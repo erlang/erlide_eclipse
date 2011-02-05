@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.erlide.ui" version="2">
+    <resource path="META-INF/MANIFEST.MF">
+        <filter id="923795461">
+            <message_arguments>
+                <message_argument value="0.9.5.qualifier"/>
+                <message_argument value="0.8.2.201008170742"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/editors/erl/handlers/ExpandCollapseAllHandler.java" type="org.erlide.ui.editors.erl.handlers.ExpandCollapseAllHandler">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.editors.erl.handlers.ExpandCollapseAllHandler"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/editors/erl/handlers/ToggleMarkOccurrencesHandler.java" type="org.erlide.ui.editors.erl.handlers.ToggleMarkOccurrencesHandler">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.editors.erl.handlers.ToggleMarkOccurrencesHandler"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/util/BackendManagerPopup.java" type="org.erlide.ui.util.BackendManagerPopup">
+        <filter id="337682486">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.BackendManagerPopup"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="moduleLoaded(Backend, String, String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/util/ErlModelUtils.java" type="org.erlide.ui.util.ErlModelUtils">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="checkMacroValue(String, IErlModule)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="findExternalModule(String, String, IErlModule, IProject, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="findPreprocessorDef(Backend, IProject, IErlModule, String, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getExternalModule(String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getExternalModules(Backend, String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getImportsAsList(IErlModule)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getModule(IEditorInput, IDocumentProvider)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getModule(IEditorPart)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getModulesWithReferencedProjects(IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getPredefinedMacroNames()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="getPreprocessorDefs(Backend, IProject, IErlModule, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="openElement(IErlElement)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="openExternalFunction(String, ErlangFunction, String, IErlModule, IProject, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="openExternalType(String, String, String, IErlModule, IProject, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlModelUtils"/>
+                <message_argument value="openPreprocessorDef(Backend, IProject, IWorkbenchPage, IErlModule, String, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getModule(IEditorInput)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openElement(IErlElement)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openExternalFunction(String, ErlangFunction, String, IErlModule, IErlProject, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openMF(String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openMFA(String, String, int)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openModule(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openSourceRange(IErlModule, ISourceRange)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/util/ErlideSelection.java" type="org.erlide.ui.util.ErlideSelection">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlideSelection"/>
+                <message_argument value="extractActivationToken(IDocument, int, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlideSelection"/>
+                <message_argument value="getCurrToken()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.ErlideSelection"/>
+                <message_argument value="getLineAndCol(int)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="extractActivationToken(IDocument, int, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getCurrToken()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getLineAndCol(int)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/util/PopupDialog.java" type="org.erlide.ui.util.PopupDialog">
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="showModalDialog(String, String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/ui/util/UIStringUtils.java" type="org.erlide.ui.util.UIStringUtils">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.ui.util.UIStringUtils"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

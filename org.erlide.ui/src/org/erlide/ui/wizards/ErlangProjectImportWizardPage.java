@@ -90,7 +90,7 @@ public class ErlangProjectImportWizardPage extends
 
     // A boolean to indicate if the user has typed anything
     boolean entryChanged = false;
-    boolean copyFiles = false;
+    boolean copyFiles = ErlangProjectImportWizard.COPY_ONLY;
 
     // dialog store id constants
     private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
@@ -247,8 +247,7 @@ public class ErlangProjectImportWizardPage extends
                     .addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            copyFiles = ErlangProjectImportWizard.COPY_ONLY
-                                    || copyProjectsIntoWorkspaceCheckbox
+                            copyFiles = copyProjectsIntoWorkspaceCheckbox
                                             .getSelection();
                             if (copyFiles) {
                                 enableButtonGroup(false);
@@ -263,6 +262,11 @@ public class ErlangProjectImportWizardPage extends
                         }
                     });
             // copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+        } else {
+            enableButtonGroup(false);
+            enableSourceGroup(true);
+            enableResourceTreeGroup(true);
+            // setAllSelections(false);
         }
     }
 

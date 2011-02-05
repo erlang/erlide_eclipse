@@ -13,9 +13,9 @@ package org.erlide.ui.internal.search;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
+import erlang.ErlSearchScope;
 import erlang.ErlangSearchPattern.LimitTo;
 
 /**

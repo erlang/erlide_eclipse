@@ -1,0 +1,1253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="org.erlide.core" version="2">
+    <resource path="META-INF/MANIFEST.MF">
+        <filter id="923795461">
+            <message_arguments>
+                <message_argument value="0.9.5.qualifier"/>
+                <message_argument value="0.8.2.201008170742"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlSearchScope.java" type="erlang.ErlSearchScope">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="erlang.ErlSearchScope"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlangSearchPattern.java" type="erlang.ErlangSearchPattern">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="erlang.ErlangSearchPattern"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideBuilder.java" type="erlang.ErlideBuilder">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="erlang.ErlideBuilder"/>
+                <message_argument value="compileErl(Backend, String, String, List&lt;String&gt;, OtpErlangList)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="compileErl(Backend, IPath, String, Collection&lt;IPath&gt;, OtpErlangList)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideDebug.java" type="erlang.ErlideDebug">
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getAllModulesOnStack(Backend, OtpErlangPid)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideDialyze.java" type="erlang.ErlideDialyze">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="erlang.ErlideDialyze"/>
+                <message_argument value="dialyze(Backend, Collection&lt;String&gt;, String, Collection&lt;String&gt;, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="dialyze(Backend, Collection&lt;String&gt;, List&lt;String&gt;, Collection&lt;IPath&gt;, boolean)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideIndent.java" type="erlang.ErlideIndent">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="erlang.ErlideIndent"/>
+                <message_argument value="indentLines(Backend, boolean, int, int, String, int, boolean, Map&lt;String,String&gt;, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="indentLines(Backend, int, int, String, int, boolean, Map&lt;String,String&gt;)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideOpen.java" type="erlang.ErlideOpen">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="erlang.ErlideOpen"/>
+                <message_argument value="getExternalModule(Backend, String, String, OtpErlangList)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="erlang.ErlideOpen"/>
+                <message_argument value="getExternalModules(Backend, String, String, OtpErlangList)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getExternalModuleTree(Backend, String, OtpErlangList)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getLibDirs(Backend)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getLibFiles(Backend, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getLibSrcInclude(Backend, String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideOpen.java" type="erlang.ErlideOpen$ExternalTreeEntry">
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="ExternalTreeEntry"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/ErlideSearchServer.java" type="erlang.ErlideSearchServer">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="erlang.ErlideSearchServer"/>
+                <message_argument value="findRefs(Backend, ErlangSearchPattern, Collection&lt;IResource&gt;, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findRefs(Backend, ErlangSearchPattern, ErlSearchScope, ErlSearchScope, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findRefs(Backend, ErlangSearchPattern, IErlModule, String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/erlang/OpenResult.java" type="erlang.OpenResult">
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="isField()"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/ErlangPlugin.java" type="org.erlide.core.ErlangPlugin">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.ErlangPlugin"/>
+                <message_argument value="initializeAfterLoad(IProgressMonitor)"/>
+            </message_arguments>
+        </filter>
+        <filter id="421683322">
+            <message_arguments>
+                <message_argument value="org.erlide.core.ErlangPlugin"/>
+                <message_argument value="log(IStatus)"/>
+            </message_arguments>
+        </filter>
+        <filter id="421683322">
+            <message_arguments>
+                <message_argument value="org.erlide.core.ErlangPlugin"/>
+                <message_argument value="log(Throwable)"/>
+            </message_arguments>
+        </filter>
+        <filter id="421683322">
+            <message_arguments>
+                <message_argument value="org.erlide.core.ErlangPlugin"/>
+                <message_argument value="logErrorMessage(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="421683322">
+            <message_arguments>
+                <message_argument value="org.erlide.core.ErlangPlugin"/>
+                <message_argument value="logErrorStatus(String, IStatus)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1227882500">
+            <message_arguments>
+                <message_argument value="getFeatureVersion()"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/BuildResource.java" type="org.erlide.core.builder.BuildResource">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.BuildResource"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/CompilerPreferencesConstants.java" type="org.erlide.core.builder.CompilerPreferencesConstants">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.CompilerPreferencesConstants"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/DialyzerBuilder.java" type="org.erlide.core.builder.DialyzerBuilder">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.DialyzerBuilder"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/DialyzerPreferences.java" type="org.erlide.core.builder.DialyzerPreferences">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.DialyzerPreferences"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/DialyzerPreferencesConstants.java" type="org.erlide.core.builder.DialyzerPreferencesConstants">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.DialyzerPreferencesConstants"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/ErlProgressMonitor.java" type="org.erlide.core.builder.ErlProgressMonitor">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.ErlProgressMonitor"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/builder/MarkerUtils.java" type="org.erlide.core.builder.MarkerUtils">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.builder.MarkerUtils"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/ErlScanner.java" type="org.erlide.core.erlang.ErlScanner">
+        <filter id="337682486">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlScanner"/>
+            </message_arguments>
+        </filter>
+        <filter id="338722907">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlScanner"/>
+                <message_argument value="ErlScanner(IErlModule, String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlScanner"/>
+                <message_argument value="getScannerModuleName()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="ErlScanner(String, String, String, boolean)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/ErlangCore.java" type="org.erlide.core.erlang.ErlangCore">
+        <filter id="338755678">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlangCore"/>
+                <message_argument value="EXTERNAL_INCLUDES"/>
+            </message_arguments>
+        </filter>
+        <filter id="338755678">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlangCore"/>
+                <message_argument value="EXTERNAL_MODULES"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlangCore"/>
+                <message_argument value="getProjectProperties(IProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.ErlangCore"/>
+                <message_argument value="getRuntimeInfoManager()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getModuleMap()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getProjectProperties(IProject)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlElement.java" type="org.erlide.core.erlang.IErlElement">
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getAncestorOfKind(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getFilePath()"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getLabelString()"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getModuleName()"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getParent()"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="resourceChanged(IResourceDelta)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405864542">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="VISIT_EXTERNALS"/>
+            </message_arguments>
+        </filter>
+        <filter id="405864542">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="VISIT_REFERENCED"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getAncestor(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="getParent()"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlElement"/>
+                <message_argument value="resourceChanged()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getAncestorOfKind(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getFilePath()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getLabelString()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getModuleName()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getParent()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="resourceChanged(IResourceDelta)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlElement.java" type="org.erlide.core.erlang.IErlElement$Kind">
+        <filter id="1177550852">
+            <message_arguments>
+                <message_argument value="EXTERNAL"/>
+            </message_arguments>
+        </filter>
+        <filter id="1177550852">
+            <message_arguments>
+                <message_argument value="RECORD_FIELD"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlExternal.java" type="org.erlide.core.erlang.IErlExternal">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlExternal"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlImportExport.java" type="org.erlide.core.erlang.IErlImportExport">
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlImportExport"/>
+                <message_argument value="getFunctions()"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlImportExport"/>
+                <message_argument value="getFunctions()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getFunctions()"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlModule.java" type="org.erlide.core.erlang.IErlModule">
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlModule"/>
+                <message_argument value="addComment(IErlComment)"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlModule"/>
+                <message_argument value="findTypespec(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlModule"/>
+                <message_argument value="getInitialText()"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlModule"/>
+                <message_argument value="setResource(IFile)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="addComment(IErlComment)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="findTypespec(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getInitialText()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="setResource(IFile)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlModuleMap.java" type="org.erlide.core.erlang.IErlModuleMap">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlModuleMap"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlRecordDef.java" type="org.erlide.core.erlang.IErlRecordDef">
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlRecordDef"/>
+                <message_argument value="getFieldNamed(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="405901410">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlRecordDef"/>
+                <message_argument value="getFields()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getFieldNamed(String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IErlRecordField.java" type="org.erlide.core.erlang.IErlRecordField">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IErlRecordField"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IOldErlangProjectProperties.java" type="org.erlide.core.erlang.IOldErlangProjectProperties">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IOldErlangProjectProperties"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/IParent.java" type="org.erlide.core.erlang.IParent">
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IParent"/>
+                <message_argument value="getChildCount()"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IParent"/>
+                <message_argument value="getChildrenOfKind(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+        <filter id="403804204">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.IParent"/>
+                <message_argument value="hasChildrenOfKind(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getChildCount()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="getChildrenOfKind(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1211105284">
+            <message_arguments>
+                <message_argument value="hasChildrenOfKind(IErlElement.Kind)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/SourceRange.java" type="org.erlide.core.erlang.SourceRange">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.SourceRange"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/BackendUtils.java" type="org.erlide.core.erlang.util.BackendUtils">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.BackendUtils"/>
+                <message_argument value="getErlideNameTag()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.BackendUtils"/>
+                <message_argument value="getProjects(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.BackendUtils"/>
+                <message_argument value="getProjects(String[])"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getBuildOrIdeBackend(IProject)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/ContainerFilterCreator.java" type="org.erlide.core.erlang.util.ContainerFilterCreator">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ContainerFilterCreator"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/ErlangFunction.java" type="org.erlide.core.erlang.util.ErlangFunction">
+        <filter id="1194328068">
+            <message_arguments>
+                <message_argument value="ANY_ARITY"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/ErlideUtil.java" type="org.erlide.core.erlang.util.ErlideUtil">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="fetchErlideLog()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="fetchPlatformLog()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="fetchStraceLog(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="getBeamBinary(String, IPath)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="getBeamBinary(String, URL)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="getPath(String, Bundle)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="getReportFile()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="getReportLocation()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="isModuleExtension(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="loadModuleViaInput(ErlideBackend, IProject, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="unpackBeamFiles(Bundle, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ErlideUtil"/>
+                <message_argument value="unquote(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="hasErlideExternalExtension(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="isErlangFileContentFileName(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="isModuleExtensionx(String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/ModelUtils.java" type="org.erlide.core.erlang.util.ModelUtils">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ModelUtils"/>
+                <message_argument value="findIncludeFile(IProject, String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ModelUtils"/>
+                <message_argument value="findPreprocessorDef(Backend, Collection&lt;IProject&gt;, String, String, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ModelUtils"/>
+                <message_argument value="getModule(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ModelUtils"/>
+                <message_argument value="getSourcePathProviders()"/>
+            </message_arguments>
+        </filter>
+        <filter id="421572723">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ModelUtils"/>
+                <message_argument value="findTypespec(IErlModule, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="EXTERNAL_FILES_PROJECT_NAME"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="NO_IMPORTS"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="createModuleInExternalFilesProject(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findAllIncludedFiles(IErlModule, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findExternalFunction(String, ErlangFunction, String, IErlProject, boolean, IErlModule)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findExternalModule(String, String, IErlProject, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findExternalModuleFromPath(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findExternalModulesFromName(String, IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findExternalModulesFromPath(String, IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findExternalType(IErlModule, String, String, String, IErlProject, boolean)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findIncludeFile(IErlProject, String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findPreprocessorDef(Collection&lt;IErlProject&gt;, String, String, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findPreprocessorDef(IErlModule, String, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findTypespec(IErlModule, String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="findVariable(Backend, ISourceRange, String, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getExternalFilesProject()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getExternalInclude(Backend, IErlProject, String, ErlangIncludeFile)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getExternalModule(String, IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getExternalModulePath(IErlModule)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getExternalModulesWithPrefix(Backend, String, IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getImportsAsList(IErlModule)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getModuleByName(String, String, IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getModuleFromExternalModulePath(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getModulesWithReferencedProjectsWithPrefix(IErlProject, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getPredefinedMacroNames()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getPreprocessorDefs(IErlModule, IErlElement.Kind, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="isExternalFilesProject(IProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="moduleInProject(IErlModule, IErlProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="openExternal(IErlProject, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="resolveMacroValue(String, IErlModule)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/PluginUtils.java" type="org.erlide.core.erlang.util.PluginUtils">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.PluginUtils"/>
+                <message_argument value="getFullPaths(IProject, List&lt;String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.PluginUtils"/>
+                <message_argument value="isOnPaths(IContainer, IProject, List&lt;String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.PluginUtils"/>
+                <message_argument value="resolvePath(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="421572723">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.PluginUtils"/>
+                <message_argument value="getIncludePathFilter(IProject, IContainer)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getFullPaths(IProject, Collection&lt;IPath&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getIncludePathFilterCreator(IContainer)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getPVMValue(IPathVariableManager, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getSourcePathFilterCreator()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="isOnPaths(IContainer, IProject, Collection&lt;IPath&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="resolvePVMPath(IPathVariableManager, IPath)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/erlang/util/ResourceUtil.java" type="org.erlide.core.erlang.util.ResourceUtil">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ResourceUtil"/>
+                <message_argument value="getExternalFilesProject()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ResourceUtil"/>
+                <message_argument value="getOutFolder(IProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ResourceUtil"/>
+                <message_argument value="getSourceFolder(IProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ResourceUtil"/>
+                <message_argument value="hasErlangExtension(IResource)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ResourceUtil"/>
+                <message_argument value="openExternal(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.erlang.util.ResourceUtil"/>
+                <message_argument value="recursiveFindNamedResourceWithReferences(IContainer, String, ContainerFilter)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="recursiveFindNamedModuleResourceWithReferences(IContainer, String, ContainerFilterCreator)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/platform/PlatformChangeListener.java" type="org.erlide.core.platform.PlatformChangeListener">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.platform.PlatformChangeListener"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/ErlProjectInfo.java" type="org.erlide.core.preferences.ErlProjectInfo">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.ErlProjectInfo"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/ErlProjectInfoBuilder.java" type="org.erlide.core.preferences.ErlProjectInfoBuilder">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.ErlProjectInfoBuilder"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/ErlProjectLayout.java" type="org.erlide.core.preferences.ErlProjectLayout">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.ErlProjectLayout"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/OldErlangProjectProperties.java" type="org.erlide.core.preferences.OldErlangProjectProperties">
+        <filter id="338755678">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="CODEPATH_FILENAME"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="buildCommandLine()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="buildIncludeDirs(List&lt;String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="copyFrom(OldErlangProjectProperties)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="dispose()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="getIncludeDirs()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="getOutputDir()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="getProject()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="getRuntimeInfo()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="getRuntimeVersion()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="getSourceDirs()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="load(IEclipsePreferences)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="setOutputDir(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.OldErlangProjectProperties"/>
+                <message_argument value="setRuntimeVersion(RuntimeVersion)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="copyFrom(IOldErlangProjectProperties)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getIncludeDirs()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getOutputDir()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getRuntimeInfo()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getRuntimeVersion()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getSourceDirs()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="load(IEclipsePreferences)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="setOutputDir(IPath)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="setRuntimeVersion(RuntimeVersion)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/PathEntry.java" type="org.erlide.core.preferences.PathEntry">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.PathEntry"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/PathSerializer.java" type="org.erlide.core.preferences.PathSerializer">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.PathSerializer"/>
+                <message_argument value="unpackList(String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="unpackList(String)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/preferences/PropertiesUtils.java" type="org.erlide.core.preferences.PropertiesUtils">
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.core.preferences.PropertiesUtils"/>
+                <message_argument value="convertOld(OldErlangProjectProperties)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="convertOld(IOldErlangProjectProperties)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="filter(Collection&lt;U&gt;, Class&lt;T&gt;)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/core/util/LogUtil.java" type="org.erlide.core.util.LogUtil">
+        <filter id="1110441988">
+            <message_arguments>
+                <message_argument value="org.erlide.core.util.LogUtil"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/runtime/backend/BackendManager.java">
+        <filter id="0"/>
+    </resource>
+    <resource path="src/org/erlide/runtime/backend/BackendManager.java" type="org.erlide.runtime.backend.BackendManager">
+        <filter id="337682486">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+                <message_argument value="addBackendListener(BackendListener)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+                <message_argument value="addBundle(Bundle, Collection&lt;Tuple&lt;String,CodeBundle.CodeContext&gt;&gt;, Tuple&lt;String,String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+                <message_argument value="createBackend(RuntimeInfo, Set&lt;BackendManager.BackendOptions&gt;, ILaunch, Map&lt;String,String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+                <message_argument value="getBuildBackend(IProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+                <message_argument value="getEpmdWatcher()"/>
+            </message_arguments>
+        </filter>
+        <filter id="338792546">
+            <message_arguments>
+                <message_argument value="org.erlide.runtime.backend.BackendManager"/>
+                <message_argument value="removeBackendListener(BackendListener)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="addBackendListener(IBackendListener)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="addBundle(Bundle, Collection&lt;Tuple&lt;String,CodeBundle.CodeContext&gt;&gt;, Tuple&lt;String,String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="createBackend(RuntimeInfo, Set&lt;BackendManager.BackendOptions&gt;, ILaunch, Map&lt;String,String&gt;)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getBackendForLaunch(ILaunch)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getBuildBackend(IProject)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="getEpmdWatcher()"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="moduleLoaded(Backend, IProject, String)"/>
+            </message_arguments>
+        </filter>
+        <filter id="1143996420">
+            <message_arguments>
+                <message_argument value="removeBackendListener(IBackendListener)"/>
+            </message_arguments>
+        </filter>
+    </resource>
+    <resource path="src/org/erlide/runtime/backend/BackendManager.java" type="org.erlide.runtime.backend.BackendManager$BackendEvent">
+        <filter id="1177550852">
+            <message_arguments>
+                <message_argument value="MODULE_LOADED"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>
