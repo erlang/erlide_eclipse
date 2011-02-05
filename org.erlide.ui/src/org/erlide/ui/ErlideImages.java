@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2005 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,22 +20,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 
-/**
- * 
- * 
- * @author Vlad Dumitrescu [vladdu55 at gmail dot com]
- */
-public class ErlideUIPluginImages {
+public class ErlideImages {
 
-    private static final String NAME_PREFIX = "org.erlide.ui."; //$NON-NLS-1$
-
+    private static final String NAME_PREFIX = ""; //$NON-NLS-1$
     private static final int NAME_PREFIX_LENGTH = NAME_PREFIX.length();
 
     private static URL fgIconBaseURL = null;
 
     // Determine display depth. If depth > 4 then we use high color images.
-    // Otherwise low
-    // color images are used
+    // Otherwise low color images are used
     static {
         fgIconBaseURL = ErlideUIPlugin.getDefault().getBundle()
                 .getEntry("/icons/full/"); //$NON-NLS-1$
@@ -43,13 +36,10 @@ public class ErlideUIPluginImages {
 
     // The plug-in registry
     private static ImageRegistry fgImageRegistry = null;
-
     private static HashMap<String, ImageDescriptor> fgAvoidSWTErrorMap = null;
 
     private static final String T_OBJ = "obj16"; //$NON-NLS-1$
-
     private static final String T_OVR = "ovr16"; //$NON-NLS-1$
-
     // private static final String T_WIZBAN = "wizban"; //$NON-NLS-1$
     private static final String T_ELCL = "elcl16"; //$NON-NLS-1$
     // private static final String T_DLCL = "dlcl16"; //$NON-NLS-1$
@@ -118,7 +108,7 @@ public class ErlideUIPluginImages {
     public static final ImageDescriptor DESC_HIDE_MACRO_RECORD_DEFS = createManaged(
             T_ELCL, IMG_HIDE_MACRO_RECORD_DEFS);
 
-    public static final String IMG_HIDE_ATTRIBUTES = NAME_PREFIX
+    private static final String IMG_HIDE_ATTRIBUTES = NAME_PREFIX
             + "hide_attributes.gif"; //$NON-NLS-1$
 
     public static final ImageDescriptor DESC_HIDE_ATTRIBUTES = createManaged(
@@ -190,6 +180,17 @@ public class ErlideUIPluginImages {
 
     public static final ImageDescriptor DESC_OBJS_EDOCTAG = createManaged(
             T_OBJ, IMG_OBJS_EDOCTAG);
+
+    public static final String IMG_TEST_SUCCESS = NAME_PREFIX
+            + "methpub_obj.gif"; //$NON-NLS-1$
+
+    public static final String IMG_TEST_FAILED = NAME_PREFIX
+            + "methpri_obj.gif"; //$NON-NLS-1$
+
+    public static final String IMG_TEST_SKIPPED = NAME_PREFIX
+            + "methpro_obj.gif"; //$NON-NLS-1$
+
+    // //////////////////////////////
 
     /**
      * Returns the image managed under the given key in this registry.
@@ -307,32 +308,6 @@ public class ErlideUIPluginImages {
             return ImageDescriptor.getMissingImageDescriptor();
         }
     }
-
-    // private static ImageDescriptor createManaged(String prefix, String name,
-    // String
-    // key)
-    // {
-    // try
-    // {
-    // ImageDescriptor result =
-    // ImageDescriptor.createFromURL(makeIconFileURL(prefix, name
-    // .substring(NAME_PREFIX_LENGTH)));
-    // if (fgAvoidSWTErrorMap == null)
-    // {
-    // fgAvoidSWTErrorMap = new HashMap();
-    // }
-    // fgAvoidSWTErrorMap.put(key, result);
-    // if (fgImageRegistry != null)
-    // {
-    // ErlideUIPlugin.logErrorMessage("Image registry already defined");
-    //
-    // }
-    // return result;
-    // } catch (MalformedURLException e)
-    // {
-    // return ImageDescriptor.getMissingImageDescriptor ();
-    // }
-    // }
 
     private static ImageDescriptor create(final String prefix, final String name) {
         try {

@@ -28,7 +28,7 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.ErlideImages;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;
@@ -139,7 +139,7 @@ public final class PresenterControlCreator extends
         public ShowInEdocViewAction(final BrowserInformationControl infoControl) {
             fInfoControl = infoControl;
             setText("Show in eDoc view");
-            setImageDescriptor(ErlideUIPluginImages.DESC_OBJS_EDOCTAG);
+            setImageDescriptor(ErlideImages.DESC_OBJS_EDOCTAG);
         }
 
         /*
@@ -177,7 +177,7 @@ public final class PresenterControlCreator extends
             fInfoControl = infoControl;
             this.editor = editor;
             setText("Open declaration");
-            ErlideUIPluginImages.setLocalImageDescriptors(this,
+            ErlideImages.setLocalImageDescriptors(this,
                     "goto_input.gif");
         }
 

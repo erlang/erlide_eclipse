@@ -2,29 +2,25 @@ package org.erlide.test_support.ui.suites;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.console.ConsolePluginImages;
-import org.eclipse.ui.internal.console.IInternalConsoleConstants;
+import org.erlide.ui.ErlideImage;
 
 class TestResultsLabelProvider extends LabelProvider {
+    @SuppressWarnings("restriction")
     @Override
     public Image getImage(final Object element) {
         if (element instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) element;
             switch (data.getState()) {
             case NOT_RUN:
-                return ConsolePluginImages
-                        .getImage(IInternalConsoleConstants.IMG_ELCL_CLEAR);
+                return null;
+            case SKIPPED:
+                return ErlideImage.TEST_SKIPPED.getImage();
             case RUNNING:
-                return PlatformUI.getWorkbench().getSharedImages()
-                        .getImage(ISharedImages.IMG_TOOL_REDO);
+                return ErlideImage.TEST_RUNNING.getImage();
             case SUCCESS:
-                return PlatformUI.getWorkbench().getSharedImages()
-                        .getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+                return ErlideImage.TEST_SUCCEEDED.getImage();
             case FAILURE:
-                return PlatformUI.getWorkbench().getSharedImages()
-                        .getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+                return ErlideImage.TEST_FAILED.getImage();
             }
         }
         return null;

@@ -18,8 +18,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
+import org.erlide.ui.ErlideImages;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageDescriptor;
 
 public class ProblemsLabelDecorator implements ILabelDecorator,
@@ -194,9 +194,9 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
     public void decorate(final Object element, final IDecoration decoration) {
         final int adornmentFlags = computeAdornmentFlags(element);
         if (adornmentFlags == ERRORTICK_ERROR) {
-            decoration.addOverlay(ErlideUIPluginImages.DESC_OVR_ERROR);
+            decoration.addOverlay(ErlideImages.DESC_OVR_ERROR);
         } else if (adornmentFlags == ERRORTICK_WARNING) {
-            decoration.addOverlay(ErlideUIPluginImages.DESC_OVR_WARNING);
+            decoration.addOverlay(ErlideImages.DESC_OVR_WARNING);
         }
 
     }

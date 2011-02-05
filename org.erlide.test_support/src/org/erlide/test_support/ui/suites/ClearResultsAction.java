@@ -12,9 +12,9 @@ public class ClearResultsAction extends Action {
     private final TreeViewer treeViewer;
 
     public ClearResultsAction(final TreeViewer treeViewer,
-            final List<TestCaseData> events2) {
+            final List<TestCaseData> events) {
         super("Clear results");
-        this.events = events2;
+        this.events = events;
         this.treeViewer = treeViewer;
         setImageDescriptor(ConsolePluginImages
                 .getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLEAR));

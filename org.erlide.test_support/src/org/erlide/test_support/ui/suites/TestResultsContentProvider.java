@@ -31,6 +31,8 @@ class TestResultsContentProvider implements ITreeContentProvider {
         return myEvents.toArray();
     }
 
+    // TODO group after test suite
+
     public Object[] getChildren(final Object parentElement) {
         if (parentElement instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) parentElement;

@@ -165,6 +165,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         super.stop(context);
         ErlangCore.getBackendManager().removeBackendListener(
                 erlangDebuggerBackendListener);
+        if (ErlideImage.isInstalled()) {
+            ErlideImage.dispose();
+        }
         plugin = null;
     }
 

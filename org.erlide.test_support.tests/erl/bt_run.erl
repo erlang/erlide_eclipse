@@ -3,7 +3,9 @@
 
 -compile(export_all).
 
--include("erlide.hrl"). 
+-include("erlide.hrl").
+
+-define(NUM_TESTS, 7).
 
 run(Dir, Suite, Arg, Cb) ->
 	?Info({Dir, Suite, Arg, Cb}),
@@ -12,18 +14,29 @@ run(Dir, Suite, Arg, Cb) ->
 
 run(Cb) ->
 	timer:sleep(100),
-	notify(Cb, init, init),
-	do_tests(Cb, 5).
+	notify(Cb, init, {"",s,c}),
+	do_tests(Cb, ?NUM_TESTS).
 
 do_tests(Cb, 0) ->
 	stop(Cb);
 do_tests(Cb, N) ->
-	timer:sleep(200),
-	notify(Cb, tc_result, ok),
+	F=list_to_atom("f"++[?NUM_TESTS-N+$1]),
+	notify(Cb, tc_start, {m,F}),
+	timer:sleep(800),
+	case N of
+		2 ->	
+			notify(Cb, tc_fail, {{m,F}, [], reason});
+		4 ->	
+			notify(Cb, tc_fail, {{m,F}, [], reason});
+		%% 		3 ->	
+		%% 			notify(Cb, tc_skip, {{m,F}, [], reason});
+		_ ->
+			notify(Cb, tc_result, {m, F, ok})
+	end,
 	do_tests(Cb, N-1).
 
 stop(Cb) ->
-	notify(Cb, done, ok),
+	notify(Cb, done, {m, "", {3,4,5}, []}),
 	ok.
 	
 

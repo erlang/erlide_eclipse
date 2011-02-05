@@ -86,7 +86,7 @@ init_debugger() ->
 
 init(Args) ->
     %os:cmd("touch /home/qvladum/zzz"),
-    notify({tc_init, Args}),
+    notify({init, Args}),
     ok.
 
 start_failed(Reason) ->
