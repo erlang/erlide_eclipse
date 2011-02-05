@@ -109,7 +109,7 @@ public class ResultsView extends ViewPart {
         if ("init".equals(tag)) {
             // value = {Dir, Suite, Case}
             final String title = value.toString();
-            label.setText(">>> ");
+            label.setText(">>> " + title);
         } else if ("start_failed".equals(tag)) {
             // value = ?
         } else if ("log_started".equals(tag)) {

@@ -25,7 +25,8 @@ public enum ErlideImage {
     TEST_RUNNING(ErlideImagePrefix.T_OBJ, "searchm_obj.gif"),
     TEST_SUCCEEDED(ErlideImagePrefix.T_OBJ, "methpub_obj.gif"),
     TEST_FAILED(ErlideImagePrefix.T_OBJ, "methpri_obj.gif"),
-    TEST_SKIPPED(ErlideImagePrefix.T_OBJ, "methpro_obj.gif")
+    TEST_SKIPPED(ErlideImagePrefix.T_OBJ, "methpro_obj.gif"),
+    CLEAR(ErlideImagePrefix.T_ELCL, "clear_co.gif")
     ;
     //@formatter:on
 

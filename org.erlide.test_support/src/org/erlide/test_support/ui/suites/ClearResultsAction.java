@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.ui.internal.console.ConsolePluginImages;
-import org.eclipse.ui.internal.console.IInternalConsoleConstants;
+import org.erlide.ui.ErlideImage;
 
 public class ClearResultsAction extends Action {
     private final List<TestCaseData> events;
@@ -16,8 +15,7 @@ public class ClearResultsAction extends Action {
         super("Clear results");
         this.events = events;
         this.treeViewer = treeViewer;
-        setImageDescriptor(ConsolePluginImages
-                .getImageDescriptor(IInternalConsoleConstants.IMG_ELCL_CLEAR));
+        setImageDescriptor(ErlideImage.CLEAR.getDescriptor());
     }
 
     @Override
