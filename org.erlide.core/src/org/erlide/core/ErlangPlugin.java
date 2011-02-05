@@ -115,7 +115,7 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
-            ResourcesPlugin.getWorkspace().removeSaveParticipant(PLUGIN_ID);
+            ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
             ErlangCore.getModelManager().shutdown();
             platformListener.dispose();
         } finally {
@@ -159,7 +159,7 @@ public class ErlangPlugin extends Plugin {
 
         BackendManager.getDefault().loadCodepathExtensions();
 
-        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID,
+        ResourcesPlugin.getWorkspace().addSaveParticipant(this,
                 new ISaveParticipant() {
                     public void doneSaving(final ISaveContext context1) {
                     }
