@@ -8,13 +8,15 @@
 -define(NUM_TESTS, 7).
 
 run(Dir, Suite, Arg, Cb) ->
-	?Info({Dir, Suite, Arg, Cb}),
+	?Info({"BT_RUN RUN", Dir, Suite, Arg, Cb}),
 	spawn(fun()->run(Cb) end),
 	ok.
 
 run(Cb) ->
 	timer:sleep(100),
 	notify(Cb, init, {"",s,c}),
+	Z=(catch blabla_SUITE:f()),
+	?Info(Z),
 	do_tests(Cb, ?NUM_TESTS).
 
 do_tests(Cb, 0) ->

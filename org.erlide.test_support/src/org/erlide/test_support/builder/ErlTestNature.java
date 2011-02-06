@@ -11,7 +11,7 @@ public class ErlTestNature implements IProjectNature {
     /**
      * ID of this project nature
      */
-    public static final String NATURE_ID = "shade.bterl.nature";
+    public static final String NATURE_ID = "org.erlide.test_support.nature";
 
     private IProject project;
 

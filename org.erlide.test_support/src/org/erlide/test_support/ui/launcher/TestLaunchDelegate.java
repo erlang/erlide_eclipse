@@ -57,6 +57,11 @@ import com.google.common.collect.Sets;
 
 public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
+    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
+            "undefined");
+    private static final OtpErlangTuple BTERL_WATCHER_INIT_DEBUGGER = OtpErlang
+            .mkTuple(new OtpErlangAtom("bterl_watcher"), new OtpErlangAtom(
+                    "init_debugger"));
     private String testcase;
     private String suite;
     private String mode;
@@ -111,6 +116,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final ErlideBackend backend = ErlangCore.getBackendManager()
                 .getBackendForLaunch(launch);
         if (backend == null) {
+            ErlLogger.warn("Could not start backend for launch %s", launch
+                    .getLaunchConfiguration().getName());
             return;
         }
         if (amode.equals("debug")) {
@@ -165,7 +172,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                         backend.getFullNodeName())) {
                     return;
                 }
-                System.out.println("BTERL DEBUG INIIT");
+                System.out.println("BTERL DEBUG INIT");
                 final String[] modules = workdir.list(new FilenameFilter() {
                     public boolean accept(final File dir, final String filename) {
                         return filename.endsWith(".erl");
@@ -276,8 +283,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 "trace".equals(mode) ? OtpErlang.mkList(new OtpErlangString(
                         ".*")) : new OtpErlangList());
         final OtpErlangTuple cmd = OtpErlang.mkTuple(e_dir, e_suite, e_test);
-        final String cb = ILaunchManager.DEBUG_MODE.equals(mode) ? "{bterl_watcher, init_debugger}"
-                : "undefined";
+        final OtpErlangObject cb = ILaunchManager.DEBUG_MODE.equals(mode) ? BTERL_WATCHER_INIT_DEBUGGER
+                : UNDEFINED;
         final String s = e_flags.toString() + "," + cmd.toString() + ","
                 + trace.toString() + "," + cb;
         System.out.println(">>>>  * bt_run:start(" + s + ")");

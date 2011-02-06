@@ -46,7 +46,7 @@ wait_start() ->
 	end.
 
 start_bterl(Str) ->
-    erlide_log:log({start_bterl, Str}),
+    erlide_log:log({"!!", start_bterl, Str}),
     {ok, {Flags, Cmd, Trace, Cb, Dir}=X} = erlide_backend:parse_term(Str++"."),
     ?Info({start_bterl, X}),
 %%     Pids = case bt_run:has_flag($t, Flags) of 
@@ -70,6 +70,7 @@ start_bterl(Str) ->
 
 init_debugger() ->
     %% FIXME: DON'T HARDCODE THIS!
+            ?Info("initializing Debugger..."),
     timer:sleep(1000),
     erlide_jrpc:event(bterl_debugger, self()),
     receive

@@ -1,4 +1,7 @@
 -module(blabla_SUITE).
-f()->
-  ok.
- 
+-compile(export_all).
+
+f()-> 
+	x:f(),     
+  ok.  
+  

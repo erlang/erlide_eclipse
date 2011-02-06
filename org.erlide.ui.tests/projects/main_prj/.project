@@ -10,9 +10,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.erlide.test_support.builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.erlide.core.erlnature</nature>
-		<nature>shade.bterl.nature</nature>
+		<nature>org.erlide.test_support.nature</nature>
 	</natures>
 </projectDescription>
