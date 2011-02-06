@@ -97,21 +97,25 @@ public enum ErlideImage {
             synchronized (ErlideImage.class) {
                 if (registry == null) {
                     registry = new ImageRegistry(Display.getDefault());
-                    for (final ErlideImage key : values()) {
-                        ImageDescriptor descriptor;
-                        try {
-                            final URL url = key.url();
-                            descriptor = ImageDescriptor.createFromURL(url);
-                        } catch (final MalformedURLException e) {
-                            descriptor = ImageDescriptor
-                                    .getMissingImageDescriptor();
-                        }
-                        registry.put(key.name(), descriptor);
-                    }
+                    registerAllImages();
                 }
             }
         }
         return registry;
+    }
+
+    private static void registerAllImages() {
+        for (final ErlideImage key : values()) {
+            ImageDescriptor descriptor;
+            try {
+                final URL url = key.url();
+                descriptor = ImageDescriptor.createFromURL(url);
+            } catch (final MalformedURLException e) {
+                descriptor = ImageDescriptor
+                        .getMissingImageDescriptor();
+            }
+            registry.put(key.name(), descriptor);
+        }
     }
 
     private static URL makeIconFileURL(final String prefix, final String name)
@@ -167,10 +171,9 @@ public enum ErlideImage {
             ErlLogger.warn(e);
         }
 
-        ImageDescriptor descriptor;
         try {
-            descriptor = ImageDescriptor.createFromURL(makeIconFileURL("e"
-                    + type, relPath));
+            final ImageDescriptor descriptor = ImageDescriptor
+                    .createFromURL(makeIconFileURL("e" + type, relPath));
             action.setHoverImageDescriptor(descriptor);
             action.setImageDescriptor(descriptor);
         } catch (final MalformedURLException e) {
