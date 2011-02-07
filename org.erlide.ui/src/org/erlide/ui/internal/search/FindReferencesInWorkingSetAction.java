@@ -14,8 +14,9 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
+
+import erlang.ErlSearchScope;
 
 /**
  * Finds references of the selected element in working sets. The action is

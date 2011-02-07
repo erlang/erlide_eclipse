@@ -148,7 +148,7 @@ public class ModelUtilsTests {
 		// then
 		// it should be returned if found
 		assertTrue(element1 instanceof IErlTypespec);
-		assertTrue(element2 instanceof IErlTypespec);
+		assertNull(element2);
 		assertTrue(element3 instanceof IErlTypespec);
 		assertNull(element4);
 	}

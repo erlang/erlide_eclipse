@@ -158,7 +158,7 @@ public class ErlModelUtils {
                 return module;
             }
         }
-        return ModelUtils.createModuleInExternalFilesProject(path);
+        return null;
     }
 
     public static void openMFA(final String module, final String function,

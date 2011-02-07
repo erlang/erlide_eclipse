@@ -47,7 +47,6 @@ import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
@@ -62,6 +61,7 @@ import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Sets;
 
+import erlang.ErlSearchScope;
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlangSearchPattern.SearchFor;
