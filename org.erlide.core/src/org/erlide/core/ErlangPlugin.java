@@ -253,7 +253,7 @@ public class ErlangPlugin extends Plugin {
 
     public void logErrorMessage(final String message) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, message, null));
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
     }
 
     public void logErrorStatus(final String message, final IStatus status) {
@@ -262,15 +262,15 @@ public class ErlangPlugin extends Plugin {
             return;
         }
         final MultiStatus multi = new MultiStatus(PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, message, null);
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null);
         multi.add(status);
         log(multi);
     }
 
     public void log(final Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
-                e));
+                ErlangStatus.INTERNAL_ERROR.getValue(),
+                "Erlide internal error", e));
     }
 
     public static void log(final String msg, final Throwable thr) {

@@ -8,18 +8,11 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.erlide.backend.util.StringUtils;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -173,7 +166,8 @@ public class ModelUtils {
                 return result.get(0);
             }
         }
-        return createModuleInExternalFilesProject(path);
+        return null;
+        // return createModuleInExternalFilesProject(path);
     }
 
     public static List<IErlModule> findExternalModulesFromPath(
@@ -205,55 +199,6 @@ public class ModelUtils {
 
     public static boolean isExternalFilesProject(final IProject project) {
         return project.getName().equals(EXTERNAL_FILES_PROJECT_NAME);
-    }
-
-    static public IErlModule createModuleInExternalFilesProject(
-            final String path) throws CoreException {
-        if (path == null) {
-            return null;
-        }
-        final IProject project = getExternalFilesProject();
-        final IFile file = project.getFile(new Path(path).lastSegment());
-        createExternalFile(file, path, project);
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project.getName());
-        erlProject.open(null);
-        return ErlangCore.getModel().findModule(file);
-    }
-
-    public static IProject getExternalFilesProject() throws CoreException {
-        final String prjName = EXTERNAL_FILES_PROJECT_NAME;
-        final IWorkspace ws = ResourcesPlugin.getWorkspace();
-        final IProject project = ws.getRoot().getProject(prjName);
-        if (!project.exists()) {
-            project.create(null);
-            project.open(null);
-            final IProjectDescription description = project.getDescription();
-            description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-            project.setDescription(description, null);
-        }
-        if (!project.isOpen()) {
-            project.open(null);
-        }
-        return project;
-    }
-
-    private static void createExternalFile(final IFile file, final String path,
-            final IProject project) throws CoreException, ErlModelException {
-        final IPath location = new Path(path);
-        final IStatus status = ResourcesPlugin.getWorkspace()
-                .validateLinkLocation(file, location);
-        if (status.getSeverity() != IStatus.OK
-                && status.getSeverity() != IStatus.INFO) {
-            if (status.getSeverity() != IStatus.WARNING
-                    || status.getCode() != IResourceStatus.OVERLAPPING_LOCATION) {
-                ErlLogger.warn("Can't open %s:: %s", path, status.toString());
-                return;
-            }
-        }
-        if (!file.isLinked()) {
-            file.createLink(location, IResource.NONE, null);
-        }
     }
 
     public static String getExternalModulePath(final IErlModule module) {
