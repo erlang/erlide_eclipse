@@ -12,5 +12,6 @@ External_Files
 cover_report
 *.html
 org.erlide.selfhost*
+org.erlide.cover.site.bak
 refac_proj
 *wrangler*
