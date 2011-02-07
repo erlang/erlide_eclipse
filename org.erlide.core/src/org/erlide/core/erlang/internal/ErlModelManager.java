@@ -340,51 +340,59 @@ public final class ErlModelManager implements IErlModelManager {
 
     class ResourceChangeListener implements IResourceChangeListener {
         public void resourceChanged(final IResourceChangeEvent event) {
-            if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
-                return;
-            }
             final IResourceDelta rootDelta = event.getDelta();
             final ArrayList<IResource> added = Lists.newArrayList();
             final ArrayList<IResource> changed = Lists.newArrayList();
             final ArrayList<IResource> removed = Lists.newArrayList();
             final Map<IResource, IResourceDelta> changedDelta = Maps
                     .newHashMap();
-            final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-                public boolean visit(final IResourceDelta delta) {
-                    if (verbose) {
-                        ErlLogger.debug("delta " + delta.getKind() + " for "
-                                + delta.getResource().getLocation());
+            if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+                final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+                    public boolean visit(final IResourceDelta delta) {
+                        if (verbose) {
+                            ErlLogger.debug("delta " + delta.getKind()
+                                    + " for "
+                                    + delta.getResource().getLocation());
+                        }
+                        final IResource resource = delta.getResource();
+                        final boolean erlangFile = resource.getType() == IResource.FILE
+                                && ErlideUtil
+                                        .isErlangFileContentFileName(resource
+                                                .getName());
+                        // XXX FIXME TODO we have to check this in other ways
+                        // when closing, probably with the PRE_CHANGE flag,
+                        // since
+                        // the nature
+                        // is not accessible when the resource change is fired
+                        // (since the project is already closed)
+                        final boolean erlangProject = resource.getType() == IResource.PROJECT
+                                && ErlideUtil
+                                        .hasErlangNature((IProject) resource);
+                        final boolean erlangFolder = resource.getType() == IResource.FOLDER;
+                        // &&
+                        // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
+                        // IFolder)
+                        // resource);
+                        if (erlangFile || erlangProject || erlangFolder) {
+                            if (delta.getKind() == IResourceDelta.ADDED) {
+                                added.add(resource);
+                            }
+                            if (delta.getKind() == IResourceDelta.CHANGED) {
+                                changed.add(resource);
+                                changedDelta.put(resource, delta);
+                            }
+                            if (delta.getKind() == IResourceDelta.REMOVED) {
+                                removed.add(resource);
+                            }
+                        }
+                        return !erlangFile;
                     }
-                    final IResource resource = delta.getResource();
-                    final boolean erlangFile = resource.getType() == IResource.FILE
-                            && ErlideUtil.isErlangFileContentFileName(resource
-                                    .getName());
-                    final boolean erlangProject = resource.getType() == IResource.PROJECT
-                            && ErlideUtil.hasErlangNature((IProject) resource);
-                    final boolean erlangFolder = resource.getType() == IResource.FOLDER;
-                    // &&
-                    // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
-                    // IFolder)
-                    // resource);
-                    if (erlangFile || erlangProject || erlangFolder) {
-                        if (delta.getKind() == IResourceDelta.ADDED) {
-                            added.add(resource);
-                        }
-                        if (delta.getKind() == IResourceDelta.CHANGED) {
-                            changed.add(resource);
-                            changedDelta.put(resource, delta);
-                        }
-                        if (delta.getKind() == IResourceDelta.REMOVED) {
-                            removed.add(resource);
-                        }
-                    }
-                    return !erlangFile;
+                };
+                try {
+                    rootDelta.accept(visitor);
+                } catch (final CoreException e) {
+                    ErlLogger.warn(e);
                 }
-            };
-            try {
-                rootDelta.accept(visitor);
-            } catch (final CoreException e) {
-                ErlLogger.warn(e);
             }
             for (final IResource rsrc : added) {
                 create(rsrc);
