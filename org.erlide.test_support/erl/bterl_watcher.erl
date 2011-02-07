@@ -106,6 +106,10 @@ tc_fail(Result) ->
     notify({fail, Result}),
     ok.
 
+tc_skip(Result) ->
+    notify({skip, Result}),
+    ok.
+
 log_started(Arg) ->
     notify({log_started, Arg}),
     ok.

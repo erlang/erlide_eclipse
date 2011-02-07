@@ -1,4 +1,4 @@
-package org.erlide.test_support.ui.launcher;
+package org.erlide.shade.bterl.ui.launcher;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.debug.core.ILaunchConfiguration;

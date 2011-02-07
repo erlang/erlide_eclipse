@@ -1,4 +1,4 @@
-package org.erlide.test_support.builder;
+package org.erlide.shade.bterl.builder;
 
 import java.io.File;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private final BuilderHelper helper = new BuilderHelper();
 
-    public static final String BUILDER_ID = "org.erlide.test_support.builder";
+    public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
     private static final boolean DEBUG = true; // "true".equals(System
 

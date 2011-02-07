@@ -36,7 +36,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
     public Object[] getChildren(final Object parentElement) {
         if (parentElement instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) parentElement;
-            if (data.getState() == TestState.FAILURE) {
+            if (data.getState() == TestState.FAILED) {
                 return new String[] { data.getFailLocations(),
                         data.getFailReason() };
             }

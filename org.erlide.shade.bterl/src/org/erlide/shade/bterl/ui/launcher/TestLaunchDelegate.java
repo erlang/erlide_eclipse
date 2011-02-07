@@ -1,4 +1,4 @@
-package org.erlide.test_support.ui.launcher;
+package org.erlide.shade.bterl.ui.launcher;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -38,7 +38,7 @@ import org.erlide.jinterface.util.ParserException;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.debug.ErlangDebugHelper;
 import org.erlide.runtime.launch.ErlangLaunchDelegate;
-import org.erlide.test_support.Activator;
+import org.erlide.shade.bterl.Activator;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;

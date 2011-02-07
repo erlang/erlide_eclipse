@@ -1,4 +1,4 @@
-package org.erlide.test_support.builder;
+package org.erlide.shade.bterl.builder;
 
 import java.util.Iterator;
 

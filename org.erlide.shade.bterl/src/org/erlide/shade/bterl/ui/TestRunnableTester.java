@@ -1,4 +1,4 @@
-package org.erlide.test_support.ui;
+package org.erlide.shade.bterl.ui;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IFile;
@@ -13,8 +13,8 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.test_support.builder.ErlTestNature;
-import org.erlide.test_support.ui.launcher.TestLaunchShortcut;
+import org.erlide.shade.bterl.builder.ErlTestNature;
+import org.erlide.shade.bterl.ui.launcher.TestLaunchShortcut;
 
 public class TestRunnableTester extends PropertyTester {
 

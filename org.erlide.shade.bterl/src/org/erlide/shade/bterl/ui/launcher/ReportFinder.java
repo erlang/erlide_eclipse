@@ -1,4 +1,4 @@
-package org.erlide.test_support.ui.launcher;
+package org.erlide.shade.bterl.ui.launcher;
 
 import java.io.BufferedReader;
 import java.io.File;

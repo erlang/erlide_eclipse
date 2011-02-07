@@ -146,6 +146,14 @@ public class ResultsView extends ViewPart {
             final OtpErlangObject reason = bindings.get("R");
             test = findCase(mod, fun);
             test.setFailed(reason, locations);
+        } else if ("skip".equals(tag)) {
+            // value = {Module, Function, Comment
+            final Bindings bindings = ErlUtils.match("{M:a,F:a,C}", value);
+            final String mod = bindings.getAtom("M");
+            final String fun = bindings.getAtom("F");
+            final OtpErlangObject reason = bindings.get("C");
+            test = findCase(mod, fun);
+            test.setSkipped(reason);
         } else if ("done".equals(tag)) {
             // value = Module, Log, {Successful,Failed,Skipped}, [Results]}
             final Bindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}",

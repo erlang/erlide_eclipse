@@ -6,7 +6,7 @@ public class TestCaseData {
 
     enum TestState {
         // order is important!
-        NOT_RUN, SUCCESS, SKIPPED, RUNNING, FAILURE
+        NOT_RUN, SUCCESS, SKIPPED, RUNNING, FAILED
     }
 
     private final String suite;
@@ -14,6 +14,7 @@ public class TestCaseData {
     private TestState state;
     private OtpErlangObject failReason;
     private OtpErlangObject failLocations;
+    private OtpErlangObject skipComment;
 
     public TestCaseData(final String mod, final String fun) {
         suite = mod;
@@ -36,7 +37,7 @@ public class TestCaseData {
 
     public void setFailed(final OtpErlangObject reason,
             final OtpErlangObject locations) {
-        state = TestState.FAILURE;
+        state = TestState.FAILED;
         failReason = reason;
         failLocations = locations;
     }
@@ -59,5 +60,14 @@ public class TestCaseData {
 
     public String getFailReason() {
         return failReason.toString();
+    }
+
+    public void setSkipped(final OtpErlangObject comment) {
+        state = TestState.SKIPPED;
+        skipComment = comment;
+    }
+
+    public OtpErlangObject getSkipComment() {
+        return skipComment;
     }
 }
