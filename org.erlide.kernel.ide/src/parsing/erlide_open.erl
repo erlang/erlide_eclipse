@@ -15,8 +15,7 @@
          get_external_module/2,
          get_external_module_tree/1,
          get_external_include/2,
-	 get_external_1/3,
-         has_external_with_path/2,
+		 get_external_1/3,
          get_lib_dirs/0,
          get_lib_src_include/1,
          get_lib_files/1
@@ -85,11 +84,6 @@ get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes,
                                              pathVars=PathVars}) ->
     ExtIncPaths = get_external_modules_files(ExternalIncludes, PathVars),
     get_ext_inc(ExtIncPaths, FilePath).
-
-has_external_with_path(FilePath, #open_context{externalModules=ExternalModules, 
-                                               pathVars=PathVars}) ->
-    ExtModPaths = get_external_modules_files(ExternalModules, PathVars),
-    ExtModPaths.
 
 get_lib_dirs() ->
     CodeLibs = [D || D <- code:get_path(), D =/= "."],
