@@ -93,6 +93,8 @@ public final class MarkerUtils {
      */
     public static void addErrorMarkers(final IResource resource,
             final OtpErlangList errorList) {
+        final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+                .getRoot();
         for (final OtpErlangObject odata : errorList.elements()) {
             try {
                 final OtpErlangTuple data = (OtpErlangTuple) odata;
@@ -119,10 +121,14 @@ public final class MarkerUtils {
                             final String includeFile = ModelUtils
                                     .findIncludeFile(erlProject, fileName,
                                             externalIncludes);
-                            if (includeFile != null) {
-                                final IWorkspaceRoot workspaceRoot = ResourcesPlugin
-                                        .getWorkspace().getRoot();
+                            if (includeFile == null) {
                                 res = workspaceRoot;
+                            } else {
+                                res = BuilderHelper.findResourceByLocation(
+                                        project, includeFile);
+                                if (res == null) {
+                                    res = workspaceRoot;
+                                }
                             }
                         } catch (final Exception e) {
                             ErlLogger.warn(e);
