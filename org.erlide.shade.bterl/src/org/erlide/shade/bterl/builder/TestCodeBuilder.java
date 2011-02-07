@@ -185,19 +185,22 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     }
                     OtpErlangObject result;
                     try {
-                        result = entry.getKey().get(100);
+                        result = entry.getKey().get(10);
                     } catch (final Exception e) {
                         result = null;
                     }
                     if (result != null) {
                         final IResource resource = entry.getValue();
                         if (DEBUG) {
-                            ErlLogger.debug("@@@ >> bterl result :: "
-                                    + resource.getFullPath().toString()
-                                    + " :: " + result);
+                            ErlLogger.debug("@@@ >> bterl built :: "
+                                    + resource.getFullPath().toString());
                         }
                         helper.completeCompile(project, resource, result,
                                 backend, new OtpErlangList());
+                        if (DEBUG) {
+                            ErlLogger.debug("### >> bterl built :: "
+                                    + resource.getFullPath().toString());
+                        }
                         done.add(entry);
                     }
                 }
