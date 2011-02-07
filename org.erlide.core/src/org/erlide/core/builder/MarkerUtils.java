@@ -119,10 +119,16 @@ public final class MarkerUtils {
                             final String includeFile = ModelUtils
                                     .findIncludeFile(erlProject, fileName,
                                             externalIncludes);
-                            if (includeFile != null) {
-                                final IWorkspaceRoot workspaceRoot = ResourcesPlugin
-                                        .getWorkspace().getRoot();
+                            final IWorkspaceRoot workspaceRoot = ResourcesPlugin
+                                    .getWorkspace().getRoot();
+                            if (includeFile == null) {
                                 res = workspaceRoot;
+                            } else {
+                                res = BuilderHelper.findResourceByLocation(
+                                        project, includeFile);
+                                if (res == null) {
+                                    res = workspaceRoot;
+                                }
                             }
                         } catch (final Exception e) {
                             ErlLogger.warn(e);
