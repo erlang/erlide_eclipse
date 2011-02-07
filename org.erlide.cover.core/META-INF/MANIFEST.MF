@@ -15,3 +15,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.cover.core,
  org.erlide.cover.runtime.launch,
  org.erlide.cover.views.model
+Bundle-ClassPath: lib/log4j-1.2.16.jar,
+ .

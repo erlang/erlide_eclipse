@@ -13,5 +13,6 @@ cover_report
 *.html
 org.erlide.selfhost*
 org.erlide.cover.site.bak
+org.erlide.eunit.erlang.bak
 refac_proj
 *wrangler*
