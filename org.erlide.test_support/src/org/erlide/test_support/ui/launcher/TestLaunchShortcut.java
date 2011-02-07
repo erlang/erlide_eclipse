@@ -56,9 +56,15 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                         .getJobManager().createProgressGroup(), false, true);
                 final ErlideBackend backend = ErlangCore.getBackendManager()
                         .getBackendForLaunch(launch);
-                // TODO locate results view
-                final ResultsView view = null;
+                if (backend == null) {
+                    System.out.println("NULL backend for bterl");
+                    return;
+                }
+                final ResultsView view = (ResultsView) PlatformUI
+                        .getWorkbench().getActiveWorkbenchWindow()
+                        .getActivePage().showView(ResultsView.VIEW_ID);
                 if (view != null) {
+                    view.clearEvents();
                     backend.getEventDaemon().addHandler(view.getEventHandler());
                 }
             }

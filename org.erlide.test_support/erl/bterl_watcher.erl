@@ -7,10 +7,12 @@
 
 -export([init/1, 
          start_failed/1,
-         tc_result/1,
-         tc_fail/1,
          log_started/1,
-         done/1
+         done/1,
+         
+         tc_start/1,
+         tc_result/1,
+         tc_fail/1
         ]).
 
 -include("erlide.hrl").
@@ -84,11 +86,15 @@ init_debugger() ->
 
 init(Args) ->
     %os:cmd("touch /home/qvladum/zzz"),
-    notify({tc_init, Args}),
+    notify({init, Args}),
     ok.
 
 start_failed(Reason) ->
     notify({start_failed, Reason}),
+    ok.
+
+tc_start(Result) ->
+    notify({start, Result}),
     ok.
 
 tc_result(Result) ->

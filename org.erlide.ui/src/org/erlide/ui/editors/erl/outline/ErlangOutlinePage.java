@@ -54,8 +54,8 @@ import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -418,7 +418,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             super(ActionMessages.ToggleLinkingAction_label);
             setDescription(ActionMessages.ToggleLinkingAction_description);
             setToolTipText(ActionMessages.ToggleLinkingAction_tooltip);
-            ErlideUIPluginImages.setLocalImageDescriptors(this, "synced.gif");
+            ErlideImage.setLocalImageDescriptors(this, "synced.gif");
             PlatformUI.getWorkbench().getHelpSystem()
                     .setHelp(this, IErlangHelpContextIds.LINK_EDITOR_ACTION);
             final IEclipsePreferences prefsNode = MemberFilterActionGroup

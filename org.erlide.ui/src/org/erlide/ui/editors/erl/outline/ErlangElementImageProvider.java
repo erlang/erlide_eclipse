@@ -26,8 +26,8 @@ import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlModel;
+import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 
 /**
@@ -144,7 +144,7 @@ public class ErlangElementImageProvider {
             final int flags) {
         final Point size = useSmallSize(flags) ? SMALL_SIZE : BIG_SIZE;
         return new ErlangElementImageDescriptor(
-                ErlideUIPluginImages.DESC_MODULE_RESOURCE, 0, size);
+                ErlideImage.MODULE_RESOURCE.getDescriptor(), 0, size);
     }
 
     /**
@@ -194,48 +194,63 @@ public class ErlangElementImageProvider {
         if (element instanceof IErlFunction) {
             final IErlFunction fun = (IErlFunction) element;
             if (fun.isExported()) {
-                return ErlideUIPluginImages.DESC_FUNCTION_EXPORTED;
+                return ErlideImage.FUNCTION_EXPORTED.getDescriptor();
             }
         }
         return getImageDescriptionFromKind(element.getKind());
     }
 
     public static ImageDescriptor getImageDescriptionFromKind(final Kind kind) {
+        ErlideImage result = ErlideImage.UNKNOWN;
         switch (kind) {
         case ATTRIBUTE:
-            return ErlideUIPluginImages.DESC_ATTRIBUTE;
+            result = ErlideImage.ATTRIBUTE;
+            break;
         case CLAUSE:
-            return ErlideUIPluginImages.DESC_FUNCTION_CLAUSE;
+            result = ErlideImage.FUNCTION_CLAUSE;
+            break;
         case COMMENT:
         case ERROR:
         case HEADERCOMMENT:
         case MODEL:
         case PROJECT:
-            return ErlideUIPluginImages.DESC_UNKNOWN;
+            result = ErlideImage.UNKNOWN;
+            break;
         case EXPORT:
-            return ErlideUIPluginImages.DESC_EXPORT;
+            result = ErlideImage.EXPORT;
+            break;
         case EXPORTFUNCTION:
-            return ErlideUIPluginImages.DESC_FUNCTION_EXPORTED;
+            result = ErlideImage.FUNCTION_EXPORTED;
+            break;
         case FOLDER:
-            return ErlideUIPluginImages.DESC_SRC_FOLDER;
+            result = ErlideImage.SRC_FOLDER;
+            break;
         case FUNCTION:
-            return ErlideUIPluginImages.DESC_FUNCTION_DEFAULT;
+            result = ErlideImage.FUNCTION_DEFAULT;
+            break;
         case EXTERNAL:
-            return ErlideUIPluginImages.DESC_EXTERNAL;
+            result = ErlideImage.EXTERNAL;
+            break;
         case IMPORT:
-            return ErlideUIPluginImages.DESC_IMPORT;
+            result = ErlideImage.IMPORT;
+            break;
         case MACRO_DEF:
-            return ErlideUIPluginImages.DESC_MACRO_DEF;
+            result = ErlideImage.MACRO_DEF;
+            break;
         case MODULE:
-            return ErlideUIPluginImages.DESC_MODULE;
+            result = ErlideImage.MODULE;
+            break;
         case RECORD_DEF:
-            return ErlideUIPluginImages.DESC_RECORD_DEF;
+            result = ErlideImage.RECORD_DEF;
+            break;
         case TYPESPEC:
-            return ErlideUIPluginImages.DESC_TYPESPEC_DEF;
+            result = ErlideImage.TYPESPEC_DEF;
+            break;
         case RECORD_FIELD:
-            return ErlideUIPluginImages.DESC_RECORD_FIELD;
+            result = ErlideImage.RECORD_FIELD;
+            break;
         }
-        return ErlideUIPluginImages.DESC_UNKNOWN;
+        return result.getDescriptor();
     }
 
     public void dispose() {

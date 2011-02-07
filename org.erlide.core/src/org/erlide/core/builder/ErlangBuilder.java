@@ -35,10 +35,10 @@ import org.erlide.core.builder.internal.BuildNotifier;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -143,7 +143,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                         Integer.valueOf(n), resourcesToBuild.toString());
             }
             if (n > 0) {
-                final Backend backend = ErlangCore.getBackendManager()
+                final ErlideBackend backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);
                 if (backend == null) {
                     final String message = "No backend with the required "
@@ -152,6 +152,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                             0, IMarker.SEVERITY_ERROR);
                     throw new BackendException(message);
                 }
+                backend.addProjectPath(project);
 
                 notifier.setProgressPerCompilationUnit(1.0f / n);
                 final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
@@ -213,6 +214,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     helper.checkForClashes(backend, project);
                 } catch (final Exception e) {
                 }
+                backend.removeProjectPath(project);
             }
 
         } catch (final OperationCanceledException e) {

@@ -44,7 +44,7 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.core.ErlangStatusConstants;
+import org.erlide.core.ErlangStatus;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
@@ -165,6 +165,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         super.stop(context);
         ErlangCore.getBackendManager().removeBackendListener(
                 erlangDebuggerBackendListener);
+        if (ErlideImage.isInstalled()) {
+            ErlideImage.dispose();
+        }
         plugin = null;
     }
 
@@ -334,7 +337,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     public static void log(final Exception e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, e.getMessage(), null));
+                ErlangStatus.INTERNAL_ERROR.getValue(), e.getMessage(), null));
     }
 
     public static void log(final IStatus status) {
@@ -343,7 +346,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     public static void logErrorMessage(final String message) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, message, null));
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
     }
 
     public static void logErrorStatus(final String message, final IStatus status) {
@@ -352,15 +355,15 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             return;
         }
         final MultiStatus multi = new MultiStatus(PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, message, null);
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null);
         multi.add(status);
         log(multi);
     }
 
     public static void log(final Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
-                ErlangStatusConstants.INTERNAL_ERROR, "Erlide internal error",
-                e));
+                ErlangStatus.INTERNAL_ERROR.getValue(),
+                "Erlide internal error", e));
     }
 
     public static ImageDescriptorRegistry getImageDescriptorRegistry() {

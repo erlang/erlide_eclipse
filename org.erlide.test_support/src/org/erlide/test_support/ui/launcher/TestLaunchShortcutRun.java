@@ -5,16 +5,20 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.ui.IEditorPart;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 
 public class TestLaunchShortcutRun extends TestLaunchShortcut {
 
     @Override
-    protected ILaunchConfiguration getLaunchConfiguration(final Object target) {
+    protected ILaunchConfiguration getLaunchConfiguration(Object target) {
         final ILaunchConfigurationWorkingCopy cfg = (ILaunchConfigurationWorkingCopy) super
                 .getLaunchConfiguration(target);
         if (cfg != null) {
+            if (target instanceof IEditorPart) {
+                target = getEditorTarget(target);
+            }
             if (target instanceof IFolder) {
                 final IFolder res = (IFolder) target;
                 cfg.setAttribute(TestLaunchAttributes.PROJECT, res.getProject()

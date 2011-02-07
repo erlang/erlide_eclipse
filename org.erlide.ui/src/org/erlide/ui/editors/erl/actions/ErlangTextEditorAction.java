@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangStatusConstants;
+import org.erlide.core.ErlangStatus;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -162,7 +162,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
         if (newText == null) {
             final Status status = new Status(IStatus.ERROR,
                     ErlangPlugin.PLUGIN_ID,
-                    ErlangStatusConstants.INTERNAL_ERROR, "indent returned "
+                    ErlangStatus.INTERNAL_ERROR.getValue(), "indent returned "
                             + r1 + " instead of a string", null);
             ErlLogger.error("INTERNAL ERROR: indent returned " + r1
                     + " instead of a string");

@@ -47,7 +47,6 @@ public class TestRunnableTester extends PropertyTester {
      */
     public boolean test(Object receiver, final String property,
             final Object[] args, final Object expectedValue) {
-
         if (receiver instanceof IEditorPart
                 || receiver instanceof IFileEditorInput) {
             // maybe we should use adapters?
@@ -58,7 +57,6 @@ public class TestRunnableTester extends PropertyTester {
         final boolean isTestDir = isTestDir(receiver);
         final boolean isTestSuite = isTestSuite(receiver);
         final boolean isTestCase = isTestCase(receiver);
-
         switch (kind) {
         case RUN:
             return isTestDir || isTestSuite || isTestCase;
