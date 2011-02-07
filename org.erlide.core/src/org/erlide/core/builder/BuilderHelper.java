@@ -103,7 +103,11 @@ public final class BuilderHelper {
                 final IFolder folder = project.getFolder(inc);
                 if (folder != null) {
                     final IPath location = folder.getLocation();
-                    includeDirs.add(location);
+                    if (location != null) {
+                        includeDirs.add(location);
+                    } else {
+                        ErlLogger.warn("No location for %s", folder);
+                    }
                 }
             }
         }
@@ -429,10 +433,13 @@ public final class BuilderHelper {
 
         MarkerUtils.deleteMarkers(res);
 
-        final String outputDir = bres.getOutput() == null ? projectPath.append(
-                outputDir0).toString()
-                : bres.getOutput().startsWith("/") ? bres.getOutput()
-                        : projectPath.append(bres.getOutput()).toString();
+        final String bout = bres.getOutput();
+        String outputDir = bout == null ? projectPath.append(outputDir0)
+                .toString() : null;
+        if (outputDir == null) {
+            outputDir = bout.startsWith("/") || bout.charAt(1) == ':' ? bout
+                    : projectPath.append(bout).toString();
+        }
         ensureDirExists(outputDir);
 
         final Collection<IPath> includeDirs = getAllIncludeDirs(project);
