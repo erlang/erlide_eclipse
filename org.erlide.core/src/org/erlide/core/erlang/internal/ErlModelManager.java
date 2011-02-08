@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlElementDelta;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementDelta;
 import org.erlide.core.erlang.IErlFolder;
@@ -46,6 +47,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IWorkingCopy;
 import org.erlide.core.erlang.util.ElementChangedEvent;
@@ -166,10 +168,18 @@ public final class ErlModelManager implements IErlModelManager {
     }
 
     void remove(final IResource rsrc) {
-        final IErlElement e = erlangModel.findElement(rsrc);
-        if (e != null) {
-            final IParent p = e.getParent();
-            p.removeChild(e);
+        final IErlElement element = erlangModel.findElement(rsrc);
+        if (element != null) {
+            final IParent p = element.getParent();
+            p.removeChild(element);
+            if (element instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) element;
+                try {
+                    openable.close();
+                } catch (final ErlModelException e) {
+                    ErlLogger.error(e);
+                }
+            }
         }
         // TODO should we make Erlidemodelevents and fire them?
     }
@@ -346,25 +356,19 @@ public final class ErlModelManager implements IErlModelManager {
             final ArrayList<IResource> removed = Lists.newArrayList();
             final Map<IResource, IResourceDelta> changedDelta = Maps
                     .newHashMap();
+            final IResourceDeltaVisitor visitor;
             if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
-                final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+                visitor = new IResourceDeltaVisitor() {
                     public boolean visit(final IResourceDelta delta) {
+                        final IResource resource = delta.getResource();
                         if (verbose) {
                             ErlLogger.debug("delta " + delta.getKind()
-                                    + " for "
-                                    + delta.getResource().getLocation());
+                                    + " for " + resource.getLocation());
                         }
-                        final IResource resource = delta.getResource();
                         final boolean erlangFile = resource.getType() == IResource.FILE
                                 && ErlideUtil
                                         .isErlangFileContentFileName(resource
                                                 .getName());
-                        // XXX FIXME TODO we have to check this in other ways
-                        // when closing, probably with the PRE_CHANGE flag,
-                        // since
-                        // the nature
-                        // is not accessible when the resource change is fired
-                        // (since the project is already closed)
                         final boolean erlangProject = resource.getType() == IResource.PROJECT
                                 && ErlideUtil
                                         .hasErlangNature((IProject) resource);
@@ -388,6 +392,37 @@ public final class ErlModelManager implements IErlModelManager {
                         return !erlangFile;
                     }
                 };
+            } else if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+                visitor = new IResourceDeltaVisitor() {
+
+                    public boolean visit(final IResourceDelta delta)
+                            throws CoreException {
+                        final IResource resource = delta.getResource();
+                        final boolean erlangProject = resource.getType() == IResource.PROJECT
+                                && ErlideUtil
+                                        .hasErlangNature((IProject) resource);
+                        if (erlangProject) {
+                            removed.add(resource);
+                        }
+                        return false;
+                    }
+                };
+                final IResource resource = event.getResource();
+                final boolean erlangProject = resource.getType() == IResource.PROJECT
+                        && ErlideUtil.hasErlangNature((IProject) resource);
+                if (erlangProject) {
+                    removed.add(resource);
+                }
+            } else {
+                visitor = new IResourceDeltaVisitor() {
+
+                    public boolean visit(final IResourceDelta delta)
+                            throws CoreException {
+                        return false;
+                    }
+                };
+            }
+            if (rootDelta != null) {
                 try {
                     rootDelta.accept(visitor);
                 } catch (final CoreException e) {
