@@ -1,12 +1,16 @@
 package org.erlide.cover.ui.actions;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.views.util.BrowserDialog;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
@@ -41,7 +45,11 @@ public class HtmlReportAction extends Action {
 
         log.debug(selection.getClass().getName());
         if (!(selection instanceof ITreeSelection)) {
-            // show error
+            final IStatus executionStatus = new Status(IStatus.ERROR,
+                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type", null);
+            StatusManager.getManager().handle(executionStatus,
+                    StatusManager.SHOW);
+            return;
         }
 
         final ITreeSelection treeSelection = (ITreeSelection) selection;

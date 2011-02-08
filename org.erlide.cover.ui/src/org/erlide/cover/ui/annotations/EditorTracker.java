@@ -11,6 +11,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWindowListener;
@@ -73,14 +74,35 @@ public class EditorTracker implements ICoverAnnotationMarker {
         for (final IWorkbenchWindow w : windows) {
             for (final IWorkbenchPage page : w.getPages()) {
                 for (final IEditorReference editor : page.getEditorReferences()) {
-                    annotateEditor(editor);
+                    annotateEditor(editor.getEditor(false));
                 }
             }
         }
     }
 
-    public void annotateEditor(final IWorkbenchPartReference partref) {
-        final IWorkbenchPart part = partref.getPart(false);
+    public void addAnnotationsToFile(String fileName) {
+
+        IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
+                .getActivePage().getActiveEditor();
+
+        if (currentEditor.getTitle().equals(fileName)) {
+
+            annotateEditor(currentEditor);
+        }
+
+    }
+
+    public void removeAnnotationsFromFile(String fileName) {
+        IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
+                .getActivePage().getActiveEditor();
+
+        if (currentEditor.getTitle().equals(fileName)) {
+
+            clearAnnotations(currentEditor);
+        }
+    }
+
+    public void annotateEditor(final IWorkbenchPart part) {
 
         if (part instanceof ITextEditor) {
             final ITextEditor editor = (ITextEditor) part;
@@ -127,19 +149,21 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
                     Annotation annotation;
                     if (lr.called()) {
-                        annotation = CoverageAnnotation
-                                .create(CoverageAnnotation.FULL_COVERAGE);
+                        annotation = CoverageAnnotationFactory
+                                .create(CoverageAnnotationFactory.FULL_COVERAGE);
                     } else {
-                        annotation = CoverageAnnotation
-                                .create(CoverageAnnotation.NO_COVERAGE);
+                        annotation = CoverageAnnotationFactory
+                                .create(CoverageAnnotationFactory.NO_COVERAGE);
                     }
 
                     if (!curAnn.containsKey(pos)
                             || curAnn.containsKey(pos)
-                            && curAnn.get(pos).getType()
-                                    .equals(CoverageAnnotation.NO_COVERAGE)
+                            && curAnn
+                                    .get(pos)
+                                    .getType()
+                                    .equals(CoverageAnnotationFactory.NO_COVERAGE)
                             && annotation.getType().equals(
-                                    CoverageAnnotation.FULL_COVERAGE)) {
+                                    CoverageAnnotationFactory.FULL_COVERAGE)) {
                         annMod.addAnnotation(annotation, pos);
                     }
 
@@ -160,14 +184,13 @@ public class EditorTracker implements ICoverAnnotationMarker {
         for (final IWorkbenchWindow w : windows) {
             for (final IWorkbenchPage page : w.getPages()) {
                 for (final IEditorReference editor : page.getEditorReferences()) {
-                    clearAnnotations(editor);
+                    clearAnnotations(editor.getPart(false));
                 }
             }
         }
     }
 
-    public void clearAnnotations(final IWorkbenchPartReference partref) {
-        final IWorkbenchPart part = partref.getPart(false);
+    public void clearAnnotations(final IWorkbenchPart part) {
 
         if (part instanceof ITextEditor) {
             final ITextEditor editor = (ITextEditor) part;
@@ -180,9 +203,9 @@ public class EditorTracker implements ICoverAnnotationMarker {
             while (it.hasNext()) {
                 final Annotation annotation = (Annotation) it.next();
                 if (annotation.getType().equals(
-                        CoverageAnnotation.FULL_COVERAGE)
+                        CoverageAnnotationFactory.FULL_COVERAGE)
                         || annotation.getType().equals(
-                                CoverageAnnotation.NO_COVERAGE)) {
+                                CoverageAnnotationFactory.NO_COVERAGE)) {
                     annMod.removeAnnotation(annotation);
                 }
             }
@@ -210,7 +233,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
     private final IPartListener2 partListener = new IPartListener2() {
 
         public void partOpened(final IWorkbenchPartReference partref) {
-            annotateEditor(partref);
+            annotateEditor(partref.getPart(false));
         }
 
         public void partActivated(final IWorkbenchPartReference partref) {

@@ -35,7 +35,9 @@ import org.erlide.cover.core.ICoverEvent;
 import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.actions.ClearCoverageAction;
+import org.erlide.cover.ui.actions.HideCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
+import org.erlide.cover.ui.actions.ShowCoverageAction;
 import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
@@ -212,35 +214,21 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeShowCoverageAction() {
-        showCoverage = new Action() {
-            @Override
-            public void run() {
-                // TODO: implement showing code coverage for specified modules
-                showMessage("show coverage");
-            }
-        };
+        showCoverage = new ShowCoverageAction(viewer);
         showCoverage.setText("Show coverage");
         showCoverage.setToolTipText("Shows item's coverage");
         showCoverage.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-        showCoverage.setEnabled(false);
     }
 
     private void makeHideCoverageAction() {
-        hideCoverage = new Action() {
-            @Override
-            public void run() {
-                // TODO: implement hiding code coverage for specified modules
-                showMessage("hide coverage");
-            }
-        };
+        hideCoverage = new HideCoverageAction(viewer);
         hideCoverage.setText("Hide coverage");
         hideCoverage.setToolTipText("Hides item's coverage");
         hideCoverage.setImageDescriptor(PlatformUI.getWorkbench()
                 .getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-        hideCoverage.setEnabled(false);
     }
 
     private void makeOpenItemAction() {
@@ -367,6 +355,9 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                     Activator.PLUGIN_ID, e.getInfo(), null);
             StatusManager.getManager().handle(executionStatus,
                     StatusManager.SHOW);
+            break;
+        default:
+            break;
         }
     }
 
