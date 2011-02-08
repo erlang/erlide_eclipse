@@ -768,7 +768,9 @@ public class ErlProject extends Openable implements IErlProject {
             int i = 0;
             ++i;
         }
-        super.resourceChanged(delta);
+        if ((delta.getFlags() & ~IResourceDelta.MARKERS) != 0) {
+            super.resourceChanged(delta);
+        }
     }
 
 }

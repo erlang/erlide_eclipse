@@ -309,7 +309,8 @@ public class EditorUtility {
         return null;
     }
 
-    private static IFile resolveFile(IFile file) {
+    private static IFile resolveFile(final IFile file) {
+        IFile result = file;
         if (file.getResourceAttributes().isSymbolicLink()) {
             try {
                 final File f = new File(file.getLocation().toString());
@@ -318,13 +319,18 @@ public class EditorUtility {
                 final String target = info
                         .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
                 if (target != null) {
-                    file = (IFile) file.getParent().findMember(target);
+                    // FIXME this is wrong in the general case
+                    // find the file in the externals!
+                    result = (IFile) file.getParent().findMember(target);
+                    if (result == null) {
+                        result = file;
+                    }
                 }
             } catch (final Exception e) {
                 ErlLogger.warn(e);
             }
         }
-        return file;
+        return result;
     }
 
     public static IEditorInput getEditorInput(final Object input) {
