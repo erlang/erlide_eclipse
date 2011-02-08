@@ -70,13 +70,13 @@
 %%-spec(rename_mod_command/3::(modulename()|filename(), modulename(), [dir()]) -> 
 %%			  {error, string()} | {ok, [filename()]}).
 rename_mod_command(OldModOrFileName, NewModName, SearchPaths) ->
-    case is_atom(NewModName) of 
-	true -> 
+    case is_atom(NewModName) of
+	true ->
 	    ok;
 	false ->
 	    throw({error, "Invalud new module name."})
     end,
-    FileName = case is_list(OldModOrFileName) of 
+    FileName = case is_list(OldModOrFileName) of
 		   true ->
 		       case filelib:is_file(OldModOrFileName) of
 			   true ->
@@ -87,7 +87,7 @@ rename_mod_command(OldModOrFileName, NewModName, SearchPaths) ->
 		   false ->
 		       case is_atom(OldModOrFileName) of
 			   true ->
-			       case refac_misc:modname_to_filename(OldModOrFileName, SearchPaths) of
+			       case refac_util:modname_to_filename(OldModOrFileName, SearchPaths) of
 				   {ok, OldFileName} ->
 				       OldFileName;
 				   {error, Msg} ->
@@ -99,28 +99,28 @@ rename_mod_command(OldModOrFileName, NewModName, SearchPaths) ->
 	       end,
     rename_mod_command(FileName, atom_to_list(NewModName), SearchPaths, 8).
 
-rename_mod_command(OldFileName,  NewModName, SearchPaths, TabWidth) ->
+rename_mod_command(OldFileName, NewModName, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:rename_mod(~p, ~p,~p).\n",
 		 [?MODULE, OldFileName, NewModName, SearchPaths]),
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(OldFileName, true, SearchPaths, TabWidth),
-    rename_mod_command_precond_check(OldFileName,NewModName, Info, SearchPaths),
-    {value, {module, OldModName}} = lists:keysearch(module,1, Info),
+    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(OldFileName, true, SearchPaths, TabWidth),
+    rename_mod_command_precond_check(OldFileName, NewModName, Info, SearchPaths),
+    {value, {module, OldModName}} = lists:keysearch(module, 1, Info),
     NewModNameAtom = list_to_atom(NewModName),
-    do_rename_mod(OldFileName, [{OldModName, NewModNameAtom}], AnnAST, 
+    do_rename_mod(OldFileName, [{OldModName, NewModNameAtom}], AnnAST,
 		  SearchPaths, command, TabWidth, "").
 
-rename_mod_command_precond_check(OldFileName,NewModName, Info, SearchPaths) ->
-    case refac_misc:is_fun_name(NewModName) of
+rename_mod_command_precond_check(OldFileName, NewModName, Info, SearchPaths) ->
+    case refac_util:is_fun_name(NewModName) of
 	true ->
 	    case lists:keysearch(module, 1, Info) of
 		{value, {module, OldModName}} ->
 		    case is_tuple(OldModName) of
-			true -> 
+			true ->
 			    {error, "Renaming of parameterised module is not supported yet."};
-			false -> 
-			    NewModNameAtom=list_to_atom(NewModName),
+			false ->
+			    NewModNameAtom = list_to_atom(NewModName),
 			    pre_cond_check(OldFileName, OldModName, NewModNameAtom, [], SearchPaths)
-			end;
+		    end;
 		false -> ok
 	    end;
 	false -> {error, "Invalid new module name!"}
@@ -154,33 +154,33 @@ rename_mod_1_eclipse(FileName, NewName, SearchPaths, TabWidth, RenameTestMod) ->
 rename_mod(FileName, NewName, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_mod(~p, ~p,~p, ~p).\n",
 		 [?MODULE, FileName, NewName, SearchPaths, TabWidth]),
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_mod(" ++ "\"" ++
-	    FileName ++ "\", " ++ NewName ++ "\"," ++ "[" ++
-	      refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
-    case refac_misc:is_fun_name(NewName) of
-      true ->
-	  {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-	  case lists:keysearch(module, 1, Info) of
-	    {value, {module, OldModName}} ->
-		  case is_tuple(OldModName) of
-		      true -> throw({error, "Renaming of parameterised module is not supported yet."});
-		      false -> ok
-		  end,
-		  NewModName = list_to_atom(NewName),
-		  TestFrameWorkUsed = refac_util:test_framework_used(FileName),
-		  case pre_cond_check(FileName, OldModName, NewModName, TestFrameWorkUsed, SearchPaths) of
-		      ok -> 
-			  do_rename_mod(FileName, [{OldModName, NewModName}],
-					AnnAST, SearchPaths, Editor, TabWidth, Cmd);
-		      Other -> Other
-		  end;
-	      false -> {error, "Wrangler could not infer the current module name."}
-	  end;
-      false -> {error, "Invalid new module name!"}
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_mod(" ++ "\"" ++ 
+	    FileName ++ "\", " ++ NewName ++ "\"," ++ "[" ++ 
+	      refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+    case refac_util:is_fun_name(NewName) of
+	true ->
+	    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+	    case lists:keysearch(module, 1, Info) of
+		{value, {module, OldModName}} ->
+		    case is_tuple(OldModName) of
+			true -> throw({error, "Renaming of parameterised module is not supported yet."});
+			false -> ok
+		    end,
+		    NewModName = list_to_atom(NewName),
+		    TestFrameWorkUsed = refac_util:test_framework_used(FileName),
+		    case pre_cond_check(FileName, OldModName, NewModName, TestFrameWorkUsed, SearchPaths) of
+			ok ->
+			    do_rename_mod(FileName, [{OldModName, NewModName}],
+					  AnnAST, SearchPaths, Editor, TabWidth, Cmd);
+			Other -> Other
+		    end;
+		false -> {error, "Wrangler could not infer the current module name."}
+	    end;
+	false -> {error, "Invalid new module name!"}
     end.
 
 parse_file_with_type_ann(FileName, SearchPaths, TabWidth) ->
-    {ok, {AnnAST0, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    {ok, {AnnAST0, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {AnnAST0, Info}.
 
 
@@ -207,8 +207,8 @@ pre_cond_check(FileName, OldModName, NewModName, TestFrameWorkUsed, SearchPaths)
 find_eunit_test_file(ModName, SearchPaths) ->
     TestFileName = atom_to_list(ModName)++"_tests",
     Files = refac_util:expand_files(SearchPaths, ".erl"),
-    [F || F<-Files, filename:basename(F, ".erl")==TestFileName,
-                   lists:member(eunit, refac_util:test_framework_used(F))].
+    [F || F <- Files, filename:basename(F, ".erl")==TestFileName,
+	  lists:member(eunit, refac_util:test_framework_used(F))].
     
 	
 pre_cond_test_file_checking(OldModName, NewModName,TestFrameWorkUsed, SearchPaths) ->
@@ -229,25 +229,24 @@ pre_cond_test_file_checking(OldModName, NewModName,TestFrameWorkUsed, SearchPath
 		  ", and Wrangler will not rename them, still continue?"}
     end.
 
-    
 rename_mod_1(FileName, NewName, SearchPaths, TabWidth, RenameTestMod, Editor) ->
     ?wrangler_io("\nCMD: ~p:rename_mod_1(~p, ~p,~p, ~p, ~p, ~p).\n",
 		 [?MODULE, FileName, NewName, SearchPaths, TabWidth, RenameTestMod, Editor]),
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_mod(" ++ "\"" ++
-	    FileName ++ "\", " ++ NewName ++ "\"," ++ "[" ++
-	      refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":rename_mod(" ++ "\"" ++ 
+	    FileName ++ "\", " ++ NewName ++ "\"," ++ "[" ++ 
+	      refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     {AnnAST, Info} = parse_file_with_type_ann(FileName, SearchPaths, TabWidth),
     {value, {module, OldModName}} = lists:keysearch(module, 1, Info),
     NewModName = list_to_atom(NewName),
     TestFrameWorkUsed = refac_util:test_framework_used(FileName),
     case lists:member(eunit, TestFrameWorkUsed) andalso RenameTestMod of
-      true ->
-	  TestModName = list_to_atom(atom_to_list(OldModName) ++ "_tests"),
-	  NewTestModName = list_to_atom(NewName ++ "_tests"),
-	  do_rename_mod(FileName, [{OldModName, NewModName}, {TestModName, NewTestModName}],
-			AnnAST, SearchPaths, Editor, TabWidth, Cmd);
-      false ->
-	  do_rename_mod(FileName, [{OldModName, NewModName}], AnnAST, SearchPaths, Editor, TabWidth, Cmd)
+	true ->
+	    TestModName = list_to_atom(atom_to_list(OldModName) ++ "_tests"),
+	    NewTestModName = list_to_atom(NewName ++ "_tests"),
+	    do_rename_mod(FileName, [{OldModName, NewModName}, {TestModName, NewTestModName}],
+			  AnnAST, SearchPaths, Editor, TabWidth, Cmd);
+	false ->
+	    do_rename_mod(FileName, [{OldModName, NewModName}], AnnAST, SearchPaths, Editor, TabWidth, Cmd)
     end.
 
 do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths, Editor, TabWidth, Cmd) ->
@@ -255,33 +254,33 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths, Editor, TabWidth, C
     NewFileName = filename:dirname(FileName) ++ "/" ++ atom_to_list(NewModName) ++ ".erl",
     {TestFileName, NewTestFileName} =
 	case find_eunit_test_file(OldModName, SearchPaths) of
-	  [F] -> {F, filename:dirname(F) ++ "/" ++ atom_to_list(NewModName) ++ "_tests.erl"};
-	  _ -> {none, none}
+	    [F] -> {F, filename:dirname(F) ++ "/" ++ atom_to_list(NewModName) ++ "_tests.erl"};
+	    _ -> {none, none}
 	end,
-    Pid = start_atom_process(), 
+    Pid = start_atom_process(),
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
     {AnnAST1, _C1} = do_rename_mod_1(AnnAST, {FileName, OldNewModPairs, Pid}),
     OldModNames = element(1, lists:unzip(OldNewModPairs)),
     check_unsure_atoms(FileName, AnnAST1, OldModNames, m_atom, Pid),
     TestModRes = case length(OldNewModPairs) of
-		   2 -> ?wrangler_io("The current file under refactoring is:\n~p\n", [TestFileName]),
-			{TestAnnAST, _Info} = parse_file_with_type_ann(TestFileName, SearchPaths, TabWidth),
-			{TestAnnAST1, _C2} = do_rename_mod_1(TestAnnAST, {FileName, OldNewModPairs, Pid}),
-			check_unsure_atoms(FileName, TestAnnAST1, OldModNames, m_atom,  Pid),
-			[{{TestFileName, NewTestFileName}, TestAnnAST1}]; 
-		   _ -> []
+		     2 -> ?wrangler_io("The current file under refactoring is:\n~p\n", [TestFileName]),
+			  {TestAnnAST, _Info} = parse_file_with_type_ann(TestFileName, SearchPaths, TabWidth),
+			  {TestAnnAST1, _C2} = do_rename_mod_1(TestAnnAST, {FileName, OldNewModPairs, Pid}),
+			  check_unsure_atoms(FileName, TestAnnAST1, OldModNames, m_atom, Pid),
+			  [{{TestFileName, NewTestFileName}, TestAnnAST1}];
+		     _ -> []
 		 end,
     ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
-    ClientFiles1 = refac_util:get_client_files(FileName, SearchPaths),
+    ClientFiles1 = wrangler_modulegraph_server:get_client_files(FileName, SearchPaths),
     ClientFiles2 = case length(OldNewModPairs) == 2 of
-		     true -> refac_util:get_client_files(TestFileName, SearchPaths);
-		     _ -> []
+		       true -> wrangler_modulegraph_server:get_client_files(TestFileName, SearchPaths);
+		       _ -> []
 		   end,
     ClientFiles = case length(OldNewModPairs) of
-		    2 -> lists:usort(ClientFiles1 ++ ClientFiles2) -- [FileName, TestFileName];
-		    _ -> ClientFiles1
+		      2 -> lists:usort(ClientFiles1 ++ ClientFiles2) -- [FileName, TestFileName];
+		      _ -> ClientFiles1
 		  end,
-    Results = rename_mod_in_client_modules(ClientFiles, OldModName, OldNewModPairs, SearchPaths, TabWidth, Pid),  
+    Results = rename_mod_in_client_modules(ClientFiles, OldModName, OldNewModPairs, SearchPaths, TabWidth, Pid),
     case Editor of
 	emacs ->
 	    HasWarningMsg = refac_atom_utils:has_warning_msg(Pid),
@@ -292,28 +291,26 @@ do_rename_mod(FileName, OldNewModPairs, AnnAST, SearchPaths, Editor, TabWidth, C
 		    ok
 	    end,
 	    stop_atom_process(Pid),
-	    refac_util:write_refactored_files_for_preview([{{FileName, NewFileName}, AnnAST1}| TestModRes ++ Results], TabWidth,Cmd),
+	    refac_write_file:write_refactored_files_for_preview([{{FileName, NewFileName}, AnnAST1}| TestModRes ++ Results], TabWidth, Cmd),
 	    ChangedClientFiles = lists:map(fun ({{F, _F}, _AST}) -> F end, Results),
 	    ChangedFiles = case length(OldNewModPairs) of
 			       2 -> [FileName, TestFileName| ChangedClientFiles];
 			       1 -> [FileName| ChangedClientFiles]
 			   end,
-	    RenamedFiles=[{FileName, NewFileName}]++[{F1, F2}||{{F1,F2}, _}<-TestModRes],
+	    RenamedFiles = [{FileName, NewFileName}]++[{F1, F2} || {{F1,F2}, _} <- TestModRes],
 	    ?wrangler_io("The following files are to be changed by this refactoring:\n~p\n", [ChangedFiles]),
 	    {ok, ChangedFiles, RenamedFiles, HasWarningMsg};
 	_ ->
 	    Results1 = [{{FileName, NewFileName}, AnnAST1}| TestModRes ++ Results],
-	    refac_util:write_refactored_files(Results1, Editor, TabWidth, "")
+	    refac_write_file:write_refactored_files(Results1, Editor, TabWidth, "")
     end.
-  
- 
-   
+
 do_rename_mod_1(Tree, {FileName, OldNewModPairs, Pid}) ->
     TestFrameWorkUsed = refac_util:test_framework_used(FileName),
     {AnnAST1, C1} = ast_traverse_api:full_tdTP(fun do_rename_mod_2/2, Tree, {FileName, OldNewModPairs, Pid}),
     {AnnAST2, C2} = case lists:member(eunit, TestFrameWorkUsed) of
-		      true -> do_rename_mod_in_eunit_funs(FileName, AnnAST1, OldNewModPairs, Pid);
-		      _ -> {AnnAST1, C1}
+			true -> do_rename_mod_in_eunit_funs(FileName, AnnAST1, OldNewModPairs, Pid);
+			_ -> {AnnAST1, C1}
 		    end,
     {AnnAST2, C1 or C2}.
 

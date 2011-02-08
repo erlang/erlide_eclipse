@@ -29,9 +29,9 @@
 
 -export([add_fun_define_locations/2]).
 
--import(refac_misc, [rewrite/2]).
+-import(refac_util,[rewrite/2]).
 
--import(refac_misc, [update_ann/2]).
+-import(refac_util,[update_ann/2]).
 
 -include("../include/wrangler.hrl").
 
@@ -43,20 +43,20 @@ add_fun_define_locations(AST, ModInfo) ->
     end,
     Funs = fun (T, S) ->
 		   case refac_syntax:type(T) of
-		     function ->
-			 FunName = refac_syntax:data(refac_syntax:function_name(T)),
-			 Arity = refac_syntax:function_arity(T),
-			 Pos = refac_syntax:get_pos(T),
-			 ordsets:add_element({{ModName, FunName, Arity}, Pos}, S);
-		     _ -> S
+		       function ->
+			   FunName = refac_syntax:data(refac_syntax:function_name(T)),
+			   Arity = refac_syntax:function_arity(T),
+			   Pos = refac_syntax:get_pos(T),
+			   ordsets:add_element({{ModName, FunName, Arity}, Pos}, S);
+		       _ -> S
 		   end
 	   end,
-    DefinedFuns = refac_syntax_lib:fold(Funs, ordsets:new(), AST),
+    DefinedFuns = ast_traverse_api:fold(Funs, ordsets:new(), AST),
     ImportedFuns = case lists:keysearch(imports, 1, ModInfo) of
-		     {value, {imports, I}} ->
-			 lists:append([[{{M, F, A}, ?DEFAULT_LOC}
-					|| {F, A} <- Fs] || {M, Fs} <- I]);
-		     _ -> []
+		       {value, {imports, I}} ->
+			   lists:append([[{{M, F, A}, ?DEFAULT_LOC}
+					  || {F, A} <- Fs] || {M, Fs} <- I]);
+		       _ -> []
 		   end,
     Fs = refac_syntax:form_list_elements(AST),
     Fs1 = [add_fun_def_info(F, ModName, DefinedFuns, ImportedFuns) || F <- Fs],
@@ -87,22 +87,6 @@ add_fun_def_info(F, ModName, DefinedFuns, ImportedFuns) ->
     end.
  
 add_fun_def_info_in_import(F) ->
-    Fun = fun(Node, DefMod) ->
-		  B = refac_syntax:arity_qualifier_body(Node),
-		  A = refac_syntax:arity_qualifier_argument(Node),
-		  Pos = refac_syntax:get_pos(B),
-		  FunName =case refac_syntax:type(B) of
-			       atom -> refac_syntax:atom_value(B);
-			       _ -> '_'
-			   end,
-		  Arity = case refac_syntax:type(A) of
-			      integer -> refac_syntax:integer_value(A);
-			      _ -> '_'
-			  end,
-		  Ann = {fun_def, {DefMod, FunName, Arity, Pos, ?DEFAULT_LOC}},
-		  B1 = update_ann(B, Ann),
-		  update_ann(rewrite(Node, refac_syntax:arity_qualifier(B1, A)), Ann)
-	  end,
     Name = refac_syntax:attribute_name(F),
     Args = refac_syntax:attribute_arguments(F),
     case Args of 
@@ -111,10 +95,22 @@ add_fun_def_info_in_import(F) ->
 	    case refac_syntax:type(M) of
 		atom ->
 		    M1 = refac_syntax:atom_value(M),
-		    L1 = [Fun(E, M1) || E<-refac_syntax:list_elements(L)],
+		    L1 = [add_fun_def_info_to_export_import_elems(E, M1,[]) ||
+			     E<-refac_syntax:list_elements(L)],
 		    rewrite(F, refac_syntax:attribute(Name, [M, rewrite(L, refac_syntax:list(L1))]));
 		_ -> F
 	    end;					    
+	_ -> F
+    end.
+
+add_fun_def_info_in_export(F, ModName, DefinedFuns) ->
+    Name = refac_syntax:attribute_name(F),
+    Args = refac_syntax:attribute_arguments(F),
+    case Args of
+	[L] ->
+	    L1 = [add_fun_def_info_to_export_import_elems(E, ModName, DefinedFuns) 
+		  || E <- refac_syntax:list_elements(L)],
+	    rewrite(F, refac_syntax:attribute(Name, [rewrite(L, refac_syntax:list(L1))]));
 	_ -> F
     end.
 
@@ -147,37 +143,30 @@ add_fun_def_info_in_spec(Form, ModName, DefinedFuns) ->
 	_ -> Form
     end.
 
- 
-add_fun_def_info_in_export(F, ModName, DefinedFuns) ->
-    Fun = fun(Node) ->
-		  B = refac_syntax:arity_qualifier_body(Node),
-		  A = refac_syntax:arity_qualifier_argument(Node),
-		  Pos = refac_syntax:get_pos(B),
-		  FunName =case refac_syntax:type(B) of
-			       atom -> refac_syntax:atom_value(B);
-			       _ -> '_'
-			   end,
-		  Arity = case refac_syntax:type(A) of
-			      integer -> refac_syntax:integer_value(A);
-			      _ -> '_'
-			  end,
-		  case lists:keysearch({ModName, FunName, Arity}, 1, DefinedFuns) of
-		      {value, {{ModName, FunName, Arity}, DefinePos}} ->
-			  Ann ={fun_def, {ModName, FunName, Arity, Pos, DefinePos}};
-		      false ->
-			  Ann = {fun_def, {ModName, FunName, Arity, Pos, ?DEFAULT_LOC}}
-		  end,
-		  B1 = update_ann(B, Ann),
-		  update_ann(rewrite(Node, refac_syntax:arity_qualifier(B1, A)), Ann)
-	  end, 
-    Name = refac_syntax:attribute_name(F),
-    Args = refac_syntax:attribute_arguments(F),
-    case Args of 
-	[L] ->
-	    L1 = [Fun(E) || E<-refac_syntax:list_elements(L)],
-	    rewrite(F, refac_syntax:attribute(Name, [rewrite(L, refac_syntax:list(L1))]));
-	_ -> F
-    end.
+add_fun_def_info_to_export_import_elems(Node, DefMod, DefinedFuns) ->
+    B = refac_syntax:arity_qualifier_body(Node),
+    A = refac_syntax:arity_qualifier_argument(Node),
+    Pos = refac_syntax:get_pos(B),
+    FunName = case refac_syntax:type(B) of
+		  atom -> refac_syntax:atom_value(B);
+		  _ -> '_'
+	      end,
+    Arity = case refac_syntax:type(A) of
+		integer -> refac_syntax:integer_value(A);
+		_ -> '_'
+	    end,
+    case lists:keysearch({DefMod,FunName,Arity},1,DefinedFuns) of
+	{value,{{DefMod,FunName,Arity},DefinePos}} ->
+	    Ann = {fun_def,{DefMod,FunName,Arity,Pos,DefinePos}};
+	false ->
+	    Ann = {fun_def,{DefMod,FunName,Arity,Pos,?DEFAULT_LOC}}
+    end,
+    B1 = update_ann(B,Ann),
+    update_ann(rewrite(Node,refac_syntax:arity_qualifier(B1,A)),Ann).
+    
+
+
+
 
 add_fun_def_info_in_form(F, ModName, DefinedFuns, ImportedFuns) ->
     {F1, _} = ast_traverse_api:full_tdTP(fun add_fun_def_info_1/2, F, {ModName, DefinedFuns, ImportedFuns}),

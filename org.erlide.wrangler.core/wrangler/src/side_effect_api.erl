@@ -75,8 +75,6 @@ has_side_effect(_File, Node, _SearchPaths) ->
 	    %% ets:delete(LocalPlt),
 	    %% ets:delete(LibPlt),
 	    %% Res1	
-           	
-
 
 
 %%=================================================================
@@ -89,9 +87,9 @@ has_side_effect(_File, Node, _SearchPaths) ->
 build_local_side_effect_tab(File, SearchPaths) ->
     ValidSearchPaths = lists:all(fun (X) -> filelib:is_dir(X) end, SearchPaths),
     case ValidSearchPaths of
-      true -> ok;
-      false ->
-	  throw("One of the directories sepecified in the search paths does not exist, please check the customization!")
+	true -> ok;
+	false ->
+	    throw("One of the directories sepecified in the search paths does not exist, please check the customization!")
     end,
     CurrentDir = filename:dirname(normalise_file_name(File)),
     SideEffectFile = filename:join(CurrentDir, "local_side_effect_tab"),
@@ -102,10 +100,10 @@ build_local_side_effect_tab(File, SearchPaths) ->
     SideEffectFileModifiedTime = filelib:last_modified(SideEffectFile),
     FilesToAnalyse = [F || F <- Files, SideEffectFileModifiedTime < filelib:last_modified(F)],
     LocalPlt = case filelib:is_file(SideEffectFile) of
-		 true -> from_dets(local_side_effect_tab, SideEffectFile);
-		 _ -> ets:new(local_side_effect_tab, [set, public])
+		   true -> from_dets(local_side_effect_tab, SideEffectFile);
+		   _ -> ets:new(local_side_effect_tab, [set, public])
 	       end,
-    #callgraph{callercallee = _CallerCallee, scc_order = Sccs, external_calls = _E} = 
+    #callgraph{callercallee = _CallerCallee, scc_order = Sccs, external_calls = _E} =
 	wrangler_callgraph_server:build_scc_callgraph(FilesToAnalyse),
     build_side_effect_tab(Sccs, LocalPlt, LibPlt),
     to_dets(LocalPlt, SideEffectFile),

@@ -28,7 +28,13 @@
 
 -export([once_tdTU/3, stop_tdTP/3, full_tdTP/3, full_buTP/3]).
 
+-export([map/2, map_subtrees/2, mapfold/3,
+	 mapfold_subtrees/3, fold/3, fold_subtrees/3]).
+
+-export([foldl_listlist/3, mapfoldl_listlist/3]).
+
 -include("../include/wrangler.hrl").
+
 
 %% =====================================================================
 %% @spec once_tdTU(Function, Tree::syntaxTree(), Others::term())-> {term(), boolean()}
@@ -100,7 +106,7 @@ stop_tdTP(Function, Node, Others) ->
 		Gs2 = [[N || {N, _B} <- G] || G <- Gs1],
 		G = [[B || {_N, B} <- G] || G <- Gs1],
 		Node2 = refac_syntax:make_tree(refac_syntax:type(Node1), Gs2),
-		{refac_misc:rewrite(Node1, Node2), lists:member(true, lists:flatten(G))}
+		{rewrite(Node1, Node2), lists:member(true, lists:flatten(G))}
 	  end
     end.
 
@@ -118,7 +124,7 @@ full_tdTP(Function, Node, Others) ->
 		Gs2 = [[N || {N, _B} <- G] || G <- Gs1],
 		G = [[B || {_N, B} <- G] || G <- Gs1],
 		Node2 = refac_syntax:make_tree(refac_syntax:type(Node1), Gs2),
-		{refac_misc:rewrite(Node1, Node2), Changed or lists:member(true, lists:flatten(G))}
+		{rewrite(Node1, Node2), Changed or lists:member(true, lists:flatten(G))}
 	  end
     end.
 
@@ -136,13 +142,15 @@ full_tdTP(Function, Node, Others) ->
 %%	     syntaxTree()).       
 full_buTP(Fun, Tree, Others) ->
     case refac_syntax:subtrees(Tree) of
-      [] -> Fun(Tree, Others);
+      [] -> Fun(Tree, Others); 
       Gs ->
 	  Gs1 = [[full_buTP(Fun, T, Others) || T <- G] || G <- Gs],
 	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree), Gs1),
-	  Fun(refac_misc:rewrite(Tree, Tree1), Others)
+	  Fun(rewrite(Tree, Tree1), Others)
     end.
 
+rewrite(Tree, Tree1) ->
+    refac_syntax:copy_attrs(Tree, Tree1).
 
 
 %% stop_tdTU(Function, S, Node) ->
@@ -165,3 +173,188 @@ full_buTP(Fun, Tree, Others) ->
 %% 		end
 %% 	  end
 %%     end.
+
+
+%% =====================================================================
+%% @spec map(Function, Tree::syntaxTree()) -> syntaxTree()
+%%
+%%          Function = (syntaxTree()) -> syntaxTree()
+%%
+%% @doc Applies a function to each node of a syntax tree. The result of
+%% each application replaces the corresponding original node. The order
+%% of traversal is bottom-up.
+%%
+%% @see map_subtrees/2
+
+map(F, Tree) ->
+    case refac_syntax:subtrees(Tree) of
+      [] -> F(Tree);
+      Gs ->
+	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
+				       [[map(F, T) || T <- G] || G <- Gs]),
+	  F(refac_syntax:copy_attrs(Tree, Tree1))
+    end.
+
+%% =====================================================================
+%% @spec map_subtrees(Function, syntaxTree()) -> syntaxTree()
+%%
+%%          Function = (Tree) -> Tree1
+%%
+%% @doc Applies a function to each immediate subtree of a syntax tree.
+%% The result of each application replaces the corresponding original
+%% node.
+%%
+%% @see map/2
+
+map_subtrees(F, Tree) ->
+    case refac_syntax:subtrees(Tree) of
+      [] -> Tree;
+      Gs ->
+	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
+				       [[F(T) || T <- G] || G <- Gs]),
+	  refac_syntax:copy_attrs(Tree, Tree1)
+    end.
+
+%% =====================================================================
+%% @spec fold(Function, Start::term(), Tree::syntaxTree()) -> term()
+%%
+%%          Function = (syntaxTree(), term()) -> term()
+%%
+%% @doc Folds a function over all nodes of a syntax tree. The result is
+%% the value of <code>Function(X1, Function(X2, ... Function(Xn, Start)
+%% ... ))</code>, where <code>[X1, X2, ..., Xn]</code> are the nodes of
+%% <code>Tree</code> in a post-order traversal.
+%%
+%% @see fold_subtrees/3
+%% @see foldl_listlist/3
+
+fold(F, S, Tree) ->
+    case refac_syntax:subtrees(Tree) of
+      [] -> F(Tree, S);
+      Gs -> F(Tree, fold_1(F, S, Gs))
+    end.
+
+fold_1(F, S, [L | Ls]) ->
+    fold_1(F, fold_2(F, S, L), Ls);
+fold_1(_, S, []) -> S.
+
+fold_2(F, S, [T | Ts]) -> fold_2(F, fold(F, S, T), Ts);
+fold_2(_, S, []) -> S.
+
+%% =====================================================================
+%% @spec fold_subtrees(Function, Start::term(), Tree::syntaxTree()) ->
+%%           term()
+%%
+%%          Function = (syntaxTree(), term()) -> term()
+%%
+%% @doc Folds a function over the immediate subtrees of a syntax tree.
+%% This is similar to <code>fold/3</code>, but only on the immediate
+%% subtrees of <code>Tree</code>, in left-to-right order; it does not
+%% include the root node of <code>Tree</code>.
+%%
+%% @see fold/3
+
+
+fold_subtrees(F, S, Tree) ->
+    foldl_listlist(F, S, refac_syntax:subtrees(Tree)).
+
+%% =====================================================================
+%% @spec mapfold(Function, Start::term(), Tree::syntaxTree()) ->
+%%           {syntaxTree(), term()}
+%%
+%%          Function = (syntaxTree(), term()) -> {syntaxTree(), term()}
+%%
+%% @doc Combines map and fold in a single operation. This is similar to
+%% <code>map/2</code>, but also propagates an extra value from each
+%% application of the <code>Function</code> to the next, while doing a
+%% post-order traversal of the tree like <code>fold/3</code>. The value
+%% <code>Start</code> is passed to the first function application, and
+%% the final result is the result of the last application.
+%%
+%% @see map/2
+%% @see fold/3
+
+mapfold(F, S, Tree) ->
+    case refac_syntax:subtrees(Tree) of
+      [] -> F(Tree, S);
+      Gs ->
+	  {Gs1, S1} = mapfold_1(F, S, Gs),
+	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
+				       Gs1),
+	  F(refac_syntax:copy_attrs(Tree, Tree1), S1)
+    end.
+
+mapfold_1(F, S, [L | Ls]) ->
+    {L1, S1} = mapfold_2(F, S, L),
+    {Ls1, S2} = mapfold_1(F, S1, Ls),
+    {[L1 | Ls1], S2};
+mapfold_1(_, S, []) -> {[], S}.
+
+mapfold_2(F, S, [T | Ts]) ->
+    {T1, S1} = mapfold(F, S, T),
+    {Ts1, S2} = mapfold_2(F, S1, Ts),
+    {[T1 | Ts1], S2};
+mapfold_2(_, S, []) -> {[], S}.
+
+%% =====================================================================
+%% @spec mapfold_subtrees(Function, Start::term(),
+%%                        Tree::syntaxTree()) -> {syntaxTree(), term()}
+%%
+%%          Function = (syntaxTree(), term()) -> {syntaxTree(), term()}
+%%
+%% @doc Does a mapfold operation over the immediate subtrees of a syntax
+%% tree. This is similar to <code>mapfold/3</code>, but only on the
+%% immediate subtrees of <code>Tree</code>, in left-to-right order; it
+%% does not include the root node of <code>Tree</code>.
+%%
+%% @see mapfold/3
+
+
+mapfold_subtrees(F, S, Tree) ->
+    case refac_syntax:subtrees(Tree) of
+	[] -> {Tree, S};
+	Gs ->
+	    {Gs1, S1} = mapfoldl_listlist(F, S, Gs),
+	    Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
+					   Gs1),
+	    {refac_syntax:copy_attrs(Tree, Tree1), S1}
+    end.
+
+%% =====================================================================
+%% @spec foldl_listlist(Function, Start::term(), [[term()]]) -> term()
+%%
+%%          Function = (term(), term()) -> term()
+%%
+%% @doc Like <code>lists:foldl/3</code>, but over a list of lists.
+%%
+%% @see fold/3
+%% @see lists:foldl/3
+
+foldl_listlist(F, S, [L | Ls]) ->
+    foldl_listlist(F, foldl(F, S, L), Ls);
+foldl_listlist(_, S, []) -> S.
+
+foldl(F, S, [T | Ts]) -> foldl(F, F(T, S), Ts);
+foldl(_, S, []) -> S.
+
+%% =====================================================================
+%% @spec mapfoldl_listlist(Function, State, [[term()]]) ->
+%%           {[[term()]], term()}
+%%
+%%          Function = (term(), term()) -> {term(), term()}
+%%
+%% @doc Like <code>lists:mapfoldl/3</code>, but over a list of lists.
+%% The list of lists in the result has the same structure as the given
+%% list of lists.
+
+mapfoldl_listlist(F, S, [L | Ls]) ->
+    {L1, S1} = mapfoldl(F, S, L),
+    {Ls1, S2} = mapfoldl_listlist(F, S1, Ls),
+    {[L1 | Ls1], S2};
+mapfoldl_listlist(_, S, []) -> {[], S}.
+
+mapfoldl(F, S, [L | Ls]) ->
+    {L1, S1} = F(L, S),
+    {Ls1, S2} = mapfoldl(F, S1, Ls),
+    {[L1 | Ls1], S2};
+mapfoldl(_, S, []) -> {[], S}.
