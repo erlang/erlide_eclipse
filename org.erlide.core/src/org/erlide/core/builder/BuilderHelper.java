@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -367,20 +368,21 @@ public final class BuilderHelper {
     }
 
     public void completeCompile(final IProject project, final IResource source,
-            final OtpErlangObject r, final Backend backend,
+            final OtpErlangObject compilationResult, final Backend backend,
             final OtpErlangList compilerOptions) {
-        if (r == null) {
+        if (compilationResult == null) {
             MarkerUtils.addProblemMarker(source, null, null,
                     "Could not compile file", 0, IMarker.SEVERITY_ERROR);
             return;
         }
-        final OtpErlangTuple t = (OtpErlangTuple) r;
-        // ErlLogger.debug("** " + r);
+        final OtpErlangTuple t = (OtpErlangTuple) compilationResult;
+        // ErlLogger.debug("** " + t);
 
         if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
             final String beamf = source.getFullPath().removeFileExtension()
                     .lastSegment();
             ErlideBuilder.loadModule(project, beamf);
+            refreshDirs(project, t.elementAt(2));
         } else {
             // ErlLogger.debug(">>>> compile error... %s\n   %s",
             // resource.getName(), t);
@@ -395,6 +397,29 @@ public final class BuilderHelper {
         }
 
         completeCompileForYrl(project, source, backend, compilerOptions);
+    }
+
+    private void refreshDirs(final IProject project,
+            final OtpErlangObject element) {
+        final OtpErlangList list = (OtpErlangList) element;
+        for (final OtpErlangObject ebeam : list.elements()) {
+            final OtpErlangString beam = (OtpErlangString) ebeam;
+            IPath p = new Path(beam.stringValue());
+            p = p.removeLastSegments(1);
+            p = p.removeFirstSegments(project.getLocation().segmentCount());
+            final String projectName = project.getName();
+            // FIXME hardcoded "_erl" suffix
+            final String linkname = projectName.substring(0,
+                    projectName.length() - 4);
+            p = new Path(linkname).append(p);
+            final IResource dir = project.findMember(p);
+            if (dir != null) {
+                try {
+                    dir.refreshLocal(IResource.DEPTH_ONE, null);
+                } catch (final CoreException e) {
+                }
+            }
+        }
     }
 
     private void completeCompileForYrl(final IProject project,
@@ -433,14 +458,8 @@ public final class BuilderHelper {
 
         MarkerUtils.deleteMarkers(res);
 
-        final String bout = bres.getOutput();
-        String outputDir = bout == null ? projectPath.append(outputDir0)
-                .toString() : null;
-        if (outputDir == null) {
-            outputDir = bout.startsWith("/") || bout.charAt(1) == ':' ? bout
-                    : projectPath.append(bout).toString();
-        }
-        ensureDirExists(outputDir);
+        String outputDir;
+        outputDir = getRealOutputDir(bres, outputDir0, projectPath);
 
         final Collection<IPath> includeDirs = getAllIncludeDirs(project);
 
@@ -475,6 +494,20 @@ public final class BuilderHelper {
             ErlLogger.warn(e);
             return null;
         }
+    }
+
+    private String getRealOutputDir(final BuildResource bres,
+            final String outputDir0, final IPath projectPath) {
+        String outputDir;
+        final String bout = bres.getOutput();
+        if (bout == null) {
+            outputDir = projectPath.append(outputDir0).toString();
+        } else {
+            outputDir = bout.startsWith("/") || bout.charAt(1) == ':' ? bout
+                    : projectPath.append(bout).toString();
+        }
+        ensureDirExists(outputDir);
+        return outputDir;
     }
 
     private void createTaskMarkers(final IProject project, final IResource res) {

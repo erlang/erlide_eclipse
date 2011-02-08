@@ -35,6 +35,7 @@ import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.util.TermParser;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.runtime.debug.ErlangDebugHelper;
 import org.erlide.runtime.launch.ErlangLaunchDelegate;
@@ -59,9 +60,15 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
     private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
             "undefined");
-    private static final OtpErlangTuple BTERL_WATCHER_INIT_DEBUGGER = OtpErlang
-            .mkTuple(new OtpErlangAtom("bterl_watcher"), new OtpErlangAtom(
-                    "init_debugger"));
+    private static OtpErlangTuple BTERL_WATCHER_INIT_DEBUGGER;
+    {
+        try {
+            BTERL_WATCHER_INIT_DEBUGGER = (OtpErlangTuple) TermParser
+                    .getParser().parse("{bterl_watcher, init_debugger}");
+        } catch (final ParserException e) {
+        }
+    }
+
     private String testcase;
     private String suite;
     private String mode;

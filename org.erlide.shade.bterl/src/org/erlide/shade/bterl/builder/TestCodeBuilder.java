@@ -49,9 +49,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = true; // "true".equals(System
-
-    // .getProperty("org.erlide.test_support.debug"));
+    private static final boolean DEBUG = "true".equals(System
+            .getProperty("org.erlide.test_support.debug"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -160,13 +159,13 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
                 final OtpErlangList compilerOptions = (OtpErlangList) ErlUtils
                         .format("[{i, \"/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool\"}]");
+                final String outputDir = bres.getResource().getParent()
+                        .getProjectRelativePath().toString();
                 if (DEBUG) {
                     ErlLogger.debug("@@@ >> bterl build :: "
                             + resource.getFullPath().toString() + " :: "
-                            + compilerOptions);
+                            + outputDir + " " + compilerOptions);
                 }
-                final String outputDir = bres.getResource().getParent()
-                        .getProjectRelativePath().toString();
                 final RpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
@@ -207,7 +206,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 waiting.removeAll(done);
                 done.clear();
             }
-            helper.refreshOutputDir(project);
 
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {
