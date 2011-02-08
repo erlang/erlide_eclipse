@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageStats;
 import org.erlide.cover.views.model.IStatsTreeObject;
@@ -38,8 +39,14 @@ public class CoverEventHandler extends EventHandler {
     private int counter;
     private ICoverAnnotationMarker annotationMarker;
 
+    private Logger log; //log
+    
+    public CoverEventHandler() {
+        log = Logger.getLogger(this.getClass());
+    }
+    
     public void addListener(final ICoverObserver listener) {
-        System.out.println("adding listener");
+        log.debug("adding listener");
         listeners.add(listener);
     }
 
@@ -132,8 +139,8 @@ public class CoverEventHandler extends EventHandler {
                 final double percent = Double.parseDouble(resTuple.elementAt(5)
                         .toString());
 
-                System.out.format("Module %s %s %d %d %f", moduleName,
-                        htmlPath, allLines, coveredLines, percent);
+                log.debug(String.format("Module %s %s %d %d %f", moduleName,
+                        htmlPath, allLines, coveredLines, percent));
 
                 final ModuleStats moduleStats = new ModuleStats();
 

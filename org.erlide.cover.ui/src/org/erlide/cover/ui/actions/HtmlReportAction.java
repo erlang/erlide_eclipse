@@ -1,5 +1,6 @@
 package org.erlide.cover.ui.actions;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -19,33 +20,35 @@ import org.erlide.cover.views.model.StatsTreeObject;
  */
 public class HtmlReportAction extends Action {
 
-    Shell shell;
-    TreeViewer viewer;
+    private Shell shell;
+    private TreeViewer viewer;
 
+    private Logger log;     // logger
+    
     public HtmlReportAction(final TreeViewer viewer) {
         shell = viewer.getControl().getShell();
         this.viewer = viewer;
+        log = Logger.getLogger(getClass());
     }
 
     @Override
     public void run() {
-        System.out.println("html report!");
+        log.debug("html report!");
 
         // viewer jest selection providerem
 
         final ISelection selection = viewer.getSelection();
 
-        System.out.println(selection.getClass().getName());
+        log.debug(selection.getClass().getName());
         if (!(selection instanceof ITreeSelection)) {
             // show error
         }
 
         final ITreeSelection treeSelection = (ITreeSelection) selection;
 
-        System.out.println(treeSelection.getFirstElement());
-        System.out
-                .println(treeSelection.getFirstElement().getClass().getName());
-        System.out.println(treeSelection.getPaths());
+        log.debug(treeSelection.getFirstElement());
+        log.debug(treeSelection.getFirstElement().getClass().getName());
+        log.debug(treeSelection.getPaths());
 
         final StatsTreeObject selObj = (StatsTreeObject) treeSelection
                 .getFirstElement();

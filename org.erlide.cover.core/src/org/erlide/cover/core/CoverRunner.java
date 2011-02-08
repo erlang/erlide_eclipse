@@ -1,5 +1,6 @@
 package org.erlide.cover.core;
 
+import org.apache.log4j.Logger;
 import org.erlide.cover.constants.Constants;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.jinterface.backend.BackendException;
@@ -18,8 +19,11 @@ public class CoverRunner extends Thread {
 
     private final CoverBackend backend;
 
+    private Logger log;     // logger
+    
     public CoverRunner(final CoverBackend backend) {
         this.backend = backend;
+        log = Logger.getLogger(getClass());
     }
 
     @Override
@@ -44,7 +48,7 @@ public class CoverRunner extends Thread {
                         && ((OtpErlangTuple) resTuple.elementAt(1))
                                 .elementAt(0).toString()
                                 .equals("already_started"))) {
-                    System.out.println("cover_error");
+                    log.debug("cover_error");
                     return;
                 }
             } else {

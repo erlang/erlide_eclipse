@@ -23,10 +23,9 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
             final Map<String, String> env) throws CoreException {
 
         final CoverLaunchData coverData = new CoverLaunchData(config);
-        final ErlLaunchData lData = new ErlLaunchData(config, internal);
 
         final CoverBackend coverBackend = CoverBackend.getInstance();
-        coverBackend.initialize(lData, coverData);
+        coverBackend.initialize(coverData);
         coverBackend.start();
     }
 

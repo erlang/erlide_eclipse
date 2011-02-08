@@ -37,10 +37,10 @@ public class CoverTabGroup extends AbstractLaunchConfigurationTabGroup {
         ILaunchConfigurationTab[] tabs;
         if (mode.equals("debug")) {
             tabs = new ILaunchConfigurationTab[] { new CoverMainTab(),
-                    new RuntimeTab(), new DebugTab(), new CodepathTab() };
+                    new DebugTab(), new CodepathTab() };
         } else {
             tabs = new ILaunchConfigurationTab[] { new CoverMainTab(),
-                    new RuntimeTab(), new CodepathTab() };
+                    new CodepathTab() };
         }
         return Arrays.asList(tabs);
     }

@@ -1,5 +1,6 @@
 package org.erlide.cover.ui.views;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -54,37 +55,26 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     public static final String ID = "org.erlide.eunit.core.views.TestResultView";
 
     private TreeViewer viewer;
-
     private DrillDownAdapter drillDownAdapter;
-
+    
     private Action openItem;
-
     private Action showHtml;
-
     private Action save;
-
     private Action clear;
-
     private Action refresh;
-
     private Action restore;
-
     private Action doubleClickAction;
-
     private Action showCoverage;
-
     private Action hideCoverage;
-
+    
     private final CoverBackend backend;
-
     private TreeColumn colName;
-
     private TreeColumn colLines;
-
     private TreeColumn colCovered;
-
     private TreeColumn colPercentage;
 
+    private Logger log;         //logger
+    
     /**
      * The constructor.
      */
@@ -94,6 +84,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
         // TODO: find better place for this
         backend.addAnnotationMaker(EditorTracker.getInstance());
+        log = Logger.getLogger(this.getClass());
     }
 
     /**
@@ -267,7 +258,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeShowHtmlAction() {
-        System.out.println(viewer.getSelection());
+        log.debug(viewer.getSelection());
         showHtml = new HtmlReportAction(viewer);
         showHtml.setText("Show html report");
         showHtml.setToolTipText("Shows generated html report");

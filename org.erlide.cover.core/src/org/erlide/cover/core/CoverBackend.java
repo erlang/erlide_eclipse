@@ -39,6 +39,8 @@ import org.erlide.runtime.launch.ErlLaunchData;
  */
 public class CoverBackend {
 
+    public static final String NODE_NAME = "cover_internal";
+    
     public static CoverBackend instance;
 
     private Backend backend;
@@ -50,7 +52,7 @@ public class CoverBackend {
     private String nodeName;
     private boolean coverRunning;
     
-    private Logger log;  //logger
+    private Logger log;      //logger
     
     static {
         // logger configuration
@@ -74,34 +76,34 @@ public class CoverBackend {
         log = Logger.getLogger(this.getClass());
     }
 
-    public void initialize(final ErlLaunchData data,
+    public void initialize(/* final ErlLaunchData data, */
             final CoverLaunchData coverData) {
 
         this.coverData = coverData;
 
         settings = new CoverSettings(coverData.getType(), coverData);
 
-        if (backend != null && !backend.isStopped()
-                && info.getNodeName().equals(data.nodeName)
-                && info.getName().equals(data.runtime)) {
+        if (backend != null && !backend.isStopped())
+         /*       && info.getNodeName().equals(data.nodeName)
+                && info.getName().equals(data.runtime))*/ {
             return;
         } else if (backend != null) {
             backend.stop();
         }
 
-        final RuntimeInfo rt0 = ErlangCore.getRuntimeInfoManager().getRuntime(
-                data.runtime);
+        RuntimeInfo rt0  = RuntimeInfo.copy(ErlangCore
+                .getRuntimeInfoManager().getErlideRuntime(), false);
+        
 
         if (rt0 == null) {
-            ErlLogger.error("Could not find runtime %s", data.runtime);
+            log.error(String.format("Could not find runtime %s", ErlangCore
+                    .getRuntimeInfoManager().getErlideRuntime().getVersion()));
             handleError("Could not find runtime");
         }
 
         log.debug("create backend");
-        //ErlLogger.debug("Backend created...");
-        //System.out.println("Create backend");
-
-        info = buildRuntimeInfo(data, rt0);
+        
+        info = buildRuntimeInfo(rt0);
         final EnumSet<BackendOptions> options = EnumSet
                 .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
         config = getLaunchConfiguration(info, options);
@@ -189,7 +191,7 @@ public class CoverBackend {
 
                 return BackendManager.getDefault().getByName(nodeName);
             } catch (final Exception e) {
-                ErlLogger.error(e);
+                log.error(e);
                 e.printStackTrace();
                 throw new BackendException(e);
             }
@@ -197,25 +199,11 @@ public class CoverBackend {
         throw new BackendException();
     }
 
-    private RuntimeInfo buildRuntimeInfo(final ErlLaunchData data,
-            final RuntimeInfo rt0) {
+    private RuntimeInfo buildRuntimeInfo(final RuntimeInfo rt0) {
         final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
-        rt.setNodeName(data.nodeName);
-        rt.setCookie(data.cookie);
+        rt.setNodeName(NODE_NAME);
 
-        rt.setStartShell(true);
-        final File d = new File(data.workingDir);
-        if (d.isAbsolute()) {
-            rt.setWorkingDir(data.workingDir);
-        } else {
-            final String wspace = ResourcesPlugin.getWorkspace().getRoot()
-                    .getLocation().toPortableString();
-            rt.setWorkingDir(wspace + "/" + data.workingDir);
-        }
-        rt.setArgs(data.xtraArgs);
-        rt.useLongName(data.longName);
-        rt.setHasConsole(data.console);
-        rt.setLoadAllNodes(data.loadAllNodes);
+        rt.setStartShell(false);
 
         return rt;
     }

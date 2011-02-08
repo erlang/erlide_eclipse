@@ -3,6 +3,7 @@ package org.erlide.cover.core;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
@@ -20,6 +21,8 @@ public class CoverSettings {
     private final LaunchType type;
     private final List<CoverObject> objs;
     private final FrameworkType frameworkType;
+    
+    private Logger log;     //logger
 
     /**
      * Create coverage settings, depend mainly on launch type
@@ -31,6 +34,8 @@ public class CoverSettings {
         objs = new LinkedList<CoverObject>();
         type = t;
         frameworkType = data.getFramework();
+        
+        log = Logger.getLogger(getClass());
 
         switch (t) {
         case MODULE:
@@ -44,12 +49,13 @@ public class CoverSettings {
                     .replace(".erl", ""), path, path, pathEbin));
             break;
         case ALL:
-            System.out.println("all: " + data.getFile());
+            log.debug(data);
+            log.debug("all: " + data.getFile());
             final StringBuffer bf = new StringBuffer(ResourcesPlugin
                     .getWorkspace().getRoot().getRawLocation().toString());
             bf.append("/").append(data.getFile()).append("/");
 
-            System.out.println(bf);
+            log.debug(bf);
             final String pathSrc = bf.toString() + "src";
             final String pathTst = bf.toString() + "test";
             pathEbin = bf.toString() + "ebin";
