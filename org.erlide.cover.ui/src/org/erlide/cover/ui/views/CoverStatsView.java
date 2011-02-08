@@ -37,6 +37,7 @@ import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.actions.ClearCoverageAction;
 import org.erlide.cover.ui.actions.HideCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
+import org.erlide.cover.ui.actions.OpenItemAction;
 import org.erlide.cover.ui.actions.ShowCoverageAction;
 import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
@@ -232,17 +233,11 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeOpenItemAction() {
-        openItem = new Action() {
-            @Override
-            public void run() {
-                showMessage("Action open item");
-            }
-        };
+        openItem = new OpenItemAction(viewer);
         openItem.setText("Open in editor");
         openItem.setToolTipText("Opens the including file in editor");
         openItem.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-        openItem.setEnabled(false);
     }
 
     private void makeShowHtmlAction() {
