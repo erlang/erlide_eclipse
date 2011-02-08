@@ -37,6 +37,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -49,8 +50,10 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = "true".equals(System
-            .getProperty("org.erlide.test_support.debug"));
+    private static final boolean DEBUG = true;
+
+    // "true".equals(System
+    // .getProperty("org.erlide.test_support.debug"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -156,15 +159,16 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 resource.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_ZERO);
 
                 // FIXME use real bterl path!!
-
                 final OtpErlangList compilerOptions = (OtpErlangList) ErlUtils
-                        .format("[{i, \"/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool\"}]");
+                        .format("[{i, ~s}]", TestLaunchDelegate.getBterlPath()
+                                + "/../bt_tool");
+
                 final String outputDir = bres.getResource().getParent()
                         .getProjectRelativePath().toString();
                 if (DEBUG) {
                     ErlLogger.debug("@@@ >> bterl build :: "
                             + resource.getFullPath().toString() + " :: "
-                            + outputDir + " " + compilerOptions);
+                            + outputDir + " -- " + compilerOptions);
                 }
                 final RpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);

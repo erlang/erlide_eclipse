@@ -322,7 +322,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         return Joiner.on('/').join(spath);
     }
 
-    private String getBterlPath() throws CoreException {
+    public static String getBterlPath() throws CoreException {
         String bterlPath;
         try {
             bterlPath = getPluginPath().append("ebin").toString();
