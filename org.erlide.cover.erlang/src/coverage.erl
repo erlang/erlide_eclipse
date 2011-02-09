@@ -78,35 +78,34 @@ prepare(eunit, Module,  _Path) ->
 
 %creates html report
 create_report(Modules) when is_list(Modules) ->
-	lists:foldl(fun(Module, Acc) ->
-						Res = create_report(Module),
-						case Res of
-							{ok, Result} ->
-								erlide_jrpc:event(?EVENT, Result),
-								[Result | Acc];
-							{error, Reason} ->
-								erlide_jrpc:event(?EVENT, 
-												#cover_error{place = Module,
-												   type = 'creating report',
-												   info = Reason}),
-								Acc
-						end
-				end, [], Modules);
+    lists:foldl(fun (Module,Acc) ->
+			Res = create_report(Module), 
+			case Res of
+			  {ok,Result} ->
+			      erlide_jrpc:event(?EVENT,Result), 
+			      [Result| Acc];
+			  {error,Reason} ->
+			      erlide_jrpc:event(?EVENT,
+						#cover_error{place = Module, 
+							     type = 'creating report', 
+							     info = Reason}), 
+			      Acc
+			end
+		end,[],Modules);
 
 create_report(Module) ->
-	io:format(Module),
-	ModRes = cover:analyse(Module, module),
-	FunRes = cover:analyse(Module, function),
-	LineRes = cover:analyse(Module, calls, line), %%calls!
-	
-	case { ModRes, FunRes, LineRes} of
-		{{ok, _}, {ok, _}, {ok, _}} ->
-			Res = prepare_result(ModRes, FunRes, LineRes, Module),
-			
-			{ok, Res};
-		_ -> 
-			{error, analyse}
-	end.
+    io:format(Module), 
+    ModRes = cover:analyse(Module,module), 
+    FunRes = cover:analyse(Module,function), 
+    LineRes = cover:analyse(Module,calls,line),  %%calls! 
+    case {ModRes,FunRes,LineRes} of
+      {{ok,_},{ok,_},{ok,_}} ->
+	  Res = prepare_result(ModRes,FunRes,LineRes,Module), 
+	  
+	  {ok,Res};
+      _ ->
+	  {error,analyse}
+    end.
 
 % create index.html file
 create_index(Results) ->

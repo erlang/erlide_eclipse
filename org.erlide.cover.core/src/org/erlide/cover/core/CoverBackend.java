@@ -83,9 +83,8 @@ public class CoverBackend {
 
         settings = new CoverSettings(coverData.getType(), coverData);
 
-        if (backend != null && !backend.isStopped())
-         /*       && info.getNodeName().equals(data.nodeName)
-                && info.getName().equals(data.runtime))*/ {
+        if (backend != null && !backend.isStopped()) {
+        	log.debug("is started");
             return;
         } else if (backend != null) {
             backend.stop();

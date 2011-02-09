@@ -73,7 +73,8 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.dialogs",
  org.erlide.ui.editors.erl;
   x-friends:="org.erlide.wrangler.refactoring,
-   org.erlide.test_support";
+   org.erlide.test_support,
+   org.erlide.cover.ui";
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.text.information,
@@ -143,7 +144,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.util;x-internal:=true,
  org.erlide.ui.jinterface;uses:="org.erlide.jinterface.rpc",
  org.erlide.ui.launch;
- org.erlide.ui.launch;x-friends:="org.erlide.selfhost.plugin,
+  x-friends:="org.erlide.selfhost.plugin,
    org.erlide.cover.ui";
   uses:="org.eclipse.debug.core,
    org.eclipse.debug.ui,
