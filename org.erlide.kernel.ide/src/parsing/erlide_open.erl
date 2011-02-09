@@ -423,7 +423,6 @@ fx([FN0 | Rest], Fun, Fun2, PathVars, Parent, Done, Acc) ->
     end.
 
 fx2(FN, Fun, Fun2, PathVars, Parent, Done, Acc) ->
-    io:format("reading \"~s\"\n", [FN]),
     NewAcc = Fun2(Parent, FN, Acc),
     case file:read_file(FN) of
         {ok, B} ->
