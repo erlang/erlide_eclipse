@@ -374,7 +374,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 + ")= " + Arrays.toString(cmdline));
     }
 
-    public ErlangDebugHelper getDebugHelper() {
+    @Override
+    protected ErlangDebugHelper getDebugHelper() {
         return new TestDebugHelper(workdir);
     }
 

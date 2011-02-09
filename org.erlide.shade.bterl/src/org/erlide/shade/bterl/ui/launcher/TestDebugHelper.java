@@ -24,6 +24,7 @@ public class TestDebugHelper extends ErlangDebugHelper {
         final String beam = ErlideUtil.withoutExtension(module) + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {
             public boolean accept(final File dir, final String name) {
+                System.out.println(dir.getAbsolutePath() + "   " + name);
                 return name.equals(beam);
             }
         });

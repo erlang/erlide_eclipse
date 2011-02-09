@@ -254,9 +254,13 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ErlideBackend backend, final boolean distributed) {
         for (final String pm : data.interpretedModules) {
             final String[] pms = pm.split(":");
-            new ErlangDebugHelper().interpret(backend, pms[0], pms[1],
-                    distributed, true);
+            getDebugHelper().interpret(backend, pms[0], pms[1], distributed,
+                    true);
         }
+    }
+
+    protected ErlangDebugHelper getDebugHelper() {
+        return new ErlangDebugHelper();
     }
 
     private void addNodesAsDebugTargets(final Backend backend,
