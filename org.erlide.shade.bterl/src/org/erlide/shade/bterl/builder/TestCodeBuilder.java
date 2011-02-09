@@ -1,4 +1,4 @@
-package org.erlide.test_support.builder;
+package org.erlide.shade.bterl.builder;
 
 import java.io.File;
 import java.util.Collection;
@@ -37,6 +37,7 @@ import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -47,10 +48,12 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private final BuilderHelper helper = new BuilderHelper();
 
-    public static final String BUILDER_ID = "org.erlide.test_support.builder";
+    public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = "true".equals(System
-            .getProperty("org.erlide.test_support.debug"));
+    private static final boolean DEBUG = true;
+
+    // "true".equals(System
+    // .getProperty("org.erlide.test_support.debug"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -154,16 +157,19 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 }
                 final IResource resource = bres.getResource();
                 resource.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_ZERO);
+
+                // FIXME use real bterl path!!
                 final OtpErlangList compilerOptions = (OtpErlangList) ErlUtils
-                        .format("[{i, \"/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool\"}]");
+                        .format("[{i, ~s}]", TestLaunchDelegate.getBterlPath()
+                                + "/../bt_tool");
+
+                final String outputDir = bres.getResource().getParent()
+                        .getProjectRelativePath().toString();
                 if (DEBUG) {
                     ErlLogger.debug("@@@ >> bterl build :: "
                             + resource.getFullPath().toString() + " :: "
-                            + compilerOptions);
+                            + outputDir + " -- " + compilerOptions);
                 }
-                final IOldErlangProjectProperties prefs = ErlangCore
-                        .getProjectProperties(project);
-                final String outputDir = prefs.getOutputDir().toString();
                 final RpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
@@ -176,27 +182,34 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
             // TODO should use some kind of notification!
             while (waiting.size() > 0) {
-                for (final Entry<RpcFuture, IResource> result : waiting) {
+                for (final Entry<RpcFuture, IResource> entry : waiting) {
                     if (monitor.isCanceled()) {
                         return;
                     }
-                    OtpErlangObject r;
+                    OtpErlangObject result;
                     try {
-                        r = result.getKey().get(100);
+                        result = entry.getKey().get(10);
                     } catch (final Exception e) {
-                        r = null;
+                        result = null;
                     }
-                    if (r != null) {
-                        final IResource resource = result.getValue();
-                        helper.completeCompile(project, resource, r, backend,
-                                new OtpErlangList());
-                        done.add(result);
+                    if (result != null) {
+                        final IResource resource = entry.getValue();
+                        if (DEBUG) {
+                            ErlLogger.debug("@@@ >> bterl built :: "
+                                    + resource.getFullPath().toString());
+                        }
+                        helper.completeCompile(project, resource, result,
+                                backend, new OtpErlangList());
+                        if (DEBUG) {
+                            ErlLogger.debug("### >> bterl built :: "
+                                    + resource.getFullPath().toString());
+                        }
+                        done.add(entry);
                     }
                 }
                 waiting.removeAll(done);
                 done.clear();
             }
-            helper.refreshOutputDir(project);
 
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {

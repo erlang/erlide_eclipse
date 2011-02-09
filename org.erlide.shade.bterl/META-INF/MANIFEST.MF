@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test frameworks support plug-in
-Bundle-SymbolicName: org.erlide.test_support;singleton:=true
+Bundle-Name: Bterl
+Bundle-SymbolicName: shade.bterl;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.erlide.test_support.Activator
+Bundle-Activator: org.erlide.shade.bterl.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -25,12 +25,9 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.ui,
  org.eclipse.ui.browser,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.erlide.test_support;bundle-version="0.4.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.test_support,
- org.erlide.test_support.popup.actions,
- org.erlide.test_support.ui,
- org.erlide.test_support.ui.suites
-Bundle-ClassPath: .
-
+Export-Package: org.erlide.shade.bterl,
+ org.erlide.shade.bterl.ui.launcher

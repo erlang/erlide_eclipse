@@ -18,7 +18,7 @@ class TestResultsLabelProvider extends LabelProvider {
                 return ErlideImage.TEST_RUNNING.getImage();
             case SUCCESS:
                 return ErlideImage.TEST_SUCCEEDED.getImage();
-            case FAILURE:
+            case FAILED:
                 return ErlideImage.TEST_FAILED.getImage();
             }
         }

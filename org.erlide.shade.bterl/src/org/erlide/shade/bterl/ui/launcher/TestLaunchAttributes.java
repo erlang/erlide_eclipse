@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.erlide.test_support.ui.launcher;
+package org.erlide.shade.bterl.ui.launcher;
 
 public class TestLaunchAttributes {
 
