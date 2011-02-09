@@ -413,7 +413,7 @@ fx([FN0 | Rest], Fun, Fun2, PathVars, Parent, Done, Acc) ->
         true ->
             fx(Rest, Fun, Fun2, PathVars, Parent, Done, Acc);
         false ->
-            case Parent=:=top orelse filename:extension(FN) == ".erlidex" of
+            case Parent=:="root" orelse filename:extension(FN) == ".erlidex" of
                 true ->
                     {NewDone, NewAcc} = fx2(FN, Fun, Fun2, PathVars, Parent, Done, Acc),
                     fx(Rest, Fun, Fun2, PathVars, Parent, NewDone, NewAcc);
