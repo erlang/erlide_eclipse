@@ -338,8 +338,7 @@ public class ErlTextHover implements ITextHover,
                         IErlFunction f = null;
                         try {
                             module2.open(null);
-                            f = ModelUtils
-                                    .findFunction(module2, erlangFunction);
+                            f = module2.findFunction(erlangFunction);
                         } catch (final ErlModelException e) {
                         }
                         if (f == null) {

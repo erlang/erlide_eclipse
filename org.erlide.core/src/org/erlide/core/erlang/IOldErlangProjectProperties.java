@@ -10,40 +10,40 @@ import org.erlide.backend.runtime.RuntimeVersion;
 
 public interface IOldErlangProjectProperties {
 
-    public abstract void load(final IEclipsePreferences node);
+    void load(final IEclipsePreferences node);
 
-    public abstract void store(final IEclipsePreferences node);
+    void store(final IEclipsePreferences node);
 
-    public abstract Collection<IPath> getIncludeDirs();
+    Collection<IPath> getIncludeDirs();
 
-    public abstract void setIncludeDirs(final Collection<IPath> includeDirs2);
+    void setIncludeDirs(final Collection<IPath> includeDirs2);
 
-    public abstract IPath getOutputDir();
+    IPath getOutputDir();
 
-    public abstract void setOutputDir(final IPath dir);
+    void setOutputDir(final IPath dir);
 
-    public abstract Collection<IPath> getSourceDirs();
+    Collection<IPath> getSourceDirs();
 
-    public abstract void setSourceDirs(final Collection<IPath> sourceDirs2);
+    void setSourceDirs(final Collection<IPath> sourceDirs2);
 
-    public abstract void copyFrom(final IOldErlangProjectProperties bprefs);
+    void copyFrom(final IOldErlangProjectProperties bprefs);
 
-    public abstract String getExternalIncludesFile();
+    String getExternalIncludesFile();
 
-    public abstract void setExternalIncludesFile(final String file);
+    void setExternalIncludesFile(final String file);
 
-    public abstract void setExternalModulesFile(final String externalModules);
+    void setExternalModulesFile(final String externalModules);
 
-    public abstract String getExternalModulesFile();
+    String getExternalModulesFile();
 
-    public abstract RuntimeInfo getRuntimeInfo();
+    RuntimeInfo getRuntimeInfo();
 
-    public abstract boolean hasSourceDir(final IPath fullPath);
+    boolean hasSourceDir(final IPath fullPath);
 
-    public abstract RuntimeVersion getRuntimeVersion();
+    RuntimeVersion getRuntimeVersion();
 
-    public abstract void preferenceChange(final PreferenceChangeEvent event);
+    void preferenceChange(final PreferenceChangeEvent event);
 
-    public abstract void setRuntimeVersion(final RuntimeVersion runtimeVersion);
+    void setRuntimeVersion(final RuntimeVersion runtimeVersion);
 
 }

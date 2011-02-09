@@ -86,44 +86,16 @@ public class ModelUtils {
     public static IErlTypespec findTypespec(final IErlModule module,
             final String name, final String externalIncludes)
             throws CoreException, BackendException {
-        IErlTypespec typespec = findTypespec(module, name);
+        IErlTypespec typespec = module.findTypespec(name);
         if (typespec != null) {
             return typespec;
         }
         final List<IErlModule> includedFiles = findAllIncludedFiles(module,
                 externalIncludes);
         for (final IErlModule includedFile : includedFiles) {
-            typespec = findTypespec(includedFile, name);
+            typespec = includedFile.findTypespec(name);
             if (typespec != null) {
                 return typespec;
-            }
-        }
-        return null;
-    }
-
-    private static IErlTypespec findTypespec(final IErlModule module,
-            final String name) throws ErlModelException {
-        for (final IErlElement element : module
-                .getChildrenOfKind(Kind.TYPESPEC)) {
-            if (element instanceof IErlTypespec) {
-                final IErlTypespec t = (IErlTypespec) element;
-                if (t.getName().equals(name)) {
-                    return t;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static IErlFunction findFunction(final IErlModule module,
-            final ErlangFunction erlangFunction) throws ErlModelException {
-        for (final IErlElement element : module
-                .getChildrenOfKind(Kind.FUNCTION)) {
-            if (element instanceof IErlFunction) {
-                final IErlFunction f = (IErlFunction) element;
-                if (f.getFunction().equals(erlangFunction)) {
-                    return f;
-                }
             }
         }
         return null;
