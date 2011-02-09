@@ -17,6 +17,7 @@
     <shortcut
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRegression"
           description="run the BTerl regression tests for this project"
+          icon="icons/run_bterl.gif"
           id="org.erlide.test_support.regression"
           label="Test regression"
           modes="run">
@@ -40,6 +41,7 @@
     <shortcut
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRun"
           description="run the BTerl tests"
+          icon="icons/run_bterl.gif"
           id="org.erlide.test_support.run"
           label="BTerl test"
           modes="run">
@@ -64,6 +66,7 @@
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutCover"
           description="run the BTerl tests with cover information"
           id="org.erlide.test_support.cover"
+          icon="icons/run_bterl.gif"
           label="BTerl test with cover"
           modes="run">
         <contextualLaunch>
@@ -87,6 +90,7 @@
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutTrace"
           description="run the BTerl tests with trace enabled"
           id="org.erlide.test_support.trace"
+          icon="icons/run_bterl.gif"
           label="BTerl test with trace"
           modes="run">
         <contextualLaunch>
@@ -110,6 +114,7 @@
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRun"
           description="run the BTerl tests"
           id="org.erlide.test_support.debug"
+          icon="icons/run_bterl.gif"
           label="BTerl test"
           modes="debug">
         <contextualLaunch>
