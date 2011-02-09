@@ -558,7 +558,7 @@ public final class BuilderHelper {
         // matter much
 
         try {
-            if (br != null) {
+            if (br != null && br.exists()) {
                 try {
                     br.delete(true, null);
                 } catch (final Exception e) {
