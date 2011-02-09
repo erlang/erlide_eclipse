@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class ModuleStats extends StatsTreeObject {
 
-    private final List<LineResult> lineResults = new LinkedList<LineResult>(); // results
-                                                                               // per
-                                                                               // line
+    private final List<LineResult> lineResults = 
+    	new LinkedList<LineResult>(); 	// results per line
+    
 
     public List<LineResult> getLineResults() {
         return lineResults;
@@ -21,6 +21,11 @@ public class ModuleStats extends StatsTreeObject {
 
     public void addLine(final LineResult lr) {
         lineResults.add(lr);
+    }
+    
+    public void addChild(final String name, final IStatsTreeObject child) {
+    	
+    	super.addChild(name, child);
     }
 
 }

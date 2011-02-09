@@ -101,8 +101,20 @@ public class EditorTracker implements ICoverAnnotationMarker {
             clearAnnotations(currentEditor);
         }
     }
+    
+    public void addAnnotationsFragment(String filename, 
+    		int start, int end) {
+    	//TODO:
+    }
+    
+    public void removeAnnotationsFragment(String filename,
+    		int start, int end) {
+    	//TODO:
+    }
 
     public void annotateEditor(final IWorkbenchPart part) {
+    	
+    	//TODO:add boundaries for line numbers
 
         if (part instanceof ITextEditor) {
             final ITextEditor editor = (ITextEditor) part;
