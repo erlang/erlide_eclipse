@@ -3,47 +3,44 @@ package org.erlide.core.erlang;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
 
 public interface IOldErlangProjectProperties {
 
-    public abstract void load(final IEclipsePreferences node);
+    void store();
 
-    public abstract void store(final IEclipsePreferences node);
+    Collection<IPath> getIncludeDirs();
 
-    public abstract Collection<IPath> getIncludeDirs();
+    void setIncludeDirs(final Collection<IPath> includeDirs2);
 
-    public abstract void setIncludeDirs(final Collection<IPath> includeDirs2);
+    IPath getOutputDir();
 
-    public abstract IPath getOutputDir();
+    void setOutputDir(final IPath dir);
 
-    public abstract void setOutputDir(final IPath dir);
+    Collection<IPath> getSourceDirs();
 
-    public abstract Collection<IPath> getSourceDirs();
+    void setSourceDirs(final Collection<IPath> sourceDirs2);
 
-    public abstract void setSourceDirs(final Collection<IPath> sourceDirs2);
+    void copyFrom(final IOldErlangProjectProperties bprefs);
 
-    public abstract void copyFrom(final IOldErlangProjectProperties bprefs);
+    String getExternalIncludesFile();
 
-    public abstract String getExternalIncludesFile();
+    void setExternalIncludesFile(final String file);
 
-    public abstract void setExternalIncludesFile(final String file);
+    void setExternalModulesFile(final String externalModules);
 
-    public abstract void setExternalModulesFile(final String externalModules);
+    String getExternalModulesFile();
 
-    public abstract String getExternalModulesFile();
+    RuntimeInfo getRuntimeInfo();
 
-    public abstract RuntimeInfo getRuntimeInfo();
+    boolean hasSourceDir(final IPath fullPath);
 
-    public abstract boolean hasSourceDir(final IPath fullPath);
+    RuntimeVersion getRuntimeVersion();
 
-    public abstract RuntimeVersion getRuntimeVersion();
+    void preferenceChange(final PreferenceChangeEvent event);
 
-    public abstract void preferenceChange(final PreferenceChangeEvent event);
-
-    public abstract void setRuntimeVersion(final RuntimeVersion runtimeVersion);
+    void setRuntimeVersion(final RuntimeVersion runtimeVersion);
 
 }

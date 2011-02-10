@@ -283,4 +283,26 @@ public class ErlideOpen {
         return null;
     }
 
+    public static Collection<String> getHeadersInDir(final Backend backend,
+            final String directory) {
+        try {
+            final OtpErlangObject res = backend.call("erlide_open",
+                    "get_headers_in_dir", "s", directory);
+            if (Util.isOk(res)) {
+                final OtpErlangTuple t = (OtpErlangTuple) res;
+                final OtpErlangList l = (OtpErlangList) t.elementAt(1);
+                final List<String> result = Lists.newArrayListWithCapacity(l
+                        .arity());
+                for (final OtpErlangObject object : l) {
+                    result.add(Util.stringValue(object));
+                }
+                return result;
+            }
+        } catch (final BackendException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

@@ -117,9 +117,30 @@ get_lib_files(Dir) ->
             {ok, []}
     end.
 
+get_headers_in_dir(Dir) ->
+    case file:list_dir(Dir) of
+        {ok, Files} ->
+            {ok, filter_headers(Files)};
+        _ ->
+            {ok, []}
+    end.
+
 %%
 %% Local Functions
 %%
+
+filter_headers(Files) ->
+    filter_headers(Files, []).
+
+filter_headers([], Acc) ->
+    lists:reverse(Acc);
+filter_headers([Filename | Rest], Acc) ->
+    case filename:extension(Filename) of
+        ".hrl" ->
+            filter_headers(Rest, [Filename | Acc]);
+        _ ->
+            filter_headers(Rest, Acc)
+    end.
 
 get_lib_dir(Dir) ->
     B = filename:basename(Dir),

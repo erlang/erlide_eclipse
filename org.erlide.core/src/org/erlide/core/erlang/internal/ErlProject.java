@@ -57,6 +57,8 @@ import org.erlide.jinterface.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 
+import erlang.ErlideOpen;
+
 /**
  * Handle for an Erlang Project.
  * 
@@ -171,21 +173,33 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addExternals(final List<IErlElement> children) {
-        if (ModelUtils.isExternalFilesProject(getProject())) {
+        final IProject project = getProject();
+        if (ModelUtils.isExternalFilesProject(project)) {
             return;
         }
         final IErlModel model = ErlangCore.getModel();
         final String externalIncludes = model.getExternalIncludes(this);
         final String externalModules = model.getExternalModules(this);
-        if (externalIncludes.length() != 0 || externalModules.length() != 0) {
-            children.add(getExternalChild(externalIncludes, externalModules));
+        final IOldErlangProjectProperties props = getProperties();
+        final Collection<IPath> includeDirs = props.getIncludeDirs();
+        final List<String> projectIncludes = Lists.newArrayList();
+        for (final IPath path : includeDirs) {
+            if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
+                final Backend backend = BackendUtils
+                        .getBuildOrIdeBackend(getProject());
+                final Collection<String> headers = ErlideOpen.getHeadersInDir(
+                        backend, path.toPortableString());
+                for (final String header : headers) {
+                    projectIncludes.add(path.append(header).toPortableString());
+                }
+            }
         }
-    }
-
-    private IErlElement getExternalChild(final String externalIncludes,
-            final String externalModules) {
-        return new ErlExternalReferenceEntryList(this, "Externals",
-                "externals", externalIncludes, externalModules);
+        if (externalIncludes.length() != 0 || externalModules.length() != 0
+                || !projectIncludes.isEmpty()) {
+            children.add(new ErlExternalReferenceEntryList(this, "Externals",
+                    "externals", externalIncludes, projectIncludes,
+                    externalModules));
+        }
     }
 
     /**
