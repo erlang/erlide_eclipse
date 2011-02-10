@@ -162,7 +162,8 @@ public class ModelUtils {
         final List<IErlModule> result = Lists.newArrayList();
         final Collection<IErlModule> modules = project.getExternalModules();
         for (final IErlModule module : modules) {
-            if (module.getModuleName().equals(moduleName)) {
+            if (module.getModuleName().equals(moduleName)
+                    || module.getName().equals(moduleName)) {
                 result.add(module);
             }
         }
@@ -370,7 +371,17 @@ public class ModelUtils {
             final boolean checkAllProjects) throws CoreException {
         IErlModule module = getModuleByName(moduleName, modulePath, project);
         if (module == null) {
-            final String moduleFileName = moduleName + ".erl";
+            final String moduleFileName;
+            if (!ErlideUtil.hasModuleExtension(moduleName)) {
+                moduleFileName = moduleName + ".erl";
+            } else {
+                moduleFileName = moduleName;
+            }
+            final IErlModule module2 = getExternalModule(moduleFileName,
+                    project);
+            if (module2 != null) {
+                return module2;
+            }
             IResource r = null;
             if (project != null) {
                 r = ResourceUtil
