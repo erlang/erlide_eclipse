@@ -128,6 +128,7 @@ public class ModelUtilsTests {
         // ErlideTestUtils.createErlModule(projects[1],
         // "c.erl", "-module(c).\n-type cc() :: b:concat_thing().\n");
         moduleB.open(null);
+        projects[0].open(null);
         // moduleC.open(null);
         // when
         // looking for it
