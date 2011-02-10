@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,7 +27,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -219,9 +217,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
             final IOldErlangProjectProperties prefs = ErlangCore
                     .getProjectProperties(project);
             prefs.copyFrom(bprefs);
-            final IEclipsePreferences node = new ProjectScope(project)
-                    .getNode(ErlangPlugin.PLUGIN_ID);
-            prefs.store(node);
+            prefs.store();
 
             // TODO add code path to backend
             // final String out = project.getLocation().append(

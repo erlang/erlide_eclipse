@@ -66,7 +66,7 @@ public final class OldErlangProjectProperties implements
      * org.erlide.core.preferences.IOldErlangProjectProperties#load(org.eclipse
      * .core.runtime.preferences.IEclipsePreferences)
      */
-    public void load(final IEclipsePreferences node) {
+    private void load(final IEclipsePreferences node) {
         if (project == null) {
             return;
         }
@@ -123,15 +123,14 @@ public final class OldErlangProjectProperties implements
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.erlide.core.preferences.IOldErlangProjectProperties#store(org.eclipse
-     * .core.runtime.preferences.IEclipsePreferences)
+     * @see org.erlide.core.preferences.IOldErlangProjectProperties#store()
      */
-    public void store(final IEclipsePreferences node) {
+    public void store() {
         if (project == null) {
             return;
         }
-
+        final IEclipsePreferences node = new ProjectScope(project)
+                .getNode(ErlangPlugin.PLUGIN_ID);
         if ("true".equals(System.getProperty("erlide.newprops"))) {
             try {
                 final ErlProjectInfo npp = PropertiesUtils.convertOld(this);

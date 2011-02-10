@@ -24,7 +24,7 @@ c56ea0f http://www.assembla.com/spaces/erlide/tickets/682-dialyzer---multiple-pl
 713     dialyzer - specify functionality and use cases 
 725     files with other extensions cannot be opened in erlang editor  
 727     dialyzer - better gui for multiple plt files   
-
+745     navigation---use-include-path-for-external-includes
 
 List of user visible changes between 0.9.4 and 0.9.5 (20110122)
 

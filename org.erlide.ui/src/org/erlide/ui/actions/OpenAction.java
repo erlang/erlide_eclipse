@@ -264,8 +264,8 @@ public class OpenAction extends SelectionDispatchAction {
             return ModelUtils.findTypespec(module, res.getFun(),
                     model.getExternalIncludes(erlProject));
         }
-        final IErlFunction foundElement = ModelUtils.findFunction(module,
-                res.getFunction());
+        final IErlFunction foundElement = module
+                .findFunction(res.getFunction());
         if (foundElement != null) {
             return foundElement;
         }

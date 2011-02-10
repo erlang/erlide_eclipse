@@ -93,8 +93,7 @@ public class ErlModelUtils {
             return false;
         }
         module.open(null);
-        final IErlFunction function = ModelUtils.findFunction(module,
-                erlangFunction);
+        final IErlFunction function = module.findFunction(erlangFunction);
         if (function == null) {
             return false;
         }
