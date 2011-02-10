@@ -24,7 +24,8 @@ public class FunctionNode extends TreeNode {
      * @param arity
      *            function arity
      */
-    public FunctionNode(String moduleName, String functionName, int arity) {
+    public FunctionNode(final String moduleName, final String functionName,
+            final int arity) {
         this.moduleName = moduleName;
         this.functionName = functionName;
         this.arity = arity;

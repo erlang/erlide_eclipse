@@ -56,7 +56,7 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
                     .getSourceRange().getOffset()
                     + member.getSourceRange().getLength(), getEndLine() - 1,
                     document);
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             e.printStackTrace();
             return -1;
         }
@@ -90,7 +90,7 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
             range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
                     getEndCol(), member.getSourceRange().getOffset(), member
                             .getSourceRange().getLength());
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             e.printStackTrace();
             return null;
         }

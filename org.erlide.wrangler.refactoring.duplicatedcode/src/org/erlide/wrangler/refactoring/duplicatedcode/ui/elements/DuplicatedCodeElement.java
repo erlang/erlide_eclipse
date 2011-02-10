@@ -18,31 +18,32 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
  */
 public class DuplicatedCodeElement extends AbstractResultTreeParent {
 
-	String codePartId;
-	DuplicatedCodeInstanceElement defaultCodePart;
+    String codePartId;
+    DuplicatedCodeInstanceElement defaultCodePart;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param defaultInstance
-	 *            a particular element, which will be used to show the
-	 *            corresponding code part
-	 */
-	public DuplicatedCodeElement(DuplicatedCodeInstanceElement defaultInstance) {
-		this.defaultCodePart = defaultInstance;
-	}
+    /**
+     * Constructor
+     * 
+     * @param defaultInstance
+     *            a particular element, which will be used to show the
+     *            corresponding code part
+     */
+    public DuplicatedCodeElement(
+            final DuplicatedCodeInstanceElement defaultInstance) {
+        defaultCodePart = defaultInstance;
+    }
 
-	@Override
-	public String getName() {
-		return "\"" + defaultCodePart.getCodePartString() + "\"";
-	}
+    @Override
+    public String getName() {
+        return "\"" + defaultCodePart.getCodePartString() + "\"";
+    }
 
-	/**
-	 * Returns the default code part
-	 * 
-	 * @return default code part
-	 */
-	public DuplicatedCodeInstanceElement getCodePart() {
-		return defaultCodePart;
-	}
+    /**
+     * Returns the default code part
+     * 
+     * @return default code part
+     */
+    public DuplicatedCodeInstanceElement getCodePart() {
+        return defaultCodePart;
+    }
 }

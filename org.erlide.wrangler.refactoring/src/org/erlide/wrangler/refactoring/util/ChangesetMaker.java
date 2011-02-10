@@ -33,205 +33,204 @@ import org.incava.util.diff.Difference;
  */
 public final class ChangesetMaker {
 
-	static private File inFile;
-	// static private File outFile;
+    static private File inFile;
+    // static private File outFile;
 
-	static Diff algorithm;
-	static private ArrayList<Character> inFileCharArray;
-	static private ArrayList<Character> outFileCharArray;
-	static private List<Difference> differencesList;
+    static Diff algorithm;
+    static private ArrayList<Character> inFileCharArray;
+    static private ArrayList<Character> outFileCharArray;
+    static private List<Difference> differencesList;
 
-	/**
-	 * Converts the given char array to list.
-	 * 
-	 * @param charArray
-	 * @return list of chars
-	 */
-	@SuppressWarnings("boxing")
-	private static ArrayList<Character> convertArrayToArrayList(
-			final char[] charArray) {
-		ArrayList<Character> result = new ArrayList<Character>();
-		for (char c : charArray) {
-			result.add(c);
-		}
-		return result;
-	}
+    /**
+     * Converts the given char array to list.
+     * 
+     * @param charArray
+     * @return list of chars
+     */
+    @SuppressWarnings("boxing")
+    private static ArrayList<Character> convertArrayToArrayList(
+            final char[] charArray) {
+        final ArrayList<Character> result = new ArrayList<Character>();
+        for (final char c : charArray) {
+            result.add(c);
+        }
+        return result;
+    }
 
-	/**
-	 * Creates <code>Edit</code> object from a <code>Difference</code> object
-	 * 
-	 * @param diff
-	 * @return
-	 */
-	private static TextEdit createEditFromDiff(final Difference diff) {
-		TextEdit result = null;
+    /**
+     * Creates <code>Edit</code> object from a <code>Difference</code> object
+     * 
+     * @param diff
+     * @return
+     */
+    private static TextEdit createEditFromDiff(final Difference diff) {
+        TextEdit result = null;
 
-		// delete
-		if (diff.getAddedEnd() == -1 && diff.getDeletedEnd() != -1) {
-			result = new DeleteEdit(diff.getDeletedStart(), diff
-					.getDeletedEnd()
-					- diff.getDeletedStart() + 1);
-		}
-		// replace
-		else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() != -1) {
-			result = createReplaceEdit(diff.getAddedStart(),
-					diff.getAddedEnd(), diff.getDeletedStart(), diff
-							.getDeletedEnd());
-		}
-		// insert
-		else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() == -1) {
-			result = new InsertEdit(diff.getDeletedStart(), getString(diff
-					.getAddedStart(), diff.getAddedEnd()));
-		}
+        // delete
+        if (diff.getAddedEnd() == -1 && diff.getDeletedEnd() != -1) {
+            result = new DeleteEdit(diff.getDeletedStart(),
+                    diff.getDeletedEnd() - diff.getDeletedStart() + 1);
+        }
+        // replace
+        else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() != -1) {
+            result = createReplaceEdit(diff.getAddedStart(),
+                    diff.getAddedEnd(), diff.getDeletedStart(),
+                    diff.getDeletedEnd());
+        }
+        // insert
+        else if (diff.getAddedEnd() != -1 && diff.getDeletedEnd() == -1) {
+            result = new InsertEdit(diff.getDeletedStart(), getString(
+                    diff.getAddedStart(), diff.getAddedEnd()));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	// @SuppressWarnings("unchecked")
-	// static public ArrayList<TextEdit> createEdits(File in, File out)
-	// throws IOException {
-	// inFile = in;
-	// outFile = out;
-	//
-	// ArrayList<TextEdit> edits = new ArrayList<TextEdit>();
-	// inFileCharArray = null;
-	// outFileCharArray = null;
-	//
-	// inFileCharArray = splitFile(inFile);
-	// outFileCharArray = splitFile(outFile);
-	//
-	// algorithm = new Diff(inFileCharArray, outFileCharArray);
-	//
-	// differencesList = algorithm.diff();
-	// for (Difference d : differencesList) {
-	// edits.add(createEditFromDiff(d));
-	// }
-	//
-	// return edits;
-	// }
+    // @SuppressWarnings("unchecked")
+    // static public ArrayList<TextEdit> createEdits(File in, File out)
+    // throws IOException {
+    // inFile = in;
+    // outFile = out;
+    //
+    // ArrayList<TextEdit> edits = new ArrayList<TextEdit>();
+    // inFileCharArray = null;
+    // outFileCharArray = null;
+    //
+    // inFileCharArray = splitFile(inFile);
+    // outFileCharArray = splitFile(outFile);
+    //
+    // algorithm = new Diff(inFileCharArray, outFileCharArray);
+    //
+    // differencesList = algorithm.diff();
+    // for (Difference d : differencesList) {
+    // edits.add(createEditFromDiff(d));
+    // }
+    //
+    // return edits;
+    // }
 
-	/**
-	 * Reads the input file, compares with the given new string, then creates
-	 * Eclipse's <code>TextEdit</code>-s.
-	 * 
-	 * @param in
-	 *            original file
-	 * @param out
-	 *            modified file content
-	 * @return list of edit objects
-	 * @throws IOException
-	 *             if the file could not be read
-	 */
-	@SuppressWarnings("unchecked")
-	static public ArrayList<TextEdit> createEdits(final File in,
-			final String out) throws IOException {
-		inFile = in;
+    /**
+     * Reads the input file, compares with the given new string, then creates
+     * Eclipse's <code>TextEdit</code>-s.
+     * 
+     * @param in
+     *            original file
+     * @param out
+     *            modified file content
+     * @return list of edit objects
+     * @throws IOException
+     *             if the file could not be read
+     */
+    @SuppressWarnings("unchecked")
+    static public ArrayList<TextEdit> createEdits(final File in,
+            final String out) throws IOException {
+        inFile = in;
 
-		ArrayList<TextEdit> edits = new ArrayList<TextEdit>();
-		inFileCharArray = null;
-		outFileCharArray = null;
+        final ArrayList<TextEdit> edits = new ArrayList<TextEdit>();
+        inFileCharArray = null;
+        outFileCharArray = null;
 
-		inFileCharArray = readFile(inFile);
-		outFileCharArray = new ArrayList<Character>();
-		outFileCharArray = convertArrayToArrayList(out.toCharArray());
+        inFileCharArray = readFile(inFile);
+        outFileCharArray = new ArrayList<Character>();
+        outFileCharArray = convertArrayToArrayList(out.toCharArray());
 
-		algorithm = new Diff(inFileCharArray, outFileCharArray);
+        algorithm = new Diff(inFileCharArray, outFileCharArray);
 
-		differencesList = algorithm.diff();
-		for (Difference d : differencesList) {
-			edits.add(createEditFromDiff(d));
-		}
+        differencesList = algorithm.diff();
+        for (final Difference d : differencesList) {
+            edits.add(createEditFromDiff(d));
+        }
 
-		return edits;
-	}
+        return edits;
+    }
 
-	/**
-	 * Creates a <code>ReplaceEdit</code> object from the given parameters and
-	 * the stored input/output strings.
-	 * 
-	 * @param addedStart
-	 * @param addedEnd
-	 * @param deletedStart
-	 * @param deletedEnd
-	 * @return
-	 */
-	private static TextEdit createReplaceEdit(final int addedStart,
-			final int addedEnd, final int deletedStart, final int deletedEnd) {
-		TextEdit result = new MultiTextEdit();
+    /**
+     * Creates a <code>ReplaceEdit</code> object from the given parameters and
+     * the stored input/output strings.
+     * 
+     * @param addedStart
+     * @param addedEnd
+     * @param deletedStart
+     * @param deletedEnd
+     * @return
+     */
+    private static TextEdit createReplaceEdit(final int addedStart,
+            final int addedEnd, final int deletedStart, final int deletedEnd) {
+        final TextEdit result = new MultiTextEdit();
 
-		int addedLength = addedEnd - addedStart + 1;
-		int deletedLength = deletedEnd - deletedStart + 1;
-		int minLength = Math.min(addedLength, deletedLength);
+        final int addedLength = addedEnd - addedStart + 1;
+        final int deletedLength = deletedEnd - deletedStart + 1;
+        final int minLength = Math.min(addedLength, deletedLength);
 
-		if (deletedLength < addedLength) {
-			result.addChild(new InsertEdit(deletedStart + minLength, getString(
-					addedStart + minLength, addedEnd)));
-		}
+        if (deletedLength < addedLength) {
+            result.addChild(new InsertEdit(deletedStart + minLength, getString(
+                    addedStart + minLength, addedEnd)));
+        }
 
-		result.addChild(new ReplaceEdit(deletedStart, minLength, getString(
-				addedStart, addedStart + minLength - 1)));
+        result.addChild(new ReplaceEdit(deletedStart, minLength, getString(
+                addedStart, addedStart + minLength - 1)));
 
-		if (addedLength < deletedLength) {
-			result.addChild(new DeleteEdit(deletedStart + minLength,
-					deletedLength - minLength));
-		}
+        if (addedLength < deletedLength) {
+            result.addChild(new DeleteEdit(deletedStart + minLength,
+                    deletedLength - minLength));
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Gets the string from the new source file, according to the given
-	 * parameters.
-	 * 
-	 * @param from
-	 *            string's starting position
-	 * @param to
-	 *            string's ending position
-	 * @return
-	 */
-	private static String getString(final int from, final int to) {
-		String s = "";
-		// from, to+1
-		for (char c : outFileCharArray) {
-			s += c;
-		}
-		return s.substring(from, to + 1);
-	}
+    /**
+     * Gets the string from the new source file, according to the given
+     * parameters.
+     * 
+     * @param from
+     *            string's starting position
+     * @param to
+     *            string's ending position
+     * @return
+     */
+    private static String getString(final int from, final int to) {
+        String s = "";
+        // from, to+1
+        for (final char c : outFileCharArray) {
+            s += c;
+        }
+        return s.substring(from, to + 1);
+    }
 
-	/**
-	 * Read the given files into a list of <code>Character</code>-s.
-	 * 
-	 * @param file
-	 *            the file which is read
-	 * @return
-	 * @throws IOException
-	 *             if any i/o error occurs this exception is raised.
-	 */
-	@SuppressWarnings("boxing")
-	static private ArrayList<Character> readFile(final File file)
-			throws IOException {
+    /**
+     * Read the given files into a list of <code>Character</code>-s.
+     * 
+     * @param file
+     *            the file which is read
+     * @return
+     * @throws IOException
+     *             if any i/o error occurs this exception is raised.
+     */
+    @SuppressWarnings("boxing")
+    static private ArrayList<Character> readFile(final File file)
+            throws IOException {
 
-		ArrayList<Character> result = new ArrayList<Character>();
-		BufferedReader input = new BufferedReader(new FileReader(file));
+        final ArrayList<Character> result = new ArrayList<Character>();
+        final BufferedReader input = new BufferedReader(new FileReader(file));
 
-		try {
-			char c[] = new char[1];
-			while (input.read(c) > 0) {
-				/*
-				 * char[] chars = line.toCharArray(); for (int i = 0; i <
-				 * chars.length; ++i) { result.add(chars[i]); }
-				 * result.add('\n'); } input.close(); if (result.size() != 0) {
-				 * result.remove(result.size() - 1);
-				 */
-				result.add(c[0]);
-			}
-		} finally {
-			input.close();
-		}
-		return result;
-	}
+        try {
+            final char c[] = new char[1];
+            while (input.read(c) > 0) {
+                /*
+                 * char[] chars = line.toCharArray(); for (int i = 0; i <
+                 * chars.length; ++i) { result.add(chars[i]); }
+                 * result.add('\n'); } input.close(); if (result.size() != 0) {
+                 * result.remove(result.size() - 1);
+                 */
+                result.add(c[0]);
+            }
+        } finally {
+            input.close();
+        }
+        return result;
+    }
 
-	private ChangesetMaker() {
-	}
+    private ChangesetMaker() {
+    }
 
 }

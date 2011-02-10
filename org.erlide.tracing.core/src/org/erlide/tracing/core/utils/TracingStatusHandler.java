@@ -25,34 +25,45 @@ public final class TracingStatusHandler {
      * @param status
      *            status
      */
-    public static void handleStatus(TracingStatus status) {
+    public static void handleStatus(final TracingStatus status) {
         Status executionStatus = null;
         switch (status) {
         case ERROR:
-            Object errorObject = TraceBackend.getInstance().getErrorObject();
-            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error: " + errorObject, null);
+            final Object errorObject = TraceBackend.getInstance()
+                    .getErrorObject();
+            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Error: " + errorObject, null);
             break;
         case EXCEPTION_THROWN:
-            Exception e = (Exception) TraceBackend.getInstance().getErrorObject();
-            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error", e);
+            final Exception e = (Exception) TraceBackend.getInstance()
+                    .getErrorObject();
+            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "Error", e);
             break;
         case NO_ACTIVATED_NODES:
-            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No nodes were activated for tracing", null);
+            executionStatus = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    "No nodes were activated for tracing", null);
             break;
         case NOT_ALL_NODES_ACTIVATED:
-            StringBuilder builder = new StringBuilder("Following nodes were not activated for tracing:\n");
-            for (String node : TraceBackend.getInstance().getNotActivatedNodes()) {
+            final StringBuilder builder = new StringBuilder(
+                    "Following nodes were not activated for tracing:\n");
+            for (final String node : TraceBackend.getInstance()
+                    .getNotActivatedNodes()) {
                 builder.append(node).append("\n");
             }
-            executionStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, builder.toString(), null);
+            executionStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID,
+                    builder.toString(), null);
             break;
         case EMPTY:
-            executionStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, "No data to display", null);
+            executionStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID,
+                    "No data to display", null);
             break;
         case OK:
             break;
         }
-        if (executionStatus != null)
-            StatusManager.getManager().handle(executionStatus, StatusManager.SHOW);
+        if (executionStatus != null) {
+            StatusManager.getManager().handle(executionStatus,
+                    StatusManager.SHOW);
+        }
     }
 }

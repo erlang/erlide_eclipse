@@ -23,32 +23,32 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * 
  */
 public interface IResultParser {
-	/**
-	 * Indicates whether the RPC was successful
-	 * 
-	 * @return true if RPC is successful
-	 */
-	public boolean isSuccessful();
+    /**
+     * Indicates whether the RPC was successful
+     * 
+     * @return true if RPC is successful
+     */
+    public boolean isSuccessful();
 
-	/**
-	 * Gets the error message if there's any.
-	 * 
-	 * @return error message string
-	 */
-	public String getErrorMessage();
+    /**
+     * Gets the error message if there's any.
+     * 
+     * @return error message string
+     */
+    public String getErrorMessage();
 
-	/**
-	 * Parses the RPC
-	 * 
-	 * @param object
-	 *            rpc result
-	 */
-	public void parse(OtpErlangObject object);
+    /**
+     * Parses the RPC
+     * 
+     * @param object
+     *            rpc result
+     */
+    public void parse(OtpErlangObject object);
 
-	/**
-	 * Returns with the duplicates
-	 * 
-	 * @return list of duplicates
-	 */
-	public List<DuplicatedCodeElement> getDuplicates();
+    /**
+     * Returns with the duplicates
+     * 
+     * @return list of duplicates
+     */
+    public List<DuplicatedCodeElement> getDuplicates();
 }

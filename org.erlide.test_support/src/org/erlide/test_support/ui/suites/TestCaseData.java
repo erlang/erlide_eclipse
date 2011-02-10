@@ -6,7 +6,11 @@ public class TestCaseData {
 
     enum TestState {
         // order is important!
-        NOT_RUN, SUCCESS, SKIPPED, RUNNING, FAILED
+        NOT_RUN,
+        SUCCESS,
+        SKIPPED,
+        RUNNING,
+        FAILED
     }
 
     private final String suite;

@@ -32,68 +32,68 @@ import com.ericsson.otp.erlang.OtpErlangString;
  * @version %I%, %G%
  */
 public abstract class QuickCheckStateRefactoring extends
-		SimpleOneStepWranglerRefactoring {
+        SimpleOneStepWranglerRefactoring {
 
-	protected OtpErlangObject stateFuns;
-	protected int fieldCount = 0;
-	private String recordName;
-	private List<String> fieldsNames;
+    protected OtpErlangObject stateFuns;
+    protected int fieldCount = 0;
+    private String recordName;
+    private List<String> fieldsNames;
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		// FIXME: what kind of preconditions do I need?
-		IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
-				.getWranglerSelection();
-		StateDataToRecordRpcMessage message = runFirst(sel);
-		if (!message.isSuccessful()) {
-			return RefactoringStatus.createFatalErrorStatus(message
-					.getMessageString());
-		} else {
-			fieldCount = message.getFieldCount();
-			stateFuns = message.getStateFuns();
-			return new RefactoringStatus();
-		}
-	}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        // FIXME: what kind of preconditions do I need?
+        final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+                .getWranglerSelection();
+        final StateDataToRecordRpcMessage message = runFirst(sel);
+        if (!message.isSuccessful()) {
+            return RefactoringStatus.createFatalErrorStatus(message
+                    .getMessageString());
+        } else {
+            fieldCount = message.getFieldCount();
+            stateFuns = message.getStateFuns();
+            return new RefactoringStatus();
+        }
+    }
 
-	/**
-	 * @noreference This method is not intended to be referenced by clients.
-	 */
-	protected abstract StateDataToRecordRpcMessage runFirst(
-			IErlMemberSelection sel);
+    /**
+     * @noreference This method is not intended to be referenced by clients.
+     */
+    protected abstract StateDataToRecordRpcMessage runFirst(
+            IErlMemberSelection sel);
 
-	/**
-	 * Returns the count of fields which a new record may need
-	 * 
-	 * @return coutn of fields
-	 */
-	public int getRecordFieldCount() {
-		return fieldCount;
-	}
+    /**
+     * Returns the count of fields which a new record may need
+     * 
+     * @return coutn of fields
+     */
+    public int getRecordFieldCount() {
+        return fieldCount;
+    }
 
-	/**
-	 * Record data setter
-	 * 
-	 * @param name
-	 *            record name
-	 * @param fieldNames
-	 *            field names
-	 */
-	public void setRecordData(final String name, final List<String> fieldNames) {
-		this.recordName = name;
-		this.fieldsNames = fieldNames;
-	}
+    /**
+     * Record data setter
+     * 
+     * @param name
+     *            record name
+     * @param fieldNames
+     *            field names
+     */
+    public void setRecordData(final String name, final List<String> fieldNames) {
+        recordName = name;
+        fieldsNames = fieldNames;
+    }
 
-	protected String getRecordName() {
-		return recordName;
-	}
+    protected String getRecordName() {
+        return recordName;
+    }
 
-	protected OtpErlangList getFieldsName() {
-		ArrayList<OtpErlangString> f = new ArrayList<OtpErlangString>();
-		for (String s : fieldsNames) {
-			f.add(new OtpErlangString(s));
-		}
-		return new OtpErlangList(f.toArray(new OtpErlangString[0]));
+    protected OtpErlangList getFieldsName() {
+        final ArrayList<OtpErlangString> f = new ArrayList<OtpErlangString>();
+        for (final String s : fieldsNames) {
+            f.add(new OtpErlangString(s));
+        }
+        return new OtpErlangList(f.toArray(new OtpErlangString[0]));
 
-	}
+    }
 }

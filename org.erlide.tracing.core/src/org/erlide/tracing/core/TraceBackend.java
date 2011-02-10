@@ -589,7 +589,7 @@ public class TraceBackend {
      *            results set
      */
     public void setActiveResultSet(final TracingResultsNode results) {
-        this.activeResultSet = results;
+        activeResultSet = results;
     }
 
     public TracingResultsNode getActiveResultSet() {

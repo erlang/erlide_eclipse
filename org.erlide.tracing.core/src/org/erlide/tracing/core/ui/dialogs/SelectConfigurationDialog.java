@@ -12,7 +12,8 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
  */
 public class SelectConfigurationDialog extends ElementListSelectionDialog {
 
-    public SelectConfigurationDialog(Shell parent, ILabelProvider renderer) {
+    public SelectConfigurationDialog(final Shell parent,
+            final ILabelProvider renderer) {
         super(parent, renderer);
         setTitle("Select configuration");
         setEmptyListMessage("no configuration");

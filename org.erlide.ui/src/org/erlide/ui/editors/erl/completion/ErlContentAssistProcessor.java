@@ -104,7 +104,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     private static URL fgStyleSheet;
 
     enum Kinds {
-        DECLARED_FUNCTIONS, EXTERNAL_FUNCTIONS, VARIABLES, RECORD_FIELDS, RECORD_DEFS, MODULES, MACRO_DEFS, IMPORTED_FUNCTIONS, AUTO_IMPORTED_FUNCTIONS, ARITY_ONLY, UNEXPORTED_ONLY
+        DECLARED_FUNCTIONS,
+        EXTERNAL_FUNCTIONS,
+        VARIABLES,
+        RECORD_FIELDS,
+        RECORD_DEFS,
+        MODULES,
+        MACRO_DEFS,
+        IMPORTED_FUNCTIONS,
+        AUTO_IMPORTED_FUNCTIONS,
+        ARITY_ONLY,
+        UNEXPORTED_ONLY
     };
 
     // private static final int DECLARED_FUNCTIONS = 1;

@@ -22,29 +22,29 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 public class ClipboardAction extends Action {
-	private final Display display;
-	private String text;
+    private final Display display;
+    private String text;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param display
-	 *            actual SWT display
-	 */
-	public ClipboardAction(Display display) {
-		this.display = display;
-	}
+    /**
+     * Constructor
+     * 
+     * @param display
+     *            actual SWT display
+     */
+    public ClipboardAction(final Display display) {
+        this.display = display;
+    }
 
-	@Override
-	public void run() {
-		Clipboard cb = new Clipboard(display);
-		TextTransfer textTransfer = TextTransfer.getInstance();
-		cb.setContents(new Object[] { text },
-				new TextTransfer[] { textTransfer });
-	}
+    @Override
+    public void run() {
+        final Clipboard cb = new Clipboard(display);
+        final TextTransfer textTransfer = TextTransfer.getInstance();
+        cb.setContents(new Object[] { text },
+                new TextTransfer[] { textTransfer });
+    }
 
-	@Override
-	public void setText(String text) {
-		this.text = text;
-	}
+    @Override
+    public void setText(final String text) {
+        this.text = text;
+    }
 }

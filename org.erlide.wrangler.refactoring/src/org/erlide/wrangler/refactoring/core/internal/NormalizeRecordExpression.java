@@ -32,45 +32,46 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
  */
 public class NormalizeRecordExpression extends SimpleOneStepWranglerRefactoring {
 
-	private final boolean showDefault;
+    private final boolean showDefault;
 
-	/**
-	 * @param showDefault
-	 *            indicates whether the refactoring should include default
-	 *            fields
-	 */
-	public NormalizeRecordExpression(final boolean showDefault) {
-		this.showDefault = showDefault;
-	}
+    /**
+     * @param showDefault
+     *            indicates whether the refactoring should include default
+     *            fields
+     */
+    public NormalizeRecordExpression(final boolean showDefault) {
+        this.showDefault = showDefault;
+    }
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		IErlSelection sel = GlobalParameters.getWranglerSelection();
-		if (sel instanceof IErlMemberSelection) {
-			SelectionKind kind = sel.getKind();
-			if (kind == SelectionKind.FUNCTION_CLAUSE
-					|| kind == SelectionKind.FUNCTION)
-				return new RefactoringStatus();
-		}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
+        if (sel instanceof IErlMemberSelection) {
+            final SelectionKind kind = sel.getKind();
+            if (kind == SelectionKind.FUNCTION_CLAUSE
+                    || kind == SelectionKind.FUNCTION) {
+                return new RefactoringStatus();
+            }
+        }
 
-		return RefactoringStatus
-				.createFatalErrorStatus("Please select a record expression!");
-	}
+        return RefactoringStatus
+                .createFatalErrorStatus("Please select a record expression!");
+    }
 
-	@Override
-	public String getName() {
-		return "Normalize record expression";
-	}
+    @Override
+    public String getName() {
+        return "Normalize record expression";
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"normalise_record_expr_eclipse", "sxxxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartPos(),
-				new OtpErlangBoolean(this.showDefault), sel.getSearchPath(),
-				GlobalParameters.getTabWidth());
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "normalise_record_expr_eclipse", "sxxxi", sel.getFilePath(),
+                sel.getSelectionRange().getStartPos(),
+                new OtpErlangBoolean(showDefault), sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
 
-	}
+    }
 }

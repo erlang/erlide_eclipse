@@ -248,7 +248,7 @@ public class ErlangProjectImportWizardPage extends
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
                             copyFiles = copyProjectsIntoWorkspaceCheckbox
-                                            .getSelection();
+                                    .getSelection();
                             if (copyFiles) {
                                 enableButtonGroup(false);
                                 enableSourceGroup(true);

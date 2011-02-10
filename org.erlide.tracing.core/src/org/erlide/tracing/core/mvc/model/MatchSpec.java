@@ -18,25 +18,27 @@ public class MatchSpec implements Serializable {
     private OtpErlangObject msObject;
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || !o.getClass().equals(MatchSpec.class))
+    public boolean equals(final Object o) {
+        if (o == null || !o.getClass().equals(MatchSpec.class)) {
             return false;
+        }
         return functionString.equals(((MatchSpec) o).functionString);
     }
 
     @Override
     public int hashCode() {
-        if (functionString == null)
+        if (functionString == null) {
             return 0;
-        else
+        } else {
             return functionString.hashCode();
+        }
     }
 
     public String getFunctionString() {
         return functionString;
     }
 
-    public void setFunctionString(String functionString) {
+    public void setFunctionString(final String functionString) {
         this.functionString = functionString;
     }
 
@@ -44,7 +46,7 @@ public class MatchSpec implements Serializable {
         return msObject;
     }
 
-    public void setMsObject(OtpErlangObject msObject) {
+    public void setMsObject(final OtpErlangObject msObject) {
         this.msObject = msObject;
     }
 

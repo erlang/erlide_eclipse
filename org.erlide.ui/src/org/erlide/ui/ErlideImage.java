@@ -111,8 +111,7 @@ public enum ErlideImage {
                 final URL url = key.url();
                 descriptor = ImageDescriptor.createFromURL(url);
             } catch (final MalformedURLException e) {
-                descriptor = ImageDescriptor
-                        .getMissingImageDescriptor();
+                descriptor = ImageDescriptor.getMissingImageDescriptor();
             }
             registry.put(key.name(), descriptor);
         }

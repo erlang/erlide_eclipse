@@ -1,6 +1,5 @@
 package org.erlide.tracing.core;
 
-
 /**
  * Interface which should be implemented by every class which wants to be
  * notified about tracing or loading.

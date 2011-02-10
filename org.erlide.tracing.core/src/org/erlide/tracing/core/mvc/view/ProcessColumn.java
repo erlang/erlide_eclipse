@@ -15,7 +15,7 @@ public enum ProcessColumn {
     private final String name;
     private final int width;
 
-    private ProcessColumn(String name, int width) {
+    private ProcessColumn(final String name, final int width) {
         this.name = name;
         this.width = width;
     }
@@ -27,10 +27,11 @@ public enum ProcessColumn {
      * @param index
      * @return enum value
      */
-    public static ProcessColumn getByIndex(int index) {
-        for (ProcessColumn column : ProcessColumn.values()) {
-            if (column.ordinal() == index)
+    public static ProcessColumn getByIndex(final int index) {
+        for (final ProcessColumn column : ProcessColumn.values()) {
+            if (column.ordinal() == index) {
                 return column;
+            }
         }
         return null;
     }
