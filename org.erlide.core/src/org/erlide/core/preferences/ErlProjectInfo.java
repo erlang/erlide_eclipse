@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.erlide.jinterface.backend.RuntimeVersion;
+import org.erlide.backend.runtime.RuntimeVersion;
 
 import com.google.common.collect.Sets;
 
@@ -13,7 +13,7 @@ public class ErlProjectInfo {
     private final RuntimeVersion requiredRuntimeVersion;
     private final ErlProjectLayout layout;
 
-    private final Set<PathEntry> codePathEntries = Sets.newHashSet();
+    // private final Set<PathEntry> codePathEntries = Sets.newHashSet();
 
     private final Set<PathEntry> dependencies = Sets.newHashSet();
 
@@ -44,10 +44,10 @@ public class ErlProjectInfo {
     }
 
     public ErlProjectInfo addDependencies(final Collection<PathEntry> locations) {
-        final Collection<PathEntry> dependencies = getDependencies();
+        final Collection<PathEntry> theDependencies = getDependencies();
         for (final PathEntry loc : locations) {
-            if (!dependencies.contains(loc)) {
-                dependencies.add(loc);
+            if (!theDependencies.contains(loc)) {
+                theDependencies.add(loc);
             }
         }
         return new ErlProjectInfo(/* dependencies */);
@@ -55,9 +55,9 @@ public class ErlProjectInfo {
 
     public ErlProjectInfo removeDependencies(
             final Collection<PathEntry> locations) {
-        final Collection<PathEntry> dependencies = getDependencies();
+        final Collection<PathEntry> theDependencies = getDependencies();
         for (final PathEntry loc : locations) {
-            dependencies.remove(loc);
+            theDependencies.remove(loc);
         }
         return new ErlProjectInfo(/* dependencies */);
     }

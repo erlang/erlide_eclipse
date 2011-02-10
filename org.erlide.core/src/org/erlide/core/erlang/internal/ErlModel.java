@@ -24,14 +24,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -460,6 +458,11 @@ public class ErlModel extends Openable implements IErlModel {
             // Ok, if it's not found, we'll try to build it...
             element = findElement(file, true);
         }
+        // if (element == null) {
+        // final String path = file.getLocation().toPortableString();
+        // element = ErlangCore.getModelManager().getModuleFromFile(this,
+        // file.getName(), null, path, path);
+        // }
         return (IErlModule) element;
     }
 
@@ -509,10 +512,7 @@ public class ErlModel extends Openable implements IErlModel {
         props.setSourceDirs(dirs);
         dirs = findOtpIncludeDirs(new File(location.toString()));
         props.setIncludeDirs(dirs);
-
-        final IEclipsePreferences root = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        props.store(root);
+        props.store();
         p.open(null);
         return p;
     }
@@ -566,29 +566,29 @@ public class ErlModel extends Openable implements IErlModel {
                 for (final IErlElement child : parent.getChildren()) {
                     accept(child, visitor, flags, leafKind);
                 }
-                if (parent instanceof IErlProject) {
-                    final IErlProject project = (IErlProject) parent;
-                    if ((flags & IErlElement.VISIT_REFERENCED) != 0) {
-                        final IProject p = project.getProject();
-                        try {
-                            for (final IProject referenced : p
-                                    .getReferencedProjects()) {
-                                final IErlElement e = findElement(referenced);
-                                if (e instanceof IErlProject) {
-                                    final IErlProject ep = (IErlProject) e;
-                                    accept(ep, visitor, flags
-                                            & ~IErlElement.VISIT_REFERENCED,
-                                            leafKind);
-                                }
-                            }
-                        } catch (final CoreException e) {
-                            ErlLogger.warn(e);
-                        }
-                    }
-                    if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
-                        // FIXME how do we do that?
-                    }
-                }
+                // if (parent instanceof IErlProject) {
+                // final IErlProject project = (IErlProject) parent;
+                // if ((flags & IErlElement.VISIT_REFERENCED) != 0) {
+                // final IProject p = project.getProject();
+                // try {
+                // for (final IProject referenced : p
+                // .getReferencedProjects()) {
+                // final IErlElement e = findElement(referenced);
+                // if (e instanceof IErlProject) {
+                // final IErlProject ep = (IErlProject) e;
+                // accept(ep, visitor, flags
+                // & ~IErlElement.VISIT_REFERENCED,
+                // leafKind);
+                // }
+                // }
+                // } catch (final CoreException e) {
+                // ErlLogger.warn(e);
+                // }
+                // }
+                // if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
+                // // FIXME how do we do that?
+                // }
+                // }
             }
         }
     }

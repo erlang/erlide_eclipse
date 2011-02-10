@@ -10,9 +10,9 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendUtil;
+import org.erlide.jinterface.backend.ErlDebugConstants;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlDebugConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

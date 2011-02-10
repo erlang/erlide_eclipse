@@ -13,10 +13,12 @@ package org.erlide.core.erlang.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -277,10 +279,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
                     final int start = range.getOffset();
                     final int end = start + range.getLength();
                     if (start <= position && position <= end) {
-                        if (child instanceof IParent) {
-                            return child.getSourceElementAt(position);
-                        }
-                        return child;
+                        return child.getSourceElementAt(position);
                     }
                 }
             }
@@ -536,6 +535,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public List<IErlElement> getChildren() throws ErlModelException {
+        return Collections.unmodifiableList(Lists.newArrayList(fChildren));
+    }
+
+    protected List<IErlElement> internalGetChildren() {
         return fChildren;
     }
 
@@ -562,17 +565,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public IErlElement getChildNamed(final String name) {
-        if (this instanceof IParent) {
-            return getChildNamed(this, name);
-        }
-        return null;
+        return getChildNamed(this, name);
     }
 
     public IErlElement getChildWithResource(final IResource rsrc) {
-        if (this instanceof IParent) {
-            return getChildWithResource(this, rsrc);
-        }
-        return null;
+        return getChildWithResource(this, rsrc);
     }
 
     /**
@@ -615,7 +612,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         structureKnown = newStructureKnown;
     }
 
-    public void resourceChanged() {
+    public void resourceChanged(final IResourceDelta delta) {
         // FIXME is this enough? it will rebuild at next occasion, and modules
         // are handled with reconciles, containers children through add and
         // remove, but... e.g. name change of folder?

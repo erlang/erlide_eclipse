@@ -24,6 +24,7 @@ import org.erlide.runtime.debug.ErlangProcess;
 import org.erlide.runtime.debug.ErlangStackFrame;
 import org.erlide.runtime.debug.ErlangUninterpretedStackFrame;
 import org.erlide.ui.ErlideUIDebugImages;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
 /**
@@ -33,11 +34,6 @@ import org.erlide.ui.editors.util.EditorUtility;
 public class ErlDebugModelPresentation extends LabelProvider implements
         IDebugModelPresentation {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
-     */
     @Override
     public Image getImage(final Object element) {
         if (element instanceof ErlangUninterpretedStackFrame) {
@@ -47,29 +43,11 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return super.getImage(element);
     }
 
-    public ErlDebugModelPresentation() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.IDebugModelPresentation#setAttribute(java.lang.String
-     * , java.lang.Object)
-     */
     public void setAttribute(final String attribute, final Object value) {
         // TODO Auto-generated method stub
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.IDebugModelPresentation#getText(java.lang.Object)
-     */
     @Override
     public String getText(final Object element) {
         try {
@@ -131,11 +109,6 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return sb.toString();
     }
 
-    /**
-     * @param el
-     * @return
-     * @throws DebugException
-     */
     private String getErlangProcessText(final ErlangProcess el)
             throws DebugException {
         final StringBuilder sb = new StringBuilder();
@@ -159,23 +132,11 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return sb.toString();
     }
 
-    /**
-     * @param el
-     * @return
-     * @throws DebugException
-     */
     private String getTargetText(final ErlangDebugTarget el)
             throws DebugException {
         return el.getName() + " (backend)";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.IDebugModelPresentation#computeDetail(org.eclipse
-     * .debug.core.model.IValue, org.eclipse.debug.ui.IValueDetailListener)
-     */
     public void computeDetail(final IValue value,
             final IValueDetailListener listener) {
         String detail = "";
@@ -186,48 +147,18 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         listener.detailComputed(value, detail);
     }
 
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see
-    // org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-    // */
-    // @Override
-    // public void addListener(final ILabelProviderListener listener) {
-    // // TODO Auto-generated method stub
-    //
-    // }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-     */
     @Override
     public void dispose() {
         // TODO Auto-generated method stub
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang
-     * .Object, java.lang.String)
-     */
     @Override
     public boolean isLabelProperty(final Object element, final String property) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ISourcePresentation#getEditorInput(java.lang.Object)
-     */
     public IEditorInput getEditorInput(final Object element) {
         if (element instanceof IFile) {
             return new FileEditorInput((IFile) element);
@@ -249,16 +180,10 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.eclipse.debug.ui.ISourcePresentation#getEditorId(org.eclipse.ui.
-     * IEditorInput, java.lang.Object)
-     */
     public String getEditorId(final IEditorInput input, final Object element) {
         if (element instanceof IFile || element instanceof ILineBreakpoint
                 || element instanceof LocalFileStorage) {
-            return "org.erlide.ui.editors.erl.ErlangEditor";
+            return ErlangEditor.ERLANG_EDITOR_ID;
         }
         return null;
     }

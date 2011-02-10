@@ -35,6 +35,7 @@ import java.text.DecimalFormat;
  * must provide it yourself.
  * 
  */
+@SuppressWarnings("hiding")
 public class OtpOutputStream extends ByteArrayOutputStream {
     /** The default initial size of the stream. * */
     public static final int defaultInitialSize = 2048;

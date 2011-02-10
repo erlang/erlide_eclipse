@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ModelUtils;
 
@@ -33,8 +34,13 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
         if (externalModulePath == null) {
             return null;
         }
-        final IErlModule module = ModelUtils
-                .getModuleFromExternalModulePath(externalModulePath);
+        IErlModule module;
+        try {
+            module = ModelUtils
+                    .getModuleFromExternalModulePath(externalModulePath);
+        } catch (final ErlModelException e1) {
+            return null;
+        }
         if (module == null) {
             return null;
         }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl.outline;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -84,7 +83,10 @@ public abstract class OpenAndLinkWithEditorHelper {
      *            the viewer
      */
     public OpenAndLinkWithEditorHelper(final StructuredViewer viewer) {
-        Assert.isLegal(viewer != null);
+        if (viewer == null) {
+            throw new IllegalArgumentException(
+                    "viewer can't be null in OpenAndLinkWithEditorHelper");
+        }
         this.viewer = viewer;
         listener = new InternalListener();
         viewer.addPostSelectionChangedListener(listener);

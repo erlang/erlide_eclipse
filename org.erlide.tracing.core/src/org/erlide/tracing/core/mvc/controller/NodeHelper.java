@@ -33,7 +33,7 @@ public class NodeHelper {
      */
     public static boolean isExternal(String nodeName) {
         for (Backend backend : getBackends(false)) {
-            if (backend.getPeer().equals(nodeName))
+            if (backend.getFullNodeName().equals(nodeName))
                 return false;
         }
         return true;

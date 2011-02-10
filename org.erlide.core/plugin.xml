@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
-   <extension-point id="javaRpcStubs" name="javaRpcStubs" schema="schema/javaRpcStubs.exsd"/>
-   <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
-   <extension-point id="messageReporter" name="messageReporter" schema="schema/messageReporter.exsd"/>
-
      <extension
          id="erlnature"
          name="Erlang Nature"
@@ -120,7 +115,7 @@
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
+            delegate="org.erlide.runtime.launch.ErlangLaunchDelegate"
             id="org.erlide.core.launch.erlangProcess"
             modes="run, debug"
             name="Erlang application"
@@ -129,7 +124,7 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
       <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchConfigurationDelegate"
+            delegate="org.erlide.runtime.launch.ErlangLaunchDelegate"
             id="org.erlide.core.launch.internal"
             modes="run"
             name="internal"

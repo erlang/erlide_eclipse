@@ -10,346 +10,30 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlImport;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleMap;
-import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
-import org.erlide.core.erlang.SourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlangIncludeFile;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangTuple;
-
-import erlang.ErlideOpen;
-
 public class ErlModelUtils {
-
-    private static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
-            0);
-
-    public static List<IErlPreprocessorDef> getPreprocessorDefs(
-            final Backend b, final IProject project, final IErlModule module,
-            final IErlElement.Kind kind, final String externalIncludes)
-            throws CoreException, BackendException {
-        final List<IErlPreprocessorDef> res = new ArrayList<IErlPreprocessorDef>();
-        final List<IErlModule> modulesFound = new ArrayList<IErlModule>(1);
-        List<IErlModule> modulesWithIncludes = modulesFound;
-        modulesWithIncludes = getModulesWithIncludes(b, project, module,
-                externalIncludes, modulesFound);
-        for (final IErlModule m : modulesWithIncludes) {
-            res.addAll(m.getPreprocessorDefs(kind));
-        }
-        return res;
-    }
-
-    public static List<OtpErlangObject> getImportsAsList(final IErlModule mod) {
-        if (mod == null) {
-            return NO_IMPORTS;
-        }
-        final Collection<IErlImport> imports = mod.getImports();
-        if (imports.isEmpty()) {
-            return NO_IMPORTS;
-        }
-        final List<OtpErlangObject> result = new ArrayList<OtpErlangObject>(
-                imports.size());
-        for (final IErlImport i : imports) {
-            final List<ErlangFunction> functions = i.getFunctions();
-            final OtpErlangObject funsT[] = new OtpErlangObject[functions
-                    .size()];
-            int j = 0;
-            for (final ErlangFunction f : functions) {
-                funsT[j] = f.getNameArityTuple();
-                j++;
-            }
-            final OtpErlangTuple modFunsT = new OtpErlangTuple(
-                    new OtpErlangObject[] {
-                            new OtpErlangAtom(i.getImportModule()),
-                            new OtpErlangList(funsT) });
-            result.add(modFunsT);
-        }
-        return result;
-    }
-
-    public static IErlPreprocessorDef findPreprocessorDef(
-            final Backend backend, final IProject project,
-            final IErlModule module, final String definedName,
-            final IErlElement.Kind kind, final String externalIncludes)
-            throws CoreException, BackendException {
-        String unquoted = ErlideUtil.unquote(definedName);
-        final Set<String> names = new HashSet<String>(3);
-        if (kind == Kind.RECORD_DEF) {
-            while (names.add(unquoted)) {
-                unquoted = resolveMacroValue(unquoted, module);
-            }
-        } else {
-            names.add(unquoted);
-        }
-        names.add(definedName);
-        for (final String name : names) {
-            final IErlPreprocessorDef pd = internalFindPreprocessorDef(backend,
-                    project, module, name, kind, externalIncludes,
-                    new ArrayList<IErlModule>());
-            if (pd != null) {
-                return pd;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param project
-     * @param m
-     * @param definedName
-     * @param type
-     * @param externalIncludes
-     *            TODO
-     * @param modulesDone
-     * @return
-     * @throws CoreException
-     * @throws BackendException
-     */
-    private static IErlPreprocessorDef internalFindPreprocessorDef(
-            final Backend b, final IProject project, IErlModule module,
-            final String name, final IErlElement.Kind kind,
-            final String externalIncludes, final List<IErlModule> modulesDone)
-            throws CoreException, BackendException {
-        if (module == null) {
-            return null;
-        }
-        modulesDone.add(module);
-        module.open(null);
-        final IErlPreprocessorDef pd = module.findPreprocessorDef(name, kind);
-        if (pd != null) {
-            return pd;
-        }
-        final Collection<ErlangIncludeFile> includes = module
-                .getIncludedFiles();
-        for (final ErlangIncludeFile element : includes) {
-            if (module == null) {
-                continue;
-            }
-            final IResource resource = module.getResource();
-            IResource re = null;
-            if (resource != null) {
-                re = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(
-                                project, element.getFilenameLastPart(),
-                                PluginUtils
-                                        .getIncludePathFilterCreator(resource
-                                                .getParent()));
-            }
-            if (re instanceof IFile) {
-                module = ModelUtils.getModule((IFile) re);
-            } else {
-                module = getExternalInclude(b, project, externalIncludes,
-                        element);
-            }
-            if (module != null && !modulesDone.contains(module)) {
-                final IErlPreprocessorDef pd2 = internalFindPreprocessorDef(b,
-                        project, module, name, kind, externalIncludes,
-                        modulesDone);
-                if (pd2 != null) {
-                    return pd2;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param b
-     * @param project
-     * @param m
-     * @param modulesFound
-     * @return
-     * @throws CoreException
-     * @throws BackendException
-     */
-    private static List<IErlModule> getModulesWithIncludes(final Backend b,
-            final IProject project, final IErlModule m,
-            final String externalIncludes, final List<IErlModule> modulesFound)
-            throws CoreException, BackendException {
-        if (m == null) {
-            return null;
-        }
-        modulesFound.add(m);
-        m.open(null);
-        final Collection<ErlangIncludeFile> includes = m.getIncludedFiles();
-        for (final ErlangIncludeFile element : includes) {
-            final IResource re = ResourceUtil
-                    .recursiveFindNamedModuleResourceWithReferences(project,
-                            element.getFilenameLastPart(), PluginUtils
-                                    .getIncludePathFilterCreator(m
-                                            .getResource().getParent()));
-            final IErlModule included;
-            if (re instanceof IFile) {
-                included = ModelUtils.getModule((IFile) re);
-            } else {
-                included = getExternalInclude(b, project, externalIncludes,
-                        element);
-            }
-            if (included != null && !modulesFound.contains(included)) {
-                getModulesWithIncludes(b, project, included, externalIncludes,
-                        modulesFound);
-            }
-        }
-        return modulesFound;
-    }
-
-    public static boolean openPreprocessorDef(final Backend backend,
-            final IProject project, final IErlModule module, final String name,
-            final IErlElement.Kind kind, final String externalIncludes)
-            throws PartInitException, ErlModelException, CoreException,
-            BackendException {
-        return internalOpenPreprocessorDef(backend, project, module, name,
-                kind, externalIncludes, new ArrayList<IErlModule>());
-    }
-
-    /**
-     * @param backend
-     * @param project
-     * @param module
-     * @param definedName
-     * @param type
-     * @param findPreprocessorDef
-     *            TODO
-     * @throws CoreException
-     * @throws ErlModelException
-     * @throws PartInitException
-     * @throws BackendException
-     */
-    private static boolean internalOpenPreprocessorDef(final Backend backend,
-            final IProject project, final IErlModule module,
-            final String definedName, final IErlElement.Kind type,
-            final String externalIncludes, final List<IErlModule> modulesDone)
-            throws CoreException, ErlModelException, PartInitException,
-            BackendException {
-        if (module == null) {
-            return false;
-        }
-        modulesDone.add(module);
-        module.open(null);
-        final IErlPreprocessorDef pd = findPreprocessorDef(backend, project,
-                module, definedName, type, externalIncludes);
-        if (pd == null) {
-            final Collection<ErlangIncludeFile> includes = module
-                    .getIncludedFiles();
-            for (final ErlangIncludeFile element : includes) {
-                final String filenameLastPart = element.getFilenameLastPart();
-                final IResource resource = module.getResource();
-                final IContainer parent = resource.getParent();
-                final IResource re = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(
-                                project, filenameLastPart,
-                                PluginUtils.getIncludePathFilterCreator(parent));
-                final IErlModule m2;
-                if (re instanceof IFile) {
-                    m2 = ModelUtils.getModule((IFile) re);
-                } else {
-                    m2 = getExternalInclude(backend, project, externalIncludes,
-                            element);
-                }
-                if (m2 != null && !modulesDone.contains(m2)) {
-                    if (internalOpenPreprocessorDef(backend, project, m2,
-                            definedName, type, externalIncludes, modulesDone)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        if (pd != null) {
-            EditorUtility.openElementInEditor(pd, true);
-            return true;
-        }
-        return false;
-    }
-
-    private static IErlModule getExternalInclude(final Backend backend,
-            final IProject project, final String externalIncludes,
-            final ErlangIncludeFile element) throws BackendException,
-            CoreException {
-        String s = element.getFilename();
-        if (element.isSystemInclude()) {
-            s = ErlideOpen.getIncludeLib(backend, s);
-        } else {
-            s = ModelUtils.findIncludeFile(project, s, externalIncludes);
-        }
-        final IErlModule module = ModelUtils.openExternal(project, s);
-        return module;
-    }
-
-    public static String resolveMacroValue(final String definedName,
-            final IErlModule m) {
-        if ("?MODULE".equals(definedName)) {
-            return m.getModuleName();
-        }
-        final IErlPreprocessorDef def = m.findPreprocessorDef(
-                withoutInterrogationMark(definedName), Kind.MACRO_DEF);
-        if (def != null) {
-            final String extra = def.getExtra();
-            final int p = extra.indexOf(',');
-            if (p != -1) {
-                final String s = extra.substring(p + 1).trim();
-                if (s.length() > 0) {
-                    return s;
-                }
-            }
-        }
-        return definedName;
-    }
-
-    private static String withoutInterrogationMark(final String definedName) {
-        if (definedName.startsWith("?")) {
-            return definedName.substring(1);
-        }
-        return definedName;
-    }
 
     /**
      * Open an editor on the given module and select the given erlang function
@@ -369,41 +53,15 @@ public class ErlModelUtils {
      */
     public static boolean openExternalFunction(final String moduleName,
             final ErlangFunction function, final String path,
-            final IErlModule module, final IProject project,
+            final IErlModule module, final IErlProject project,
             final boolean checkAllProjects) throws CoreException {
-        final IErlModule module2 = findExternalModule(moduleName, path,
-                project, checkAllProjects);
+        final IErlModule module2 = ModelUtils.findExternalModule(moduleName,
+                path, project, checkAllProjects);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
             return openFunctionInEditor(function, editor);
         }
         return false;
-    }
-
-    public static IErlElement findExternalFunction(String moduleName,
-            final ErlangFunction erlangFunction, final String modulePath,
-            final IProject project, final boolean checkAllProjects,
-            final IErlModule module) {
-        try {
-            if (moduleName != null) {
-                moduleName = resolveMacroValue(moduleName, module);
-                final IErlModule module2 = findExternalModule(moduleName,
-                        modulePath, project, checkAllProjects);
-                if (module2 != null) {
-                    module2.open(null);
-                    final IErlFunction function = module2
-                            .findFunction(erlangFunction);
-                    if (function != null) {
-                        return function;
-                    }
-                    return module2;
-                }
-            }
-        } catch (final ErlModelException e) {
-        } catch (final CoreException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static void openElement(final IErlElement element)
@@ -416,139 +74,6 @@ public class ErlModelUtils {
             final ISourceRange sourceRange) throws PartInitException {
         final IEditorPart editor = EditorUtility.openInEditor(module);
         EditorUtility.revealInEditor(editor, sourceRange);
-    }
-
-    public static IErlElement findExternalType(final IErlModule module,
-            String moduleName, final String typeName, final String modulePath,
-            final IProject project, final boolean checkAllProjects) {
-        try {
-            moduleName = resolveMacroValue(moduleName, module);
-            final IErlModule module2 = findExternalModule(moduleName,
-                    modulePath, project, checkAllProjects);
-            if (module2 != null) {
-                module2.open(null);
-                return module2.findTypespec(typeName);
-            }
-        } catch (final ErlModelException e) {
-        } catch (final CoreException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static IErlModule findExternalModule(final String moduleName,
-            final String modulePath, final IProject project,
-            final boolean checkAllProjects) throws CoreException {
-        IErlModule module = getModuleByName(moduleName, modulePath, project);
-        if (module == null) {
-            final String moduleFileName = moduleName + ".erl";
-            IResource r = null;
-            if (project != null) {
-                r = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(
-                                project, moduleFileName,
-                                PluginUtils.getSourcePathFilterCreator());
-
-                if (r == null) {
-                    if (checkAllProjects) {
-                        final IWorkspaceRoot workspaceRoot = ResourcesPlugin
-                                .getWorkspace().getRoot();
-                        final IProject[] projects = workspaceRoot.getProjects();
-                        for (final IProject p : projects) {
-                            if (ErlideUtil.hasErlangNature(p)) {
-                                ErlLogger.debug("searching project %s",
-                                        p.getName());
-                                r = ResourceUtil.recursiveFindNamedResource(p,
-                                        moduleFileName,
-                                        PluginUtils.getSourcePathFilter(p));
-                                if (r != null) {
-                                    ErlLogger.debug("found %s", r);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (r == null) {
-                        module = ModelUtils.openExternal(project, modulePath);
-                    }
-                }
-            }
-            if (r instanceof IFile) {
-                module = ErlangCore.getModel().findModule((IFile) r);
-            }
-        }
-        return module;
-    }
-
-    private static IErlModule getModuleByName(final String moduleName,
-            final String modulePath, final IProject project) {
-        final IErlModuleMap modelMap = ErlangCore.getModelMap();
-        final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
-        for (final IErlModule module : modules) {
-            if (moduleInProject(module, project)) {
-                final IParent parent = module.getParent();
-                if (parent instanceof IErlElement) {
-                    final IErlElement element = (IErlElement) parent;
-                    if (element.getKind() != Kind.EXTERNAL) {
-                        return module;
-                    }
-                }
-            }
-        }
-        if (modulePath != null) {
-            final IErlModule module = modelMap.getModuleByPath(modulePath);
-            if (module != null) {
-                return module;
-            }
-        }
-        if (modules != null) {
-            if (modulePath != null) {
-                for (final IErlModule module : modules) {
-                    final String filePath = module.getFilePath();
-                    if (filePath != null && modulePath.equals(filePath)) {
-                        return module;
-                    }
-                }
-            }
-            for (final IErlModule module : modules) {
-                if (moduleInProject(module, project)) {
-                    return module;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static boolean moduleInProject(final IErlModule module,
-            final IProject project) {
-        final IErlProject project2 = module.getProject();
-        if (project == null) {
-            return true;
-        }
-        if (project2 == null) {
-            return false;
-        }
-        final IProject project3 = project2.getProject();
-        return project.equals(project3);
-    }
-
-    public static IErlModule getExternalModule(final String moduleName,
-            final IErlProject erlProject) throws CoreException {
-        final IProject project = erlProject != null ? erlProject.getProject()
-                : null;
-        final IErlModule module = getModuleByName(moduleName, null, project);
-        if (module != null) {
-            return module;
-        }
-        final IErlModel model = ErlangCore.getModel();
-        final String externalModules = model.getExternalModules(erlProject);
-        return getExternalModule(moduleName, externalModules, project);
-    }
-
-    public static IErlModule getExternalModule(final String moduleName,
-            final String externalModules, final IProject project)
-            throws CoreException {
-        return ModelUtils.findExternalModuleFromName(moduleName, project);
     }
 
     /**
@@ -568,8 +93,7 @@ public class ErlModelUtils {
             return false;
         }
         module.open(null);
-        final IErlFunction function = ModelUtils.findFunction(module,
-                erlangFunction);
+        final IErlFunction function = module.findFunction(erlangFunction);
         if (function == null) {
             return false;
         }
@@ -578,14 +102,15 @@ public class ErlModelUtils {
     }
 
     public static boolean openTypeInEditor(final String typeName,
-            final IEditorPart editor) throws CoreException {
+            final IEditorPart editor) throws CoreException, BackendException {
         final ErlangEditor erlangEditor = (ErlangEditor) editor;
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
             return false;
         }
         module.open(null);
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName);
+        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName,
+                ErlangCore.getModel().getExternalIncludes(module.getProject()));
         if (typespec == null) {
             return false;
         }
@@ -593,29 +118,20 @@ public class ErlModelUtils {
         return true;
     }
 
-    public static List<IErlModule> getModulesWithReferencedProjects(
-            final IErlProject project) throws CoreException {
-        final IErlModel model = ErlangCore.getModel();
-        final List<IErlModule> result = new ArrayList<IErlModule>();
-        if (project == null) {
-            return result;
-        }
-        project.open(null);
-        result.addAll(project.getModules());
-        for (final IProject p : project.getProject().getReferencedProjects()) {
-            final IErlProject ep = model.findProject(p);
-            if (ep != null) {
-                ep.open(null);
-                result.addAll(ep.getModules());
-            }
-        }
-        return result;
-    }
-
-    public static IErlModule getModule(final IEditorInput editorInput) {
+    public static IErlModule getModule(final IEditorInput editorInput)
+            throws CoreException {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
-            return ModelUtils.getModule(input.getFile());
+            final IFile file = input.getFile();
+            IErlModule module = ModelUtils.getModule(file);
+            if (module != null) {
+                return module;
+            }
+            final String path = file.getLocation().toPortableString();
+            module = ErlangCore.getModelManager().getModuleFromFile(
+                    ErlangCore.getModel(), file.getName(), null, path, path);
+            module.setResource(file);
+            return module;
         }
         if (editorInput instanceof ErlangExternalEditorInput) {
             final ErlangExternalEditorInput erlangExternalEditorInput = (ErlangExternalEditorInput) editorInput;
@@ -641,15 +157,7 @@ public class ErlModelUtils {
                 return module;
             }
         }
-        try {
-            return ModelUtils.openInExternalFilesProject(path);
-        } catch (final CoreException e) {
-        }
         return null;
-    }
-
-    public static String[] getPredefinedMacroNames() {
-        return new String[] { "MODULE", "LINE", "FILE" };
     }
 
     public static void openMFA(final String module, final String function,
@@ -665,33 +173,11 @@ public class ErlModelUtils {
     }
 
     public static void openModule(final String moduleName) throws CoreException {
-        final IErlModule module = findExternalModule(moduleName, null, null,
-                true);
+        final IErlModule module = ModelUtils.findExternalModule(moduleName,
+                null, null, true);
         if (module != null) {
             EditorUtility.openInEditor(module);
         }
-    }
-
-    public static ISourceRange findVariable(final Backend backend,
-            final ISourceRange range, final String variableName,
-            final String elementText) throws ErlModelException,
-            BadLocationException, OtpErlangRangeException {
-        final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,
-                variableName, elementText);
-        if (res2 != null) {
-            final int relativePos = ((OtpErlangLong) res2.elementAt(0))
-                    .intValue() - 1;
-            final int length = ((OtpErlangLong) res2.elementAt(1)).intValue();
-            final int start = relativePos + range.getOffset();
-            return new SourceRange(start, length);
-        }
-        return range;
-    }
-
-    public static boolean isTypeDefOrRecordDef(final IErlElement element) {
-        return element != null
-                && (element.getKind() == IErlElement.Kind.TYPESPEC || element
-                        .getKind() == IErlElement.Kind.RECORD_DEF);
     }
 
 }

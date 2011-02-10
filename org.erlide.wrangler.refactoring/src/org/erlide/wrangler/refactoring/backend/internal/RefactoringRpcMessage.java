@@ -31,43 +31,43 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
 
-	OtpErlangTuple resultTuple;
+    OtpErlangTuple resultTuple;
 
-	@Override
-	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
-			throws WranglerRpcParsingException {
-		this.resultTuple = resultTuple;
+    @Override
+    protected void parseRefactoringMessage(final OtpErlangTuple tuple)
+            throws WranglerRpcParsingException {
+        resultTuple = tuple;
 
-		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
-		if (resultTuple.elementAt(0).toString().equals("ok")) {
+        OtpErlangObject wranglerResult = tuple.elementAt(1);
+        if (tuple.elementAt(0).toString().equals("ok")) {
 
-			if (wranglerResult instanceof OtpErlangList) {
-				this.changedFiles = parseFileList((OtpErlangList) wranglerResult);
-				setSuccessful();
-				return;
-			}
-		} else {
-			OtpErlangString msg = (OtpErlangString) wranglerResult;
-			if (resultTuple.elementAt(0).toString().equals("warning")) {
-				setWarning(msg.stringValue());
-			} else if (resultTuple.elementAt(0).toString().equals("question")) {
-				setQuestion(msg.stringValue());
-			} else {
-				setUnsuccessful(msg.stringValue());
-			}
-			return;
-		}
+            if (wranglerResult instanceof OtpErlangList) {
+                this.changedFiles = parseFileList((OtpErlangList) wranglerResult);
+                setSuccessful();
+                return;
+            }
+        } else {
+            OtpErlangString msg = (OtpErlangString) wranglerResult;
+            if (tuple.elementAt(0).toString().equals("warning")) {
+                setWarning(msg.stringValue());
+            } else if (tuple.elementAt(0).toString().equals("question")) {
+                setQuestion(msg.stringValue());
+            } else {
+                setUnsuccessful(msg.stringValue());
+            }
+            return;
+        }
 
-		throw new WranglerRpcParsingException(resultTuple.toString());
+        throw new WranglerRpcParsingException(tuple.toString());
 
-	}
+    }
 
-	/**
-	 * Returns the raw result object from Wrangler
-	 * 
-	 * @return result from Wrangler
-	 */
-	public OtpErlangTuple getResultObject() {
-		return resultTuple;
-	}
+    /**
+     * Returns the raw result object from Wrangler
+     * 
+     * @return result from Wrangler
+     */
+    public OtpErlangTuple getResultObject() {
+        return resultTuple;
+    }
 }

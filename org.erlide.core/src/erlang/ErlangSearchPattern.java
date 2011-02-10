@@ -2,6 +2,7 @@ package erlang;
 
 import java.util.EnumSet;
 
+import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
@@ -223,11 +224,11 @@ public abstract class ErlangSearchPattern {
                     true);
         } else if (element instanceof IErlMacroDef) {
             final IErlMacroDef m = (IErlMacroDef) element;
-            final String unquoted = ErlideUtil.unquote(m.getDefinedName());
+            final String unquoted = StringUtils.unquote(m.getDefinedName());
             return new MacroPattern(unquoted, limitTo);
         } else if (element instanceof IErlRecordDef) {
             final IErlRecordDef r = (IErlRecordDef) element;
-            final String unquoted = ErlideUtil.unquote(r.getDefinedName());
+            final String unquoted = StringUtils.unquote(r.getDefinedName());
             return new RecordPattern(unquoted, limitTo);
         } else if (element instanceof IErlFunctionClause) {
             final IErlFunctionClause clause = (IErlFunctionClause) element;

@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlElementDelta;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElementDelta;
 import org.erlide.core.erlang.IErlFolder;
@@ -46,13 +47,16 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.IWorkingCopy;
-import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * The <code>ErlModelManager</code> manages instances of <code>IErlModel</code>.
@@ -164,18 +168,26 @@ public final class ErlModelManager implements IErlModelManager {
     }
 
     void remove(final IResource rsrc) {
-        final IErlElement e = erlangModel.findElement(rsrc);
-        if (e != null) {
-            final IParent p = e.getParent();
-            p.removeChild(e);
+        final IErlElement element = erlangModel.findElement(rsrc);
+        if (element != null) {
+            final IParent p = element.getParent();
+            p.removeChild(element);
+            if (element instanceof IOpenable) {
+                final IOpenable openable = (IOpenable) element;
+                try {
+                    openable.close();
+                } catch (final ErlModelException e) {
+                    ErlLogger.error(e);
+                }
+            }
         }
         // TODO should we make Erlidemodelevents and fire them?
     }
 
-    void change(final IResource rsrc) {
+    void change(final IResource rsrc, final IResourceDelta delta) {
         final IErlElement e = erlangModel.findElement(rsrc);
         if (e != null) {
-            e.resourceChanged();
+            e.resourceChanged(delta);
         }
         // TODO should we make Erlidemodelevents and fire them?
     }
@@ -211,7 +223,7 @@ public final class ErlModelManager implements IErlModelManager {
                 }
             }
         }
-        if (ErlideUtil.hasModuleExtension(file.getName())) {
+        if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
             return createModuleFrom(file, parent);
         }
         return null;
@@ -233,33 +245,13 @@ public final class ErlModelManager implements IErlModelManager {
     }
 
     public IErlModule createModuleFrom(final IFile file, final IParent parent) {
-        // ErlLogger.debug("createModuleFrom:: " + file + " " + project);
         if (file == null) {
             return null;
         }
-
-        // if (project == null) {
-        // project = createProject(file.getProject());
-        // }
-
-        // final String key = parent.getName() + "/" + file.getName();
-        // if (elements.containsKey(key)) {
-        // return (IErlModule) elements.get(key);
-        // }
-        final String ext = file.getFileExtension();
-        if (ErlideUtil.isModuleExtension(ext)) {
-            String initialText = null;
-            if (file.exists()) {
-                try {
-                    initialText = new String(
-                            CoreUtil.getResourceContentsAsCharArray(file));
-                } catch (final Exception e) {
-                    initialText = "";
-                }
-            }
-            final String name = file.getName();
-            final IErlModule module = new ErlModule(parent, name, initialText,
-                    file, file.getLocation().toPortableString(), true);
+        final String name = file.getName();
+        if (ErlideUtil.isErlangFileContentFileName(name)) {
+            final IErlModule module = new ErlModule(parent, name, null, file,
+                    file.getLocation().toPortableString(), true);
             if (parent != null) {
                 parent.addChild(module);
             }
@@ -356,63 +348,92 @@ public final class ErlModelManager implements IErlModelManager {
         return getDefault().getErlangModel();
     }
 
-    /**
-     * @see org.erlide.core.erlang.IErlModelManager#createModuleFrom(org.eclipse.core.resources.IFile)
-     */
-    public IErlModule createModuleFrom(final IFile file) {
-        return createModuleFrom(file, null);
-    }
-
     class ResourceChangeListener implements IResourceChangeListener {
         public void resourceChanged(final IResourceChangeEvent event) {
-            if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
-                return;
-            }
             final IResourceDelta rootDelta = event.getDelta();
-            final ArrayList<IResource> added = new ArrayList<IResource>();
-            final ArrayList<IResource> changed = new ArrayList<IResource>();
-            final ArrayList<IResource> removed = new ArrayList<IResource>();
-            final IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-                public boolean visit(final IResourceDelta delta) {
-                    if (verbose) {
-                        ErlLogger.debug("delta " + delta.getKind() + " for "
-                                + delta.getResource().getLocation());
+            final ArrayList<IResource> added = Lists.newArrayList();
+            final ArrayList<IResource> changed = Lists.newArrayList();
+            final ArrayList<IResource> removed = Lists.newArrayList();
+            final Map<IResource, IResourceDelta> changedDelta = Maps
+                    .newHashMap();
+            final IResourceDeltaVisitor visitor;
+            if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+                visitor = new IResourceDeltaVisitor() {
+                    public boolean visit(final IResourceDelta delta) {
+                        final IResource resource = delta.getResource();
+                        if (verbose) {
+                            ErlLogger.debug("delta " + delta.getKind()
+                                    + " for " + resource.getLocation());
+                        }
+                        final boolean erlangFile = resource.getType() == IResource.FILE
+                                && ErlideUtil
+                                        .isErlangFileContentFileName(resource
+                                                .getName());
+                        final boolean erlangProject = resource.getType() == IResource.PROJECT
+                                && ErlideUtil
+                                        .hasErlangNature((IProject) resource);
+                        final boolean erlangFolder = resource.getType() == IResource.FOLDER;
+                        // &&
+                        // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
+                        // IFolder)
+                        // resource);
+                        if (erlangFile || erlangProject || erlangFolder) {
+                            if (delta.getKind() == IResourceDelta.ADDED) {
+                                added.add(resource);
+                            }
+                            if (delta.getKind() == IResourceDelta.CHANGED) {
+                                changed.add(resource);
+                                changedDelta.put(resource, delta);
+                            }
+                            if (delta.getKind() == IResourceDelta.REMOVED) {
+                                removed.add(resource);
+                            }
+                        }
+                        return !erlangFile;
                     }
-                    final IResource resource = delta.getResource();
-                    final boolean erlangFile = resource.getType() == IResource.FILE
-                            && ErlideUtil
-                                    .hasModuleExtension(resource.getName());
-                    final boolean erlangProject = resource.getType() == IResource.PROJECT
-                            && ErlideUtil.hasErlangNature((IProject) resource);
-                    final boolean erlangFolder = resource.getType() == IResource.FOLDER;
-                    // &&
-                    // ErlideUtil.isOnSourcePathOrParentToFolderOnSourcePath((
-                    // IFolder)
-                    // resource);
-                    if (erlangFile || erlangProject || erlangFolder) {
-                        if (delta.getKind() == IResourceDelta.ADDED) {
-                            added.add(resource);
-                        }
-                        if (delta.getKind() == IResourceDelta.CHANGED) {
-                            changed.add(resource);
-                        }
-                        if (delta.getKind() == IResourceDelta.REMOVED) {
+                };
+            } else if (event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+                visitor = new IResourceDeltaVisitor() {
+
+                    public boolean visit(final IResourceDelta delta)
+                            throws CoreException {
+                        final IResource resource = delta.getResource();
+                        final boolean erlangProject = resource.getType() == IResource.PROJECT
+                                && ErlideUtil
+                                        .hasErlangNature((IProject) resource);
+                        if (erlangProject) {
                             removed.add(resource);
                         }
+                        return false;
                     }
-                    return !erlangFile;
+                };
+                final IResource resource = event.getResource();
+                final boolean erlangProject = resource.getType() == IResource.PROJECT
+                        && ErlideUtil.hasErlangNature((IProject) resource);
+                if (erlangProject) {
+                    removed.add(resource);
                 }
-            };
-            try {
-                rootDelta.accept(visitor);
-            } catch (final CoreException e) {
-                ErlLogger.warn(e);
+            } else {
+                visitor = new IResourceDeltaVisitor() {
+
+                    public boolean visit(final IResourceDelta delta)
+                            throws CoreException {
+                        return false;
+                    }
+                };
+            }
+            if (rootDelta != null) {
+                try {
+                    rootDelta.accept(visitor);
+                } catch (final CoreException e) {
+                    ErlLogger.warn(e);
+                }
             }
             for (final IResource rsrc : added) {
                 create(rsrc);
             }
             for (final IResource rsrc : changed) {
-                change(rsrc);
+                change(rsrc, changedDelta.get(rsrc));
             }
             // make sure we don't dispose trees before leaves...
             Collections.sort(removed, new Comparator<IResource>() {

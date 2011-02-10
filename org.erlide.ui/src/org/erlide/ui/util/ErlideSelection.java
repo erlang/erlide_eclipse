@@ -23,7 +23,7 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.util.Tuple;
+import org.erlide.backend.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
 
 /**
@@ -715,21 +715,18 @@ public class ErlideSelection {
             final String replacementString) {
         final ArrayList<Integer> ret = new ArrayList<Integer>();
 
-        int lineBreaks = 0;
         int ignoreNextNAt = -1;
 
         // we may have line breaks with \r\n, or only \n or \r
         for (int i = 0; i < replacementString.length(); i++) {
             final char c = replacementString.charAt(i);
             if (c == '\r') {
-                lineBreaks++;
                 ret.add(i);
                 ignoreNextNAt = i + 1;
 
             } else if (c == '\n') {
                 if (ignoreNextNAt != i) {
                     ret.add(i);
-                    lineBreaks++;
                 }
             }
         }

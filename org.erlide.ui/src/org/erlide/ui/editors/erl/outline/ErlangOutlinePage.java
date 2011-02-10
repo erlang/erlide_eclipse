@@ -13,6 +13,7 @@ package org.erlide.ui.editors.erl.outline;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
@@ -47,15 +48,14 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModelChangeListener;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -209,12 +209,12 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public void setInput(final IEditorInput editorInput) {
         // ErlLogger.log("> outline set input "+editorInput);
         fModule = null;
-        fModule = ErlModelUtils.getModule(editorInput);
         try {
+            fModule = ErlModelUtils.getModule(editorInput);
             if (fModule != null) {
                 fModule.open(null);
             }
-        } catch (final ErlModelException e) {
+        } catch (final CoreException e) {
         }
     }
 
@@ -418,7 +418,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             super(ActionMessages.ToggleLinkingAction_label);
             setDescription(ActionMessages.ToggleLinkingAction_description);
             setToolTipText(ActionMessages.ToggleLinkingAction_tooltip);
-            ErlideUIPluginImages.setLocalImageDescriptors(this, "synced.gif");
+            ErlideImage.setLocalImageDescriptors(this, "synced.gif");
             PlatformUI.getWorkbench().getHelpSystem()
                     .setHelp(this, IErlangHelpContextIds.LINK_EDITOR_ACTION);
             final IEclipsePreferences prefsNode = MemberFilterActionGroup

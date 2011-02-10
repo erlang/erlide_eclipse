@@ -25,7 +25,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.util.ModelUtils;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.dialogs.OpenModuleDialog;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -121,9 +121,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
                                 .getRoot()
                                 .findFilesForLocationURI(new URI(path));
                         for (final IFile con : cons) {
-                            if (con.getProject() != ModelUtils
-                                    .getExternalFilesProject()
-                                    || cons.length == 1) {
+                            if (cons.length == 1) {
                                 files.add(con);
                             }
                         }
@@ -134,7 +132,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
                         }
                         // } catch (final CoreException e) {
                     } catch (final URISyntaxException e) {
-                        e.printStackTrace();
+                        ErlLogger.error(e);
                     }
                 }
             }

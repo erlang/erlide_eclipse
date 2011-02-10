@@ -34,8 +34,8 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImportExport;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.ErlideUIPluginImages;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -154,8 +154,8 @@ public class MemberFilterActionGroup extends ActionGroup {
                     .setDescription(ActionMessages.MemberFilterActionGroup_hide_attributes_description);
             hideAttributes
                     .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_attributes_tooltip);
-            hideAttributes
-                    .setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_ATTRIBUTES);
+            hideAttributes.setImageDescriptor(ErlideImage.HIDE_ATTRIBUTES
+                    .getDescriptor());
             fFilterActions.add(hideAttributes);
         }
 
@@ -176,7 +176,8 @@ public class MemberFilterActionGroup extends ActionGroup {
             hideLocalFunctions
                     .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_local_functions_tooltip);
             hideLocalFunctions
-                    .setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_LOCAL_FUNCTIONS);
+                    .setImageDescriptor(ErlideImage.HIDE_LOCAL_FUNCTIONS
+                            .getDescriptor());
             fFilterActions.add(hideLocalFunctions);
         }
 
@@ -197,7 +198,8 @@ public class MemberFilterActionGroup extends ActionGroup {
             hideMacroRecordDefs
                     .setToolTipText(ActionMessages.MemberFilterActionGroup_hide_macro_record_defs_typespecs_tooltip);
             hideMacroRecordDefs
-                    .setImageDescriptor(ErlideUIPluginImages.DESC_HIDE_MACRO_RECORD_DEFS);
+                    .setImageDescriptor(ErlideImage.HIDE_MACRO_RECORD_DEFS
+                            .getDescriptor());
             fFilterActions.add(hideMacroRecordDefs);
         }
 

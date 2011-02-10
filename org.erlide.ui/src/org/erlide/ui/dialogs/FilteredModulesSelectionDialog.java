@@ -72,6 +72,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.jinterface.backend.util.PreferencesUtils;
@@ -640,7 +641,7 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
-            if (ResourceUtil.hasErlangExtension(resource)
+            if (ErlideUtil.isErlangFileContentFileName(resource.getName())
                     && !resource.isLinked()
                     && !resource.getResourceAttributes().isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {

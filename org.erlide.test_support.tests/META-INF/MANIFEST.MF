@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Support tests
+Bundle-SymbolicName: org.erlide.test_support.tests
+Bundle-Version: 0.4.0.qualifier
+Bundle-Vendor: erlide.org
+Fragment-Host: org.erlide.test_support
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.junit4

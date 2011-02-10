@@ -56,6 +56,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     private ITextDoubleClickStrategy doubleClickStrategy;
     private ICharacterPairMatcher fBracketMatcher;
     private ErlReconciler reconciler;
+    private ErlContentAssistProcessor contentAssistProcessor;
 
     /**
      * Default configuration constructor
@@ -129,7 +130,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
         final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-        reconciler = new ErlReconciler(strategy, true, true, editor.getPath());
+        final String path = editor != null ? editor.getPath() : null;
+        reconciler = new ErlReconciler(strategy, true, true, path);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setDelay(500);
         return reconciler;
@@ -138,24 +140,27 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IContentAssistant getContentAssistant(
             final ISourceViewer sourceViewer) {
-        if (getEditor() != null) {
-            final ContentAssistant asst = new ContentAssistant();
+        if (editor != null) {
+            final ContentAssistant contentAssistant = new ContentAssistant();
 
-            asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-                    sourceViewer, editor.getModule()),
+            contentAssistProcessor = new ErlContentAssistProcessor(
+                    sourceViewer, editor.getModule(), contentAssistant);
+            contentAssistProcessor.setToPrefs();
+            contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                     IDocument.DEFAULT_CONTENT_TYPE);
+            contentAssistant.enableAutoInsert(true);
+            contentAssistant.enablePrefixCompletion(false);
+            contentAssistant
+                    .setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
 
-            asst.enableAutoActivation(true);
-            asst.setAutoActivationDelay(500);
-            asst.enableAutoInsert(true);
-            asst.enablePrefixCompletion(false);
-            asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING);
+            contentAssistant
+                    .setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+            contentAssistant
+                    .setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+            contentAssistant
+                    .setInformationControlCreator(getInformationControlCreator(sourceViewer));
 
-            asst.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-            asst.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-            asst.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-
-            return asst;
+            return contentAssistant;
         }
         return null;
     }
@@ -174,7 +179,8 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 if (parent.getText().length() == 0
-                        && BrowserInformationControl.isAvailable(parent)) {
+                        && BrowserInformationControl.isAvailable(parent)
+                        && editor != null) {
                     final BrowserInformationControl info = new BrowserInformationControl(
                             parent, JFaceResources.DIALOG_FONT,
                             EditorsUI.getTooltipAffordanceString()) {
@@ -193,7 +199,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         };
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
         final Map map = super.getHyperlinkDetectorTargets(sourceViewer);
@@ -248,6 +254,10 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         }
 
         return "Press 'Tab' from proposal table or click for focus";
+    }
+
+    public ErlContentAssistProcessor getContentAssistProcessor() {
+        return contentAssistProcessor;
     }
 
 }

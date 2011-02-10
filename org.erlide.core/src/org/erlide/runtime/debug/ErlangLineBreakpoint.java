@@ -26,6 +26,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.ErlDebugConstants;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideDebug;
@@ -88,12 +89,12 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     /**
      * Installs this breakpoint
      * 
-     * @param target
+     * @param theTarget
      *            debug target
      */
-    public void install(final ErlangDebugTarget target) {
-        this.target = target;
-        if (target != null) {
+    public void install(final ErlangDebugTarget theTarget) {
+        target = theTarget;
+        if (theTarget != null) {
             createRequest(ErlDebugConstants.REQUEST_INSTALL);
         }
     }
@@ -154,9 +155,9 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         return -1;
     }
 
-    public void remove(final ErlangDebugTarget target) {
-        this.target = target;
-        if (target != null) {
+    public void remove(final ErlangDebugTarget theTarget) {
+        target = theTarget;
+        if (theTarget != null) {
             createRequest(ErlDebugConstants.REQUEST_REMOVE);
         }
     }

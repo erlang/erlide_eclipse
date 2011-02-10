@@ -611,7 +611,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
             public void widgetSelected(SelectionEvent e) {
                 for (Backend backend : NodeHelper.getBackends(true)) {
                     TracedNode node = new TracedNode();
-                    node.setNodeName(backend.getPeer());
+                    node.setNodeName(backend.getFullNodeName());
                     TraceBackend.getInstance().addTracedNode(node);
                 }
                 nodesTableViewer.refresh();
@@ -766,14 +766,14 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
-    public void finishLoadingFile(TracingStatus status) {
-        this.status = status;
+    public void finishLoadingFile(TracingStatus theStatus) {
+        this.status = theStatus;
         if (task != null) {
             task.finish();
         }
     }
 
-    public void finishLoadingTraces(TracingStatus status) {
+    public void finishLoadingTraces(TracingStatus theStatus) {
     }
 
     public void removeFile() {

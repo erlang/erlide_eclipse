@@ -90,7 +90,7 @@ public class ErlangProjectImportWizardPage extends
 
     // A boolean to indicate if the user has typed anything
     boolean entryChanged = false;
-    boolean copyFiles = false;
+    boolean copyFiles = ErlangProjectImportWizard.COPY_ONLY;
 
     // dialog store id constants
     private final static String STORE_SOURCE_NAMES_ID = "WizardFileSystemResourceImportPage1.STORE_SOURCE_NAMES_ID";//$NON-NLS-1$
@@ -236,30 +236,38 @@ public class ErlangProjectImportWizardPage extends
                 .setText(WizardMessages.FileImport_overwriteExisting);
         overwriteExistingResourcesCheckbox.setEnabled(false);
 
-        // copy projects into workspace
-        copyProjectsIntoWorkspaceCheckbox = new Button(optionsGroup, SWT.CHECK);
-        copyProjectsIntoWorkspaceCheckbox.setFont(optionsGroup.getFont());
-        copyProjectsIntoWorkspaceCheckbox
-                .setText(WizardMessages.FileImport_copyProjectIntoWorkspace);
-        copyProjectsIntoWorkspaceCheckbox
-                .addSelectionListener(new SelectionAdapter() {
-                    @Override
-                    public void widgetSelected(final SelectionEvent e) {
-                        copyFiles = copyProjectsIntoWorkspaceCheckbox
-                                .getSelection();
-                        if (copyFiles) {
-                            enableButtonGroup(false);
-                            enableSourceGroup(true);
-                            enableResourceTreeGroup(true);
-                            // setAllSelections(false);
-                        } else {
-                            // setAllSelections(tr);
-                            enableButtonGroup(false);
-                            enableResourceTreeGroup(true);
+        if (!ErlangProjectImportWizard.COPY_ONLY) {
+            // copy projects into workspace
+            copyProjectsIntoWorkspaceCheckbox = new Button(optionsGroup,
+                    SWT.CHECK);
+            copyProjectsIntoWorkspaceCheckbox.setFont(optionsGroup.getFont());
+            copyProjectsIntoWorkspaceCheckbox
+                    .setText(WizardMessages.FileImport_copyProjectIntoWorkspace);
+            copyProjectsIntoWorkspaceCheckbox
+                    .addSelectionListener(new SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(final SelectionEvent e) {
+                            copyFiles = copyProjectsIntoWorkspaceCheckbox
+                                            .getSelection();
+                            if (copyFiles) {
+                                enableButtonGroup(false);
+                                enableSourceGroup(true);
+                                enableResourceTreeGroup(true);
+                                // setAllSelections(false);
+                            } else {
+                                // setAllSelections(tr);
+                                enableButtonGroup(false);
+                                enableResourceTreeGroup(true);
+                            }
                         }
-                    }
-                });
-        // copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+                    });
+            // copyProjectsIntoWorkspaceCheckbox.setEnabled(false);
+        } else {
+            enableButtonGroup(false);
+            enableSourceGroup(true);
+            enableResourceTreeGroup(true);
+            // setAllSelections(false);
+        }
     }
 
     /**
@@ -509,7 +517,7 @@ public class ErlangProjectImportWizardPage extends
      * 
      * @return boolean
      */
-    public boolean finish(final String projectPath,
+    public boolean finish(final String theProjectPath,
             final List<Object> fileSystemObjects) {
         if (!ensureSourceIsValid()) {
             return false;
@@ -527,7 +535,7 @@ public class ErlangProjectImportWizardPage extends
                     @Override
                     protected void execute(final IProgressMonitor monitor)
                             throws InvocationTargetException, CoreException {
-                        linkToResources(projectPath, fileSystemObjects,
+                        linkToResources(theProjectPath, fileSystemObjects,
                                 new SubProgressMonitor(monitor, 1));
 
                         try {
@@ -582,7 +590,7 @@ public class ErlangProjectImportWizardPage extends
                                 .getResourceString("wizards.errors.projectfileerrordesc"));
     }
 
-    boolean linkToResources(final String projectPath,
+    boolean linkToResources(final String theProjectPath,
             final List<Object> fileSystemObjects, final IProgressMonitor monitor)
             throws InvocationTargetException, CoreException {
         final String prjName = getProjectName();
@@ -614,31 +622,29 @@ public class ErlangProjectImportWizardPage extends
                     File f = (File) fso;
                     for (;;) {
                         String path = f.getPath();
-                        if (path.equals(projectPath)) {
+                        if (path.equals(theProjectPath)) {
                             break;
                         }
                         path = f.getParent();
-                        if (path.equals(projectPath)) {
-                            final String name = f.getName();
-                            final IPath location = new Path(f.getAbsolutePath());
-                            IFile file = null;
-                            IFolder folder = null;
-                            IResource resource;
-                            final boolean directory = f.isDirectory();
-                            if (directory) {
-                                resource = folder = project.getFolder(name);
-                            } else {
-                                resource = file = project.getFile(name);
-                            }
+                        if (path.equals(theProjectPath)) {
                             final SubProgressMonitor subMonitor = new SubProgressMonitor(
                                     monitor, subTicks);
+                            final String name = f.getName();
+                            final IPath location = new Path(f.getAbsolutePath());
+                            IResource resource;
+                            final boolean isDirectory = f.isDirectory();
+                            if (isDirectory) {
+                                resource = project.getFolder(name);
+                            } else {
+                                resource = project.getFile(name);
+                            }
                             if (!resource.isLinked()) {
-                                if (directory) {
-                                    folder.createLink(location, IResource.NONE,
-                                            subMonitor);
+                                if (isDirectory) {
+                                    ((IFolder) resource).createLink(location,
+                                            IResource.NONE, subMonitor);
                                 } else {
-                                    file.createLink(location, IResource.NONE,
-                                            subMonitor);
+                                    ((IFile) resource).createLink(location,
+                                            IResource.NONE, subMonitor);
                                 }
                             } else {
                                 subMonitor.done();
@@ -924,7 +930,9 @@ public class ErlangProjectImportWizardPage extends
             // .getBoolean(STORE_CREATE_CONTAINER_STRUCTURE_ID);
             // createContainerStructureButton.setSelection(createStructure);
             // createOnlySelectedButton.setSelection(!createStructure);
-            copyProjectsIntoWorkspaceCheckbox.setSelection(copyFiles);
+            if (!ErlangProjectImportWizard.COPY_ONLY) {
+                copyProjectsIntoWorkspaceCheckbox.setSelection(copyFiles);
+            }
 
         }
     }
@@ -1132,9 +1140,9 @@ public class ErlangProjectImportWizardPage extends
      * @param map
      *            Map - key tree elements, values Lists of list elements
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    protected void updateSelections(@SuppressWarnings("rawtypes") final Map map) {
+    protected void updateSelections(final Map map) {
         super.updateSelections(map);
     }
 

@@ -2,20 +2,15 @@ package org.erlide.core.erlang.internal;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExternal;
-import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.BackendUtils;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.util.ErlLogger;
 
-import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Lists;
 
 import erlang.ErlideOpen;
@@ -23,13 +18,13 @@ import erlang.ErlideOpen;
 public class ErlExternalReferenceEntry extends Openable implements IErlExternal {
 
     private final String entry;
-    private final boolean isRoot;
+    private final boolean prebuilt;
 
     protected ErlExternalReferenceEntry(final IParent parent,
-            final String name, final String entry, final boolean isRoot) {
+            final String name, final String entry, final boolean prebuilt) {
         super(parent, name);
         this.entry = entry;
-        this.isRoot = isRoot;
+        this.prebuilt = prebuilt;
     }
 
     public Kind getKind() {
@@ -39,48 +34,37 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final Backend backend = BackendUtils
-                .getBuildOrIdeBackend(getErlProject().getProject());
-        final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
-        final List<IErlElement> children = getEntryChildren(this, entry,
-                isRoot, backend, pathVars, pm);
-        setChildren(children);
-        return true;
-    }
-
-    public static List<IErlElement> getEntryChildren(final IParent parent,
-            final String fileName, final boolean isRoot, final Backend backend,
-            final OtpErlangList pathVars, final IProgressMonitor pm)
-            throws ErlModelException {
-        ErlLogger.debug("reading external %s", fileName);
-        final List<String> external1 = ErlideOpen.getExternal1(backend,
-                fileName, pathVars, isRoot);
-        final List<IErlElement> children = Lists
-                .newArrayListWithCapacity(external1.size());
-        final IErlModelManager modelManager = ErlangCore.getModelManager();
-        for (final String path : external1) {
-            final String name = getNameFromExternalPath(path);
-            if (ErlideUtil.hasModuleExtension(path)) {
-                final IErlModule module = modelManager.getModuleFromFile(
-                        parent, name, null, path, path);
-                children.add(module);
-            } else if (ErlideUtil.hasErlideExternalExtension(path) || isRoot) {
-                final ErlExternalReferenceEntry child = new ErlExternalReferenceEntry(
-                        parent, name, path, false);
-                children.add(child);
-                child.open(pm);
+        if (prebuilt) {
+            // already done
+            return true;
+        }
+        final Backend backend = getBackend();
+        if (backend != null) {
+            final List<String> files = ErlideOpen.getLibFiles(backend, entry);
+            final List<IErlModule> children = Lists
+                    .newArrayListWithCapacity(files.size());
+            for (final String file : files) {
+                children.add(new ErlModule(this, getName(file), null, null,
+                        file, false));
             }
+            setChildren(children);
+            return true;
         }
-        return children;
+        return false;
     }
 
-    private static String getNameFromExternalPath(String path) {
-        int i = path.indexOf(".settings");
-        if (i > 2) {
-            path = path.substring(0, i - 1);
+    public Backend getBackend() {
+        final IParent parent = getParent();
+        if (parent instanceof IErlExternal) {
+            final IErlExternal external = (IErlExternal) parent;
+            return external.getBackend();
         }
-        i = path.lastIndexOf('/');
-        return path.substring(i + 1).replace("\\.erlidex", "");
+        return null;
+    }
+
+    private String getName(final String file) {
+        final IPath p = new Path(file);
+        return p.lastSegment();
     }
 
     @Override
@@ -102,15 +86,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return entry;
     }
 
-    public boolean hasModuleWithPath(final String path) {
-        final Backend backend = BackendUtils
-                .getBuildOrIdeBackend(getErlProject().getProject());
-        final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
-        return ErlideOpen.hasExternalWithPath(backend, entry, path, pathVars);
-    }
-
-    public boolean isRoot() {
-        return false; // isRoot;
+    public boolean isOTP() {
+        return false;
     }
 
 }

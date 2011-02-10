@@ -20,14 +20,20 @@
 %% API Functions
 %%
 
-dialyze(Files, Plt, Includes, FromSource) ->
-    ?D([Files, Plt, Includes]),
+dialyze(Files, Plts, Includes, FromSource) ->
+    ?D([Files, Plts, Includes]),
     From = case FromSource of
 	       true -> src_code;
 	       false -> byte_code
 	   end,
+    PltOption = case Plts of
+                    [Plt] ->
+                        {init_plt, Plt};
+                    _ ->
+                        {plts, Plts}
+                end,
     case catch dialyzer:run([{files_rec, Files}, 
-			     {init_plt, Plt}, 
+			     PltOption, 
 			     {check_plt, false},
 			     {from, From},
 			     {include_dirs, Includes}]) of

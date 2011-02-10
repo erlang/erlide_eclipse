@@ -125,4 +125,6 @@ public interface IErlProject extends IErlFolder {
 
     IOldErlangProjectProperties getProperties();
 
+    Collection<IErlModule> getExternalModules() throws CoreException;
+
 }

@@ -208,7 +208,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
          * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
          * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
          */
-        public void inputChanged(final Viewer viewer, final Object oldInput,
+        public void inputChanged(final Viewer theViewer, final Object oldInput,
                 final Object newInput) {
         }
     }

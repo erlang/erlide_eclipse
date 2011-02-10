@@ -75,7 +75,7 @@ public class ExtensionHelper {
      *            the extension we want to get
      * @return a list of classes created from those extensions
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     public static List getParticipants(final String type) {
         if (testingParticipants != null) {
             return testingParticipants.get(type);

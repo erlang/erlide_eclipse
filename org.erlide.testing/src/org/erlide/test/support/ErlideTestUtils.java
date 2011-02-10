@@ -19,12 +19,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.text.ErlangToolkit;
 
 import com.google.common.collect.Lists;
 
@@ -57,18 +59,34 @@ public class ErlideTestUtils {
 		final IProject project = erlProject.getProject();
 		final IFolder folder = project.getFolder("src");
 		final IFile file = folder.getFile(moduleName);
+		final File f = new File(file.getLocation().toOSString());
+		f.delete();
 		file.create(new ByteArrayInputStream(moduleContents.getBytes()), true,
 				null);
-		final IErlModule module = ErlangCore.getModel().findModule(file);
+		IErlModule module = ErlangCore.getModel().findModule(file);
+		if (module == null) {
+			final String path = file.getLocation().toPortableString();
+			module = ErlangCore.getModelManager().getModuleFromFile(
+					ErlangCore.getModel(), file.getName(), null, path, path);
+		}
 		modules.add(module);
 		return module;
 	}
 
 	public static void deleteModule(final IErlModule module)
 			throws CoreException {
+		final String scannerName = ErlangToolkit
+				.createScannerModuleName(module);
 		final IFile file = (IFile) module.getResource();
 		if (file != null) {
 			file.delete(true, null);
+		}
+		final IPath stateDir = ErlangPlugin.getDefault().getStateLocation();
+		final String cacheExts[] = { ".noparse", ".refs", ".scan" };
+		for (final String ext : cacheExts) {
+			final IPath p = stateDir.append(scannerName + ext);
+			final File f = new File(p.toOSString());
+			f.delete();
 		}
 		module.dispose();
 		modules.remove(module);
@@ -145,7 +163,7 @@ public class ErlideTestUtils {
 		}
 		projects.remove(project);
 		final IErlModel model = ErlangCore.getModel();
-		model.resourceChanged();
+		model.resourceChanged(null);
 		model.open(null);
 	}
 
@@ -179,6 +197,11 @@ public class ErlideTestUtils {
 						"test1");
 		modules.add(module);
 		return module;
+	}
+
+	public static IErlProject createTmpErlProject(final String projectName)
+			throws CoreException {
+		return createProject(getTmpPath(projectName), projectName);
 	}
 
 }

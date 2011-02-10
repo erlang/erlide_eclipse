@@ -76,6 +76,7 @@ package com.ericsson.otp.erlang;
  * </p>
  * 
  */
+@SuppressWarnings("hiding")
 public class OtpMbox {
     OtpNode home;
     OtpErlangPid self;

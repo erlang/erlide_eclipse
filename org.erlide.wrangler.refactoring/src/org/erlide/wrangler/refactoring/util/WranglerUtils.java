@@ -56,432 +56,432 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @version %I%, %G%
  */
 public final class WranglerUtils {
-	private WranglerUtils() {
-	}
+    private WranglerUtils() {
+    }
 
-	/**
-	 * Gets the column number from offset value
-	 * 
-	 * @param offset
-	 *            offset in the current editor
-	 * @param line
-	 *            line number in the current editor
-	 * @param doc
-	 *            current document, in which the offset is calculated
-	 * @return column number
-	 */
-	static public int calculateColumnFromOffset(final int offset,
-			final int line, final IDocument doc) {
-		int lineOffset;
-		try {
-			lineOffset = doc.getLineOffset(line);
-			int ret = (((offset - lineOffset) < 0) ? 0 : offset - lineOffset);
-			return ret + 1;
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-			return 0;
+    /**
+     * Gets the column number from offset value
+     * 
+     * @param offset
+     *            offset in the current editor
+     * @param line
+     *            line number in the current editor
+     * @param doc
+     *            current document, in which the offset is calculated
+     * @return column number
+     */
+    static public int calculateColumnFromOffset(final int offset,
+            final int line, final IDocument doc) {
+        int lineOffset;
+        try {
+            lineOffset = doc.getLineOffset(line);
+            int ret = (((offset - lineOffset) < 0) ? 0 : offset - lineOffset);
+            return ret + 1;
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+            return 0;
 
-		}
-	}
+        }
+    }
 
-	/**
-	 * Calculates offset from the given line and column number.
-	 * 
-	 * @param line
-	 *            line number
-	 * @param column
-	 *            column number
-	 * @param doc
-	 *            the document in which the position is given
-	 * @return offset in the document
-	 * @throws BadLocationException
-	 *             if the given position doesn't exist
-	 */
-	static public int calculateOffsetFromPosition(final int line,
-			final int column, final IDocument doc) throws BadLocationException {
-		return doc.getLineOffset(line - 1) + column - 1;
-	}
+    /**
+     * Calculates offset from the given line and column number.
+     * 
+     * @param line
+     *            line number
+     * @param column
+     *            column number
+     * @param doc
+     *            the document in which the position is given
+     * @return offset in the document
+     * @throws BadLocationException
+     *             if the given position doesn't exist
+     */
+    static public int calculateOffsetFromPosition(final int line,
+            final int column, final IDocument doc) throws BadLocationException {
+        return doc.getLineOffset(line - 1) + column - 1;
+    }
 
-	/**
-	 * Calculate offset from a position.
-	 * 
-	 * @param pos
-	 *            Position wrapped in an Erlang Tuple: {Line, Column}
-	 * @param doc
-	 *            the current document
-	 * @return offset in the document
-	 * @throws OtpErlangRangeException
-	 *             if the tuple is not well formed
-	 * @throws BadLocationException
-	 *             if the given position doesn't exist
-	 */
-	static public int calculateOffsetFromErlangPos(final OtpErlangTuple pos,
-			final IDocument doc) throws OtpErlangRangeException,
-			BadLocationException {
-		int line = ((OtpErlangLong) pos.elementAt(0)).intValue();
-		int column = ((OtpErlangLong) pos.elementAt(1)).intValue();
-		int offset = calculateOffsetFromPosition(line, column, doc);
-		return offset - 1;
-	}
+    /**
+     * Calculate offset from a position.
+     * 
+     * @param pos
+     *            Position wrapped in an Erlang Tuple: {Line, Column}
+     * @param doc
+     *            the current document
+     * @return offset in the document
+     * @throws OtpErlangRangeException
+     *             if the tuple is not well formed
+     * @throws BadLocationException
+     *             if the given position doesn't exist
+     */
+    static public int calculateOffsetFromErlangPos(final OtpErlangTuple pos,
+            final IDocument doc) throws OtpErlangRangeException,
+            BadLocationException {
+        int line = ((OtpErlangLong) pos.elementAt(0)).intValue();
+        int column = ((OtpErlangLong) pos.elementAt(1)).intValue();
+        int offset = calculateOffsetFromPosition(line, column, doc);
+        return offset - 1;
+    }
 
-	/**
-	 * Gets a string from a document.
-	 * 
-	 * @param range
-	 *            Position range
-	 * @param doc
-	 *            source document
-	 * @return requested string
-	 */
-	static public String getTextFromEditor(final IErlRange range,
-			final IDocument doc) {
-		try {
-			String s = doc.get(range.getOffset(), range.getLength());
-			return s;
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-		return "";
+    /**
+     * Gets a string from a document.
+     * 
+     * @param range
+     *            Position range
+     * @param doc
+     *            source document
+     * @return requested string
+     */
+    static public String getTextFromEditor(final IErlRange range,
+            final IDocument doc) {
+        try {
+            String s = doc.get(range.getOffset(), range.getLength());
+            return s;
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+        return "";
 
-	}
+    }
 
-	/**
-	 * Returns a list of the given project Erlang files.
-	 * 
-	 * @param project
-	 *            the containing project in which the scan is run
-	 * @return module names' list
-	 */
-	static public ArrayList<String> getModuleNames(final IProject project) {
-		ArrayList<IFile> erlangFiles = getModules(project);
+    /**
+     * Returns a list of the given project Erlang files.
+     * 
+     * @param project
+     *            the containing project in which the scan is run
+     * @return module names' list
+     */
+    static public ArrayList<String> getModuleNames(final IProject project) {
+        ArrayList<IFile> erlangFiles = getModules(project);
 
-		ArrayList<String> moduleNames = new ArrayList<String>();
-		for (IFile f : erlangFiles) {
-			moduleNames.add(removeExtension(f.getName()));
-		}
-		Collections.sort(moduleNames);
-		return moduleNames;
-	}
+        ArrayList<String> moduleNames = new ArrayList<String>();
+        for (IFile f : erlangFiles) {
+            moduleNames.add(removeExtension(f.getName()));
+        }
+        Collections.sort(moduleNames);
+        return moduleNames;
+    }
 
-	/**
-	 * Get modules in an Erlang project.
-	 * 
-	 * @param project
-	 *            the project in which the scan is run
-	 * @return module list
-	 */
-	static public ArrayList<IFile> getModules(final IProject project) {
-		ArrayList<IFile> erlangFiles = new ArrayList<IFile>();
-		try {
-			findModulesRecursively(project, erlangFiles);
-		} catch (CoreException e) {
-			e.printStackTrace();
-			return new ArrayList<IFile>();
-		}
-		return erlangFiles;
-	}
+    /**
+     * Get modules in an Erlang project.
+     * 
+     * @param project
+     *            the project in which the scan is run
+     * @return module list
+     */
+    static public ArrayList<IFile> getModules(final IProject project) {
+        ArrayList<IFile> erlangFiles = new ArrayList<IFile>();
+        try {
+            findModulesRecursively(project, erlangFiles);
+        } catch (CoreException e) {
+            e.printStackTrace();
+            return new ArrayList<IFile>();
+        }
+        return erlangFiles;
+    }
 
-	static private void findModulesRecursively(final IResource res,
-			final ArrayList<IFile> files) throws CoreException {
-		if (res instanceof IContainer) {
-			IContainer c = (IContainer) res;
-			for (IResource r : c.members()) {
-				findModulesRecursively(r, files);
-			}
-		} else if (res instanceof IFile) {
-			IFile file = (IFile) res;
-			if (isErlangFile(file)) {
-				files.add(file);
-			}
-		}
-	}
+    static private void findModulesRecursively(final IResource res,
+            final ArrayList<IFile> files) throws CoreException {
+        if (res instanceof IContainer) {
+            IContainer c = (IContainer) res;
+            for (IResource r : c.members()) {
+                findModulesRecursively(r, files);
+            }
+        } else if (res instanceof IFile) {
+            IFile file = (IFile) res;
+            if (isErlangFile(file)) {
+                files.add(file);
+            }
+        }
+    }
 
-	static public boolean isErlangFile(final IFile file) {
-		return "erl".equals(file.getFileExtension())
-				|| "hrl".equals(file.getFileExtension());
-	}
+    static public boolean isErlangFile(final IFile file) {
+        return "erl".equals(file.getFileExtension())
+                || "hrl".equals(file.getFileExtension());
+    }
 
-	/**
-	 * Removes the extension from a filename
-	 * 
-	 * @param fileName
-	 *            the file's name
-	 * @return file name without the extension
-	 */
-	static public String removeExtension(final String fileName) {
-		return fileName.substring(0, fileName.lastIndexOf("."));
-	}
+    /**
+     * Removes the extension from a filename
+     * 
+     * @param fileName
+     *            the file's name
+     * @return file name without the extension
+     */
+    static public String removeExtension(final String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf("."));
+    }
 
-	/**
-	 * Returns the selection's text from the active editor's text file.
-	 * 
-	 * @param start
-	 *            tuple with 2 element: line:int(), col:int()
-	 * @param end
-	 *            tuple with 2 element: line:int(), col:int()
-	 * @param doc
-	 *            the document in which the scan is run
-	 * @return selected text
-	 * @throws OtpErlangRangeException
-	 *             if the position tuple is not well formed
-	 * @throws BadLocationException
-	 *             if the given position does not exist
-	 */
-	static public String getTextSegment(final OtpErlangTuple start,
-			final OtpErlangTuple end, final IDocument doc)
-			throws OtpErlangRangeException, BadLocationException {
-		int startOffset = calculateOffsetFromErlangPos(start, doc);
-		int endOffset = calculateOffsetFromErlangPos(end, doc);
-		return getTextSegment(startOffset, endOffset, doc);
-	}
+    /**
+     * Returns the selection's text from the active editor's text file.
+     * 
+     * @param start
+     *            tuple with 2 element: line:int(), col:int()
+     * @param end
+     *            tuple with 2 element: line:int(), col:int()
+     * @param doc
+     *            the document in which the scan is run
+     * @return selected text
+     * @throws OtpErlangRangeException
+     *             if the position tuple is not well formed
+     * @throws BadLocationException
+     *             if the given position does not exist
+     */
+    static public String getTextSegment(final OtpErlangTuple start,
+            final OtpErlangTuple end, final IDocument doc)
+            throws OtpErlangRangeException, BadLocationException {
+        int startOffset = calculateOffsetFromErlangPos(start, doc);
+        int endOffset = calculateOffsetFromErlangPos(end, doc);
+        return getTextSegment(startOffset, endOffset, doc);
+    }
 
-	/**
-	 * Returns the selection's text from the active editor's text file.
-	 * 
-	 * @param startOffset
-	 *            start offset
-	 * @param endOffset
-	 *            end offset
-	 * @param doc
-	 *            selected document
-	 * @return selected text
-	 * @throws BadLocationException
-	 *             if the positions does not name a corrsssect place
-	 */
-	public static String getTextSegment(final int startOffset,
-			final int endOffset, final IDocument doc)
-			throws BadLocationException {
-		String s = doc.get(startOffset, endOffset - startOffset);
-		return s;
-	}
+    /**
+     * Returns the selection's text from the active editor's text file.
+     * 
+     * @param startOffset
+     *            start offset
+     * @param endOffset
+     *            end offset
+     * @param doc
+     *            selected document
+     * @return selected text
+     * @throws BadLocationException
+     *             if the positions does not name a corrsssect place
+     */
+    public static String getTextSegment(final int startOffset,
+            final int endOffset, final IDocument doc)
+            throws BadLocationException {
+        String s = doc.get(startOffset, endOffset - startOffset);
+        return s;
+    }
 
-	/*
-	 * static public String getTextSegment(int startLine, int startPos, int
-	 * endLine, int endPos, IFile file) throws BadLocationException { IDocument
-	 * doc = getDocument(file); return getTextSegment(startLine, startPos,
-	 * endLine, endPos, doc); }
-	 */
+    /*
+     * static public String getTextSegment(int startLine, int startPos, int
+     * endLine, int endPos, IFile file) throws BadLocationException { IDocument
+     * doc = getDocument(file); return getTextSegment(startLine, startPos,
+     * endLine, endPos, doc); }
+     */
 
-	protected static String getTextSegment(final int startLine,
-			final int startPos, final int endLine, final int endPos,
-			final IDocument doc) throws BadLocationException {
-		int startOffset = calculateOffsetFromPosition(startLine, startPos, doc);
-		int endOffset = calculateOffsetFromPosition(endLine, endPos, doc);
-		return getTextSegment(startOffset, endOffset, doc);
-	}
+    protected static String getTextSegment(final int startLine,
+            final int startPos, final int endLine, final int endPos,
+            final IDocument doc) throws BadLocationException {
+        int startOffset = calculateOffsetFromPosition(startLine, startPos, doc);
+        int endOffset = calculateOffsetFromPosition(endLine, endPos, doc);
+        return getTextSegment(startOffset, endOffset, doc);
+    }
 
-	/**
-	 * Highlight the given selection in the given editor
-	 * 
-	 * @param startOffset
-	 *            selection's starting offset
-	 * @param endOffset
-	 *            selection's ending offset
-	 * @param editor
-	 *            editor in which the highlightion should be done
-	 */
-	static public void highlightOffsetSelection(final int startOffset,
-			final int endOffset, final ITextEditor editor) {
-		highlightSelection(startOffset, endOffset - startOffset, editor);
-	}
+    /**
+     * Highlight the given selection in the given editor
+     * 
+     * @param startOffset
+     *            selection's starting offset
+     * @param endOffset
+     *            selection's ending offset
+     * @param editor
+     *            editor in which the highlightion should be done
+     */
+    static public void highlightOffsetSelection(final int startOffset,
+            final int endOffset, final ITextEditor editor) {
+        highlightSelection(startOffset, endOffset - startOffset, editor);
+    }
 
-	/**
-	 * Highlight the given selection in the given editor
-	 * 
-	 * @param offset
-	 *            selection's starting offset
-	 * @param length
-	 *            selection's length
-	 * @param editor
-	 *            editor in which the highlightion should be done
-	 */
-	static protected void highlightSelection(final int offset,
-			final int length, final ITextEditor editor) {
-		editor.setHighlightRange(offset, length, true);
-		editor.selectAndReveal(offset, length);
+    /**
+     * Highlight the given selection in the given editor
+     * 
+     * @param offset
+     *            selection's starting offset
+     * @param length
+     *            selection's length
+     * @param editor
+     *            editor in which the highlightion should be done
+     */
+    static protected void highlightSelection(final int offset,
+            final int length, final ITextEditor editor) {
+        editor.setHighlightRange(offset, length, true);
+        editor.selectAndReveal(offset, length);
 
-	}
+    }
 
-	/**
-	 * Highlight the given selection in the editor which contains the given
-	 * IErlMemberSelection
-	 * 
-	 * @param offset
-	 *            selection's starting offset
-	 * @param length
-	 *            selection's length
-	 * @param selection
-	 *            Selected Erlang member
-	 */
-	public static void highlightSelection(final int offset, final int length,
-			final IErlMemberSelection selection) {
-		ITextEditor editor = (ITextEditor) openFile(selection.getFile());
-		highlightSelection(offset, length, editor);
-	}
+    /**
+     * Highlight the given selection in the editor which contains the given
+     * IErlMemberSelection
+     * 
+     * @param offset
+     *            selection's starting offset
+     * @param length
+     *            selection's length
+     * @param selection
+     *            Selected Erlang member
+     */
+    public static void highlightSelection(final int offset, final int length,
+            final IErlMemberSelection selection) {
+        ITextEditor editor = (ITextEditor) openFile(selection.getFile());
+        highlightSelection(offset, length, editor);
+    }
 
-	/**
-	 * Highlights the given function clause
-	 * 
-	 * @param clause
-	 *            erlang function clause
-	 */
-	public static void highlightSelection(final IErlFunctionClause clause) {
-		int offset, length;
-		offset = clause.getNameRange().getOffset();
-		length = clause.getNameRange().getLength();
-		IErlModule module = clause.getModule();
-		IEditorPart editor = openFile((IFile) module.getResource());
-		highlightSelection(offset, length, (ITextEditor) editor);
+    /**
+     * Highlights the given function clause
+     * 
+     * @param clause
+     *            erlang function clause
+     */
+    public static void highlightSelection(final IErlFunctionClause clause) {
+        int offset, length;
+        offset = clause.getNameRange().getOffset();
+        length = clause.getNameRange().getLength();
+        IErlModule module = clause.getModule();
+        IEditorPart editor = openFile((IFile) module.getResource());
+        highlightSelection(offset, length, (ITextEditor) editor);
 
-	}
+    }
 
-	/**
-	 * Opens the given file with the Eclipse default editor
-	 * 
-	 * @param file
-	 *            file
-	 * @return the opened editor
-	 */
-	static public IEditorPart openFile(final IFile file) {
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
-		/*
-		 * IEditorDescriptor desc =
-		 * PlatformUI.getWorkbench().getEditorRegistry()
-		 * .getDefaultEditor(file.getName());
-		 */
+    /**
+     * Opens the given file with the Eclipse default editor
+     * 
+     * @param file
+     *            file
+     * @return the opened editor
+     */
+    static public IEditorPart openFile(final IFile file) {
+        IWorkbenchPage page = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage();
+        /*
+         * IEditorDescriptor desc =
+         * PlatformUI.getWorkbench().getEditorRegistry()
+         * .getDefaultEditor(file.getName());
+         */
 
-		try {
-			return IDE.openEditor(page, file);
-			// return page.openEditor(new FileEditorInput(file), desc.getId());
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-		return null;
+        try {
+            return IDE.openEditor(page, file);
+            // return page.openEditor(new FileEditorInput(file), desc.getId());
+        } catch (PartInitException e) {
+            e.printStackTrace();
+        }
+        return null;
 
-	}
+    }
 
-	/**
-	 * Returns the actual editor's document
-	 * 
-	 * @return document in the current editor
-	 */
-	static public IDocument getDocument() {
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
-		IEditorPart part = page.getActiveEditor();
-		ITextEditor editor = (ITextEditor) part;
-		IDocumentProvider dp = editor.getDocumentProvider();
-		IDocument doc = dp.getDocument(editor.getEditorInput());
-		return doc;
-	}
+    /**
+     * Returns the actual editor's document
+     * 
+     * @return document in the current editor
+     */
+    static public IDocument getDocument() {
+        IWorkbenchPage page = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage();
+        IEditorPart part = page.getActiveEditor();
+        ITextEditor editor = (ITextEditor) part;
+        IDocumentProvider dp = editor.getDocumentProvider();
+        IDocument doc = dp.getDocument(editor.getEditorInput());
+        return doc;
+    }
 
-	/**
-	 * Gets the document which belongs to a file
-	 * 
-	 * @param file
-	 *            corresponding file
-	 * @return document
-	 */
-	static public IDocument getDocument(final IFile file) {
-		return new Document(getFileContent(file));
-	}
+    /**
+     * Gets the document which belongs to a file
+     * 
+     * @param file
+     *            corresponding file
+     * @return document
+     */
+    static public IDocument getDocument(final IFile file) {
+        return new Document(getFileContent(file));
+    }
 
-	/**
-	 * Returns the corresponding IDocument object
-	 * 
-	 * @param editor
-	 *            editor which has the document
-	 * @return document is conatained by the editor
-	 */
-	static public IDocument getDocument(final ITextEditor editor) {
-		IFileEditorInput input = (IFileEditorInput) (editor.getEditorInput());
-		IDocument doc = editor.getDocumentProvider().getDocument(input);
+    /**
+     * Returns the corresponding IDocument object
+     * 
+     * @param editor
+     *            editor which has the document
+     * @return document is conatained by the editor
+     */
+    static public IDocument getDocument(final ITextEditor editor) {
+        IFileEditorInput input = (IFileEditorInput) (editor.getEditorInput());
+        IDocument doc = editor.getDocumentProvider().getDocument(input);
 
-		return doc;
-	}
+        return doc;
+    }
 
-	static private String getFileContent(final IFile file) {
-		try {
-			InputStream in = file.getContents();
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
-			int read = in.read(buf);
-			while (read > 0) {
-				out.write(buf, 0, read);
-				read = in.read(buf);
-			}
-			return out.toString();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
+    static private String getFileContent(final IFile file) {
+        try {
+            InputStream in = file.getContents();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            int read = in.read(buf);
+            while (read > 0) {
+                out.write(buf, 0, read);
+                read = in.read(buf);
+            }
+            return out.toString();
+        } catch (CoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 
-	/**
-	 * Gets IFile object from path string
-	 * 
-	 * @param pathString
-	 *            file path
-	 * @return IFile object
-	 */
-	static public IFile getFileFromPath(final String pathString) {
-		Path path = new Path(pathString);
-		return getFileFromPath(path);
-	}
+    /**
+     * Gets IFile object from path string
+     * 
+     * @param pathString
+     *            file path
+     * @return IFile object
+     */
+    static public IFile getFileFromPath(final String pathString) {
+        Path path = new Path(pathString);
+        return getFileFromPath(path);
+    }
 
-	/**
-	 * Gets an IFile object from Path
-	 * 
-	 * @param path
-	 *            file path
-	 * @return IFile object
-	 */
-	public static IFile getFileFromPath(final IPath path) {
-		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IFile[] files = // root.findFilesForLocation(path);
-		root.findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil
-				.toURI(path));
+    /**
+     * Gets an IFile object from Path
+     * 
+     * @param path
+     *            file path
+     * @return IFile object
+     */
+    public static IFile getFileFromPath(final IPath path) {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IFile[] files = // root.findFilesForLocation(path);
+        root.findFilesForLocationURI(org.eclipse.core.filesystem.URIUtil
+                .toURI(path));
 
-		if (files.length > 0)
-			return files[0];// else
-		else
-			return root.getFile(path);
-		/*
-		 * if (file != null) return file;
-		 */
-		/*
-		 * else throw new WranglerException("File not found!");
-		 */
-	}
+        if (files.length > 0)
+            return files[0];// else
+        else
+            return root.getFile(path);
+        /*
+         * if (file != null) return file;
+         */
+        /*
+         * else throw new WranglerException("File not found!");
+         */
+    }
 
-	/**
-	 * Notifies Erlide about the changed files.
-	 * 
-	 * @param changedFiles
-	 *            changed files
-	 */
-	public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
+    /**
+     * Notifies Erlide about the changed files.
+     * 
+     * @param changedFiles
+     *            changed files
+     */
+    public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
 
-		IErlModel model = ErlangCore.getModel();
-		for (ChangedFile f : changedFiles) {
-			IFile file;
-			try {
-				file = getFileFromPath(f.getNewPath());
-				IErlElement element = model.findElement(file);
-				IErlModule m = (IErlModule) element;
-				m.resourceChanged();
-				IEditorPart editor = GlobalParameters.getEditor();
-				if (editor instanceof ErlangEditor)
-					((ErlangEditor) editor).resetAndCacheScannerAndParser();
-				model.notifyChange(m);
+        IErlModel model = ErlangCore.getModel();
+        for (ChangedFile f : changedFiles) {
+            IFile file;
+            try {
+                file = getFileFromPath(f.getNewPath());
+                IErlElement element = model.findElement(file);
+                IErlModule m = (IErlModule) element;
+                m.resourceChanged(null);
+                IEditorPart editor = GlobalParameters.getEditor();
+                if (editor instanceof ErlangEditor)
+                    ((ErlangEditor) editor).resetAndCacheScannerAndParser();
+                model.notifyChange(m);
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-	}
+    }
 }

@@ -12,6 +12,7 @@ package org.erlide.core.erlang.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,7 +84,7 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        final IErlModuleMap erlModelMap = ErlangCore.getModelMap();
+        final IErlModuleMap erlModelMap = ErlangCore.getModuleMap();
         erlModelMap.putModule(this);
     }
 
@@ -230,7 +231,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public Collection<IErlComment> getComments() {
-        return comments;
+        return Collections.unmodifiableCollection(comments);
     }
 
     @Override
@@ -274,32 +275,26 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        try {
-            for (final IErlElement fun : getChildren()) {
-                if (fun instanceof IErlFunction) {
-                    final IErlFunction f = (IErlFunction) fun;
-                    if (f.getName().equals(function.name)
-                            && (function.arity < 0 || f.getArity() == function.arity)) {
-                        return f;
-                    }
+        for (final IErlElement fun : internalGetChildren()) {
+            if (fun instanceof IErlFunction) {
+                final IErlFunction f = (IErlFunction) fun;
+                if (f.getName().equals(function.name)
+                        && (function.arity < 0 || f.getArity() == function.arity)) {
+                    return f;
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlTypespec findTypespec(final String typeName) {
-        try {
-            for (final IErlElement child : getChildren()) {
-                if (child instanceof IErlTypespec) {
-                    final IErlTypespec typespec = (IErlTypespec) child;
-                    if (typespec.getName().equals(typeName)) {
-                        return typespec;
-                    }
+        for (final IErlElement child : internalGetChildren()) {
+            if (child instanceof IErlTypespec) {
+                final IErlTypespec typespec = (IErlTypespec) child;
+                if (typespec.getName().equals(typeName)) {
+                    return typespec;
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }
@@ -443,7 +438,7 @@ public class ErlModule extends Openable implements IErlModule {
     public void dispose() {
         disposeScanner();
         ErlangCore.getModelManager().removeModule(this);
-        ErlangCore.getModelMap().removeModule(this);
+        ErlangCore.getModuleMap().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependents() throws ErlModelException {

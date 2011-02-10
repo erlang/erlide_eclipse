@@ -87,6 +87,12 @@
       </page>
       <page
             category="org.erlide.ui.preferences.editor"
+            class="org.erlide.ui.prefs.plugin.CodeAssistPreferencePage"
+            id="org.erlide.ui.preferences.editor.codeassist"
+            name="Content Assist">
+      </page>
+      <page
+            category="org.erlide.ui.preferences.editor"
             class="org.erlide.ui.prefs.plugin.ColoringPreferencePage"
             id="org.erlide.ui.preferences.editor.coloring"
             name="Syntax coloring">
@@ -1210,6 +1216,9 @@
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
+               <adapt
+                     type="org.erlide.core.erlang.IErlModule">
+               </adapt>
             </or>
          </triggerPoints>
          <possibleChildren>
@@ -1805,7 +1814,7 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.core.messageReporter">
+         point="org.erlide.backend.messageReporter">
       <messageReporter
             class="org.erlide.ui.MessageReporter">
       </messageReporter>

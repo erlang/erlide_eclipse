@@ -49,25 +49,28 @@ final class ErlangConsoleSourceViewerConfiguration extends
     public IContentAssistant getContentAssistant(
             final ISourceViewer sourceViewer) {
 
-        final ContentAssistant asst = new ContentAssistant();
+        final ContentAssistant contentAssistant = new ContentAssistant();
 
         // TODO vi vill ha in en punkt h�r, men den f�r return till
         // styledtext o skickar allt f�r tidigt...
-        asst.setContentAssistProcessor(new ErlContentAssistProcessor(
-                sourceViewer, null), IDocument.DEFAULT_CONTENT_TYPE);
-
-        asst.enableAutoActivation(true);
-        asst.setAutoActivationDelay(500);
-        asst.enableAutoInsert(true);
-        asst.enablePrefixCompletion(false);
+        final ErlContentAssistProcessor contentAssistProcessor = new ErlContentAssistProcessor(
+                sourceViewer, null, contentAssistant);
+        contentAssistant.setContentAssistProcessor(contentAssistProcessor,
+                IDocument.DEFAULT_CONTENT_TYPE);
+        contentAssistProcessor.setToPrefs();
+        contentAssistant.enableAutoInsert(true);
+        contentAssistant.enablePrefixCompletion(false);
         // asst.setDocumentPartitioning(IErlangPartitions.ERLANG_PARTITIONING
         // );
 
-        asst.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-        asst.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-        asst.setInformationControlCreator(getInformationControlCreator(sourceViewer));
+        contentAssistant
+                .setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+        contentAssistant
+                .setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+        contentAssistant
+                .setInformationControlCreator(getInformationControlCreator(sourceViewer));
 
-        return asst;
+        return contentAssistant;
     }
 
     /*

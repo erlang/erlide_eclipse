@@ -26,79 +26,78 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  * @version %I%, %G%
  */
 public class ErlMemberSelection extends AbstractErlMemberSelection {
-	protected IErlElement element;
+    protected IErlElement element;
 
-	protected IErlMember member;
+    protected IErlMember member;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param element
-	 *            Erlang element - Erlide representation
-	 * @param file
-	 *            the file which contains the selection
-	 * @param document
-	 *            document which contains the selection
-	 */
-	public ErlMemberSelection(final IErlElement element, final IFile file,
-			final IDocument document) {
-		this.document = document;
-		this.file = file;
-		this.element = element;
-		if (element instanceof IErlMember) {
-			IErlMember member = (IErlMember) element;
-			this.member = member;
-		}
-	}
+    /**
+     * Constructor
+     * 
+     * @param element
+     *            Erlang element - Erlide representation
+     * @param file
+     *            the file which contains the selection
+     * @param document
+     *            document which contains the selection
+     */
+    public ErlMemberSelection(final IErlElement element, final IFile file,
+            final IDocument document) {
+        this.document = document;
+        this.file = file;
+        this.element = element;
+        if (element instanceof IErlMember) {
+            member = (IErlMember) element;
+        }
+    }
 
-	protected int getEndCol() {
-		try {
-			return WranglerUtils.calculateColumnFromOffset(member
-					.getSourceRange().getOffset()
-					+ member.getSourceRange().getLength(), getEndLine() - 1,
-					document);
-		} catch (ErlModelException e) {
-			e.printStackTrace();
-			return -1;
-		}
-	}
+    protected int getEndCol() {
+        try {
+            return WranglerUtils.calculateColumnFromOffset(member
+                    .getSourceRange().getOffset()
+                    + member.getSourceRange().getLength(), getEndLine() - 1,
+                    document);
+        } catch (ErlModelException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
-	protected int getEndLine() {
-		return member.getLineEnd() + 1;
-	}
+    protected int getEndLine() {
+        return member.getLineEnd() + 1;
+    }
 
-	public IErlElement getErlElement() {
-		return element;
-	}
+    public IErlElement getErlElement() {
+        return element;
+    }
 
-	protected int getStartCol() throws ErlModelException {
-		return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-				.getOffset(), getStartLine() - 1, document);
+    protected int getStartCol() throws ErlModelException {
+        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
+                .getOffset(), getStartLine() - 1, document);
 
-	}
+    }
 
-	protected int getStartLine() {
-		return member.getLineStart() + 1;
-	}
+    protected int getStartLine() {
+        return member.getLineStart() + 1;
+    }
 
-	public IErlRange getMemberRange() {
-		return getSelectionRange();
-	}
+    public IErlRange getMemberRange() {
+        return getSelectionRange();
+    }
 
-	public IErlRange getSelectionRange() {
-		IErlRange range;
-		try {
-			range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
-					getEndCol(), member.getSourceRange().getOffset(), member
-							.getSourceRange().getLength());
-		} catch (ErlModelException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return range;
-	}
+    public IErlRange getSelectionRange() {
+        IErlRange range;
+        try {
+            range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
+                    getEndCol(), member.getSourceRange().getOffset(), member
+                            .getSourceRange().getLength());
+        } catch (ErlModelException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return range;
+    }
 
-	public SelectionKind getDetailedKind() {
-		return getKind();
-	}
+    public SelectionKind getDetailedKind() {
+        return getKind();
+    }
 }

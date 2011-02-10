@@ -34,12 +34,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
 import org.erlide.core.erlang.internal.ErlModuleMap;
-import org.erlide.jinterface.backend.RuntimeInfo;
 import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.RuntimeInfoManager;
 
 /**
  * <p>
@@ -71,12 +71,8 @@ public final class ErlangCore {
         return getModelManager().getErlangModel();
     }
 
-    public static final IErlModuleMap getModelMap() {
+    public static final IErlModuleMap getModuleMap() {
         return ErlModuleMap.getDefault();
-    }
-
-    public static final RuntimeInfoManager getRuntimeInfoManager() {
-        return RuntimeInfoManager.getDefault();
     }
 
     public static final BackendManager getBackendManager() {
@@ -104,7 +100,7 @@ public final class ErlangCore {
      * 
      */
     public static void initializeRuntimesList() {
-        if (getRuntimeInfoManager().getDefaultRuntime() != null) {
+        if (BackendCore.getRuntimeInfoManager().getDefaultRuntime() != null) {
             return;
         }
         final String[] locations = {
@@ -124,11 +120,11 @@ public final class ErlangCore {
                         .getRoot();
                 final String location = wroot.getLocation().toPortableString();
                 rt.setWorkingDir(location);
-                getRuntimeInfoManager().addRuntime(rt);
+                BackendCore.getRuntimeInfoManager().addRuntime(rt);
             }
         }
-        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
-                getRuntimeInfoManager().getRuntimes());
+        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(BackendCore
+                .getRuntimeInfoManager().getRuntimes());
         Collections.sort(list, new Comparator<RuntimeInfo>() {
             public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
                 final int x = o2.getVersion().compareTo(o1.getVersion());
@@ -139,9 +135,10 @@ public final class ErlangCore {
             }
         });
         if (list.size() > 0) {
-            getRuntimeInfoManager().setDefaultRuntime(list.get(0).getName());
-            getRuntimeInfoManager().setErlideRuntime(
-                    getRuntimeInfoManager().getDefaultRuntime());
+            BackendCore.getRuntimeInfoManager().setDefaultRuntime(
+                    list.get(0).getName());
+            BackendCore.getRuntimeInfoManager().setErlideRuntime(
+                    BackendCore.getRuntimeInfoManager().getDefaultRuntime());
         }
     }
 

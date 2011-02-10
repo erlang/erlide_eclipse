@@ -165,16 +165,16 @@ public class GeneraliseFunctionRefactoring extends
 	 * Returns IErlRange, OtpErlangTuple pairs, which are represents the same
 	 * position in a module
 	 * 
-	 * @param positions
+	 * @param thePositions
 	 * @return
 	 */
 	protected HashMap<IErlRange, OtpErlangTuple> createPositionList(
-			final OtpErlangList positions) {
+			final OtpErlangList thePositions) {
 		try {
 			HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
 			IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
 					.getWranglerSelection();
-			for (OtpErlangObject o : positions.elements()) {
+			for (OtpErlangObject o : thePositions.elements()) {
 				// {{sl, sc}, {el,ec}}
 				OtpErlangTuple pos = (OtpErlangTuple) o;
 				ret.put(new ErlRange(new Range(pos), sel.getDocument()), pos);
@@ -257,12 +257,12 @@ public class GeneraliseFunctionRefactoring extends
 	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
 			throws CoreException, OperationCanceledException {
 		IErlSelection sel = GlobalParameters.getWranglerSelection();
-		IRefactoringRpcMessage message = run(sel);
-		if (message.isSuccessful()) {
-			changedFiles = message.getRefactoringChangeset();
+		IRefactoringRpcMessage theMessage = run(sel);
+		if (theMessage.isSuccessful()) {
+			changedFiles = theMessage.getRefactoringChangeset();
 			return new RefactoringStatus();
 		} else {
-			return RefactoringStatus.createFatalErrorStatus(message
+			return RefactoringStatus.createFatalErrorStatus(theMessage
 					.getMessageString());
 		}
 	}

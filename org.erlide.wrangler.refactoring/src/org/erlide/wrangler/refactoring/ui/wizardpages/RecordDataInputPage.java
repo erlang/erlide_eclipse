@@ -118,12 +118,12 @@ public class RecordDataInputPage extends MultiInputPage {
 
 	@Override
 	protected boolean isInputValid() {
-		IValidator validator = new AtomValidator();
-		boolean valid = validator.isValid(recordName.getText());
+		IValidator theValidator = new AtomValidator();
+		boolean valid = theValidator.isValid(recordName.getText());
 
 		ArrayList<String> fn = new ArrayList<String>();
 		for (Text t : fieldNames) {
-			valid = valid && validator.isValid(t.getText());
+			valid = valid && theValidator.isValid(t.getText());
 			fn.add(t.getText());
 			if (!valid)
 				break;

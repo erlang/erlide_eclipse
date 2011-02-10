@@ -38,26 +38,29 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendPlugin;
+import org.erlide.backend.epmd.EpmdWatchJob;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeVersion;
+import org.erlide.backend.util.MessageReporter;
+import org.erlide.backend.util.MessageReporter.ReporterPosition;
+import org.erlide.backend.util.Tuple;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.util.MessageReporter;
-import org.erlide.core.util.MessageReporter.ReporterPosition;
-import org.erlide.core.util.Tuple;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.BackendUtil;
+import org.erlide.jinterface.backend.CodeBundle;
+import org.erlide.jinterface.backend.CodeBundle.CodeContext;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
+import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.jinterface.backend.IBackendListener;
-import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeVersion;
-import org.erlide.jinterface.util.EpmdWatcher;
+import org.erlide.jinterface.epmd.EpmdWatcher;
+import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.jinterface.util.IEpmdListener;
-import org.erlide.runtime.backend.CodeBundle.CodeContext;
 import org.erlide.runtime.backend.internal.ManagedLauncher;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;
@@ -202,7 +205,7 @@ public final class BackendManager extends OtpNodeStatus implements
         return b;
     }
 
-    public Backend getBuildBackend(final IProject project)
+    public ErlideBackend getBuildBackend(final IProject project)
             throws BackendException {
         final IOldErlangProjectProperties prefs = ErlangCore
                 .getProjectProperties(project);
@@ -221,9 +224,10 @@ public final class BackendManager extends OtpNodeStatus implements
         ErlideBackend b = buildBackends.get(version);
         if (b == null) {
             info.setNodeName(version);
-            info.setNodeNameSuffix("_" + BackendUtils.getErlideNameTag());
+            info.setNodeNameSuffix("_"
+                    + org.erlide.backend.util.BackendUtils.getErlideNameTag());
             info.setCookie("erlide");
-            info.hasConsole(false);
+            info.setHasConsole(false);
             // will add workspace unique id
             final EnumSet<BackendOptions> options = EnumSet.of(
                     BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
@@ -231,9 +235,6 @@ public final class BackendManager extends OtpNodeStatus implements
             b = createInternalBackend(info, options, null);
             buildBackends.put(version, b);
         }
-        b.addProjectPath(project);
-
-        ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;
     }
 
@@ -307,19 +308,19 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     private void createIdeBackend() throws BackendException {
-        final RuntimeInfo info = RuntimeInfo.copy(ErlangCore
+        final RuntimeInfo info = RuntimeInfo.copy(BackendCore
                 .getRuntimeInfoManager().getErlideRuntime(), false);
         if (info != null) {
             final String defLabel = BackendUtil.getLabelProperty();
             if (defLabel != null) {
                 info.setNodeName(defLabel);
             } else {
-                final String nodeName = BackendUtils.getErlideNameTag()
-                        + "_erlide";
+                final String nodeName = org.erlide.backend.util.BackendUtils
+                        .getErlideNameTag() + "_erlide";
                 info.setNodeName(nodeName);
             }
             info.setCookie("erlide");
-            info.hasConsole(ErlideUtil.isDeveloper());
+            info.setHasConsole(ErlideUtil.isDeveloper());
             ErlLogger.debug("creating IDE backend %s", info.getName());
             final EnumSet<BackendOptions> options = EnumSet.of(
                     BackendOptions.AUTOSTART, BackendOptions.INTERNAL,
@@ -503,7 +504,7 @@ public final class BackendManager extends OtpNodeStatus implements
     public void loadCodepathExtensions() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
         final IExtensionPoint exPnt = reg.getExtensionPoint(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                BackendPlugin.PLUGIN_ID, "codepath");
         // TODO listen to changes to the registry!
 
         final IExtension[] extensions = exPnt.getExtensions();
@@ -550,5 +551,14 @@ public final class BackendManager extends OtpNodeStatus implements
     public void moduleLoaded(final Backend b, final IProject project,
             final String moduleName) {
         notifyBackendChange(b, BackendEvent.MODULE_LOADED, project, moduleName);
+    }
+
+    public ErlideBackend getBackendForLaunch(final ILaunch launch) {
+        for (final ErlideBackend backend : allBackends) {
+            if (backend.getLaunch() == launch) {
+                return backend;
+            }
+        }
+        return null;
     }
 }

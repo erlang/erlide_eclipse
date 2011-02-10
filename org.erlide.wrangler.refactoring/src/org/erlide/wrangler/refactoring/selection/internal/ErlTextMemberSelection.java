@@ -45,8 +45,8 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 			final ITextEditor editor) {
 		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
 		document = editor.getDocumentProvider().getDocument(input);
-		IFile file = input.getFile();
-		store(selection, file, document);
+		IFile theFile = input.getFile();
+		store(selection, theFile, document);
 	}
 
 	/**

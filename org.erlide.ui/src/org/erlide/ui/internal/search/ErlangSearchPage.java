@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogPage;
@@ -45,6 +42,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -52,22 +50,20 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.ui.util.ErlModelUtils;
 
 import com.google.common.collect.Lists;
 
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlangSearchPattern.SearchFor;
+import erlang.ErlSearchScope;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 
 public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
-    private static final ArrayList<IErlModule> EMPTY_EXTERNAL_SCOPE = Lists
-            .newArrayList();
-    private static final ArrayList<IResource> EMPTY_SCOPE = Lists
-            .newArrayList();
+    private static final ErlSearchScope EMPTY_EXTERNAL_SCOPE = new ErlSearchScope();
+    private static final ErlSearchScope EMPTY_SCOPE = new ErlSearchScope();
 
     private static class SearchPatternData {
         private final String pattern;
@@ -211,8 +207,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final SearchPatternData data = getPatternData();
         final int includeMask = getIncludeMask();
         // Setup search scope
-        Collection<IResource> scope = EMPTY_SCOPE;
-        Collection<IErlModule> externalScope = EMPTY_EXTERNAL_SCOPE;
+        ErlSearchScope scope = EMPTY_SCOPE;
+        ErlSearchScope externalScope = EMPTY_EXTERNAL_SCOPE;
         String scopeDescription = null;
         final boolean searchSources = (includeMask & SearchUtil.SEARCH_IN_SOURCES) != 0;
         final boolean searchExternals = (includeMask & SearchUtil.SEARCH_IN_EXTERNALS) != 0;
@@ -621,7 +617,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         final String scannerModuleName = ErlangToolkit
                                 .createScannerModuleName(module);
                         res = ErlideOpen.open(b, scannerModuleName, offset,
-                                ErlModelUtils.getImportsAsList(module), "",
+                                ModelUtils.getImportsAsList(module), "",
                                 ErlangCore.getModel().getPathVars());
                     } catch (final BackendException e) {
                         res = null;

@@ -68,7 +68,7 @@ public class FoldRemoteExpressionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
+	public IRefactoringRpcMessage runAlternative(final IErlSelection theSelection) {
 		return null;
 	}
 
@@ -133,8 +133,8 @@ public class FoldRemoteExpressionRefactoring extends
 	}
 
 	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
+	public IRefactoringRpcMessage run(final IErlSelection theSelection) {
+		IErlMemberSelection sel = (IErlMemberSelection) theSelection;
 		return WranglerBackendManager.getRefactoringBackend().call(
 				"fold_expr_1_eclipse", "sxxxi", sel.getFilePath(), syntaxTree,
 				getSelectedPos(), sel.getSearchPath(),

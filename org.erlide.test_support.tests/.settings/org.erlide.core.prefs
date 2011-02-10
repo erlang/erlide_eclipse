@@ -1,0 +1,5 @@
+#Fri Jan 28 19:24:30 CET 2011
+backend_version=R12B
+eclipse.preferences.version=1
+output_dir=ebin
+source_dirs=erl

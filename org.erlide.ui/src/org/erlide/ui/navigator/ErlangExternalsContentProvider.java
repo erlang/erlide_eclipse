@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.erlang.ErlModelException;
@@ -47,7 +48,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         try {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
-                parentElement = ErlangCore.getModel().findProject(project);
+                if (project.isOpen()) {
+                    parentElement = ErlangCore.getModel().findProject(project);
+                }
             }
             if (parentElement instanceof IErlModule) {
                 return erlangFileContentProvider.getChildren(parentElement);
@@ -78,7 +81,11 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
             if (parent == ErlangCore.getModel() && filePath != null) {
-                ModelUtils.findExternalModuleFromPath(filePath);
+                try {
+                    // FIXME shouldn't this call be assigned to something!?
+                    ModelUtils.findExternalModuleFromPath(filePath);
+                } catch (final CoreException e) {
+                }
                 parent = elt.getParent();
             }
             if (parent instanceof IErlModule) {
@@ -101,7 +108,9 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     public boolean hasChildren(Object element) {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
-            element = ErlangCore.getModel().findProject(project);
+            if (project.isOpen()) {
+                element = ErlangCore.getModel().findProject(project);
+            }
         }
         if (element instanceof IErlModule) {
             return erlangFileContentProvider.hasChildren(element);

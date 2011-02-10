@@ -2,16 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.jinterface; singleton:=true
-Bundle-Version: 0.9.5.qualifier
+Bundle-Version: 0.10.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.ericsson.otp.erlang,
- org.erlide.jinterface.backend,
- org.erlide.jinterface.backend.console,
- org.erlide.jinterface.backend.events,
- org.erlide.jinterface.backend.util,
- org.erlide.jinterface.rpc,
+ org.erlide.jinterface.epmd,
  org.erlide.jinterface.util
 Require-Bundle: org.erlide.libs
 Bundle-ActivationPolicy: lazy

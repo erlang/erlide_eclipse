@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.erlide.core.erlang.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
@@ -404,9 +406,9 @@ public final class ErlParser {
                         .elementAt(1);
                 final ErlRecordDef r = new ErlRecordDef(module, s);
                 setPos(r, pos, false);
-                final List<ErlRecordField> children = Lists
-                        .newArrayListWithCapacity(fields.arity());
                 if (fields != null) {
+                    final List<ErlRecordField> children = Lists
+                            .newArrayListWithCapacity(fields.arity());
                     for (final OtpErlangObject o : fields.elements()) {
                         final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
                         final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
@@ -424,8 +426,10 @@ public final class ErlParser {
                         setPos(field, posTuple, false);
                         children.add(field);
                     }
+                    r.setChildren(children);
+                } else {
+                    r.setChildren(new ArrayList<IErlElement>());
                 }
-                r.setChildren(children);
                 return r;
             }
         }

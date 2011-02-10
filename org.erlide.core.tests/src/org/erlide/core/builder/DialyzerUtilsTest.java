@@ -12,13 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlangCore;
@@ -95,7 +93,7 @@ public class DialyzerUtilsTest {
             // given
             // an erlang module in an erlang project
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             final String moduleName = "test.erl";
             final IErlModule erlModule = ErlideTestUtils
                     .createModule(erlProject, moduleName,
@@ -134,14 +132,26 @@ public class DialyzerUtilsTest {
         // http://www.assembla.com/spaces/erlide/tickets/608-dialyzer---navigate-to-external-includes-from-markers
         File externalFile = null;
         IErlProject erlProject = null;
+        File externalInclude = null;
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         try {
             // given
             // an erlang project and an external file not in any project
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.hrl";
             externalFile = ErlideTestUtils.createTmpFile(externalFileName,
                     "f([_ | _]=L ->\n    atom_to_list(L).\n");
+            externalInclude = ErlideTestUtils.createTmpFile(
+                    "external_includes", externalFile.getAbsolutePath());
+            // to getter coverage, let's delete External_Projects
+            final IProject extPrj = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(ModelUtils.EXTERNAL_FILES_PROJECT_NAME);
+            if (extPrj != null) {
+                extPrj.delete(true, null);
+                // extPrj.close(null); // let's close it, too
+            }
+            MarkerUtils.removeDialyzerMarkers(root);
             // when
             // putting dialyzer warning markers on the external file
             final String message = "test message";
@@ -151,27 +161,27 @@ public class DialyzerUtilsTest {
             // then
             // the marker should have the proper file name and the include file
             // should appear in External Files
-            final IProject externalFilesProject = ModelUtils
-                    .getExternalFilesProject();
-            final IFile file = externalFilesProject.getFile(new Path(
-                    externalFileName));
-            assertNotNull(file);
-            final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
-                    .getRoot();
-            final IMarker[] markers = root.getProject("External_Files")
-                    .findMarkers(MarkerUtils.DIALYZE_WARNING_MARKER, true,
-                            IResource.DEPTH_INFINITE);
+            final IMarker[] markers = root.findMarkers(
+                    MarkerUtils.DIALYZE_WARNING_MARKER, true,
+                    IResource.DEPTH_INFINITE);
             // FIXME this fails on Hudson!
             // assertTrue(markers.length > 0);
             for (final IMarker marker : markers) {
                 // for some reason, when running on Hudson, we get two identical
                 // markers...
-                assertEquals(externalFileName, marker.getResource().getName());
+                final String path = (String) marker
+                        .getAttribute(MarkerUtils.PATH_ATTRIBUTE);
+                final IPath p = new Path(path);
+                assertEquals(externalFileName, p.lastSegment());
                 assertEquals(lineNumber,
                         marker.getAttribute(IMarker.LINE_NUMBER));
                 assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
             }
         } finally {
+            MarkerUtils.removeDialyzerMarkers(root);
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
+            }
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
             }
@@ -189,7 +199,7 @@ public class DialyzerUtilsTest {
             // given
             // a project with two erlang modules, one of them selected
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils
                     .createModule(
@@ -304,7 +314,6 @@ public class DialyzerUtilsTest {
     // ErlideTestUtils.deleteErlProject(erlProject);
     // }
     // }
-    // }
 
     @Test
     public void dialyzeBinaryOnProjectWithErrorFile() throws Exception {
@@ -315,7 +324,7 @@ public class DialyzerUtilsTest {
             // a project with two erlang modules, one of them with an erlang
             // error, preventing it from generating a beam-file
             final String projectName = "testproject";
-            erlProject = createTmpErlProject(projectName);
+            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
             assertNotNull(erlProject);
             final IErlModule a = ErlideTestUtils
                     .createModule(
@@ -352,11 +361,5 @@ public class DialyzerUtilsTest {
                 ErlideTestUtils.deleteProject(erlProject);
             }
         }
-    }
-
-    private IErlProject createTmpErlProject(final String projectName)
-            throws CoreException {
-        return ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(projectName), projectName);
     }
 }
