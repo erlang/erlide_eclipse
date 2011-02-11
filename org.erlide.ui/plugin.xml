@@ -569,6 +569,11 @@
              id="org.erlide.ui.commandCategories.dialyzer"
              name="Dialyzer Commands">
        </category>
+       <command
+             description="Filter From Outline"
+             id="org.erlide.ui.command.showOutlineFilterDialog"
+             name="Filter...">
+       </command>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -691,6 +696,13 @@
        </command>
        <command
              commandId="org.erlide.ui.command.removeDialyzerWarnings"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="org.erlide.ui.erlangOutlineAndNavigatorScope">
+       <command
+             commandId="org.erlide.ui.command1"
              style="push">
        </command>
     </menuContribution>
@@ -832,6 +844,10 @@
     <handler
           class="org.erlide.ui.handlers.CheckDialyzerPltFileHandler"
           commandId="org.erlide.ui.command.checkDialyzerPLTFile">
+    </handler>
+    <handler
+          class="org.erlide.ui.editors.erl.outline.ErlangOutlinePage$ShowOutlineFilterDialog"
+          commandId="org.erlide.ui.command.showOutlineFilterDialog">
     </handler>
  </extension>
  <extension

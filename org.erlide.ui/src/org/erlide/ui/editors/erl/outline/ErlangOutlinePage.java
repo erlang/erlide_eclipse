@@ -12,16 +12,23 @@ package org.erlide.ui.editors.erl.outline;
 
 import java.util.List;
 
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.action.AbstractAction;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.commands.ActionHandler;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -29,9 +36,11 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
@@ -76,6 +85,186 @@ import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
 
 public class ErlangOutlinePage extends ContentOutlinePage implements
         IErlModelChangeListener, ISortableContentOutlinePage {
+
+    public class ShowOutlineFilterDialog extends AbstractAction implements
+            IHandler {
+
+        public ShowOutlineFilterDialog() {
+            // TODO Auto-generated constructor stub
+        }
+
+        public int getAccelerator() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public String getActionDefinitionId() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getDescription() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public ImageDescriptor getDisabledImageDescriptor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public HelpListener getHelpListener() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public ImageDescriptor getHoverImageDescriptor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getId() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public ImageDescriptor getImageDescriptor() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public IMenuCreator getMenuCreator() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public int getStyle() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public String getText() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getToolTipText() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public boolean isChecked() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public void run() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void runWithEvent(final Event event) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setActionDefinitionId(final String id) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setChecked(final boolean checked) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setDescription(final String text) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setDisabledImageDescriptor(final ImageDescriptor newImage) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setEnabled(final boolean enabled) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setHelpListener(final HelpListener listener) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setHoverImageDescriptor(final ImageDescriptor newImage) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setId(final String id) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setImageDescriptor(final ImageDescriptor newImage) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setMenuCreator(final IMenuCreator creator) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setText(final String text) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setToolTipText(final String text) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void setAccelerator(final int keycode) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void addHandlerListener(final IHandlerListener handlerListener) {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void dispose() {
+            // TODO Auto-generated method stub
+
+        }
+
+        public Object execute(final ExecutionEvent event)
+                throws ExecutionException {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public boolean isEnabled() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public boolean isHandled() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public void removeHandlerListener(final IHandlerListener handlerListener) {
+            // TODO Auto-generated method stub
+
+        }
+
+    }
 
     IErlModule fModule;
     private ErlangEditor fEditor;
@@ -334,7 +523,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes")
+        final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }
