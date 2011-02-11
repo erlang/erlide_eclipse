@@ -2,6 +2,7 @@ package org.erlide.core.erlang.internal;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -90,4 +91,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return false;
     }
 
+    @Override
+    public IResource getResource() {
+        return null;
+    }
 }
