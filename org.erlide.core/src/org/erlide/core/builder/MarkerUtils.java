@@ -298,9 +298,11 @@ public final class MarkerUtils {
 
     public static boolean haveDialyzerMarkers(final IResource resource) {
         try {
-            final IMarker[] markers = resource.findMarkers(
-                    DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
-            return markers != null && markers.length > 0;
+            if (resource.isAccessible()) {
+                final IMarker[] markers = resource.findMarkers(
+                        DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
+                return markers != null && markers.length > 0;
+            }
         } catch (final CoreException e) {
             e.printStackTrace();
         }

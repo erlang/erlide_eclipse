@@ -12,6 +12,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -299,15 +301,22 @@ public class ModelUtils {
             final IErlProject project, final String externalIncludes,
             final ErlangIncludeFile element) throws BackendException,
             CoreException {
-        String s = element.getFilename();
+        String pathOrName = element.getFilename();
         if (element.isSystemInclude()) {
-            s = ErlideOpen.getIncludeLib(backend, s);
+            pathOrName = ErlideOpen.getIncludeLib(backend, pathOrName);
         }
         // else {
         // s = findIncludeFile(project, s, externalIncludes);
         // }
-        final IErlModule module = openExternal(project, s);
-        return module;
+        final IErlModule module = openExternal(project, pathOrName);
+        if (module != null) {
+            return module;
+        }
+        final IPath p = new Path(pathOrName);
+        if (!p.isAbsolute()) {
+            return getExternalModule(pathOrName, project);
+        }
+        return null;
     }
 
     public static String resolveMacroValue(final String definedName,
