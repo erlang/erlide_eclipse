@@ -137,11 +137,12 @@ public final class MarkerUtils {
                     if (includeFile == null) {
                         res = workspaceRoot;
                     } else {
-                        res = BuilderHelper.findResourceByLocation(project,
-                                includeFile);
-                        if (res == null) {
-                            res = workspaceRoot;
-                        }
+                        res = resource;
+                        // BuilderHelper.findResourceByLocation(
+                        // workspaceRoot, includeFile);
+                        // if (res == null) {
+                        // res = workspaceRoot;
+                        // }
                     }
                 } catch (final Exception e) {
                     ErlLogger.warn(e);
