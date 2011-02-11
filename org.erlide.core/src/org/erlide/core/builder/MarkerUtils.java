@@ -218,7 +218,7 @@ public final class MarkerUtils {
             final IMarker marker = resource.createMarker(PROBLEM_MARKER);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
-            if (path != null) {
+            if (path != null && !new Path(path).equals(resource.getLocation())) {
                 marker.setAttribute(MarkerUtils.PATH_ATTRIBUTE, path);
             }
             if (compiledFile != null) {
