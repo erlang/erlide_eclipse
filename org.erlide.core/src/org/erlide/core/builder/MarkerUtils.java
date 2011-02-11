@@ -135,7 +135,7 @@ public final class MarkerUtils {
                     final IWorkspaceRoot workspaceRoot = ResourcesPlugin
                             .getWorkspace().getRoot();
                     if (includeFile == null) {
-                        res = workspaceRoot;
+                        res = resource;
                     } else {
                         res = resource;
                         // BuilderHelper.findResourceByLocation(
