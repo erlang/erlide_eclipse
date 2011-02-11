@@ -409,9 +409,11 @@ public final class BuilderHelper {
             p = p.removeFirstSegments(project.getLocation().segmentCount());
             final String projectName = project.getName();
             // FIXME hardcoded "_erl" suffix
-            final String linkname = projectName.substring(0,
-                    projectName.length() - 4);
-            p = new Path(linkname).append(p);
+            if (projectName.endsWith("_erl")) {
+                final String linkname = projectName.substring(0,
+                        projectName.length() - 4);
+                p = new Path(linkname).append(p);
+            }
             final IResource dir = project.findMember(p);
             if (dir != null) {
                 try {
