@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="foldingStructureProviders" name="%foldingStructureProvidersExtensionPoint" schema="schema/foldingStructureProviders.exsd"/>
    <extension-point id="erlDndAdapter" name="Erlide Drag and Drop Adapter" schema="schema/erlDndAdapter.exsd"/>
+   <extension-point id="erlangElementFilters" name="Erlang Element Filters" schema="schema/erlangElementFilters.exsd"/>
 
      <extension
          point="org.eclipse.ui.editors">
@@ -574,6 +575,16 @@
              id="org.erlide.ui.command.showOutlineFilterDialog"
              name="Filter...">
        </command>
+       <command
+             description="Hide In Outline"
+             id="org.erlide.ui.command.toolbarFilter"
+             name="Hide In Outline">
+          <commandParameter
+                id="org.erlide.ui.filterId"
+                name="Filter ID"
+                optional="false">
+          </commandParameter>
+       </command>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -700,10 +711,45 @@
        </command>
     </menuContribution>
     <menuContribution
-          locationURI="org.erlide.ui.erlangOutlineAndNavigatorScope">
+          locationURI="menu:org.eclipse.ui.views.ContentOutline">
        <command
-             commandId="org.erlide.ui.command1"
+             commandId="org.erlide.ui.command.showOutlineFilterDialog"
+             icon="icons/full/elcl16/filter_ps.gif"
+             label="Filters..."
              style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="toolbar:org.eclipse.ui.views.ContentOutline">
+       <command
+             commandId="org.erlide.ui.command.toolbarFilter"
+             icon="icons/full/elcl16/hide_attributes.gif"
+             label="Hide Attributes"
+             style="toggle">
+          <parameter
+                name="org.erlide.ui.filterId"
+                value="attributesFilter">
+          </parameter>
+       </command>
+       <command
+             commandId="org.erlide.ui.command.toolbarFilter"
+             icon="icons/full/elcl16/hide_local_functions.gif"
+             label="Hide Local Functions"
+             style="toggle">
+          <parameter
+                name="org.erlide.ui.filterId"
+                value="localFunctionsFilter">
+          </parameter>
+       </command>
+       <command
+             commandId="org.erlide.ui.command.toolbarFilter"
+             icon="icons/full/elcl16/hide_macro_record_defs.gif"
+             label="Hide Macro, Record and Type Definitions"
+             style="toggle">
+          <parameter
+                name="org.erlide.ui.filterId"
+                value="macrosRecordsTypesFilter">
+          </parameter>
        </command>
     </menuContribution>
  </extension>
@@ -846,8 +892,12 @@
           commandId="org.erlide.ui.command.checkDialyzerPLTFile">
     </handler>
     <handler
-          class="org.erlide.ui.editors.erl.outline.ErlangOutlinePage$ShowOutlineFilterDialog"
+          class="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler"
           commandId="org.erlide.ui.command.showOutlineFilterDialog">
+    </handler>
+    <handler
+          class="org.erlide.ui.editors.erl.outline.filters.ToolbarFilterHandler"
+          commandId="org.erlide.ui.command.toolbarFilter">
     </handler>
  </extension>
  <extension
@@ -1849,5 +1899,33 @@
             id="org.erlide.ui.erlangLineBreakpointUpdater"
             markerType="org.erlide.core.erlang.lineBreakpoint.marker">
       </updater>
+   </extension>
+   <extension
+         point="org.erlide.ui.erlangElementFilters">
+      <filter
+            description="Hides all -compile attributes"
+            name="Compile Attributes"
+            pattern="-compile(*)."
+            targetId="org.eclipse.ui.views.ContentOutline">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.LocalFunctionsFilter"
+            description="Hide local (not exported) functions"
+            enabled="false"
+            id="localFunctionsFilter"
+            name="Local Functions">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.AttributesFilter"
+            description="Hide Attributes"
+            id="attributesFilter"
+            name="Hide Attributes">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.MacrosRecordsTypesFilter"
+            description="Hide Macro, Record and Type Definitions"
+            id="macrosRecordsTypesFilter"
+            name="Hide Macro, Record and Type Definitions">
+      </filter>
    </extension>
 </plugin>

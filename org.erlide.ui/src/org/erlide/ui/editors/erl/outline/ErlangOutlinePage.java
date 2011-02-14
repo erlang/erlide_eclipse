@@ -12,23 +12,18 @@ package org.erlide.ui.editors.erl.outline;
 
 import java.util.List;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jface.action.AbstractAction;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.commands.ActionHandler;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,11 +31,9 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
@@ -86,194 +79,14 @@ import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
 public class ErlangOutlinePage extends ContentOutlinePage implements
         IErlModelChangeListener, ISortableContentOutlinePage {
 
-    public class ShowOutlineFilterDialog extends AbstractAction implements
-            IHandler {
-
-        public ShowOutlineFilterDialog() {
-            // TODO Auto-generated constructor stub
-        }
-
-        public int getAccelerator() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public String getActionDefinitionId() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public String getDescription() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public ImageDescriptor getDisabledImageDescriptor() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public HelpListener getHelpListener() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public ImageDescriptor getHoverImageDescriptor() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public String getId() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public ImageDescriptor getImageDescriptor() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public IMenuCreator getMenuCreator() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public int getStyle() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        public String getText() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public String getToolTipText() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public boolean isChecked() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void run() {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void runWithEvent(final Event event) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setActionDefinitionId(final String id) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setChecked(final boolean checked) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setDescription(final String text) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setDisabledImageDescriptor(final ImageDescriptor newImage) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setEnabled(final boolean enabled) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setHelpListener(final HelpListener listener) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setHoverImageDescriptor(final ImageDescriptor newImage) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setId(final String id) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setImageDescriptor(final ImageDescriptor newImage) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setMenuCreator(final IMenuCreator creator) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setText(final String text) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setToolTipText(final String text) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void setAccelerator(final int keycode) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void addHandlerListener(final IHandlerListener handlerListener) {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void dispose() {
-            // TODO Auto-generated method stub
-
-        }
-
-        public Object execute(final ExecutionEvent event)
-                throws ExecutionException {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public boolean isEnabled() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public boolean isHandled() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        public void removeHandlerListener(final IHandlerListener handlerListener) {
-            // TODO Auto-generated method stub
-
-        }
-
-    }
-
     IErlModule fModule;
     private ErlangEditor fEditor;
     private CompositeActionGroup fActionGroups;
     private TreeViewer fOutlineViewer;
-    private MemberFilterActionGroup fMemberFilterActionGroup;
     private SortAction fSortAction;
     private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
     private ToggleLinkingAction fToggleLinkingAction;
+    private final PatternFilter fPatternFilter = new PatternFilter();
 
     public class ErlangOutlineViewer extends TreeViewer {
 
@@ -351,7 +164,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
      */
     @Override
-    protected TreeViewer getTreeViewer() {
+    public TreeViewer getTreeViewer() {
         return fOutlineViewer;
     }
 
@@ -553,10 +366,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fEditor.outlinePageClosed();
             fEditor = null;
         }
-        if (fMemberFilterActionGroup != null) {
-            fMemberFilterActionGroup.dispose();
-            fMemberFilterActionGroup = null;
-        }
         ErlangCore.getModel().removeModelChangeListener(this);
 
         super.dispose();
@@ -578,9 +387,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
                 new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null,
                 false, ErlideUIPlugin.getDefault().getPreferenceStore());
         toolBarManager.add(fSortAction);
-        fMemberFilterActionGroup = new MemberFilterActionGroup(fOutlineViewer,
-                "org.eclipse.jdt.ui.JavaOutlinePage"); //$NON-NLS-1$
-        fMemberFilterActionGroup.contributeToToolBar(toolBarManager);
 
         final IMenuManager viewMenuManager = actionBars.getMenuManager();
         fToggleLinkingAction = new ToggleLinkingAction();
@@ -591,6 +397,14 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     public void sort(final boolean sorting) {
         ErlLogger.debug("sorting " + sorting);
+    }
+
+    public static IEclipsePreferences getPrefsNode() {
+        final String qualifier = ErlideUIPlugin.PLUGIN_ID;
+        final IScopeContext context = new InstanceScope();
+        final IEclipsePreferences eclipsePreferences = context
+                .getNode(qualifier);
+        return eclipsePreferences;
     }
 
     /**
@@ -611,7 +425,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             ErlideImage.setLocalImageDescriptors(this, "synced.gif");
             PlatformUI.getWorkbench().getHelpSystem()
                     .setHelp(this, IErlangHelpContextIds.LINK_EDITOR_ACTION);
-            final IEclipsePreferences prefsNode = MemberFilterActionGroup
+            final IEclipsePreferences prefsNode = ErlangOutlinePage
                     .getPrefsNode();
             final boolean isLinkingEnabled = prefsNode.getBoolean(
                     PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
@@ -624,7 +438,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          */
         @Override
         public void run() {
-            final IEclipsePreferences prefsNode = MemberFilterActionGroup
+            final IEclipsePreferences prefsNode = ErlangOutlinePage
                     .getPrefsNode();
             final boolean isChecked = isChecked();
             prefsNode.putBoolean(
@@ -636,6 +450,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fOpenAndLinkWithEditorHelper.setLinkWithEditor(isChecked);
         }
 
+    }
+
+    public PatternFilter getPatternFilter() {
+        return fPatternFilter;
     }
 
 }
