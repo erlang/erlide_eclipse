@@ -13,7 +13,7 @@ import com.google.common.collect.Maps;
 
 public class PatternFilter extends ViewerFilter {
 
-    Map<String, SearchPattern> fPatterns = Maps.newHashMap();
+    private final Map<String, SearchPattern> fPatterns = Maps.newHashMap();
 
     @Override
     public boolean select(final Viewer viewer, final Object parentElement,
@@ -50,6 +50,10 @@ public class PatternFilter extends ViewerFilter {
             searchPattern.setPattern(pattern);
             fPatterns.put(pattern, searchPattern);
         }
+    }
+
+    public boolean isEmpty() {
+        return fPatterns.isEmpty();
     }
 
 }

@@ -1903,9 +1903,10 @@
    <extension
          point="org.erlide.ui.erlangElementFilters">
       <filter
-            description="Hides all -compile attributes"
+            description="Hides -compile attributes"
+            id="compileAttributesFilter"
             name="Compile Attributes"
-            pattern="-compile(*)."
+            pattern="compile:*"
             targetId="org.eclipse.ui.views.ContentOutline">
       </filter>
       <filter
@@ -1926,6 +1927,20 @@
             description="Hide Macro, Record and Type Definitions"
             id="macrosRecordsTypesFilter"
             name="Hide Macro, Record and Type Definitions">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.TypespecFilter"
+            description="Hide -typespec attributes"
+            id="typespecsFilter"
+            name="Typespecs"
+            targetId="org.eclipse.ui.views.ContentOutline">
+      </filter>
+      <filter
+            description="Hide -file attributes"
+            id="fileAttributesFilter"
+            name="File Attributes"
+            pattern="file:*"
+            targetId="org.eclipse.ui.views.ContentOutline">
       </filter>
    </extension>
 </plugin>

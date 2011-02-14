@@ -56,13 +56,16 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
         } else {
             return null;
         }
-        final List<String> oldUserDefinedPatterns = Lists.newArrayList();
+        List<String> oldUserDefinedPatterns = Lists.newArrayList();
         final Set<String> oldEnabledFilterIDs = Sets.newHashSet();
         final boolean oldAreUserDefinedPatternsEnabled = loadViewDefaults(
                 oldUserDefinedPatterns, oldEnabledFilterIDs);
         final CustomOutlineFiltersDialog dialog = new CustomOutlineFiltersDialog(
                 shell, targetId, oldAreUserDefinedPatternsEnabled,
                 oldUserDefinedPatterns, oldEnabledFilterIDs);
+        if (oldAreUserDefinedPatternsEnabled) {
+            oldUserDefinedPatterns = Lists.newArrayList();
+        }
         if (dialog.open() == Window.OK) {
             final boolean areUserDefinedPatternsEnabled = dialog
                     .areUserDefinedPatternsEnabled();
@@ -133,9 +136,6 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
                 intersection);
         SetView<String> oldDifference = Sets.difference(oldEnabledFilterIDs,
                 intersection);
-        if (difference.isEmpty() && oldDifference.isEmpty()) {
-            return;
-        }
         final HashSet<String> oldPatterns = Sets
                 .newHashSet(oldUserDefinedPatterns);
         final HashSet<String> patterns = Sets.newHashSet(userDefinedPatterns);
@@ -164,8 +164,17 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
         if (difference.isEmpty() && oldDifference.isEmpty()) {
             return;
         }
+        final boolean oldPatternFilterEmpty = patternFilter.isEmpty();
         patternFilter.removePatterns(oldDifference);
         patternFilter.addPatterns(difference);
-        viewer.refresh();
+        if (oldPatternFilterEmpty != patternFilter.isEmpty()) {
+            if (oldPatternFilterEmpty) {
+                viewer.addFilter(patternFilter);
+            } else {
+                viewer.removeFilter(patternFilter);
+            }
+        } else {
+            viewer.refresh();
+        }
     }
 }

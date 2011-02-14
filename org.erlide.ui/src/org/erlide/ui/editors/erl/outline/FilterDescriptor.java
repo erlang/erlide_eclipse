@@ -153,16 +153,7 @@ public class FilterDescriptor implements Comparable<Object>,
      * @return the filter id
      */
     public String getId() {
-        if (isPatternFilter()) {
-            final String targetId = getTargetId();
-            if (targetId == null) {
-                return PATTERN_FILTER_ID_PREFIX + getPattern();
-            } else {
-                return targetId + PATTERN_FILTER_ID_PREFIX + getPattern();
-            }
-        } else {
-            return fElement.getAttribute(ID_ATTRIBUTE);
-        }
+        return fElement.getAttribute(ID_ATTRIBUTE);
     }
 
     /**
