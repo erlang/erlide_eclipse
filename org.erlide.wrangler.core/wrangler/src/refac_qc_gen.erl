@@ -57,16 +57,16 @@ test_cases_to_property_eclipse(FileName, Line, Col,SearchPaths, TabWidth) ->
 
 test_cases_to_property(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
     ?wrangler_io("\nCMD: ~p:test_cases_to_property( ~p, ~p, ~p, ~p, ~p).\n",
-		 [?MODULE, FileName, Line, Col,SearchPaths, TabWidth]),
-    Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":create_oneof(" ++ "\"" ++
-	     FileName ++ "\", " ++ integer_to_list(Line) ++
-	       ", " ++ integer_to_list(Col) ++ ", " 
-		 ++ "[" ++ refac_misc:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+		 [?MODULE, FileName, Line, Col, SearchPaths, TabWidth]),
+    Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":create_oneof(" ++ "\"" ++ 
+	     FileName ++ "\", " ++ integer_to_list(Line) ++ 
+	       ", " ++ integer_to_list(Col) ++ ", "
+						  ++ "[" ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case interface_api:pos_to_fun_name(AnnAST, {Line, Col}) of
-      {ok, {Mod, Fun, Arity, _, DefPos}} ->
+	{ok, {Mod, Fun, Arity, _, DefPos}} ->
 	    AnnAST1 = do_intro_oneof(AnnAST, {Mod, Fun, Arity, DefPos}),
-	    HasWarningMsg = not is_quickcheck_used(Info),
+	    HasWarningMsg =  not  is_quickcheck_used(Info),
 	    case HasWarningMsg of
 		true ->
 		    ?wrangler_io("\n=================================================================\n", []),
@@ -75,9 +75,9 @@ test_cases_to_property(FileName, Line, Col, SearchPaths, TabWidth, Editor) ->
 		    ok
 	    end,
 	    case Editor of
-	    emacs ->
+		emacs ->
 		    Res = [{{FileName, FileName}, AnnAST1}],
-		    refac_util:write_refactored_files_for_preview(Res, TabWidth, Cmd1),
+		    refac_write_file:write_refactored_files_for_preview(Res, TabWidth, Cmd1),
 		    {ok, [FileName], HasWarningMsg};
 		eclipse ->
 		    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1, TabWidth),
@@ -98,25 +98,25 @@ is_quickcheck_used(ModuleInfo) ->
     end.
 
 do_collect_parameters(AnnAST, {M, F, A}) ->
-    Fun = fun(Node, Acc) ->
+    Fun = fun (Node, Acc) ->
 		  case refac_syntax:type(Node) of
 		      application ->
 			  Op = refac_syntax:application_operator(Node),
 			  As = refac_syntax:get_ann(Op),
-			  case lists:keysearch(fun_def, 1, As) of 
+			  case lists:keysearch(fun_def, 1, As) of
 			      {value, {fun_def, {M, F, A, _, _}}} ->
 				  Args = refac_syntax:application_arguments(Node),
-				  case refac_misc:get_free_vars(Args) of
+				  case refac_util:get_free_vars(Args) of
 				      [] ->
-					  [Args |Acc];
+					  [Args| Acc];
 				      _ -> Acc
 				  end;
 			      _ -> Acc
 			  end;
 		      _ -> Acc
 		  end
-	  end,			  
-    lists:reverse(refac_syntax_lib:fold(Fun, [], AnnAST)).
+	  end,
+    lists:reverse(ast_traverse_api:fold(Fun, [], AnnAST)).
 
 
 do_intro_oneof(AnnAST, {Mod, Fun, Arity, DefPos}) ->
@@ -179,30 +179,28 @@ get_parameter_name(Index, Pars) ->
 	  refac_syntax:variable(V);
 	_ -> make_new_var(Index)
     end.
-			      
-    
 
 make_oneof_gen(OneOfGenName, Data) ->
-    NewData =refac_syntax:list([case length(D) of 
-				    1 -> hd(D);
-				    _->refac_syntax:tuple(D)
-				end||D<-Data]),
+    NewData = refac_syntax:list([case length(D) of
+				     1 -> hd(D);
+				     _ -> refac_syntax:tuple(D)
+				 end || D <- Data]),
     Op = refac_syntax:atom(oneof),
     App = refac_syntax:application(Op, [NewData]),
-    Clause = refac_syntax:clause([], [], [App]),    
-    refac_misc:reset_attrs(refac_syntax:function(OneOfGenName, [Clause])).
+    Clause = refac_syntax:clause([], [], [App]),
+    refac_util:reset_attrs(refac_syntax:function(OneOfGenName, [Clause])).
 
 make_oneof_prop(OneOfGenName, OneOfPropName, ParNames, {Mod, Fun, Arity, DefPos}) ->
-    Pat =  case Arity  of 
-	       1-> hd(ParNames);
-	       _ ->
-		   refac_syntax:tuple(ParNames)
-	   end,
+    Pat = case Arity of
+	      1 -> hd(ParNames);
+	      _ ->
+		  refac_syntax:tuple(ParNames)
+	  end,
     Gen = refac_syntax:application(OneOfGenName, []),
-    Prop=make_prop(ParNames, {Mod, Fun, Arity}, DefPos),
-    Body=make_for_all(Pat, Gen, Prop),
-    Clause=refac_syntax:clause([], [], [Body]),
-    refac_misc:reset_attrs(refac_syntax:function(OneOfPropName, [Clause])).
+    Prop = make_prop(ParNames, {Mod, Fun, Arity}, DefPos),
+    Body = make_for_all(Pat, Gen, Prop),
+    Clause = refac_syntax:clause([], [], [Body]),
+    refac_util:reset_attrs(refac_syntax:function(OneOfPropName, [Clause])).
     
 
 make_forall_gen_props(ListOfPars1, ParNames, {Mod, Fun, Arity, DefPos}) ->
@@ -214,21 +212,19 @@ make_forall_gen_props(ListOfPars1, ParNames, {Mod, Fun, Arity, DefPos}) ->
     ForAllPropFun = make_forall_prop(ParNames,NewParMaps, {Mod, Fun, Arity, DefPos}),
     GenFuns =[make_generator_fun(Fun,ParMap, ParNames)||ParMap<-NewParMaps],
     [ForAllPropFun|GenFuns].
-    
 
 make_forall_prop(ParNames, ParMaps, {Mod, Fun, Arity, DefPos}) ->
     Prop = make_prop(ParNames, {Mod, Fun, Arity}, DefPos),
-    ForAllExpr=generate_forall_expr(ParNames, Fun, lists:reverse(ParMaps), Prop),
-    Clause =refac_syntax:clause([],[],[ForAllExpr]),
-    ForAllPropName=refac_syntax:atom(list_to_atom(atom_to_list(Fun)++"_forall_prop")),
-    refac_misc:reset_attrs(refac_syntax:function(ForAllPropName, [Clause])).
+    ForAllExpr = generate_forall_expr(ParNames, Fun, lists:reverse(ParMaps), Prop),
+    Clause = refac_syntax:clause([],[],[ForAllExpr]),
+    ForAllPropName = refac_syntax:atom(list_to_atom(atom_to_list(Fun)++"_forall_prop")),
+    refac_util:reset_attrs(refac_syntax:function(ForAllPropName, [Clause])).
 
-
-make_generator_fun(FunName, {Pars, Rets}, ParNames) -> 
-    ZippedParsRets=refac_misc:group_by(1, lists:zip(Pars, Rets)),
+make_generator_fun(FunName, {Pars, Rets}, ParNames) ->
+    ZippedParsRets = refac_util:group_by(1, lists:zip(Pars, Rets)),
     GenFunName = make_new_gen_fun_name(FunName, length(hd(Pars))+1, ParNames),
-    Clause=[make_clause(lists:unzip(ZippedParRet))||ZippedParRet<-ZippedParsRets],
-    refac_misc:reset_attrs(refac_syntax:function(GenFunName, Clause)).
+    Clause = [make_clause(lists:unzip(ZippedParRet)) || ZippedParRet <- ZippedParsRets],
+    refac_util:reset_attrs(refac_syntax:function(GenFunName, Clause)).
     
 
 make_prop(ParNames, {Mod, Fun, _Arity}, DefPos) ->
@@ -246,14 +242,13 @@ make_prop(ParNames, {Mod, Fun, _Arity}, DefPos) ->
 				   [], [refac_syntax:atom('false')])],
     
     refac_syntax:try_expr([Body],Cs, Handlers).
-    
-    
-make_clause({[Pars|_], Ret}) ->
-    Pats=[P||P<-Pars, P/=refac_syntax:atom('_')],
-    case length(Ret)>1 of 
+
+make_clause({[Pars| _], Ret}) ->
+    Pats = [P || P <- Pars, P/=refac_syntax:atom('_')],
+    case length(Ret)>1 of
 	true ->
 	    Op = refac_syntax:atom(oneof),
-	    App= refac_syntax:application(Op, refac_misc:remove_duplicates(Ret)),
+	    App = refac_syntax:application(Op, refac_util:remove_duplicates(Ret)),
 	    refac_syntax:clause(Pats, [], [App]);
 	_ ->
 	    refac_syntax:clause(Pats, [], Ret)
@@ -311,11 +306,11 @@ make_new_var(Index) ->
     refac_syntax:variable(
       list_to_atom(
 	"NewPat"++integer_to_list(Index))).
-		   
-make_new_gen_fun_name(FunName,Index, ParNames)->
-    ParName=refac_misc:to_lower(atom_to_list(
-				  refac_syntax:variable_name(
-				    lists:nth(Index, ParNames)))),
+
+make_new_gen_fun_name(FunName, Index, ParNames) ->
+    ParName = refac_util:to_lower(atom_to_list(
+				    refac_syntax:variable_name(
+				      lists:nth(Index, ParNames)))),
     refac_syntax:atom(list_to_atom(atom_to_list(FunName)++"_"++ParName++"_gen")).
  
 

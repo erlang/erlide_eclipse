@@ -28,6 +28,9 @@
 %%
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
+
+%% THIS FILE WILL BE REMOVED!!!
+
 -module(refac_sim_code).
 
 -export([sim_code_detection/6, sim_code_detection_in_buffer/6]).
@@ -49,73 +52,62 @@
 sim_code_detection_in_buffer(FileName, MinLen, MinFreq, SimiScore, SearchPaths, TabWidth) ->
     sim_code_detection([FileName],MinLen, MinFreq, SimiScore, SearchPaths, TabWidth).
 
+%%-spec(sim_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(),
+%%			     SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}).
 
-%%-spec(sim_code_detection/6::(DirFileList::[filename()|dir()], MinLen::string(), MinFreq::string(), MinScore::string(), 
-%%			     SearchPaths::[dir()], TabWidth::integer()) -> {ok, string()}). 			     
 sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_code_detection(~p,~p,~p,~p,~p,~p).\n",
 		 [?MODULE, DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth]),
-    {MinLen, MinFreq, SimiScore} =  get_parameters(MinLen1, MinFreq1, SimiScore1),
+    {MinLen, MinFreq, SimiScore} = get_parameters(MinLen1, MinFreq1, SimiScore1),
     Cmd = io_lib:format("\nCMD: ~p:inc_sim_code_detection(~p,~p,~p,~p,~p,~p).",
 			[?MODULE,DirFileList,MinLen,MinFreq,SimiScore,SearchPaths,TabWidth]),
-    Pid = start_hash_process(),
     ASTTab = ets:new(ast_tab, [set, public]),
     VarTab = ets:new(var_tab, [set, public]),
     RangeTab = ets:new(range_tab, [set, public]),
     Files = refac_util:expand_files(DirFileList, ".erl"),
-    FinalCs=case Files of
-		[] -> ?wrangler_io("Warning: No files found in the searchpaths specified.", []),
-		      [];
-		_ ->
-		    _Time1 = now(),
-		    ?wrangler_io("Searching for initial clone candidates...\n", []),
-		    %% ?debug("current time:~p\n", [time()]),
-		    generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab),
-		    %%?debug("\ngeneralise and hash ast done.\n",[]),
-		    Dir = filename:dirname(hd(Files)),
-		    Cs = get_clones(Pid, MinLen, MinFreq, Dir, RangeTab),
-		    stop_hash_process(Pid),
-		    %% ?debug("\nInitial candiates finished\n",[]),
-		    ?wrangler_io("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
-		    CloneCheckPid = start_clone_check_process(),
-		    Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
-		    _Time2 = now(),
-		    stop_clone_check_process(CloneCheckPid),
-		    ets:delete(ASTTab),
-		    ets:delete(VarTab),
-		    ets:delete(RangeTab),
-		    refac_code_search_utils:display_clone_result(remove_fun_info(Cs2), "Similar"),
-		    Cs2
-	    end,
+    FinalCs = case Files of
+		  [] -> ?wrangler_io("Warning: No files found in the searchpaths specified.", []),
+			[];
+		  _ ->
+		      _Time1 = now(),
+		      ?wrangler_io("Searching for initial clone candidates...\n", []),
+		      Cs = get_initial_clone_candidates(Files, MinLen, MinFreq, ASTTab, VarTab, RangeTab, SearchPaths,TabWidth),
+		      ?wrangler_io("\nNumber of initial clone candidates: ~p\n", [length(Cs)]),
+		      CloneCheckPid = start_clone_check_process(),
+		      Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
+		      _Time2 = now(),
+		      stop_clone_check_process(CloneCheckPid),
+		      ets:delete(ASTTab),
+		      ets:delete(VarTab),
+		      ets:delete(RangeTab),
+		      refac_code_search_utils:display_clone_result(remove_fun_info(Cs2), "Similar"),
+		      Cs2
+	      end,
     CloneReport = gen_clone_report(FinalCs),
     LogMsg = Cmd ++ " \nNum of clones detected: "++ integer_to_list(length(FinalCs)) ++ ".\n",
     {ok, lists:flatten(LogMsg++CloneReport)}.
 
-    
-%%-spec(sim_code_detection_eclipse/6::(DirFileList::dir(), MinLen::integer(), MinFreq::integer(), 
+%%-spec(sim_code_detection_eclipse/6::(DirFileList::dir(), MinLen::integer(), MinFreq::integer(),
 %%				     SimScore::float(),  SearchPaths::[dir()], TabWidth::integer()) ->
 %% 	     [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], integer(), integer(), string()}]).
+
 sim_code_detection_eclipse(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabWidth) ->
-    {MinLen, MinFreq, SimiScore} =  get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1),
-    Pid = start_hash_process(),
+    {MinLen, MinFreq, SimiScore} = get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1),
     ASTTab = ets:new(ast_tab, [set, public]),
     VarTab = ets:new(var_tab, [set, public]),
     RangeTab = ets:new(range_tab, [set, public]),
     Files = refac_util:expand_files(DirFileList, ".erl"),
     case Files of
-      [] -> [];
-      _ ->
-	  generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab),
-	  Dir = filename:dirname(hd(Files)),
-	  Cs = get_clones(Pid, MinLen, MinFreq, Dir, RangeTab),
-	  stop_hash_process(Pid),
-	  CloneCheckPid = start_clone_check_process(),
-	  Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
-	  stop_clone_check_process(CloneCheckPid),
-	  ets:delete(ASTTab),
-	  ets:delete(VarTab),
-	  ets:delete(RangeTab),
-	  remove_fun_info(Cs2)
+	[] -> [];
+	_ ->
+	    Cs = get_initial_clone_candidates(Files, MinLen, MinFreq, ASTTab, VarTab, RangeTab, SearchPaths,TabWidth),
+	    CloneCheckPid = start_clone_check_process(),
+	    Cs2 = examine_clone_sets(Cs, MinFreq, SimiScore, ASTTab, VarTab, RangeTab, CloneCheckPid, 1),
+	    stop_clone_check_process(CloneCheckPid),
+	    ets:delete(ASTTab),
+	    ets:delete(VarTab),
+	    ets:delete(RangeTab),
+	    remove_fun_info(Cs2)
     end.
 
 %%-spec(get_parameters/3::(string(), string(), string())->
@@ -173,26 +165,34 @@ get_parameters_eclipse(MinLen1, MinFreq1, SimiScore1) ->
 
 
 %%==================================================================
+
+get_initial_clone_candidates(Files, MinLen, MinFreq, ASTTab, VarTab, RangeTab, SearchPaths, TabWidth) ->
+    Pid = start_hash_process(),
+    generalise_and_hash_ast(Files,Pid,SearchPaths,TabWidth,ASTTab,VarTab),
+    Dir = filename:dirname(hd(Files)),
+    Cs = get_clones(Pid,MinLen,MinFreq,Dir,RangeTab),
+    stop_hash_process(Pid),
+    Cs.
+
 generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
     lists:foreach(fun(F) ->
 			  generalise_and_hash_ast_1(F, Pid, SearchPaths, TabWidth, ASTTab, VarTab)
 		  end, Files).
 
-
 generalise_and_hash_ast_1(FName, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
     Fun = fun (Form) ->
 		  case refac_syntax:type(Form) of
-		    function ->
-			FunName = refac_syntax:atom_value(refac_syntax:function_name(Form)),
-			Arity = refac_syntax:function_arity(Form),
-			AllVars = refac_misc:collect_var_source_def_pos_info(Form),
-			ets:insert(VarTab, {{FName, FunName, Arity}, AllVars}),
-			ast_traverse_api:full_tdTP(fun generalise_and_hash_ast_2/2,
-						   Form, {FName, FunName, Arity, ASTTab, Pid});
-		    _ -> ok
+		      function ->
+			  FunName = refac_syntax:atom_value(refac_syntax:function_name(Form)),
+			  Arity = refac_syntax:function_arity(Form),
+			  AllVars = refac_util:collect_var_source_def_pos_info(Form),
+			  ets:insert(VarTab, {{FName, FunName, Arity}, AllVars}),
+			  ast_traverse_api:full_tdTP(fun generalise_and_hash_ast_2/2,
+						     Form, {FName, FunName, Arity, ASTTab, Pid});
+		      _ -> ok
 		  end
 	  end,
-    {ok, {AnnAST, _Info}} = refac_util:quick_parse_annotate_file(FName, SearchPaths, TabWidth),
+    {ok, {AnnAST, _Info}} = wrangler_ast_server:quick_parse_annotate_file(FName, SearchPaths, TabWidth),
     refac_syntax:form_list_elements(AnnAST),
     lists:foreach(fun (F) -> Fun(F) end, refac_syntax:form_list_elements(AnnAST)),
     insert_dummy_entry(Pid).
@@ -200,44 +200,44 @@ generalise_and_hash_ast_1(FName, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
 generalise_and_hash_ast_2(Node, {FName, FunName, Arity, ASTTab, Pid}) ->
     F0 = fun (T, _Others) ->
 		 case refac_code_search_utils:generalisable(T) of
-		   true ->
-		       {refac_syntax:variable('Var'), true};
-		   false -> {T, false}
+		     true ->
+			 {refac_syntax:variable('Var'), true};
+		     false -> {T, false}
 		 end
 	 end,
     F1 = fun (T) ->
 		 {T1, _} = ast_traverse_api:stop_tdTP(F0, T, []),
-		 HashVal = erlang:md5(refac_prettypr:format(T1)),
-		 {S, E} = refac_misc:get_start_end_loc(T),
+		 HashVal = erlang:md5(format(T1)),
+		 {S, E} = refac_util:get_start_end_loc(T),
 		 insert_hash(Pid, HashVal, {{FName, FunName, Arity}, S, E}),
 		 T1
 	 end,
     case refac_syntax:type(Node) of
-      clause ->
-	  Body = refac_syntax:clause_body(Node),
-	  [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
-	   || E <- Body,
-	      {StartLoc, EndLoc} <- [refac_misc:get_start_end_loc(E)]],
-	  insert_dummy_entry(Pid),
-	  _NewBody = [F1(E) || E <- Body],
-	  {Node, true};
-      block_expr ->
-	  insert_dummy_entry(Pid),
-	  Body = refac_syntax:block_expr_body(Node),
-	  [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
-	   || E <- Body,
-	      {StartLoc, EndLoc} <- [refac_misc:get_start_end_loc(E)]],
-	  _NewBody = [F1(E) || E <- Body],
-	  {Node, true};
-      try_expr ->
-	  insert_dummy_entry(Pid),
-	  Body = refac_syntax:try_expr_body(Node),
-	  [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
-	   || E <- Body,
-	      {StartLoc, EndLoc} <- [refac_misc:get_start_end_loc(E)]],
-	  _NewBody = [F1(E) || E <- Body],
-	  {Node, true};
-      _ -> {Node, false}
+	clause ->
+	    Body = refac_syntax:clause_body(Node),
+	    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
+	     || E <- Body,
+		{StartLoc, EndLoc} <- [refac_util:get_start_end_loc(E)]],
+	    insert_dummy_entry(Pid),
+	    _NewBody = [F1(E) || E <- Body],
+	    {Node, true};
+	block_expr ->
+	    insert_dummy_entry(Pid),
+	    Body = refac_syntax:block_expr_body(Node),
+	    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
+	     || E <- Body,
+		{StartLoc, EndLoc} <- [refac_util:get_start_end_loc(E)]],
+	    _NewBody = [F1(E) || E <- Body],
+	    {Node, true};
+	try_expr ->
+	    insert_dummy_entry(Pid),
+	    Body = refac_syntax:try_expr_body(Node),
+	    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
+	     || E <- Body,
+		{StartLoc, EndLoc} <- [refac_util:get_start_end_loc(E)]],
+	    _NewBody = [F1(E) || E <- Body],
+	    {Node, true};
+	_ -> {Node, false}
     end.
 
 %%=============================================================================
@@ -409,11 +409,11 @@ get_generalised_form(ASTTab, RangeTab, {Ranges, {Len, Freq}, {Range, SubSt, Expo
     Files = [element(1, element(1,R)) ||R<-Ranges],
     case length(lists:usort(Files)) ==1 of 
 	true ->
-	    AUStr =refac_prettypr:format(AntiUnifier),
+	    AUStr =format(AntiUnifier),
 	    {Ranges, {Len, Freq}, {AUStr, {NumOfPars, NumOfNewVars}}};
 	false ->
 	    NewAntiUnifier=post_process_anti_unifier(AntiUnifier),
-	    AUStr = refac_prettypr:format(NewAntiUnifier),
+	    AUStr = format(NewAntiUnifier),
 	    {Ranges, {Len, Freq}, {AUStr, {NumOfPars, NumOfNewVars}}}
     end.
    
@@ -428,20 +428,19 @@ get_expr_list({{FName, FunName, Arity}, StartLoc, EndLoc}, ASTTab, RangeTab) ->
 			      ||{{File, Fun, Ari}, SLoc, ELoc}<-Rs]),
 		    [element(2, E)||E<-Es]
 	     
-    end.  
-
+    end.
 
 get_expr_list_and_vars_to_export({{FName, FunName, Arity}, StartLoc, EndLoc}, ASTTab, VarTab, RangeTab) ->
     Es = get_expr_list({{FName, FunName, Arity}, StartLoc, EndLoc}, ASTTab, RangeTab),
     AllVars = ets:lookup(VarTab, {FName, FunName, Arity}),
     case AllVars of
-      [] -> {Es, []};
-      [{_, Vars}] ->
-	  ExprBdVarsPos = [Pos || {_Var, Pos} <- refac_misc:get_bound_vars(Es)],
-	  VarsToExport = [{V, DefPos} || {V, SourcePos, DefPos} <- Vars,
-					 SourcePos > EndLoc,
-					 lists:subtract(DefPos, ExprBdVarsPos) == []],
-	  {Es, VarsToExport}
+	[] -> {Es, []};
+	[{_, Vars}] ->
+	    ExprBdVarsPos = [Pos || {_Var, Pos} <- refac_util:get_bound_vars(Es)],
+	    VarsToExport = [{V, DefPos} || {V, SourcePos, DefPos} <- Vars,
+					   SourcePos > EndLoc,
+					   lists:subtract(DefPos, ExprBdVarsPos) == []],
+	    {Es, VarsToExport}
     end.
 
 
@@ -602,27 +601,28 @@ remove_overlapped_ranges([{S, E}| Rs], {S1, E1}, Acc) ->
       false ->
 	  remove_overlapped_ranges(Rs, {S, E}, [{S, E}| Acc])
     end.
+
 get_clones_in_ranges(Cs, Data, MinLen, MinFreq, RangeTab) ->
     F0 = fun ({S, E}) ->
 		 {_, Ranges} = lists:unzip(lists:sublist(Data, S, E - S + 1)),
-		 Ranges1 = refac_misc:remove_duplicates(Ranges),
+		 Ranges1 = refac_util:remove_duplicates(Ranges),
 		 sub_list(Ranges1, MinLen, length(Ranges1))
 	 end,
     F1 = fun (Rs) ->
 		 [begin
-		    {MFA, S1, _E1} = hd(R),
-		    {_, _, E2} = lists:last(R),
-		    ets:insert(RangeTab, {{MFA, S1, E2}, R}),
-		    {MFA, S1, E2}
+		      {MFA, S1, _E1} = hd(R),
+		      {_, _, E2} = lists:last(R),
+		      ets:insert(RangeTab, {{MFA, S1, E2}, R}),
+		      {MFA, S1, E2}
 		  end || R <- Rs]
 	 end,
     F = fun ({Ranges, {_Len, Freq}}) ->
 		case Freq >= MinFreq of
-		  true ->
-		      NewRanges0 = [F0(R) || R <- Ranges],
-		      NewRanges = zip(NewRanges0),
-		      [{F1(Rs), {length(hd(Rs)), Freq}} || Rs <- NewRanges];
-		  _ -> []
+		    true ->
+			NewRanges0 = [F0(R) || R <- Ranges],
+			NewRanges = zip(NewRanges0),
+			[{F1(Rs), {length(hd(Rs)), Freq}} || Rs <- NewRanges];
+		    _ -> []
 		end
 	end,
     Res = [lists:reverse(F(C)) || C <- Cs],
@@ -697,28 +697,31 @@ gen_clone_report([_C={_Ranges, {Len, F}, {Code, {Pars,NewVars}}}|Cs], Num, Str) 
 
 post_process_anti_unifier(FunAST) ->
     {FunAST1, _} = ast_traverse_api:stop_tdTP(fun do_post_process_anti_unifier/2, FunAST, none),
-    FunAST1. 
+    FunAST1.
 
 do_post_process_anti_unifier(Node, _Others) ->
     case refac_syntax:type(Node) of
 	application ->
 	    Operator = refac_syntax:application_operator(Node),
-	    Arguments =refac_syntax:application_arguments(Node),
+	    Arguments = refac_syntax:application_arguments(Node),
 	    case refac_syntax:type(Operator) of
 		atom ->
 		    As = refac_syntax:get_ann(Operator),
 		    {value, {fun_def, {M, _F, _A, _, _}}} = lists:keysearch(fun_def,1,As),
-		    case M== erlang orelse M=='_' of 
+		    case M== erlang orelse M=='_' of
 			true ->
 			    {Node, false};
 			false ->
 			    Mod = refac_syntax:atom(M),
-			    Operator1 = refac_misc:rewrite(Operator, refac_syntax:module_qualifier(Mod, Operator)),
-			    Node1 = refac_misc:rewrite(Node, refac_syntax:application(Operator1, Arguments)),
+			    Operator1 = refac_util:rewrite(Operator, refac_syntax:module_qualifier(Mod, Operator)),
+			    Node1 = refac_util:rewrite(Node, refac_syntax:application(Operator1, Arguments)),
 			    {Node1, false}
 		    end;
-		_ -> 
+		_ ->
 		    {Node, false}
 	    end;
 	_ -> {Node, false}
     end.
+
+format(Node) ->
+    refac_prettypr:format(refac_util:reset_ann_and_pos(Node)).

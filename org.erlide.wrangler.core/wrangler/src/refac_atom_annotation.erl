@@ -60,18 +60,18 @@ type_ann_ast(FileName, Info, AnnAST, SearchPaths, TabWidth) ->
 	    Fs = refac_syntax:form_list_elements(AnnAST),
 	    Funs = get_sorted_funs(ModName, AnnAST),
 	    NewFuns = [do_type_ann(FileName, F, TestFrameWorkUsed, SearchPaths, TabWidth, Pid)
-		       || F<-Funs],
-	    NewFs = [update_a_form(F, NewFuns)|| F<-Fs],
-	    AnnAST1 = refac_misc:rewrite(AnnAST, refac_syntax:form_list(NewFs)),
-	    AnnAST2 =case get_all_type_info(Pid) of
-			 [] ->
-			     stop_type_env_process(Pid),
-			     AnnAST1;
-			 TypeInfo ->
-			     ?debug("Typeinfo:\n~p\n", [TypeInfo]),
-			     stop_type_env_process(Pid),
-			     prop_type_info(AnnAST1, TypeInfo)
-		     end,
+		       || F <- Funs],
+	    NewFs = [update_a_form(F, NewFuns) || F <- Fs],
+	    AnnAST1 = refac_util:rewrite(AnnAST, refac_syntax:form_list(NewFs)),
+	    AnnAST2 = case get_all_type_info(Pid) of
+			  [] ->
+			      stop_type_env_process(Pid),
+			      AnnAST1;
+			  TypeInfo ->
+			      ?debug("Typeinfo:\n~p\n", [TypeInfo]),
+			      stop_type_env_process(Pid),
+			      prop_type_info(AnnAST1, TypeInfo)
+		      end,
 	    AnnAST2
     end.
  
@@ -85,40 +85,39 @@ update_a_form(Form, SortedFuns) ->
 do_atom_annotation_in_attr(Form) ->
     element(1, ast_traverse_api:full_tdTP(fun do_atom_annotation_in_attr/2, Form, {})).
 
-
 do_atom_annotation_in_attr(Node, _Others) ->
     case refac_syntax:type(Node) of
 	attribute ->
 	    Name = refac_syntax:attribute_name(Node),
-	    Name1 = refac_misc:update_ann(Name, {type, attr_atom}),
+	    Name1 = refac_util:update_ann(Name, {type, attr_atom}),
 	    Args = refac_syntax:attribute_arguments(Node),
 	    Args1 = case refac_syntax:atom_value(Name) of
 			module ->
-			    [refac_misc:update_ann(A, {type, m_atom}) || A <- Args];
+			    [refac_util:update_ann(A, {type, m_atom}) || A <- Args];
 			record ->
-			    [refac_misc:update_ann(hd(Args), {type, rn_atom})|tl(Args)];
+			    [refac_util:update_ann(hd(Args), {type, rn_atom})| tl(Args)];
 			import ->
 			    case Args of
 				[H| T] ->
 				    case refac_syntax:type(H) of
 					atom ->
-					    [refac_misc:update_ann(H, {type, m_atom})| T];
+					    [refac_util:update_ann(H, {type, m_atom})| T];
 					qualified_name ->
-					    [refac_syntax:qualified_name([refac_misc:update_ann(A, {type, m_atom})
+					    [refac_syntax:qualified_name([refac_util:update_ann(A, {type, m_atom})
 									  || A <- refac_syntax:qualified_name_segments(H)])| T]
 				    end
 			    end;
 			define -> do_ann_macro_in_attr(Args);
 			ifdef -> do_ann_macro_in_attr(Args);
-			ifndef ->do_ann_macro_in_attr(Args);
-		      _ -> Args
+			ifndef -> do_ann_macro_in_attr(Args);
+			_ -> Args
 		    end,
-	    {refac_misc:rewrite(Node, refac_syntax:attribute(Name1, Args1)), true};
+	    {refac_util:rewrite(Node, refac_syntax:attribute(Name1, Args1)), true};
 	record_field ->
 	    Name = refac_syntax:record_field_name(Node),
-	    Name1 = refac_misc:update_ann(Name,{type, rf_atom}),
+	    Name1 = refac_util:update_ann(Name,{type, rf_atom}),
 	    Value = refac_syntax:record_field_value(Node),
-	    {refac_misc:rewrite(Node, refac_syntax:record_field(Name1, Value)), true};
+	    {refac_util:rewrite(Node, refac_syntax:record_field(Name1, Value)), true};
 	atom ->
 	    As = refac_syntax:get_ann(Node),
 	    case lists:keysearch(type, 1, As) of
@@ -127,36 +126,36 @@ do_atom_annotation_in_attr(Node, _Others) ->
 		false ->
 		    case lists:keysearch(fun_def, 1, As) of
 			{value, {fun_def, {Mod, FunName, Ari, _, _}}} ->
-			    {refac_misc:update_ann(Node, {type, {f_atom, [Mod, FunName, Ari]}}), true};
+			    {refac_util:update_ann(Node, {type, {f_atom, [Mod, FunName, Ari]}}), true};
 			false ->
 			    {Node, false}
-		  end
-	  end;
-      _ ->
-	  {Node, false}
+		    end
+	    end;
+	_ ->
+	    {Node, false}
     end.
 
 do_ann_macro_in_attr(Args) ->
     case Args of
-      [] -> Args;
-      _ -> [H| T] = Args,
-	   case refac_syntax:type(H) of
-	     application ->
-		   Op = refac_syntax:application_operator(H),
-		   Op1 = case refac_syntax:type(Op) of
-			     atom -> refac_misc:delete_from_ann(
-				       refac_misc:update_ann(Op, {type, macro_atom}), fun_def);
-			     _ -> refac_misc:delete_from_ann(Op, fun_def)
-			 end,
-		   AppArgs = refac_syntax:application_arguments(H),
-		   [refac_misc:rewrite(H, refac_syntax:application(Op1, AppArgs))| T];
-	       _ ->
-		   case refac_syntax:type(H) of
-		       atom ->
-			   [refac_misc:update_ann(H, {type, macro_atom})| T];
-		       _ -> Args
-		   end
-	   end
+	[] -> Args;
+	_ -> [H| T] = Args,
+	     case refac_syntax:type(H) of
+		 application ->
+		     Op = refac_syntax:application_operator(H),
+		     Op1 = case refac_syntax:type(Op) of
+			       atom -> refac_util:delete_from_ann(
+					 refac_util:update_ann(Op, {type, macro_atom}), fun_def);
+			       _ -> refac_util:delete_from_ann(Op, fun_def)
+			   end,
+		     AppArgs = refac_syntax:application_arguments(H),
+		     [refac_util:rewrite(H, refac_syntax:application(Op1, AppArgs))| T];
+		 _ ->
+		     case refac_syntax:type(H) of
+			 atom ->
+			     [refac_util:update_ann(H, {type, macro_atom})| T];
+			 _ -> Args
+		     end
+	     end
     end.
 			 
 
@@ -173,37 +172,31 @@ find_fun(Form, Funs) ->
 	    Form
     end.
 
-
 do_type_ann(FileName, {{M, F, A}, Form}, TestFrameWorkUsed, SearchPaths, TabWidth, Pid) ->
     case refac_syntax:type(Form) of
-      function ->
-	  Name = refac_syntax:function_name(Form),
-	  Name1 = refac_misc:update_ann(Name, {type, {f_atom, [M, F, A]}}),
-	  Cs = [do_atom_annotation(FileName, C, TestFrameWorkUsed, SearchPaths, TabWidth, Pid)
-		|| C <- refac_syntax:function_clauses(Form)],
-	  CsPats = [refac_syntax:clause_patterns(C) || C <- refac_syntax:function_clauses(Form)],
-	  TypeInfo = get_all_type_info(Pid),
-	  ?debug("TypeInfo:\n~p\n", [TypeInfo]),
-	  CsPatsTypes = [[get_pat_type(P, TypeInfo) || P <- CPats] || CPats <- CsPats],
-	  ZippedCsPatsTypes = zip_list(CsPatsTypes),
-	  PatTypes = [lists:usort(Ts) || Ts <- ZippedCsPatsTypes],
-	  ?debug("MFA:\n~p\n", [{M, F, A}]),
-	  ?debug("ParTypes:\n~p\n", [[hd(PT) || PT <- PatTypes]]),
-	  case lists:all(fun (T) -> length(T) == 1
-			 end, PatTypes) andalso
-		 lists:any(fun (T) -> T /= [any] end, PatTypes)
-	      of
-	    true ->
-		  Ts = {{M, F, A}, {[hd(PT) || PT <- PatTypes], any}},
-		  add_to_type_env(Pid, [Ts]);
-	    _ -> ok
-	  end,
-	  Form1 = refac_misc:rewrite(Form, refac_syntax:function(Name1, Cs)),
-	  {{M, F, A}, Form1};
-      _ ->
-	  {{M, F, A}, Form}
+	function ->
+	    Name = refac_syntax:function_name(Form),
+	    Name1 = refac_util:update_ann(Name, {type, {f_atom, [M, F, A]}}),
+	    Cs = [do_atom_annotation(FileName, C, TestFrameWorkUsed, SearchPaths, TabWidth, Pid)
+		  || C <- refac_syntax:function_clauses(Form)],
+	    CsPats = [refac_syntax:clause_patterns(C) || C <- refac_syntax:function_clauses(Form)],
+	    TypeInfo = get_all_type_info(Pid),
+	    CsPatsTypes = [[get_pat_type(P, TypeInfo) || P <- CPats] || CPats <- CsPats],
+	    ZippedCsPatsTypes = zip_list(CsPatsTypes),
+	    PatTypes = [lists:usort(Ts) || Ts <- ZippedCsPatsTypes],
+	    case lists:all(fun (T) -> length(T) == 1 end, PatTypes) andalso 
+		   lists:any(fun (T) -> T /= [any] end, PatTypes)
+		of
+		true ->
+		    Ts = {{M, F, A}, {[hd(PT) || PT <- PatTypes], any}},
+		    add_to_type_env(Pid, [Ts]);
+		_ -> ok
+	    end,
+	    Form1 = refac_util:rewrite(Form, refac_syntax:function(Name1, Cs)),
+	    {{M, F, A}, Form1};
+	_ ->
+	    {{M, F, A}, Form}
     end.
-
 
 get_sorted_funs(ModName, AnnAST) ->
     F1 = fun (T, S) ->
@@ -217,12 +210,11 @@ get_sorted_funs(ModName, AnnAST) ->
 		     _ -> S
 		 end
 	 end,
-    CallerCallees = lists:usort(refac_syntax_lib:fold(F1, ordsets:new(), AnnAST)),
+    CallerCallees = lists:usort(ast_traverse_api:fold(F1, ordsets:new(), AnnAST)),
     {Sccs, _E} = refac_callgraph:construct(CallerCallees),
     lists:append(Sccs).
 
-
-%% This function is actually defined in wrangler_callgraph_server.erl, 
+%% This function is actually defined in wrangler_callgraph_server.erl,
 %% but I would like to keep it here so that this module does not 
 %% depends on the wrangler_callgraph_server.
 called_funs(Tree) ->
@@ -231,22 +223,22 @@ called_funs(Tree) ->
 		      application ->
 			  Op = refac_syntax:application_operator(T),
 			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
-			      {value, {fun_def, {M, F, A, _, _}}} 
-				when M =/= '_' andalso F =/= '_' ->
+			      {value, {fun_def, {M, F, A, _, _}}}
+				  when M =/= '_' andalso F =/= '_' ->
 				  ordsets:add_element({M, F, A}, S);
 			      _ -> S
 			  end;
 		      implicit_fun ->
 			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(T)) of
-			      {value, {fun_def, {M, F, A, _, _}}} 
-				when M =/= '_' andalso F =/= '_' ->
+			      {value, {fun_def, {M, F, A, _, _}}}
+				  when M =/= '_' andalso F =/= '_' ->
 				  ordsets:add_element({M, F, A}, S);
 			      _ -> S
 			  end;
 		      _ -> S
-		end
-	end,
-    refac_syntax_lib:fold(Fun, ordsets:new(), Tree).
+		  end
+	  end,
+    ast_traverse_api:fold(Fun, ordsets:new(), Tree).
 
 
 
@@ -259,107 +251,104 @@ do_atom_annotation(FileName, C, TestFrameWorkUsed, SearchPaths, TabWidth, Pid) -
 do_atom_annotation(Node, {FileName, Pats, TestFrameWorkUsed, SearchPaths, TabWidth, Pid}) ->
     case refac_syntax:type(Node) of
 	application ->
-	    Op = refac_syntax:application_operator(Node),
+            Op = refac_syntax:application_operator(Node),
 	    Args = refac_syntax:application_arguments(Node),
 	    Arity = length(Args),
-	    Op1 = case refac_syntax:type(Op) of
+            Op1 = case refac_syntax:type(Op) of
 		      variable ->
 			  add_type_info({f_atom, ['_', try_eval(FileName, Op, SearchPaths, TabWidth,
-								   fun is_atom/1), Arity]}, Op, Pid);
+								fun is_atom/1), Arity]}, Op, Pid);
 		      _ -> Op
 		  end,
-	    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op1))
-	    of
-		{value, {fun_def, {M, F, A, _, _}}}
-		  when M =/= '_' andalso F =/= '_' ->
+            case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op1)) of
+		{value, {fun_def, {M, F, A, _, _}}} when M =/= '_' andalso F =/= '_' ->
 		    Args1 = do_type_ann_args({M, F, A}, map_args(Pats, Args), Args, Pid),
-		    {refac_misc:rewrite(Node, refac_syntax:application(Op1, Args1)), true};
+                    {refac_util:rewrite(Node, refac_syntax:application(Op1, Args1)), true};
 		_ ->
 		    {Node, false}
 	    end;
-      module_qualifier ->
-	  Ann = refac_syntax:get_ann(Node),
-	  {value, {fun_def, {_, _, Arity, _, _}}} = lists:keysearch(fun_def, 1, Ann),
-	  Arg = refac_syntax:module_qualifier_argument(Node),
-	  Body = refac_syntax:module_qualifier_body(Node),
-	  Arg1 = add_type_info(m_atom, Arg, Pid),
-	  Body1 = add_type_info({f_atom, [try_eval(FileName, Arg, SearchPaths, TabWidth, fun is_atom/1),
-						 try_eval(FileName, Body, SearchPaths, TabWidth, fun is_atom/1), Arity]}, Body, Pid),
-	  {refac_misc:rewrite(Node, refac_syntax:module_qualifier(Arg1, Body1)), true};
-      tuple ->
-	  case refac_syntax:tuple_elements(Node) of
-	    [E1, E2, E3, E4] ->
-		case
-		  refac_syntax:type(E1) == atom andalso refac_syntax:atom_value(E1) == call
-		    andalso lists:member(eqc, TestFrameWorkUsed)
-		    of
-		  true ->
-		      NewE2 = add_type_info(m_atom, E2, Pid),
-		      NewE3 = add_type_info({f_atom, [try_eval(FileName, E2, SearchPaths, TabWidth, fun is_atom/1),
-							     try_eval(FileName, E3, SearchPaths, TabWidth, fun is_atom/1),
-							     try_eval_length(E4)]}, E3, Pid),
-		      {refac_misc:rewrite(Node, refac_syntax:tuple([E1, NewE2, NewE3, E4])), true};
-		  false ->
-		      {Node, false}
-		end;
-	    _ -> {Node, false}
-	  end;
-      infix_expr ->
-	  Op = refac_syntax:infix_expr_operator(Node),
-	  Left = refac_syntax:infix_expr_left(Node),
-	  Right = refac_syntax:infix_expr_right(Node),
-	  case refac_syntax:operator_name(Op) of
-	    '!' ->
-		case refac_syntax:type(Left) of
-		  atom ->
-		      Left1 = refac_misc:update_ann(Left, {type, p_atom}),
-		      {refac_misc:rewrite(Node, refac_syntax:infix_expr(Left1, Op, Right)), true};
-		  _ -> {Node, false}
-		end;
-	    _ -> {Node, false}
-	  end;
+	module_qualifier ->
+	    Ann = refac_syntax:get_ann(Node),
+	    {value, {fun_def, {_, _, Arity, _, _}}} = lists:keysearch(fun_def, 1, Ann),
+	    Arg = refac_syntax:module_qualifier_argument(Node),
+	    Body = refac_syntax:module_qualifier_body(Node),
+	    Arg1 = add_type_info(m_atom, Arg, Pid),
+	    Body1 = add_type_info({f_atom, [try_eval(FileName, Arg, SearchPaths, TabWidth, fun is_atom/1),
+					    try_eval(FileName, Body, SearchPaths, TabWidth, fun is_atom/1), Arity]}, Body, Pid),
+	    {refac_util:rewrite(Node, refac_syntax:module_qualifier(Arg1, Body1)), true};
+	tuple ->
+	    case refac_syntax:tuple_elements(Node) of
+		[E1, E2, E3, E4] ->
+		    case refac_syntax:type(E1) == atom andalso refac_syntax:atom_value(E1) == call
+								  andalso lists:member(eqc, TestFrameWorkUsed)
+			of
+			true ->
+			    NewE2 = add_type_info(m_atom, E2, Pid),
+			    NewE3 = add_type_info({f_atom, [try_eval(FileName, E2, SearchPaths, TabWidth, fun is_atom/1),
+							    try_eval(FileName, E3, SearchPaths, TabWidth, fun is_atom/1),
+							    try_eval_length(E4)]}, E3, Pid),
+			    {refac_util:rewrite(Node, refac_syntax:tuple([E1, NewE2, NewE3, E4])), true};
+			false ->
+			    {Node, false}
+		    end;
+		_ -> {Node, false}
+	    end;
+	infix_expr ->
+	    Op = refac_syntax:infix_expr_operator(Node),
+	    Left = refac_syntax:infix_expr_left(Node),
+	    Right = refac_syntax:infix_expr_right(Node),
+	    case refac_syntax:operator_name(Op) of
+		'!' ->
+		    case refac_syntax:type(Left) of
+			atom ->
+			    Left1 = refac_util:update_ann(Left, {type, p_atom}),
+			    {refac_util:rewrite(Node, refac_syntax:infix_expr(Left1, Op, Right)), true};
+			_ -> {Node, false}
+		    end;
+		_ -> {Node, false}
+	    end;
 	macro ->
 	    Name = refac_syntax:macro_name(Node),
-	    case refac_syntax:type(Name)of
+	    case refac_syntax:type(Name) of
 		atom ->
-		    Name1 = refac_misc:update_ann(Name, {type, macro_atom}),
+		    Name1 = refac_util:update_ann(Name, {type, macro_atom}),
 		    Args = refac_syntax:macro_arguments(Node),
-		    {refac_misc:rewrite(Node, refac_syntax:macro(Name1,Args)), true};
+		    {refac_util:rewrite(Node, refac_syntax:macro(Name1,Args)), true};
 		_ ->
 		    {Node, false}
-	    end;	    
-      record_expr ->
-	  Type = refac_syntax:record_expr_type(Node),
-	  Type1 = add_type_info(rt_atom, Type, Pid),
-	  Arg = refac_syntax:record_expr_argument(Node),
-	  Fields = refac_syntax:record_expr_fields(Node),
-	  {refac_misc:rewrite(Node, refac_syntax:record_expr(Arg, Type1, Fields)), true};
-      record_field ->
-	  Name = refac_syntax:record_field_name(Node),
-	  Name1 = add_type_info(rf_atom, Name, Pid),
-	  Value = refac_syntax:record_field_value(Node),
-	  {refac_misc:rewrite(Node, refac_syntax:record_field(Name1, Value)), true};
-      record_access ->
-	  Arg = refac_syntax:record_access_argument(Node),
-	  Type = refac_syntax:record_access_type(Node),
-	  Field = refac_syntax:record_access_field(Node),
-	  Type1 = add_type_info(rt_atom, Type, Pid),
-	  Field1 = add_type_info(rf_atom, Field, Pid),
-	  {refac_misc:rewrite(Node, refac_syntax:record_access(Arg, Type1, Field1)), true};
-      atom ->
-	  As = refac_syntax:get_ann(Node),
-	  case lists:keysearch(type, 1, As) of
-	    {value, _} ->
-		{Node, true};
-	    false ->
-		case lists:keysearch(fun_def, 1, As) of
-		  {value, {fun_def, {Mod, FunName, Ari, _, _}}} ->
-		      {refac_misc:update_ann(Node, {type, {f_atom, [Mod, FunName, Ari]}}), true};
-		  false ->
-		      {Node, false}
-		end
-	  end;
-      _ -> {Node, false}
+	    end;
+	record_expr ->
+	    Type = refac_syntax:record_expr_type(Node),
+	    Type1 = add_type_info(rt_atom, Type, Pid),
+	    Arg = refac_syntax:record_expr_argument(Node),
+	    Fields = refac_syntax:record_expr_fields(Node),
+	    {refac_util:rewrite(Node, refac_syntax:record_expr(Arg, Type1, Fields)), true};
+	record_field ->
+	    Name = refac_syntax:record_field_name(Node),
+	    Name1 = add_type_info(rf_atom, Name, Pid),
+	    Value = refac_syntax:record_field_value(Node),
+	    {refac_util:rewrite(Node, refac_syntax:record_field(Name1, Value)), true};
+	record_access ->
+	    Arg = refac_syntax:record_access_argument(Node),
+	    Type = refac_syntax:record_access_type(Node),
+	    Field = refac_syntax:record_access_field(Node),
+	    Type1 = add_type_info(rt_atom, Type, Pid),
+	    Field1 = add_type_info(rf_atom, Field, Pid),
+	    {refac_util:rewrite(Node, refac_syntax:record_access(Arg, Type1, Field1)), true};
+	atom ->
+	    As = refac_syntax:get_ann(Node),
+	    case lists:keysearch(type, 1, As) of
+		{value, _} ->
+		    {Node, true};
+		false ->
+		    case lists:keysearch(fun_def, 1, As) of
+			{value, {fun_def, {Mod, FunName, Ari, _, _}}} ->
+			    {refac_util:update_ann(Node, {type, {f_atom, [Mod, FunName, Ari]}}), true};
+			false ->
+			    {Node, false}
+		    end
+	    end;
+	_ -> {Node, false}
     end.
 
 do_type_ann_args({M, F, A}, MappedArgs, Args, Pid) ->
@@ -371,7 +360,7 @@ do_type_ann_args({M, F, A}, MappedArgs, Args, Pid) ->
 		    do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid)
 	    end;
 	{ParTypes, _RtnType} ->
-	    do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid)	    
+            do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid)	    
     end.
 
 do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid) ->
@@ -408,41 +397,40 @@ do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid) ->
 		      end
 	      end, ZippedParTypeArgs).
 
-
 add_type_info(Type, Node, Pid) when is_list(Type) ->
-    case refac_syntax:type(Node)==list of 
+    case refac_syntax:type(Node)==list of
 	true ->
 	    NodeList = refac_syntax:list_elements(Node),
 	    case length(Type)==length(NodeList) of
-		true -> 
-		    NodeList1 =do_type_ann_args_1(Type, NodeList, NodeList, Pid),
-		    refac_misc:rewrite(Node, refac_syntax:list(NodeList1));		
+		true ->
+		    NodeList1 = do_type_ann_args_1(Type, NodeList, NodeList, Pid),
+		    refac_util:rewrite(Node, refac_syntax:list(NodeList1));
 		false ->
 		    Node
-	    end;	    
+	    end;
 	_ ->
 	    Node
     end;
 add_type_info(Type, Node, Pid) ->
-    case is_tuple(Type) andalso refac_syntax:type(Node)==tuple of 
+    case is_tuple(Type) andalso refac_syntax:type(Node)==tuple of
 	true ->
 	    TypeList = tuple_to_list(Type),
 	    NodeList = refac_syntax:tuple_elements(Node),
 	    case length(TypeList)==length(NodeList) of
-		true -> 
-		    NodeList1 =do_type_ann_args_1(TypeList, NodeList, NodeList, Pid),
-		    refac_misc:rewrite(Node, refac_syntax:tuple(NodeList1));		
+		true ->
+		    NodeList1 = do_type_ann_args_1(TypeList, NodeList, NodeList, Pid),
+		    refac_util:rewrite(Node, refac_syntax:tuple(NodeList1));
 		false ->
 		    Node
-	    end;	    
+	    end;
 	false ->
-	    As =refac_syntax:get_ann(Node),
-	    Ps = [{Pos, {type, Type}}|| {value, {_,  Pos}} <- As],
-	    Ps1 =lists:append([[{Pos, {type, Type}}|| Pos<-Poss] ||{def, Poss} <-As]),
+	    As = refac_syntax:get_ann(Node),
+	    Ps = [{Pos, {type, Type}} || {value, {_, Pos}} <- As],
+	    Ps1 = lists:append([[{Pos, {type, Type}} || Pos <- Poss] || {def, Poss} <- As]),
 	    add_to_type_env(Pid, Ps++Ps1),
 	    case refac_syntax:type(Node) of
 		atom ->
-		    refac_misc:update_ann(Node,{type, Type});
+		    refac_util:update_ann(Node,{type, Type});
 		_ -> Node
 	    end
     end.
@@ -451,37 +439,40 @@ add_type_info(Type, Node, Pid) ->
 
 map_args(Pats, ActualArgs) ->
     Fun = fun (ActualArg) ->
-		  case refac_syntax:type(ActualArg) of
-		      literal ->
-			  ActualArg;
-		      variable ->
-			  As = refac_syntax:get_ann(ActualArg),
-			  case lists:keysearch(def, 1, As) of
-			      {value, {def, DefinePos}} ->
-				  {Ps1, _Ps2} = lists:splitwith(
-					      fun (P) -> case refac_syntax:type(P) of
-							     variable ->
-								 As1 = refac_syntax:get_ann(P),
-								 case lists:keysearch(def, 1, As1) of
-								     {value, {def, DefinePos}} ->
-									 false;
-								     _ -> true
-								 end;
-							     _ -> true
-							 end
-					      end, Pats),
-				  case length(Ps1) == length(Pats) of
-				      true ->
-					  ActualArg;
-				      _ ->
-					  fun (P) -> lists:nth(length(Ps1) + 1, P) end
-				  end;
-			      _ ->
-				  ActualArg
-			  end;
-		      _ -> ActualArg
-		  end
-	  end,
+                  case refac_syntax:is_literal(ActualArg) of 
+                      true -> 
+                          ActualArg;
+                      _ ->
+                          case refac_syntax:type(ActualArg) of
+                              variable ->
+                                  As = refac_syntax:get_ann(ActualArg),
+                                  case lists:keysearch(def, 1, As) of
+                                      {value, {def, DefinePos}} ->
+                                          {Ps1, _Ps2} = lists:splitwith(
+                                                          fun (P) -> case refac_syntax:type(P) of
+                                                                         variable ->
+                                                                             As1 = refac_syntax:get_ann(P),
+                                                                             case lists:keysearch(def, 1, As1) of
+                                                                                 {value, {def, DefinePos}} ->
+                                                                                     false;
+                                                                                 _ -> true
+                                                                             end;
+                                                                         _ -> true
+                                                                     end
+                                                          end, Pats),
+                                          case length(Ps1) == length(Pats) of
+                                              true ->
+                                                  ActualArg;
+                                              _ ->
+                                                  fun (P) -> lists:nth(length(Ps1) + 1, P) end
+                                          end;
+                                      _ ->
+                                          ActualArg
+                                  end;
+                              _ -> ActualArg
+                          end
+                  end
+          end,
     lists:map(Fun, ActualArgs).
    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
@@ -510,25 +501,25 @@ get_pat_type(P, TypeInfo) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 prop_type_info(AnnAST, TypeEnv) ->
     element(1, ast_traverse_api:stop_tdTP(fun do_prop_type_info/2, AnnAST, TypeEnv)).
-  
+
 do_prop_type_info(Node, TypeEnv) ->
-    case refac_syntax:type(Node) of 
+    case refac_syntax:type(Node) of
 	atom ->
 	    Pos = refac_syntax:get_pos(Node),
-	    Ts =lists:usort([Type||{P, Type} <-TypeEnv, P==Pos]),
+	    Ts = lists:usort([Type || {P, Type} <- TypeEnv, P==Pos]),
 	    case Ts of
 		[] ->
 		    {Node, true};
 		_ ->
 		    Type = element(2, lists:unzip(Ts)),
-		    case Type of 
+		    case Type of
 			[T] ->
-			    Node1 = refac_misc:update_ann(Node, {type, T});
+			    Node1 = refac_util:update_ann(Node, {type, T});
 			_ -> %% This node has multiple roles?
-			    Node1 = refac_misc:update_ann(Node, {type, Type})
+			    Node1 = refac_util:update_ann(Node, {type, Type})
 		    end,
 		    {Node1, true}
-	    end;	    
+	    end;
 	_ -> {Node, false}
     end.
   
@@ -606,14 +597,15 @@ try_eval(FileName, E, SearchPaths, TabWidth, Cond) ->
 		_ -> '_'
 	    end;
 	_ ->
-	    case refac_misc:try_eval(FileName, E, SearchPaths, TabWidth) of
+            case refac_util:try_eval(FileName, E, SearchPaths, TabWidth) of
 		{value, V} ->
 		    ?debug("V:\n~p\n", [V]),
 		    case Cond(V) of
 			true -> V;
 			_ -> '_'
 		    end;
-		{error, _} -> '_'
+		{error, _} -> 
+                    '_'
 	    end
     end.
 		    

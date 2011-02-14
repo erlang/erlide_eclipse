@@ -55,6 +55,7 @@
 %%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}.
 %% =================================================================================================         
 
+
 %%-spec(expr_search_in_buffer/5::(filename(), pos(), pos(), [dir()], integer()) -> 
 %%    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).
 expr_search_in_buffer(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SearchPaths, TabWidth) ->
@@ -62,10 +63,9 @@ expr_search_in_buffer(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, Se
 		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SearchPaths, TabWidth]),
     Es = get_expr_selected(FileName, Start, End, SearchPaths, TabWidth),
     Res = do_expr_search(FileName, Es, SearchPaths, TabWidth),
-    SE = refac_misc:get_start_end_loc(Es),
+    SE = refac_util:get_start_end_loc(Es),
     Res1 = [{FileName, SE}| Res -- [{FileName, SE}]],
     refac_code_search_utils:display_search_results(Res1, none, "indentical").
-
 
 %% ================================================================================================
 %% @doc Search for identical clones of an expression/ expression sequence across multiple modules.
@@ -94,40 +94,38 @@ expr_search_in_dirs(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, Sear
     Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
     Es = get_expr_selected(FileName, Start, End, SearchPaths, TabWidth),
     Res = lists:append([do_expr_search(F, Es, SearchPaths, TabWidth) || F <- Files]),
-    SE = refac_misc:get_start_end_loc(Es),
+    SE = refac_util:get_start_end_loc(Es),
     Res1 = [{FileName, SE}| Res -- [{FileName, SE}]],
     refac_code_search_utils:display_search_results(Res1, none, "indentical").
-
-
 
 %%-spec(expr_search_eclipse/4::(filename(), pos(), pos(), integer()) ->
 %%   {ok, [{{integer(), integer()}, {integer(), integer()}}]} | {error, string()}).
 expr_search_eclipse(FileName, Start, End, TabWidth) ->
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, [], TabWidth),
+    {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, [], TabWidth),
     case interface_api:pos_to_expr_list(AnnAST, Start, End) of
-      [E| Es] ->
-	  Res = case Es == [] of
-		  true ->
-		      search_one_expr(FileName, AnnAST, E);
-		  _ ->
-		      search_expr_seq(FileName, AnnAST, [E| Es])
-		end,
-	  {ok, [SE || {_File, SE} <- Res]};
-      _ -> {error, "You have not selected an expression!"}
+	[E| Es] ->
+	    Res = case Es == [] of
+		      true ->
+			  search_one_expr(FileName, AnnAST, E);
+		      _ ->
+			  search_expr_seq(FileName, AnnAST, [E| Es])
+		  end,
+	    {ok, [SE || {_File, SE} <- Res]};
+	_ -> {error, "You have not selected an expression!"}
     end.
 
 get_expr_selected(FileName, Start, End, SearchPaths, TabWidth) ->
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Es = interface_api:pos_to_expr_list(AnnAST, Start, End),
     case Es of
-      [] -> throw({error, "You have not selected an expression!"});
-      _ -> Es
+	[] -> throw({error, "You have not selected an expression!"});
+	_ -> Es
     end.
-   
+
 do_expr_search(FileName, Es, SearchPaths, TabWidth) ->
-    try  refac_util:parse_annotate_file(FileName, true, SearchPaths, TabWidth) of
+    try wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth) of
 	{ok, {AnnAST, _}} ->
-	    case length(Es) of 
+	    case length(Es) of
 		1 -> search_one_expr(FileName, AnnAST, hd(Es));
 		_ -> search_expr_seq(FileName, AnnAST, Es)
 	    end
@@ -141,54 +139,53 @@ search_one_expr(FileName, Tree, Exp) ->
     SimplifiedExp = simplify_expr(Exp),
     BdStructExp = refac_code_search_utils:var_binding_structure([Exp]),
     F = fun (T, Acc) ->
-		case refac_misc:is_expr(T) orelse 
-		    refac_syntax:type(T)==match_expr of
-		  true -> T1 = simplify_expr(T),
-			  case SimplifiedExp == T1 of
-			    true ->
-				case refac_code_search_utils:var_binding_structure([T]) of
-				  BdStructExp ->
-				      StartEndLoc = refac_misc:get_start_end_loc(T),
-				      [{FileName, StartEndLoc}| Acc];
-				  _ -> Acc
-				end;
-			    _ -> Acc
-			  end;
-		  _ -> Acc
+		case refac_util:is_expr(T) orelse refac_syntax:type(T)==match_expr of
+		    true -> T1 = simplify_expr(T),
+			    case SimplifiedExp == T1 of
+				true ->
+				    case refac_code_search_utils:var_binding_structure([T]) of
+					BdStructExp ->
+					    StartEndLoc = refac_util:get_start_end_loc(T),
+					    [{FileName, StartEndLoc}| Acc];
+					_ -> Acc
+				    end;
+				_ -> Acc
+			    end;
+		    _ -> Acc
 		end
 	end,
-    lists:reverse(refac_syntax_lib:fold(F, [], Tree)).
+    lists:reverse(ast_traverse_api:fold(F, [], Tree)).
     
 %% Search for the clones of an expresion sequence.
 search_expr_seq(FileName, Tree, ExpList) ->
     AllExpList = contained_exprs(Tree, length(ExpList)),
     lists:flatmap(fun(EL) ->get_clone(FileName, ExpList, EL) end, AllExpList).
-   
+
 get_clone(FileName, ExpList1, ExpList2) ->
     Len1 = length(ExpList1),
     Len2 = length(ExpList2),
     case Len1 =< Len2 of
-      true ->
-	  SimplifiedExpList1 = simplify_expr(ExpList1),
-	  SimplifiedExpList2 = simplify_expr(ExpList2),
-	  case lists:prefix(SimplifiedExpList1, SimplifiedExpList2) of
-	    true ->
-		List22 = lists:sublist(ExpList2, Len1),
-		BdList1 = refac_code_search_utils:var_binding_structure(ExpList1),
-		BdList2 = refac_code_search_utils:var_binding_structure(List22),
-		case BdList1 == BdList2 of
-		  true ->
-		      E1 = hd(List22),
-		      En = lists:last(List22),
-		      {StartLoc, _EndLoc} = refac_misc:get_start_end_loc(E1),
-		      {_StartLoc1, EndLoc1} = refac_misc:get_start_end_loc(En),
-		      [{FileName, {StartLoc, EndLoc1}}] ++ get_clone(FileName, ExpList1, tl(ExpList2));
-		  _ -> get_clone(FileName, ExpList1, tl(ExpList2))
-		end;
-	    _ ->
-		get_clone(FileName, ExpList1, tl(ExpList2))
-	  end;
-      _ -> []
+	true ->
+	    SimplifiedExpList1 = simplify_expr(ExpList1),
+	    SimplifiedExpList2 = simplify_expr(ExpList2),
+	    case lists:prefix(SimplifiedExpList1, SimplifiedExpList2) of
+		true ->
+		    List22 = lists:sublist(ExpList2, Len1),
+		    BdList1 = refac_code_search_utils:var_binding_structure(ExpList1),
+		    BdList2 = refac_code_search_utils:var_binding_structure(List22),
+		    case BdList1 == BdList2 of
+			true ->
+			    E1 = hd(List22),
+			    En = lists:last(List22),
+			    {StartLoc, _EndLoc} = refac_util:get_start_end_loc(E1),
+			    {_StartLoc1, EndLoc1} = refac_util:get_start_end_loc(En),
+			    [{FileName, {StartLoc, EndLoc1}}] ++ get_clone(FileName, ExpList1, tl(ExpList2));
+			_ -> get_clone(FileName, ExpList1, tl(ExpList2))
+		    end;
+		_ ->
+		    get_clone(FileName, ExpList1, tl(ExpList2))
+	    end;
+	_ -> []
     end.
 %% Simplify expressions by masking variable names, literals and locations.
 simplify_expr(Exp) when is_list(Exp) ->
@@ -244,28 +241,28 @@ set_default_ann(Node) ->
 
 %% get all the expression sequences contained in Tree.	    
 contained_exprs(Tree, MinLen) ->
-    F = fun(T, Acc) ->
+    F = fun (T, Acc) ->
 		case refac_syntax:type(T) of
 		    clause ->
 			Exprs = refac_syntax:clause_body(T),  %% HOW ABOUT CLAUSE_GUARD?
 			Acc ++ [Exprs];
-		    application -> 
+		    application ->
 			Exprs = refac_syntax:application_arguments(T),
 			Acc++ [Exprs];
-		    tuple -> 
+		    tuple ->
 			Exprs = refac_syntax:tuple_elements(T),
 			Acc++ [Exprs];
-		    lists -> 
+		    lists ->
 			Exprs = refac_syntax:list_prefix(T),
 			Acc++ [Exprs];
 		    block_expr ->
 			Exprs = refac_syntax:block_expr_body(T),
-			Acc++ [Exprs];    
+			Acc++ [Exprs];
 		    try_expr ->
 			Exprs = refac_syntax:try_expr_body(T),
 			Acc ++ [Exprs];
-		    _  -> Acc
+		    _ -> Acc
 		end
 	end,
-    Es = refac_syntax_lib:fold(F, [], Tree),
-    [E ||  E <- Es, length(E) >= MinLen].
+    Es = ast_traverse_api:fold(F, [], Tree),
+    [E || E <- Es, length(E) >= MinLen].
