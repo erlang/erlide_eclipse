@@ -16,6 +16,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -81,10 +83,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     private ErlangEditor fEditor;
     private CompositeActionGroup fActionGroups;
     private TreeViewer fOutlineViewer;
-    private MemberFilterActionGroup fMemberFilterActionGroup;
     private SortAction fSortAction;
     private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
     private ToggleLinkingAction fToggleLinkingAction;
+    private final PatternFilter fPatternFilter = new PatternFilter();
 
     public class ErlangOutlineViewer extends TreeViewer {
 
@@ -162,7 +164,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
      */
     @Override
-    protected TreeViewer getTreeViewer() {
+    public TreeViewer getTreeViewer() {
         return fOutlineViewer;
     }
 
@@ -334,7 +336,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes")
+        final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }
@@ -363,10 +366,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fEditor.outlinePageClosed();
             fEditor = null;
         }
-        if (fMemberFilterActionGroup != null) {
-            fMemberFilterActionGroup.dispose();
-            fMemberFilterActionGroup = null;
-        }
         ErlangCore.getModel().removeModelChangeListener(this);
 
         super.dispose();
@@ -388,9 +387,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
                 new ErlElementSorter(ErlElementSorter.SORT_ON_EXPORT), null,
                 false, ErlideUIPlugin.getDefault().getPreferenceStore());
         toolBarManager.add(fSortAction);
-        fMemberFilterActionGroup = new MemberFilterActionGroup(fOutlineViewer,
-                "org.eclipse.jdt.ui.JavaOutlinePage"); //$NON-NLS-1$
-        fMemberFilterActionGroup.contributeToToolBar(toolBarManager);
 
         final IMenuManager viewMenuManager = actionBars.getMenuManager();
         fToggleLinkingAction = new ToggleLinkingAction();
@@ -401,6 +397,14 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     public void sort(final boolean sorting) {
         ErlLogger.debug("sorting " + sorting);
+    }
+
+    public static IEclipsePreferences getPrefsNode() {
+        final String qualifier = ErlideUIPlugin.PLUGIN_ID;
+        final IScopeContext context = new InstanceScope();
+        final IEclipsePreferences eclipsePreferences = context
+                .getNode(qualifier);
+        return eclipsePreferences;
     }
 
     /**
@@ -421,7 +425,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             ErlideImage.setLocalImageDescriptors(this, "synced.gif");
             PlatformUI.getWorkbench().getHelpSystem()
                     .setHelp(this, IErlangHelpContextIds.LINK_EDITOR_ACTION);
-            final IEclipsePreferences prefsNode = MemberFilterActionGroup
+            final IEclipsePreferences prefsNode = ErlangOutlinePage
                     .getPrefsNode();
             final boolean isLinkingEnabled = prefsNode.getBoolean(
                     PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
@@ -434,7 +438,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          */
         @Override
         public void run() {
-            final IEclipsePreferences prefsNode = MemberFilterActionGroup
+            final IEclipsePreferences prefsNode = ErlangOutlinePage
                     .getPrefsNode();
             final boolean isChecked = isChecked();
             prefsNode.putBoolean(
@@ -446,6 +450,10 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fOpenAndLinkWithEditorHelper.setLinkWithEditor(isChecked);
         }
 
+    }
+
+    public PatternFilter getPatternFilter() {
+        return fPatternFilter;
     }
 
 }

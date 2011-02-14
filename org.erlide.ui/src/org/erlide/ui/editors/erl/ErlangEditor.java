@@ -147,7 +147,6 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
-import org.erlide.ui.editors.erl.outline.MemberFilterActionGroup;
 import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
@@ -1038,7 +1037,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     private boolean isLinkedToOutlinePage() {
-        final IEclipsePreferences prefsNode = MemberFilterActionGroup
+        final IEclipsePreferences prefsNode = ErlangOutlinePage
                 .getPrefsNode();
         final boolean isLinkingEnabled = prefsNode.getBoolean(
                 PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
