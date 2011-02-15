@@ -37,14 +37,13 @@ public class ShowCoverageAction extends CoverageAction {
             ModuleStats module = (ModuleStats)fs.getParent();
             String name = module.getLabel() + ".erl";
             
-            IErlModule m = ErlangCore.getModel().findModule(name);
-            IErlFunction f = m.findFunction(
-            		new ErlangFunction(fs.getLabel(), fs.getArity()));
+            log.debug(fs.getLineStart());
+            log.debug(fs.getLineEnd());
             
-            log.debug(f.getLineStart());
-            log.debug(f.getLineEnd());
+            marker.addAnnotationsFragment(name,
+                    fs.getLineStart(),
+                    fs.getLineEnd());
             
-            marker.addAnnotationsToFile(name);
         } else {
             marker.addAnnotations();
         }

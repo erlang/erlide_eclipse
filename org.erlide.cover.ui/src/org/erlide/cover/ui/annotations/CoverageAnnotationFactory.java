@@ -10,9 +10,6 @@ import org.eclipse.jface.text.source.Annotation;
  */
 public class CoverageAnnotationFactory {
 
-    public static final String FULL_COVERAGE = "org.erlide.cover.ui.fullCoverageAnnotation";
-    public static final String NO_COVERAGE = "org.erlide.cover.ui.noCoverageAnnotation";
-
     public static Annotation create(final String type) {
         return new Annotation(type, true, "");
     }
