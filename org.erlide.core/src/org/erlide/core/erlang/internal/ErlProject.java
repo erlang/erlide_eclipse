@@ -103,8 +103,9 @@ public class ErlProject extends Openable implements IErlProject {
     private Collection<IResource> nonErlangResources;
 
     private String fCachedExternalModules = null;
-
     private String fCachedExternalIncludes = null;
+    private Collection<IPath> fCachedSourceDirs = null;
+    private Collection<IPath> fCachedIncludeDirs = null;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -833,12 +834,14 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public void setIncludeDirs(final Collection<IPath> includeDirs) {
+        fCachedIncludeDirs = null;
         final IOldErlangProjectProperties properties = getProperties();
         properties.setIncludeDirs(includeDirs);
         properties.store();
     }
 
     public void setSourceDirs(final Collection<IPath> sourceDirs) {
+        fCachedSourceDirs = null;
         final IOldErlangProjectProperties properties = getProperties();
         properties.setSourceDirs(sourceDirs);
         properties.store();
@@ -852,13 +855,19 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public Collection<IPath> getSourceDirs() {
-        final IOldErlangProjectProperties properties = getProperties();
-        return properties.getSourceDirs();
+        if (fCachedSourceDirs == null) {
+            final IOldErlangProjectProperties properties = getProperties();
+            fCachedSourceDirs = properties.getSourceDirs();
+        }
+        return fCachedSourceDirs;
     }
 
     public Collection<IPath> getIncludeDirs() {
-        final IOldErlangProjectProperties properties = getProperties();
-        return properties.getIncludeDirs();
+        if (fCachedIncludeDirs == null) {
+            final IOldErlangProjectProperties properties = getProperties();
+            fCachedIncludeDirs = properties.getIncludeDirs();
+        }
+        return fCachedIncludeDirs;
     }
 
     public IPath getOutputLocation() {
@@ -884,6 +893,8 @@ public class ErlProject extends Openable implements IErlProject {
     public void setAllProperties(final IOldErlangProjectProperties bprefs) {
         fCachedExternalIncludes = null;
         fCachedExternalModules = null;
+        fCachedIncludeDirs = null;
+        fCachedSourceDirs = null;
         final IOldErlangProjectProperties properties = getProperties();
         properties.copyFrom(bprefs);
         properties.store();
