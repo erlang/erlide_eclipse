@@ -1,6 +1,7 @@
 package org.erlide.cover.views.model;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +33,10 @@ public class ModuleSet {
 
     public static void clear() {
         map.clear();
+    }
+    
+    public static Iterator<ModuleStats> iterator() {
+        return map.values().iterator();
     }
 
 }

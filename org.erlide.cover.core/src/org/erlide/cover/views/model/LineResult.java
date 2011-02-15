@@ -40,5 +40,18 @@ public class LineResult implements Comparable<LineResult> {
     public int compareTo(final LineResult lineRes2) {
         return lineNum - lineRes2.getLineNum();
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof LineResult &&
+                ((LineResult)obj).getLineNum() == lineNum)
+            return true;
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        return lineNum;
+    }
 
 }

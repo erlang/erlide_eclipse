@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.text.BadLocationException;
@@ -36,21 +37,25 @@ import org.erlide.cover.views.model.ModuleStats;
 public class EditorTracker implements ICoverAnnotationMarker {
 
     private static EditorTracker editorTracker;
-    
+
     private final IWorkbench workbench;
+    private CoverageMap coverage;
+
     private Logger log;
 
     private EditorTracker(final IWorkbench workbench) {
         this.workbench = workbench;
         log = Logger.getLogger(getClass());
-        
+
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
         for (final IWorkbenchWindow w : windows) {
             w.getPartService().addPartListener(partListener);
         }
 
-        workbench.addWindowListener(windowListener);
+        coverage = new CoverageMap();
+
+        this.workbench.addWindowListener(windowListener);
     }
 
     public static synchronized EditorTracker getInstance() {
@@ -70,14 +75,36 @@ public class EditorTracker implements ICoverAnnotationMarker {
         }
     }
 
+    /**
+     * Marks coverage of all tested modules (if they are opened)
+     */
     public void addAnnotations() {
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
+
+        createAnnotationMap();
 
         for (final IWorkbenchWindow w : windows) {
             for (final IWorkbenchPage page : w.getPages()) {
                 for (final IEditorReference editor : page.getEditorReferences()) {
                     annotateEditor(editor.getEditor(false));
                 }
+            }
+        }
+    }
+
+    private void createAnnotationMap() {
+
+        Iterator<ModuleStats> it = ModuleSet.iterator();
+
+        while (it.hasNext()) {
+            ModuleStats module = it.next();
+            List<LineResult> list = module.getLineResults();
+            String modName = module.getLabel() + ".erl";
+
+            for (LineResult lr : list) {
+
+                coverage.addAnnotation(modName, lr, null);
+
             }
         }
     }
@@ -94,6 +121,17 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         if (currentEditor.getTitle().equals(fileName)) {
 
+            ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
+
+            if (module == null)
+                return;
+
+            List<LineResult> list = module.getLineResults();
+
+            for (final LineResult lr : list) {
+                coverage.addAnnotation(fileName, lr, null);
+            }            
+
             annotateEditor(currentEditor);
         }
 
@@ -105,6 +143,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         if (currentEditor.getTitle().equals(fileName)) {
 
+            coverage.removeAll(fileName);
+            
             clearAnnotations(currentEditor);
         }
     }
@@ -124,25 +164,15 @@ public class EditorTracker implements ICoverAnnotationMarker {
                 && currentEditor instanceof ITextEditor) {
 
             ITextEditor editor = (ITextEditor) currentEditor;
-            String modName = fileName.replace(".erl", "");
-            ModuleStats module = ModuleSet.get(modName);
-
-            if (module == null)
-                return;
-
-            List<LineResult> list = module.getLineResults();
-
-            final Map<Position, Annotation> curAnn = buildAnnotationsMap(editor);
+            final Set<LineResult> list = coverage.getLineList(editor.getTitle());
 
             for (final LineResult lr : list) {
 
                 if (lr.getLineNum() < start
                         || (end != -1 && lr.getLineNum() > end))
                     continue;
-                
-                log.debug(lr.getLineNum());
 
-                markLine(curAnn, editor, lr);
+                markLine(editor, lr);
 
             }
 
@@ -166,101 +196,51 @@ public class EditorTracker implements ICoverAnnotationMarker {
                 && currentEditor instanceof ITextEditor) {
 
             ITextEditor editor = (ITextEditor) currentEditor;
-            IDocument doc = editor.getDocumentProvider().getDocument(
-                    editor.getEditorInput());
             IAnnotationModel annMod = editor.getDocumentProvider()
                     .getAnnotationModel(editor.getEditorInput());
 
-            final Map<Position, Annotation> curAnn = buildAnnotationsMap(editor);
-
-            String modName = fileName.replace(".erl", "");
-            ModuleStats module = ModuleSet.get(modName);
-
-            if (module == null)
-                return;
-
-            List<LineResult> list = module.getLineResults();
+            final Set<LineResult> list = coverage.getLineList(editor.getTitle());
 
             for (final LineResult lr : list) {
 
                 if (lr.getLineNum() < start
                         || (end != -1 && lr.getLineNum() > end))
                     continue;
-                
+
                 log.debug(lr.getLineNum());
-
-                try {
-
-                    IRegion reg = doc.getLineInformation(lr.getLineNum() - 1);
-                    int length = reg.getLength();
-                    int offset = reg.getOffset();
-                    Position pos = new Position(offset, length);
-                    
-                    Annotation annotation;
-                    if( ((annotation = curAnn.get(pos)) != null) && 
-                            (annotation.getType().equals(CoverageTypes.FULL_COVERAGE) ||
-                                    annotation.getType().equals(CoverageTypes.NO_COVERAGE))) {
-                        
-                        annMod.removeAnnotation(annotation);
-                    }
-                    
-
-                } catch (BadLocationException e) {
-                    log.error(e);
-                    e.printStackTrace();
+                if(coverage.containsAnnotation(editor.getTitle(), lr)) {
+                    Annotation ann = coverage.getAnnotation(editor.getTitle(), lr);
+                    annMod.removeAnnotation(ann);
+                    coverage.removeAnnotation(editor.getTitle(), lr);
                 }
             }
-
         }
     }
 
     public void annotateEditor(final IWorkbenchPart part) {
-
-        // TODO:add boundaries for line numbers
 
         if (!(part instanceof ITextEditor)) {
             return;
         }
 
         final ITextEditor editor = (ITextEditor) part;
-        final String modName = editor.getTitle().replace(".erl", "");
-        final ModuleStats module = ModuleSet.get(modName);
 
-        if (module == null)
-            return;
+        final Set<LineResult> list = coverage.getLineList(editor.getTitle());
 
-        final List<LineResult> list = module.getLineResults();
-
-        final Map<Position, Annotation> curAnn = buildAnnotationsMap(editor);
+        // final Map<Position, Annotation> curAnn = buildAnnotationsMap(editor);
 
         for (final LineResult lr : list) {
 
             if (lr.getLineNum() == 0)
                 continue;
 
-            markLine(curAnn, editor, lr);
+            markLine(editor, lr);
 
         }
 
     }
 
-    private Map<Position, Annotation> buildAnnotationsMap(
-            final ITextEditor editor) {
-        final Map<Position, Annotation> curAnn = new HashMap<Position, Annotation>();
-
-        final IAnnotationModel annMod = editor.getDocumentProvider()
-                .getAnnotationModel(editor.getEditorInput());
-
-        final Iterator it = annMod.getAnnotationIterator();
-        while (it.hasNext()) {
-            final Annotation ann = (Annotation) it.next();
-            curAnn.put(annMod.getPosition(ann), ann);
-        }
-        return curAnn;
-    }
-
-    private void markLine(final Map<Position, Annotation> curAnn,
-            final ITextEditor editor, LineResult lr) {
+    private void markLine(final ITextEditor editor, LineResult lr) {
 
         final IDocument doc = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
@@ -284,13 +264,19 @@ public class EditorTracker implements ICoverAnnotationMarker {
                         .create(CoverageTypes.NO_COVERAGE);
             }
 
-            if (!curAnn.containsKey(pos)
-                    || curAnn.containsKey(pos)
-                    && curAnn.get(pos).getType()
-                            .equals(CoverageTypes.NO_COVERAGE)
-                    && annotation.getType().equals(
-                            CoverageTypes.FULL_COVERAGE)) {
+            Annotation lastAnn = coverage.getAnnotation(editor.getTitle(),
+                    lr);
+            if (lastAnn == null) {
                 annMod.addAnnotation(annotation, pos);
+                coverage.addAnnotation(editor.getTitle(), lr,
+                        annotation);
+            } else if (lastAnn.getType().equals(CoverageTypes.NO_COVERAGE)
+                    && annotation.getType().equals(CoverageTypes.FULL_COVERAGE)) {
+
+                annMod.removeAnnotation(lastAnn);
+                annMod.addAnnotation(annotation, pos);
+                coverage.addAnnotation(editor.getTitle(), lr,
+                        annotation);
             }
 
         } catch (final BadLocationException e) {
@@ -306,6 +292,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
     public void clearAllAnnotations() {
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
+        coverage.removeAll();
+        
         for (final IWorkbenchWindow w : windows) {
             for (final IWorkbenchPage page : w.getPages()) {
                 for (final IEditorReference editor : page.getEditorReferences()) {
@@ -327,8 +315,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             while (it.hasNext()) {
                 final Annotation annotation = (Annotation) it.next();
-                if (annotation.getType().equals(
-                        CoverageTypes.FULL_COVERAGE)
+                if (annotation.getType().equals(CoverageTypes.FULL_COVERAGE)
                         || annotation.getType().equals(
                                 CoverageTypes.NO_COVERAGE)) {
                     annMod.removeAnnotation(annotation);
