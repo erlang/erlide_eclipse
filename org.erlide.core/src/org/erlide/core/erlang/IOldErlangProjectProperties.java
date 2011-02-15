@@ -35,8 +35,6 @@ public interface IOldErlangProjectProperties {
 
     RuntimeInfo getRuntimeInfo();
 
-    boolean hasSourceDir(final IPath fullPath);
-
     RuntimeVersion getRuntimeVersion();
 
     void preferenceChange(final PreferenceChangeEvent event);

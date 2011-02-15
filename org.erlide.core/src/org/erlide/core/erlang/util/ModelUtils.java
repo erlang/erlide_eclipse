@@ -133,7 +133,7 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<IErlModule> findExternalModulesFromName(
+    private static List<IErlModule> findExternalModulesFromName(
             final String moduleName, final IErlProject project)
             throws CoreException {
         final List<IErlModule> result = Lists.newArrayList();

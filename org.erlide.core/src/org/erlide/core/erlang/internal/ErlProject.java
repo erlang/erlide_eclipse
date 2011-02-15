@@ -886,8 +886,16 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public boolean hasSourceDir(final IPath fullPath) {
-        final IOldErlangProjectProperties properties = getProperties();
-        return properties.hasSourceDir(fullPath);
+        final IPath f = fullPath.removeFirstSegments(1);
+        for (final IPath s : getSourceDirs()) {
+            if (s.equals(f)) {
+                return true;
+            }
+            if (fullPath.segmentCount() == 1 && s.toString().equals(".")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setAllProperties(final IOldErlangProjectProperties bprefs) {

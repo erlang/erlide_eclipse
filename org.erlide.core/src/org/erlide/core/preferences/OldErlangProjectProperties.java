@@ -331,26 +331,6 @@ public final class OldErlangProjectProperties implements
      * (non-Javadoc)
      * 
      * @see
-     * org.erlide.core.preferences.IOldErlangProjectProperties#hasSourceDir(
-     * org.eclipse.core.runtime.IPath)
-     */
-    public boolean hasSourceDir(final IPath fullPath) {
-        final IPath f = fullPath.removeFirstSegments(1);
-        for (final IPath s : getSourceDirs()) {
-            if (s.equals(f)) {
-                return true;
-            }
-            if (fullPath.segmentCount() == 1 && s.toString().equals(".")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * org.erlide.core.preferences.IOldErlangProjectProperties#getRuntimeVersion
      * ()
      */
