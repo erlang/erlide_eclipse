@@ -172,7 +172,10 @@ public class ModelUtils {
             throws ErlModelException {
         for (final IErlElement i : parent.getChildrenOfKind(Kind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
-            if (external.getExternalName().equals(segment)) {
+            final String externalName = external.getExternalName();
+            ErlLogger
+                    .debug("externalName %s segment %s", externalName, segment);
+            if (externalName.equals(segment)) {
                 return external;
             }
         }
@@ -184,6 +187,8 @@ public class ModelUtils {
         final List<String> path = StringUtils.split(DELIMITER, modulePath);
         final IErlElement childNamed = ErlangCore.getModel().getChildNamed(
                 path.get(0));
+        ErlLogger.debug(">>childNamed %s", (childNamed == null ? "<null>"
+                : childNamed));
         if (childNamed instanceof IParent) {
             IParent parent = (IParent) childNamed;
             final int n = path.size() - 1;
@@ -199,6 +204,8 @@ public class ModelUtils {
                     break;
                 }
                 parent = getElementWithExternalName(parent, path.get(i));
+                ErlLogger.debug(">>parent %s", (parent == null ? "<null>"
+                        : parent));
             }
             if (parent != null) {
                 final IErlElement child = parent.getChildNamed(path.get(n));

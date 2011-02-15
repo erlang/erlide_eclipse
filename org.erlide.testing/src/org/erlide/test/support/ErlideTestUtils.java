@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
@@ -155,13 +156,17 @@ public class ErlideTestUtils {
 			throws CoreException {
 		final IProject project = erlProject.getProject();
 		project.delete(true, null);
-		final List<IErlModule> list = Lists.newArrayList(modules);
-		for (final IErlModule module : list) {
-			if (module.getProject() == erlProject) {
-				deleteModule(module);
+		if (modules != null) {
+			final List<IErlModule> list = Lists.newArrayList(modules);
+			for (final IErlModule module : list) {
+				if (module.getProject() == erlProject) {
+					deleteModule(module);
+				}
 			}
 		}
-		projects.remove(project);
+		if (projects != null) {
+			projects.remove(project);
+		}
 		final IErlModel model = ErlangCore.getModel();
 		model.resourceChanged(null);
 		model.open(null);
@@ -189,6 +194,20 @@ public class ErlideTestUtils {
 
 	public static void initProjects() {
 		projects = Lists.newArrayList();
+		try {
+			final IErlModel model = ErlangCore.getModel();
+			model.open(null);
+			final List<IErlElement> children = model.getChildren();
+			for (final IErlElement child : children) {
+				if (child instanceof IErlProject) {
+					final IErlProject project = (IErlProject) child;
+					deleteProject(project);
+				}
+			}
+		} catch (final CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static IErlModule createModuleFromText(final String initialText) {

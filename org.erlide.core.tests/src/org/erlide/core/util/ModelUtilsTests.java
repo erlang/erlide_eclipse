@@ -33,6 +33,7 @@ import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -455,10 +456,12 @@ public class ModelUtilsTests {
             assertNotNull(module);
             final String externalModulePath = ModelUtils
                     .getExternalModulePath(module);
+            ErlLogger.debug(" >> %s", externalModulePath);
             final IErlModule module2 = ModelUtils
                     .getModuleFromExternalModulePath(externalModulePath);
             // then
             // we should find it
+            assertNotNull(module2);
             assertEquals(externalFileName, module.getName());
             assertEquals(module, module2);
         } finally {

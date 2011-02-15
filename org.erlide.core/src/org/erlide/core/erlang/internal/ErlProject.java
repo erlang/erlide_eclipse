@@ -145,8 +145,12 @@ public class ErlProject extends Openable implements IErlProject {
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
                     elems.length + 1);
+            ErlLogger.debug(">>adding externals");
             addExternals(children);
+            ErlLogger.debug("childcount %d", children.size());
+            ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
+            ErlLogger.debug("childcount %d", children.size());
             final IErlModelManager modelManager = ErlangCore.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {

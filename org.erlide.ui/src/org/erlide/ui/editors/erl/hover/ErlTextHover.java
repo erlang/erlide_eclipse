@@ -277,9 +277,11 @@ public class ErlTextHover implements ITextHover,
                     .getBuildBackend(project);
 
             final IErlModel model = ErlangCore.getModel();
+            final String externalModulesString = erlProject != null ? erlProject
+                    .getExternalModulesString() : null;
             r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,
                     ErlangToolkit.createScannerModuleName(module), fImports,
-                    erlProject.getExternalModulesString(), model.getPathVars());
+                    externalModulesString, model.getPathVars());
             // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
             final OtpErlangTuple t = (OtpErlangTuple) r1;
             if (Util.isOk(t)) {
