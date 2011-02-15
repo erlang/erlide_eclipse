@@ -2,7 +2,6 @@ package org.erlide.core.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -75,7 +74,7 @@ public class ModelUtilsTests {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModules();
+        ErlideTestUtils.initModulesAndHeaders();
     }
 
     @After
@@ -164,7 +163,7 @@ public class ModelUtilsTests {
         moduleD.open(null);
         // when
         // looking for it with ?MODULE
-        final IErlElement element1 = ModelUtils.findExternalFunction("?MODULE",
+        final IErlElement element1 = ModelUtils.findFunction("?MODULE",
                 new ErlangFunction("f", 0), null, projects[0], false, moduleD);
         // then
         // it should be found
@@ -190,7 +189,7 @@ public class ModelUtilsTests {
                 ErlangToolkit.createScannerModuleName(moduleE), 49,
                 ModelUtils.getImportsAsList(moduleE),
                 project.getExternalModulesString(), model.getPathVars());
-        final IErlElement function = ModelUtils.findExternalFunction(
+        final IErlElement function = ModelUtils.findFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 false, moduleE);
         // final OpenResult res2 = ErlideOpen.open(backend,
@@ -214,7 +213,7 @@ public class ModelUtilsTests {
         // a module with includes and record
         final IErlProject project = projects[0];
         final IErlModule header = ErlideTestUtils
-                .createModule(project, "a.hrl",
+                .createHeader(project, "a.hrl",
                         "-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
         final IErlModule module = ErlideTestUtils
                 .createModule(
@@ -223,13 +222,14 @@ public class ModelUtilsTests {
                         "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
+        project.open(null);
         final IErlPreprocessorDef preprocessorDef1 = ModelUtils
-                .findPreprocessorDef(module, "rec1", Kind.RECORD_DEF, "");
+                .findPreprocessorDef(module, "rec1", Kind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef2 = ModelUtils
-                .findPreprocessorDef(header, "rec1", Kind.RECORD_DEF, "");
+                .findPreprocessorDef(header, "rec1", Kind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef3 = ModelUtils
                 .findPreprocessorDef(Arrays.asList(projects), "f.erl", "rec2",
-                        Kind.RECORD_DEF, "");
+                        Kind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -256,7 +256,7 @@ public class ModelUtilsTests {
         // when
         // looking for the record
         final IErlPreprocessorDef preprocessorDef = ModelUtils
-                .findPreprocessorDef(module, "file_info", Kind.RECORD_DEF, "");
+                .findPreprocessorDef(module, "file_info", Kind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -281,9 +281,9 @@ public class ModelUtilsTests {
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
         final List<IErlPreprocessorDef> macrodDefs = ModelUtils
-                .getPreprocessorDefs(module, Kind.MACRO_DEF, "");
+                .getAllPreprocessorDefs(module, Kind.MACRO_DEF);
         final List<IErlPreprocessorDef> recordDefs = ModelUtils
-                .getPreprocessorDefs(module, Kind.RECORD_DEF, "");
+                .getAllPreprocessorDefs(module, Kind.RECORD_DEF);
         assertEquals(2, macrodDefs.size());
         assertEquals(3, recordDefs.size());
     }
@@ -475,37 +475,6 @@ public class ModelUtilsTests {
     }
 
     @Test
-    public void findIncludeFile() throws Exception {
-        // given
-        // a project with a module and an include including file.hrl
-        final IErlProject project = projects[0];
-        final String headerName = "a.hrl";
-        final IErlModule header = ErlideTestUtils
-                .createModule(
-                        project,
-                        headerName,
-                        "-include_lib(\"kernel/include/file.hrl\").\n-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
-        header.open(null);
-        final IErlModule module = ErlideTestUtils
-                .createModule(
-                        project,
-                        "f.erl",
-                        "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
-                                + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
-        module.open(null);
-        // when
-        // looking for the include
-        final String s = ModelUtils.findIncludeFile(project, headerName, "");
-        final String filePath = ModelUtils.findIncludeFile(project, "file.hrl",
-                "");
-        // then
-        // it should be found
-        assertEquals(header.getFilePath(), s);
-        assertNotNull(filePath);
-        assertNotSame("file.hrl", filePath);
-    }
-
-    @Test
     public void findExternalIncludeFileOnIncludePath() throws Exception {
         File externalHeader = null;
         IErlProject project = null;
@@ -563,8 +532,7 @@ public class ModelUtilsTests {
         module.open(null);
         // when
         // looking for the typespec
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, "date",
-                "");
+        final IErlTypespec typespec = ModelUtils.findTypespec(module, "date");
         // then
         // it should be found
         assertNotNull(typespec);

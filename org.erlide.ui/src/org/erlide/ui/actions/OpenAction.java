@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
@@ -35,8 +33,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -219,12 +215,10 @@ public class OpenAction extends SelectionDispatchAction {
                     elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
-            found = ModelUtils.findPreprocessorDef(module, res.getName(), kind,
-                    erlProject.getExternalIncludesString());
+            found = ModelUtils.findPreprocessorDef(module, res.getName(), kind);
         } else if (res.isField()) {
             final IErlRecordDef def = (IErlRecordDef) ModelUtils
-                    .findPreprocessorDef(module, res.getFun(), Kind.RECORD_DEF,
-                            erlProject.getExternalIncludesString());
+                    .findPreprocessorDef(module, res.getFun(), Kind.RECORD_DEF);
             if (def != null) {
                 found = def.getFieldNamed(res.getName());
             }
@@ -235,25 +229,8 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findInclude(final IErlModule module,
             final IErlProject project, final OpenResult res,
             final IErlModel model) throws CoreException, BackendException {
-        IContainer parent = null;
-        if (module != null) {
-            final IResource resource = module.getResource();
-            parent = resource.getParent();
-        }
-        final IResource r = ResourceUtil
-                .recursiveFindNamedModuleResourceWithReferences(
-                        project.getProject(), res.getName(),
-                        PluginUtils.getIncludePathFilterCreator(parent));
-        if (r instanceof IFile) {
-            final IFile file = (IFile) r;
-            return model.findModule(file);
-        } else {
-            final String includeFile = ModelUtils.findIncludeFile(project,
-                    res.getName(), project.getExternalIncludesString());
-            if (includeFile != null) {
-                return ModelUtils.findExternalModuleFromPath(includeFile,
-                        project);
-            }
+        if (project != null) {
+            return project.findIncludeFile(res.getName());
         }
         return null;
     }
@@ -269,10 +246,8 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IErlElement element,
             final boolean checkAllProjects) throws BackendException,
             CoreException {
-        final IErlModel model = ErlangCore.getModel();
         if (isTypeDefOrRecordDef(element)) {
-            return ModelUtils.findTypespec(module, res.getFun(),
-                    erlProject.getExternalIncludesString());
+            return ModelUtils.findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = module
                 .findFunction(res.getFunction());
@@ -285,6 +260,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (module != null) {
             final IErlImport ei = module.findImport(res.getFunction());
             if (ei != null) {
+                final IErlModel model = ErlangCore.getModel();
                 moduleName = ei.getImportModule();
                 res2 = ErlideOpen.getSourceFromModule(backend,
                         model.getPathVars(), moduleName,
@@ -294,7 +270,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (res2 instanceof OtpErlangString && moduleName != null) {
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            return ModelUtils.findExternalFunction(moduleName,
+            return ModelUtils.findFunction(moduleName,
                     res.getFunction(), modulePath, erlProject,
                     checkAllProjects, module);
         } else {
@@ -310,13 +286,13 @@ public class OpenAction extends SelectionDispatchAction {
             return ModelUtils.findExternalType(module, res.getName(),
                     res.getFun(), res.getPath(), project, checkAllProjects);
         }
-        final IErlElement result = ModelUtils.findExternalFunction(
+        final IErlElement result = ModelUtils.findFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 checkAllProjects, module);
         if (result instanceof IErlFunction) {
             return result;
         }
-        return ModelUtils.findExternalFunction(res.getName(),
+        return ModelUtils.findFunction(res.getName(),
                 new ErlangFunction(res.getFun(), ErlangFunction.ANY_ARITY),
                 res.getPath(), project, checkAllProjects, module);
     }

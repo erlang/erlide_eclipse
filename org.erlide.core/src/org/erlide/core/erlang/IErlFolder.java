@@ -50,9 +50,9 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
      */
     Collection<IErlModule> getModules() throws ErlModelException;
 
-    IErlModule getModule(String name) throws ErlModelException;
-
-    IErlModule getModuleExt(String name);
+    // IErlModule getModule(String name) throws ErlModelException;
+    //
+    // IErlModule getModuleIgnoreCase(String name) throws ErlModelException;
 
     boolean isOnSourcePath();
 

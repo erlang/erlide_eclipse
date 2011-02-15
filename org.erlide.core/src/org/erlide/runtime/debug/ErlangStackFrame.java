@@ -38,20 +38,20 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlangStackFrame extends ErlangDebugElement implements
         IStackFrame, IDropToFrame {
 
-    private final String fModule;
+    private final String fModuleName;
     private final ErlangProcess fParent;
     private final int fLineNumber;
     List<ErlangVariable> bindings;
     int stackFrameNo;
     private String clauseHead;
 
-    public ErlangStackFrame(final String module, final ErlangProcess parent,
-            final IDebugTarget target, int lineNumber,
-            final ErlangFunction function, final OtpErlangList bindings,
-            final int stackFrameNo) {
+    public ErlangStackFrame(final String moduleName,
+            final ErlangProcess parent, final IDebugTarget target,
+            int lineNumber, final ErlangFunction function,
+            final OtpErlangList bindings, final int stackFrameNo) {
         super(target);
         fParent = parent;
-        fModule = module;
+        fModuleName = moduleName;
         this.stackFrameNo = stackFrameNo;
         final List<ErlangVariable> framesReversed = new ArrayList<ErlangVariable>(
                 bindings.arity());
@@ -61,7 +61,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
                 final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);
                 final OtpErlangObject value = t.elementAt(1);
                 framesReversed.add(new ErlangVariable(target,
-                        nameA.atomValue(), false, value, parent, module,
+                        nameA.atomValue(), false, value, parent, moduleName,
                         stackFrameNo));
             }
         }
@@ -72,20 +72,27 @@ public class ErlangStackFrame extends ErlangDebugElement implements
         }
         this.bindings = frames;
         final IErlModel model = ErlModelManager.getDefault().getErlangModel();
-        final IErlModule m = model.findModule(module);
+        IErlModule module;
+        try {
+            module = model.findModule(moduleName);
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e);
+            module = null;
+        }
         clauseHead = null;
-        if (m != null) {
+        if (module != null) {
             try {
-                m.open(null);
+                module.open(null);
                 if (lineNumber != -1) {
-                    final IErlElement e = m.getElementAtLine(lineNumber - 1);
+                    final IErlElement e = module
+                            .getElementAtLine(lineNumber - 1);
                     if (e instanceof IErlFunctionClause) {
                         final IErlFunctionClause clause = (IErlFunctionClause) e;
                         clauseHead = clause.getFunctionName()
                                 + clause.getHead();
                     }
                 } else if (function != null) {
-                    final IErlFunction f = m.findFunction(function);
+                    final IErlFunction f = module.findFunction(function);
                     if (f != null) {
                         lineNumber = f.getLineStart() + 1;
                         clauseHead = f.getFunctionName() + f.getHead();
@@ -99,7 +106,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
     }
 
     public String getModule() {
-        return fModule;
+        return fModuleName;
     }
 
     public IThread getThread() {
@@ -127,7 +134,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
     }
 
     public String getName() throws DebugException {
-        return "<" + fModule + ">";
+        return "<" + fModuleName + ">";
     }
 
     public IRegisterGroup[] getRegisterGroups() throws DebugException {

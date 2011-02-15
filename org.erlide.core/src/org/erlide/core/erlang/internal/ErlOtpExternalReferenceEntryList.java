@@ -43,16 +43,28 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     private void addExternalEntries(final IProgressMonitor pm,
             final List<String> libList) {
         for (final String libDir : libList) {
-            final IErlExternal external = new ErlExternalReferenceEntry(this,
-                    getLibName(libDir), libDir, true);
-            addChild(external);
             final List<String> srcInclude = ErlideOpen.getLibSrcInclude(
                     backend, libDir);
+            boolean hasHeaders = false;
+            for (final String path : srcInclude) {
+                if (includePath(path)) {
+                    hasHeaders = true;
+                    break;
+                }
+            }
+            final IErlExternal external = new ErlExternalReferenceEntry(this,
+                    getLibName(libDir), libDir, true, hasHeaders);
+            addChild(external);
             for (final String i : srcInclude) {
                 external.addChild(new ErlExternalReferenceEntry(external,
-                        getLibName(i), i, false));
+                        getLibName(i), i, false, includePath(i)));
             }
         }
+    }
+
+    private final boolean includePath(final String path) {
+        final IPath p = new Path(path);
+        return p.lastSegment().equals("include");
     }
 
     private String getLibName(final String libDir) {
@@ -112,5 +124,9 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     @Override
     public IResource getResource() {
         return null;
+    }
+
+    public boolean hasHeaders() {
+        return true;
     }
 }

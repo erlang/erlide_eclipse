@@ -38,4 +38,6 @@ public interface IErlModuleMap {
     void setIncludesForProject(IErlProject project,
             List<IErlModule> modulesAndIncludes);
 
+    public abstract void removeForProject(final IErlProject project);
+
 }

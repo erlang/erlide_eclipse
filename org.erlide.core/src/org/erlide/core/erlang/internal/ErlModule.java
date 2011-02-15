@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
@@ -31,6 +31,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
+import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
@@ -44,13 +45,10 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.SourceRange;
-import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -59,6 +57,8 @@ import org.erlide.jinterface.util.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.collect.Lists;
+
+import erlang.ErlideOpen;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -566,15 +566,14 @@ public class ErlModule extends Openable implements IErlModule {
         return initialText;
     }
 
-    public List<IErlModule> findAllIncludedFiles(final String externalIncludes)
-            throws CoreException, BackendException {
+    public List<IErlModule> findAllIncludedFiles() throws CoreException,
+            BackendException {
         final List<IErlModule> checked = Lists.newArrayList();
         checked.add(this);
-        return findAllIncludedFiles(checked, externalIncludes);
+        return findAllIncludedFiles(checked);
     }
 
-    public List<IErlModule> findAllIncludedFiles(
-            final List<IErlModule> checked, final String externalIncludes)
+    public List<IErlModule> findAllIncludedFiles(final List<IErlModule> checked)
             throws CoreException, BackendException {
         final List<IErlModule> includedFilesForModule = ErlangCore
                 .getModuleMap().getIncludedFilesForModule(this);
@@ -583,38 +582,114 @@ public class ErlModule extends Openable implements IErlModule {
         }
         final List<IErlModule> result = Lists.newArrayList();
         final Collection<ErlangIncludeFile> includes = getIncludedFiles();
-        final IResource resource = getResource();
-        final IErlProject erlProject = getProject();
-        final IProject project = erlProject == null ? null : erlProject
-                .getProject();
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
-        for (final ErlangIncludeFile element : includes) {
-            IResource re = null;
-            if (resource != null) {
-                re = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(
-                                project, element.getFilenameLastPart(),
-                                PluginUtils
-                                        .getIncludePathFilterCreator(resource
-                                                .getParent()));
+        final IErlProject project = getProject();
+        final Collection<IErlModule> headers = project.getHeaders();
+        Collection<IErlModule> externalHeaders = null;
+        Collection<IErlModule> referencedHeaders = null;
+        Collection<IErlModule> modules = null;
+        for (final ErlangIncludeFile include : includes) {
+            final String includeFileName = include.getFilenameLastPart();
+            if (findAllIncludedHeadersAux(checked, result, headers,
+                    includeFileName)) {
+                continue;
             }
-            IErlModule includeModule = null;
-            if (re instanceof IFile) {
-                includeModule = getModel().findModule((IFile) re);
-            } else {
-                includeModule = ModelUtils.getExternalInclude(backend,
-                        erlProject, externalIncludes, element);
+            if (referencedHeaders == null) {
+                referencedHeaders = Lists.newArrayList();
+                final Collection<IErlProject> referencedProjects = project
+                        .getProjectReferences();
+                for (final IErlProject referencedProject : referencedProjects) {
+                    referencedHeaders.addAll(referencedProject.getHeaders());
+                }
             }
-            if (includeModule != null && !checked.contains(includeModule)) {
-                checked.add(includeModule);
-                result.add(includeModule);
-                final ErlModule includeErlModule = (ErlModule) includeModule;
-                result.addAll(includeErlModule.findAllIncludedFiles(checked,
-                        externalIncludes));
+            if (findAllIncludedHeadersAux(checked, result, referencedHeaders,
+                    includeFileName)) {
+                continue;
             }
+            if (externalHeaders == null) {
+                externalHeaders = project.getExternalHeaders();
+            }
+            if (findAllIncludedHeadersAux(checked, result, externalHeaders,
+                    includeFileName)) {
+                continue;
+            }
+            if (modules == null) {
+                modules = project.getModules();
+            }
+            findAllIncludedHeadersAux(checked, result, modules, includeFileName);
         }
         ErlangCore.getModuleMap().setIncludedFilesForModule(this, result);
         return result;
+    }
+
+    private boolean findAllIncludedHeadersAux(final List<IErlModule> checked,
+            final List<IErlModule> result,
+            final Collection<IErlModule> headers, final String includeFileName)
+            throws CoreException, BackendException {
+        for (final IErlModule header : headers) {
+            if (header.getName().equals(includeFileName)) {
+                result.add(header);
+                final ErlModule h = (ErlModule) header;
+                result.addAll(h.findAllIncludedFiles(checked));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isOnSourcePath() {
+        final IParent parent = getParent();
+        if (parent instanceof IErlFolder) {
+            final IErlFolder folder = (IErlFolder) parent;
+            return folder.isOnSourcePath();
+        }
+        if (checkPath(getProject().getSourceDirs())) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOnIncludePath() {
+        final IParent parent = getParent();
+        if (parent instanceof IErlFolder) {
+            final IErlFolder folder = (IErlFolder) parent;
+            return folder.isOnIncludePath();
+        }
+        if (checkPath(getProject().getIncludeDirs())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkPath(final Collection<IPath> dirs) {
+        final String path = getFilePath();
+        if (path != null) {
+            final IPath p = new Path(path).removeLastSegments(1);
+            for (final IPath dir : dirs) {
+                if (dir.equals(p)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static IErlModule getExternalInclude(final Backend backend,
+            final IErlProject project, final ErlangIncludeFile element)
+            throws BackendException, CoreException {
+        String pathOrName = element.getFilename();
+        if (element.isSystemInclude()) {
+            pathOrName = ErlideOpen.getIncludeLib(backend, pathOrName);
+        }
+        final IErlModule module = project
+                .findExternalModuleFromPath(pathOrName);
+        if (module != null) {
+            return module;
+        }
+        final IPath p = new Path(pathOrName);
+        if (!p.isAbsolute()) {
+            return ModelUtils.getExternalModule(pathOrName, project);
+        }
+        return null;
     }
 
 }

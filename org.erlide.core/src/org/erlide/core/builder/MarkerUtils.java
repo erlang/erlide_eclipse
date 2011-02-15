@@ -30,7 +30,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.ISourceRange;
-import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
@@ -123,26 +122,17 @@ public final class MarkerUtils {
                 try {
                     final IErlModel model = ErlangCore.getModel();
                     final IErlProject erlProject = model.findProject(project);
-                    final String externalIncludes = erlProject
-                            .getExternalIncludesString();
-
                     ErlLogger.debug("inc::" + fileName + " "
                             + resource.getName() + " " + erlProject.getName());
                     ErlLogger.debug("    " + entry.getValue());
 
-                    final String includeFile = ModelUtils.findIncludeFile(
-                            erlProject, fileName, externalIncludes);
-                    final IWorkspaceRoot workspaceRoot = ResourcesPlugin
-                            .getWorkspace().getRoot();
+                    final IErlModule includeFile = erlProject != null ? erlProject
+                            .findIncludeFile(fileName) : null;
                     if (includeFile == null) {
                         res = resource;
                     } else {
-                        res = resource;
-                        // BuilderHelper.findResourceByLocation(
-                        // workspaceRoot, includeFile);
-                        // if (res == null) {
-                        // res = workspaceRoot;
-                        // }
+                        res = includeFile.getResource();
+                        // FIXME is this right?
                     }
                 } catch (final Exception e) {
                     ErlLogger.warn(e);

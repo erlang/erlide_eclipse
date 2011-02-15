@@ -16,6 +16,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
@@ -106,7 +107,11 @@ public class CallHierarchyAction extends Action {
             protected void handleResult(final CallHierarchyView context,
                     final RpcFuture result) {
                 page.activate(context);
-                context.setRoot(module.getModel().findFunction(ref));
+                try {
+                    context.setRoot(module.getModel().findFunction(ref));
+                } catch (final ErlModelException e) {
+                    ErlLogger.error(e);
+                }
             }
         };
         ac.run();

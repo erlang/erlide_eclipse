@@ -109,8 +109,7 @@ public class ErlModelUtils {
             return false;
         }
         module.open(null);
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName,
-                module.getProject().getExternalIncludesString());
+        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName);
         if (typespec == null) {
             return false;
         }

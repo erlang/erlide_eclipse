@@ -125,7 +125,7 @@ public final class OldErlangProjectProperties implements
      * 
      * @see org.erlide.core.preferences.IOldErlangProjectProperties#store()
      */
-    public void store() {
+    public void store() throws BackingStoreException {
         if (project == null) {
             return;
         }
@@ -169,10 +169,7 @@ public final class OldErlangProjectProperties implements
             node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                     externalModulesFile);
 
-            try {
-                node.flush();
-            } catch (final BackingStoreException e1) {
-            }
+            node.flush();
         } finally {
             node.addPreferenceChangeListener(this);
         }

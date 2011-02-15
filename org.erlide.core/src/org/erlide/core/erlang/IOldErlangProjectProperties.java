@@ -6,10 +6,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
+import org.osgi.service.prefs.BackingStoreException;
 
 public interface IOldErlangProjectProperties {
 
-    void store();
+    void store() throws BackingStoreException;
 
     Collection<IPath> getIncludeDirs();
 

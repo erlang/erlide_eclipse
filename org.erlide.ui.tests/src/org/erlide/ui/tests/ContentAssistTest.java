@@ -267,7 +267,7 @@ public class ContentAssistTest {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModules();
+        ErlideTestUtils.initModulesAndHeaders();
     }
 
     @After

@@ -45,6 +45,7 @@ import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * Creates a new erlide project in the Eclipse workbench.
@@ -222,8 +223,12 @@ public class NewErlangProject extends Wizard implements INewWizard {
             // TODO add code path to backend
             // final String out = project.getLocation().append(
             // prefs.getOutputDir()).toString();
-        } catch (final CoreException x) {
-            reportError(x);
+        } catch (final CoreException e) {
+            ErlLogger.debug(e);
+            reportError(e);
+        } catch (final BackingStoreException e) {
+            ErlLogger.debug(e);
+            reportError(e);
         } finally {
             monitor.done();
         }

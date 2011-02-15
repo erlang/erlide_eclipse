@@ -34,9 +34,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
 import erlang.ErlangXref;
@@ -105,9 +107,13 @@ public class CallHierarchyView extends ViewPart {
             }
             final List<IErlFunction> result = new ArrayList<IErlFunction>();
             for (final FunctionRef r : children) {
-                final IErlFunction fun = parent.getModel().findFunction(r);
-                if (fun != null) {
-                    result.add(fun);
+                try {
+                    final IErlFunction fun = parent.getModel().findFunction(r);
+                    if (fun != null) {
+                        result.add(fun);
+                    }
+                } catch (final ErlModelException e) {
+                    ErlLogger.error(e);
                 }
             }
             return result.toArray(new IErlFunction[result.size()]);

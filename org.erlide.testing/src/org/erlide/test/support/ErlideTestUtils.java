@@ -50,15 +50,31 @@ public class ErlideTestUtils {
 		}
 	}
 
-	public static void initModules() {
+	public static void initModulesAndHeaders() {
 		modules = Lists.newArrayList();
 	}
 
-	public static IErlModule createModule(final IErlProject erlProject,
+	public static IErlModule createModule(final IErlProject project,
 			final String moduleName, final String moduleContents)
 			throws CoreException {
-		final IProject project = erlProject.getProject();
-		final IFolder folder = project.getFolder("src");
+		final IFolder folder = project.getProject().getFolder("src");
+		final IErlModule module = createFile(moduleName, moduleContents, folder);
+		modules.add(module);
+		return module;
+	}
+
+	public static IErlModule createHeader(final IErlProject project,
+			final String moduleName, final String moduleContents)
+			throws CoreException {
+		final IFolder folder = project.getProject().getFolder("include");
+		final IErlModule module = createFile(moduleName, moduleContents, folder);
+		modules.add(module);
+		return module;
+	}
+
+	private static IErlModule createFile(final String moduleName,
+			final String moduleContents, final IFolder folder)
+			throws CoreException {
 		final IFile file = folder.getFile(moduleName);
 		final File f = new File(file.getLocation().toOSString());
 		f.delete();
@@ -70,7 +86,6 @@ public class ErlideTestUtils {
 			module = ErlangCore.getModelManager().getModuleFromFile(
 					ErlangCore.getModel(), file.getName(), null, path, path);
 		}
-		modules.add(module);
 		return module;
 	}
 

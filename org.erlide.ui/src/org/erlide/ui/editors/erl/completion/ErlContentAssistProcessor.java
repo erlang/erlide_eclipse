@@ -41,13 +41,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlImport;
-import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
@@ -318,12 +316,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
-        final IErlProject erlProject = module.getProject();
-        final IErlModel model = ErlangCore.getModel();
         IErlPreprocessorDef pd;
         try {
             pd = ModelUtils.findPreprocessorDef(module, recordName,
-                    Kind.RECORD_DEF, erlProject.getExternalIncludesString());
+                    Kind.RECORD_DEF);
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         } catch (final BackendException e) {
@@ -471,13 +467,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (module == null) {
             return EMPTY_COMPLETIONS;
         }
-        final IErlModel model = ErlangCore.getModel();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
-            final String externalIncludesString = erlProject != null ? erlProject
-                    .getExternalIncludesString() : null;
             final List<IErlPreprocessorDef> defs = ModelUtils
-                    .getPreprocessorDefs(module, kind, externalIncludesString);
+                    .getAllPreprocessorDefs(module, kind);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);

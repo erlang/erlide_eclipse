@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
+import org.erlide.jinterface.backend.BackendException;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang
@@ -103,19 +105,26 @@ public interface IErlProject extends IErlFolder {
 
     Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
+    Collection<IErlModule> getHeaders() throws ErlModelException;
+
     // IOldErlangProjectProperties getProperties();
 
-    Collection<IErlModule> getExternalModules() throws CoreException;
+    Collection<IErlModule> getExternalModules() throws ErlModelException;
+
+    Collection<IErlModule> getExternalHeaders() throws ErlModelException;
 
     String getExternalModulesString();
 
     String getExternalIncludesString();
 
-    void setIncludeDirs(Collection<IPath> includeDirs);
+    void setIncludeDirs(Collection<IPath> includeDirs)
+            throws BackingStoreException;
 
-    void setSourceDirs(Collection<IPath> sourceDirs);
+    void setSourceDirs(Collection<IPath> sourceDirs)
+            throws BackingStoreException;
 
-    void setExternalModulesFile(String absolutePath);
+    void setExternalModulesFile(String absolutePath)
+            throws BackingStoreException;
 
     Collection<IPath> getSourceDirs();
 
@@ -147,6 +156,20 @@ public interface IErlProject extends IErlFolder {
 
     boolean hasSourceDir(IPath fullPath);
 
-    void setAllProperties(IOldErlangProjectProperties bprefs);
+    void setAllProperties(IOldErlangProjectProperties bprefs)
+            throws BackingStoreException;
+
+    void clearCaches();
+
+    IErlModule findExternalModuleFromPath(String path) throws CoreException;
+
+    Collection<IErlProject> getProjectReferences() throws CoreException;
+
+    public abstract IErlModule findIncludeFile(final String filePath)
+            throws CoreException, BackendException;
+
+    IErlModule getModule(String name) throws ErlModelException;
+
+    IErlModule getModuleIgnoreCase(String name) throws ErlModelException;
 
 }

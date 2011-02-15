@@ -143,7 +143,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     void addComment(IErlComment c);
 
-    List<IErlModule> findAllIncludedFiles(String externalIncludes)
-            throws CoreException, BackendException;
+    List<IErlModule> findAllIncludedFiles() throws CoreException,
+            BackendException;
+
+    boolean isOnSourcePath();
 
 }

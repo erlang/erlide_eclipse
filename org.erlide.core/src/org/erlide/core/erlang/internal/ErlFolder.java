@@ -19,9 +19,7 @@ import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ErlideUtil;
 
 /**
  * Implementation of folder in erlang model
@@ -47,7 +45,7 @@ public class ErlFolder extends Openable implements IErlFolder {
             // model manager?
             final IResource[] members = c.members();
             for (final IResource resource : members) {
-                manager.create(resource, this);
+                manager.create(resource);
             }
         } catch (final CoreException e) {
             throw new ErlModelException(e,
@@ -74,49 +72,50 @@ public class ErlFolder extends Openable implements IErlFolder {
      * @param name
      * @return
      */
-    public static IErlModule getModule(final IParent parent, final String name,
-            final boolean caseinsensitive) {
-        try {
-            if (parent instanceof IOpenable) {
-                final IOpenable o = (IOpenable) parent;
-                o.open(null);
-            }
-            final boolean hasExtension = ErlideUtil.hasExtension(name);
-            for (final IErlElement e : parent.getChildren()) {
-                if (e instanceof IErlModule) {
-                    final IErlModule m = (IErlModule) e;
-                    final String moduleName = hasExtension ? m.getName() : m
-                            .getModuleName();
-                    if (caseinsensitive) {
-                        if (moduleName.equalsIgnoreCase(name)) {
-                            return m;
-                        }
-                    } else {
-                        if (moduleName.equals(name)) {
-                            return m;
-                        }
-                    }
-                } else if (e instanceof IParent) {
-                    final IParent p = (IParent) e;
-                    final IErlModule m = getModule(p, name, caseinsensitive);
-                    if (m != null) {
-                        return m;
-                    }
-                }
-            }
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public IErlModule getModule(final String name) throws ErlModelException {
-        return getModule(this, name, false);
-    }
-
-    public IErlModule getModuleExt(final String name) {
-        return getModule(this, name, true);
-    }
+    // public static IErlModule getModule(final IParent parent, final String
+    // name,
+    // final boolean caseinsensitive) {
+    // try {
+    // if (parent instanceof IOpenable) {
+    // final IOpenable o = (IOpenable) parent;
+    // o.open(null);
+    // }
+    // final boolean hasExtension = ErlideUtil.hasExtension(name);
+    // for (final IErlElement e : parent.getChildren()) {
+    // if (e instanceof IErlModule) {
+    // final IErlModule m = (IErlModule) e;
+    // final String moduleName = hasExtension ? m.getName() : m
+    // .getModuleName();
+    // if (caseinsensitive) {
+    // if (moduleName.equalsIgnoreCase(name)) {
+    // return m;
+    // }
+    // } else {
+    // if (moduleName.equals(name)) {
+    // return m;
+    // }
+    // }
+    // } else if (e instanceof IParent) {
+    // final IParent p = (IParent) e;
+    // final IErlModule m = getModule(p, name, caseinsensitive);
+    // if (m != null) {
+    // return m;
+    // }
+    // }
+    // }
+    // } catch (final ErlModelException e) {
+    // e.printStackTrace();
+    // }
+    // return null;
+    // }
+    //
+    // public IErlModule getModule(final String name) throws ErlModelException {
+    // return getModule(this, name, false);
+    // }
+    //
+    // public IErlModule getModuleExt(final String name) {
+    // return getModule(this, name, true);
+    // }
 
     /*
      * (non-Javadoc)

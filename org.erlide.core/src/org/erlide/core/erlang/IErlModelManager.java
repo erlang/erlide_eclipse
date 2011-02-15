@@ -18,6 +18,7 @@ import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.IElementChangedListener;
+import org.osgi.service.prefs.BackingStoreException;
 
 public interface IErlModelManager extends ISaveParticipant {
 
@@ -38,14 +39,18 @@ public interface IErlModelManager extends ISaveParticipant {
      * Creating a Erlang element has the side effect of creating and opening all
      * of the element's parents if they are not yet open.
      */
-    IErlElement create(IResource resource, IParent parent);
+    // IErlElement create(IResource resource, IParent parent);
+
+    IErlElement create(IResource resource);
 
     /**
      * Create a reference OTP project
      * 
      * @throws CoreException
+     * @throws BackingStoreException
      */
-    IErlProject createOtpProject(IProject project) throws CoreException;
+    IErlProject createOtpProject(IProject project) throws CoreException,
+            BackingStoreException;
 
     Object getInfo(IErlElement element);
 

@@ -20,12 +20,15 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
 
     private final String entry;
     private final boolean prebuilt;
+    private final boolean hasHeaders;
 
     protected ErlExternalReferenceEntry(final IParent parent,
-            final String name, final String entry, final boolean prebuilt) {
+            final String name, final String entry, final boolean prebuilt,
+            final boolean hasHeaders) {
         super(parent, name);
         this.entry = entry;
         this.prebuilt = prebuilt;
+        this.hasHeaders = hasHeaders;
     }
 
     public Kind getKind() {
@@ -94,5 +97,9 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     @Override
     public IResource getResource() {
         return null;
+    }
+
+    public boolean hasHeaders() {
+        return hasHeaders;
     }
 }

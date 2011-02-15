@@ -54,6 +54,7 @@ import org.erlide.core.erlang.util.ElementChangedEvent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.IElementChangedListener;
 import org.erlide.jinterface.util.ErlLogger;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -282,7 +283,7 @@ public final class ErlModelManager implements IErlModelManager {
     }
 
     public IErlProject createOtpProject(final IProject project)
-            throws CoreException {
+            throws CoreException, BackingStoreException {
         if (project == null) {
             return null;
         }

@@ -415,7 +415,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final IErlModel model = ErlangCore.getModel();
         for (final String i : interpret) {
             final String[] pm = i.split(":");
-            IErlModule m = null;
+            IErlModule module = null;
             if (pm.length > 1) {
                 final IErlProject p = (IErlProject) model.getChildNamed(pm[0]);
                 final String mName = pm[1];
@@ -423,16 +423,20 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                     final String s = ErlideUtil
                             .isErlangFileContentFileName(mName) ? mName : mName
                             + ".erl";
-                    m = p.getModule(s);
+                    module = p.getModule(s);
                 } catch (final ErlModelException e) {
                     ErlLogger.warn(e);
                 }
             } else {
-                m = model.findModule(i + ".erl");
+                try {
+                    module = model.findModule(i);
+                } catch (final ErlModelException e) {
+                    module = null;
+                }
             }
-            if (m != null) {
-                if (!interpretedModules.contains(m)) {
-                    interpretedModules.add(m);
+            if (module != null) {
+                if (!interpretedModules.contains(module)) {
+                    interpretedModules.add(module);
                 }
             }
         }

@@ -116,7 +116,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 try {
                     pd = ModelUtils.findPreprocessorDef(
                             getErlProjects(target.getProjects()), moduleName,
-                            a.atomValue(), IErlElement.Kind.RECORD_DEF, "");
+                            a.atomValue(), IErlElement.Kind.RECORD_DEF);
                     if (pd instanceof IErlRecordDef) {
                         final IErlRecordDef r = (IErlRecordDef) pd;
                         if (r.hasChildren()

@@ -276,9 +276,9 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     IErlModule findModule(IFile file);
 
-    IErlModule findModule(String name);
+    IErlModule findModule(String name) throws ErlModelException;
 
-    IErlModule findModuleExt(String name);
+    IErlModule findModuleIgnoreCase(String name) throws ErlModelException;
 
     public IErlElement innermostThat(final IErlElement el,
             final IErlangFirstThat firstThat);
@@ -288,8 +288,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     /**
      * Locates definitions of functions matching the given signature. Function
      * name and module can be regexps.
+     * 
+     * @throws ErlModelException
      */
-    IErlFunction findFunction(FunctionRef r);
+    IErlFunction findFunction(FunctionRef r) throws ErlModelException;
 
     IErlProject newProject(final String name, final String path)
             throws ErlModelException;

@@ -177,4 +177,9 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
             final List<IErlModule> includes) {
         projectIncludeCache.put(project, Lists.newArrayList(includes));
     }
+
+    public void removeForProject(final IErlProject project) {
+        projectIncludeCache.remove(project);
+        projectModuleCache.remove(project);
+    }
 }

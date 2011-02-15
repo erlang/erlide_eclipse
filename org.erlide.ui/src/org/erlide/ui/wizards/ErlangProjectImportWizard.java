@@ -50,6 +50,7 @@ import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
+import org.osgi.service.prefs.BackingStoreException;
 
 import erlang.ErlideImport;
 
@@ -306,9 +307,12 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
             // TODO add code path to backend
             // final String out = project.getLocation().append(
             // prefs.getOutputDir()).toString();
-        } catch (final CoreException x) {
-            x.printStackTrace();
-            reportError(x);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            reportError(e);
+        } catch (final BackingStoreException e) {
+            e.printStackTrace();
+            reportError(e);
         } finally {
             monitor.done();
         }

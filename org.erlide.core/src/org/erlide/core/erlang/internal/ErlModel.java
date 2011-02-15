@@ -46,6 +46,7 @@ import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.jinterface.util.ErlLogger;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -182,6 +183,9 @@ public class ErlModel extends Openable implements IErlModel {
      * @see IErlModel
      */
     public IErlProject getErlangProject(final IProject project) {
+        if (!project.isAccessible()) {
+            return null;
+        }
         final IErlElement e = getChildWithResource(project);
         if (e instanceof IErlProject) {
             return (IErlProject) e;
@@ -459,7 +463,7 @@ public class ErlModel extends Openable implements IErlModel {
             element = findElement(file, true);
         }
         if (element == null) {
-            return (IErlModule) ErlangCore.getModelManager().create(file, this);
+            return (IErlModule) ErlangCore.getModelManager().create(file);
         }
         return (IErlModule) element;
     }
@@ -472,28 +476,35 @@ public class ErlModel extends Openable implements IErlModel {
         return (IErlProject) e;
     }
 
-    public IErlModule findModule(final String name) {
-        try {
-            for (final IErlElement e : getChildren()) {
-                if (e instanceof IErlProject) {
-                    final IErlProject p = (IErlProject) e;
-                    try {
-                        final IErlModule m = p.getModule(name);
-                        if (m != null) {
-                            return m;
-                        }
-                    } catch (final ErlModelException e1) {
-                        e1.printStackTrace();
+    public IErlModule findModule(final String name) throws ErlModelException {
+        return findModuleAux(name, false);
+    }
+
+    public IErlModule findModuleIgnoreCase(final String name)
+            throws ErlModelException {
+        return findModuleAux(name, true);
+    }
+
+    private IErlModule findModuleAux(final String name, final boolean ignoreCase)
+            throws ErlModelException {
+        for (final IErlElement e : getChildren()) {
+            if (e instanceof ErlProject) {
+                final ErlProject p = (ErlProject) e;
+                try {
+                    final IErlModule m = p.getModuleAux(name, ignoreCase);
+                    if (m != null) {
+                        return m;
                     }
+                } catch (final ErlModelException e1) {
+                    e1.printStackTrace();
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlProject createOtpProject(final IProject project)
-            throws CoreException {
+            throws CoreException, BackingStoreException {
         final IPath location = project.getLocation();
 
         final IErlProject p = getErlangProject(project);
@@ -612,29 +623,10 @@ public class ErlModel extends Openable implements IErlModel {
         return fCachedPathVars;
     }
 
-    public IErlFunction findFunction(final FunctionRef r) {
+    public IErlFunction findFunction(final FunctionRef r)
+            throws ErlModelException {
         final IErlModule m = findModule(r.module);
-        try {
-            m.open(null);
-            return m.findFunction(new ErlangFunction(r.function, r.arity));
-        } catch (final ErlModelException e) {
-        }
-        return null;
-    }
-
-    public IErlModule findModuleExt(final String name) {
-        try {
-            for (final IErlElement e : getChildren()) {
-                if (e instanceof IErlProject) {
-                    final IErlProject p = (IErlProject) e;
-                    final IErlModule m = p.getModuleExt(name);
-                    if (m != null) {
-                        return m;
-                    }
-                }
-            }
-        } catch (final ErlModelException e) {
-        }
-        return null;
+        m.open(null);
+        return m.findFunction(new ErlangFunction(r.function, r.arity));
     }
 }
