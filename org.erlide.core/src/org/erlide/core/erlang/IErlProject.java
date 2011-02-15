@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeVersion;
 
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang
@@ -56,28 +58,6 @@ public interface IErlProject extends IErlFolder {
      *         was created
      */
     IProject getProject();
-
-    /**
-     * Returns the default output location for this project as a workspace-
-     * relative absolute path.
-     * <p>
-     * The default output location is where class files are ordinarily generated
-     * (and resource files, copied). Each source classpath entry can also
-     * specify an output location for the generated class files (and copied
-     * resource files) corresponding to compilation units under that source
-     * folder. This makes it possible to arrange generated class files for
-     * different source folders in different output folders, and not necessarily
-     * the default output folder. This means that the generated class files for
-     * the project may end up scattered across several folders, rather than all
-     * in the default output folder (which is more standard).
-     * </p>
-     * 
-     * @return the workspace-relative absolute path of the default output folder
-     * @throws ErlModelException
-     *             if this element does not exist
-     * @see #setOutputLocation(org.eclipse.core.runtime.IPath, IProgressMonitor)
-     */
-    IPath getOutputLocation() throws ErlModelException;
 
     /**
      * Sets the default output location of this project to the location
@@ -123,8 +103,50 @@ public interface IErlProject extends IErlFolder {
 
     Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
 
-    IOldErlangProjectProperties getProperties();
+    // IOldErlangProjectProperties getProperties();
 
     Collection<IErlModule> getExternalModules() throws CoreException;
+
+    String getExternalModulesString();
+
+    String getExternalIncludesString();
+
+    void setIncludeDirs(Collection<IPath> includeDirs);
+
+    void setSourceDirs(Collection<IPath> sourceDirs);
+
+    void setExternalModulesFile(String absolutePath);
+
+    Collection<IPath> getSourceDirs();
+
+    Collection<IPath> getIncludeDirs();
+
+    /**
+     * Returns the default output location for this project as a workspace-
+     * relative absolute path.
+     * <p>
+     * The default output location is where class files are ordinarily generated
+     * (and resource files, copied). Each source classpath entry can also
+     * specify an output location for the generated class files (and copied
+     * resource files) corresponding to compilation units under that source
+     * folder. This makes it possible to arrange generated class files for
+     * different source folders in different output folders, and not necessarily
+     * the default output folder. This means that the generated class files for
+     * the project may end up scattered across several folders, rather than all
+     * in the default output folder (which is more standard).
+     * </p>
+     * 
+     * @return the workspace-relative absolute path of the default output folder
+     * @see #setOutputLocation(org.eclipse.core.runtime.IPath, IProgressMonitor)
+     */
+    IPath getOutputLocation();
+
+    RuntimeInfo getRuntimeInfo();
+
+    RuntimeVersion getRuntimeVersion();
+
+    boolean hasSourceDir(IPath fullPath);
+
+    void setAllProperties(IOldErlangProjectProperties bprefs);
 
 }

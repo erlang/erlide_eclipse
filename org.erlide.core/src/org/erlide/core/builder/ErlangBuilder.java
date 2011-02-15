@@ -34,7 +34,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
@@ -64,10 +64,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(currentProject);
-            final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(currentProject);
+            final IFolder bf = currentProject.getFolder(erlProject
+                    .getOutputLocation());
             if (bf.exists()) {
                 final IResource[] beams = bf.members();
                 monitor.beginTask("Cleaning Erlang files", beams.length);
@@ -99,9 +99,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
     }
 
     @Override
-    protected IProject[] build(final int kind,
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes")
+    final Map args, final IProgressMonitor monitor) throws CoreException {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
@@ -112,13 +111,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
                     + project.getName());
         }
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
         try {
             MarkerUtils.deleteMarkers(project);
             initializeBuilder(monitor);
 
-            final IPath out = prefs.getOutputDir();
+            final IPath out = erlProject.getOutputLocation();
             final IResource outr = project.findMember(out);
             if (outr != null) {
                 try {
@@ -161,7 +160,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     final IResource resource = bres.getResource();
                     // notifier.aboutToCompile(resource);
                     if ("erl".equals(resource.getFileExtension())) {
-                        final String outputDir = prefs.getOutputDir()
+                        final String outputDir = erlProject.getOutputLocation()
                                 .toString();
                         final RpcFuture f = helper.startCompileErl(project,
                                 bres, outputDir, backend, compilerOptions,
@@ -252,8 +251,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
     }
 
     private Set<BuildResource> getResourcesToBuild(final int kind,
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProject currentProject) throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IProject currentProject) throws CoreException {
         Set<BuildResource> resourcesToBuild = Sets.newHashSet();
         final IProgressMonitor submon = new NullProgressMonitor();
         // new SubProgressMonitor(monitor, 10);

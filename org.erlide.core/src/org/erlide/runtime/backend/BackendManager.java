@@ -47,7 +47,7 @@ import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
 import org.erlide.backend.util.Tuple;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -207,9 +207,9 @@ public final class BackendManager extends OtpNodeStatus implements
 
     public ErlideBackend getBuildBackend(final IProject project)
             throws BackendException {
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final RuntimeInfo info = prefs.getRuntimeInfo();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final RuntimeInfo info = erlProject.getRuntimeInfo();
         if (info == null) {
             ErlLogger.info("Project %s has no runtime info, using ide",
                     project.getName());
@@ -417,8 +417,9 @@ public final class BackendManager extends OtpNodeStatus implements
 
     public boolean isCompatibleBackend(final IProject project,
             final ErlideBackend b) {
-        final RuntimeVersion projectVersion = ErlangCore.getProjectProperties(
-                project).getRuntimeVersion();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final RuntimeVersion projectVersion = erlProject.getRuntimeVersion();
         return b.getInfo().getVersion().isCompatible(projectVersion);
     }
 
@@ -495,8 +496,7 @@ public final class BackendManager extends OtpNodeStatus implements
                 listener.runtimeRemoved(b);
                 break;
             case MODULE_LOADED:
-                listener.moduleLoaded(b,
-                        project == null ? null : project.getName(), moduleName);
+                listener.moduleLoaded(b, project, moduleName);
             }
         }
     }

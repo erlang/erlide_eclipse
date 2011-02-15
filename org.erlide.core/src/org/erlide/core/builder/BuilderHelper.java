@@ -41,7 +41,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.jinterface.backend.Backend;
@@ -91,12 +90,13 @@ public final class BuilderHelper {
 
     public Collection<IPath> getIncludeDirs(final IProject project,
             final Collection<IPath> includeDirs) {
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final Collection<IPath> incs = prefs.getIncludeDirs();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final Collection<IPath> projectIncludeDirs = erlProject
+                .getIncludeDirs();
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
-        for (IPath inc : incs) {
+        for (IPath inc : projectIncludeDirs) {
             inc = PluginUtils.resolvePVMPath(pvm, inc);
             if (inc.isAbsolute()) {
                 includeDirs.add(inc);
@@ -115,10 +115,9 @@ public final class BuilderHelper {
         return includeDirs;
     }
 
-    boolean isInCodePath(final IResource resource,
-            final IOldErlangProjectProperties prefs) {
+    boolean isInCodePath(final IResource resource, final IErlProject erlProject) {
         final IPath projectPath = resource.getProject().getFullPath();
-        final Collection<IPath> srcs = prefs.getSourceDirs();
+        final Collection<IPath> srcs = erlProject.getSourceDirs();
         final IPath exceptLastSegment = resource.getFullPath()
                 .removeLastSegments(1);
         for (final IPath element : srcs) {
@@ -156,18 +155,18 @@ public final class BuilderHelper {
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProject project, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IProject project,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         project.accept(new BuilderVisitor(result, monitor, this));
         return result;
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IResourceDelta delta, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IResourceDelta delta,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         if (delta != null) {
             delta.accept(new BuilderVisitor(result, monitor, this));
@@ -198,9 +197,9 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final IOldErlangProjectProperties pp = ErlangCore
-                    .getProjectProperties(project);
-            final Collection<IPath> sd = pp.getSourceDirs();
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(project);
+            final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
             int j = 0;
             for (final IPath sp : sd) {
@@ -358,9 +357,9 @@ public final class BuilderHelper {
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final IPath outputDir = prefs.getOutputDir();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final IPath outputDir = erlProject.getOutputLocation();
         final IResource ebinDir = project.findMember(outputDir);
         if (ebinDir != null) {
             ebinDir.refreshLocal(IResource.DEPTH_ONE, null);
@@ -436,10 +435,10 @@ public final class BuilderHelper {
                     br.setDerived(true);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IOldErlangProjectProperties prefs = ErlangCore
-                            .getProjectProperties(project);
-                    compileErl(project, bbr, prefs.getOutputDir().toString(),
-                            backend, compilerOptions);
+                    final IErlProject erlProject = ErlangCore.getModel()
+                            .getErlangProject(project);
+                    compileErl(project, bbr, erlProject.getOutputLocation()
+                            .toString(), backend, compilerOptions);
                 }
             } catch (final CoreException e) {
                 ErlLogger.warn(e);
@@ -527,9 +526,9 @@ public final class BuilderHelper {
     }
 
     private IPath getBeamForErl(final IResource source) {
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(source.getProject());
-        IPath p = prefs.getOutputDir();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                source.getProject());
+        IPath p = erlProject.getOutputLocation();
         p = p.append(source.getName());
         if (!"erl".equals(p.getFileExtension())) {
             return null;
@@ -642,12 +641,12 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(resource.getProject());
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null
                     && "erl".equals(resource.getFileExtension())
-                    && isInCodePath(resource, prefs)) {
+                    && isInCodePath(resource, erlProject)) {
                 final String[] p = resource.getName().split("\\.");
                 if (p[0].equals(fName)) {
                     setResult(resource);

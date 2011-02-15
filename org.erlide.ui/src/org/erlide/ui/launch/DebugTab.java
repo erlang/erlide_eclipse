@@ -228,8 +228,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                     }
                     final IErlModel model = ErlangCore.getModel();
                     for (final String projName : projNames) {
-                        final IErlElement prj = model
-                                .getErlangProject(projName);
+                        final IErlElement prj = model.getChildNamed(projName);
                         getRoot().addAllErlangModules(prj);
                     }
                 }
@@ -418,7 +417,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             final String[] pm = i.split(":");
             IErlModule m = null;
             if (pm.length > 1) {
-                final IErlProject p = model.getErlangProject(pm[0]);
+                final IErlProject p = (IErlProject) model.getChildNamed(pm[0]);
                 final String mName = pm[1];
                 try {
                     final String s = ErlideUtil

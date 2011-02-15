@@ -110,7 +110,7 @@ public class ErlModelUtils {
         }
         module.open(null);
         final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName,
-                ErlangCore.getModel().getExternalIncludes(module.getProject()));
+                module.getProject().getExternalIncludesString());
         if (typespec == null) {
             return false;
         }
@@ -123,7 +123,7 @@ public class ErlModelUtils {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
-            IErlModule module = ModelUtils.getModule(file);
+            IErlModule module = ErlangCore.getModel().findModule(file);
             if (module != null) {
                 return module;
             }

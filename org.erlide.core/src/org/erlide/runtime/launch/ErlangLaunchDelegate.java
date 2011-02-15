@@ -25,6 +25,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -252,9 +253,11 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     private void interpretModules(final ErlLaunchData data,
             final ErlideBackend backend, final boolean distributed) {
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final String pm : data.interpretedModules) {
             final String[] pms = pm.split(":");
-            getDebugHelper().interpret(backend, pms[0], pms[1], distributed,
+            final IProject project = root.getProject(pms[0]);
+            getDebugHelper().interpret(backend, project, pms[1], distributed,
                     true);
         }
     }

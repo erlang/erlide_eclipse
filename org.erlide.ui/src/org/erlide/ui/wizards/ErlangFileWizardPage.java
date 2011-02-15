@@ -11,6 +11,7 @@
 package org.erlide.ui.wizards;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
@@ -40,7 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -183,23 +184,25 @@ public class ErlangFileWizardPage extends WizardPage {
             }
             final Object obj = ssel.getFirstElement();
             if (obj instanceof IResource) {
+                final IResource resource = (IResource) obj;
                 IContainer container;
-                if (obj instanceof IContainer) {
-                    container = (IContainer) obj;
+                if (resource instanceof IContainer) {
+                    container = (IContainer) resource;
                 } else {
-                    container = ((IResource) obj).getParent();
+                    container = resource.getParent();
                 }
-                final IOldErlangProjectProperties pp = ErlangCore
-                        .getProjectProperties(((IResource) obj).getProject());
+                final IProject project = resource.getProject();
+                final IErlProject erlProject = ErlangCore.getModel()
+                        .getErlangProject(project);
                 String txt;
-                if (pp.hasSourceDir(container.getFullPath())) {
+                if (erlProject.hasSourceDir(container.getFullPath())) {
                     txt = container.getFullPath().toString();
-                } else if (pp.getSourceDirs().size() > 0) {
+                } else if (erlProject.getSourceDirs().size() > 0) {
                     txt = container
                             .getFolder(
-                                    new Path(pp.getSourceDirs().iterator()
-                                            .next().toString())).getFullPath()
-                            .toString();
+                                    new Path(erlProject.getSourceDirs()
+                                            .iterator().next().toString()))
+                            .getFullPath().toString();
                 } else {
                     txt = container.getFullPath().toString();
                 }

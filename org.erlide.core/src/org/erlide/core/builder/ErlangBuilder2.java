@@ -30,7 +30,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.builder.internal.BuildNotifier;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcEventHandler;
@@ -64,10 +64,10 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(currentProject);
-            final IFolder bf = currentProject.getFolder(prefs.getOutputDir());
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(currentProject);
+            final IFolder bf = currentProject.getFolder(erlProject
+                    .getOutputLocation());
             if (bf.exists()) {
                 final IResource[] beams = bf.members();
                 monitor.beginTask("Cleaning Erlang files", beams.length);
@@ -99,9 +99,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
     }
 
     @Override
-    protected IProject[] build(final int kind,
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes")
+    final Map args, final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
             return new IProject[0];
@@ -139,10 +138,10 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                 notifier.setProgressPerCompilationUnit(1.0f / n);
 
                 final IPath projectPath = project.getLocation();
-                final IOldErlangProjectProperties prefs = ErlangCore
-                        .getProjectProperties(project);
+                final IErlProject erlProject = ErlangCore.getModel()
+                        .getErlangProject(project);
                 final String outputDir = projectPath.append(
-                        prefs.getOutputDir()).toString();
+                        erlProject.getOutputLocation()).toString();
                 helper.ensureDirExists(outputDir);
 
                 final Collection<IPath> includeDirs = helper
@@ -177,8 +176,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
     }
 
     private Set<String> getResourcesToBuild(final int kind,
-            @SuppressWarnings("rawtypes") final Map args, final IProject project)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IProject project) throws CoreException {
         Set<BuildResource> result = Sets.newHashSet();
         final IProgressMonitor submon = new NullProgressMonitor();
         // new SubProgressMonitor(monitor, 10);

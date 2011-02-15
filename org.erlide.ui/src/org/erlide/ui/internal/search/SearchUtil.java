@@ -41,9 +41,9 @@ import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlFunctionClause;
+import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
@@ -103,9 +103,9 @@ public class SearchUtil {
         if (project == null) {
             return;
         }
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final Collection<IPath> sourcePaths = prefs.getSourceDirs();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath path : sourcePaths) {
             final IFolder folder = project.getFolder(path);
             addFolderToScope(folder, result);
@@ -217,11 +217,12 @@ public class SearchUtil {
         try {
             final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
                     .getRoot();
+            final IErlModel model = ErlangCore.getModel();
             for (final String i : projectNames) {
                 final IProject project = root.getProject(i);
                 if (ErlideUtil.hasErlangNature(project)) {
-                    final IErlProject erlProject = ErlangCore.getModel()
-                            .getErlangProject(i);
+                    final IErlProject erlProject = model
+                            .getErlangProject(project);
                     addExternalModules(erlProject, result, externalModulePaths);
                 }
             }

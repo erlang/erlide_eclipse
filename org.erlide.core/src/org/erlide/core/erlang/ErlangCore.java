@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -79,11 +78,11 @@ public final class ErlangCore {
         return BackendManager.getDefault();
     }
 
-    public static IOldErlangProjectProperties getProjectProperties(
-            final IProject project) {
-        return getModelManager().getErlangModel()
-                .getErlangProject(project.getName()).getProperties();
-    }
+    // public static IOldErlangProjectProperties getProjectProperties(
+    // final IProject project) {
+    // return getModelManager().getErlangModel().getErlangProject(project)
+    // .getProperties();
+    // }
 
     /**
      * If runtime is not set, try to locate one. The first one found as below is

@@ -151,7 +151,7 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res = ErlideOpen.open(b,
                     ErlangToolkit.createScannerModuleName(module), offset,
                     ModelUtils.getImportsAsList(module),
-                    model.getExternalModules(erlProject), model.getPathVars());
+                    erlProject.getExternalModulesString(), model.getPathVars());
             ErlLogger.debug("open " + res);
             openOpenResult(editor, module, b, offset, erlProject, res);
         } catch (final Exception e) {
@@ -220,11 +220,11 @@ public class OpenAction extends SelectionDispatchAction {
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
             found = ModelUtils.findPreprocessorDef(module, res.getName(), kind,
-                    model.getExternalIncludes(erlProject));
+                    erlProject.getExternalIncludesString());
         } else if (res.isField()) {
             final IErlRecordDef def = (IErlRecordDef) ModelUtils
                     .findPreprocessorDef(module, res.getFun(), Kind.RECORD_DEF,
-                            model.getExternalIncludes(erlProject));
+                            erlProject.getExternalIncludesString());
             if (def != null) {
                 found = def.getFieldNamed(res.getName());
             }
@@ -249,9 +249,10 @@ public class OpenAction extends SelectionDispatchAction {
             return model.findModule(file);
         } else {
             final String includeFile = ModelUtils.findIncludeFile(project,
-                    res.getName(), model.getExternalIncludes(project));
+                    res.getName(), project.getExternalIncludesString());
             if (includeFile != null) {
-                return ModelUtils.openExternal(project, includeFile);
+                return ModelUtils.findExternalModuleFromPath(includeFile,
+                        project);
             }
         }
         return null;
@@ -271,7 +272,7 @@ public class OpenAction extends SelectionDispatchAction {
         final IErlModel model = ErlangCore.getModel();
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun(),
-                    model.getExternalIncludes(erlProject));
+                    erlProject.getExternalIncludesString());
         }
         final IErlFunction foundElement = module
                 .findFunction(res.getFunction());
@@ -287,7 +288,7 @@ public class OpenAction extends SelectionDispatchAction {
                 moduleName = ei.getImportModule();
                 res2 = ErlideOpen.getSourceFromModule(backend,
                         model.getPathVars(), moduleName,
-                        model.getExternalModules(erlProject));
+                        erlProject.getExternalModulesString());
             }
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {

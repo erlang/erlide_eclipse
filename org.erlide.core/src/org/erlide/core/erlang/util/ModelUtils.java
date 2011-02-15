@@ -73,8 +73,8 @@ public class ModelUtils {
             return filePath;
         }
         for (final IErlModule module : project.getModules()) {
-            final List<IErlModule> allIncludedFiles = findAllIncludedFiles(
-                    module, externalIncludes);
+            final List<IErlModule> allIncludedFiles = module
+                    .findAllIncludedFiles(externalIncludes);
             for (final IErlModule includeFile : allIncludedFiles) {
                 if (includeFile.getFilePath().equals(filePath)
                         || includeFile.getName().equals(filePath)) {
@@ -92,8 +92,8 @@ public class ModelUtils {
         if (typespec != null) {
             return typespec;
         }
-        final List<IErlModule> includedFiles = findAllIncludedFiles(module,
-                externalIncludes);
+        final List<IErlModule> includedFiles = module
+                .findAllIncludedFiles(externalIncludes);
         for (final IErlModule includedFile : includedFiles) {
             typespec = includedFile.findTypespec(name);
             if (typespec != null) {
@@ -103,17 +103,6 @@ public class ModelUtils {
         return null;
     }
 
-    public static IErlModule getModule(final IFile file)
-            throws ErlModelException {
-        final IErlModel model = ErlangCore.getModel();
-        model.open(null);
-        final IErlModule module = model.findModule(file);
-        if (module != null) {
-            return module;
-        }
-        return (IErlModule) ErlangCore.getModelManager().create(file, model);
-    }
-
     public static IErlModule findExternalModuleFromPath(final String path)
             throws CoreException {
         final Collection<IErlElement> children = ErlangCore.getModel()
@@ -121,41 +110,27 @@ public class ModelUtils {
         for (final IErlElement child : children) {
             if (child instanceof IErlProject) {
                 final IErlProject project = (IErlProject) child;
-                final List<IErlModule> result = findExternalModulesFromPath(
-                        path, project);
-                if (!result.isEmpty()) {
-                    return result.get(0);
+                final IErlModule module = findExternalModuleFromPath(path,
+                        project);
+                if (module != null) {
+                    return module;
                 }
             }
         }
         return null;
     }
 
-    public static IErlModule openExternal(final IErlProject project,
-            final String path) throws CoreException {
-        if (project != null) {
-            final List<IErlModule> result = findExternalModulesFromPath(path,
-                    project);
-            if (!result.isEmpty()) {
-                return result.get(0);
-            }
-        }
-        return null;
-        // return createModuleInExternalFilesProject(path);
-    }
-
-    public static List<IErlModule> findExternalModulesFromPath(
-            final String path, final IErlProject project) throws CoreException {
-        final List<IErlModule> result = Lists.newArrayList();
+    public static IErlModule findExternalModuleFromPath(final String path,
+            final IErlProject project) throws CoreException {
         final Collection<IErlModule> modules = project.getExternalModules();
         for (final IErlModule module : modules) {
             final String filePath = module.getFilePath();
             if (filePath != null && path != null
                     && StringUtils.equalFilePaths(path, filePath)) {
-                result.add(module);
+                return module;
             }
         }
-        return result;
+        return null;
     }
 
     public static List<IErlModule> findExternalModulesFromName(
@@ -207,25 +182,29 @@ public class ModelUtils {
     public static IErlModule getModuleFromExternalModulePath(
             final String modulePath) throws ErlModelException {
         final List<String> path = StringUtils.split(DELIMITER, modulePath);
-        IParent parent = ErlangCore.getModel().getErlangProject(path.get(0));
-        final int n = path.size() - 1;
-        for (int i = 1;; i++) {
-            if (parent == null) {
-                break;
+        final IErlElement childNamed = ErlangCore.getModel().getChildNamed(
+                path.get(0));
+        if (childNamed instanceof IParent) {
+            IParent parent = (IParent) childNamed;
+            final int n = path.size() - 1;
+            for (int i = 1;; i++) {
+                if (parent == null) {
+                    break;
+                }
+                if (parent instanceof IOpenable) {
+                    final IOpenable openable = (IOpenable) parent;
+                    openable.open(null);
+                }
+                if (i == n) {
+                    break;
+                }
+                parent = getElementWithExternalName(parent, path.get(i));
             }
-            if (parent instanceof IOpenable) {
-                final IOpenable openable = (IOpenable) parent;
-                openable.open(null);
-            }
-            if (i == n) {
-                break;
-            }
-            parent = getElementWithExternalName(parent, path.get(i));
-        }
-        if (parent != null) {
-            final IErlElement child = parent.getChildNamed(path.get(n));
-            if (child instanceof IErlModule) {
-                return (IErlModule) child;
+            if (parent != null) {
+                final IErlElement child = parent.getChildNamed(path.get(n));
+                if (child instanceof IErlModule) {
+                    return (IErlModule) child;
+                }
             }
         }
         return null;
@@ -245,58 +224,6 @@ public class ModelUtils {
         return result;
     }
 
-    public static List<IErlModule> findAllIncludedFiles(
-            final IErlModule module, final String externalIncludes)
-            throws CoreException, BackendException {
-        final List<IErlModule> checked = Lists.newArrayList(module);
-        return findAllIncludedFiles(module, checked, externalIncludes);
-    }
-
-    private static List<IErlModule> findAllIncludedFiles(
-            final IErlModule module, final List<IErlModule> checked,
-            final String externalIncludes) throws CoreException,
-            BackendException {
-        final List<IErlModule> includedFilesForModule = ErlangCore
-                .getModuleMap().getIncludedFilesForModule(module);
-        if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
-            return includedFilesForModule;
-        }
-        final List<IErlModule> result = Lists.newArrayList();
-        final Collection<ErlangIncludeFile> includes = module
-                .getIncludedFiles();
-        final IResource resource = module.getResource();
-        final IErlProject erlProject = module.getProject();
-        final IProject project = erlProject == null ? null : erlProject
-                .getProject();
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
-        for (final ErlangIncludeFile element : includes) {
-            IResource re = null;
-            if (resource != null) {
-                re = ResourceUtil
-                        .recursiveFindNamedModuleResourceWithReferences(
-                                project, element.getFilenameLastPart(),
-                                PluginUtils
-                                        .getIncludePathFilterCreator(resource
-                                                .getParent()));
-            }
-            IErlModule includeModule = null;
-            if (re instanceof IFile) {
-                includeModule = getModule((IFile) re);
-            } else {
-                includeModule = getExternalInclude(backend, erlProject,
-                        externalIncludes, element);
-            }
-            if (includeModule != null && !checked.contains(includeModule)) {
-                checked.add(includeModule);
-                result.add(includeModule);
-                result.addAll(findAllIncludedFiles(includeModule, checked,
-                        externalIncludes));
-            }
-        }
-        ErlangCore.getModuleMap().setIncludedFilesForModule(module, result);
-        return result;
-    }
-
     public static IErlModule getExternalInclude(final Backend backend,
             final IErlProject project, final String externalIncludes,
             final ErlangIncludeFile element) throws BackendException,
@@ -305,10 +232,8 @@ public class ModelUtils {
         if (element.isSystemInclude()) {
             pathOrName = ErlideOpen.getIncludeLib(backend, pathOrName);
         }
-        // else {
-        // s = findIncludeFile(project, s, externalIncludes);
-        // }
-        final IErlModule module = openExternal(project, pathOrName);
+        final IErlModule module = findExternalModuleFromPath(pathOrName,
+                project);
         if (module != null) {
             return module;
         }
@@ -418,7 +343,7 @@ public class ModelUtils {
                         }
                     }
                     if (r == null) {
-                        module = openExternal(project, modulePath);
+                        module = findExternalModuleFromPath(modulePath, project);
                     }
                 }
             }
@@ -508,8 +433,8 @@ public class ModelUtils {
             names.add(unquoted);
         }
         names.add(definedName);
-        final List<IErlModule> allIncludedFiles = findAllIncludedFiles(module,
-                externalIncludes);
+        final List<IErlModule> allIncludedFiles = module
+                .findAllIncludedFiles(externalIncludes);
         allIncludedFiles.add(0, module);
         for (final IErlModule includedFile : allIncludedFiles) {
             for (final String name : names) {
@@ -556,15 +481,14 @@ public class ModelUtils {
             final IErlModule module, final IErlElement.Kind kind,
             final String externalIncludes) throws CoreException,
             BackendException {
-        final List<IErlPreprocessorDef> res = Lists.newArrayList();
-
-        final List<IErlModule> modulesWithIncludes = findAllIncludedFiles(
-                module, externalIncludes);
+        final List<IErlPreprocessorDef> result = Lists.newArrayList();
+        final List<IErlModule> modulesWithIncludes = module
+                .findAllIncludedFiles(externalIncludes);
         modulesWithIncludes.add(module);
         for (final IErlModule m : modulesWithIncludes) {
-            res.addAll(m.getPreprocessorDefs(kind));
+            result.addAll(m.getPreprocessorDefs(kind));
         }
-        return res;
+        return result;
     }
 
     public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(

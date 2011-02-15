@@ -3,6 +3,7 @@ package org.erlide.debug.ui.model;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -33,7 +34,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     public void runtimeAdded(final Backend backend) {
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final Backend backend, final IProject project,
             final String moduleName) {
         try {
             final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend);
@@ -50,7 +51,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                             ErlLaunchAttributes.DEBUG_FLAGS,
                             ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
                     final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
-                    new ErlangDebugHelper().interpret(backend, projectName,
+                    new ErlangDebugHelper().interpret(backend, project,
                             moduleName, distributed, true);
                 }
             }

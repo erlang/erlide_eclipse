@@ -71,7 +71,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
@@ -597,12 +597,13 @@ public class FilteredModulesSelectionDialog extends
                 // navigate even "external" lists
                 final IErlModel model = ErlangCore.getModel();
                 if (project != null) {
-                    final String extMods = model.getExternalModules(model
-                            .findProject(project));
+                    final IErlProject erlProject = model.findProject(project);
+                    final String extMods = erlProject
+                            .getExternalModulesString();
                     final List<String> files = new ArrayList<String>();
                     files.addAll(PreferencesUtils.unpackList(extMods));
-                    final String extIncs = model.getExternalIncludes(model
-                            .findProject(project));
+                    final String extIncs = erlProject
+                            .getExternalIncludesString();
                     files.addAll(PreferencesUtils.unpackList(extIncs));
 
                     final IPathVariableManager pvm = ResourcesPlugin
@@ -662,12 +663,12 @@ public class FilteredModulesSelectionDialog extends
         }
 
         private void addPaths(final IProject project) {
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(project);
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(project);
             validPaths.addAll(PluginUtils.getFullPaths(project,
-                    prefs.getIncludeDirs()));
+                    erlProject.getIncludeDirs()));
             validPaths.addAll(PluginUtils.getFullPaths(project,
-                    prefs.getSourceDirs()));
+                    erlProject.getSourceDirs()));
         }
     }
 

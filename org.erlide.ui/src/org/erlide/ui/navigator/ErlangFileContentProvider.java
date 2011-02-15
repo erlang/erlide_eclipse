@@ -28,7 +28,6 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
@@ -59,7 +58,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IFile) {
-                parentElement = ModelUtils.getModule((IFile) parentElement);
+                parentElement = ErlangCore.getModel().findModule(
+                        (IFile) parentElement);
             }
             if (parentElement instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) parentElement;
@@ -195,7 +195,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (SaveablesProvider.class.equals(required)) {
             // TODO return something useful
             return null;

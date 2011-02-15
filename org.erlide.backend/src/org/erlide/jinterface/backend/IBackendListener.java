@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.erlide.jinterface.backend;
 
+import org.eclipse.core.resources.IProject;
+
 public interface IBackendListener {
 
     public void runtimeAdded(Backend backend);
 
     public void runtimeRemoved(Backend backend);
 
-    public void moduleLoaded(Backend backend, String projectName,
+    public void moduleLoaded(Backend backend, IProject project,
             String moduleName);
 
 }

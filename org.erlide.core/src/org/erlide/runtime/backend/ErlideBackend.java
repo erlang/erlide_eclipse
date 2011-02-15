@@ -26,7 +26,7 @@ import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
@@ -200,10 +200,10 @@ public final class ErlideBackend extends Backend implements IDisposable,
     }
 
     public void addProjectPath(final IProject project) {
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
         final String outDir = project.getLocation()
-                .append(prefs.getOutputDir()).toOSString();
+                .append(erlProject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             if (isDistributed()) {
@@ -238,10 +238,10 @@ public final class ErlideBackend extends Backend implements IDisposable,
     }
 
     public void removeProjectPath(final IProject project) {
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
         final String outDir = project.getLocation()
-                .append(prefs.getOutputDir()).toOSString();
+                .append(erlProject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {

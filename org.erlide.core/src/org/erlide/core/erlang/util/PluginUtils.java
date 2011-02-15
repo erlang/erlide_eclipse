@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideOpen;
@@ -71,9 +71,9 @@ public class PluginUtils {
      */
     public static boolean isOnSourcePath(final IContainer container) {
         final IProject project = container.getProject();
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        return isOnPaths(container, project, prefs.getSourceDirs());
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        return isOnPaths(container, project, erlProject.getSourceDirs());
     }
 
     /**
@@ -85,9 +85,9 @@ public class PluginUtils {
      */
     public static boolean isOnIncludePath(final IContainer container) {
         final IProject project = container.getProject();
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        return isOnPaths(container, project, prefs.getIncludeDirs());
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        return isOnPaths(container, project, erlProject.getIncludeDirs());
     }
 
     public static Set<IPath> getFullPaths(final IProject project,
@@ -108,9 +108,9 @@ public class PluginUtils {
         /*
          * Get the project settings so that we can find the source nodes
          */
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final Collection<IPath> sourcePaths = prefs.getSourceDirs();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         final IPath path = con.getFullPath();
         for (final IPath i : sourcePaths) {
             if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
@@ -138,9 +138,11 @@ public class PluginUtils {
 
     private static ContainerFilter getIncludePathFilter(final IProject project,
             final IContainer current) {
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
         return new ContainerFilter() {
-            private final Set<IPath> paths = getFullPaths(project, ErlangCore
-                    .getProjectProperties(project).getIncludeDirs());
+            private final Set<IPath> paths = getFullPaths(project,
+                    erlProject.getIncludeDirs());
 
             public boolean accept(final IContainer container) {
                 return container.equals(current)
@@ -155,8 +157,9 @@ public class PluginUtils {
         private final Set<String> extra;
 
         SourcePathContainerFilter(final IProject project) {
-            paths = getFullPaths(project,
-                    ErlangCore.getProjectProperties(project).getSourceDirs());
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(project);
+            paths = getFullPaths(project, erlProject.getSourceDirs());
             extra = new HashSet<String>();
             extra.addAll(ErlideOpen.getExtraSourcePaths());
         }

@@ -135,11 +135,11 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
      * Returns the Erlang project with the given name. This is a handle-only
      * method. The project may or may not exist.
      * 
-     * @param name
+     * @param project
      *            the name of the Erlang project
      * @return the Erlang project with the given name
      */
-    IErlProject getErlangProject(String name);
+    IErlProject getErlangProject(IProject project);
 
     /**
      * Returns the Erlang projects in this Erlang model, or an empty array if
@@ -282,10 +282,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     public IErlElement innermostThat(final IErlElement el,
             final IErlangFirstThat firstThat);
-
-    String getExternalModules(IErlProject erlProject);
-
-    String getExternalIncludes(IErlProject erlProject);
 
     OtpErlangList getPathVars();
 

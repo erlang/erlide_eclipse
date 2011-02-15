@@ -33,6 +33,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -47,11 +51,13 @@ import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
+import org.erlide.core.erlang.internal.ErlModel.External;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -95,6 +101,10 @@ public class ErlProject extends Openable implements IErlProject {
      * PackageFragment
      */
     private Collection<IResource> nonErlangResources;
+
+    private String fCachedExternalModules = null;
+
+    private String fCachedExternalIncludes = null;
 
     public ErlProject(final IProject project, final ErlElement parent) {
         super(parent, project.getName());
@@ -177,9 +187,8 @@ public class ErlProject extends Openable implements IErlProject {
         if (ModelUtils.isExternalFilesProject(project)) {
             return;
         }
-        final IErlModel model = ErlangCore.getModel();
-        final String externalIncludes = model.getExternalIncludes(this);
-        final String externalModules = model.getExternalModules(this);
+        final String externalIncludes = getExternalIncludesString();
+        final String externalModules = getExternalModulesString();
         final IOldErlangProjectProperties props = getProperties();
         final Collection<IPath> includeDirs = props.getIncludeDirs();
         final List<String> projectIncludes = Lists.newArrayList();
@@ -418,13 +427,6 @@ public class ErlProject extends Openable implements IErlProject {
     public Collection<IResource> getNonErlangResources()
             throws ErlModelException {
         return getNonErlangResources(this);
-    }
-
-    /**
-     * @see IErlProject
-     */
-    public IPath getOutputLocation() throws ErlModelException {
-        return getProperties().getOutputDir();
     }
 
     /**
@@ -745,7 +747,7 @@ public class ErlProject extends Openable implements IErlProject {
         return true;
     }
 
-    public IOldErlangProjectProperties getProperties() {
+    private IOldErlangProjectProperties getProperties() {
         return new OldErlangProjectProperties(fProject);
     }
 
@@ -785,6 +787,100 @@ public class ErlProject extends Openable implements IErlProject {
         if ((delta.getFlags() & ~IResourceDelta.MARKERS) != 0) {
             super.resourceChanged(delta);
         }
+    }
+
+    private String getExternal(final External external) {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = external == External.EXTERNAL_INCLUDES ? "default_external_includes"
+                : "default_external_modules";
+        String result = getExternal(external, service, key, "org.erlide.ui");
+        if ("".equals(result)) {
+            result = getExternal(external, service, key, ErlangPlugin.PLUGIN_ID);
+        }
+        return result;
+    }
+
+    private String getExternal(final External external,
+            final IPreferencesService service, final String key,
+            final String pluginId) {
+        final String s = service.getString(pluginId, key, "", null);
+        if (s.length() > 0) {
+            ErlLogger.debug("%s: '%s'", key, s);
+        }
+        final String global = s;
+        final IOldErlangProjectProperties prefs = getProperties();
+        final String projprefs = external == External.EXTERNAL_INCLUDES ? prefs
+                .getExternalIncludesFile() : prefs.getExternalModulesFile();
+        return PreferencesUtils.packArray(new String[] { projprefs, global });
+    }
+
+    public String getExternalModulesString() {
+        if (fCachedExternalModules == null) {
+            fCachedExternalModules = getExternal(External.EXTERNAL_MODULES);
+        }
+        return fCachedExternalModules;
+    }
+
+    public String getExternalIncludesString() {
+        if (fCachedExternalIncludes == null) {
+            fCachedExternalIncludes = getExternal(External.EXTERNAL_INCLUDES);
+        }
+        return fCachedExternalIncludes;
+    }
+
+    public void setIncludeDirs(final Collection<IPath> includeDirs) {
+        final IOldErlangProjectProperties properties = getProperties();
+        properties.setIncludeDirs(includeDirs);
+        properties.store();
+    }
+
+    public void setSourceDirs(final Collection<IPath> sourceDirs) {
+        final IOldErlangProjectProperties properties = getProperties();
+        properties.setSourceDirs(sourceDirs);
+        properties.store();
+    }
+
+    public void setExternalModulesFile(final String absolutePath) {
+        fCachedExternalModules = null;
+        final IOldErlangProjectProperties properties = getProperties();
+        properties.setExternalModulesFile(absolutePath);
+        properties.store();
+    }
+
+    public Collection<IPath> getSourceDirs() {
+        final IOldErlangProjectProperties properties = getProperties();
+        return properties.getSourceDirs();
+    }
+
+    public Collection<IPath> getIncludeDirs() {
+        final IOldErlangProjectProperties properties = getProperties();
+        return properties.getIncludeDirs();
+    }
+
+    public IPath getOutputLocation() {
+        final IOldErlangProjectProperties properties = getProperties();
+        return properties.getOutputDir();
+    }
+
+    public RuntimeInfo getRuntimeInfo() {
+        final IOldErlangProjectProperties properties = getProperties();
+        return properties.getRuntimeInfo();
+    }
+
+    public RuntimeVersion getRuntimeVersion() {
+        final IOldErlangProjectProperties properties = getProperties();
+        return properties.getRuntimeVersion();
+    }
+
+    public boolean hasSourceDir(final IPath fullPath) {
+        final IOldErlangProjectProperties properties = getProperties();
+        return properties.hasSourceDir(fullPath);
+    }
+
+    public void setAllProperties(final IOldErlangProjectProperties bprefs) {
+        final IOldErlangProjectProperties properties = getProperties();
+        properties.copyFrom(bprefs);
+        properties.store();
     }
 
 }

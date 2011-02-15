@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
@@ -276,7 +277,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
             final boolean checked) {
         final String module = dti.getItem().getName();
         final String moduleWoExtension = ErlideUtil.withoutExtension(module);
-        final String project = dti.getItem().getErlProject().getName();
+        final IProject project = dti.getItem().getErlProject().getProject();
         final boolean interpret = checked;
         final Backend backend = erlangDebugTarget.getBackend();
 

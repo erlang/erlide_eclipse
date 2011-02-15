@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
@@ -173,9 +173,9 @@ public final class ErlideUtil {
             final IFolder folder) {
         final IProject project = folder.getProject();
         final IPath folderPath = folder.getFullPath();
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final Collection<IPath> sourcePaths = prefs.getSourceDirs();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath p : sourcePaths) {
             final IPath path = project.getFolder(p).getFullPath();
             if (folderPath.isPrefixOf(path)) {

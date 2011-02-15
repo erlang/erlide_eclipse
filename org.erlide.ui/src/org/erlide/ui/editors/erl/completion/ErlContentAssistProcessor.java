@@ -323,7 +323,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         IErlPreprocessorDef pd;
         try {
             pd = ModelUtils.findPreprocessorDef(module, recordName,
-                    Kind.RECORD_DEF, model.getExternalIncludes(erlProject));
+                    Kind.RECORD_DEF, erlProject.getExternalIncludesString());
         } catch (final CoreException e) {
             return EMPTY_COMPLETIONS;
         } catch (final BackendException e) {
@@ -474,9 +474,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final IErlModel model = ErlangCore.getModel();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         try {
+            final String externalIncludesString = erlProject != null ? erlProject
+                    .getExternalIncludesString() : null;
             final List<IErlPreprocessorDef> defs = ModelUtils
-                    .getPreprocessorDefs(module, kind,
-                            model.getExternalIncludes(erlProject));
+                    .getPreprocessorDefs(module, kind, externalIncludesString);
             for (final IErlPreprocessorDef pd : defs) {
                 final String name = pd.getDefinedName();
                 addIfMatches(name, prefix, offset, result);

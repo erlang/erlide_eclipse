@@ -27,7 +27,6 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -189,7 +188,7 @@ public class ModelUtilsTests {
         final OpenResult res = ErlideOpen.open(backend,
                 ErlangToolkit.createScannerModuleName(moduleE), 49,
                 ModelUtils.getImportsAsList(moduleE),
-                model.getExternalModules(project), model.getPathVars());
+                project.getExternalModulesString(), model.getPathVars());
         final IErlElement function = ModelUtils.findExternalFunction(
                 res.getName(), res.getFunction(), res.getPath(), project,
                 false, moduleE);
@@ -305,10 +304,7 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IOldErlangProjectProperties properties = project
-                    .getProperties();
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store();
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
             // when
             // looking for it
@@ -347,10 +343,7 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IOldErlangProjectProperties properties = project
-                    .getProperties();
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store();
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
             // when
             // looking for it
@@ -390,10 +383,7 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IOldErlangProjectProperties properties = project
-                    .getProperties();
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store();
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
             // when
             // looking for it
@@ -456,10 +446,7 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IOldErlangProjectProperties properties = project
-                    .getProperties();
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store();
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
             // when
             // looking for it with its external module path
@@ -528,12 +515,9 @@ public class ModelUtilsTests {
             final String headerName = "x.hrl";
             externalHeader = ErlideTestUtils.createTmpFile(headerName,
                     "-record(rec2, {field, another=def}.");
-            final IOldErlangProjectProperties properties = project
-                    .getProperties();
             final String headerPath = externalHeader.getAbsolutePath();
             final IPath p = new Path(headerPath).removeLastSegments(1);
-            properties.setIncludeDirs(Lists.newArrayList(p));
-            properties.store();
+            project.setIncludeDirs(Lists.newArrayList(p));
             // when
             // looking for the include file
             // String includeFile = ModelUtils.findIncludeFile(erlProject,

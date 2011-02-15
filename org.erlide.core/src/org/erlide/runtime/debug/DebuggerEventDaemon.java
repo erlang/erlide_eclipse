@@ -2,6 +2,7 @@ package org.erlide.runtime.debug;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -101,7 +102,7 @@ public class DebuggerEventDaemon implements IBackendListener {
         }
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final Backend backend, final IProject project,
             final String moduleName) {
     }
 

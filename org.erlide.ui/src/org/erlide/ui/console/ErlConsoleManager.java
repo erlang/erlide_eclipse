@@ -3,6 +3,7 @@ package org.erlide.ui.console;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -52,7 +53,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         ErlangCore.getBackendManager().removeBackendListener(this);
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final Backend backend, final IProject project,
             final String moduleName) {
     }
 }

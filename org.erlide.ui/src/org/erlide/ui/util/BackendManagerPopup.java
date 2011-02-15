@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -55,7 +56,7 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final Backend backend, final IProject project,
             final String moduleName) {
     }
 }

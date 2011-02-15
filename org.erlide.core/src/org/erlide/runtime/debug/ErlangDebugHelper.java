@@ -16,11 +16,11 @@ import erlang.ErlideDebug;
 
 public class ErlangDebugHelper {
 
-    public void interpret(final Backend backend, final String projectName,
+    public void interpret(final Backend backend, final IProject project,
             final String moduleName, final boolean distributed,
             final boolean interpret) {
         try {
-            final IFile beam = findModuleBeam(projectName, moduleName);
+            final IFile beam = findModuleBeam(project, moduleName);
             if (beam != null && beam.exists()) {
                 final String de = interpret ? "" : "de";
                 ErlLogger.debug(de + "interpret " + beam.getLocation());
@@ -28,20 +28,20 @@ public class ErlangDebugHelper {
                         .toString(), distributed, interpret);
                 b = !b;
             } else {
-                ErlLogger.debug("IGNORED MISSING interpret " + projectName
-                        + ":" + moduleName);
+                ErlLogger.debug("IGNORED MISSING interpret "
+                        + (project == null ? "null" : project.getName()) + ":"
+                        + moduleName);
             }
         } catch (final ErlModelException e) {
             ErlLogger.warn(e);
         }
     }
 
-    protected IFile findModuleBeam(final String projectName, final String module)
+    protected IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
-        final IErlProject eprj = ErlangCore.getModel().getErlangProject(
-                projectName);
-        final IProject iprj = eprj.getProject();
-        final IFolder r = iprj.getFolder(eprj.getOutputLocation());
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final IFolder r = project.getFolder(erlProject.getOutputLocation());
         try {
             r.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {

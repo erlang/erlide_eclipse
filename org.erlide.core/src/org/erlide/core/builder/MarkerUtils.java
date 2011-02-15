@@ -123,8 +123,8 @@ public final class MarkerUtils {
                 try {
                     final IErlModel model = ErlangCore.getModel();
                     final IErlProject erlProject = model.findProject(project);
-                    final String externalIncludes = model
-                            .getExternalIncludes(erlProject);
+                    final String externalIncludes = erlProject
+                            .getExternalIncludesString();
 
                     ErlLogger.debug("inc::" + fileName + " "
                             + resource.getName() + " " + erlProject.getName());

@@ -23,14 +23,14 @@ import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.builder.MarkerUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
     private final Set<BuildResource> result;
     private final IProgressMonitor monitor;
-    private IOldErlangProjectProperties prefs = null;
+    private IErlProject erlProject = null;
     private final BuilderHelper helper;
 
     public BuilderVisitor(final Set<BuildResource> result,
@@ -51,9 +51,9 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
     private boolean visit(final IResource resource, final int kind,
             final boolean fullBuild) {
-        final IProject my_project = resource.getProject();
         if (resource.getType() == IResource.PROJECT) {
-            prefs = ErlangCore.getProjectProperties(my_project);
+            erlProject = ErlangCore.getModel().getErlangProject(
+                    (IProject) resource);
             return true;
         }
         if (resource.getType() == IResource.FOLDER) {
@@ -62,7 +62,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
         final IPath path = resource.getParent().getProjectRelativePath();
         final String ext = resource.getFileExtension();
-        if (prefs.getSourceDirs().contains(path)) {
+        if (erlProject.getSourceDirs().contains(path)) {
             if ("erl".equals(ext)) {
                 handleErlFile(kind, resource);
                 return false;
@@ -72,7 +72,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
                 return false;
             }
         }
-        if (prefs.getIncludeDirs().contains(path) && "hrl".equals(ext)) {
+        if (erlProject.getIncludeDirs().contains(path) && "hrl".equals(ext)) {
             try {
                 handleHrlFile(kind, resource, fullBuild);
             } catch (final ErlModelException e) {
@@ -80,7 +80,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             }
             return false;
         }
-        if (prefs.getOutputDir().equals(path) && "beam".equals(ext)) {
+        if (erlProject.getOutputLocation().equals(path) && "beam".equals(ext)) {
             try {
                 handleBeamFile(kind, resource);
             } catch (final CoreException e) {
@@ -162,8 +162,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             break;
         case IResourceDelta.REMOVED:
             MarkerUtils.deleteMarkers(resource);
-
-            IPath beam = prefs.getOutputDir();
+            IPath beam = erlProject.getOutputLocation();
             final IPath module = beam.append(resource.getName())
                     .removeFileExtension();
             beam = module.addFileExtension("beam").setDevice(null);
