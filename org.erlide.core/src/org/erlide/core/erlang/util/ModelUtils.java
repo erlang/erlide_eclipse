@@ -361,7 +361,7 @@ public class ModelUtils {
         return module;
     }
 
-    public static IErlModule getModuleByName(final String moduleName,
+    private static IErlModule getModuleByName(final String moduleName,
             final String modulePath, final IErlProject project) {
         final IErlModuleMap modelMap = ErlangCore.getModuleMap();
         final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
