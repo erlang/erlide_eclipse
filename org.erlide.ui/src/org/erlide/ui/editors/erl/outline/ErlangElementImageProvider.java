@@ -115,7 +115,7 @@ public class ErlangElementImageProvider {
             final IErlModel model = ErlangCore.getModel();
             final IErlFolder ef = (IErlFolder) model
                     .findElement((IResource) element);
-            if (ef != null && ef.isOnSourcePath()) {
+            if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {
                 final ImageDescriptor desc = getErlImageDescriptor(ef, flags);
             }
         } else if (element instanceof IAdaptable) {

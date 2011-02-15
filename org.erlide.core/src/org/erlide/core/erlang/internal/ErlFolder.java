@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlModelStatusConstants;
@@ -16,10 +18,10 @@ import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.erlang.util.PluginUtils;
 
 /**
  * Implementation of folder in erlang model
@@ -147,10 +149,46 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     public boolean isOnSourcePath() {
-        return PluginUtils.isOnSourcePath(folder);
+        final IErlProject erlProject = getErlProject();
+        return ErlFolder.isOnPaths(folder, erlProject.getProject(),
+                erlProject.getSourceDirs());
+    }
+
+    public boolean isOnIncludePath() {
+        final IErlProject erlProject = getErlProject();
+        return ErlFolder.isOnPaths(folder, erlProject.getProject(),
+                erlProject.getIncludeDirs());
     }
 
     public boolean isSourcePathParent() {
-        return PluginUtils.isSourcePathParent(folder);
+        final IProject project = folder.getProject();
+        /*
+         * Get the project settings so that we can find the source nodes
+         */
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
+        final IPath path = folder.getFullPath();
+        for (final IPath i : sourcePaths) {
+            if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isOnPaths(final IContainer con,
+            final IProject project, final Collection<IPath> sourcePaths) {
+        final IPath path = con.getFullPath();
+        for (final IPath i : sourcePaths) {
+            if (i.toString().equals(".")) {
+                if (project.getFullPath().equals(path)) {
+                    return true;
+                }
+            } else if (project.getFolder(i).getFullPath().equals(path)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

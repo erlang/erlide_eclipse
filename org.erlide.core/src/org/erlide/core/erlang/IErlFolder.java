@@ -56,5 +56,7 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
 
     boolean isOnSourcePath();
 
+    boolean isOnIncludePath();
+
     boolean isSourcePathParent();
 }

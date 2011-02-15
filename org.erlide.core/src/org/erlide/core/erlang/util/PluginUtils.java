@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -47,49 +46,6 @@ public class PluginUtils {
                 x.getMessage(), x);
     }
 
-    public static boolean isOnPaths(final IContainer con,
-            final IProject project, final Collection<IPath> sourcePaths) {
-        final IPath path = con.getFullPath();
-        for (final IPath i : sourcePaths) {
-            if (i.toString().equals(".")) {
-                if (project.getFullPath().equals(path)) {
-                    return true;
-                }
-            } else if (project.getFolder(i).getFullPath().equals(path)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks to see if the specified container is on the source path
-     * 
-     * @param container
-     *            container to check
-     * @return true if the container is on the project's source path
-     */
-    public static boolean isOnSourcePath(final IContainer container) {
-        final IProject project = container.getProject();
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
-        return isOnPaths(container, project, erlProject.getSourceDirs());
-    }
-
-    /**
-     * Checks if the specified container is on the include path
-     * 
-     * @param container
-     *            container to check
-     * @return true if the container is on the project's include path
-     */
-    public static boolean isOnIncludePath(final IContainer container) {
-        final IProject project = container.getProject();
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
-        return isOnPaths(container, project, erlProject.getIncludeDirs());
-    }
-
     public static Set<IPath> getFullPaths(final IProject project,
             final Collection<IPath> sourcePaths) {
         final HashSet<IPath> result = new HashSet<IPath>();
@@ -101,23 +57,6 @@ public class PluginUtils {
             }
         }
         return result;
-    }
-
-    public static boolean isSourcePathParent(final IFolder con) {
-        final IProject project = con.getProject();
-        /*
-         * Get the project settings so that we can find the source nodes
-         */
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
-        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
-        final IPath path = con.getFullPath();
-        for (final IPath i : sourcePaths) {
-            if (path.isPrefixOf(project.getFolder(i).getFullPath())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static boolean isTracing(final String traceOption) {
@@ -191,17 +130,6 @@ public class PluginUtils {
                 return getIncludePathFilter(project, current);
             }
         };
-    }
-
-    public static boolean isOnExtraPath(final IContainer con) {
-        final Collection<String> sourcePaths = ErlideOpen.getExtraSourcePaths();
-        final String path = con.getLocation().toString();
-        for (final String spath : sourcePaths) {
-            if (path.equals(spath)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static IPath resolvePVMPath(final IPathVariableManager pvm,

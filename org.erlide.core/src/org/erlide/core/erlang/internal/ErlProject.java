@@ -735,6 +735,10 @@ public class ErlProject extends Openable implements IErlProject {
         // IErlFolder? jaja....
     }
 
+    public boolean isOnIncludePath() {
+        return false; // FIXME
+    }
+
     public IErlModule getModule(final String name) {
         return ErlFolder.getModule(this, name, false);
     }
@@ -878,6 +882,8 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public void setAllProperties(final IOldErlangProjectProperties bprefs) {
+        fCachedExternalIncludes = null;
+        fCachedExternalModules = null;
         final IOldErlangProjectProperties properties = getProperties();
         properties.copyFrom(bprefs);
         properties.store();
