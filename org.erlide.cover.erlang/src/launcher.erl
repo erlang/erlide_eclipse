@@ -14,6 +14,7 @@
 %% Exported Functions
 %%----------------------------------------------
 -export([start/1,
+		 start/2,
 		 start_link/1,
 		 stop/0,
 	 	 perform/3,
@@ -32,6 +33,9 @@
 
 start(Type) ->
 	gen_server:start({local, ?MODULE}, ?MODULE, [Type], []).
+
+start(Type, Nodes) ->
+	gen_server:start({local, ?MODULE}, ?MODULE, [Type, Nodes], []).
 
 start_link(Type) ->
 	gen_server:start_link({local, ?MODULE}, ?MODULE, [Type], []).
@@ -87,10 +91,26 @@ set_beam_dir(Dir) ->
 
 %init
 %can be extendnded with the version with multible cover nodes
-init(Args) ->
+init([Type]) ->
 	try cover:start() of
 		{ok, _} ->
-			[Type] = Args,
+			State = #state{cover_type = Type},
+			{ok, State};
+		{error, Reason} ->
+			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
+												   type = starting,
+												   info = Reason}),
+			{stop, Reason}
+	catch
+		_:_ ->
+			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
+												   type = starting,
+												   info = "cover error - check if it is installed"}),
+			{stop, "cover error - check if it is installed"}
+	end;
+init([Type, Nodes]) ->
+	try cover:start(Nodes) of
+		{ok, _} ->
 			State = #state{cover_type = Type},
 			{ok, State};
 		{error, Reason} ->
@@ -105,6 +125,7 @@ init(Args) ->
 												   info = "cover error - check if it is installed"}),
 			{stop, "cover error - check if it is installed"}
 	end.
+
 
 % cast 
 handle_cast(stop, State) ->
