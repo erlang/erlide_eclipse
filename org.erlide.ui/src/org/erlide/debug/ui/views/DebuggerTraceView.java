@@ -582,8 +582,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
                 try {
                     part = page.openEditor(input, editorId);
                 } catch (final PartInitException e) {
-                    ErlideUIPlugin.errorDialog(window.getShell(),
-                            "Go to File", "Exception occurred", e); //
+                    ErlideUIPlugin.errorDialog(window.getShell(), "Go to File",
+                            "Exception occurred", e); //
                 }
             }
         }

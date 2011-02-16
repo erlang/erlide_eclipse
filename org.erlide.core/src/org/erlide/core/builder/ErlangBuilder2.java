@@ -99,8 +99,9 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
     }
 
     @Override
-    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes")
-    final Map args, final IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(final int kind,
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
             return new IProject[0];
@@ -176,8 +177,8 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
     }
 
     private Set<String> getResourcesToBuild(final int kind,
-            @SuppressWarnings("rawtypes")
-            final Map args, final IProject project) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args, final IProject project)
+            throws CoreException {
         Set<BuildResource> result = Sets.newHashSet();
         final IProgressMonitor submon = new NullProgressMonitor();
         // new SubProgressMonitor(monitor, 10);

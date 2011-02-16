@@ -336,8 +336,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes")
-        final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }

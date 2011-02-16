@@ -1037,8 +1037,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     private boolean isLinkedToOutlinePage() {
-        final IEclipsePreferences prefsNode = ErlangOutlinePage
-                .getPrefsNode();
+        final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final boolean isLinkingEnabled = prefsNode.getBoolean(
                 PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
         return isLinkingEnabled;

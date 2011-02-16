@@ -195,8 +195,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (SaveablesProvider.class.equals(required)) {
             // TODO return something useful
             return null;

@@ -270,9 +270,8 @@ public class OpenAction extends SelectionDispatchAction {
         if (res2 instanceof OtpErlangString && moduleName != null) {
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
-            return ModelUtils.findFunction(moduleName,
-                    res.getFunction(), modulePath, erlProject,
-                    checkAllProjects, module);
+            return ModelUtils.findFunction(moduleName, res.getFunction(),
+                    modulePath, erlProject, checkAllProjects, module);
         } else {
             return null;
         }
@@ -286,9 +285,9 @@ public class OpenAction extends SelectionDispatchAction {
             return ModelUtils.findExternalType(module, res.getName(),
                     res.getFun(), res.getPath(), project, checkAllProjects);
         }
-        final IErlElement result = ModelUtils.findFunction(
-                res.getName(), res.getFunction(), res.getPath(), project,
-                checkAllProjects, module);
+        final IErlElement result = ModelUtils.findFunction(res.getName(),
+                res.getFunction(), res.getPath(), project, checkAllProjects,
+                module);
         if (result instanceof IErlFunction) {
             return result;
         }
