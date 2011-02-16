@@ -15,65 +15,67 @@ import org.eclipse.ui.PlatformUI;
 
 public class AboutHandler extends AbstractHandler {
 
-	protected static class MyMessageDialog extends Dialog {
+    protected static class MyMessageDialog extends Dialog {
 
-		String title, message;
+        String title, message;
 
-		protected MyMessageDialog(IShellProvider parentShell) {
-			super(parentShell);
-		}
+        protected MyMessageDialog(final IShellProvider parentShell) {
+            super(parentShell);
+        }
 
-		public MyMessageDialog(Shell shell, String title, String message) {
-			super(shell);
-			this.title = title;
-			this.message = message;
+        public MyMessageDialog(final Shell shell, final String title,
+                final String message) {
+            super(shell);
+            this.title = title;
+            this.message = message;
 
-		}
+        }
 
-		@Override
-		protected void createButtonsForButtonBar(Composite parent) {
-			// create OK and Cancel buttons by default
-			createButton(parent, IDialogConstants.OK_ID,
-					IDialogConstants.OK_LABEL, true);
-		}
+        @Override
+        protected void createButtonsForButtonBar(final Composite parent) {
+            // create OK and Cancel buttons by default
+            createButton(parent, IDialogConstants.OK_ID,
+                    IDialogConstants.OK_LABEL, true);
+        }
 
-		@Override
-		protected void configureShell(Shell shell) {
-			super.configureShell(shell);
-			shell.setText(title);
-		}
+        @Override
+        protected void configureShell(final Shell shell) {
+            super.configureShell(shell);
+            shell.setText(title);
+        }
 
-		@Override
-		protected Control createDialogArea(Composite parent) {
-			Composite composite = (Composite) super.createDialogArea(parent);
+        @Override
+        protected Control createDialogArea(final Composite parent) {
+            final Composite composite = (Composite) super
+                    .createDialogArea(parent);
 
-			Link url1 = new Link(composite, SWT.BORDER);
-			url1.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-					| GridData.HORIZONTAL_ALIGN_FILL));
+            final Link url1 = new Link(composite, SWT.BORDER);
+            url1.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                    | GridData.HORIZONTAL_ALIGN_FILL));
 
-			url1.setText(message);
+            url1.setText(message);
 
-			return composite;
-		}
-	}
+            return composite;
+        }
+    }
 
-	public Object execute(ExecutionEvent event)
-			throws org.eclipse.core.commands.ExecutionException {
+    public Object execute(final ExecutionEvent event)
+            throws org.eclipse.core.commands.ExecutionException {
 
-		MyMessageDialog m = new MyMessageDialog(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-				"Missing Graphviz library",
-				"For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).\nUpdate site: <a src=\"http://oroszgy.github.com/eclipsegraphviz/update/\">http://oroszgy.github.com/eclipsegraphviz/update/</a>");
+        final MyMessageDialog m = new MyMessageDialog(
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                "Missing Graphviz library",
+                "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).\nUpdate site: <a src=\"http://oroszgy.github.com/eclipsegraphviz/update/\">http://oroszgy.github.com/eclipsegraphviz/update/</a>");
 
-		m.open();
+        m.open();
 
-		// MyMessageDialog
-		// .openMessage(
-		// PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-		// .getShell(),
-		// "Missing Graphviz plugin",
-		// "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).");
+        // MyMessageDialog
+        // .openMessage(
+        // PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+        // .getShell(),
+        // "Missing Graphviz plugin",
+        // "For using Wrangler code inspection functionalities you must first install the Eclipse GraphViz plugin (and also the original graphviz binaries).");
 
-		return null;
-	}
+        return null;
+    }
 }

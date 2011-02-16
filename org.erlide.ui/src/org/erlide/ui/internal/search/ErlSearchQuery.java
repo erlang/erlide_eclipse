@@ -13,13 +13,13 @@ import org.eclipse.search.ui.text.Match;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.runtime.backend.ErlideBackend;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import erlang.ErlSearchScope;
 import erlang.ErlangSearchPattern;
 import erlang.ErlideSearchServer;
 
@@ -34,8 +34,9 @@ public class ErlSearchQuery implements ISearchQuery {
     private String stateDirCached = null;
     private final String scopeDescription;
 
-    public ErlSearchQuery(final ErlangSearchPattern pattern, final ErlSearchScope scope,
-            final ErlSearchScope externalScope, final String scopeDescription) {
+    public ErlSearchQuery(final ErlangSearchPattern pattern,
+            final ErlSearchScope scope, final ErlSearchScope externalScope,
+            final String scopeDescription) {
         this.pattern = pattern;
         this.scope = scope;
         this.externalScope = externalScope == null ? new ErlSearchScope()

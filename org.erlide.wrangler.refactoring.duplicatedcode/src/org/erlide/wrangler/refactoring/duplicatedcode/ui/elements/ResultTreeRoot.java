@@ -18,17 +18,18 @@ package org.erlide.wrangler.refactoring.duplicatedcode.ui.elements;
  */
 public class ResultTreeRoot extends AbstractResultTreeParent {
 
-	@Override
-	public String getName() {
-		return "";
-	}
+    @Override
+    public String getName() {
+        return "";
+    }
 
-	/**
-	 * Drops children elements.
-	 */
-	public void dropChildren() {
-		if (children != null)
-			children.clear();
-	}
+    /**
+     * Drops children elements.
+     */
+    public void dropChildren() {
+        if (children != null) {
+            children.clear();
+        }
+    }
 
 }

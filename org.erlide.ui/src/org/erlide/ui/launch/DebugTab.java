@@ -50,10 +50,13 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.internal.ErlExternalReferenceEntry;
+import org.erlide.core.erlang.internal.ErlExternalReferenceEntryList;
+import org.erlide.core.erlang.internal.ErlOtpExternalReferenceEntryList;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.ErlDebugConstants;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlDebugConstants;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.ui.util.SWTUtil;
 
@@ -142,6 +145,12 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             if (elem instanceof IErlModule) {
                 children.add(new DebugTreeItem(elem, this));
                 return true;
+            } else if (elem instanceof ErlOtpExternalReferenceEntryList) {
+                return false;
+            } else if (elem instanceof ErlExternalReferenceEntryList) {
+                return false;
+            } else if (elem instanceof ErlExternalReferenceEntry) {
+                return false;
             } else if (elem instanceof IParent) {
                 try {
                     if (elem instanceof IErlFolder) {
@@ -471,8 +480,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             projects.add(project);
         }
 
-        interpret = ErlangLaunchDelegate
-                .addBreakpointProjectsAndModules(projects, interpret);
+        interpret = ErlangLaunchDelegate.addBreakpointProjectsAndModules(
+                projects, interpret);
         interpretedModules = new ArrayList<IErlModule>();
 
         addModules(interpret, interpretedModules);

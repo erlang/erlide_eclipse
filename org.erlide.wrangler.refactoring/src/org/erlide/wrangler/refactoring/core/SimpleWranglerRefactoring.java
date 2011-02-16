@@ -19,17 +19,17 @@ package org.erlide.wrangler.refactoring.core;
  */
 public abstract class SimpleWranglerRefactoring extends WranglerRefactoring {
 
-	protected String userInput = null;
+    protected String userInput = null;
 
-	/**
-	 * Most of the refactorings needs an input parameter (e.g. new name). This
-	 * function is for setting this input.
-	 * 
-	 * @param userInput
-	 *            user input data
-	 */
-	public void setUserInput(final String userInput) {
-		this.userInput = userInput;
-	}
+    /**
+     * Most of the refactorings needs an input parameter (e.g. new name). This
+     * function is for setting this input.
+     * 
+     * @param userInput
+     *            user input data
+     */
+    public void setUserInput(final String userInput) {
+        this.userInput = userInput;
+    }
 
 }

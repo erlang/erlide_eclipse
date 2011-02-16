@@ -35,9 +35,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.ui.util.SWTUtil;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
@@ -58,7 +58,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
      * @wbp.parser.entryPoint
      */
     public void createControl(final Composite parent) {
-        runtimes = ErlangCore.getRuntimeInfoManager().getRuntimes();
+        runtimes = BackendCore.getRuntimeInfoManager().getRuntimes();
 
         final Composite comp = new Composite(parent, SWT.NONE);
         setControl(comp);
@@ -84,7 +84,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             rtl.add(r.getName());
         }
         final String[] rts = rtl.toArray(new String[] {});
-        final RuntimeInfo defaultRuntime = ErlangCore.getRuntimeInfoManager()
+        final RuntimeInfo defaultRuntime = BackendCore.getRuntimeInfoManager()
                 .getDefaultRuntime();
         final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
                 defaultRuntime.getName());

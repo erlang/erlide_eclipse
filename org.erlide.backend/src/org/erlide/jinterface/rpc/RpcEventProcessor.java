@@ -37,7 +37,8 @@ public final class RpcEventProcessor implements Runnable {
             } catch (final OtpErlangExit e) {
                 terminated = true;
             } catch (final Exception e) {
-                ErlLogger.warn("RpcEventProcessor %s got exception:", mbox.self());
+                ErlLogger.warn("RpcEventProcessor %s got exception:",
+                        mbox.self());
                 ErlLogger.warn(e);
             }
 

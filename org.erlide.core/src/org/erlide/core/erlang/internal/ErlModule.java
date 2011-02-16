@@ -275,32 +275,26 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        try {
-            for (final IErlElement fun : getChildren()) {
-                if (fun instanceof IErlFunction) {
-                    final IErlFunction f = (IErlFunction) fun;
-                    if (f.getName().equals(function.name)
-                            && (function.arity < 0 || f.getArity() == function.arity)) {
-                        return f;
-                    }
+        for (final IErlElement fun : internalGetChildren()) {
+            if (fun instanceof IErlFunction) {
+                final IErlFunction f = (IErlFunction) fun;
+                if (f.getName().equals(function.name)
+                        && (function.arity < 0 || f.getArity() == function.arity)) {
+                    return f;
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }
 
     public IErlTypespec findTypespec(final String typeName) {
-        try {
-            for (final IErlElement child : getChildren()) {
-                if (child instanceof IErlTypespec) {
-                    final IErlTypespec typespec = (IErlTypespec) child;
-                    if (typespec.getName().equals(typeName)) {
-                        return typespec;
-                    }
+        for (final IErlElement child : internalGetChildren()) {
+            if (child instanceof IErlTypespec) {
+                final IErlTypespec typespec = (IErlTypespec) child;
+                if (typespec.getName().equals(typeName)) {
+                    return typespec;
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }

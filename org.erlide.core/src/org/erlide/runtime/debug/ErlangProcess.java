@@ -23,9 +23,9 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.backend.util.ErlangFunctionCall;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 

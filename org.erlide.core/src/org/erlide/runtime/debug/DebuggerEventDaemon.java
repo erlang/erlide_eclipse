@@ -76,7 +76,7 @@ public class DebuggerEventDaemon implements IBackendListener {
         }
     }
 
-    public DebuggerEventDaemon(final Backend b, ErlangDebugTarget target) {
+    public DebuggerEventDaemon(final Backend b, final ErlangDebugTarget target) {
         runtime = b;
         handler = new DebugEventHandler(target);
     }

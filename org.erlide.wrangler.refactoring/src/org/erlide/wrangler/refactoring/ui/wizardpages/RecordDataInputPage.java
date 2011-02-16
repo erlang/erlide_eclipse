@@ -32,112 +32,113 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
  */
 public class RecordDataInputPage extends MultiInputPage {
 
-	IValidator validator;
+    IValidator validator;
 
-	protected ArrayList<Text> fieldNames;
-	protected ArrayList<Label> fieldNameLabels;
+    protected ArrayList<Text> fieldNames;
+    protected ArrayList<Label> fieldNameLabels;
 
-	protected Label recordNameLabel;
-	protected Text recordName;
+    protected Label recordNameLabel;
+    protected Text recordName;
 
-	protected Composite composite;
+    protected Composite composite;
 
-	protected QuickCheckStateRefactoring refactoring;
+    protected QuickCheckStateRefactoring refactoring;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            title
-	 */
-	public RecordDataInputPage(final String name) {
-		super(name);
-	}
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            title
+     */
+    public RecordDataInputPage(final String name) {
+        super(name);
+    }
 
-	@Override
-	public void createControl(final Composite parent) {
-		refactoring = (QuickCheckStateRefactoring) getRefactoring();
-		composite = new Composite(parent, SWT.NONE);
+    @Override
+    public void createControl(final Composite parent) {
+        refactoring = (QuickCheckStateRefactoring) getRefactoring();
+        composite = new Composite(parent, SWT.NONE);
 
-		recordNameLabel = new Label(composite, SWT.LEFT);
-		recordNameLabel.setText("Record name:");
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-		recordNameLabel.setLayoutData(gridData);
+        recordNameLabel = new Label(composite, SWT.LEFT);
+        recordNameLabel.setText("Record name:");
+        GridData gridData = new GridData();
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.horizontalSpan = 2;
+        recordNameLabel.setLayoutData(gridData);
 
-		recordName = new Text(composite, SWT.NONE);
-		gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-		gridData.grabExcessHorizontalSpace = true;
-		recordName.setLayoutData(gridData);
+        recordName = new Text(composite, SWT.NONE);
+        gridData = new GridData();
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.horizontalSpan = 2;
+        gridData.grabExcessHorizontalSpace = true;
+        recordName.setLayoutData(gridData);
 
-		ModifyListener modifyListener = new ModifyListener() {
+        final ModifyListener modifyListener = new ModifyListener() {
 
-			public void modifyText(final ModifyEvent e) {
-				isInputValid();
-			}
+            public void modifyText(final ModifyEvent e) {
+                isInputValid();
+            }
 
-		};
+        };
 
-		recordName.addModifyListener(modifyListener);
+        recordName.addModifyListener(modifyListener);
 
-		// adding field name inputs
-		int n = refactoring.getRecordFieldCount();
-		fieldNameLabels = new ArrayList<Label>();
-		fieldNames = new ArrayList<Text>();
-		for (int i = 0; i < n; ++i) {
-			Label l = new Label(composite, SWT.LEFT);
-			l.setText("Field name (" + i + "):");
-			GridData gd = new GridData();
-			gd.horizontalAlignment = GridData.FILL;
-			gd.horizontalSpan = 2;
-			l.setLayoutData(gridData);
+        // adding field name inputs
+        final int n = refactoring.getRecordFieldCount();
+        fieldNameLabels = new ArrayList<Label>();
+        fieldNames = new ArrayList<Text>();
+        for (int i = 0; i < n; ++i) {
+            final Label l = new Label(composite, SWT.LEFT);
+            l.setText("Field name (" + i + "):");
+            GridData gd = new GridData();
+            gd.horizontalAlignment = GridData.FILL;
+            gd.horizontalSpan = 2;
+            l.setLayoutData(gridData);
 
-			fieldNameLabels.add(l);
+            fieldNameLabels.add(l);
 
-			Text t = new Text(composite, SWT.NONE);
-			gd = new GridData();
-			gd.horizontalAlignment = GridData.FILL;
-			gd.horizontalSpan = 2;
-			gd.grabExcessHorizontalSpace = true;
-			t.setLayoutData(gridData);
+            final Text t = new Text(composite, SWT.NONE);
+            gd = new GridData();
+            gd.horizontalAlignment = GridData.FILL;
+            gd.horizontalSpan = 2;
+            gd.grabExcessHorizontalSpace = true;
+            t.setLayoutData(gridData);
 
-			fieldNames.add(t);
+            fieldNames.add(t);
 
-			t.addModifyListener(modifyListener);
-		}
+            t.addModifyListener(modifyListener);
+        }
 
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		composite.setLayout(layout);
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        composite.setLayout(layout);
 
-		setControl(composite);
-	}
+        setControl(composite);
+    }
 
-	@Override
-	protected boolean isInputValid() {
-		IValidator theValidator = new AtomValidator();
-		boolean valid = theValidator.isValid(recordName.getText());
+    @Override
+    protected boolean isInputValid() {
+        final IValidator theValidator = new AtomValidator();
+        boolean valid = theValidator.isValid(recordName.getText());
 
-		ArrayList<String> fn = new ArrayList<String>();
-		for (Text t : fieldNames) {
-			valid = valid && theValidator.isValid(t.getText());
-			fn.add(t.getText());
-			if (!valid)
-				break;
-		}
+        final ArrayList<String> fn = new ArrayList<String>();
+        for (final Text t : fieldNames) {
+            valid = valid && theValidator.isValid(t.getText());
+            fn.add(t.getText());
+            if (!valid) {
+                break;
+            }
+        }
 
-		if (valid) {
-			refactoring.setRecordData(recordName.getText(), fn);
-			setErrorMessage(null);
-			setPageComplete(true);
-		} else {
-			setPageComplete(false);
-			setErrorMessage("Please provide valid record name, and field names!");
-		}
+        if (valid) {
+            refactoring.setRecordData(recordName.getText(), fn);
+            setErrorMessage(null);
+            setPageComplete(true);
+        } else {
+            setPageComplete(false);
+            setErrorMessage("Please provide valid record name, and field names!");
+        }
 
-		return valid;
-	}
+        return valid;
+    }
 }

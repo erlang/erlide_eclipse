@@ -24,50 +24,51 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
  */
 public class CostumworkFlowInputPage extends SimpleInputPage {
 
-	protected CostumWorkflowRefactoring costumWrokflowRefactoring;
-	protected RefactoringWorkflowController workflowController;
+    protected CostumWorkflowRefactoring costumWrokflowRefactoring;
+    protected RefactoringWorkflowController workflowController;
 
-	/**
-	 * Default constructor
-	 * 
-	 * @param name
-	 *            Input page title
-	 * @param description
-	 *            Input page description
-	 * @param labelText
-	 *            input data label
-	 * @param inputErrorMsg
-	 *            error message in case of the user mistyped sg
-	 * @param validator
-	 *            validator object
-	 */
-	public CostumworkFlowInputPage(final String name, final String description,
-			final String labelText, final String inputErrorMsg,
-			final IValidator validator) {
-		super(name, description, labelText, inputErrorMsg, validator);
-	}
+    /**
+     * Default constructor
+     * 
+     * @param name
+     *            Input page title
+     * @param description
+     *            Input page description
+     * @param labelText
+     *            input data label
+     * @param inputErrorMsg
+     *            error message in case of the user mistyped sg
+     * @param validator
+     *            validator object
+     */
+    public CostumworkFlowInputPage(final String name, final String description,
+            final String labelText, final String inputErrorMsg,
+            final IValidator validator) {
+        super(name, description, labelText, inputErrorMsg, validator);
+    }
 
-	@Override
-	protected void controlWorkflow(final Shell s) {
-		setCostumRefactoring();
-		workflowController = costumWrokflowRefactoring.getWorkflowController(s);
-		workflowController.doRefactoring();
-	}
+    @Override
+    protected void controlWorkflow(final Shell s) {
+        setCostumRefactoring();
+        workflowController = costumWrokflowRefactoring.getWorkflowController(s);
+        workflowController.doRefactoring();
+    }
 
-	/*
-	 * @Override public boolean isLastUserInputPage() { setCostumRefactoring();
-	 * if (workflowController.controlInputPagesOrder()) return
-	 * workflowController.isLastPage(); else return super.isLastUserInputPage();
-	 * }
-	 */
+    /*
+     * @Override public boolean isLastUserInputPage() { setCostumRefactoring();
+     * if (workflowController.controlInputPagesOrder()) return
+     * workflowController.isLastPage(); else return super.isLastUserInputPage();
+     * }
+     */
 
-	protected void setCostumRefactoring() {
-		if (costumWrokflowRefactoring == null)
-			costumWrokflowRefactoring = (CostumWorkflowRefactoring) getRefactoring();
-	}
+    protected void setCostumRefactoring() {
+        if (costumWrokflowRefactoring == null) {
+            costumWrokflowRefactoring = (CostumWorkflowRefactoring) getRefactoring();
+        }
+    }
 
-	@Override
-	public boolean canFlipToNextPage() {
-		return isPageComplete();
-	}
+    @Override
+    public boolean canFlipToNextPage() {
+        return isPageComplete();
+    }
 }

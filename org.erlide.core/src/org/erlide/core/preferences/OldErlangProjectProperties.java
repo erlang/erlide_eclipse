@@ -21,11 +21,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.backend.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
@@ -66,7 +66,7 @@ public final class OldErlangProjectProperties implements
      * org.erlide.core.preferences.IOldErlangProjectProperties#load(org.eclipse
      * .core.runtime.preferences.IEclipsePreferences)
      */
-    public void load(final IEclipsePreferences node) {
+    private void load(final IEclipsePreferences node) {
         if (project == null) {
             return;
         }
@@ -102,7 +102,7 @@ public final class OldErlangProjectProperties implements
                 runtimeVersion = new RuntimeVersion(
                         ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
             } else {
-                final RuntimeInfo ri = ErlangCore.getRuntimeInfoManager()
+                final RuntimeInfo ri = BackendCore.getRuntimeInfoManager()
                         .getRuntime(runtimeName);
                 if (ri != null) {
                     runtimeVersion = new RuntimeVersion(ri.getVersion());
@@ -123,15 +123,14 @@ public final class OldErlangProjectProperties implements
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.erlide.core.preferences.IOldErlangProjectProperties#store(org.eclipse
-     * .core.runtime.preferences.IEclipsePreferences)
+     * @see org.erlide.core.preferences.IOldErlangProjectProperties#store()
      */
-    public void store(final IEclipsePreferences node) {
+    public void store() {
         if (project == null) {
             return;
         }
-
+        final IEclipsePreferences node = new ProjectScope(project)
+                .getNode(ErlangPlugin.PLUGIN_ID);
         if ("true".equals(System.getProperty("erlide.newprops"))) {
             try {
                 final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
@@ -319,7 +318,7 @@ public final class OldErlangProjectProperties implements
      * org.erlide.core.preferences.IOldErlangProjectProperties#getRuntimeInfo()
      */
     public RuntimeInfo getRuntimeInfo() {
-        final RuntimeInfo runtime = ErlangCore.getRuntimeInfoManager()
+        final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
                 .getRuntime(runtimeVersion, runtimeName);
         RuntimeInfo rt = null;
         if (runtime != null) {

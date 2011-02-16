@@ -20,14 +20,14 @@ import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
  */
 public abstract class WranglerPage extends UserInputWizardPage {
 
-	/**
-	 * Default constructor
-	 * 
-	 * @param name
-	 *            the page's name
-	 */
-	public WranglerPage(final String name) {
-		super(name);
-	}
+    /**
+     * Default constructor
+     * 
+     * @param name
+     *            the page's name
+     */
+    public WranglerPage(final String name) {
+        super(name);
+    }
 
 }

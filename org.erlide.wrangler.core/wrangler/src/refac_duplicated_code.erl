@@ -100,11 +100,11 @@ duplicated_code_command_line(DirFileList, MinLength1, MinClones1, MaxPars, TabWi
     {ok, "Duplicated code detection finished."}.
 
 %%-spec(duplicated_code_detection/6::([dir()|filename()], integer(),integer(), integer(), filename(),integer()) ->
-%%					 [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}], 
+%%					 [{[{{filename(), integer(), integer()},{filename(), integer(), integer()}}],
 %%					   integer(), integer(), string()}]).
 duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTreeExec, TabWidth) ->
     FileNames = refac_util:expand_files(DirFileList, ".erl"),
-    case FileNames of 
+    case FileNames of
 	[] -> throw({error, "No .erl files were found"});
 	_ -> ok
     end,
@@ -112,7 +112,7 @@ duplicated_code_detection(DirFileList, MinClones, MinLength, MaxPars, SuffixTree
     ?debug("Constructing suffix tree and collecting clones from the suffix tree.\n", []),
     {Toks, ProcessedToks} = tokenize(FileNames, TabWidth),
     Dir = filename:dirname(hd(FileNames)),
-    Cs= suffix_tree:get_clones_by_suffix_tree(Dir, ProcessedToks,MinLength, MinClones,alphabet(), 0, SuffixTreeExec),
+    Cs = suffix_tree:get_clones_by_suffix_tree(Dir, ProcessedToks, MinLength, MinClones, alphabet(), 0, SuffixTreeExec),
     ?debug("Initial numberclones from suffix tree:~p\n", [length(Cs)]),
     %% This step is necessary to reduce large number of sub-clones.
     ?debug("Type 4 clones:\n~p\n", [length(Cs)]),
@@ -160,12 +160,13 @@ get_parameters_1(MinClonesStr, DefaultVal) ->
 %% =====================================================================
 %% tokenize a collection of concatenated Erlang files.
 
+
 %% -spec(tokenize/2::([filename()], integer()) ->
 %% 		{[token()], string()}).
 tokenize(FileList, TabWidth) ->
-    Toks = lists:flatmap(fun(F) -> 
-				 Toks= refac_util:tokenize(F, false, TabWidth),
-				 [add_filename_to_token(F,T)||T<-Toks]
+    Toks = lists:flatmap(fun (F) ->
+				 Toks = refac_util:tokenize(F, false, TabWidth),
+				 [add_filename_to_token(F,T) || T <- Toks]
 			 end, FileList),
     R = [T1 || T <- Toks, T1 <- [process_a_tok(T)]],
     {Toks, lists:concat(R)}.
@@ -285,46 +286,47 @@ connect_clones(C1={Range1, Len1, F1}, {Range2, Len2, F2}) ->
 %% trim both end of each clones to exclude those tokens that does not form a meaninhful syntax phrase.
 %% This phase needs to get access to the abstract syntax tree.
 
+
 trim_clones(Cs, MinLength, MinClones, MaxPars, TabWidth) ->
     Files0 = [File || C <- Cs, {Range, _Len, _Freq} <- [C],
 		      {File, _, _} <- element(1, lists:unzip(Range))],
-    Files = refac_misc:remove_duplicates(Files0),
+    Files = refac_util:remove_duplicates(Files0),
     Fun = fun (File, Cs0) -> process_a_file(File, Cs0, MinLength, TabWidth) end,
     Fun2 = fun (ListsOfUnitsList) ->
 		   case lists:usort(lists:map(fun length/1, ListsOfUnitsList)) of
-		     [_N] -> ZippedUnitsList = zip_list(ListsOfUnitsList),
-			     NewCs = lists:append([group_by_index(4, ZippedUnits) || ZippedUnits <- ZippedUnitsList]),
-			     lists:append([get_anti_unifier(C, MaxPars, MinLength) || C <- NewCs, C /= [], length(C) >= MinClones,
-										      element(5, hd(C)) >= MinLength]);
-		     _ -> []
+		       [_N] -> ZippedUnitsList = zip_list(ListsOfUnitsList),
+			       NewCs = lists:append([group_by_index(4, ZippedUnits) || ZippedUnits <- ZippedUnitsList]),
+			       lists:append([get_anti_unifier(C, MaxPars, MinLength) || C <- NewCs, C /= [], length(C) >= MinClones,
+											element(5, hd(C)) >= MinLength]);
+		       _ -> []
 		   end
 	   end,
     Cs1 = lists:foldl(Fun, Cs, Files),
     lists:append([Fun2(Ranges) || {Ranges, _, _} <- Cs1]).
 
 process_a_file(File, Cs, MinLength, TabWidth) ->
-    {ok, {AnnAST, _}} = refac_util:parse_annotate_file(File, true, [], TabWidth),
-    Vars = refac_misc:collect_var_source_def_pos_info(AnnAST),
+    {ok, {AnnAST, _}} = wrangler_ast_server:parse_annotate_file(File, true, [], TabWidth),
+    Vars = refac_util:collect_var_source_def_pos_info(AnnAST),
     Fun0 = fun (Node) ->
 		   case refac_syntax:type(Node) of
-		     function ->
-			 true;
-		     _ ->
-			 (refac_misc:is_expr(Node) orelse refac_syntax:type(Node)==match_expr) 
-			       andalso refac_syntax:type(Node) /= guard_expression
+		       function ->
+			   true;
+		       _ ->
+			   (refac_util:is_expr(Node) orelse refac_syntax:type(Node)==match_expr)
+			      andalso refac_syntax:type(Node) /= guard_expression
 		   end
 	   end,
     Fun1 = fun (Range) ->
 		   case Range of
-		     {{File1, L1, C1}, {File2, L2, C2}} ->
-			 case File1 /= File2 of
-			   true -> [];
-			   _ when File == File1 ->
-			       Units = pos_to_syntax_units(AnnAST, {L1, C1}, {L2, C2}, Fun0, MinLength),
-			       [process_a_unit(Vars, File1, U) || U <- Units];
-			   _ -> Range
-			 end;
-		     _ -> Range
+		       {{File1, L1, C1}, {File2, L2, C2}} ->
+			   case File1 /= File2 of
+			       true -> [];
+			       _ when File == File1 ->
+				   Units = pos_to_syntax_units(AnnAST, {L1, C1}, {L2, C2}, Fun0, MinLength),
+				   [process_a_unit(Vars, File1, U) || U <- Units];
+			       _ -> Range
+			   end;
+		       _ -> Range
 		   end
 	   end,
     [{NewRanges, Len, Freq}
@@ -333,11 +335,11 @@ process_a_file(File, Cs, MinLength, TabWidth) ->
 	NewRanges <- [lists:map(Fun1, Range)], NewRanges /= []].
 
 process_a_unit(VarsUsed, FileName, Unit) ->
-    {{StartLn, StartCol}, _} = refac_misc:get_start_end_loc(hd(Unit)),
-    {_, {EndLn, EndCol}} = refac_misc:get_start_end_loc(lists:last(Unit)),
+    {{StartLn, StartCol}, _} = refac_util:get_start_end_loc(hd(Unit)),
+    {_, {EndLn, EndCol}} = refac_util:get_start_end_loc(lists:last(Unit)),
     BdStruct = refac_code_search_utils:var_binding_structure(Unit),
     Range = {{FileName, StartLn, StartCol}, {FileName, EndLn, EndCol}},
-    ExprBdVarsPos = [Pos || {_Var, Pos} <- refac_misc:get_bound_vars(Unit)],
+    ExprBdVarsPos = [Pos || {_Var, Pos} <- refac_util:get_bound_vars(Unit)],
     VarsToExport = [{V, DefPos} || {V, SourcePos, DefPos} <- VarsUsed,
 				   SourcePos > {EndLn, EndCol},
 				   lists:subtract(DefPos, ExprBdVarsPos) == []],
@@ -357,12 +359,12 @@ pos_to_syntax_units_1(Tree, Start, End, F, Type) ->
 		  [[lists:append(pos_to_syntax_units_1(T, Start, End, F, Type1)) || T <- G]
 		   || G <- Ts]
 	  end,
-    {S, E} = refac_misc:get_start_end_loc(Tree),
+    {S, E} = refac_util:get_start_end_loc(Tree),
     if (S >= Start) and (E =< End) ->
 	   case F(Tree) of
-	     true ->
-		 [{Tree, Type}];
-	     _ -> []
+	       true ->
+		   [{Tree, Type}];
+	       _ -> []
 	   end;
        (S > End) or (E < Start) -> [];
        (S < Start) or (E > End) ->
@@ -483,7 +485,7 @@ rm_loc_in_tok(T) ->
 	{char, _L, V}  -> {char, D, V};
 	{atom, _L, V} -> {atom, D, V};
 	{A, _L} ->{A, D};
-	_Other  -> 
+	_Other ->
 	    erlang:error(?wrangler_io("Unhandled token:\n~p\n", [_Other]))
     end.
 
@@ -755,32 +757,31 @@ do_anti_unify_atoms(Exp1, Exp2) ->
 has_the_same_value(Node1, Node2) ->
     refac_syntax:concrete(Node1)==refac_syntax:concrete(Node2).
 
-
 %%===============================================
 generalise_expr({[], _}, _) ->
     {"", 0};
 generalise_expr({Exprs = [H| _T], EVs}, {NodeVarPairs, VarsToExport}) ->
     case refac_syntax:type(H) of
-      function ->
-	  generalise_fun(H, NodeVarPairs);
-      _ ->
-	  FunName = refac_syntax:atom(new_fun),
-	  FVs = lists:ukeysort(2, refac_misc:get_free_vars(Exprs)),
-	  EVs1 = lists:ukeysort(2, EVs ++ VarsToExport),
-	  NewExprs = generalise_expr_1(Exprs, NodeVarPairs),
-	  NewExprs1 = case EVs1 of
-			[] -> NewExprs;
-			[{V, _}] -> E = refac_syntax:variable(V),
-				    NewExprs ++ [E];
-			[_V| _Vs] -> E = refac_syntax:tuple([refac_syntax:variable(V) || {V, _} <- EVs1]),
-				     NewExprs ++ [E]
-		      end,
-	  NewVars = refac_misc:collect_var_names(NewExprs) -- refac_misc:collect_var_names(Exprs),
-	  Pars = [refac_syntax:variable(V) || {V, _} <- FVs] ++
-		   [refac_syntax:variable(V) || V <- NewVars],
-	  Pars1 = refac_misc:remove_duplicates(Pars),
-	  C = refac_syntax:clause(Pars1, none, NewExprs1),
-	  {refac_prettypr:format(refac_syntax:function(FunName, [C])), length(Pars1)}
+	function ->
+	    generalise_fun(H, NodeVarPairs);
+	_ ->
+	    FunName = refac_syntax:atom(new_fun),
+	    FVs = lists:ukeysort(2, refac_util:get_free_vars(Exprs)),
+	    EVs1 = lists:ukeysort(2, EVs ++ VarsToExport),
+	    NewExprs = generalise_expr_1(Exprs, NodeVarPairs),
+	    NewExprs1 = case EVs1 of
+			    [] -> NewExprs;
+			    [{V, _}] -> E = refac_syntax:variable(V),
+					NewExprs ++ [E];
+			    [_V| _Vs] -> E = refac_syntax:tuple([refac_syntax:variable(V) || {V, _} <- EVs1]),
+					 NewExprs ++ [E]
+			end,
+	    NewVars = refac_util:collect_var_names(NewExprs) -- refac_util:collect_var_names(Exprs),
+	    Pars = [refac_syntax:variable(V) || {V, _} <- FVs] ++ 
+		     [refac_syntax:variable(V) || V <- NewVars],
+	    Pars1 = refac_util:remove_duplicates(Pars),
+	    C = refac_syntax:clause(Pars1, none, NewExprs1),
+	    {refac_prettypr:format(refac_syntax:function(FunName, [C])), length(Pars1)}
     end.
 
 generalise_fun(F, NodesToGen) ->
@@ -790,11 +791,11 @@ generalise_fun(F, NodesToGen) ->
 		       lists:map(
 			 fun (C) ->
 				 C1 = generalise_expr_2(C, NodesToGen),
-				 NewVars = refac_misc:collect_var_names(C1) --
-					     refac_misc:collect_var_names(C),
+				 NewVars = refac_util:collect_var_names(C1) -- 
+					     refac_util:collect_var_names(C),
 				 {C1, NewVars}
 			 end, Cs)),
-    NewVars1 = refac_misc:remove_duplicates(lists:append(NewVars)),
+    NewVars1 = refac_util:remove_duplicates(lists:append(NewVars)),
     NewCs = [generalise_clause(C, NewVars1) || C <- Cs1],
     %% Here only count the new vars.
     {refac_prettypr:format(refac_syntax:function(FunName, NewCs)), length(NewVars)}.

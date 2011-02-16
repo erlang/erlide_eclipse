@@ -37,7 +37,8 @@ public class Difference {
      * Creates the difference for the given start and end points for the
      * deletion and addition.
      */
-    public Difference(int delStart, int delEnd, int addStart, int addEnd) {
+    public Difference(final int delStart, final int delEnd, final int addStart,
+            final int addEnd) {
         this.delStart = delStart;
         this.delEnd = delEnd;
         this.addStart = addStart;
@@ -80,7 +81,7 @@ public class Difference {
      * Sets the point as deleted. The start and end points will be modified to
      * include the given line.
      */
-    public void setDeleted(int line) {
+    public void setDeleted(final int line) {
         delStart = Math.min(line, delStart);
         delEnd = Math.max(line, delEnd);
     }
@@ -89,7 +90,7 @@ public class Difference {
      * Sets the point as added. The start and end points will be modified to
      * include the given line.
      */
-    public void setAdded(int line) {
+    public void setAdded(final int line) {
         addStart = Math.min(line, addStart);
         addEnd = Math.max(line, addEnd);
     }
@@ -99,12 +100,12 @@ public class Difference {
      * type Difference, with the same starting and ending points.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof Difference) {
-            Difference other = (Difference) obj;
+            final Difference other = (Difference) obj;
 
-            return (delStart == other.delStart && delEnd == other.delEnd
-                    && addStart == other.addStart && addEnd == other.addEnd);
+            return delStart == other.delStart && delEnd == other.delEnd
+                    && addStart == other.addStart && addEnd == other.addEnd;
         } else {
             return false;
         }
@@ -120,7 +121,7 @@ public class Difference {
      */
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         buf.append("del: [" + delStart + ", " + delEnd + "]");
         buf.append(' ');
         buf.append("add: [" + addStart + ", " + addEnd + "]");

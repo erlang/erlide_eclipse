@@ -36,80 +36,81 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  */
 public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		run();
-		return null;
-	}
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
+        run();
+        return null;
+    }
 
-	protected final String rpcErrorMsg = "An error occured during the refactoring!";
+    protected final String rpcErrorMsg = "An error occured during the refactoring!";
 
-	/**
-	 * Runs the refactoring.
-	 */
-	public void run() {
-		// TODO: run it in a new thread
-		selectionChanged();
-		if (getUserInput()) {
-			IProgressMonitor monitor = new NullProgressMonitor();
-			try {
-				IResultParser result;
-				monitor.beginTask("Detecting..", 0);
+    /**
+     * Runs the refactoring.
+     */
+    public void run() {
+        // TODO: run it in a new thread
+        selectionChanged();
+        if (getUserInput()) {
+            final IProgressMonitor monitor = new NullProgressMonitor();
+            try {
+                IResultParser result;
+                monitor.beginTask("Detecting..", 0);
 
-				result = callRefactoring();
-				if (result.isSuccessful()) {
-					showDuplicatesView();
-					addDuplicates(result.getDuplicates());
-				} else {
-					DuplicatesUIManager.closeDuplicatesView();
-					displayErrorNotification(result.getErrorMessage());
-				}
-			} catch (WranglerWarningException e) {
+                result = callRefactoring();
+                if (result.isSuccessful()) {
+                    showDuplicatesView();
+                    addDuplicates(result.getDuplicates());
+                } else {
+                    DuplicatesUIManager.closeDuplicatesView();
+                    displayErrorNotification(result.getErrorMessage());
+                }
+            } catch (final WranglerWarningException e) {
 
-			} catch (WranglerRpcParsingException e) {
-				displayErrorNotification(rpcErrorMsg);
-			} catch (CoreException e) {
-				displayErrorNotification(rpcErrorMsg);
-			} catch (IOException e) {
-				displayErrorNotification(rpcErrorMsg);
-			} finally {
-				monitor.done();
-			}
-		}
+            } catch (final WranglerRpcParsingException e) {
+                displayErrorNotification(rpcErrorMsg);
+            } catch (final CoreException e) {
+                displayErrorNotification(rpcErrorMsg);
+            } catch (final IOException e) {
+                displayErrorNotification(rpcErrorMsg);
+            } finally {
+                monitor.done();
+            }
+        }
 
-	}
+    }
 
-	protected abstract boolean getUserInput();
+    protected abstract boolean getUserInput();
 
-	protected void addDuplicates(List<DuplicatedCodeElement> duplicatedCode) {
-		DuplicatesUIManager.setRefactoringResults(duplicatedCode);
-	}
+    protected void addDuplicates(
+            final List<DuplicatedCodeElement> duplicatedCode) {
+        DuplicatesUIManager.setRefactoringResults(duplicatedCode);
+    }
 
-	protected abstract IResultParser callRefactoring()
-			throws WranglerRpcParsingException, CoreException, IOException,
-			WranglerWarningException;
+    protected abstract IResultParser callRefactoring()
+            throws WranglerRpcParsingException, CoreException, IOException,
+            WranglerWarningException;
 
-	/**
-	 * Handles the event when a selectino is changed in the workbench
-	 */
-	public void selectionChanged() {
-		GlobalParameters.setEditor(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getActiveEditor());
-	}
+    /**
+     * Handles the event when a selectino is changed in the workbench
+     */
+    public void selectionChanged() {
+        GlobalParameters.setEditor(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage().getActiveEditor());
+    }
 
-	/*
-	 * public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-	 * GlobalParameters.setEditor(targetEditor); }
-	 */
+    /*
+     * public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+     * GlobalParameters.setEditor(targetEditor); }
+     */
 
-	void displayErrorNotification(String errorMsg) {
-		MessageDialog.openError(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell(), "Refactoring error",
-				errorMsg);
+    void displayErrorNotification(final String errorMsg) {
+        MessageDialog.openError(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getShell(), "Refactoring error",
+                errorMsg);
 
-	}
+    }
 
-	void showDuplicatesView() {
-		DuplicatesUIManager.showDuplicatesView();
-	}
+    void showDuplicatesView() {
+        DuplicatesUIManager.showDuplicatesView();
+    }
 
 }

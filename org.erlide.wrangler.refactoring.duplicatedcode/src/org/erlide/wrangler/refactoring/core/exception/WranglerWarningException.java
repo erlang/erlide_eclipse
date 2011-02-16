@@ -20,14 +20,14 @@ import org.erlide.wrangler.refactoring.exception.WranglerException;
  */
 public class WranglerWarningException extends WranglerException {
 
-	protected WranglerWarningException(String message) {
-		super(message);
+    protected WranglerWarningException(final String message) {
+        super(message);
 
-	}
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

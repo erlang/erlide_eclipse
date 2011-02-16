@@ -15,54 +15,54 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedFileElement;
 
 class DuplicatesViewLabelProvider extends LabelProvider {
-	Image erlangFileImage;
+    Image erlangFileImage;
 
-	Image codeSnippetImage;
+    Image codeSnippetImage;
 
-	Image duplicateImage;
+    Image duplicateImage;
 
-	public DuplicatesViewLabelProvider() {
-		createImages();
-	}
+    public DuplicatesViewLabelProvider() {
+        createImages();
+    }
 
-	@Override
-	public void dispose() {
-		erlangFileImage.dispose();
-		codeSnippetImage.dispose();
-		duplicateImage.dispose();
-	}
+    @Override
+    public void dispose() {
+        erlangFileImage.dispose();
+        codeSnippetImage.dispose();
+        duplicateImage.dispose();
+    }
 
-	private void createImages() {
+    private void createImages() {
 
-		erlangFileImage = getImageDescriptor("icons/erlFile.gif").createImage();
-		codeSnippetImage = getImageDescriptor("icons/match.gif").createImage();
-		duplicateImage = getImageDescriptor("icons/codeSnippet.gif")
-				.createImage();
-	}
+        erlangFileImage = getImageDescriptor("icons/erlFile.gif").createImage();
+        codeSnippetImage = getImageDescriptor("icons/match.gif").createImage();
+        duplicateImage = getImageDescriptor("icons/codeSnippet.gif")
+                .createImage();
+    }
 
-	@Override
-	public String getText(Object obj) {
-		return obj.toString();
-	}
+    @Override
+    public String getText(final Object obj) {
+        return obj.toString();
+    }
 
-	@Override
-	public Image getImage(Object obj) {
-		if (obj instanceof DuplicatedFileElement) {
-			return erlangFileImage;
-		} else if (obj instanceof DuplicatedCodeElement) {
-			return duplicateImage;
-		} else if (obj instanceof DuplicatedCodeInstanceElement) {
-			return codeSnippetImage;
-		}
-		String imageKey = ISharedImages.IMG_OBJ_FILE;
-		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-	}
+    @Override
+    public Image getImage(final Object obj) {
+        if (obj instanceof DuplicatedFileElement) {
+            return erlangFileImage;
+        } else if (obj instanceof DuplicatedCodeElement) {
+            return duplicateImage;
+        } else if (obj instanceof DuplicatedCodeInstanceElement) {
+            return codeSnippetImage;
+        }
+        final String imageKey = ISharedImages.IMG_OBJ_FILE;
+        return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+    }
 
-	public static ImageDescriptor getImageDescriptor(String name) {
+    public static ImageDescriptor getImageDescriptor(final String name) {
 
-		ImageDescriptor descriptor = AbstractUIPlugin
-				.imageDescriptorFromPlugin(Activator.PLUGIN_ID, name);
+        final ImageDescriptor descriptor = AbstractUIPlugin
+                .imageDescriptorFromPlugin(Activator.PLUGIN_ID, name);
 
-		return descriptor;
-	}
+        return descriptor;
+    }
 }

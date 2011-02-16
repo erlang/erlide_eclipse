@@ -15,18 +15,18 @@ class DebugEventHandler {
 
     private final ErlangDebugTarget debugTarget;
 
-    DebugEventHandler(ErlangDebugTarget erlangDebugTarget) {
+    DebugEventHandler(final ErlangDebugTarget erlangDebugTarget) {
         debugTarget = erlangDebugTarget;
     }
 
-    public void handleMessages(Collection<OtpErlangObject> messages)
+    public void handleMessages(final Collection<OtpErlangObject> messages)
             throws Exception {
-        for (OtpErlangObject message : messages) {
+        for (final OtpErlangObject message : messages) {
             handleMessage(message);
         }
     }
 
-    private void handleMessage(OtpErlangObject message) throws Exception {
+    private void handleMessage(final OtpErlangObject message) throws Exception {
         // TODO More events from erlide_dbg_mon...
 
         // System.out.println("@@@>> " + message);

@@ -25,36 +25,36 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class ProcessRpcMessage extends AbstractRefactoringRpcMessage {
 
-	protected boolean hasUndecidables = false;
+    protected boolean hasUndecidables = false;
 
-	@Override
-	protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
-			throws WranglerException {
-		OtpErlangObject wranglerResult = resultTuple.elementAt(1);
-		if (resultTuple.elementAt(0).toString().equals("ok")) {
+    @Override
+    protected void parseRefactoringMessage(final OtpErlangTuple resultTuple)
+            throws WranglerException {
+        final OtpErlangObject wranglerResult = resultTuple.elementAt(1);
+        if (resultTuple.elementAt(0).toString().equals("ok")) {
 
-			if (wranglerResult instanceof OtpErlangList) {
-				this.changedFiles = parseFileList((OtpErlangList) wranglerResult);
-				setSuccessful();
-				return;
-			}
-		} else if (resultTuple.elementAt(0).toString().equals("undecidables")) {
-			hasUndecidables = true;
+            if (wranglerResult instanceof OtpErlangList) {
+                changedFiles = parseFileList((OtpErlangList) wranglerResult);
+                setSuccessful();
+                return;
+            }
+        } else if (resultTuple.elementAt(0).toString().equals("undecidables")) {
+            hasUndecidables = true;
 
-		}
-		OtpErlangString errorMsg = (OtpErlangString) wranglerResult;
-		setUnsuccessful(errorMsg.stringValue());
-		return;
+        }
+        final OtpErlangString errorMsg = (OtpErlangString) wranglerResult;
+        setUnsuccessful(errorMsg.stringValue());
+        return;
 
-	}
+    }
 
-	/**
-	 * Returns true if refactoring is unsure...
-	 * 
-	 * @return true if is unsure
-	 */
-	public boolean hasUndecidables() {
-		return hasUndecidables;
-	}
+    /**
+     * Returns true if refactoring is unsure...
+     * 
+     * @return true if is unsure
+     */
+    public boolean hasUndecidables() {
+        return hasUndecidables;
+    }
 
 }

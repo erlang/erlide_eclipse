@@ -104,7 +104,17 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     private static URL fgStyleSheet;
 
     enum Kinds {
-        DECLARED_FUNCTIONS, EXTERNAL_FUNCTIONS, VARIABLES, RECORD_FIELDS, RECORD_DEFS, MODULES, MACRO_DEFS, IMPORTED_FUNCTIONS, AUTO_IMPORTED_FUNCTIONS, ARITY_ONLY, UNEXPORTED_ONLY
+        DECLARED_FUNCTIONS,
+        EXTERNAL_FUNCTIONS,
+        VARIABLES,
+        RECORD_FIELDS,
+        RECORD_DEFS,
+        MODULES,
+        MACRO_DEFS,
+        IMPORTED_FUNCTIONS,
+        AUTO_IMPORTED_FUNCTIONS,
+        ARITY_ONLY,
+        UNEXPORTED_ONLY
     };
 
     // private static final int DECLARED_FUNCTIONS = 1;
@@ -188,8 +198,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 moduleOrRecord = rc.getName();
                 fieldsSoFar = rc.getFields();
             } else if (colonPos > commaPos && colonPos > parenPos) {
-                moduleOrRecord = StringUtils.unquote(getPrefix(before.substring(
-                        0, colonPos)));
+                moduleOrRecord = StringUtils.unquote(getPrefix(before
+                        .substring(0, colonPos)));
                 flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS);
                 pos = colonPos;
                 before = before.substring(colonPos + 1);

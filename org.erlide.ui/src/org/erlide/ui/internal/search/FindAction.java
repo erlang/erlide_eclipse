@@ -36,7 +36,6 @@ import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.search.ErlSearchScope;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
@@ -48,6 +47,7 @@ import org.erlide.ui.internal.ExceptionHandler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import erlang.ErlSearchScope;
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlideOpen;

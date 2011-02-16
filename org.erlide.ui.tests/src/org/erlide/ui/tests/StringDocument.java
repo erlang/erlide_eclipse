@@ -81,7 +81,7 @@ public class StringDocument implements IDocument {
      * @see org.eclipse.jface.text.IDocument#replace(int, int, java.lang.String)
      */
     public void replace(final int offset, final int length, final String theText) {
-        this.text = text.substring(0, offset) + theText
+        text = text.substring(0, offset) + theText
                 + text.substring(offset + length);
     }
 

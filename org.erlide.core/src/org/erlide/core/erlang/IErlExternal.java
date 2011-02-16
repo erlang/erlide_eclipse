@@ -3,6 +3,8 @@
  */
 package org.erlide.core.erlang;
 
+import org.erlide.jinterface.backend.Backend;
+
 /**
  * @author jakob
  * 
@@ -11,8 +13,7 @@ public interface IErlExternal extends IErlElement, IParent, IOpenable {
 
     String getExternalName();
 
-    // boolean hasModuleWithPath(String path);
+    Backend getBackend();
 
-    boolean isRoot();
-
+    boolean isOTP();
 }

@@ -1,3 +1,35 @@
+List of user visible changes between 0.10.0 and 0.10.1 (20110216)
+
+d5edcf0 754-trying-to-open-an-erlang-debug-configuration-hangs-the-whole-eclipse
+
+List of user visible changes between 0.9.5 and 0.10.0 (20110209)
+
+Minor version number updated because of internal API changes.
+
+90cea3f http://www.assembla.com/spaces/erlide/tickets/43-closing-project-should-dispose-internal-model
+63fc8e3 modified markerutils to do less searching for resources
+79a16c3 http://www.assembla.com/spaces/erlide/tickets/711-import-erlang-project---link-option-bad--remove-temporarily fixed so that it indeed copies...
+99006d2 http://www.assembla.com/spaces/erlide/tickets/630-navigator--create-links-to-otp
+c9e954d https://www.assembla.com/spaces/erlide/tickets/644-searching--show-an-icon-in-the-history (thanks, Vlad!)
+75199ff https://www.assembla.com/spaces/erlide/tickets/731-erlang-navigator---external-should-expand-on-double-click
+2ff2612 http://www.assembla.com/spaces/erlide/tickets/611-duplicated-and-weird-code-
+6e7cdde http://www.assembla.com/spaces/erlide/tickets/729-indent--can-t-handle-binary-compehensions
+7b74b4b http://www.assembla.com/spaces/erlide/tickets/717--externals--folder-in-navigator-shows-for-closed-projects
+310dbc2 http://www.assembla.com/spaces/erlide/tickets/690-add-option-to-disable-content-assist Did it even better, with configurable delay
+df10484 https://github.com/erlide/erlide/issues/#issue/5 Fix problem to open files in erlang editor with other extension than erl, hrl or yrl
+22752f4 http://www.assembla.com/spaces/erlide/tickets/721-model---will-not-parse-file-in-non-erlang-project as noted by user on github https://github.com/erlide/erlide/issues/issue/5
+96ecb68 http://www.assembla.com/spaces/erlide/tickets/724-searching--record-references-with-dot-messes-up-the-searching
+a75a087 fix #726: strings larger than 64k are encoded as OtpErlangList, not OtpErlangString
+c56ea0f http://www.assembla.com/spaces/erlide/tickets/682-dialyzer---multiple-plt-files (preliminary but well working GUI)
+
+655     eunit: create basic EUnit runner   
+659     navigator: double click on project should open it  
+687     eunit: no live feedback from runner    
+713     dialyzer - specify functionality and use cases 
+725     files with other extensions cannot be opened in erlang editor  
+727     dialyzer - better gui for multiple plt files   
+745     navigation---use-include-path-for-external-includes
+
 List of user visible changes between 0.9.4 and 0.9.5 (20110122)
 
 8146742 702 externals: make external reference faster and less memory-hungry

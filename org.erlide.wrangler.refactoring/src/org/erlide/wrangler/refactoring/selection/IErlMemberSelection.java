@@ -22,25 +22,25 @@ import org.erlide.wrangler.refactoring.util.IErlRange;
  * @version %I%, %G%
  */
 public interface IErlMemberSelection extends IErlSelection {
-	/**
-	 * Get the selection range of the member
-	 * 
-	 * @return selection range
-	 */
-	public IErlRange getSelectionRange();
+    /**
+     * Get the selection range of the member
+     * 
+     * @return selection range
+     */
+    public IErlRange getSelectionRange();
 
-	/**
-	 * Get the member range
-	 * 
-	 * @return range
-	 */
-	public IErlRange getMemberRange();
+    /**
+     * Get the member range
+     * 
+     * @return range
+     */
+    public IErlRange getMemberRange();
 
-	/**
-	 * Get the document which conatins the member
-	 * 
-	 * @return document
-	 */
-	public IDocument getDocument();
+    /**
+     * Get the document which conatins the member
+     * 
+     * @return document
+     */
+    public IDocument getDocument();
 
 }

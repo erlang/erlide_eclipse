@@ -28,31 +28,31 @@ import com.ericsson.otp.erlang.OtpErlangBoolean;
  */
 
 public class EqcFsmStateDataToRecordRefactoring extends
-		QuickCheckStateRefactoring {
+        QuickCheckStateRefactoring {
 
-	@Override
-	public String getName() {
-		return "eqc_fsm State data to record";
-	}
+    @Override
+    public String getName() {
+        return "eqc_fsm State data to record";
+    }
 
-	@Override
-	protected StateDataToRecordRpcMessage runFirst(final IErlMemberSelection sel) {
-		IRefactoringRpcMessage parser = new StateDataToRecordRpcMessage();
+    @Override
+    protected StateDataToRecordRpcMessage runFirst(final IErlMemberSelection sel) {
+        final IRefactoringRpcMessage parser = new StateDataToRecordRpcMessage();
 
-		return (StateDataToRecordRpcMessage) WranglerBackendManager
-				.getRefactoringBackend().callWithParser(parser,
-						"eqc_fsm_to_record_eclipse", "sxi", sel.getFilePath(),
-						sel.getSearchPath(), GlobalParameters.getTabWidth());
-	}
+        return (StateDataToRecordRpcMessage) WranglerBackendManager
+                .getRefactoringBackend().callWithParser(parser,
+                        "eqc_fsm_to_record_eclipse", "sxi", sel.getFilePath(),
+                        sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection sel) {
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection sel) {
 
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"eqc_fsm_to_record_1_eclipse", "ssxxxxi", sel.getFilePath(),
-				getRecordName(), getFieldsName(), stateFuns,
-				new OtpErlangBoolean(fieldCount > 1), sel.getSearchPath(),
-				GlobalParameters.getTabWidth());
-	}
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "eqc_fsm_to_record_1_eclipse", "ssxxxxi", sel.getFilePath(),
+                getRecordName(), getFieldsName(), stateFuns,
+                new OtpErlangBoolean(fieldCount > 1), sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
+    }
 
 }

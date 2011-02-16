@@ -38,16 +38,16 @@ public class RefactoringRpcMessage extends AbstractRefactoringRpcMessage {
             throws WranglerRpcParsingException {
         resultTuple = tuple;
 
-        OtpErlangObject wranglerResult = tuple.elementAt(1);
+        final OtpErlangObject wranglerResult = tuple.elementAt(1);
         if (tuple.elementAt(0).toString().equals("ok")) {
 
             if (wranglerResult instanceof OtpErlangList) {
-                this.changedFiles = parseFileList((OtpErlangList) wranglerResult);
+                changedFiles = parseFileList((OtpErlangList) wranglerResult);
                 setSuccessful();
                 return;
             }
         } else {
-            OtpErlangString msg = (OtpErlangString) wranglerResult;
+            final OtpErlangString msg = (OtpErlangString) wranglerResult;
             if (tuple.elementAt(0).toString().equals("warning")) {
                 setWarning(msg.stringValue());
             } else if (tuple.elementAt(0).toString().equals("question")) {

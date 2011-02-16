@@ -48,7 +48,7 @@ public enum Images {
 
     private String fileName;
 
-    private Images(String fileName) {
+    private Images(final String fileName) {
         this.fileName = fileName;
     }
 

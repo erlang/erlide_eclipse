@@ -11,23 +11,29 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
-public class IntroduceNewVariableRefactoring extends SimpleOneStepWranglerRefactoring {
+public class IntroduceNewVariableRefactoring extends
+        SimpleOneStepWranglerRefactoring {
 
     @Override
-    public IRefactoringRpcMessage run(IErlSelection selection) {
-        IErlMemberSelection sel = (IErlMemberSelection) selection;
-        return WranglerBackendManager.getRefactoringBackend().call("intro_new_var_eclipse", "sxxsxi", sel.getFilePath(), sel.getSelectionRange().getStartPos(),
-                sel.getSelectionRange().getEndPos(), userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "intro_new_var_eclipse", "sxxsxi", sel.getFilePath(),
+                sel.getSelectionRange().getStartPos(),
+                sel.getSelectionRange().getEndPos(), userInput,
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
     }
 
     @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        IErlSelection sel = GlobalParameters.getWranglerSelection();
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
         if (sel instanceof IErlMemberSelection) {
             return new RefactoringStatus();
         }
 
-        return RefactoringStatus.createFatalErrorStatus("Please select an expression!");
+        return RefactoringStatus
+                .createFatalErrorStatus("Please select an expression!");
     }
 
     @Override

@@ -21,18 +21,18 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class InfoPage extends WranglerPage {
 
-	/**
-	 * Default constructor
-	 * 
-	 * @param name
-	 *            title
-	 */
-	public InfoPage(final String name) {
-		super(name);
-	}
+    /**
+     * Default constructor
+     * 
+     * @param name
+     *            title
+     */
+    public InfoPage(final String name) {
+        super(name);
+    }
 
-	public void createControl(final Composite parent) {
-		// TODO Auto-generated method stub
-	}
+    public void createControl(final Composite parent) {
+        // TODO Auto-generated method stub
+    }
 
 }

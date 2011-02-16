@@ -183,44 +183,53 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException {
-        final IErlModel model = ErlangCore.getModel();
+        final Object found = findOpenResult(editor, module, backend,
+                erlProject, res, offset);
+        if (found instanceof IErlElement) {
+            ErlModelUtils.openElement((IErlElement) found);
+        } else if (found instanceof ISourceRange) {
+            ErlModelUtils.openSourceRange(module, (ISourceRange) found);
+        }
+    }
+
+    public static Object findOpenResult(final ErlangEditor editor,
+            final IErlModule module, final Backend backend,
+            final IErlProject erlProject, final OpenResult res, final int offset)
+            throws CoreException, BackendException, ErlModelException,
+            BadLocationException, OtpErlangRangeException {
         final IErlElement element = editor.getElementAt(offset, true);
-        IErlElement foundElement = null;
-        ISourceRange foundSourceRange = null;
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
+        final IErlModel model = ErlangCore.getModel();
+        Object found = null;
         if (res.isExternalCall()) {
-            foundElement = findExternalCallOrType(module, res, erlProject,
-                    element, checkAllProjects);
+            found = findExternalCallOrType(module, res, erlProject, element,
+                    checkAllProjects);
         } else if (res.isInclude()) {
-            foundElement = findInclude(module, erlProject, res, model);
+            found = findInclude(module, erlProject, res, model);
         } else if (res.isLocalCall()) {
-            foundElement = findLocalCall(module, backend, erlProject, res,
-                    element, checkAllProjects);
+            found = findLocalCall(module, backend, erlProject, res, element,
+                    checkAllProjects);
         } else if (res.isVariable() && element instanceof ISourceReference) {
             final ISourceReference sref = (ISourceReference) element;
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocument().get(
                     range.getOffset(), range.getLength());
-            foundSourceRange = ModelUtils.findVariable(backend, range,
-                    res.getName(), elementText);
+            found = ModelUtils.findVariable(backend, range, res.getName(),
+                    elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
-            foundElement = ModelUtils.findPreprocessorDef(module,
-                    res.getName(), kind, model.getExternalIncludes(erlProject));
+            found = ModelUtils.findPreprocessorDef(module, res.getName(), kind,
+                    model.getExternalIncludes(erlProject));
         } else if (res.isField()) {
             final IErlRecordDef def = (IErlRecordDef) ModelUtils
                     .findPreprocessorDef(module, res.getFun(), Kind.RECORD_DEF,
                             model.getExternalIncludes(erlProject));
             if (def != null) {
-                foundElement = def.getFieldNamed(res.getName());
+                found = def.getFieldNamed(res.getName());
             }
         }
-        if (foundElement != null) {
-            ErlModelUtils.openElement(foundElement);
-        } else if (foundSourceRange != null) {
-            ErlModelUtils.openSourceRange(module, foundSourceRange);
-        }
+        return found;
     }
 
     private static IErlElement findInclude(final IErlModule module,
@@ -264,8 +273,8 @@ public class OpenAction extends SelectionDispatchAction {
             return ModelUtils.findTypespec(module, res.getFun(),
                     model.getExternalIncludes(erlProject));
         }
-        final IErlFunction foundElement = ModelUtils.findFunction(module,
-                res.getFunction());
+        final IErlFunction foundElement = module
+                .findFunction(res.getFunction());
         if (foundElement != null) {
             return foundElement;
         }

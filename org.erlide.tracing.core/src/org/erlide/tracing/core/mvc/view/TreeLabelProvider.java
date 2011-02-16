@@ -13,12 +13,12 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 public class TreeLabelProvider extends LabelProvider {
 
     @Override
-    public Image getImage(Object element) {
+    public Image getImage(final Object element) {
         return ((ITreeNode) element).getImage();
     }
 
     @Override
-    public String getText(Object element) {
+    public String getText(final Object element) {
         return ((ITreeNode) element).getLabel();
     }
 

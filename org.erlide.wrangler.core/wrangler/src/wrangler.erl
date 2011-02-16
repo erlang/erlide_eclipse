@@ -1,4 +1,4 @@
-%% Copyright (c) 2010, Huiqing Li, Simon Thompson 
+%% Copyright (c) 2011, Huiqing Li, Simon Thompson 
 %% All rights reserved. 
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@
 %% @author Huiqing Li, Simon Thompson
 %%   [http://www.cs.kent.ac.uk/projects/wrangler]
 
-%% @version 0.9.1
+%% @version 0.9.2
 %% @end
 %%
 %% @doc This module describes the refactorings that are currently supported by Wrangler.
@@ -365,6 +365,7 @@ move_fun_1_eclipse(FileName, Line, Col, TargetModName,SearchPaths, TabWidth) ->
 
 
 %% ==================================================================================
+%% @private
 %% @doc An identical code detector that searches for identical code within the current Erlang buffer.
 %% <p> This function reports duplicated code fragments found in the current Erlang buffer, it does 
 %% not remove those code clones though. The user will be prompted for two parameters: the minimum number of 
@@ -377,7 +378,6 @@ move_fun_1_eclipse(FileName, Line, Col, TargetModName,SearchPaths, TabWidth) ->
 %% Usage: simply select <em> Detect Identical Code in Current Buffer </em> from <em> Identical Code Detection</em>, 
 %% Wrangler will prompt to input the parameters.
 %% </p>
-
 %%-spec(duplicated_code_in_buffer/5::(filename(), string(), string(), string(), integer()) ->{ok, string()}).     
 duplicated_code_in_buffer(FileName, MinToks, MinClones, MaxPars, TabWidth) -> 
     try_refactoring(refac_duplicated_code, duplicated_code, [[FileName], MinToks, MinClones, MaxPars, TabWidth]).
@@ -400,7 +400,9 @@ sim_code_detection_eclipse(DirFileList, MinLen,MinToks,MinFreq,MaxNewVars,SimiSc
     try_refactoring(refac_inc_sim_code, inc_sim_code_detection_eclipse, 
 		    [DirFileList, MinLen, MinToks, MinFreq, MaxNewVars, SimiScore, SearchPaths, TabWidth]).
 
+
 %% =====================================================================================
+%%@private
 %% @doc An identical code detector that searches for identical code across multiple Erlang modules.
 %% <p> This function reports duplicated code fragments found in the directories specified by SearchPaths, it does
 %% not remove those code clones though.
@@ -415,7 +417,6 @@ sim_code_detection_eclipse(DirFileList, MinLen,MinToks,MinFreq,MaxNewVars,SimiSc
 %% the place where you want to search for duplicated code, then select <em> Detect Identical Code in Dirs </em> from 
 %% <em> Identical Clone Detection</em>, Wrangler will then prompt to input the parameters.
 %% </p>
-
 %%-spec(duplicated_code_in_dirs/5::([dir()], string(), string(), string(),  integer()) ->{ok, string()}).
 duplicated_code_in_dirs(FileDirList, MinToks, MinClones, MaxPars, TabWidth) ->
     try_refactoring(refac_duplicated_code, duplicated_code, [FileDirList, MinToks, MinClones, MaxPars, TabWidth]).
@@ -459,8 +460,8 @@ similar_code_detection(DirFileList, MinLen, MinFreq, SimiScore1, SearchPaths, Ta
     refac_sim_code:sim_code_detection(DirFileList, MinLen, MinFreq, SimiScore1, SearchPaths, TabWidth) .
   
 
-%% ==================================================================================================
-%% @doc Identical expression search in the current Erlang buffer.
+%%@private
+% @doc Identical expression search in the current Erlang buffer.
 %% 
 %% <p> This functionality allows searching for clones of a selected expression or expression 
 %% sequence.  The found clones are syntactically identical to the code fragment selected  after consistent renaming of variables, 
@@ -478,6 +479,7 @@ identical_expression_search_in_buffer(FileName, Start, End, SearchPaths, TabWidt
 
 
 %% ==================================================================================================
+%%@private
 %% @doc Identical expression search across mutlple Erlang modules.
 %%
 %% <p> This functionality allows searching for clones of a selected expression or expression 
@@ -669,7 +671,7 @@ fold_expr_by_name_eclipse(FileName, ModName, FunName, Arity, ClauseIndex, Search
 %%                     StartEndExpList::[{{{integer(), integer()}, {integer(), integer()}}, syntaxTree()}],
 %%                     SearchPaths::[dir()], TabWidth::integer()) ->
 %%	     {ok, [{filename(), filename(), string()}]}).
-fold_expr_1_eclipse(FileName, FunClauseDef, StartEndExpList, SearchPaths, TabWidth) ->  %% StartEndExpList: {{{StartLine, StartCol}, {EndLine, EndCol}}, NewExp}
+fold_expr_1_eclipse(FileName, FunClauseDef, StartEndExpList, SearchPaths, TabWidth) ->
     try_refactoring(refac_fold_expression, fold_expr_1_eclipse, [FileName, FunClauseDef, StartEndExpList, SearchPaths, TabWidth]).
 
 
@@ -1251,10 +1253,10 @@ try_to_apply(Mod, Fun, Args, Msg) ->
      catch
 	 throw:Error -> 
 	     Error;    %% wrangler always throws Error in the format of '{error, string()}';
-	 _E1:_E2->
-	     ?wrangler_io("Error:\n~p\n", [{_E1,_E2}]),
-    	     {error, Msg}
-     end.
+	_E1:E2 ->
+	    ?wrangler_io("Error:\n~p\n", [{_E1,E2}]),
+            {error, Msg ++ lists:flatten(io_lib:format("~p",[E2]))}
+    end.
 
 %%@private
 try_refactoring(Mod, Fun, Args) ->
@@ -1266,16 +1268,16 @@ try_refactoring(Mod, Fun, Args) ->
 init_eclipse() ->
     application:start(wrangler_app).
     
-
 %%@private
 get_log_msg() ->
     Errors = wrangler_error_logger:get_logged_info(),
     FileErrors = [{File, Error} || {File, Error} <- Errors, File /= warning],
+    WarningMsg = [Error || {File, Error} <- Errors, File == warning],
     case FileErrors of 
-	[] -> "";
+	[] -> lists:flatten(WarningMsg);
 	_ ->
 	    Msg1=io_lib:format("There are syntax errors, or syntaxes not supported by Wrangler;"
-			       " functions/attribute containing these syntaxes are not affected by the refactoring.\n", []),
+			       " functions/attribute containing these syntaxes may not be affected by the refactoring.\n", []),
 	    Msg2 = lists:flatmap(fun ({FileName, Errs}) ->
 					 Str = io_lib:format("File:\n ~p\n", [FileName]),
 					 Str1 = Str ++ io_lib:format("Error(s):\n", []),
@@ -1287,6 +1289,7 @@ get_log_msg() ->
 							       end,
 							       lists:reverse(Errs))
 				 end, FileErrors),
-	    Msg1++Msg2
+	    Msg1++Msg2 ++ lists:flatten(WarningMsg)
     end.
+ 
  

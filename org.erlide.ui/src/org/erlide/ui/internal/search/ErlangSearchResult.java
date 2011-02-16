@@ -17,7 +17,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.ui.ErlideUIPluginImages;
+import org.erlide.ui.ErlideImage;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import erlang.ErlangSearchPattern.LimitTo;
@@ -88,7 +88,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
     public ImageDescriptor getImageDescriptor() {
         // return ErlideUIPluginImages.DESC_EXTERNAL;
-        return ErlideUIPluginImages.DESC_ERLANG_SEARCH_RESULTS;
+        return ErlideImage.ERLANG_SEARCH_RESULTS.getDescriptor();
     }
 
     public String getLabel() {

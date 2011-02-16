@@ -22,19 +22,20 @@ import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.backend.BackendPlugin;
+import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.BeamUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.CodeBundle;
 import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.ErlangCode;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.CodeBundle;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
+
+import erlang.ErlangCode;
 
 public class CodeManager {
 
@@ -117,7 +118,7 @@ public class CodeManager {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         // reg.addRegistryChangeListener(this);
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                BackendPlugin.PLUGIN_ID, "codepath");
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             if ("beam_dir".equals(el.getName())

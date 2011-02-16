@@ -7,10 +7,12 @@
 
 -export([init/1, 
          start_failed/1,
-         tc_result/1,
-         tc_fail/1,
          log_started/1,
-         done/1
+         done/1,
+         
+         tc_start/1,
+         tc_result/1,
+         tc_fail/1
         ]).
 
 -include("erlide.hrl").
@@ -44,7 +46,7 @@ wait_start() ->
 	end.
 
 start_bterl(Str) ->
-    erlide_log:log({start_bterl, Str}),
+    erlide_log:log({"!!", start_bterl, Str}),
     {ok, {Flags, Cmd, Trace, Cb, Dir}=X} = erlide_backend:parse_term(Str++"."),
     ?Info({start_bterl, X}),
 %%     Pids = case bt_run:has_flag($t, Flags) of 
@@ -68,6 +70,7 @@ start_bterl(Str) ->
 
 init_debugger() ->
     %% FIXME: DON'T HARDCODE THIS!
+            ?Info("initializing Debugger..."),
     timer:sleep(1000),
     erlide_jrpc:event(bterl_debugger, self()),
     receive
@@ -84,11 +87,15 @@ init_debugger() ->
 
 init(Args) ->
     %os:cmd("touch /home/qvladum/zzz"),
-    notify({tc_init, Args}),
+    notify({init, Args}),
     ok.
 
 start_failed(Reason) ->
     notify({start_failed, Reason}),
+    ok.
+
+tc_start(Result) ->
+    notify({start, Result}),
     ok.
 
 tc_result(Result) ->
@@ -97,6 +104,10 @@ tc_result(Result) ->
 
 tc_fail(Result) ->
     notify({fail, Result}),
+    ok.
+
+tc_skip(Result) ->
+    notify({skip, Result}),
     ok.
 
 log_started(Arg) ->

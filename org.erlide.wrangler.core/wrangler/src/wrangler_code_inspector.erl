@@ -376,7 +376,6 @@ dependencies_of_a_module_1(ModOrFileName, SearchPaths) ->
 dependencies_of_a_module_eclipse(FileName, SearchPaths) ->
     try_inspector(wrangler_code_inspector_lib, dependencies_of_a_module, [FileName, SearchPaths]).
 
-
 %%==========================================================================================
 %% @doc Report non tail-recursive server functions.
 %% <p>
@@ -419,7 +418,7 @@ dependencies_of_a_module_eclipse(FileName, SearchPaths) ->
 %%-spec(non_tail_recursive_servers(FileOrDirNames::[filename()|dir()])-> ok).
 non_tail_recursive_servers(FileOrDirNames) ->
     try_inspector(wrangler_code_inspector, non_tail_recursive_servers_1,
-		  [refac_util:expand_files(FileOrDirNames, ".erl"), 
+		  [refac_util:expand_files(FileOrDirNames, ".erl"),
 		   FileOrDirNames, ?DEFAULT_TABWIDTH]).
  
 
@@ -594,7 +593,9 @@ calls_to_fun_format_results(Callers)->
 	    ?wrangler_io("The function selected is not called by any other functions.\n", []);
 	_ ->
 	    ?wrangler_io("The function selected is called by the following function(s):\n", []),
-	    lists:foreach(fun ({_File, _F, _A}) -> ?wrangler_io("File:~p, function/arity: ~p/~p\n", [_File, _F, _A]) end, Callers)
+	    lists:foreach(fun ({_File, _F, _A}) ->
+                                  ?wrangler_io("File:~p, function/arity: ~p/~p\n", [_File, _F, _A])
+                          end, Callers)
     end.
 
 long_funs_format_results(LongFuns, _Lines) ->
@@ -608,7 +609,7 @@ long_funs_format_results(LongFuns, _Lines) ->
 	    format_result_1(LongFuns)
     end.
 
-large_modules_format_results(LargeModules, _Lines)->
+large_modules_format_results(LargeModules, _Lines) ->
     case LargeModules of
 	[] ->
 	    ?wrangler_io("\n No module with more than ~p lines of code has been found.\n", 

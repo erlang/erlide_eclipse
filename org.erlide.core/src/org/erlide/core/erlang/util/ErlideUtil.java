@@ -13,6 +13,7 @@ package org.erlide.core.erlang.util;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -35,8 +36,11 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public final class ErlideUtil {
+
+    private static final List<String> EMPTY_LIST = Lists.newArrayList();
 
     public static boolean isAccessible(final Backend backend,
             final String localDir) {
@@ -120,7 +124,7 @@ public final class ErlideUtil {
     }
 
     public static boolean hasModuleExtension(final String name) {
-        return nameToModuleKind(name) != ModuleKind.BAD || true;
+        return nameToModuleKind(name) != ModuleKind.BAD;
     }
 
     public static boolean hasExtension(final String name) {
@@ -204,5 +208,39 @@ public final class ErlideUtil {
             }
         }
         return false;
+    }
+
+    public static String packList(final Iterable<String> strs, final String sep) {
+        final StringBuilder result = new StringBuilder();
+        for (final String s : strs) {
+            result.append(s).append(sep);
+        }
+        return result.length() > 0 ? result.substring(0,
+                result.length() - sep.length()) : "";
+    }
+
+    public static String packArray(final String[] strs, final String sep) {
+        final StringBuilder result = new StringBuilder();
+        for (final String s : strs) {
+            result.append(s).append(sep);
+        }
+        return result.length() > 0 ? result.substring(0,
+                result.length() - sep.length()) : "";
+    }
+
+    public static IPath[] unpackArray(final String str, final String sep) {
+        return ErlideUtil.unpackList(str, sep).toArray(new IPath[0]);
+    }
+
+    public static List<String> unpackList(final String string, final String sep) {
+        if (string.length() == 0) {
+            return EMPTY_LIST;
+        }
+        final String[] v = string.split(sep);
+        final List<String> result = Lists.newArrayListWithCapacity(v.length);
+        for (final String s : v) {
+            result.add(s);
+        }
+        return result;
     }
 }

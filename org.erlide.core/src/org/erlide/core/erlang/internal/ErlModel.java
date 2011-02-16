@@ -24,14 +24,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
@@ -514,10 +512,7 @@ public class ErlModel extends Openable implements IErlModel {
         props.setSourceDirs(dirs);
         dirs = findOtpIncludeDirs(new File(location.toString()));
         props.setIncludeDirs(dirs);
-
-        final IEclipsePreferences root = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        props.store(root);
+        props.store();
         p.open(null);
         return p;
     }

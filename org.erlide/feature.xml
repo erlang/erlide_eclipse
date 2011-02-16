@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.9.5.qualifier"
+      version="0.10.1.qualifier"
       provider-name="erlide.org"
       image="erlang120.gif">
    <install-handler/>
@@ -72,6 +72,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.test_support"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="shade.bterl"
          download-size="0"
          install-size="0"
          version="0.0.0"

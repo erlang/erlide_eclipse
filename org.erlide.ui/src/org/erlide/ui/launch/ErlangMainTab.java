@@ -44,9 +44,9 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.jinterface.backend.ErlDebugConstants;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlDebugConstants;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
 import org.erlide.ui.util.SWTUtil;
 
 public class ErlangMainTab extends AbstractLaunchConfigurationTab {

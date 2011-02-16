@@ -32,7 +32,7 @@ public final class ErlangEvent {
         this.topic = topic;
         this.data = data;
         this.sender = sender;
-        this.node = sender.node();
+        node = sender.node();
     }
 
     @Override
@@ -73,6 +73,6 @@ public final class ErlangEvent {
     }
 
     public boolean matchTopicAndNode(final String aTopic, final String aNode) {
-        return topic.equals(aTopic) && (aNode == null || node.equals(aNode));
+        return topic.equals(aTopic) && node.equals(aNode);
     }
 }

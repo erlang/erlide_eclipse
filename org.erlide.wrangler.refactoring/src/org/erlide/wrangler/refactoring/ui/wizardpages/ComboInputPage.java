@@ -35,103 +35,103 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
  */
 public class ComboInputPage extends InputPage {
 
-	protected String labelText;
+    protected String labelText;
 
-	protected Composite composite;
+    protected Composite composite;
 
-	protected Label inputLabel;
+    protected Label inputLabel;
 
-	protected ArrayList<String> moduleNames;
+    protected ArrayList<String> moduleNames;
 
-	protected Combo selectionList;
+    protected Combo selectionList;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            Input page title
-	 * @param description
-	 *            description of the input page
-	 * @param labelText
-	 *            label text of the input data
-	 * @param moduleNames
-	 *            list of possible selections
-	 */
-	public ComboInputPage(final String name, final String description,
-			final String labelText, final ArrayList<String> moduleNames) {
-		super(name);
-		this.setDescription(description);
-		this.labelText = labelText;
-		this.moduleNames = moduleNames;
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            Input page title
+     * @param description
+     *            description of the input page
+     * @param labelText
+     *            label text of the input data
+     * @param moduleNames
+     *            list of possible selections
+     */
+    public ComboInputPage(final String name, final String description,
+            final String labelText, final ArrayList<String> moduleNames) {
+        super(name);
+        setDescription(description);
+        this.labelText = labelText;
+        this.moduleNames = moduleNames;
 
-		setPageComplete(false);
-	}
+        setPageComplete(false);
+    }
 
-	public void createControl(final Composite parent) {
-		composite = new Composite(parent, SWT.NONE);
+    public void createControl(final Composite parent) {
+        composite = new Composite(parent, SWT.NONE);
 
-		inputLabel = new Label(composite, SWT.LEFT);
-		inputLabel.setText(labelText);
+        inputLabel = new Label(composite, SWT.LEFT);
+        inputLabel.setText(labelText);
 
-		// GridData gridData = new GridData();
-		// gridData.horizontalAlignment = GridData.FILL;
-		// gridData.horizontalSpan = 2;
-		// inputLabel.setLayoutData(gridData);
+        // GridData gridData = new GridData();
+        // gridData.horizontalAlignment = GridData.FILL;
+        // gridData.horizontalSpan = 2;
+        // inputLabel.setLayoutData(gridData);
 
-		selectionList = new Combo(composite, SWT.DROP_DOWN);
-		for (String s : moduleNames) {
-			selectionList.add(s);
-		}
-		// gridData = new GridData();
-		// gridData.horizontalAlignment = GridData.FILL;
-		// gridData.horizontalSpan = 2;
-		// selectionList.setLayoutData(gridData);
+        selectionList = new Combo(composite, SWT.DROP_DOWN);
+        for (final String s : moduleNames) {
+            selectionList.add(s);
+        }
+        // gridData = new GridData();
+        // gridData.horizontalAlignment = GridData.FILL;
+        // gridData.horizontalSpan = 2;
+        // selectionList.setLayoutData(gridData);
 
-		// GridLayout layout = new GridLayout();
-		RowLayout layout = new RowLayout();
-		layout.spacing = 5;
-		layout.center = true;
+        // GridLayout layout = new GridLayout();
+        final RowLayout layout = new RowLayout();
+        layout.spacing = 5;
+        layout.center = true;
 
-		composite.setLayout(layout);
+        composite.setLayout(layout);
 
-		setControl(composite);
+        setControl(composite);
 
-		selectionList.addSelectionListener(new SelectionListener() {
+        selectionList.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
-			}
+            public void widgetDefaultSelected(final SelectionEvent e) {
+            }
 
-			@SuppressWarnings("synthetic-access")
-			public void widgetSelected(final SelectionEvent e) {
-				((SimpleOneStepWranglerRefactoring) getRefactoring())
-						.setUserInput(selectionList.getText());
-				setPageComplete(true);
-			}
-		});
+            @SuppressWarnings("synthetic-access")
+            public void widgetSelected(final SelectionEvent e) {
+                ((SimpleOneStepWranglerRefactoring) getRefactoring())
+                        .setUserInput(selectionList.getText());
+                setPageComplete(true);
+            }
+        });
 
-		final IValidator validator = new AtomValidator();
+        final IValidator validator = new AtomValidator();
 
-		selectionList.addModifyListener(new ModifyListener() {
+        selectionList.addModifyListener(new ModifyListener() {
 
-			public void modifyText(final ModifyEvent e) {
-				if (validator.isValid(selectionList.getText())) {
-					((SimpleWranglerRefactoring) getRefactoring())
-							.setUserInput(selectionList.getText());
-					setErrorMessage(null);
-					setPageComplete(true);
-				} else {
-					setPageComplete(false);
-					setErrorMessage("Module name must be a a valid atom!");
-				}
-			}
+            public void modifyText(final ModifyEvent e) {
+                if (validator.isValid(selectionList.getText())) {
+                    ((SimpleWranglerRefactoring) getRefactoring())
+                            .setUserInput(selectionList.getText());
+                    setErrorMessage(null);
+                    setPageComplete(true);
+                } else {
+                    setPageComplete(false);
+                    setErrorMessage("Module name must be a a valid atom!");
+                }
+            }
 
-		});
+        });
 
-	}
+    }
 
-	@Override
-	protected boolean isInputValid() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    protected boolean isInputValid() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

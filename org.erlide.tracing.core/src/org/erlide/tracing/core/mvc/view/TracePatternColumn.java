@@ -7,21 +7,26 @@ package org.erlide.tracing.core.mvc.view;
  * 
  */
 public enum TracePatternColumn {
-    ENABLED("Enabled", 60), LOCAL("Local", 60), MODULE_NAME("Module name", 150), FUNCTION_NAME("Function name", 150), ARITY("Arity", 40), MATCH_SPEC(
-            "Match spec", 90);
+    ENABLED("Enabled", 60),
+    LOCAL("Local", 60),
+    MODULE_NAME("Module name", 150),
+    FUNCTION_NAME("Function name", 150),
+    ARITY("Arity", 40),
+    MATCH_SPEC("Match spec", 90);
 
     private final String name;
     private final int width;
 
-    private TracePatternColumn(String name, int width) {
+    private TracePatternColumn(final String name, final int width) {
         this.name = name;
         this.width = width;
     }
 
-    public static TracePatternColumn getByIndex(int index) {
-        for (TracePatternColumn column : TracePatternColumn.values()) {
-            if (column.ordinal() == index)
+    public static TracePatternColumn getByIndex(final int index) {
+        for (final TracePatternColumn column : TracePatternColumn.values()) {
+            if (column.ordinal() == index) {
                 return column;
+            }
         }
         return null;
     }

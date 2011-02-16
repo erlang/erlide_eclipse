@@ -1,20 +1,31 @@
 package org.erlide.core.erlang.internal;
 
+import java.util.List;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlExternal;
+import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
+import org.erlide.jinterface.backend.Backend;
+
+import com.google.common.collect.Lists;
+
+import erlang.ErlideOpen;
 
 public class ErlExternalReferenceEntry extends Openable implements IErlExternal {
 
     private final String entry;
-    private final boolean isRoot;
+    private final boolean prebuilt;
 
     protected ErlExternalReferenceEntry(final IParent parent,
-            final String name, final String entry, final boolean isRoot) {
+            final String name, final String entry, final boolean prebuilt) {
         super(parent, name);
         this.entry = entry;
-        this.isRoot = isRoot;
+        this.prebuilt = prebuilt;
     }
 
     public Kind getKind() {
@@ -24,8 +35,37 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        // already done
-        return true;
+        if (prebuilt) {
+            // already done
+            return true;
+        }
+        final Backend backend = getBackend();
+        if (backend != null) {
+            final List<String> files = ErlideOpen.getLibFiles(backend, entry);
+            final List<IErlModule> children = Lists
+                    .newArrayListWithCapacity(files.size());
+            for (final String file : files) {
+                children.add(new ErlModule(this, getName(file), null, null,
+                        file, false));
+            }
+            setChildren(children);
+            return true;
+        }
+        return false;
+    }
+
+    public Backend getBackend() {
+        final IParent parent = getParent();
+        if (parent instanceof IErlExternal) {
+            final IErlExternal external = (IErlExternal) parent;
+            return external.getBackend();
+        }
+        return null;
+    }
+
+    private String getName(final String file) {
+        final IPath p = new Path(file);
+        return p.lastSegment();
     }
 
     @Override
@@ -47,15 +87,12 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return entry;
     }
 
-    // public boolean hasModuleWithPath(final String path) {
-    // final Backend backend = BackendUtils
-    // .getBuildOrIdeBackend(getErlProject().getProject());
-    // final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
-    // return ErlideOpen.hasExternalWithPath(backend, entry, path, pathVars);
-    // }
-
-    public boolean isRoot() {
-        return isRoot;
+    public boolean isOTP() {
+        return false;
     }
 
+    @Override
+    public IResource getResource() {
+        return null;
+    }
 }

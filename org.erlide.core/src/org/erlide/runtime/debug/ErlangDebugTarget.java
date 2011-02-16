@@ -32,7 +32,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.core.erlang.util.ErlangFunctionCall;
+import org.erlide.backend.util.ErlangFunctionCall;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
@@ -128,7 +128,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             throws DebugException {
         super(null);
         fBackend = b;
-        fNodeName = b.getPeer();
+        fNodeName = b.getFullNodeName();
         fLaunch = launch;
         fTerminated = false;
         this.projects = projects;

@@ -191,7 +191,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * @see IErlElement
      */
-    @SuppressWarnings("null")
     public IErlElement getAncestorOfKind(final Kind kind) {
         IErlElement element = this;
         while (element != null) {
@@ -537,6 +536,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     public List<IErlElement> getChildren() throws ErlModelException {
         return Collections.unmodifiableList(Lists.newArrayList(fChildren));
+    }
+
+    protected List<IErlElement> internalGetChildren() {
+        return fChildren;
     }
 
     public int getChildCount() {

@@ -53,6 +53,8 @@
 
 -export([start/0, stop/0, undo/0]).
 
+-export([test_similar_code/1]).
+
 -include("../include/wrangler.hrl").
 
 %% @type(modulename()::atom()).
@@ -145,3 +147,11 @@ try_apply(Mod, Fun, Args) ->
 	error:Reason -> 
 	    {'EXIT',{Reason,erlang:get_stacktrace()}}
     end.
+
+
+%%@private
+test_similar_code(Dir) ->
+    start(),
+    Res = similar_code([Dir], 6, 25, 2, 3, 0.8, [Dir]),
+    stop(),
+    io:format("\n~p\n", [Res]).
