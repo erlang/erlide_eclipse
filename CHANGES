@@ -1,3 +1,7 @@
+List of user visible changes between 0.10.0 and 0.10.1 (20110216)
+
+d5edcf0 754-trying-to-open-an-erlang-debug-configuration-hangs-the-whole-eclipse
+
 List of user visible changes between 0.9.5 and 0.10.0 (20110209)
 
 Minor version number updated because of internal API changes.
