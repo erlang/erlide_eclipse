@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -72,15 +73,18 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     private String testcase;
     private String suite;
     private String mode;
-    private String project;
+    private String projectName;
     private File workdir;
+    private IProject project;
 
     @Override
     public void launch(final ILaunchConfiguration cfg, final String amode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
 
-        project = cfg.getAttribute(TestLaunchAttributes.PROJECT, "");
+        projectName = cfg.getAttribute(TestLaunchAttributes.PROJECT, "");
+        project = ResourcesPlugin.getWorkspace().getRoot()
+                .getProject(projectName);
         mode = ILaunchManager.DEBUG_MODE.equals(amode) ? amode : cfg
                 .getAttribute(TestLaunchAttributes.MODE, "");
         final String wdir = cfg.getAttribute(TestLaunchAttributes.WORKDIR, "");
@@ -113,8 +117,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         }
         runMakeLinks(monitor);
 
-        final ILaunchConfiguration cfg = setupConfiguration(config, project,
-                workdir);
+        final ILaunchConfiguration cfg = setupConfiguration(config,
+                projectName, workdir);
 
         final String amode = ILaunchManager.DEBUG_MODE.equals(mode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;

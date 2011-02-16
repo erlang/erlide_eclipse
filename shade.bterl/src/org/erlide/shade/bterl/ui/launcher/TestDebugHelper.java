@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -19,7 +20,7 @@ public class TestDebugHelper extends ErlangDebugHelper {
     }
 
     @Override
-    protected IFile findModuleBeam(final String project, final String module)
+    protected IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
         final String beam = ErlideUtil.withoutExtension(module) + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {

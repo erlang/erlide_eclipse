@@ -31,7 +31,6 @@ import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.rpc.RpcFuture;
@@ -484,8 +483,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
         final IErlProject erlprj = ErlangCore.getModel().findProject(myProject);
-        final IOldErlangProjectProperties props = erlprj.getProperties();
-        final Collection<IPath> srcDirs = props.getSourceDirs();
+        final Collection<IPath> srcDirs = erlprj.getSourceDirs();
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
         for (final IPath src : srcDirs) {
             if (src.isPrefixOf(rpath)) {
