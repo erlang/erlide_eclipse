@@ -47,7 +47,7 @@ public class ModelUtils {
     private static final String DELIMITER = "<>";
 
     public static IErlTypespec findTypespec(final IErlModule module,
-            final String name) throws CoreException, BackendException {
+            final String name) throws CoreException {
         IErlTypespec typespec = module.findTypespec(name);
         if (typespec != null) {
             return typespec;
@@ -340,7 +340,7 @@ public class ModelUtils {
 
     public static IErlPreprocessorDef findPreprocessorDef(
             final IErlModule module, final String definedName,
-            final IErlElement.Kind kind) throws CoreException, BackendException {
+            final IErlElement.Kind kind) throws CoreException {
         String unquoted = StringUtils.unquote(definedName);
         final Set<String> names = new HashSet<String>(3);
         if (kind == Kind.RECORD_DEF) {
@@ -396,7 +396,7 @@ public class ModelUtils {
 
     public static List<IErlPreprocessorDef> getAllPreprocessorDefs(
             final IErlModule module, final IErlElement.Kind kind)
-            throws CoreException, BackendException {
+            throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         final List<IErlModule> modulesWithIncludes = module
                 .findAllIncludedFiles();

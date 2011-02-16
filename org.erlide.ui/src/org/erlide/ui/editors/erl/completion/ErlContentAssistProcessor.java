@@ -476,11 +476,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 addIfMatches(name, prefix, offset, result);
             }
         } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final BackendException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         if (kind == Kind.MACRO_DEF) {
             final String[] names = ModelUtils.getPredefinedMacroNames();

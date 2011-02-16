@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
-import org.erlide.jinterface.backend.BackendException;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or
@@ -137,8 +136,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     void addComment(IErlComment c);
 
-    List<IErlModule> findAllIncludedFiles() throws CoreException,
-            BackendException;
+    List<IErlModule> findAllIncludedFiles() throws CoreException;
 
     boolean isOnSourcePath();
 

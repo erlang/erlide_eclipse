@@ -575,7 +575,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public List<IErlModule> findAllIncludedFiles(final List<IErlModule> checked)
-            throws CoreException, BackendException {
+            throws CoreException {
         final List<IErlModule> includedFilesForModule = ErlangCore
                 .getModuleMap().getIncludedFilesForModule(this);
         if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
@@ -628,7 +628,7 @@ public class ErlModule extends Openable implements IErlModule {
     private boolean findAllIncludedHeadersAux(final List<IErlModule> checked,
             final List<IErlModule> result,
             final Collection<IErlModule> headers, final String includeFileName)
-            throws CoreException, BackendException {
+            throws CoreException {
         for (final IErlModule header : headers) {
             if (header.getName().equals(includeFileName)) {
                 result.add(header);
