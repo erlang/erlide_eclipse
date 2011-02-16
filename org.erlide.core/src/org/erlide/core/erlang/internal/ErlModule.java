@@ -443,6 +443,7 @@ public class ErlModule extends Openable implements IErlModule {
         return Kind.MODULE;
     }
 
+    @Override
     public void dispose() {
         disposeScanner();
         ErlangCore.getModelManager().removeModule(this);
@@ -583,6 +584,9 @@ public class ErlModule extends Openable implements IErlModule {
         final List<IErlModule> result = Lists.newArrayList();
         final Collection<ErlangIncludeFile> includes = getIncludedFiles();
         final IErlProject project = getProject();
+        if (project == null) {
+            return result;
+        }
         final Collection<IErlModule> headers = project.getHeaders();
         Collection<IErlModule> externalHeaders = null;
         Collection<IErlModule> referencedHeaders = null;
