@@ -1,6 +1,7 @@
 package org.erlide.cover.ui.annotations;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,6 +64,10 @@ public class CoverageMap {
                 coverage.get(name).get(lr) != null;
     }
     
+    public boolean containsFile(String name) {
+        return coverage.containsKey(name);
+    }
+    
     /**
      * Check the type of specified cverage annotation
      * 
@@ -102,8 +107,8 @@ public class CoverageMap {
         coverage.clear();
     }
     
-    public Set<LineResult> getLineList(String name) {
-        return coverage.get(name).keySet();
+    public Set<LineResult> getLineSet(String name) {
+        return new HashSet<LineResult>(coverage.get(name).keySet());
     }
     
 }

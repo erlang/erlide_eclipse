@@ -130,7 +130,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             for (final LineResult lr : list) {
                 coverage.addAnnotation(fileName, lr, null);
-            }            
+            }
 
             annotateEditor(currentEditor);
         }
@@ -144,7 +144,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
         if (currentEditor.getTitle().equals(fileName)) {
 
             coverage.removeAll(fileName);
-            
+
             clearAnnotations(currentEditor);
         }
     }
@@ -163,14 +163,25 @@ public class EditorTracker implements ICoverAnnotationMarker {
         if (currentEditor.getTitle().equals(fileName)
                 && currentEditor instanceof ITextEditor) {
 
+            ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
+
+            if (module == null)
+                return;
+
+            List<LineResult> list = module.getLineResults();
+
             ITextEditor editor = (ITextEditor) currentEditor;
-            final Set<LineResult> list = coverage.getLineList(editor.getTitle());
+
+            log.debug(fileName);
 
             for (final LineResult lr : list) {
 
                 if (lr.getLineNum() < start
                         || (end != -1 && lr.getLineNum() > end))
                     continue;
+
+                if (!coverage.containsAnnotation(fileName, lr))
+                    coverage.addAnnotation(fileName, lr, null);
 
                 markLine(editor, lr);
 
@@ -199,7 +210,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
             IAnnotationModel annMod = editor.getDocumentProvider()
                     .getAnnotationModel(editor.getEditorInput());
 
-            final Set<LineResult> list = coverage.getLineList(editor.getTitle());
+            final Set<LineResult> list = coverage.getLineSet(editor.getTitle());
 
             for (final LineResult lr : list) {
 
@@ -208,8 +219,9 @@ public class EditorTracker implements ICoverAnnotationMarker {
                     continue;
 
                 log.debug(lr.getLineNum());
-                if(coverage.containsAnnotation(editor.getTitle(), lr)) {
-                    Annotation ann = coverage.getAnnotation(editor.getTitle(), lr);
+                if (coverage.containsAnnotation(editor.getTitle(), lr)) {
+                    Annotation ann = coverage.getAnnotation(editor.getTitle(),
+                            lr);
                     annMod.removeAnnotation(ann);
                     coverage.removeAnnotation(editor.getTitle(), lr);
                 }
@@ -225,9 +237,14 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         final ITextEditor editor = (ITextEditor) part;
 
-        final Set<LineResult> list = coverage.getLineList(editor.getTitle());
+        log.debug(editor.getTitle());
 
-        // final Map<Position, Annotation> curAnn = buildAnnotationsMap(editor);
+        if (!coverage.containsFile(editor.getTitle()))
+            return;
+
+        log.debug(coverage);
+
+        final Set<LineResult> list = coverage.getLineSet(editor.getTitle());
 
         for (final LineResult lr : list) {
 
@@ -248,6 +265,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
         final IAnnotationModel annMod = editor.getDocumentProvider()
                 .getAnnotationModel(editor.getEditorInput());
 
+        log.debug("mark line " + lr.getLineNum());
+
         try {
 
             final IRegion reg = doc.getLineInformation(lr.getLineNum() - 1);
@@ -264,19 +283,21 @@ public class EditorTracker implements ICoverAnnotationMarker {
                         .create(CoverageTypes.NO_COVERAGE);
             }
 
-            Annotation lastAnn = coverage.getAnnotation(editor.getTitle(),
-                    lr);
+            Annotation lastAnn = coverage.getAnnotation(editor.getTitle(), lr);
+
+            log.debug(lastAnn);
+
             if (lastAnn == null) {
                 annMod.addAnnotation(annotation, pos);
-                coverage.addAnnotation(editor.getTitle(), lr,
-                        annotation);
+                coverage.addAnnotation(editor.getTitle(), lr, annotation);
+            } else if (annMod.getPosition(lastAnn) == null) {
+                annMod.addAnnotation(lastAnn, pos);
             } else if (lastAnn.getType().equals(CoverageTypes.NO_COVERAGE)
                     && annotation.getType().equals(CoverageTypes.FULL_COVERAGE)) {
 
                 annMod.removeAnnotation(lastAnn);
                 annMod.addAnnotation(annotation, pos);
-                coverage.addAnnotation(editor.getTitle(), lr,
-                        annotation);
+                coverage.addAnnotation(editor.getTitle(), lr, annotation);
             }
 
         } catch (final BadLocationException e) {
@@ -293,7 +314,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
         coverage.removeAll();
-        
+
         for (final IWorkbenchWindow w : windows) {
             for (final IWorkbenchPage page : w.getPages()) {
                 for (final IEditorReference editor : page.getEditorReferences()) {

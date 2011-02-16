@@ -29,6 +29,7 @@ import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.cover.runtime.launch.FrameworkType;
 import org.erlide.cover.runtime.launch.ICoverAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
