@@ -36,183 +36,186 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
  * 
  */
 public class DuplicatesView extends ViewPart {
-	// private final class HighlightAction extends Action {
-	// public void run() {
-	// ISelection selection = viewer.getSelection();
-	// Object obj = ((IStructuredSelection) selection)
-	// .getFirstElement();
-	// showMessage("Double-click detected on " + obj.toString());
-	// }
-	// }
+    // private final class HighlightAction extends Action {
+    // public void run() {
+    // ISelection selection = viewer.getSelection();
+    // Object obj = ((IStructuredSelection) selection)
+    // .getFirstElement();
+    // showMessage("Double-click detected on " + obj.toString());
+    // }
+    // }
 
-	ISelectionListener listener = new ISelectionListener() {
+    ISelectionListener listener = new ISelectionListener() {
 
-		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			MessageDialog.openInformation(getSite().getShell(), "test",
-					selection.toString());
+        public void selectionChanged(final IWorkbenchPart part,
+                final ISelection selection) {
+            MessageDialog.openInformation(getSite().getShell(), "test",
+                    selection.toString());
 
-		}
-	};
+        }
+    };
 
-	private TreeViewer viewer;
-	private Action copyGeneralisedToClipboard;
-	private Action copyFunCallToClipboard = new ClipboardAction(PlatformUI
-			.getWorkbench().getDisplay()) {
-		private boolean hasText = false;
+    private TreeViewer viewer;
+    private Action copyGeneralisedToClipboard;
+    private final Action copyFunCallToClipboard = new ClipboardAction(
+            PlatformUI.getWorkbench().getDisplay()) {
+        private boolean hasText = false;
 
-		@Override
-		public void run() {
-			if (!hasText)
-				MessageDialog
-						.openInformation(PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getShell(),
-								"Empty clipboard",
-								"There is no FunCall element according the selected item!");
-			else
-				super.run();
-		}
+        @Override
+        public void run() {
+            if (!hasText) {
+                MessageDialog
+                        .openInformation(PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow().getShell(),
+                                "Empty clipboard",
+                                "There is no FunCall element according the selected item!");
+            } else {
+                super.run();
+            }
+        }
 
-		@Override
-		public void setText(String text) {
-			super.setText(text);
-			hasText = true;
-		}
+        @Override
+        public void setText(final String text) {
+            super.setText(text);
+            hasText = true;
+        }
 
-	};
+    };
 
-	/**
-	 * The constructor.
-	 */
-	public DuplicatesView() {
-	}
+    /**
+     * The constructor.
+     */
+    public DuplicatesView() {
+    }
 
-	/**
-	 * Refresh the view
-	 */
-	public void refresh() {
-		viewer.refresh();
-	}
+    /**
+     * Refresh the view
+     */
+    public void refresh() {
+        viewer.refresh();
+    }
 
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
-				| SWT.V_SCROLL);
-		// drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new DuplicatesViewContentProvider(this));
-		viewer.setLabelProvider(new DuplicatesViewLabelProvider());
-		// viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-		makeActions();
-		createToolbar();
-		hookDoubleClickAction();
-		// contributeToActionBars();
-		addListeners();
+    /**
+     * This is a callback that will allow us to create the viewer and initialize
+     * it.
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
+                | SWT.V_SCROLL);
+        // drillDownAdapter = new DrillDownAdapter(viewer);
+        viewer.setContentProvider(new DuplicatesViewContentProvider(this));
+        viewer.setLabelProvider(new DuplicatesViewLabelProvider());
+        // viewer.setSorter(new NameSorter());
+        viewer.setInput(getViewSite());
+        makeActions();
+        createToolbar();
+        hookDoubleClickAction();
+        // contributeToActionBars();
+        addListeners();
 
-	}
+    }
 
-	// private void hookContextMenu() {
-	// MenuManager menuMgr = new MenuManager("#PopupMenu");
-	// menuMgr.setRemoveAllWhenShown(true);
-	// menuMgr.addMenuListener(new IMenuListener() {
-	// public void menuAboutToShow(IMenuManager manager) {
-	// DuplicatedCodeView.this.fillContextMenu(manager);
-	// }
-	// });
-	// Menu menu = menuMgr.createContextMenu(viewer.getControl());
-	// viewer.getControl().setMenu(menu);
-	// getSite().registerContextMenu(menuMgr, viewer);
-	// }
-	//
-	// private void contributeToActionBars() {
-	// IActionBars bars = getViewSite().getActionBars();
-	// fillLocalPullDown(bars.getMenuManager());
-	// fillLocalToolBar(bars.getToolBarManager());
-	// }
+    // private void hookContextMenu() {
+    // MenuManager menuMgr = new MenuManager("#PopupMenu");
+    // menuMgr.setRemoveAllWhenShown(true);
+    // menuMgr.addMenuListener(new IMenuListener() {
+    // public void menuAboutToShow(IMenuManager manager) {
+    // DuplicatedCodeView.this.fillContextMenu(manager);
+    // }
+    // });
+    // Menu menu = menuMgr.createContextMenu(viewer.getControl());
+    // viewer.getControl().setMenu(menu);
+    // getSite().registerContextMenu(menuMgr, viewer);
+    // }
+    //
+    // private void contributeToActionBars() {
+    // IActionBars bars = getViewSite().getActionBars();
+    // fillLocalPullDown(bars.getMenuManager());
+    // fillLocalToolBar(bars.getToolBarManager());
+    // }
 
-	// private void fillLocalPullDown(IMenuManager manager) {
-	// manager.add(action1);
-	// // manager.add(new Separator());
-	// // manager.add(action2);
-	// }
-	//
-	// private void fillContextMenu(IMenuManager manager) {
-	// manager.add(action1);
-	// // manager.add(action2);
-	// manager.add(new Separator());
-	// drillDownAdapter.addNavigationActions(manager);
-	// // Other plug-ins can contribute there actions here
-	// manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	// }
-	//
-	// private void fillLocalToolBar(IToolBarManager manager) {
-	// // manager.add(action1);
-	// // manager.add(action2);
-	// // manager.add(new Separator());
-	// drillDownAdapter.addNavigationActions(manager);
-	// }
+    // private void fillLocalPullDown(IMenuManager manager) {
+    // manager.add(action1);
+    // // manager.add(new Separator());
+    // // manager.add(action2);
+    // }
+    //
+    // private void fillContextMenu(IMenuManager manager) {
+    // manager.add(action1);
+    // // manager.add(action2);
+    // manager.add(new Separator());
+    // drillDownAdapter.addNavigationActions(manager);
+    // // Other plug-ins can contribute there actions here
+    // manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+    // }
+    //
+    // private void fillLocalToolBar(IToolBarManager manager) {
+    // // manager.add(action1);
+    // // manager.add(action2);
+    // // manager.add(new Separator());
+    // drillDownAdapter.addNavigationActions(manager);
+    // }
 
-	private void addListeners() {
-		// getSite().getWorkbenchWindow().getSelectionService()
-		// .addSelectionListener(listener);
+    private void addListeners() {
+        // getSite().getWorkbenchWindow().getSelectionService()
+        // .addSelectionListener(listener);
 
-	}
+    }
 
-	private void createToolbar() {
-		IToolBarManager mgr = getViewSite().getActionBars().getToolBarManager();
-		mgr.add(copyGeneralisedToClipboard);
-		mgr.add(copyFunCallToClipboard);
+    private void createToolbar() {
+        final IToolBarManager mgr = getViewSite().getActionBars()
+                .getToolBarManager();
+        mgr.add(copyGeneralisedToClipboard);
+        mgr.add(copyFunCallToClipboard);
 
-	}
+    }
 
-	private void makeActions() {
+    private void makeActions() {
 
-		copyGeneralisedToClipboard = new ClipboardAction(PlatformUI
-				.getWorkbench().getDisplay());
-		copyGeneralisedToClipboard
-				.setToolTipText("Copy generalised function to the clipboard");
-		copyGeneralisedToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
-				.getSharedImages().getImageDescriptor(
-						ISharedImages.IMG_TOOL_COPY));
-		copyFunCallToClipboard.setToolTipText("Copy FunCall to the clipboard");
-		copyFunCallToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
-				.getSharedImages().getImageDescriptor(
-						ISharedImages.IMG_TOOL_COPY));
+        copyGeneralisedToClipboard = new ClipboardAction(PlatformUI
+                .getWorkbench().getDisplay());
+        copyGeneralisedToClipboard
+                .setToolTipText("Copy generalised function to the clipboard");
+        copyGeneralisedToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
+                .getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
+        copyFunCallToClipboard.setToolTipText("Copy FunCall to the clipboard");
+        copyFunCallToClipboard.setImageDescriptor(PlatformUI.getWorkbench()
+                .getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				ISelection sel = event.getSelection();
-				if (sel == null || sel.isEmpty())
-					return;
-				TreeSelection tsel = (TreeSelection) sel;
-				AbstractResultTreeObject selection = (AbstractResultTreeObject) tsel
-						.getFirstElement();
-				copyGeneralisedToClipboard
-						.setText(selection.getSuggestedCode());
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(final SelectionChangedEvent event) {
+                final ISelection sel = event.getSelection();
+                if (sel == null || sel.isEmpty()) {
+                    return;
+                }
+                final TreeSelection tsel = (TreeSelection) sel;
+                final AbstractResultTreeObject selection = (AbstractResultTreeObject) tsel
+                        .getFirstElement();
+                copyGeneralisedToClipboard.setText(selection.getSuggestedCode());
 
-				if (selection instanceof DuplicatedCodeInstanceElement) {
-					DuplicatedCodeInstanceElement dcie = (DuplicatedCodeInstanceElement) selection;
-					copyFunCallToClipboard.setText(dcie
-							.getReplicationFunction());
-				}
+                if (selection instanceof DuplicatedCodeInstanceElement) {
+                    final DuplicatedCodeInstanceElement dcie = (DuplicatedCodeInstanceElement) selection;
+                    copyFunCallToClipboard.setText(dcie
+                            .getReplicationFunction());
+                }
 
-			}
-		});
+            }
+        });
 
-	}
+    }
 
-	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new DoubleClickListener());
-	}
+    private void hookDoubleClickAction() {
+        viewer.addDoubleClickListener(new DoubleClickListener());
+    }
 
-	/**
-	 * Passing the focus request to the viewer's control.
-	 */
-	@Override
-	public void setFocus() {
-		viewer.getControl().setFocus();
-	}
+    /**
+     * Passing the focus request to the viewer's control.
+     */
+    @Override
+    public void setFocus() {
+        viewer.getControl().setFocus();
+    }
 }

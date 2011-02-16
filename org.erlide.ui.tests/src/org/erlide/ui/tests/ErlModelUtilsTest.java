@@ -9,34 +9,34 @@ import org.junit.BeforeClass;
 
 public class ErlModelUtilsTest {
 
-	static IErlProject projects[] = null;
+    static IErlProject projects[] = null;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		ErlideTestUtils.initProjects();
-		// We set up projects here, it's quite costly
-		final String name1 = "testproject1";
-		final IErlProject erlProject1 = ErlideTestUtils.createProject(
-				ErlideTestUtils.getTmpPath(name1), name1);
-		final String name2 = "testproject2";
-		final IErlProject erlProject2 = ErlideTestUtils.createProject(
-				ErlideTestUtils.getTmpPath(name2), name2);
-		projects = new IErlProject[] { erlProject1, erlProject2 };
-	}
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        ErlideTestUtils.initProjects();
+        // We set up projects here, it's quite costly
+        final String name1 = "testproject1";
+        final IErlProject erlProject1 = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name1), name1);
+        final String name2 = "testproject2";
+        final IErlProject erlProject2 = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name2), name2);
+        projects = new IErlProject[] { erlProject1, erlProject2 };
+    }
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		ErlideTestUtils.deleteProjects();
-	}
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        ErlideTestUtils.deleteProjects();
+    }
 
-	@Before
-	public void setUp() throws Exception {
-		ErlideTestUtils.initModules();
-	}
+    @Before
+    public void setUp() throws Exception {
+        ErlideTestUtils.initModules();
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		ErlideTestUtils.deleteModules();
-	}
+    @After
+    public void tearDown() throws Exception {
+        ErlideTestUtils.deleteModules();
+    }
 
 }

@@ -31,10 +31,11 @@ public class NodeHelper {
      * @return <code>true</code> if node was started outside erlide,
      *         <code>false</code> otherwise
      */
-    public static boolean isExternal(String nodeName) {
-        for (Backend backend : getBackends(false)) {
-            if (backend.getFullNodeName().equals(nodeName))
+    public static boolean isExternal(final String nodeName) {
+        for (final Backend backend : getBackends(false)) {
+            if (backend.getFullNodeName().equals(nodeName)) {
                 return false;
+            }
         }
         return true;
     }
@@ -48,22 +49,27 @@ public class NodeHelper {
      *            if nodes should be omitted
      * @return list of backends
      */
-    public static Collection<? extends Backend> getBackends(boolean ignore) {
-        if (!ignore)
+    public static Collection<? extends Backend> getBackends(final boolean ignore) {
+        if (!ignore) {
             return BackendManager.getDefault().getAllBackends();
+        }
 
-        List<Backend> backends = new ArrayList<Backend>();
-        BackendManager backendManager = BackendManager.getDefault();
-        Set<Backend> ignored = new HashSet<Backend>();
+        final List<Backend> backends = new ArrayList<Backend>();
+        final BackendManager backendManager = BackendManager.getDefault();
+        final Set<Backend> ignored = new HashSet<Backend>();
         Backend backend;
 
-        if ((backend = backendManager.getIdeBackend()) != null)
+        if ((backend = backendManager.getIdeBackend()) != null) {
             ignored.add(backend);
-        if ((backend = TraceBackend.getInstance().getBackend(false)) != null)
+        }
+        if ((backend = TraceBackend.getInstance().getBackend(false)) != null) {
             ignored.add(backend);
-        for (ErlideBackend erlideBackend : BackendManager.getDefault().getAllBackends()) {
-            if (!ignored.contains(erlideBackend))
+        }
+        for (final ErlideBackend erlideBackend : BackendManager.getDefault()
+                .getAllBackends()) {
+            if (!ignored.contains(erlideBackend)) {
                 backends.add(erlideBackend);
+            }
         }
         return backends;
     }

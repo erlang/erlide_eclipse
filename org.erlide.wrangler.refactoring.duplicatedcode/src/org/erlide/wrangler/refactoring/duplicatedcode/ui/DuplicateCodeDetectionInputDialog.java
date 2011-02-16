@@ -34,156 +34,157 @@ import org.erlide.wrangler.refactoring.ui.AbstractInputDialog;
  */
 public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
 
-	private int minToks;
+    private int minToks;
 
-	private int minClones;
+    private int minClones;
 
-	private boolean workOnlyInCurrentFile;
+    private boolean workOnlyInCurrentFile;
 
-	private Text minToksText;
+    private Text minToksText;
 
-	private Text minClonesText;
+    private Text minClonesText;
 
-	private Button onlyInFileCheckBoxButton;
+    private Button onlyInFileCheckBoxButton;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param parentShell
-	 *            SWT shell
-	 * @param dialogTitle
-	 *            dialog title
-	 */
-	public DuplicateCodeDetectionInputDialog(Shell parentShell,
-			String dialogTitle) {
-		super(parentShell, dialogTitle);
-	}
+    /**
+     * Constructor
+     * 
+     * @param parentShell
+     *            SWT shell
+     * @param dialogTitle
+     *            dialog title
+     */
+    public DuplicateCodeDetectionInputDialog(final Shell parentShell,
+            final String dialogTitle) {
+        super(parentShell, dialogTitle);
+    }
 
-	/**
-	 * Gets the value of minimal tokens
-	 * 
-	 * @return number of minimal tokens
-	 */
-	public int getMinToks() {
-		return minToks;
-	}
+    /**
+     * Gets the value of minimal tokens
+     * 
+     * @return number of minimal tokens
+     */
+    public int getMinToks() {
+        return minToks;
+    }
 
-	/**
-	 * Gets the value of minimal clone numbers
-	 * 
-	 * @return minimal clones number
-	 */
-	public int getMinClones() {
-		return minClones;
-	}
+    /**
+     * Gets the value of minimal clone numbers
+     * 
+     * @return minimal clones number
+     */
+    public int getMinClones() {
+        return minClones;
+    }
 
-	/**
-	 * Gets the value of the 'run only in the current module' checkbox
-	 * 
-	 * @return true, if the refactoring will be run in only the current module
-	 */
-	public boolean onlyInFile() {
-		return workOnlyInCurrentFile;
-	}
+    /**
+     * Gets the value of the 'run only in the current module' checkbox
+     * 
+     * @return true, if the refactoring will be run in only the current module
+     */
+    public boolean onlyInFile() {
+        return workOnlyInCurrentFile;
+    }
 
-	/*
-	 * @Override protected void buttonPressed(int buttonId) {
-	 * super.buttonPressed(buttonId); }
-	 */
+    /*
+     * @Override protected void buttonPressed(int buttonId) {
+     * super.buttonPressed(buttonId); }
+     */
 
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		super.createButtonsForButtonBar(parent);
+    @Override
+    protected void createButtonsForButtonBar(final Composite parent) {
+        super.createButtonsForButtonBar(parent);
 
-		minToksText.setFocus();
-		minToksText.setText("");
-		minToksText.selectAll();
+        minToksText.setFocus();
+        minToksText.setText("");
+        minToksText.selectAll();
 
-	}
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		// create composite
-		Composite composite = (Composite) super.createDialogArea(parent);
-		// create message
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        // create composite
+        final Composite composite = (Composite) super.createDialogArea(parent);
+        // create message
 
-		Label minTokslabel = new Label(composite, SWT.WRAP);
-		minTokslabel
-				.setText("Minimal numbers of tokens a code clone should have:");
-		GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_CENTER);
-		minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		minTokslabel.setLayoutData(minToksData);
-		minTokslabel.setFont(parent.getFont());
+        final Label minTokslabel = new Label(composite, SWT.WRAP);
+        minTokslabel
+                .setText("Minimal numbers of tokens a code clone should have:");
+        final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_CENTER);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minTokslabel.setLayoutData(minToksData);
+        minTokslabel.setFont(parent.getFont());
 
-		minToksText = new Text(composite, getInputTextStyle());
-		minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-		minToksText.setText("20");
-		minToksText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				validateInput();
-			}
-		});
+        minToksText = new Text(composite, getInputTextStyle());
+        minToksText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        minToksText.setText("20");
+        minToksText.addModifyListener(new ModifyListener() {
+            public void modifyText(final ModifyEvent e) {
+                validateInput();
+            }
+        });
 
-		Label minClonesLabel = new Label(composite, SWT.WRAP);
-		minClonesLabel.setText("Minimum number of appearance times:");
-		GridData minClonesData = new GridData( // GridData.GRAB_HORIZONTAL |
-				GridData.GRAB_VERTICAL // | GridData.HORIZONTAL_ALIGN_FILL
-						| GridData.VERTICAL_ALIGN_CENTER);
-		minClonesData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		minClonesLabel.setLayoutData(minClonesData);
-		minClonesLabel.setFont(parent.getFont());
-		minClonesText = new Text(composite, getInputTextStyle());
-		minClonesText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-		minClonesText.setText("2");
-		minClonesText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				validateInput();
-			}
-		});
+        final Label minClonesLabel = new Label(composite, SWT.WRAP);
+        minClonesLabel.setText("Minimum number of appearance times:");
+        final GridData minClonesData = new GridData( // GridData.GRAB_HORIZONTAL
+                                                     // |
+                GridData.GRAB_VERTICAL // | GridData.HORIZONTAL_ALIGN_FILL
+                        | GridData.VERTICAL_ALIGN_CENTER);
+        minClonesData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        minClonesLabel.setLayoutData(minClonesData);
+        minClonesLabel.setFont(parent.getFont());
+        minClonesText = new Text(composite, getInputTextStyle());
+        minClonesText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        minClonesText.setText("2");
+        minClonesText.addModifyListener(new ModifyListener() {
+            public void modifyText(final ModifyEvent e) {
+                validateInput();
+            }
+        });
 
-		onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
-		onlyInFileCheckBoxButton.setText("Detect duplicates in the project");
-		onlyInFileCheckBoxButton.setLayoutData(new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-		onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
+        onlyInFileCheckBoxButton = new Button(composite, SWT.CHECK);
+        onlyInFileCheckBoxButton.setText("Detect duplicates in the project");
+        onlyInFileCheckBoxButton.setLayoutData(new GridData(
+                GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
+            public void widgetDefaultSelected(final SelectionEvent e) {
+            }
 
-			public void widgetSelected(SelectionEvent e) {
-				validateInput();
+            public void widgetSelected(final SelectionEvent e) {
+                validateInput();
 
-			}
+            }
 
-		});
-		errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-		errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-		errorMessageText.setBackground(errorMessageText.getDisplay()
-				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        });
+        errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
+        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
-		setErrorMessage("Please use only integers!");
+        setErrorMessage("Please use only integers!");
 
-		applyDialogFont(composite);
-		return composite;
-	}
+        applyDialogFont(composite);
+        return composite;
+    }
 
-	@Override
-	protected void validateInput() {
-		String errorMsg = null;
-		try {
-			workOnlyInCurrentFile = !onlyInFileCheckBoxButton.getSelection();
-			minToks = Integer.parseInt(minToksText.getText());
-			minClones = Integer.parseInt(minClonesText.getText());
-			setErrorMessage(null);
-		} catch (Exception e) {
-			errorMsg = "Minimal number of clones and tokens should be integers.";
-			setErrorMessage(errorMsg);
-		}
+    @Override
+    protected void validateInput() {
+        String errorMsg = null;
+        try {
+            workOnlyInCurrentFile = !onlyInFileCheckBoxButton.getSelection();
+            minToks = Integer.parseInt(minToksText.getText());
+            minClones = Integer.parseInt(minClonesText.getText());
+            setErrorMessage(null);
+        } catch (final Exception e) {
+            errorMsg = "Minimal number of clones and tokens should be integers.";
+            setErrorMessage(errorMsg);
+        }
 
-	}
+    }
 }

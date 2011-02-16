@@ -18,12 +18,12 @@ package org.erlide.wrangler.refactoring.ui.validator;
  * @version %I%, %G%
  */
 public interface IValidator {
-	/**
-	 * Validate a string
-	 * 
-	 * @param text
-	 *            input string
-	 * @return true if the string is valid, else false
-	 */
-	boolean isValid(String text);
+    /**
+     * Validate a string
+     * 
+     * @param text
+     *            input string
+     * @return true if the string is valid, else false
+     */
+    boolean isValid(String text);
 }

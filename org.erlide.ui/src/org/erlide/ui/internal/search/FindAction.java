@@ -47,9 +47,9 @@ import org.erlide.ui.internal.ExceptionHandler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import erlang.ErlSearchScope;
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlSearchScope;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 

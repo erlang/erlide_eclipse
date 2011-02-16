@@ -22,7 +22,7 @@ public enum ProcessFlag {
     private OtpErlangAtom atom;
     private String name;
 
-    private ProcessFlag(String name, OtpErlangAtom atom) {
+    private ProcessFlag(final String name, final OtpErlangAtom atom) {
         this.name = name;
         this.atom = atom;
     }
@@ -34,10 +34,11 @@ public enum ProcessFlag {
      * @param index
      * @return enum value
      */
-    public static ProcessFlag getByIndex(int index) {
-        for (ProcessFlag column : ProcessFlag.values()) {
-            if (column.ordinal() == index)
+    public static ProcessFlag getByIndex(final int index) {
+        for (final ProcessFlag column : ProcessFlag.values()) {
+            if (column.ordinal() == index) {
                 return column;
+            }
         }
         return null;
     }

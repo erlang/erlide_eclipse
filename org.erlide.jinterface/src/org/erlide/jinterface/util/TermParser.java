@@ -141,7 +141,18 @@ public class TermParser {
     }
 
     private static enum TokenKind {
-        ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, UNKNOWN;
+        ATOM,
+        VARIABLE,
+        STRING,
+        INTEGER,
+        PLACEHOLDER,
+        TUPLESTART,
+        TUPLEEND,
+        LISTSTART,
+        LISTEND,
+        COMMA,
+        CONS,
+        UNKNOWN;
     }
 
     private static class Token {

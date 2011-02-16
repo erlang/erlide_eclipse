@@ -51,7 +51,7 @@ public class Diff {
      * The comparator used, if any.
      */
     @SuppressWarnings("rawtypes")
-    private Comparator comparator;
+    private final Comparator comparator;
 
     /**
      * The thresholds.
@@ -64,12 +64,12 @@ public class Diff {
      * comparator.
      */
     @SuppressWarnings({})
-    public Diff(Object[] a, Object[] b,
-            @SuppressWarnings("rawtypes") Comparator comp) {
+    public Diff(final Object[] a, final Object[] b,
+            @SuppressWarnings("rawtypes") final Comparator comp) {
         this.a = a;
         this.b = b;
-        this.comparator = comp;
-        this.thresh = null; // created in getLongestCommonSubsequences
+        comparator = comp;
+        thresh = null; // created in getLongestCommonSubsequences
     }
 
     /**
@@ -77,7 +77,7 @@ public class Diff {
      * comparison mechanism between the objects, such as <code>equals</code> and
      * <code>compareTo</code>.
      */
-    public Diff(Object[] a, Object[] b) {
+    public Diff(final Object[] a, final Object[] b) {
         this(a, b, null);
     }
 
@@ -86,7 +86,7 @@ public class Diff {
      * comparator.
      */
     @SuppressWarnings({ "rawtypes" })
-    public Diff(Collection a, Collection b, Comparator comp) {
+    public Diff(final Collection a, final Collection b, final Comparator comp) {
         this(a.toArray(), b.toArray(), comp);
     }
 
@@ -96,7 +96,7 @@ public class Diff {
      * <code>compareTo</code>.
      */
     @SuppressWarnings("rawtypes")
-    public Diff(Collection a, Collection b) {
+    public Diff(final Collection a, final Collection b) {
         this(a, b, null);
     }
 
@@ -121,17 +121,17 @@ public class Diff {
      * <code>onANotB</code>, and <code>onBNotA</code>.
      */
     protected void traverseSequences() {
-        Integer[] matches = getLongestCommonSubsequences();
+        final Integer[] matches = getLongestCommonSubsequences();
 
-        int lastA = a.length - 1;
-        int lastB = b.length - 1;
+        final int lastA = a.length - 1;
+        final int lastB = b.length - 1;
         int bi = 0;
         int ai;
 
-        int lastMatch = matches.length - 1;
+        final int lastMatch = matches.length - 1;
 
         for (ai = 0; ai <= lastMatch; ++ai) {
-            Integer bLine = matches[ai];
+            final Integer bLine = matches[ai];
 
             if (bLine == null) {
                 onANotB(ai, bi);
@@ -203,20 +203,20 @@ public class Diff {
      * Invoked at the last element in <code>a</code>, if
      * <code>callFinishedA</code> returns true.
      */
-    protected void finishedA(int lastA) {
+    protected void finishedA(final int lastA) {
     }
 
     /**
      * Invoked at the last element in <code>b</code>, if
      * <code>callFinishedB</code> returns true.
      */
-    protected void finishedB(int lastB) {
+    protected void finishedB(final int lastB) {
     }
 
     /**
      * Invoked for elements in <code>a</code> and not in <code>b</code>.
      */
-    protected void onANotB(int ai, int bi) {
+    protected void onANotB(final int ai, final int bi) {
         if (pending == null) {
             pending = new Difference(ai, ai, bi, -1);
         } else {
@@ -227,7 +227,7 @@ public class Diff {
     /**
      * Invoked for elements in <code>b</code> and not in <code>a</code>.
      */
-    protected void onBNotA(int ai, int bi) {
+    protected void onBNotA(final int ai, final int bi) {
         if (pending == null) {
             pending = new Difference(ai, -1, bi, bi);
         } else {
@@ -239,7 +239,7 @@ public class Diff {
      * Invoked for elements matching in <code>a</code> and <code>b</code>.
      */
     @SuppressWarnings("unchecked")
-    protected void onMatch(int ai, int bi) {
+    protected void onMatch(final int ai, final int bi) {
         if (pending == null) {
             // no current pending
         } else {
@@ -253,9 +253,8 @@ public class Diff {
      * constructor, if any.
      */
     @SuppressWarnings("unchecked")
-    protected boolean equals(Object x, Object y) {
-        return (comparator == null) ? x.equals(y)
-                : comparator.compare(x, y) == 0;
+    protected boolean equals(final Object x, final Object y) {
+        return comparator == null ? x.equals(y) : comparator.compare(x, y) == 0;
     }
 
     /**
@@ -269,7 +268,7 @@ public class Diff {
         int bStart = 0;
         int bEnd = b.length - 1;
 
-        TreeMap matches = new TreeMap();
+        final TreeMap matches = new TreeMap();
 
         while (aStart <= aEnd && bStart <= bEnd && equals(a[aStart], b[bStart])) {
             matches.put(new Integer(aStart++), new Integer(bStart++));
@@ -295,8 +294,8 @@ public class Diff {
         }
 
         for (int bi = bStart; bi <= bEnd; ++bi) {
-            Object element = b[bi];
-            Object key = element;
+            final Object element = b[bi];
+            final Object key = element;
             List positions = (List) bMatches.get(key);
             if (positions == null) {
                 positions = new ArrayList();
@@ -306,24 +305,25 @@ public class Diff {
         }
 
         thresh = new TreeMap();
-        Map links = new HashMap();
+        final Map links = new HashMap();
 
         for (int i = aStart; i <= aEnd; ++i) {
-            Object aElement = a[i]; // keygen here.
-            List positions = (List) bMatches.get(aElement);
+            final Object aElement = a[i]; // keygen here.
+            final List positions = (List) bMatches.get(aElement);
 
             if (positions != null) {
                 Integer k = new Integer(0);
-                ListIterator pit = positions.listIterator(positions.size());
+                final ListIterator pit = positions.listIterator(positions
+                        .size());
                 while (pit.hasPrevious()) {
-                    Integer j = (Integer) pit.previous();
+                    final Integer j = (Integer) pit.previous();
 
                     k = insert(j, k);
 
                     if (k == null) {
                         // nothing
                     } else {
-                        Object value = (k.intValue() > 0) ? links
+                        final Object value = k.intValue() > 0 ? links
                                 .get(new Integer(k.intValue() - 1)) : null;
                         links.put(k, new Object[] { value, new Integer(i), j });
                     }
@@ -332,11 +332,11 @@ public class Diff {
         }
 
         if (thresh.size() > 0) {
-            Integer ti = (Integer) thresh.lastKey();
+            final Integer ti = (Integer) thresh.lastKey();
             Object[] link = (Object[]) links.get(ti);
             while (link != null) {
-                Integer x = (Integer) link[1];
-                Integer y = (Integer) link[2];
+                final Integer x = (Integer) link[1];
+                final Integer y = (Integer) link[2];
                 matches.put(x, y);
                 link = (Object[]) link[0];
             }
@@ -348,16 +348,17 @@ public class Diff {
     /**
      * Converts the map (indexed by java.lang.Integers) into an array.
      */
-    protected static Integer[] toArray(@SuppressWarnings("rawtypes") TreeMap map) {
-        int size = (map.size() == 0) ? 0 : 1 + ((Integer) map.lastKey())
+    protected static Integer[] toArray(
+            @SuppressWarnings("rawtypes") final TreeMap map) {
+        final int size = map.size() == 0 ? 0 : 1 + ((Integer) map.lastKey())
                 .intValue();
-        Integer[] ary = new Integer[size];
+        final Integer[] ary = new Integer[size];
         @SuppressWarnings("rawtypes")
-        Iterator it = map.keySet().iterator();
+        final Iterator it = map.keySet().iterator();
 
         while (it.hasNext()) {
-            Integer idx = (Integer) it.next();
-            Integer val = (Integer) map.get(idx);
+            final Integer idx = (Integer) it.next();
+            final Integer val = (Integer) map.get(idx);
             ary[idx.intValue()] = val;
         }
         return ary;
@@ -366,7 +367,7 @@ public class Diff {
     /**
      * Returns whether the integer is not zero (including if it is not null).
      */
-    protected static boolean isNonzero(Integer i) {
+    protected static boolean isNonzero(final Integer i) {
         return i != null && i.intValue() != 0;
     }
 
@@ -374,8 +375,8 @@ public class Diff {
      * Returns whether the value in the map for the given index is greater than
      * the given value.
      */
-    protected boolean isGreaterThan(Integer index, Integer val) {
-        Integer lhs = (Integer) thresh.get(index);
+    protected boolean isGreaterThan(final Integer index, final Integer val) {
+        final Integer lhs = (Integer) thresh.get(index);
         return lhs != null && val != null && lhs.compareTo(val) > 0;
     }
 
@@ -383,8 +384,8 @@ public class Diff {
      * Returns whether the value in the map for the given index is less than the
      * given value.
      */
-    protected boolean isLessThan(Integer index, Integer val) {
-        Integer lhs = (Integer) thresh.get(index);
+    protected boolean isLessThan(final Integer index, final Integer val) {
+        final Integer lhs = (Integer) thresh.get(index);
         return lhs != null && (val == null || lhs.compareTo(val) < 0);
     }
 
@@ -400,12 +401,12 @@ public class Diff {
      * greatest index/key.
      */
     @SuppressWarnings("unchecked")
-    protected void append(Integer value) {
+    protected void append(final Integer value) {
         Integer addIdx = null;
         if (thresh.size() == 0) {
             addIdx = new Integer(0);
         } else {
-            Integer lastKey = (Integer) thresh.lastKey();
+            final Integer lastKey = (Integer) thresh.lastKey();
             addIdx = new Integer(lastKey.intValue() + 1);
         }
         thresh.put(addIdx, value);
@@ -415,7 +416,7 @@ public class Diff {
      * Inserts the given values into the threshold map.
      */
     @SuppressWarnings("unchecked")
-    protected Integer insert(Integer j, Integer k) {
+    protected Integer insert(final Integer j, Integer k) {
         if (isNonzero(k) && isGreaterThan(k, j)
                 && isLessThan(new Integer(k.intValue() - 1), j)) {
             thresh.put(k, j);
@@ -437,9 +438,10 @@ public class Diff {
                 int lo = 0;
 
                 while (lo <= hi) {
-                    int index = (hi + lo) / 2;
-                    Integer val = (Integer) thresh.get(new Integer(index));
-                    int cmp = j.compareTo(val);
+                    final int index = (hi + lo) / 2;
+                    final Integer val = (Integer) thresh
+                            .get(new Integer(index));
+                    final int cmp = j.compareTo(val);
 
                     if (cmp == 0) {
                         return null;

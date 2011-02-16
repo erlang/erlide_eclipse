@@ -15,30 +15,30 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 class DoubleClickListener implements IDoubleClickListener {
 
-	DoubleClickListener() {
+    DoubleClickListener() {
 
-	}
+    }
 
-	public void doubleClick(DoubleClickEvent event) {
-		ISelection selection = event.getSelection();
+    public void doubleClick(final DoubleClickEvent event) {
+        final ISelection selection = event.getSelection();
 
-		Object obj = ((IStructuredSelection) selection).getFirstElement();
+        final Object obj = ((IStructuredSelection) selection).getFirstElement();
 
-		if (obj instanceof DuplicatedCodeInstanceElement) {
-			higlightCodePart((DuplicatedCodeInstanceElement) obj);
-		} else if (obj instanceof DuplicatedCodeElement) {
-			higlightCodePart(((DuplicatedCodeElement) obj).getCodePart());
-		} else if (obj instanceof DuplicatedFileElement) {
-			DuplicatedFileElement obj2 = (DuplicatedFileElement) obj;
-			WranglerUtils.openFile(obj2.getContainingFile());
-		}
+        if (obj instanceof DuplicatedCodeInstanceElement) {
+            higlightCodePart((DuplicatedCodeInstanceElement) obj);
+        } else if (obj instanceof DuplicatedCodeElement) {
+            higlightCodePart(((DuplicatedCodeElement) obj).getCodePart());
+        } else if (obj instanceof DuplicatedFileElement) {
+            final DuplicatedFileElement obj2 = (DuplicatedFileElement) obj;
+            WranglerUtils.openFile(obj2.getContainingFile());
+        }
 
-	}
+    }
 
-	public void higlightCodePart(DuplicatedCodeInstanceElement codePart) {
-		ITextEditor textEditor = (ITextEditor) WranglerUtils.openFile(codePart
-				.getContainingFile());
-		WranglerUtils.highlightOffsetSelection(codePart.getStartOffset(), codePart
-				.getEndOffset(), textEditor);
-	}
+    public void higlightCodePart(final DuplicatedCodeInstanceElement codePart) {
+        final ITextEditor textEditor = (ITextEditor) WranglerUtils
+                .openFile(codePart.getContainingFile());
+        WranglerUtils.highlightOffsetSelection(codePart.getStartOffset(),
+                codePart.getEndOffset(), textEditor);
+    }
 }

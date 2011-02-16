@@ -20,60 +20,59 @@ import org.eclipse.jface.text.IDocument;
  * @version %I%, %G%
  */
 public class ErlRange extends Range implements IErlRange {
-	protected int offset, length;
+    protected int offset, length;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param startLine
-	 *            start line
-	 * @param startCol
-	 *            start column
-	 * @param endLine
-	 *            end line
-	 * @param endCol
-	 *            end column
-	 * @param offset
-	 *            selection's offset
-	 * @param length
-	 *            selection's length
-	 */
-	public ErlRange(final int startLine, final int startCol, final int endLine,
-			final int endCol, final int offset, final int length) {
-		super(startLine, startCol, endLine, endCol);
-		this.offset = offset;
-		this.length = length;
-	}
+    /**
+     * Constructor
+     * 
+     * @param startLine
+     *            start line
+     * @param startCol
+     *            start column
+     * @param endLine
+     *            end line
+     * @param endCol
+     *            end column
+     * @param offset
+     *            selection's offset
+     * @param length
+     *            selection's length
+     */
+    public ErlRange(final int startLine, final int startCol, final int endLine,
+            final int endCol, final int offset, final int length) {
+        super(startLine, startCol, endLine, endCol);
+        this.offset = offset;
+        this.length = length;
+    }
 
-	/**
-	 * Constructor with a range and a document
-	 * 
-	 * @param range
-	 *            selection range
-	 * @param doc
-	 *            containing document
-	 */
-	public ErlRange(final IRange range, final IDocument doc) {
-		super(range.getStartLine(), range.getStartCol(), range.getEndLine(),
-				range.getEndCol());
+    /**
+     * Constructor with a range and a document
+     * 
+     * @param range
+     *            selection range
+     * @param doc
+     *            containing document
+     */
+    public ErlRange(final IRange range, final IDocument doc) {
+        super(range.getStartLine(), range.getStartCol(), range.getEndLine(),
+                range.getEndCol());
 
-		try {
-			offset = WranglerUtils.calculateOffsetFromPosition(startLine,
-					startCol, doc);
-			length = WranglerUtils.calculateOffsetFromPosition(endLine, endCol,
-					doc)
-					- offset + 1;
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            offset = WranglerUtils.calculateOffsetFromPosition(startLine,
+                    startCol, doc);
+            length = WranglerUtils.calculateOffsetFromPosition(endLine, endCol,
+                    doc) - offset + 1;
+        } catch (final BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public int getLength() {
-		return length;
-	}
+    public int getLength() {
+        return length;
+    }
 
-	public int getOffset() {
-		return offset;
-	}
+    public int getOffset() {
+        return offset;
+    }
 
 }

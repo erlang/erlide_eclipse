@@ -35,47 +35,49 @@ import com.ericsson.otp.erlang.OtpErlangFloat;
  */
 public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
 
-	private float simScore;
-	boolean onlyInFile = true;
+    private float simScore;
+    boolean onlyInFile = true;
 
-	@Override
-	protected IResultParser callRefactoring()
-			throws WranglerRpcParsingException, CoreException, IOException,
-			WranglerWarningException {
+    @Override
+    protected IResultParser callRefactoring()
+            throws WranglerRpcParsingException, CoreException, IOException,
+            WranglerWarningException {
 
-		IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
-				.getWranglerSelection();
-		WranglerRefactoringBackend backend = WranglerBackendManager
-				.getRefactoringBackend();
-		RpcResult result = null;
-		String functionName;
-		if (onlyInFile) {
-			functionName = "simi_expr_search_in_buffer_eclipse";
-		} else {
-			functionName = "simi_expr_search_in_dirs_eclipse";
-		}
-		result = backend.callWithoutParser(
-				WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
-				"sxxxxi", sel.getFilePath(), sel.getSelectionRange()
-						.getStartPos(), sel.getSelectionRange().getEndPos(),
-				new OtpErlangFloat(simScore), sel.getSearchPath(),
-				GlobalParameters.getTabWidth());
+        final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+                .getWranglerSelection();
+        final WranglerRefactoringBackend backend = WranglerBackendManager
+                .getRefactoringBackend();
+        RpcResult result = null;
+        String functionName;
+        if (onlyInFile) {
+            functionName = "simi_expr_search_in_buffer_eclipse";
+        } else {
+            functionName = "simi_expr_search_in_dirs_eclipse";
+        }
+        result = backend.callWithoutParser(
+                WranglerRefactoringBackend.UNLIMITED_TIMEOUT, functionName,
+                "sxxxxi", sel.getFilePath(), sel.getSelectionRange()
+                        .getStartPos(), sel.getSelectionRange().getEndPos(),
+                new OtpErlangFloat(simScore), sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
 
-		if (result.isOk())
-			return new SimilarExpressionSearchParser(result.getValue());
-		else
-			throw new WranglerRpcParsingException("RPC error");
-	}
+        if (result.isOk()) {
+            return new SimilarExpressionSearchParser(result.getValue());
+        } else {
+            throw new WranglerRpcParsingException("RPC error");
+        }
+    }
 
-	@Override
-	protected boolean getUserInput() {
-		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+    @Override
+    protected boolean getUserInput() {
+        final Shell shell = PlatformUI.getWorkbench().getDisplay()
+                .getActiveShell();
 
-		SimilarSearchInputDialog inputd = new SimilarSearchInputDialog(shell,
-				"Search for similar expressions...");
-		inputd.open();
-		simScore = (float) inputd.getSimScore();
-		onlyInFile = inputd.onlyinFile();
-		return inputd.isFinished();
-	}
+        final SimilarSearchInputDialog inputd = new SimilarSearchInputDialog(
+                shell, "Search for similar expressions...");
+        inputd.open();
+        simScore = (float) inputd.getSimScore();
+        onlyInFile = inputd.onlyinFile();
+        return inputd.isFinished();
+    }
 }

@@ -36,77 +36,77 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  * @version %I%, %G%
  */
 public abstract class WranglerRefactoring extends Refactoring {
-	protected ArrayList<ChangedFile> changedFiles;
+    protected ArrayList<ChangedFile> changedFiles;
 
-	/**
-	 * @return the changed files by the refactoring
-	 */
-	public ArrayList<ChangedFile> getChangedFiles() {
-		return changedFiles;
-	}
+    /**
+     * @return the changed files by the refactoring
+     */
+    public ArrayList<ChangedFile> getChangedFiles() {
+        return changedFiles;
+    }
 
-	/**
-	 * Run the RPC call. Usually only one RPC call is needed, for this, this
-	 * function is used to do the trick.
-	 * 
-	 * @param sel
-	 *            selected code piece
-	 * @return parsed refactoring message
-	 */
-	public abstract IRefactoringRpcMessage run(IErlSelection sel);
+    /**
+     * Run the RPC call. Usually only one RPC call is needed, for this, this
+     * function is used to do the trick.
+     * 
+     * @param sel
+     *            selected code piece
+     * @return parsed refactoring message
+     */
+    public abstract IRefactoringRpcMessage run(IErlSelection sel);
 
-	@Override
-	public abstract RefactoringStatus checkFinalConditions(IProgressMonitor pm)
-			throws CoreException, OperationCanceledException;
+    @Override
+    public abstract RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+            throws CoreException, OperationCanceledException;
 
-	@Override
-	public abstract RefactoringStatus checkInitialConditions(IProgressMonitor pm)
-			throws CoreException, OperationCanceledException;
+    @Override
+    public abstract RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+            throws CoreException, OperationCanceledException;
 
-	@Override
-	public Change createChange(final IProgressMonitor pm) throws CoreException,
-			OperationCanceledException {
-		pm.beginTask("Creating changes", changedFiles.size() + 1);
-		CompositeChange change = new CompositeChange(getName());
-		pm.internalWorked(1);
+    @Override
+    public Change createChange(final IProgressMonitor pm) throws CoreException,
+            OperationCanceledException {
+        pm.beginTask("Creating changes", changedFiles.size() + 1);
+        final CompositeChange change = new CompositeChange(getName());
+        pm.internalWorked(1);
 
-		try {
-			Change c;
-			for (ChangedFile e : changedFiles) {
-				c = e.createChanges();
-				if (c != null) {
-					change.add(c);
-					pm.internalWorked(1);
-				}
-			}
-		} catch (IOException e) {
-			Status s = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e
-					.getMessage());
+        try {
+            Change c;
+            for (final ChangedFile e : changedFiles) {
+                c = e.createChanges();
+                if (c != null) {
+                    change.add(c);
+                    pm.internalWorked(1);
+                }
+            }
+        } catch (final IOException e) {
+            final Status s = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    e.getMessage());
 
-			throw new CoreException(s);
-		} finally {
-			pm.done();
-		}
+            throw new CoreException(s);
+        } finally {
+            pm.done();
+        }
 
-		return change;
-	}
+        return change;
+    }
 
-	@Override
-	public abstract String getName();
+    @Override
+    public abstract String getName();
 
-	/**
-	 * This operation is run after doing the refactoring.
-	 */
-	public void doAfterRefactoring() {
-		WranglerUtils.notifyErlide(getChangedFiles());
-	}
+    /**
+     * This operation is run after doing the refactoring.
+     */
+    public void doAfterRefactoring() {
+        WranglerUtils.notifyErlide(getChangedFiles());
+    }
 
-	/**
-	 * This operation is run before the refactoring is started.
-	 * 
-	 */
-	public void doBeforeRefactoring() {
+    /**
+     * This operation is run before the refactoring is started.
+     * 
+     */
+    public void doBeforeRefactoring() {
 
-	}
+    }
 
 }

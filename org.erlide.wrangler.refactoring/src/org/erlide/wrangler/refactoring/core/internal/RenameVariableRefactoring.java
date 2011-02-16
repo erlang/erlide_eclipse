@@ -29,32 +29,32 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  */
 public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring {
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		IErlSelection sel = GlobalParameters.getWranglerSelection();
-		if (sel instanceof IErlMemberSelection) {
-			// SelectionKind kind = sel.getDetailedKind();
-			return new RefactoringStatus();
-		}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
+        if (sel instanceof IErlMemberSelection) {
+            // SelectionKind kind = sel.getDetailedKind();
+            return new RefactoringStatus();
+        }
 
-		return RefactoringStatus
-				.createFatalErrorStatus("Please select a variable!");
-	}
+        return RefactoringStatus
+                .createFatalErrorStatus("Please select a variable!");
+    }
 
-	@Override
-	public String getName() {
-		return "Rename variable";
-	}
+    @Override
+    public String getName() {
+        return "Rename variable";
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"rename_var_eclipse", "siisxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartLine(),
-				sel.getSelectionRange().getStartCol(), userInput,
-				sel.getSearchPath(), GlobalParameters.getTabWidth());
-	}
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "rename_var_eclipse", "siisxi", sel.getFilePath(),
+                sel.getSelectionRange().getStartLine(),
+                sel.getSelectionRange().getStartCol(), userInput,
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
 
 }

@@ -39,7 +39,7 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
     }
 
     protected ArrayList<ChangedFile> parseFileList(final OtpErlangList fileList) {
-        ArrayList<ChangedFile> ret = new ArrayList<ChangedFile>();
+        final ArrayList<ChangedFile> ret = new ArrayList<ChangedFile>();
 
         OtpErlangTuple e;
         OtpErlangString oldPath, newPath;
@@ -47,7 +47,7 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
             e = (OtpErlangTuple) fileList.elementAt(i);
             oldPath = (OtpErlangString) e.elementAt(0);
             newPath = (OtpErlangString) e.elementAt(1);
-            String newContent = ErlUtils.asString(e.elementAt(2));
+            final String newContent = ErlUtils.asString(e.elementAt(2));
 
             ret.add(new ChangedFile(oldPath.stringValue(), newPath
                     .stringValue(), newContent));

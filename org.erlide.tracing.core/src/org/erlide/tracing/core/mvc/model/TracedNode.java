@@ -17,11 +17,13 @@ public class TracedNode implements Serializable {
     private String cookie = "";
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || !o.getClass().equals(TracedNode.class))
+    public boolean equals(final Object o) {
+        if (o == null || !o.getClass().equals(TracedNode.class)) {
             return false;
-        TracedNode tracedNode = (TracedNode) o;
-        return nodeName != null ? nodeName.equals(tracedNode.nodeName) : tracedNode.nodeName == null;
+        }
+        final TracedNode tracedNode = (TracedNode) o;
+        return nodeName != null ? nodeName.equals(tracedNode.nodeName)
+                : tracedNode.nodeName == null;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class TracedNode implements Serializable {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -43,7 +45,7 @@ public class TracedNode implements Serializable {
         return nodeName;
     }
 
-    public void setNodeName(String nodeName) {
+    public void setNodeName(final String nodeName) {
         this.nodeName = nodeName;
     }
 
@@ -51,7 +53,7 @@ public class TracedNode implements Serializable {
         return cookie;
     }
 
-    public void setCookie(String cookie) {
+    public void setCookie(final String cookie) {
         this.cookie = cookie;
     }
 }

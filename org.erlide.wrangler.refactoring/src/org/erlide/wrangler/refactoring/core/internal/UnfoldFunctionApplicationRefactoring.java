@@ -28,42 +28,42 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @version %I%, %G%
  */
 public class UnfoldFunctionApplicationRefactoring extends
-		SimpleOneStepWranglerRefactoring {
+        SimpleOneStepWranglerRefactoring {
 
-	/**
-	 * Default constructor
-	 */
-	public UnfoldFunctionApplicationRefactoring() {
-	}
+    /**
+     * Default constructor
+     */
+    public UnfoldFunctionApplicationRefactoring() {
+    }
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		IErlSelection sel = GlobalParameters.getWranglerSelection();
-		if (sel instanceof IErlMemberSelection) {
-			/*
-			 * if (sel.getKind() == SelectionKind.FUNCTION || sel.getKind() ==
-			 * SelectionKind.FUNCTION_CLAUSE)
-			 */
-			return new RefactoringStatus();
-		}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
+        if (sel instanceof IErlMemberSelection) {
+            /*
+             * if (sel.getKind() == SelectionKind.FUNCTION || sel.getKind() ==
+             * SelectionKind.FUNCTION_CLAUSE)
+             */
+            return new RefactoringStatus();
+        }
 
-		return RefactoringStatus
-				.createFatalErrorStatus("Please select a function!");
-	}
+        return RefactoringStatus
+                .createFatalErrorStatus("Please select a function!");
+    }
 
-	@Override
-	public String getName() {
-		return "Unfold Function Application";
-	}
+    @Override
+    public String getName() {
+        return "Unfold Function Application";
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"unfold_fun_app_eclipse", "sxxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartPos(), sel.getSearchPath(),
-				GlobalParameters.getTabWidth());
-	}
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "unfold_fun_app_eclipse", "sxxi", sel.getFilePath(),
+                sel.getSelectionRange().getStartPos(), sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
+    }
 
 }

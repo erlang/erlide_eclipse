@@ -20,19 +20,19 @@ import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
  * @version %I%, %G%
  */
 public abstract class AbstractWranglerRefactoringWizard extends
-		RefactoringWizard {
+        RefactoringWizard {
 
-	/**
-	 * Default constructor
-	 * 
-	 * @param refactoring
-	 *            refactoring
-	 * @param flags
-	 *            flags
-	 */
-	public AbstractWranglerRefactoringWizard(final Refactoring refactoring,
-			final int flags) {
-		super(refactoring, flags);
-	}
+    /**
+     * Default constructor
+     * 
+     * @param refactoring
+     *            refactoring
+     * @param flags
+     *            flags
+     */
+    public AbstractWranglerRefactoringWizard(final Refactoring refactoring,
+            final int flags) {
+        super(refactoring, flags);
+    }
 
 }

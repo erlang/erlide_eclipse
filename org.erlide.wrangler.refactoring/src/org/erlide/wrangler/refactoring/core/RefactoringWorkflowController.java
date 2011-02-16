@@ -20,41 +20,41 @@ import org.eclipse.swt.widgets.Shell;
  * @version %I%, %G%
  */
 public abstract class RefactoringWorkflowController {
-	Shell shell;
+    Shell shell;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param shell
-	 *            shell
-	 */
-	public RefactoringWorkflowController(final Shell shell) {
-		this.shell = shell;
-	}
+    /**
+     * Constructor
+     * 
+     * @param shell
+     *            shell
+     */
+    public RefactoringWorkflowController(final Shell shell) {
+        this.shell = shell;
+    }
 
-	/**
-	 * Call the RPC.
-	 */
-	public abstract void doRefactoring();
+    /**
+     * Call the RPC.
+     */
+    public abstract void doRefactoring();
 
-	/**
-	 * Abort the refactoring.
-	 */
-	public void stop() {
-		shell.close();
-	}
+    /**
+     * Abort the refactoring.
+     */
+    public void stop() {
+        shell.close();
+    }
 
-	/**
-	 * Ask a question from the user in an input dialog.
-	 * 
-	 * @param title
-	 *            dialog title
-	 * @param message
-	 *            queestion
-	 * @return true if the answer is yes, else false
-	 */
-	public boolean ask(final String title, final String message) {
-		return MessageDialog.openQuestion(shell, title, message);
-	}
+    /**
+     * Ask a question from the user in an input dialog.
+     * 
+     * @param title
+     *            dialog title
+     * @param message
+     *            queestion
+     * @return true if the answer is yes, else false
+     */
+    public boolean ask(final String title, final String message) {
+        return MessageDialog.openQuestion(shell, title, message);
+    }
 
 }

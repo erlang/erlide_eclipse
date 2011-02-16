@@ -53,10 +53,10 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 import com.google.common.collect.Lists;
 
+import erlang.ErlSearchScope;
 import erlang.ErlangSearchPattern;
 import erlang.ErlangSearchPattern.LimitTo;
 import erlang.ErlangSearchPattern.SearchFor;
-import erlang.ErlSearchScope;
 import erlang.ErlideOpen;
 import erlang.OpenResult;
 

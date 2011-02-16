@@ -32,35 +32,37 @@ import com.ericsson.otp.erlang.OtpErlangString;
  */
 public abstract class AbstractErlSelection implements IErlSelection {
 
-	protected IFile file;
+    protected IFile file;
 
-	public boolean isEmpty() {
-		return false;
-	}
+    public boolean isEmpty() {
+        return false;
+    }
 
-	public OtpErlangList getSearchPath() {
-		IProject project = file.getProject();
-		IErlModel model = ErlangCore.getModel();
-		IErlProject actualProject = model.getErlangProject(project.getName());
-		IOldErlangProjectProperties prop = actualProject.getProperties();
-		IPath projectLocation = actualProject.getProject().getLocation();
+    public OtpErlangList getSearchPath() {
+        final IProject project = file.getProject();
+        final IErlModel model = ErlangCore.getModel();
+        final IErlProject actualProject = model.getErlangProject(project
+                .getName());
+        final IOldErlangProjectProperties prop = actualProject.getProperties();
+        final IPath projectLocation = actualProject.getProject().getLocation();
 
-		Collection<IPath> sourcDirs = prop.getSourceDirs();
-		OtpErlangString[] searchPath = new OtpErlangString[sourcDirs.size()];
-		int i = 0;
-		for (IPath src : sourcDirs) {
-			searchPath[i++] = new OtpErlangString(projectLocation.append(src)
-					.toOSString());
-		}
-		return new OtpErlangList(searchPath);
-	}
+        final Collection<IPath> sourcDirs = prop.getSourceDirs();
+        final OtpErlangString[] searchPath = new OtpErlangString[sourcDirs
+                .size()];
+        int i = 0;
+        for (final IPath src : sourcDirs) {
+            searchPath[i++] = new OtpErlangString(projectLocation.append(src)
+                    .toOSString());
+        }
+        return new OtpErlangList(searchPath);
+    }
 
-	public String getFilePath() {
-		return file.getLocation().toOSString();
-	}
+    public String getFilePath() {
+        return file.getLocation().toOSString();
+    }
 
-	public IFile getFile() {
-		return file;
-	}
+    public IFile getFile() {
+        return file;
+    }
 
 }

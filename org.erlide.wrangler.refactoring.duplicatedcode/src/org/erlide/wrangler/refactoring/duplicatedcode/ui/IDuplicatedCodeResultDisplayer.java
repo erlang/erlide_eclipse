@@ -21,12 +21,12 @@ import org.erlide.wrangler.refactoring.duplicatedcode.ui.elements.DuplicatedCode
  * 
  */
 public interface IDuplicatedCodeResultDisplayer {
-	/**
-	 * Show the result of a duplicated search refactoring.
-	 * 
-	 * @param result
-	 *            result of the refactoring - duplicates
-	 */
-	public void showResult(List<DuplicatedCodeElement> result);
+    /**
+     * Show the result of a duplicated search refactoring.
+     * 
+     * @param result
+     *            result of the refactoring - duplicates
+     */
+    public void showResult(List<DuplicatedCodeElement> result);
 
 }

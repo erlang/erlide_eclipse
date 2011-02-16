@@ -12,7 +12,8 @@ import org.erlide.tracing.core.Images;
  * @author Piotr Dorobisz
  * 
  */
-public class TracingResultsNode extends TreeNode implements Comparable<TracingResultsNode> {
+public class TracingResultsNode extends TreeNode implements
+        Comparable<TracingResultsNode> {
 
     private Date startDate;
     private Date endDate;
@@ -23,11 +24,12 @@ public class TracingResultsNode extends TreeNode implements Comparable<TracingRe
         this(null);
     }
 
-    public TracingResultsNode(String label) {
-        this(label, Activator.getDefault().getImageRegistry().get(Images.ROOT_NODE.toString()));
+    public TracingResultsNode(final String label) {
+        this(label, Activator.getDefault().getImageRegistry()
+                .get(Images.ROOT_NODE.toString()));
     }
 
-    public TracingResultsNode(String label, Image image) {
+    public TracingResultsNode(final String label, final Image image) {
         super(label, image);
     }
 
@@ -39,30 +41,34 @@ public class TracingResultsNode extends TreeNode implements Comparable<TracingRe
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || !o.getClass().equals(TracingResultsNode.class))
+    public boolean equals(final Object o) {
+        if (o == null || !o.getClass().equals(TracingResultsNode.class)) {
             return false;
-        TracingResultsNode trn = (TracingResultsNode) o;
+        }
+        final TracingResultsNode trn = (TracingResultsNode) o;
         return fileName.equals(trn.fileName);
     }
 
-    public int compareTo(TracingResultsNode trn) {
-        if (trn == null)
+    public int compareTo(final TracingResultsNode trn) {
+        if (trn == null) {
             throw new NullPointerException();
+        }
 
-        if (this.equals(trn))
+        if (equals(trn)) {
             return 0;
-        if (!startDate.equals(trn.startDate))
+        }
+        if (!startDate.equals(trn.startDate)) {
             return startDate.compareTo(trn.startDate);
-        else
+        } else {
             return endDate.compareTo(trn.endDate);
+        }
     }
 
     public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(final Date startDate) {
         this.startDate = startDate;
     }
 
@@ -70,7 +76,7 @@ public class TracingResultsNode extends TreeNode implements Comparable<TracingRe
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(final Date endDate) {
         this.endDate = endDate;
     }
 
@@ -78,7 +84,7 @@ public class TracingResultsNode extends TreeNode implements Comparable<TracingRe
         return fileName;
     }
 
-    public void setFileName(String fileName) {
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
@@ -86,7 +92,7 @@ public class TracingResultsNode extends TreeNode implements Comparable<TracingRe
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(final long size) {
         this.size = size;
     }
 }

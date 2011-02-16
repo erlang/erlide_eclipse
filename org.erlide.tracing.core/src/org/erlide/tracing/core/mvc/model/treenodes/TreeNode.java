@@ -22,11 +22,11 @@ public class TreeNode implements ITreeNode {
         this(null, null);
     }
 
-    public TreeNode(String label) {
+    public TreeNode(final String label) {
         this(label, null);
     }
 
-    public TreeNode(String label, Image image) {
+    public TreeNode(final String label, final Image image) {
         this.label = label;
         this.image = image;
     }
@@ -35,7 +35,7 @@ public class TreeNode implements ITreeNode {
         return parent;
     }
 
-    public void setParent(ITreeNode parent) {
+    public void setParent(final ITreeNode parent) {
         this.parent = parent;
     }
 
@@ -51,21 +51,21 @@ public class TreeNode implements ITreeNode {
         return children;
     }
 
-    public void addChildren(ITreeNode... childrenList) {
-        for (ITreeNode child : childrenList) {
+    public void addChildren(final ITreeNode... childrenList) {
+        for (final ITreeNode child : childrenList) {
             children.add(child);
         }
     }
 
-    public void removeChild(ITreeNode child) {
+    public void removeChild(final ITreeNode child) {
         children.remove(child);
     }
 
-    public void setLabel(String label) {
+    public void setLabel(final String label) {
         this.label = label;
     }
 
-    public void setImage(Image image) {
+    public void setImage(final Image image) {
         this.image = image;
     }
 
