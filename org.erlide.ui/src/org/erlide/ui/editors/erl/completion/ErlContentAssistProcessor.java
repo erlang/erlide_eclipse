@@ -58,7 +58,6 @@ import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -321,8 +320,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             pd = ModelUtils.findPreprocessorDef(module, recordName,
                     Kind.RECORD_DEF);
         } catch (final CoreException e) {
-            return EMPTY_COMPLETIONS;
-        } catch (final BackendException e) {
             return EMPTY_COMPLETIONS;
         }
         if (pd instanceof IErlRecordDef) {
