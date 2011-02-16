@@ -190,4 +190,20 @@ public class ErlFolder extends Openable implements IErlFolder {
         }
         return false;
     }
+
+    @Override
+    public void setChildren(final Collection<? extends IErlElement> c) {
+        if (isOnIncludePath() || isOnSourcePath()) {
+            ErlangCore.getModuleMap().removeForProject(getErlProject());
+        }
+        super.setChildren(c);
+    }
+
+    @Override
+    public void clearCaches() {
+        if (isOnIncludePath() || isOnSourcePath()) {
+            ErlangCore.getModuleMap().removeForProject(getErlProject());
+        }
+        super.clearCaches();
+    }
 }

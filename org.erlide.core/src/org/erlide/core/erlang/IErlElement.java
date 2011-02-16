@@ -61,7 +61,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * @author jakob
  * 
  */
-public interface IErlElement extends IAdaptable {
+public interface IErlElement extends IAdaptable, IDisposable {
 
     enum Kind {
         ERROR,
@@ -268,6 +268,8 @@ public interface IErlElement extends IAdaptable {
      * 
      * @return path or null if not a file-based element
      */
-    public abstract String getFilePath();
+    String getFilePath();
+
+    void clearCaches();
 
 }

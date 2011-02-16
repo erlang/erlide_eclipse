@@ -12,6 +12,7 @@ import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.util.LRUCache;
+import org.erlide.jinterface.util.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -170,15 +171,28 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
 
     public void setModulesForProject(final IErlProject project,
             final List<IErlModule> modules) {
+        final List<String> moduleNames = Lists.newArrayList();
+        for (final IErlModule module : modules) {
+            moduleNames.add(module.getName());
+        }
+        ErlLogger.debug("setModulesForProject %s %s", project.getName(),
+                moduleNames);
         projectModuleCache.put(project, Lists.newArrayList(modules));
     }
 
     public void setIncludesForProject(final IErlProject project,
             final List<IErlModule> includes) {
+        final List<String> moduleNames = Lists.newArrayList();
+        for (final IErlModule module : includes) {
+            moduleNames.add(module.getName());
+        }
+        ErlLogger.debug("setIncludesForProject %s %s", project.getName(),
+                moduleNames);
         projectIncludeCache.put(project, Lists.newArrayList(includes));
     }
 
     public void removeForProject(final IErlProject project) {
+        ErlLogger.debug("removeForProject %s", project.getName());
         projectIncludeCache.remove(project);
         projectModuleCache.remove(project);
     }

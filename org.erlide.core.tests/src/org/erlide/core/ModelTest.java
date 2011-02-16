@@ -15,18 +15,22 @@ public class ModelTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        ErlideTestUtils.initProjects();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        ErlideTestUtils.deleteProjects();
     }
 
     @Before
     public void setUp() throws Exception {
+        ErlideTestUtils.initModulesAndHeaders();
     }
 
     @After
     public void tearDown() throws Exception {
+        ErlideTestUtils.deleteModules();
     }
 
     @Test

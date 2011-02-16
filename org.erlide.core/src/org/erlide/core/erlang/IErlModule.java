@@ -99,12 +99,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     void finalReconcile();
 
-    // void reenableScanner();
-
-    // void disposeParser();
-
-    void dispose();
-
     /**
      * Returns a collection of modules that include this one.
      **/

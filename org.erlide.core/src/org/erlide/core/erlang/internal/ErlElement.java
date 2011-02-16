@@ -521,8 +521,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     static final IProject[] NO_NON_ERLANG_RESOURCES = new IProject[] {};
 
-    public void addChild(final IErlElement child) {
-        fChildren.add(child);
+    public void clearCaches() {
     }
 
     @Override
@@ -587,14 +586,22 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public void removeChild(final IErlElement child) {
+        clearCaches();
         fChildren.remove(child);
     }
 
     public void removeChildren() {
+        clearCaches();
         fChildren.clear();
     }
 
+    public void addChild(final IErlElement child) {
+        clearCaches();
+        fChildren.add(child);
+    }
+
     public void setChildren(final Collection<? extends IErlElement> c) {
+        clearCaches();
         fChildren.clear();
         fChildren.addAll(c);
     }
@@ -691,6 +698,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
             return new Path(path).lastSegment();
         }
         return null;
+    }
+
+    public void dispose() {
     }
 
 }

@@ -145,7 +145,6 @@ public class ErlProject extends Openable implements IErlProject {
             throw newNotPresentException();
         }
         try {
-            ErlangCore.getModuleMap().removeForProject(this);
             final IContainer c = (IContainer) r;
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
@@ -777,7 +776,8 @@ public class ErlProject extends Openable implements IErlProject {
         for (final IErlModule module : modules) {
             final String moduleName = hasExtension ? module.getName() : module
                     .getModuleName();
-            if (moduleName.equals(name)) {
+            if (ignoreCase ? moduleName.equalsIgnoreCase(name) : moduleName
+                    .equals(name)) {
                 return module;
             }
         }
@@ -902,6 +902,14 @@ public class ErlProject extends Openable implements IErlProject {
         properties.store();
     }
 
+    public void setExternalIncludesFile(final String absolutePath)
+            throws BackingStoreException {
+        fCachedExternalIncludes = null;
+        final IOldErlangProjectProperties properties = getProperties();
+        properties.setExternalIncludesFile(absolutePath);
+        properties.store();
+    }
+
     public Collection<IPath> getSourceDirs() {
         if (fCachedSourceDirs == null) {
             final IOldErlangProjectProperties properties = getProperties();
@@ -948,17 +956,22 @@ public class ErlProject extends Openable implements IErlProject {
 
     public void setAllProperties(final IOldErlangProjectProperties bprefs)
             throws BackingStoreException {
-        clearCaches();
+        clearPropertyCaches();
         final IOldErlangProjectProperties properties = getProperties();
         properties.copyFrom(bprefs);
         properties.store();
     }
 
-    public void clearCaches() {
+    private void clearPropertyCaches() {
         fCachedExternalIncludes = null;
         fCachedExternalModules = null;
         fCachedIncludeDirs = null;
         fCachedSourceDirs = null;
+    }
+
+    @Override
+    public void clearCaches() {
+        ErlangCore.getModuleMap().removeForProject(this);
     }
 
     public IErlModule findExternalModuleFromPath(final String path)

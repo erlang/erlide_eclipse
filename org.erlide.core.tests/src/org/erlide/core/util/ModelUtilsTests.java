@@ -189,9 +189,8 @@ public class ModelUtilsTests {
                 ErlangToolkit.createScannerModuleName(moduleE), 49,
                 ModelUtils.getImportsAsList(moduleE),
                 project.getExternalModulesString(), model.getPathVars());
-        final IErlElement function = ModelUtils.findFunction(
-                res.getName(), res.getFunction(), res.getPath(), project,
-                false, moduleE);
+        final IErlElement function = ModelUtils.findFunction(res.getName(),
+                res.getFunction(), res.getPath(), project, false, moduleE);
         // final OpenResult res2 = ErlideOpen.open(backend,
         // ErlangToolkit.createScannerModuleName(moduleE), 81,
         // ModelUtils.getImportsAsList(moduleE),
@@ -242,7 +241,7 @@ public class ModelUtilsTests {
     }
 
     @Test
-    public void findPreprocessorDefExternalHeaderTest() throws Exception {
+    public void findPreprocessorDefOtpHeaderTest() throws Exception {
         // given
         // a module with includes and record
         final IErlProject project = projects[0];
@@ -539,4 +538,88 @@ public class ModelUtilsTests {
         assertEquals(typespec.getParent(), header);
     }
 
+    @Test
+    public void findPreprocessorDefExternalHeaderOnIncludePathTest()
+            throws Exception {
+        File externalHeader = null;
+        IErlProject project = null;
+        // given
+        // a project with an include dir outside the model, the include file
+        // contains a record def
+        try {
+            final String projectName = "testprojectx";
+            project = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            final IErlModule module = ErlideTestUtils.createModule(project,
+                    "a.erl", "-include(\"x.hrl\").\n");
+            final String headerName = "x.hrl";
+            externalHeader = ErlideTestUtils.createTmpFile(headerName,
+                    "-record(rec2, {field, another=def}.");
+            final String headerPath = externalHeader.getAbsolutePath();
+            final IPath p = new Path(headerPath).removeLastSegments(1);
+            project.setIncludeDirs(Lists.newArrayList(p));
+            project.open(null);
+            // when
+            // looking for the record def
+            final IErlPreprocessorDef preprocessorDef = ModelUtils
+                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+            final Collection<IErlProject> projects = Lists
+                    .newArrayList(project);
+            ModelUtils.findPreprocessorDef(projects, "a.erl", "rec2",
+                    Kind.RECORD_DEF);
+            // then
+            // it should be found
+            assertNotNull(preprocessorDef);
+        } finally {
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+            if (externalHeader != null && externalHeader.exists()) {
+                externalHeader.delete();
+            }
+        }
+    }
+
+    @Test
+    public void findPreprocessorDefExternalHeaderPathTest() throws Exception {
+        File externalHeader = null;
+        IErlProject project = null;
+        // given
+        // a project with an include dir outside the model, the include file
+        // contains a record def
+        try {
+            final String projectName = "testprojectx";
+            project = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            final IErlModule module = ErlideTestUtils.createModule(project,
+                    "a.erl", "-include(\"x.hrl\").\n");
+            final String headerName = "x.hrl";
+            externalHeader = ErlideTestUtils.createTmpFile(headerName,
+                    "-record(rec2, {field, another=def}.");
+            final String headerPath = externalHeader.getAbsolutePath();
+            final String externalsFileName = "x.erlidex";
+            final File externalsFile = ErlideTestUtils.createTmpFile(
+                    externalsFileName, headerPath);
+            project.setExternalIncludesFile(externalsFile.getAbsolutePath());
+            project.open(null);
+            // when
+            // looking for the record def
+            final IErlPreprocessorDef preprocessorDef = ModelUtils
+                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+            final Collection<IErlProject> projects = Lists
+                    .newArrayList(project);
+            ModelUtils.findPreprocessorDef(projects, "a.erl", "rec2",
+                    Kind.RECORD_DEF);
+            // then
+            // it should be found
+            assertNotNull(preprocessorDef);
+        } finally {
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+            if (externalHeader != null && externalHeader.exists()) {
+                externalHeader.delete();
+            }
+        }
+    }
 }

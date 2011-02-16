@@ -179,6 +179,7 @@ public class ErlideTestUtils {
 				}
 			}
 		}
+		erlProject.dispose();
 		if (projects != null) {
 			projects.remove(project);
 		}

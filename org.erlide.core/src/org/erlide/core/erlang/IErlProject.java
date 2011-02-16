@@ -126,6 +126,9 @@ public interface IErlProject extends IErlFolder {
     void setExternalModulesFile(String absolutePath)
             throws BackingStoreException;
 
+    void setExternalIncludesFile(String absolutePath)
+            throws BackingStoreException;
+
     Collection<IPath> getSourceDirs();
 
     Collection<IPath> getIncludeDirs();
