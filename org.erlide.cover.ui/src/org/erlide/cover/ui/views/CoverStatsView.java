@@ -300,16 +300,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeDoubleClickAction() {
-        // TODO: use it (open file in editor ?)
-        doubleClickAction = new Action() {
-            @Override
-            public void run() {
-                final ISelection selection = viewer.getSelection();
-                final Object obj = ((IStructuredSelection) selection)
-                        .getFirstElement();
-                showMessage("Double-click detected on " + obj.toString());
-            }
-        };
+        doubleClickAction = new OpenItemAction(viewer);
         doubleClickAction.setEnabled(false);
     }
 
