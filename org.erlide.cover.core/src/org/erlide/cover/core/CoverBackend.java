@@ -1,15 +1,12 @@
 package org.erlide.cover.core;
 
-import java.io.File;
 import java.net.URL;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -18,18 +15,18 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.RuntimeInfo;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.backend.ErlLaunchAttributes;
+import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.runtime.backend.BackendManager;
 import org.erlide.runtime.backend.BackendManager.BackendOptions;
-import org.erlide.runtime.backend.ErtsProcess;
-import org.erlide.runtime.launch.ErlLaunchAttributes;
-import org.erlide.runtime.launch.ErlLaunchData;
+
 
 /**
  * Core backend for Cover-plugin
@@ -90,12 +87,12 @@ public class CoverBackend {
             backend.stop();
         }
 
-        RuntimeInfo rt0  = RuntimeInfo.copy(ErlangCore
+        RuntimeInfo rt0  = RuntimeInfo.copy(BackendCore
                 .getRuntimeInfoManager().getErlideRuntime(), false);
         
 
         if (rt0 == null) {
-            log.error(String.format("Could not find runtime %s", ErlangCore
+            log.error(String.format("Could not find runtime %s", BackendCore
                     .getRuntimeInfoManager().getErlideRuntime().getVersion()));
             handleError("Could not find runtime");
         }

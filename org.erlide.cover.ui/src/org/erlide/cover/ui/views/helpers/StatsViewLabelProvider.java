@@ -42,8 +42,6 @@ public class StatsViewLabelProvider extends LabelProvider implements
             }
             break;
         case 3:
-            final IErlModule m = ErlangCore.getModel().findModule(
-                    ((StatsTreeObject) element).getLabel());
             final ICoverageStats statsEl = (ICoverageStats) element;
             img = drawPercentage(statsEl.getPrecentage());
             break;

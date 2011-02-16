@@ -116,8 +116,6 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         createTableTree();
         viewer.setInput(StatsTreeModel.getInstance());
 
-        viewer.refresh();
-
         // Create the help context id for the viewer's control
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(viewer.getControl(), "org.erlide.eunit.core.viewer");
