@@ -567,8 +567,7 @@ public class ErlModule extends Openable implements IErlModule {
         return initialText;
     }
 
-    public List<IErlModule> findAllIncludedFiles() throws CoreException,
-            BackendException {
+    public List<IErlModule> findAllIncludedFiles() throws CoreException {
         final List<IErlModule> checked = Lists.newArrayList();
         checked.add(this);
         return findAllIncludedFiles(checked);
