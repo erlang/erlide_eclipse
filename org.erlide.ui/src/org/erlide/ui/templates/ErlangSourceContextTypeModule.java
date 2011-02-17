@@ -28,6 +28,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
     public ErlangSourceContextTypeModule() {
         addGlobalResolvers();
         addModuleResolver();
+        fInstance = this;
     }
 
     private void addModuleResolver() {
@@ -57,7 +58,7 @@ public class ErlangSourceContextTypeModule extends TemplateContextType {
 
     public static ErlangSourceContextTypeModule getDefault() {
         if (fInstance == null) {
-            fInstance = new ErlangSourceContextTypeModule();
+            new ErlangSourceContextTypeModule();
         }
         return fInstance;
     }
