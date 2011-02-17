@@ -1615,10 +1615,9 @@
             <enablement>
                <with
                      variable="selection">
-                  <count
-                        value="1">
-                  </count>
-                  <iterate>
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
                      <adapt
                            type="org.erlide.core.erlang.IErlElement">
                      </adapt>

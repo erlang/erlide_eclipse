@@ -13,7 +13,6 @@ package org.erlide.ui.launch;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -31,9 +30,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.backend.ErlLaunchAttributes;
+import org.erlide.jinterface.backend.ErlLaunchData;
 import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -51,14 +53,23 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
+        final List<IErlProject> projects = Lists.newArrayList();
         final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-        final Object firstElement = structuredSelection.getFirstElement();
-        if (!(firstElement instanceof IProject)) {
+        for (final Object element : structuredSelection.toArray()) {
+            if (!(element instanceof IResource)) {
+                return;
+            }
+            final IErlElement erlElement = ErlangCore.getModel().findElement(
+                    (IResource) element);
+            final IErlProject project = erlElement.getErlProject();
+            if (project != null && !projects.contains(project)) {
+                projects.add(project);
+            }
+        }
+        if (projects.isEmpty()) {
             return;
         }
-        final IErlProject project = ErlangCore.getModel().getErlangProject(
-                (IProject) firstElement);
-        doLaunch(mode, project);
+        doLaunch(mode, projects);
     }
 
     public void launch(final IEditorPart editor, final String mode) {
@@ -69,15 +80,15 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             if (module != null) {
                 final IErlProject project = module.getProject();
                 if (project != null) {
-                    doLaunch(mode, project);
+                    doLaunch(mode, Lists.newArrayList(project));
                 }
             }
         }
     }
 
-    private void doLaunch(final String mode, final IErlProject project) {
+    private void doLaunch(final String mode, final List<IErlProject> projects) {
         final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(
-                project, mode);
+                projects, mode);
         try {
             launchConfiguration.launch(mode, null);
         } catch (final CoreException e) {
@@ -87,10 +98,11 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private ILaunchConfiguration getLaunchConfiguration(
-            final IErlProject project, final String mode) {
+            final List<IErlProject> projects, final String mode) {
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
-        final String name = project.getName();
+        final List<String> projectNames = getProjectNames(projects);
+        final String name = ErlideUtil.packList(projectNames, "_");
         try {
             // try and find one
             final ILaunchConfiguration[] launchConfigurations = launchManager
@@ -98,7 +110,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             for (final ILaunchConfiguration launchConfiguration : launchConfigurations) {
                 if (launchConfiguration.getName().equals(name)) {
                     if (mode.equals("debug")) {
-                        return addInterpretedModules(project,
+                        return addInterpretedModules(projects,
                                 launchConfiguration);
                     }
                     return launchConfiguration;
@@ -114,8 +126,9 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         ILaunchConfigurationWorkingCopy wc = null;
         try {
             wc = launchConfigurationType.newInstance(null, name);
-            wc.setAttribute(ErlLaunchAttributes.PROJECTS, name);
-            wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, project
+            wc.setAttribute(ErlLaunchAttributes.PROJECTS, ErlideUtil.packList(
+                    projectNames, ErlLaunchData.PROJECT_NAME_SEPARATOR));
+            wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.get(0)
                     .getRuntimeInfo().getName());
             wc.setAttribute(ErlLaunchAttributes.NODE_NAME, name);
             wc.setAttribute(ErlLaunchAttributes.CONSOLE, true);
@@ -124,11 +137,11 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             wc.setAttribute("org.eclipse.debug.core.environmentVariables",
                     Maps.newHashMap());
             if (mode.equals("debug")) {
-                final List<String> moduleNames = getProjectAndModuleNames(project);
+                final List<String> moduleNames = getProjectAndModuleNames(projects);
                 wc.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
                         moduleNames);
             }
-            wc.setMappedResources(new IResource[] { project.getResource() });
+            wc.setMappedResources(getProjectResources(projects));
             return wc.doSave();
         } catch (final CoreException exception) {
             final IWorkbench workbench = PlatformUI.getWorkbench();
@@ -139,13 +152,34 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         return null;
     }
 
-    private List<String> getProjectAndModuleNames(final IErlProject project) {
+    private IResource[] getProjectResources(final List<IErlProject> projects) {
+        final List<IResource> result = Lists.newArrayListWithCapacity(projects
+                .size());
+        for (final IErlProject project : projects) {
+            result.add(project.getResource());
+        }
+        return result.toArray(new IResource[0]);
+    }
+
+    private List<String> getProjectNames(final List<IErlProject> projects) {
+        final List<String> result = Lists.newArrayListWithCapacity(projects
+                .size());
+        for (final IErlProject project : projects) {
+            result.add(project.getName());
+        }
+        return result;
+    }
+
+    private List<String> getProjectAndModuleNames(
+            final List<IErlProject> projects) {
         final List<String> moduleNames = Lists.newArrayList();
         try {
-            final Collection<IErlModule> modules = project.getModules();
-            final String projectNameColon = project.getName() + ":";
-            for (final IErlModule module : modules) {
-                moduleNames.add(projectNameColon + module.getName());
+            for (final IErlProject project : projects) {
+                final Collection<IErlModule> modules = project.getModules();
+                final String projectNameColon = project.getName() + ":";
+                for (final IErlModule module : modules) {
+                    moduleNames.add(projectNameColon + module.getName());
+                }
             }
         } catch (final ErlModelException e) {
         }
@@ -153,9 +187,9 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private ILaunchConfiguration addInterpretedModules(
-            final IErlProject project,
+            final List<IErlProject> projects,
             final ILaunchConfiguration launchConfiguration) {
-        final List<String> moduleNames = getProjectAndModuleNames(project);
+        final List<String> moduleNames = getProjectAndModuleNames(projects);
         try {
             final ILaunchConfigurationWorkingCopy wc = launchConfiguration
                     .getWorkingCopy();
