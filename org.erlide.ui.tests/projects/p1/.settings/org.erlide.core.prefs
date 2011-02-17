@@ -3,6 +3,6 @@ backend_version=R13B
 eclipse.preferences.version=1
 external_includes=../external_includes
 external_modules=../external_modules
-include_dirs=include;../p3/include
+include_dirs=include;T_ROOT/p3/include
 output_dir=ebin
 source_dirs=src
