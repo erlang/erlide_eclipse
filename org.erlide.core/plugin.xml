@@ -132,10 +132,10 @@
   <extension
         point="org.eclipse.core.runtime.adapters">
      <factory
-           adaptableType="org.eclipse.core.resources.IProject"
-           class="org.erlide.core.erlang.ProjectAdapterFactory">
+           adaptableType="org.eclipse.core.resources.IResource"
+           class="org.erlide.core.erlang.ElementAdapterFactory">
         <adapter
-              type="org.erlide.core.erlang.IErlProject">
+              type="org.erlide.core.erlang.IErlElement">
         </adapter>
      </factory>
   </extension>

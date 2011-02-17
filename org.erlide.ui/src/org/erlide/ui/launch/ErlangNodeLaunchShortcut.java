@@ -36,6 +36,7 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.backend.ErlLaunchAttributes;
 import org.erlide.jinterface.backend.ErtsProcess;
 import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.ui.editors.erl.ErlangEditor;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -57,6 +58,24 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
         final IErlProject project = ErlangCore.getModel().getErlangProject(
                 (IProject) firstElement);
+        doLaunch(mode, project);
+    }
+
+    public void launch(final IEditorPart editor, final String mode) {
+        ErlLogger.debug("** Launch :: " + editor.getTitle());
+        if (editor instanceof ErlangEditor) {
+            final ErlangEditor erlangEditor = (ErlangEditor) editor;
+            final IErlModule module = erlangEditor.getModule();
+            if (module != null) {
+                final IErlProject project = module.getProject();
+                if (project != null) {
+                    doLaunch(mode, project);
+                }
+            }
+        }
+    }
+
+    private void doLaunch(final String mode, final IErlProject project) {
         final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(
                 project, mode);
         try {
@@ -146,11 +165,6 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         } catch (final CoreException e) {
             return launchConfiguration;
         }
-    }
-
-    public void launch(final IEditorPart editor, final String mode) {
-        // TODO Auto-generated method stub
-        ErlLogger.debug("** Launch :: " + editor.getTitle());
     }
 
 }
