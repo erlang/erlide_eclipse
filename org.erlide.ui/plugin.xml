@@ -1709,13 +1709,6 @@
       </contextType>
       <resolver
             class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverLocalFunctions"
-            name="Local Functions"
-            type="local_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
             contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverLocalFunctions"
             name="Local Functions"
@@ -1727,20 +1720,6 @@
             description="%variableResolverExportedFunctions"
             name="Exported Functions"
             type="exported_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
-            description="%variableResolverExportedFunctions"
-            name="Exported Functions"
-            type="exported_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.ExportsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverExports"
-            name="Exports"
-            type="exports">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportsVariableResolver"
