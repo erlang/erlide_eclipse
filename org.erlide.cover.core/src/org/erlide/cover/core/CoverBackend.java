@@ -1,7 +1,9 @@
 package org.erlide.cover.core;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,9 +19,12 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.cover.core.api.CoverAPI;
+import org.erlide.cover.core.api.IConfiguration;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
+import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 import org.erlide.cover.runtime.launch.LaunchType;
+import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.backend.ErlLaunchAttributes;
@@ -42,10 +47,10 @@ public class CoverBackend {
 
     private Backend backend;
     private RuntimeInfo info;
-    private ILaunchConfiguration config;
+    private ILaunchConfiguration launchConfig;
     private final CoverEventHandler handler;
-    private CoverLaunchData coverData;
-    private CoverSettings settings;
+//    private CoverLaunchData coverData;
+    private CoverLaunchSettings settings;
     private String nodeName;
     private boolean coverRunning;
     
@@ -76,9 +81,9 @@ public class CoverBackend {
     public void initialize(/* final ErlLaunchData data, */
             final CoverLaunchData coverData) {
 
-        this.coverData = coverData;
+       // this.coverData = coverData;
 
-        settings = new CoverSettings(coverData.getType(), coverData);
+        settings = new CoverLaunchSettings(coverData.getType(), coverData);
 
         if (backend != null && !backend.isStopped()) {
         	log.debug("is started");
@@ -102,7 +107,7 @@ public class CoverBackend {
         info = buildRuntimeInfo(rt0);
         final EnumSet<BackendOptions> options = EnumSet
                 .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
-        config = getLaunchConfiguration(info, options);
+        launchConfig = getLaunchConfiguration(info, options);
 
         try {
             backend = createBackend();
@@ -114,22 +119,11 @@ public class CoverBackend {
 
     }
 
-    public void attachBackend(final Backend b, final LaunchType type) {
-
-        // no set config
-        // TODO: implement
-    }
-
-    public void attachToNode(final String nodeName) {
-        // TODO: check how you can attach to nodes
-        // see how to obtain backend
-    }
-
-    public synchronized void start() {
+    public synchronized void startTesting() {
 
         if (!coverRunning) {
             coverRunning = true;
-            new CoverRunner(this).start();
+            new CoverRunner().start();
         }
 
     }
@@ -168,7 +162,7 @@ public class CoverBackend {
         }
     }
 
-    public CoverSettings getSettings() {
+    public CoverLaunchSettings getSettings() {
         return settings;
     }
 
@@ -182,7 +176,7 @@ public class CoverBackend {
             try {
                 info.setStartShell(true);
 
-                config.launch(ILaunchManager.RUN_MODE,
+                launchConfig.launch(ILaunchManager.RUN_MODE,
                         new NullProgressMonitor(), false, false);
 
                 return BackendManager.getDefault().getByName(nodeName);

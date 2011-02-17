@@ -17,8 +17,10 @@
 		 start/2,
 		 start_link/1,
 		 stop/0,
-	 	 perform/3,
-	 	 prepare_and_perform/3,
+	 	% perform/3,
+	 	% prepare_and_perform/3,
+		 prepare/1,
+		 analyse/1,
 	 	 set_includes/1,
 		 set_beam_dir/1]).
 
@@ -75,6 +77,15 @@ perform(Type,NameOrPathSrc,PathTst) ->
 			PathSrc = NameOrPathSrc,
 			gen_server:call(?MODULE, {perform, TypeAtom, PathSrc , PathTst})
 	end.
+
+%prepares modules
+prepare(Modules) ->
+	%%TODO - cover compilation of modules in the list
+	ok.
+
+analyse(Modules) ->
+	%%TODO - prepare report for modules in the list
+	ok.
 
 % set include directories
 set_includes(Includes) ->
@@ -165,7 +176,7 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 			TestA = list_to_atom(atom_to_list(Module) ++ "_tests"),
 			code:purge(TestA),
 			code:load_file(TestA),
-			case coverage:prepare(State#state.cover_type, Module, Path) of
+			case coverage:prepare(State#state.cover_type, Module) of
 				ok ->
 					Report = coverage:create_report(Module),
 						 case Report of		
@@ -216,7 +227,7 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 								%  coverage:compile_test(TestA, PathM),
 								  code:purge(TestA),
 								  code:load_file(TestA),
-								  case coverage:prepare(State#state.cover_type, TestA, PathM) of
+								  case coverage:prepare(State#state.cover_type, TestA) of
 										{error, _} ->
 												[];
 						  				_ ->

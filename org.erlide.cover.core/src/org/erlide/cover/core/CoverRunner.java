@@ -1,13 +1,9 @@
 package org.erlide.cover.core;
 
-import org.apache.log4j.Logger;
-import org.erlide.cover.constants.Constants;
-import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.jinterface.backend.BackendException;
+import java.util.LinkedList;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangTuple;
+import org.apache.log4j.Logger;
+import org.erlide.cover.core.api.CoveragePerformer;
 
 /**
  * Class for launching cover
@@ -17,18 +13,21 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class CoverRunner extends Thread {
 
-    private final CoverBackend backend;
+    //private final CoverBackend backend;
+    private CoveragePerformer perf;
 
     private Logger log;     // logger
     
-    public CoverRunner(final CoverBackend backend) {
-        this.backend = backend;
+    public CoverRunner() {
+        perf = CoveragePerformer.getPerformer();
         log = Logger.getLogger(getClass());
     }
 
     @Override
     public void run() {
 
+        /* old
+        
         final StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
         backend.getAnnotationMaker().clearAllAnnotations();
@@ -80,15 +79,27 @@ public class CoverRunner extends Thread {
                         htmlPath.toString().length() - 1));
 
             }
+            */
+        
+       //new
+        
+        perf.startCover(new LinkedList<String>());
+        perf.setCoverageConfiguration(CoverBackend.
+                getInstance().getSettings().getConfig());
+        
+        //launch testing
+        
+        perf.analyse();
+        
 
-        } catch (final BackendException e) {
-            e.printStackTrace();
-            backend.handleError("Exception while running cover occured: " + e);
-        }
+      //  } catch (final BackendException e) {
+      //      e.printStackTrace();
+      //      backend.handleError("Exception while running cover occured: " + e);
+      //  }
 
         // TODO: index should be created here.
 
-        backend.coverageFinished();
+        CoverBackend.getInstance().coverageFinished();
     }
 
 }

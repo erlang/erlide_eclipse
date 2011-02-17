@@ -15,7 +15,7 @@
 %%----------------------------------------------
 -export([compile/2,
 		 compile_dir/1,
-		 prepare/3,
+		 prepare/2,
 		 create_report/1,
 		 create_index/1]).
 
@@ -64,13 +64,13 @@ compile_dir(Dir) ->
 	
 
 %prepare module
-prepare(eunit, Module,  _Path) ->	
-	case eunit:test(Module) of
+prepare(eunit, Arg) ->	
+	case eunit:test(Arg) of
 			ok ->
-				erlide_jrpc:event(?EVENT, {Module, test_ok}),
+				erlide_jrpc:event(?EVENT, {Arg, test_ok}),
 				ok;
 			Er ->
-				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+				erlide_jrpc:event(?EVENT, #cover_error{place = Arg,
 													   type = testing,
 													   info = Er}),
 				{error, testing}

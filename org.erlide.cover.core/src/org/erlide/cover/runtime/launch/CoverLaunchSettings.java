@@ -1,14 +1,19 @@
-package org.erlide.cover.core;
+package org.erlide.cover.runtime.launch;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.erlide.cover.runtime.launch.CoverLaunchData;
-import org.erlide.cover.runtime.launch.FrameworkType;
-import org.erlide.cover.runtime.launch.LaunchType;
+import org.eclipse.core.runtime.IPath;
+import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.cover.core.CoverException;
+import org.erlide.cover.core.CoverObject;
+import org.erlide.cover.core.api.Configuration;
+import org.erlide.cover.core.api.IConfiguration;
 
 /**
  * Settings for performing coverage.
@@ -16,13 +21,14 @@ import org.erlide.cover.runtime.launch.LaunchType;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
  */
-public class CoverSettings {
+public class CoverLaunchSettings {
 
     private final LaunchType type;
     private final List<CoverObject> objs;
     private final FrameworkType frameworkType;
-    
-    private Logger log;     //logger
+    private Configuration config;
+
+    private Logger log; // logger
 
     /**
      * Create coverage settings, depend mainly on launch type
@@ -30,11 +36,12 @@ public class CoverSettings {
      * @param t
      * @param data
      */
-    public CoverSettings(final LaunchType t, final CoverLaunchData data) {
+    public CoverLaunchSettings(final LaunchType t, final CoverLaunchData data) {
         objs = new LinkedList<CoverObject>();
         type = t;
         frameworkType = data.getFramework();
-        
+        config = new Configuration();
+
         log = Logger.getLogger(getClass());
 
         switch (t) {
@@ -47,6 +54,18 @@ public class CoverSettings {
             String pathEbin = p.getLocation().toString() + "/ebin";
             objs.add(new CoverObject(CoverObject.MODULE, data.getModule()
                     .replace(".erl", ""), path, path, pathEbin));
+
+            // new
+            config.setProject(data.getProject());
+            try {
+                config.addModule(data.getModule());
+            } catch (ErlModelException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (CoverException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             break;
         case ALL:
             log.debug(data);
@@ -61,6 +80,26 @@ public class CoverSettings {
             pathEbin = bf.toString() + "ebin";
             objs.add(new CoverObject(CoverObject.PROJ, pathSrc, pathTst,
                     pathEbin));
+
+            // new
+            config.setProject(data.getFile());
+            try {
+                Collection<IErlModule> allModules = config.getProject()
+                        .getModules();
+                Collection<IPath> src = config.getSourceDirs();
+                for (IErlModule m : allModules) {
+                    for(IPath srcPath : src) {
+                        log.debug(srcPath.makeAbsolute().toString());
+                        if(m.getFilePath().contains(srcPath.makeAbsolute().toString())) {
+                            config.addModule(m);
+                            break;
+                        }
+                    }
+                }
+            } catch (ErlModelException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             break;
         case APPLICATION:
             // TODO: finding application - should be simmilar to finding module
@@ -85,6 +124,10 @@ public class CoverSettings {
 
     public String getFramework() {
         return frameworkType.name().toLowerCase();
+    }
+
+    public IConfiguration getConfig() {
+        return config;
     }
 
 }

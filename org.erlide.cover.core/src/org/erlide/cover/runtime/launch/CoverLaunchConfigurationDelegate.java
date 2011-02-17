@@ -25,7 +25,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
         final CoverBackend coverBackend = CoverBackend.getInstance();
         coverBackend.initialize(coverData);
-        coverBackend.start();
+        coverBackend.startTesting();
     }
 
 }
