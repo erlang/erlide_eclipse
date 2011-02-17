@@ -1716,7 +1716,7 @@
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
+            contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverExportedFunctions"
             name="Exported Functions"
             type="exported_functions">
