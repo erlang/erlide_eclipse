@@ -579,7 +579,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (project == null) {
             return result;
         }
-        final Collection<IErlModule> headers = project.getHeaders();
+        final Collection<IErlModule> headers = project.getIncludes();
         Collection<IErlModule> externalHeaders = null;
         Collection<IErlModule> referencedHeaders = null;
         Collection<IErlModule> modules = null;
@@ -594,7 +594,7 @@ public class ErlModule extends Openable implements IErlModule {
                 final Collection<IErlProject> referencedProjects = project
                         .getProjectReferences();
                 for (final IErlProject referencedProject : referencedProjects) {
-                    referencedHeaders.addAll(referencedProject.getHeaders());
+                    referencedHeaders.addAll(referencedProject.getIncludes());
                 }
             }
             if (findAllIncludedHeadersAux(checked, result, referencedHeaders,
@@ -637,19 +637,19 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public static IErlModule findExternalHeaderInOpenProjects(
-            final IErlModule header) throws CoreException {
-        final String path = header.getFilePath();
-        if (path != null) {
-            final IErlProject project = header.getErlProject();
-            if (project != null) {
-                final IErlModule header2 = project.findExternalModule(null,
-                        path, true, true);
-                if (header2 != null) {
-                    return header2;
+            final IErlModule externalInclude) throws CoreException {
+        final String filePath = externalInclude.getFilePath();
+        final Collection<IErlProject> projects = externalInclude.getModel()
+                .getErlangProjects();
+        for (final IErlProject project : projects) {
+            final Collection<IErlModule> includes = project.getIncludes();
+            for (final IErlModule include : includes) {
+                if (include.getFilePath().equals(filePath)) {
+                    return include;
                 }
             }
         }
-        return header;
+        return externalInclude;
     }
 
     public boolean isOnSourcePath() {

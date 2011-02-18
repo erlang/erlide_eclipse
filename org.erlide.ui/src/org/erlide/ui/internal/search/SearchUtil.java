@@ -142,7 +142,7 @@ public class SearchUtil {
             final Collection<IErlProject> erlangProjects = ErlangCore
                     .getModel().getErlangProjects();
             for (final IErlProject i : erlangProjects) {
-                final Collection<IErlModule> modules = i.getModulesAndHeaders();
+                final Collection<IErlModule> modules = i.getModulesAndIncludes();
                 for (final IErlModule j : modules) {
                     result.addModule(j);
                 }

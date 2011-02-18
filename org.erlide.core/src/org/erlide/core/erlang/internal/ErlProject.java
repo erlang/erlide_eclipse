@@ -620,7 +620,7 @@ public class ErlProject extends Openable implements IErlProject {
         return result;
     }
 
-    public Collection<IErlModule> getModulesAndHeaders()
+    public Collection<IErlModule> getModulesAndIncludes()
             throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
@@ -650,14 +650,14 @@ public class ErlProject extends Openable implements IErlProject {
                             fProject, model, getSourceDirs());
                     result.addAll(modules);
                 }
-                final Collection<IErlModule> includes = getHeaders();
+                final Collection<IErlModule> includes = getIncludes();
                 result.addAll(includes);
             }
         }
         return result;
     }
 
-    public Collection<IErlModule> getHeaders() throws ErlModelException {
+    public Collection<IErlModule> getIncludes() throws ErlModelException {
         final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
         final List<IErlModule> cached = erlModelCache
                 .getIncludesForProject(this);
@@ -1058,7 +1058,7 @@ public class ErlProject extends Openable implements IErlProject {
      */
     public IErlModule findIncludeFile(final String fileNameOrPath)
             throws CoreException, BackendException {
-        final Collection<IErlModule> headers = getHeaders();
+        final Collection<IErlModule> headers = getIncludes();
         IErlModule header = findIncludeFileAux(fileNameOrPath, headers);
         if (header != null) {
             return header;
@@ -1073,11 +1073,15 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private IErlModule findIncludeFileAux(final String fileNameOrPath,
-            final Collection<IErlModule> headers) {
+            final Collection<IErlModule> headers) throws CoreException {
         for (final IErlModule header : headers) {
             if (header.getFilePath().equals(fileNameOrPath)
                     || header.getName().equals(fileNameOrPath)) {
-                return header;
+                if (header.getParent() instanceof IErlExternal) {
+                    return ErlModule.findExternalHeaderInOpenProjects(header);
+                } else {
+                    return header;
+                }
             }
         }
         return null;

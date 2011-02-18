@@ -103,9 +103,9 @@ public interface IErlProject extends IErlFolder {
      */
     Collection<String> getRequiredProjectNames() throws CoreException;
 
-    Collection<IErlModule> getModulesAndHeaders() throws ErlModelException;
+    Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
 
-    Collection<IErlModule> getHeaders() throws ErlModelException;
+    Collection<IErlModule> getIncludes() throws ErlModelException;
 
     // IOldErlangProjectProperties getProperties();
 
