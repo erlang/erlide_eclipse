@@ -29,7 +29,7 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleListener;
 import org.eclipse.ui.console.IConsoleView;
 import org.erlide.backend.ErlCallable;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
 

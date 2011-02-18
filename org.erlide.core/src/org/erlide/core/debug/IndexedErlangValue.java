@@ -1,4 +1,4 @@
-package org.erlide.runtime.debug;
+package org.erlide.core.debug;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;

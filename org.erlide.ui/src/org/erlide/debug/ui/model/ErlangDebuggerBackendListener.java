@@ -19,9 +19,9 @@ import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;

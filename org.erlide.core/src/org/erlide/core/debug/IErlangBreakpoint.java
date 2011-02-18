@@ -1,4 +1,4 @@
-package org.erlide.runtime.debug;
+package org.erlide.core.debug;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IBreakpoint;

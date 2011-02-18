@@ -5,7 +5,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.erlide.runtime.debug.ErlangProcess;
+import org.erlide.core.debug.ErlangProcess;
 
 public class ToggleDebugTracingAction implements IWorkbenchWindowActionDelegate {
 

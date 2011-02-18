@@ -19,13 +19,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.ErlCallable;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendManager;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

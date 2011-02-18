@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.core.backend;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,13 +30,13 @@ import org.erlide.backend.console.IoRequest.IoRequestKind;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.IDisposable;
+import org.erlide.core.backend.internal.CodeManager;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.internal.CodeManager;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

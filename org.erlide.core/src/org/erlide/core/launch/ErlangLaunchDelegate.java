@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Jakob Cederlund
  *******************************************************************************/
-package org.erlide.runtime.launch;
+package org.erlide.core.launch;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,14 +57,14 @@ import org.erlide.backend.ErlLaunchData;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.BackendManager.BackendOptions;
+import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.ErlangDebugNode;
+import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager.BackendOptions;
-import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.debug.ErlangDebugNode;
-import org.erlide.runtime.debug.ErlangDebugTarget;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.debug;
+package org.erlide.core.debug;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;

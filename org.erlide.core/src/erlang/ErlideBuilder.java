@@ -8,11 +8,11 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.ErlCallable;
 import org.erlide.backend.rpc.RpcFuture;
+import org.erlide.core.backend.BackendManager;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

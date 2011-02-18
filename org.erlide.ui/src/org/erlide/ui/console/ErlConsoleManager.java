@@ -11,9 +11,9 @@ import org.erlide.backend.Backend;
 import org.erlide.backend.ErlCallable;
 import org.erlide.backend.IBackendListener;
 import org.erlide.backend.util.IDisposable;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<Backend, IConsole> consoles;

@@ -1,4 +1,4 @@
-package org.erlide.runtime.launch;
+package org.erlide.core.launch;
 
 import java.util.ArrayList;
 import java.util.List;

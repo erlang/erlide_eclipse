@@ -45,9 +45,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.events.ErlangEvent;
 import org.erlide.backend.events.EventHandler;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.ErlideBackendVisitor;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.backend.ErlideBackendVisitor;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 

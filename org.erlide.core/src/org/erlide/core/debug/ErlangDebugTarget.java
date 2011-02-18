@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.debug;
+package org.erlide.core.debug;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +35,8 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.Backend;
 import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.ErlangFunctionCall;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

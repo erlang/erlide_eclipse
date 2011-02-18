@@ -1,4 +1,4 @@
-package org.erlide.runtime.debug;
+package org.erlide.core.debug;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;

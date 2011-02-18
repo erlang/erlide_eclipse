@@ -7,8 +7,8 @@ import java.util.List;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.Util;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

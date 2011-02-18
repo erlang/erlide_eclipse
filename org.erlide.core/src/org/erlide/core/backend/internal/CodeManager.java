@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend.internal;
+package org.erlide.core.backend.internal;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.CodeBundle;
 import org.erlide.backend.ErlBackend;
 import org.erlide.backend.util.BeamUtil;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

@@ -9,7 +9,7 @@ import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.erlide.runtime.debug.ErlangStackFrame;
+import org.erlide.core.debug.ErlangStackFrame;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class DebugTraceDebugModelPresentation extends LabelProvider implements

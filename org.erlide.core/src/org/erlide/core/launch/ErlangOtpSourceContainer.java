@@ -1,4 +1,4 @@
-package org.erlide.runtime.launch;
+package org.erlide.core.launch;
 
 import java.io.File;
 import java.io.FilenameFilter;

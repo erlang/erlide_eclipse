@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.backend;
+package org.erlide.core.backend;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,13 +55,13 @@ import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
 import org.erlide.backend.util.Tuple;
+import org.erlide.core.backend.internal.ManagedLauncher;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.internal.ManagedLauncher;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;

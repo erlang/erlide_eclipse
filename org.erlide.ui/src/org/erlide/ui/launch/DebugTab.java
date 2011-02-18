@@ -56,8 +56,8 @@ import org.erlide.core.erlang.internal.ErlExternalReferenceEntry;
 import org.erlide.core.erlang.internal.ErlExternalReferenceEntryList;
 import org.erlide.core.erlang.internal.ErlOtpExternalReferenceEntryList;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.launch.ErlangLaunchDelegate;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.ui.util.SWTUtil;
 
 /**

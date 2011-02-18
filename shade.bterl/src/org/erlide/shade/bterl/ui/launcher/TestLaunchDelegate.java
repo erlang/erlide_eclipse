@@ -32,14 +32,14 @@ import org.erlide.backend.events.EventHandler;
 import org.erlide.backend.runtime.RuntimeInfoManager;
 import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.PreferencesUtils;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.launch.ErlangLaunchDelegate;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
-import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.launch.ErlangLaunchDelegate;
 import org.erlide.shade.bterl.Activator;
 import org.osgi.framework.Bundle;
 

@@ -8,12 +8,29 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: erlang,
  org.erlide.core,
+ org.erlide.core.backend,
+ org.erlide.core.backend.internal;x-internal:=true,
  org.erlide.core.builder,
  org.erlide.core.builder.internal;x-friends:="org.erlide.test_support,shade.bterl",
+ org.erlide.core.debug;
+  x-friends:="org.erlide.ui,
+   org.erlide.test_support,
+   shade.bterl";
+  uses:="com.ericsson.otp.erlang,
+   org.eclipse.debug.core.model,
+   org.erlide.runtime.backend,
+   org.eclipse.core.resources,
+   org.eclipse.debug.core",
  org.erlide.core.erlang,
  org.erlide.core.erlang.internal;x-friends:="org.erlide.tracing.core,org.erlide.ui",
  org.erlide.core.erlang.util,
  org.erlide.core.internal;x-internal:=true,
+ org.erlide.core.launch;
+  x-friends:="org.erlide.tracing.core,
+   org.erlide.ui,
+   org.erlide.selfhost,
+   org.erlide.test_support,
+   shade.bterl",
  org.erlide.core.platform,
  org.erlide.core.preferences,
  org.erlide.core.search;x-friends:="org.erlide.ui";
@@ -24,24 +41,7 @@ Export-Package: erlang,
    org.eclipse.core.runtime,
    org.eclipse.debug.core",
  org.erlide.core.text,
- org.erlide.core.util,
- org.erlide.runtime.backend,
- org.erlide.runtime.backend.internal;x-internal:=true,
- org.erlide.runtime.debug;
-  x-friends:="org.erlide.ui,
-   org.erlide.test_support,
-   shade.bterl";
-  uses:="com.ericsson.otp.erlang,
-   org.eclipse.debug.core.model,
-   org.erlide.runtime.backend,
-   org.eclipse.core.resources,
-   org.eclipse.debug.core",
- org.erlide.runtime.launch;
-  x-friends:="org.erlide.tracing.core,
-   org.erlide.ui,
-   org.erlide.selfhost,
-   org.erlide.test_support,
-   shade.bterl"
+ org.erlide.core.util
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,

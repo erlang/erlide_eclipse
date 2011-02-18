@@ -13,8 +13,8 @@ package org.erlide.core.erlang.util;
 import org.eclipse.core.resources.IProject;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.core.backend.BackendManager;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.BackendManager;
 
 public class BackendUtils {
     public static Backend getBuildOrIdeBackend(final IProject project) {

@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.CharOperation;
 import org.erlide.backend.util.Util;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
