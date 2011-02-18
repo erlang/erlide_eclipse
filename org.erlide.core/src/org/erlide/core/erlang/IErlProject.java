@@ -175,4 +175,8 @@ public interface IErlProject extends IErlFolder {
 
     IErlModule getModuleIgnoreCase(String name) throws ErlModelException;
 
+    IErlModule findExternalModule(String moduleName, String modulePath,
+            boolean checkReferences, boolean checkAllProjects)
+            throws CoreException;
+
 }

@@ -84,11 +84,7 @@ public class ErlModel extends Openable implements IErlModel {
         super(null, ""); //$NON-NLS-1$
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();
-        fPathVariableChangeListener = new IPathVariableChangeListener() {
-            public void pathVariableChanged(final IPathVariableChangeEvent event) {
-                fCachedPathVars = null;
-            }
-        };
+        fPathVariableChangeListener = new PathVariableChangeListener();
         pvm.addChangeListener(fPathVariableChangeListener);
     }
 
@@ -599,6 +595,24 @@ public class ErlModel extends Openable implements IErlModel {
         }
     }
 
+    private final class PathVariableChangeListener implements
+            IPathVariableChangeListener {
+
+        public void pathVariableChanged(final IPathVariableChangeEvent event) {
+            fCachedPathVars = null;
+            ErlangCore.getModuleMap().pathVarsChanged();
+            try {
+                // broadcast this change to projects, they need to clear their
+                // caches
+                for (final IErlProject project : getErlangProjects()) {
+                    ((ErlProject) project).pathVarsChanged();
+                }
+            } catch (final ErlModelException e) {
+            }
+        }
+
+    }
+
     public enum External {
         EXTERNAL_MODULES, EXTERNAL_INCLUDES
     }
@@ -625,8 +639,25 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlFunction findFunction(final FunctionRef r)
             throws ErlModelException {
-        final IErlModule m = findModule(r.module);
-        m.open(null);
-        return m.findFunction(new ErlangFunction(r.function, r.arity));
+        final IErlModule module = findModule(r.module);
+        module.open(null);
+        return module.findFunction(new ErlangFunction(r.function, r.arity));
+    }
+
+    public IErlModule findExternalModule(final String moduleName,
+            final String modulePath) throws CoreException {
+        IErlModule module = ErlProject.getModuleFromCacheByNameOrPath(null,
+                moduleName, modulePath);
+        if (module != null) {
+            return module;
+        }
+        for (final IErlProject project : getErlangProjects()) {
+            module = project.findExternalModule(moduleName, modulePath, false,
+                    false);
+            if (module != null) {
+                return module;
+            }
+        }
+        return null;
     }
 }

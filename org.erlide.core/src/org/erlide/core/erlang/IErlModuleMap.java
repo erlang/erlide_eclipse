@@ -40,4 +40,6 @@ public interface IErlModuleMap {
 
     public abstract void removeForProject(final IErlProject project);
 
+    void pathVarsChanged();
+
 }

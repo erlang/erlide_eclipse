@@ -62,6 +62,7 @@ import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
+import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
@@ -493,10 +494,12 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         final IErlProject erlProject = module == null ? null : module
                 .getProject();
-        final IErlModule theModule = ModelUtils.getExternalModule(moduleName,
-                erlProject);
-        if (theModule != null) {
-            addFunctionsFromModule(offset, prefix, arityOnly, result, theModule);
+        final boolean checkAllProjects = NavigationPreferencePage
+                .getCheckAllProjects();
+        final IErlModule module = ModelUtils.findExternalModule(erlProject,
+                moduleName, null, checkAllProjects);
+        if (module != null) {
+            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
         } else {
             boolean foundInModel = false;
             // first check in project, refs and external modules

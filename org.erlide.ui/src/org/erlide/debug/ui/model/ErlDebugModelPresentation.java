@@ -170,9 +170,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlModule module = ModelUtils
-                        .findExternalModuleFromPath(lfs.getFullPath()
-                                .toString());
+                final IErlModule module = ModelUtils.findExternalModule(null,
+                        null, lfs.getFullPath().toString(), true);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
                 e.printStackTrace();
