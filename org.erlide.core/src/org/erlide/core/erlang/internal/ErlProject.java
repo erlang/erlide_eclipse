@@ -51,7 +51,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModelMarker;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
@@ -577,8 +576,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public Collection<IErlModule> getModules() throws ErlModelException {
-        final IErlModuleMap moduleMap = ErlangCore.getModuleMap();
-        final List<IErlModule> modulesForProject = moduleMap
+        final List<IErlModule> modulesForProject = ErlModel.getErlModelCache()
                 .getModulesForProject(this);
         if (modulesForProject != null) {
             return modulesForProject;
@@ -596,7 +594,7 @@ public class ErlProject extends Openable implements IErlProject {
             result.addAll(getModulesOrIncludes(fProject, getModel(),
                     props.getSourceDirs()));
         }
-        moduleMap.setModulesForProject(this, result);
+        ErlModel.getErlModelCache().putModulesForProject(this, result);
         return result;
     }
 
@@ -625,10 +623,10 @@ public class ErlProject extends Openable implements IErlProject {
     public Collection<IErlModule> getModulesAndHeaders()
             throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        final IErlModuleMap moduleMap = ErlangCore.getModuleMap();
-        final List<IErlModule> modulesForProject = moduleMap
+        final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
+        final List<IErlModule> modulesForProject = erlModelCache
                 .getModulesForProject(this);
-        final List<IErlModule> includesForProject = moduleMap
+        final List<IErlModule> includesForProject = erlModelCache
                 .getIncludesForProject(this);
         if (modulesForProject != null && includesForProject != null) {
             result.addAll(modulesForProject);
@@ -642,7 +640,7 @@ public class ErlProject extends Openable implements IErlProject {
                     }
                 }
             } else {
-                final List<IErlModule> cached = moduleMap
+                final List<IErlModule> cached = erlModelCache
                         .getModulesForProject(this);
                 final ErlModel model = getModel();
                 if (cached != null) {
@@ -660,14 +658,15 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public Collection<IErlModule> getHeaders() throws ErlModelException {
-        final IErlModuleMap moduleMap = ErlangCore.getModuleMap();
-        final List<IErlModule> cached = moduleMap.getIncludesForProject(this);
+        final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
+        final List<IErlModule> cached = erlModelCache
+                .getIncludesForProject(this);
         if (cached != null) {
             return cached;
         }
         final List<IErlModule> includes = getModulesOrIncludes(fProject,
                 getModel(), getIncludeDirs());
-        moduleMap.setIncludesForProject(this, includes);
+        erlModelCache.putIncludesForProject(this, includes);
         return includes;
     }
 
@@ -988,7 +987,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     @Override
     public void clearCaches() {
-        ErlangCore.getModuleMap().removeForProject(this);
+        ErlModel.getErlModelCache().removeForProject(this);
     }
 
     public IErlModule findExternalModuleFromPath(final String path)
@@ -1091,15 +1090,16 @@ public class ErlProject extends Openable implements IErlProject {
 
     static IErlModule getModuleFromCacheByNameOrPath(final ErlProject project,
             final String moduleName, final String modulePath) {
-        final IErlModuleMap modelMap = ErlangCore.getModuleMap();
+        final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
         if (modulePath != null) {
-            final IErlModule module = modelMap.getModuleByPath(modulePath);
+            final IErlModule module = erlModelCache.getModuleByPath(modulePath);
             if (module != null
                     && (project == null || project.moduleInProject(module))) {
                 return module;
             }
         }
-        final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
+        final Set<IErlModule> modules = erlModelCache
+                .getModulesByName(moduleName);
         if (modules != null) {
             for (final IErlModule module : modules) {
                 if (project == null || project.moduleInProject(module)) {

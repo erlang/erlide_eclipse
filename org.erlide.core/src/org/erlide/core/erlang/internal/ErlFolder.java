@@ -194,7 +194,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlangCore.getModuleMap().removeForProject(getErlProject());
+            ErlModel.getErlModelCache().removeForProject(getErlProject());
         }
         super.setChildren(c);
     }
@@ -202,7 +202,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlangCore.getModuleMap().removeForProject(getErlProject());
+            ErlModel.getErlModelCache().removeForProject(getErlProject());
         }
         super.clearCaches();
     }

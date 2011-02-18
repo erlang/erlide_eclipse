@@ -105,6 +105,10 @@ public class ErlModel extends Openable implements IErlModel {
         return true;
     }
 
+    static final ErlModelCache getErlModelCache() {
+        return ErlModelCache.getDefault();
+    }
+
     /**
      * @see IErlModel
      */
@@ -600,7 +604,7 @@ public class ErlModel extends Openable implements IErlModel {
 
         public void pathVariableChanged(final IPathVariableChangeEvent event) {
             fCachedPathVars = null;
-            ErlangCore.getModuleMap().pathVarsChanged();
+            getErlModelCache().pathVarsChanged();
             try {
                 // broadcast this change to projects, they need to clear their
                 // caches

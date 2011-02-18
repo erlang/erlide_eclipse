@@ -36,7 +36,6 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
@@ -87,8 +86,7 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        final IErlModuleMap erlModelMap = ErlangCore.getModuleMap();
-        erlModelMap.putModule(this);
+        ErlModel.getErlModelCache().putModule(this);
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
@@ -442,7 +440,6 @@ public class ErlModule extends Openable implements IErlModule {
     public void dispose() {
         disposeScanner();
         ErlangCore.getModelManager().removeModule(this);
-        ErlangCore.getModuleMap().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependents() throws ErlModelException {
@@ -570,8 +567,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     public List<IErlModule> findAllIncludedFiles(final List<IErlModule> checked)
             throws CoreException {
-        final List<IErlModule> includedFilesForModule = ErlangCore
-                .getModuleMap().getIncludedFilesForModule(this);
+        final List<IErlModule> includedFilesForModule = ErlModel
+                .getErlModelCache().getIncludedFilesForModule(this);
         if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
             return includedFilesForModule;
         }
@@ -615,7 +612,7 @@ public class ErlModule extends Openable implements IErlModule {
             }
             findAllIncludedHeadersAux(checked, result, modules, includeFileName);
         }
-        ErlangCore.getModuleMap().setIncludedFilesForModule(this, result);
+        ErlModel.getErlModelCache().putIncludedFilesForModule(this, result);
         return result;
     }
 

@@ -12,7 +12,6 @@ import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.jinterface.backend.Backend;
@@ -52,7 +51,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         // TODO some code duplication within this function
         ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
                 externalName);
-        final IErlModuleMap moduleMap = ErlangCore.getModuleMap();
+        final ErlModelCache moduleMap = ErlModel.getErlModelCache();
         List<ExternalTreeEntry> externalModuleTree = moduleMap
                 .getExternalTree(externalModules);
         List<ExternalTreeEntry> externalIncludeTree = moduleMap
