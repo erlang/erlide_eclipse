@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -131,7 +131,7 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<String> getExternalModulesWithPrefix(final Backend b,
+    public static List<String> getExternalModulesWithPrefix(final ErlCallable b,
             final String prefix, final IErlProject erlProject)
             throws CoreException {
         final List<String> result = Lists.newArrayList();
@@ -342,7 +342,7 @@ public class ModelUtils {
         return new String[] { "MODULE", "LINE", "FILE" };
     }
 
-    public static ISourceRange findVariable(final Backend backend,
+    public static ISourceRange findVariable(final ErlCallable backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,

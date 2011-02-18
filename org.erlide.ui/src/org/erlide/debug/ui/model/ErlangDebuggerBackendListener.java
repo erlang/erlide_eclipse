@@ -14,6 +14,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.IBackendListener;
@@ -34,7 +35,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     public void runtimeAdded(final Backend backend) {
     }
 
-    public void moduleLoaded(final Backend backend, final IProject project,
+    public void moduleLoaded(final ErlCallable backend, final IProject project,
             final String moduleName) {
         try {
             final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend);
@@ -60,7 +61,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         }
     }
 
-    private ErlangDebugTarget debugTargetOfBackend(final Backend backend) {
+    private ErlangDebugTarget debugTargetOfBackend(final ErlCallable backend) {
         final IDebugTarget[] debugTargets = DebugPlugin.getDefault()
                 .getLaunchManager().getDebugTargets();
         for (final IDebugTarget debugTarget : debugTargets) {
@@ -123,7 +124,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private boolean isModuleRunningInInterpreter(
-            final ErlangDebugTarget erlangDebugTarget, final Backend backend,
+            final ErlangDebugTarget erlangDebugTarget, final ErlCallable backend,
             final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug

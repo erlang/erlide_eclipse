@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IParent;
@@ -113,7 +114,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return true;
     }
 
-    public Backend getBackend() {
+    public ErlCallable getBackend() {
         return backend;
     }
 

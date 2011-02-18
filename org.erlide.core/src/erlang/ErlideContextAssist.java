@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -19,7 +19,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideContextAssist {
 
-    public static Collection<String> getVariables(final Backend b,
+    public static Collection<String> getVariables(final ErlCallable b,
             final String src, final String prefix) {
         final SortedSet<String> result = new TreeSet<String>();
         try {
@@ -94,7 +94,7 @@ public class ErlideContextAssist {
 
     }
 
-    public static RecordCompletion checkRecordCompletion(final Backend b,
+    public static RecordCompletion checkRecordCompletion(final ErlCallable b,
             final String substring) {
         try {
             final OtpErlangObject res = b.call("erlide_content_assist",
@@ -113,7 +113,7 @@ public class ErlideContextAssist {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangList getFunctionHead(final Backend b,
+    public static OtpErlangList getFunctionHead(final ErlCallable b,
             final String name, final int arity) {
         try {
             final OtpErlangObject res = b.call("erlide_content_assist",

@@ -39,7 +39,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
@@ -255,7 +255,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
+        final ErlCallable backend = BackendUtils.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
@@ -349,7 +349,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         }
     }
 
-    private List<ICompletionProposal> getModules(final Backend b,
+    private List<ICompletionProposal> getModules(final ErlCallable b,
             final int offset, final String prefix) {
         final List<String> allErlangFiles = new ArrayList<String>();
         if (module != null) {
@@ -398,7 +398,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getAutoImportedFunctions(
-            final Backend backend, final int offset, final String prefix) {
+            final ErlCallable backend, final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
@@ -409,7 +409,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getImportedFunctions(
-            final Backend backend, final int offset, final String prefix) {
+            final ErlCallable backend, final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -437,7 +437,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         return result;
     }
 
-    private List<ICompletionProposal> getVariables(final Backend b,
+    private List<ICompletionProposal> getVariables(final ErlCallable b,
             final int offset, final String prefix) throws ErlModelException,
             BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -486,7 +486,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getExternalCallCompletions(
-            final Backend b, final IErlProject project, String moduleName,
+            final ErlCallable b, final IErlProject project, String moduleName,
             final int offset, final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
         moduleName = ModelUtils.resolveMacroValue(moduleName, module);

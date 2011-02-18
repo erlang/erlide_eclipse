@@ -6,8 +6,8 @@ import java.util.TreeMap;
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
@@ -56,7 +56,7 @@ public class IndentAction extends ErlangTextEditorAction {
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final ErlCallable b = ErlangCore.getBackendManager().getIdeBackend();
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
             final OtpErlangObject r1 = ErlideIndent.templateIndentLines(b,

@@ -3,7 +3,7 @@ package erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
@@ -50,7 +50,7 @@ public class ErlideSearchServer {
                         new OtpErlangString(path) });
     }
 
-    public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
+    public static List<ModuleLineFunctionArityRef> findRefs(final ErlCallable b,
             final ErlangSearchPattern ref, final ErlSearchScope scope,
             final ErlSearchScope externalScope, final String stateDir) {
         final List<ModuleLineFunctionArityRef> result = Lists.newArrayList();
@@ -70,7 +70,7 @@ public class ErlideSearchServer {
         return result;
     }
 
-    public static List<ModuleLineFunctionArityRef> findRefs(final Backend b,
+    public static List<ModuleLineFunctionArityRef> findRefs(final ErlCallable b,
             final ErlangSearchPattern ref, final IErlModule module,
             final String stateDir) {
         final ErlSearchScope scope = new ErlSearchScope();

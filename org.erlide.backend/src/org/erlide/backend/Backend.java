@@ -38,7 +38,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class Backend extends OtpNodeStatus {
+public class Backend extends OtpNodeStatus implements ErlCallable {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;

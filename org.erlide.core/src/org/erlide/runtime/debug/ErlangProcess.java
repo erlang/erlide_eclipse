@@ -23,7 +23,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.ErlangFunctionCall;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -54,7 +54,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private OtpErlangPid fCachedMetaPid = null;
 
-    private final Backend fBackend;
+    private final ErlCallable fBackend;
 
     private String fStatus;
 
@@ -66,7 +66,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     private ErlangFunctionCall fInitialCall;
     private boolean fTracing;
 
-    public ErlangProcess(final IDebugTarget target, final Backend backend,
+    public ErlangProcess(final IDebugTarget target, final ErlCallable backend,
             final OtpErlangPid pid) {
         super(target);
         fPid = pid;

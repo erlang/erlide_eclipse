@@ -26,8 +26,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.rpc.RpcFuture;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
@@ -136,7 +136,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
             final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
-            Backend backend;
+            ErlCallable backend;
             try {
                 backend = ErlangCore.getBackendManager().getBuildBackend(
                         project);

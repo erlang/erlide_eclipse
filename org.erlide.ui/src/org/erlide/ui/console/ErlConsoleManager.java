@@ -8,6 +8,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.IBackendListener;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.core.erlang.ErlangCore;
@@ -53,7 +54,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         ErlangCore.getBackendManager().removeBackendListener(this);
     }
 
-    public void moduleLoaded(final Backend backend, final IProject project,
+    public void moduleLoaded(final ErlCallable backend, final IProject project,
             final String moduleName) {
     }
 }

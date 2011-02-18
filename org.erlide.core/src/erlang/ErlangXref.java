@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.rpc.RpcFuture;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.util.Bindings;
@@ -16,7 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public final class ErlangXref {
 
-    public static void start(final Backend b) {
+    public static void start(final ErlCallable b) {
         try {
             b.call("erlide_xref", "start", "");
         } catch (final Exception e) {
@@ -25,7 +25,7 @@ public final class ErlangXref {
 
     }
 
-    public static void stop(final Backend b) {
+    public static void stop(final ErlCallable b) {
         try {
             b.call("erlide_xref", "stop", "");
         } catch (final Exception e) {
@@ -34,7 +34,7 @@ public final class ErlangXref {
 
     }
 
-    public static RpcFuture addProject(final Backend b,
+    public static RpcFuture addProject(final ErlCallable b,
             final IErlProject project) {
         try {
             final IPath outputLocation = project.getProject()
@@ -47,7 +47,7 @@ public final class ErlangXref {
         return null;
     }
 
-    public static void update(final Backend b) {
+    public static void update(final ErlCallable b) {
         try {
             b.call("erlide_xref", "update", "");
         } catch (final Exception e) {
@@ -56,7 +56,7 @@ public final class ErlangXref {
     }
 
     @SuppressWarnings("boxing")
-    public static FunctionRef[] functionUse(final Backend b, final String mod,
+    public static FunctionRef[] functionUse(final ErlCallable b, final String mod,
             final String fun, final int arity) {
         try {
             final OtpErlangObject r = b.call("erlide_xref", "function_use",
@@ -80,7 +80,7 @@ public final class ErlangXref {
     private ErlangXref() {
     }
 
-    public static FunctionRef[] functionUse(final Backend b,
+    public static FunctionRef[] functionUse(final ErlCallable b,
             final FunctionRef ref) {
         return functionUse(b, ref.module, ref.function, ref.arity);
     }

@@ -39,6 +39,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
@@ -273,7 +274,7 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getProject();
-            final Backend b = erlProject == null ? ide : backendManager
+            final ErlCallable b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
             final IErlModel model = ErlangCore.getModel();

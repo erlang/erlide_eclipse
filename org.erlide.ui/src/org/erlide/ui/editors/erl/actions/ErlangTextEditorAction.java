@@ -15,8 +15,8 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatus;
@@ -222,7 +222,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws BackendException {
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final ErlCallable b = ErlangCore.getBackendManager().getIdeBackend();
         final OtpErlangObject r1 = ErlideIndent.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
@@ -56,7 +57,7 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
-    public void moduleLoaded(final Backend backend, final IProject project,
+    public void moduleLoaded(final ErlCallable backend, final IProject project,
             final String moduleName) {
     }
 }

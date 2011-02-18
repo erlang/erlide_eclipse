@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.PreferencesUtils;
@@ -204,7 +205,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
-                final Backend backend = BackendUtils
+                final ErlCallable backend = BackendUtils
                         .getBuildOrIdeBackend(getProject());
                 final Collection<String> headers = ErlideOpen.getHeadersInDir(
                         backend, path.toPortableString());

@@ -18,7 +18,7 @@ public interface IBackendListener {
 
     public void runtimeRemoved(Backend backend);
 
-    public void moduleLoaded(Backend backend, IProject project,
+    public void moduleLoaded(ErlCallable backend, IProject project,
             String moduleName);
 
 }

@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlExternal;
@@ -57,7 +57,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = moduleMap
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final Backend backend = BackendUtils
+            final ErlCallable backend = BackendUtils
                     .getBuildOrIdeBackend(getErlProject().getProject());
             final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
@@ -183,7 +183,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return false;
     }
 
-    public Backend getBackend() {
+    public ErlCallable getBackend() {
         return null;
     }
 

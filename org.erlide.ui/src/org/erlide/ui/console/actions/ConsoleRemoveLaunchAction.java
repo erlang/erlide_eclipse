@@ -28,7 +28,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleListener;
 import org.eclipse.ui.console.IConsoleView;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
@@ -64,7 +64,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
     public ConsoleRemoveLaunchAction(final ErlangConsole console) {
         this();
         fConsole = console;
-        final Backend backend = console.getBackend();
+        final ErlCallable backend = console.getBackend();
         if (backend instanceof ErlideBackend) {
             final ErlideBackend eb = (ErlideBackend) backend;
             fLaunch = eb.getLaunch();
@@ -145,7 +145,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
         final IConsole console = fConsoleView.getConsole();
         if (console instanceof ErlangConsole) {
             final ErlangConsole pconsole = (ErlangConsole) console;
-            final Backend backend = pconsole.getBackend();
+            final ErlCallable backend = pconsole.getBackend();
             if (backend instanceof ErlideBackend) {
                 final ErlideBackend eb = (ErlideBackend) backend;
                 return eb.getLaunch();

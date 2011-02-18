@@ -44,6 +44,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendUtil;
 import org.erlide.backend.CodeBundle;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.ErtsProcess;
 import org.erlide.backend.IBackendListener;
@@ -435,7 +436,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public synchronized void removeExecutionBackend(final IProject project,
-            final Backend b) {
+            final ErlCallable b) {
         Set<ErlideBackend> list = executionBackends.get(project);
         if (list == null) {
             list = new HashSet<ErlideBackend>();

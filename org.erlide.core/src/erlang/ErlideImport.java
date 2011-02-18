@@ -5,8 +5,8 @@ package erlang;
 
 import java.util.List;
 
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.core.erlang.ErlProjectImport;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -27,7 +27,7 @@ public class ErlideImport {
      * 
      * @return
      */
-    public static ErlProjectImport importProject(final Backend b,
+    public static ErlProjectImport importProject(final ErlCallable b,
             final String prefix, final List<String> importSources) {
         OtpErlangObject res = null;
         try {

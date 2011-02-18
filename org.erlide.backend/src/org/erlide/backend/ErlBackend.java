@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlBackend {
 
-    public static void reload(final Backend backend) {
+    public static void reload(final ErlCallable backend) {
         try {
             final OtpErlangList loaded = (OtpErlangList) backend.call("code",
                     "all_loaded", "");
@@ -40,7 +40,7 @@ public class ErlBackend {
         }
     }
 
-    public static String format_error(final Backend b,
+    public static String format_error(final ErlCallable b,
             final OtpErlangObject object) {
         final OtpErlangTuple err = (OtpErlangTuple) object;
         final OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
@@ -59,7 +59,7 @@ public class ErlBackend {
         return res;
     }
 
-    public static String format(final Backend b, final String fmt,
+    public static String format(final ErlCallable b, final String fmt,
             final OtpErlangObject... args) {
         try {
             final String r = b.call("erlide_backend", "format", "slx", fmt,
@@ -78,7 +78,7 @@ public class ErlBackend {
      * @return OtpErlangobject
      * @throws ErlangParseException
      */
-    public static OtpErlangObject parseTerm(final Backend b, final String string)
+    public static OtpErlangObject parseTerm(final ErlCallable b, final String string)
             throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -100,7 +100,7 @@ public class ErlBackend {
      * @return
      * @throws BackendException
      */
-    public static OtpErlangObject scanString(final Backend b,
+    public static OtpErlangObject scanString(final ErlCallable b,
             final String string) throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -121,7 +121,7 @@ public class ErlBackend {
      * @param string
      * @return
      */
-    public static OtpErlangObject parseConsoleInput(final Backend b,
+    public static OtpErlangObject parseConsoleInput(final ErlCallable b,
             final String string) throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -138,7 +138,7 @@ public class ErlBackend {
                 + "\": " + t1.elementAt(1).toString());
     }
 
-    public static String prettyPrint(final Backend b, final String text)
+    public static String prettyPrint(final ErlCallable b, final String text)
             throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -150,7 +150,7 @@ public class ErlBackend {
         return ((OtpErlangString) r1).stringValue();
     }
 
-    public static BackendEvalResult eval(final Backend b, final String string,
+    public static BackendEvalResult eval(final ErlCallable b, final String string,
             final OtpErlangObject bindings) {
         final BackendEvalResult result = new BackendEvalResult();
         try {
@@ -176,7 +176,7 @@ public class ErlBackend {
         return result;
     }
 
-    public static boolean loadBeam(final Backend backend,
+    public static boolean loadBeam(final ErlCallable backend,
             final String moduleName, final OtpErlangBinary bin) {
         OtpErlangObject r = null;
         try {
@@ -208,7 +208,7 @@ public class ErlBackend {
         return false;
     }
 
-    public static OtpErlangObject concreteSyntax(final Backend b,
+    public static OtpErlangObject concreteSyntax(final ErlCallable b,
             final OtpErlangObject val) {
         try {
             return b.call("erlide_syntax", "concrete", "x", val);
@@ -217,21 +217,21 @@ public class ErlBackend {
         }
     }
 
-    public static String prettyPrint(final Backend b, final OtpErlangObject e)
+    public static String prettyPrint(final ErlCallable b, final OtpErlangObject e)
             throws BackendException {
         OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
         p = b.call("lists", "flatten", "x", p);
         return ((OtpErlangString) p).stringValue();
     }
 
-    public static OtpErlangObject convertErrors(final Backend b,
+    public static OtpErlangObject convertErrors(final ErlCallable b,
             final String lines) throws BackendException {
         OtpErlangObject res;
         res = b.call("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
         return res;
     }
 
-    public static void startTracer(final Backend b, final OtpErlangPid tracer) {
+    public static void startTracer(final ErlCallable b, final OtpErlangPid tracer) {
         try {
             ErlLogger.debug("Start tracer to %s", tracer);
             b.call("erlide_backend", "start_tracer", "ps", tracer);
@@ -239,7 +239,7 @@ public class ErlBackend {
         }
     }
 
-    public static void startTracer(final Backend b, final String logname) {
+    public static void startTracer(final ErlCallable b, final String logname) {
         try {
             ErlLogger.debug("Start tracer to %s", logname);
             b.call("erlide_backend", "start_tracer", "s", logname);
@@ -247,7 +247,7 @@ public class ErlBackend {
         }
     }
 
-    public static String getSystemInfo(final Backend b) {
+    public static String getSystemInfo(final ErlCallable b) {
         try {
             final OtpErlangObject val = b.call("erlide_backend",
                     "get_system_info", "");

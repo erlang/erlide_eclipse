@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
@@ -267,7 +267,7 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it
-            final Backend backend = BackendUtils.getBuildOrIdeBackend(project
+            final ErlCallable backend = BackendUtils.getBuildOrIdeBackend(project
                     .getProject());
             final List<String> modules = ModelUtils
                     .getExternalModulesWithPrefix(backend, "ex", project);

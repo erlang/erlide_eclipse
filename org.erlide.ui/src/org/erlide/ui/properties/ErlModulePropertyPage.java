@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.backend.Backend;
+import org.erlide.backend.ErlCallable;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
@@ -47,7 +47,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
             final IFile beam = project.getProject().getFile(beamPath);
 
             // TODO should it be the build backend?
-            final Backend backend = ErlangCore.getBackendManager()
+            final ErlCallable backend = ErlangCore.getBackendManager()
                     .getIdeBackend();
             try {
                 final OtpErlangObject info = backend.call("erlide_backend",

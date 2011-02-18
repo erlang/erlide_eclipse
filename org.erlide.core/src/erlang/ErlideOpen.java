@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlCallable;
 import org.erlide.backend.util.BackendUtils;
 import org.erlide.backend.util.SourcePathProvider;
 import org.erlide.backend.util.Util;
@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
 
 public class ErlideOpen {
 
-    public static String getIncludeLib(final Backend backend, String s)
+    public static String getIncludeLib(final ErlCallable backend, String s)
             throws BackendException {
         final OtpErlangObject t = backend.call("erlide_open",
                 "get_include_lib", "s", s);
@@ -33,7 +33,7 @@ public class ErlideOpen {
         return s;
     }
 
-    public static OtpErlangObject getSourceFromModule(final Backend backend,
+    public static OtpErlangObject getSourceFromModule(final ErlCallable backend,
             final OtpErlangList pathVars, final String mod,
             final String externalModules) throws BackendException {
         final OtpErlangObject res2 = backend.call("erlide_open",
@@ -43,7 +43,7 @@ public class ErlideOpen {
     }
 
     @SuppressWarnings("boxing")
-    public static OpenResult open(final Backend backend,
+    public static OpenResult open(final ErlCallable backend,
             final String scannerName, final int offset,
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws BackendException {
@@ -95,7 +95,7 @@ public class ErlideOpen {
         return new OtpErlangTuple(result.toArray(new OtpErlangObject[] {}));
     }
 
-    public static OtpErlangTuple findFirstVar(final Backend backend,
+    public static OtpErlangTuple findFirstVar(final ErlCallable backend,
             final String name, final String source) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
@@ -186,7 +186,7 @@ public class ErlideOpen {
     }
 
     public static List<ExternalTreeEntry> getExternalModuleTree(
-            final Backend backend, final String externalModules,
+            final ErlCallable backend, final String externalModules,
             final OtpErlangList pathVars) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
@@ -217,7 +217,7 @@ public class ErlideOpen {
         return Lists.newArrayList();
     }
 
-    public static String getExternalInclude(final Backend backend,
+    public static String getExternalInclude(final ErlCallable backend,
             final String filePath, final String externalIncludes,
             final OtpErlangList pathVars) {
         try {
@@ -234,7 +234,7 @@ public class ErlideOpen {
         return null;
     }
 
-    public static List<String> getLibDirs(final Backend backend) {
+    public static List<String> getLibDirs(final ErlCallable backend) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_lib_dirs", "");
@@ -245,7 +245,7 @@ public class ErlideOpen {
         }
     }
 
-    public static List<String> getLibFiles(final Backend backend,
+    public static List<String> getLibFiles(final ErlCallable backend,
             final String entry) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
@@ -257,7 +257,7 @@ public class ErlideOpen {
         }
     }
 
-    public static List<String> getLibSrcInclude(final Backend backend,
+    public static List<String> getLibSrcInclude(final ErlCallable backend,
             final String entry) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
@@ -283,7 +283,7 @@ public class ErlideOpen {
         return null;
     }
 
-    public static Collection<String> getHeadersInDir(final Backend backend,
+    public static Collection<String> getHeadersInDir(final ErlCallable backend,
             final String directory) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
