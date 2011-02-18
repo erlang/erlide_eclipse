@@ -7,8 +7,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.backend.BackendPlugin;
 
 import com.google.common.collect.Lists;
@@ -19,10 +17,8 @@ public class BackendUtils {
             throws CoreException {
         // TODO should be cached and listening to plugin changes?
         final List<SourcePathProvider> result = Lists.newArrayList();
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(BackendPlugin.PLUGIN_ID,
-                        "sourcePathProvider");
+        final IConfigurationElement[] elements = BackendPlugin
+                .getSourcepathConfigurationElements();
         for (final IConfigurationElement element : elements) {
             final SourcePathProvider provider = (SourcePathProvider) element
                     .createExecutableExtension("class");

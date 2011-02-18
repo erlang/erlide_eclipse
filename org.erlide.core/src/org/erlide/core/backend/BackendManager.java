@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -44,11 +43,11 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendUtil;
 import org.erlide.backend.CodeBundle;
+import org.erlide.backend.CodeBundle.CodeContext;
 import org.erlide.backend.ErlCallable;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.ErtsProcess;
 import org.erlide.backend.IBackendListener;
-import org.erlide.backend.CodeBundle.CodeContext;
 import org.erlide.backend.epmd.EpmdWatchJob;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
@@ -503,9 +502,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public void loadCodepathExtensions() {
-        final IExtensionRegistry reg = Platform.getExtensionRegistry();
-        final IExtensionPoint exPnt = reg.getExtensionPoint(
-                BackendPlugin.PLUGIN_ID, "codepath");
+        final IExtensionPoint exPnt = BackendPlugin.getCodepathExtension();
         // TODO listen to changes to the registry!
 
         final IExtension[] extensions = exPnt.getExtensions();

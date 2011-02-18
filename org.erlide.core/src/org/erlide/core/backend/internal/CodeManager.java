@@ -19,9 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.CodeBundle;
@@ -115,10 +113,8 @@ public class CodeManager {
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        // reg.addRegistryChangeListener(this);
-        final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                BackendPlugin.PLUGIN_ID, "codepath");
+        final IConfigurationElement[] els = BackendPlugin
+                .getCodepathConfigurationElements();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             if ("beam_dir".equals(el.getName())

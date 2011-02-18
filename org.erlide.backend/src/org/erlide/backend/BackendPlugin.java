@@ -1,5 +1,10 @@
 package org.erlide.backend;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -37,4 +42,23 @@ public class BackendPlugin implements BundleActivator {
         BackendPlugin.context = null;
     }
 
+    public static IExtensionPoint getCodepathExtension() {
+        final IExtensionRegistry reg = Platform.getExtensionRegistry();
+        return reg.getExtensionPoint(PLUGIN_ID, "codepath");
+    }
+
+    public static IConfigurationElement[] getCodepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "codepath");
+    }
+
+    public static IConfigurationElement[] getSourcepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "sourcePathProvider");
+    }
+
+    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "messageReporter");
+    }
 }

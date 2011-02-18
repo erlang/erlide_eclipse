@@ -30,12 +30,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -57,8 +55,8 @@ import org.erlide.backend.ErlLaunchData;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.BackendManager.BackendOptions;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
@@ -356,9 +354,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private OtpErlangBinary getBeam(final String module, final Backend backend) {
         final Bundle b = Platform.getBundle("org.erlide.kernel.debugger");
         final String beamname = module + ".beam";
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                BackendPlugin.PLUGIN_ID, "codepath");
+        final IConfigurationElement[] els = BackendPlugin
+                .getCodepathConfigurationElements();
         // TODO: this code assumes that the debugged target and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
         final String ver = backend.getCurrentVersion();
