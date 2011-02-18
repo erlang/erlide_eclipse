@@ -5,13 +5,14 @@ USER=$3
 q=
 
 TMP=${DESTINATION}.tmp
+KEY_FILE=~/.ssh/sf_key
 
 # maybe upload to a temp location and then rename it? feels safer...
 
 expect - << END
 	# exp_internal 1 # uncomment for debugging
 		
-	spawn sftp ${USER}@frs.sourceforge.net
+	spawn sftp -i $KEY_FILE ${USER}@frs.sourceforge.net
 	expect "*sftp>"
 	send "cd frs \r"
 	expect "*sftp>"
@@ -34,19 +35,19 @@ if [ $? != 0 ]; then
 	exit $?
 fi
 
-scp $q -C ${SOURCE}/artifacts.* ${USER}@frs.sourceforge.net:frs/${TMP}
+scp $q -C  -i $KEY_FILE ${SOURCE}/artifacts.* ${USER}@frs.sourceforge.net:frs/${TMP}
 if [ $? != 0 ]; then 
 	exit $?
 fi
-scp $q -C ${SOURCE}/content.* ${USER}@frs.sourceforge.net:frs/${TMP}
+scp $q -C  -i $KEY_FILE ${SOURCE}/content.* ${USER}@frs.sourceforge.net:frs/${TMP}
 if [ $? != 0 ]; then 
 	exit $?
 fi
-scp $q -C -r ${SOURCE}/features ${USER}@frs.sourceforge.net:frs/${TMP}
+scp $q -C -r  -i $KEY_FILE ${SOURCE}/features ${USER}@frs.sourceforge.net:frs/${TMP}
 if [ $? != 0 ]; then 
 	exit $?
 fi
-scp $q -C -r ${SOURCE}/plugins ${USER}@frs.sourceforge.net:frs/${TMP}
+scp $q -C -r  -i $KEY_FILE ${SOURCE}/plugins ${USER}@frs.sourceforge.net:frs/${TMP}
 if [ $? != 0 ]; then 
 	exit $?
 fi
@@ -56,7 +57,7 @@ fi
 expect - << END
 	# exp_internal 1 # uncomment for debugging
 		
-	spawn sftp ${USER}@frs.sourceforge.net
+	spawn sftp  -i $KEY_FILE ${USER}@frs.sourceforge.net
 	expect "*sftp>"
 	send "cd frs \r"
 	expect "*sftp>"
