@@ -48,17 +48,12 @@ import org.erlide.core.erlang.SourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.collect.Lists;
-
-import erlang.ErlideOpen;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -674,25 +669,6 @@ public class ErlModule extends Openable implements IErlModule {
             }
         }
         return false;
-    }
-
-    public static IErlModule getExternalInclude(final Backend backend,
-            final IErlProject project, final ErlangIncludeFile element)
-            throws BackendException, CoreException {
-        String pathOrName = element.getFilename();
-        if (element.isSystemInclude()) {
-            pathOrName = ErlideOpen.getIncludeLib(backend, pathOrName);
-        }
-        final IErlModule module = project
-                .findExternalModuleFromPath(pathOrName);
-        if (module != null) {
-            return module;
-        }
-        final IPath p = new Path(pathOrName);
-        if (!p.isAbsolute()) {
-            return ModelUtils.getExternalModule(pathOrName, project);
-        }
-        return null;
     }
 
 }

@@ -44,7 +44,7 @@ public class ErlModelUtils {
      *            function name
      * @param arity
      *            function arity
-     * @param path
+     * @param modulePath
      *            path to module (including .erl)
      * @param checkAllProjects
      *            if true, check all projects in workspace, otherwise only
@@ -52,11 +52,11 @@ public class ErlModelUtils {
      * @throws CoreException
      */
     public static boolean openExternalFunction(final String moduleName,
-            final ErlangFunction function, final String path,
+            final ErlangFunction function, final String modulePath,
             final IErlModule module, final IErlProject project,
             final boolean checkAllProjects) throws CoreException {
-        final IErlModule module2 = ModelUtils.findExternalModule(moduleName,
-                path, project, checkAllProjects);
+        final IErlModule module2 = ModelUtils.findExternalModule(project,
+                moduleName, modulePath, checkAllProjects);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
             return openFunctionInEditor(function, editor);
@@ -150,8 +150,8 @@ public class ErlModelUtils {
             path = ue.getURI().getPath();
         }
         if (path != null) {
-            final IErlModule module = ModelUtils
-                    .findExternalModuleFromPath(path);
+            final IErlModule module = ModelUtils.findExternalModule(null, null,
+                    path, true);
             if (module != null) {
                 return module;
             }
@@ -172,8 +172,8 @@ public class ErlModelUtils {
     }
 
     public static void openModule(final String moduleName) throws CoreException {
-        final IErlModule module = ModelUtils.findExternalModule(moduleName,
-                null, null, true);
+        final IErlModule module = ModelUtils.findExternalModule(null,
+                moduleName, null, true);
         if (module != null) {
             EditorUtility.openInEditor(module);
         }

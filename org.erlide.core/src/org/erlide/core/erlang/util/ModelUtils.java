@@ -18,7 +18,6 @@ import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlTypespec;
@@ -57,23 +56,6 @@ public class ModelUtils {
             typespec = includedFile.findTypespec(name);
             if (typespec != null) {
                 return typespec;
-            }
-        }
-        return null;
-    }
-
-    public static IErlModule findExternalModuleFromPath(final String path)
-            throws CoreException {
-        final Collection<IErlElement> children = ErlangCore.getModel()
-                .getChildren();
-        for (final IErlElement child : children) {
-            if (child instanceof IErlProject) {
-                final IErlProject project = (IErlProject) child;
-                final IErlModule module = project
-                        .findExternalModuleFromPath(path);
-                if (module != null) {
-                    return module;
-                }
             }
         }
         return null;
@@ -192,7 +174,7 @@ public class ModelUtils {
             moduleName = resolveMacroValue(moduleName, module);
             IErlModule module2 = project.getModule(moduleName);
             if (module2 == null) {
-                module2 = findExternalModule(moduleName, modulePath, project,
+                module2 = findExternalModule(project, moduleName, modulePath,
                         checkAllProjects);
             }
             if (module2 != null) {
@@ -208,113 +190,30 @@ public class ModelUtils {
         return null;
     }
 
+    public static IErlModule findExternalModule(final IErlProject project,
+            final String moduleName, final String modulePath,
+            final boolean checkAllProjects) throws CoreException {
+        if (project != null) {
+            return project.findExternalModule(moduleName, modulePath, true,
+                    checkAllProjects);
+        }
+        final IErlModel model = ErlangCore.getModel();
+        if (checkAllProjects) {
+            return model.findExternalModule(moduleName, modulePath);
+        }
+        return null;
+    }
+
     public static IErlElement findExternalType(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
             final IErlProject project, final boolean checkAllProjects)
             throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
-        final IErlModule module2 = findExternalModule(moduleName, modulePath,
-                project, checkAllProjects);
+        final IErlModule module2 = findExternalModule(project, moduleName,
+                modulePath, checkAllProjects);
         if (module2 != null) {
             module2.open(null);
             return module2.findTypespec(typeName);
-        }
-        return null;
-    }
-
-    public static IErlModule findExternalModule(final String moduleName,
-            final String modulePath, final IErlProject project,
-            final boolean checkAllProjects) throws CoreException {
-        IErlModule module = getModuleByName(moduleName, modulePath, project);
-        if (module != null) {
-            return module;
-        }
-        module = project.findExternalModuleFromPath(modulePath);
-        if (module != null) {
-            return module;
-        }
-        final String moduleFileName;
-        if (!ErlideUtil.hasModuleExtension(moduleName)) {
-            moduleFileName = moduleName + ".erl";
-        } else {
-            moduleFileName = moduleName;
-        }
-        module = getExternalModule(moduleFileName, project);
-        if (module != null) {
-            return module;
-        }
-        // final IResource r = null;
-        final IErlModel model = ErlangCore.getModel();
-        final List<IErlProject> projectsToSearch = Lists.newArrayList();
-        if (project != null) {
-            module = project.getModule(moduleName);
-            if (module != null && module.isOnSourcePath()) {
-                return module;
-            }
-            final Collection<IErlProject> references = project
-                    .getProjectReferences();
-            projectsToSearch.addAll(references);
-        }
-        if (checkAllProjects) {
-            for (final IErlProject p : model.getErlangProjects()) {
-                if (!projectsToSearch.contains(p)) {
-                    projectsToSearch.add(p);
-                }
-            }
-        }
-        for (final IErlProject p : projectsToSearch) {
-            ErlLogger.debug("searching project %s", p.getName());
-            module = p.getModule(moduleName);
-            if (module != null && module.isOnSourcePath()) {
-                return module;
-            }
-        }
-        return null;
-    }
-
-    private static IErlModule getModuleByName(final String moduleName,
-            final String modulePath, final IErlProject project) {
-        final IErlModuleMap modelMap = ErlangCore.getModuleMap();
-        final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
-        if (modules != null) {
-            for (final IErlModule module : modules) {
-                if (moduleInProject(module, project)) {
-                    final IParent parent = module.getParent();
-                    if (parent instanceof IErlElement) {
-                        final IErlElement element = (IErlElement) parent;
-                        if (element.getKind() != Kind.EXTERNAL) {
-                            return module;
-                        }
-                    }
-                }
-            }
-            for (final IErlModule module : modules) {
-                if (moduleInProject(module, project)) {
-                    return module;
-                }
-            }
-            if (modulePath != null) {
-                final IErlModule module = modelMap.getModuleByPath(modulePath);
-                if (module != null && moduleInProject(module, project)) {
-                    return module;
-                }
-            }
-        }
-        return null;
-    }
-
-    public static IErlModule getExternalModule(final String moduleName,
-            final IErlProject project) throws CoreException {
-        final IErlModule module = getModuleByName(moduleName, null, project);
-        if (module != null) {
-            return module;
-        }
-        final Collection<IErlModule> modules = project.getExternalModules();
-        for (final IErlModule module1 : modules) {
-            if (module1.getModuleName().equals(moduleName)
-                    || module1.getName().equals(moduleName)) {
-                return module1;
-            }
         }
         return null;
     }
@@ -458,15 +357,4 @@ public class ModelUtils {
         return range;
     }
 
-    private static boolean moduleInProject(final IErlModule module,
-            final IErlProject project) {
-        final IErlProject project2 = module.getProject();
-        if (project == null) {
-            return true;
-        }
-        if (project2 == null) {
-            return false;
-        }
-        return project.equals(project2);
-    }
 }
