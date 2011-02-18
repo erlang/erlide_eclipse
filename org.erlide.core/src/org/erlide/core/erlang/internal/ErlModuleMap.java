@@ -196,4 +196,8 @@ public class ErlModuleMap implements IErlModuleMap, IDisposable {
         projectIncludeCache.remove(project);
         projectModuleCache.remove(project);
     }
+
+    public void pathVarsChanged() {
+        // FIXME we need to clear some stuff here...
+    }
 }

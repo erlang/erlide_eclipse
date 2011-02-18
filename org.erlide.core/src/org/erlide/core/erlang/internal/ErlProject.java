@@ -16,12 +16,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
@@ -53,6 +55,7 @@ import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.internal.ErlModel.External;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
@@ -198,8 +201,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
         final String externalIncludes = getExternalIncludesString();
         final String externalModules = getExternalModulesString();
-        final IOldErlangProjectProperties props = getProperties();
-        final Collection<IPath> includeDirs = props.getIncludeDirs();
+        final Collection<IPath> includeDirs = getIncludeDirs();
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
@@ -913,7 +915,8 @@ public class ErlProject extends Openable implements IErlProject {
     public Collection<IPath> getSourceDirs() {
         if (fCachedSourceDirs == null) {
             final IOldErlangProjectProperties properties = getProperties();
-            fCachedSourceDirs = properties.getSourceDirs();
+            final Collection<IPath> sourceDirs = properties.getSourceDirs();
+            fCachedSourceDirs = resolvePaths(sourceDirs);
         }
         return fCachedSourceDirs;
     }
@@ -921,9 +924,23 @@ public class ErlProject extends Openable implements IErlProject {
     public Collection<IPath> getIncludeDirs() {
         if (fCachedIncludeDirs == null) {
             final IOldErlangProjectProperties properties = getProperties();
-            fCachedIncludeDirs = properties.getIncludeDirs();
+            final Collection<IPath> includeDirs = properties.getIncludeDirs();
+            fCachedIncludeDirs = resolvePaths(includeDirs);
         }
         return fCachedIncludeDirs;
+    }
+
+    private Collection<IPath> resolvePaths(final Collection<IPath> includeDirs) {
+        final IPathVariableManager pathVariableManager = ResourcesPlugin
+                .getWorkspace().getPathVariableManager();
+        final List<IPath> cachedIncludeDirs = Lists
+                .newArrayListWithCapacity(includeDirs.size());
+        for (final IPath includeDir : includeDirs) {
+            final IPath resolvedPath = pathVariableManager
+                    .resolvePath(includeDir);
+            cachedIncludeDirs.add(resolvedPath);
+        }
+        return Collections.unmodifiableCollection(cachedIncludeDirs);
     }
 
     public IPath getOutputLocation() {
@@ -1062,6 +1079,116 @@ public class ErlProject extends Openable implements IErlProject {
             if (header.getFilePath().equals(fileNameOrPath)
                     || header.getName().equals(fileNameOrPath)) {
                 return header;
+            }
+        }
+        return null;
+    }
+
+    void pathVarsChanged() {
+        clearPropertyCaches();
+        clearCaches();
+    }
+
+    static IErlModule getModuleFromCacheByNameOrPath(final ErlProject project,
+            final String moduleName, final String modulePath) {
+        final IErlModuleMap modelMap = ErlangCore.getModuleMap();
+        if (modulePath != null) {
+            final IErlModule module = modelMap.getModuleByPath(modulePath);
+            if (module != null
+                    && (project == null || project.moduleInProject(module))) {
+                return module;
+            }
+        }
+        final Set<IErlModule> modules = modelMap.getModulesByName(moduleName);
+        if (modules != null) {
+            for (final IErlModule module : modules) {
+                if (project == null || project.moduleInProject(module)) {
+                    final IParent parent = module.getParent();
+                    if (parent instanceof IErlElement) {
+                        final IErlElement element = (IErlElement) parent;
+                        if (element.getKind() != Kind.EXTERNAL) {
+                            return module;
+                        }
+                    }
+                }
+            }
+            for (final IErlModule module : modules) {
+                if (project == null || project.moduleInProject(module)) {
+                    return module;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean moduleInProject(final IErlModule module) {
+        final IErlProject project = module.getProject();
+        if (project == null) {
+            return false;
+        }
+        return equals(project);
+    }
+
+    public IErlModule getExternalModule(final String moduleName)
+            throws CoreException {
+        final IErlModule module = getModuleFromCacheByNameOrPath(this,
+                moduleName, null);
+        if (module != null) {
+            return module;
+        }
+        final Collection<IErlModule> modules = getExternalModules();
+        for (final IErlModule module1 : modules) {
+            if (module1.getModuleName().equals(moduleName)
+                    || module1.getName().equals(moduleName)) {
+                return module1;
+            }
+        }
+        return null;
+    }
+
+    public IErlModule findExternalModule(final String moduleName,
+            final String modulePath, final boolean checkReferences,
+            final boolean checkAllProjects) throws CoreException {
+        IErlModule module = getModuleFromCacheByNameOrPath(this, moduleName,
+                modulePath);
+        if (module != null) {
+            return module;
+        }
+        module = findExternalModuleFromPath(modulePath);
+        if (module != null) {
+            return module;
+        }
+        if (moduleName != null) {
+            final String moduleFileName;
+            if (!ErlideUtil.hasModuleExtension(moduleName)) {
+                moduleFileName = moduleName + ".erl";
+            } else {
+                moduleFileName = moduleName;
+            }
+            module = getExternalModule(moduleFileName);
+            if (module != null) {
+                return module;
+            }
+        }
+        final IErlModel model = ErlangCore.getModel();
+        final List<IErlProject> projectsToSearch = Lists.newArrayList();
+        if (checkReferences) {
+            projectsToSearch.addAll(getProjectReferences());
+        }
+        if (checkAllProjects) {
+            for (final IErlProject project : model.getErlangProjects()) {
+                if (!projectsToSearch.contains(project)) {
+                    projectsToSearch.add(project);
+                }
+            }
+        }
+        projectsToSearch.remove(this);
+        for (final IErlProject project : projectsToSearch) {
+            ErlLogger.debug("searching project %s", project.getName());
+            module = project.findExternalModule(moduleName, modulePath, false,
+                    false);
+            if (module != null && module.isOnSourcePath()) {
+                return module;
             }
         }
         return null;
