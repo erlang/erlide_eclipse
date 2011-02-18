@@ -32,6 +32,20 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <update label="Erlide main update site" url="http://erlide.org/update/"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.erlide.core" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.kernel.common" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.core" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.erlide.jinterface" version="0.9.5" match="greaterOrEqual"/>
+      <import plugin="org.erlide.libs" version="1.2.3" match="greaterOrEqual"/>
+   </requires>
+
    <plugin
          id="org.erlide.core"
          download-size="0"
