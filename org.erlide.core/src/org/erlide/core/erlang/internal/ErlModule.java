@@ -31,6 +31,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
+import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
@@ -578,7 +579,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (project == null) {
             return result;
         }
-        final Collection<IErlModule> headers = project.getHeaders();
+        final Collection<IErlModule> headers = project.getIncludes();
         Collection<IErlModule> externalHeaders = null;
         Collection<IErlModule> referencedHeaders = null;
         Collection<IErlModule> modules = null;
@@ -593,7 +594,7 @@ public class ErlModule extends Openable implements IErlModule {
                 final Collection<IErlProject> referencedProjects = project
                         .getProjectReferences();
                 for (final IErlProject referencedProject : referencedProjects) {
-                    referencedHeaders.addAll(referencedProject.getHeaders());
+                    referencedHeaders.addAll(referencedProject.getIncludes());
                 }
             }
             if (findAllIncludedHeadersAux(checked, result, referencedHeaders,
@@ -622,13 +623,33 @@ public class ErlModule extends Openable implements IErlModule {
             throws CoreException {
         for (final IErlModule header : headers) {
             if (header.getName().equals(includeFileName)) {
-                result.add(header);
+                if (header.getParent() instanceof IErlExternal) {
+                    result.add(findExternalHeaderInOpenProjects(header));
+                } else {
+                    result.add(header);
+                }
                 final ErlModule h = (ErlModule) header;
                 result.addAll(h.findAllIncludedFiles(checked));
                 return true;
             }
         }
         return false;
+    }
+
+    public static IErlModule findExternalHeaderInOpenProjects(
+            final IErlModule externalInclude) throws CoreException {
+        final String filePath = externalInclude.getFilePath();
+        final Collection<IErlProject> projects = externalInclude.getModel()
+                .getErlangProjects();
+        for (final IErlProject project : projects) {
+            final Collection<IErlModule> includes = project.getIncludes();
+            for (final IErlModule include : includes) {
+                if (include.getFilePath().equals(filePath)) {
+                    return include;
+                }
+            }
+        }
+        return externalInclude;
     }
 
     public boolean isOnSourcePath() {

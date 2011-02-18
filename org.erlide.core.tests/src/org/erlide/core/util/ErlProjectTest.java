@@ -131,6 +131,45 @@ public class ErlProjectTest {
     }
 
     @Test
+    public void findIncludeFileOnIncludePathInOtherProject() throws Exception {
+        // http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
+        IErlModule externalHeader = null;
+        IErlProject project = null, project2 = null;
+        // given
+        // a project with an include dir outside the model
+        try {
+            final String projectName = "testprojectx";
+            project = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            final String projectName2 = "testprojecty";
+            project2 = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName2), projectName2);
+
+            final String headerName = "x.hrl";
+            externalHeader = ErlideTestUtils.createHeader(project2, "x.hrl",
+                    "-record(rec2, {field, another=def}.");
+            final String headerPath = externalHeader.getFilePath();
+            final IPath p = new Path(headerPath).removeLastSegments(1);
+            project.setIncludeDirs(Lists.newArrayList(p));
+            // when
+            // looking for the include file
+            project.open(null);
+            final IErlModule module = project.findIncludeFile(headerName);
+            // then
+            // it should be found in the project defining it
+            assertNotNull(module);
+            assertEquals(project2, module.getProject());
+        } finally {
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+            if (project2 != null) {
+                ErlideTestUtils.deleteProject(project2);
+            }
+        }
+    }
+
+    @Test
     public void findFunctionInExternalFilesTest() throws Exception {
         // given
         // a module with calls to the lists module
