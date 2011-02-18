@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.erlide.backend.Backend;
+import org.erlide.backend.rpc.RpcFuture;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;

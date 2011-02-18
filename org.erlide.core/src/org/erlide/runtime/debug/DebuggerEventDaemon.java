@@ -3,8 +3,8 @@ package org.erlide.runtime.debug;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.IBackendListener;
+import org.erlide.backend.Backend;
+import org.erlide.backend.IBackendListener;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;

@@ -15,12 +15,10 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: erlang,
  org.erlide.backend,
+ org.erlide.backend.console,
  org.erlide.backend.epmd,
+ org.erlide.backend.events,
+ org.erlide.backend.internal;x-internal:=true,
+ org.erlide.backend.rpc,
  org.erlide.backend.runtime,
- org.erlide.backend.util,
- org.erlide.jinterface.backend,
- org.erlide.jinterface.backend.console,
- org.erlide.jinterface.backend.events,
- org.erlide.jinterface.backend.internal;x-internal:=true,
- org.erlide.jinterface.backend.util,
- org.erlide.jinterface.rpc
+ org.erlide.backend.util

@@ -3,7 +3,7 @@
  */
 package org.erlide.core.erlang;
 
-import org.erlide.jinterface.backend.Backend;
+import org.erlide.backend.Backend;
 
 /**
  * @author jakob

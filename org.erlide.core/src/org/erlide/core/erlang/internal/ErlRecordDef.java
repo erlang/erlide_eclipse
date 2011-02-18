@@ -1,11 +1,11 @@
 package org.erlide.core.erlang.internal;
 
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.IParent;
-import org.erlide.jinterface.backend.util.Util;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 

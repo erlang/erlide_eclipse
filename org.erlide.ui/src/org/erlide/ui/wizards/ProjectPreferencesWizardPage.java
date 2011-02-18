@@ -34,10 +34,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.backend.runtime.RuntimeVersion;
+import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.core.preferences.PathSerializer;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.swtdesigner.SWTResourceManager;

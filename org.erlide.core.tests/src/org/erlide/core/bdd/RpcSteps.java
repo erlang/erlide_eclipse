@@ -2,8 +2,8 @@ package org.erlide.core.bdd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
+import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
 import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.runtime.backend.BackendManager;

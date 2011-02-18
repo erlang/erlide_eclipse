@@ -19,8 +19,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.google.common.collect.Lists;

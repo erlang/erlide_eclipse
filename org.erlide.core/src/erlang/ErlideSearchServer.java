@@ -3,11 +3,11 @@ package erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.backend.Backend;
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.search.ModuleLineFunctionArityRef;
 import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

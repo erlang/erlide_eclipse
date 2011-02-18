@@ -12,8 +12,8 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.backend.rpc.RpcResult;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.osgi.framework.BundleContext;

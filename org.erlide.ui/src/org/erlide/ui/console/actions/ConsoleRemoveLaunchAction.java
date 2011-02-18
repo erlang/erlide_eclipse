@@ -28,7 +28,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleListener;
 import org.eclipse.ui.console.IConsoleView;
-import org.erlide.jinterface.backend.Backend;
+import org.erlide.backend.Backend;
 import org.erlide.runtime.backend.ErlideBackend;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
