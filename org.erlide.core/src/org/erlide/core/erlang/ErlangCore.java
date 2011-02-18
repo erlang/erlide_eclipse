@@ -37,7 +37,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.core.erlang.internal.ErlModuleMap;
 import org.erlide.runtime.backend.BackendManager;
 
 /**
@@ -68,10 +67,6 @@ public final class ErlangCore {
 
     public static final IErlModel getModel() {
         return getModelManager().getErlangModel();
-    }
-
-    public static final IErlModuleMap getModuleMap() {
-        return ErlModuleMap.getDefault();
     }
 
     public static final BackendManager getBackendManager() {

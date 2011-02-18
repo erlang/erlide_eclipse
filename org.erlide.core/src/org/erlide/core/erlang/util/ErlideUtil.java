@@ -86,16 +86,24 @@ public final class ErlideUtil {
         return test != null && "true".equals(test);
     }
 
-    private static boolean isEriUserCached = false;
-    private static boolean isEricssonUser;
+    private static Boolean fgCacheNoModelCache = null;
+
+    public static boolean isNoModelCache() {
+        if (fgCacheNoModelCache == null) {
+            final String test = System.getProperty("erlide.noModelCache");
+            fgCacheNoModelCache = new Boolean("true".equals(test));
+        }
+        return fgCacheNoModelCache.booleanValue();
+    }
+
+    private static Boolean fgCacheIsEricssonUser;
 
     public static boolean isEricssonUser() {
-        if (!isEriUserCached) {
+        if (fgCacheIsEricssonUser == null) {
             final String dev = System.getProperty("erlide.ericsson.user");
-            isEricssonUser = "true".equals(dev);
-            isEriUserCached = true;
+            fgCacheIsEricssonUser = new Boolean("true".equals(dev));
         }
-        return isEricssonUser;
+        return fgCacheIsEricssonUser.booleanValue();
     }
 
     public static boolean isModuleExtensionx(final String ext) {

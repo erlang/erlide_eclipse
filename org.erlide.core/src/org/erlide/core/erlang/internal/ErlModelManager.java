@@ -968,11 +968,20 @@ public final class ErlModelManager implements IErlModelManager {
             mapModule.remove(module);
             moduleMap.remove(key);
         }
+        ErlModel.getErlModelCache().removeModule(module);
     }
 
     public IErlModule getModuleFromText(final IParent parent,
             final String name, final String initialText, final String key) {
         return getModuleFromFile(parent, name, initialText, "", key);
+    }
+
+    public void putEdited(final String path) {
+        ErlModel.getErlModelCache().putEdited(path);
+    }
+
+    public void removeEdited(final String path) {
+        ErlModel.getErlModelCache().removeEdited(path);
     }
 
 }
