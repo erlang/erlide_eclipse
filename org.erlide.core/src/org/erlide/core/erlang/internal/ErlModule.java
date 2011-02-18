@@ -31,6 +31,7 @@ import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlExport;
+import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlImport;
@@ -622,13 +623,33 @@ public class ErlModule extends Openable implements IErlModule {
             throws CoreException {
         for (final IErlModule header : headers) {
             if (header.getName().equals(includeFileName)) {
-                result.add(header);
+                if (header.getParent() instanceof IErlExternal) {
+                    result.add(findExternalHeaderInOpenProjects(header));
+                } else {
+                    result.add(header);
+                }
                 final ErlModule h = (ErlModule) header;
                 result.addAll(h.findAllIncludedFiles(checked));
                 return true;
             }
         }
         return false;
+    }
+
+    public static IErlModule findExternalHeaderInOpenProjects(
+            final IErlModule header) throws CoreException {
+        final String path = header.getFilePath();
+        if (path != null) {
+            final IErlProject project = header.getErlProject();
+            if (project != null) {
+                final IErlModule header2 = project.findExternalModule(null,
+                        path, true, true);
+                if (header2 != null) {
+                    return header2;
+                }
+            }
+        }
+        return header;
     }
 
     public boolean isOnSourcePath() {
