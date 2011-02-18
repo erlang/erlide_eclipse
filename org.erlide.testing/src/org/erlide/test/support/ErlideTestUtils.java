@@ -239,4 +239,10 @@ public class ErlideTestUtils {
 		return createProject(getTmpPath(projectName), projectName);
 	}
 
+	public static IPath[] splitPathAfter(final int i, final IPath p) {
+	    final IPath last = p.removeFirstSegments(i);
+	    final IPath first = p.removeLastSegments(p.segmentCount() - i);
+	    return new IPath[] { first, last };
+	}
+
 }

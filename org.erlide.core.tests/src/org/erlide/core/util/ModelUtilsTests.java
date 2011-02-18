@@ -524,7 +524,7 @@ public class ModelUtilsTests {
                     "-record(rec2, {field, another=def}.");
             final String headerPath = externalHeader.getAbsolutePath();
             IPath path = new Path(headerPath).removeLastSegments(1);
-            final IPath[] paths = splitPathAfter(2, path);
+            final IPath[] paths = ErlideTestUtils.splitPathAfter(1, path);
             final IPathVariableManager pathVariableManager = ResourcesPlugin
                     .getWorkspace().getPathVariableManager();
             final String pathVariableName = "TEST";
@@ -551,12 +551,6 @@ public class ModelUtilsTests {
                 externalHeader.delete();
             }
         }
-    }
-
-    private IPath[] splitPathAfter(final int i, final IPath p) {
-        final IPath last = p.removeFirstSegments(i);
-        final IPath first = p.removeLastSegments(p.segmentCount() - i);
-        return new IPath[] { first, last };
     }
 
 }
