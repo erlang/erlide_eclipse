@@ -61,7 +61,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
     IErlElement getElementAtLine(int lineNumber);
 
     /**
-     * Is this module a real one, or a header file?
+     * Is this module a real one, or an include file?
      * 
      * @return true if .erl, false if .hrl
      */

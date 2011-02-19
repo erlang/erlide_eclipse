@@ -15,7 +15,6 @@ import org.erlide.jinterface.backend.util.LRUCache;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import erlang.ErlideOpen.ExternalTreeEntry;
@@ -31,7 +30,6 @@ public class ErlModelCache implements IDisposable {
     private final LRUCache<String, List<ExternalTreeEntry>> externalTreeCache;
     private final Map<String, IErlModule> editedModulesSet;
     private final Map<String, Set<IErlModule>> nameToModuleMap;
-    Multimap<String, IErlModule> x;
     private final ModelChangeListener modelChangeListener;
     private final LRUCache<IErlProject, List<IErlModule>> projectModuleCache;
     private final LRUCache<IErlProject, List<IErlModule>> projectIncludeCache;

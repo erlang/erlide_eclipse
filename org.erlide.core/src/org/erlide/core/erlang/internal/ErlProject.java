@@ -206,10 +206,11 @@ public class ErlProject extends Openable implements IErlProject {
             if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
                 final Backend backend = BackendUtils
                         .getBuildOrIdeBackend(getProject());
-                final Collection<String> headers = ErlideOpen.getHeadersInDir(
+                final Collection<String> includes = ErlideOpen.getIncludesInDir(
                         backend, path.toPortableString());
-                for (final String header : headers) {
-                    projectIncludes.add(path.append(header).toPortableString());
+                for (final String include : includes) {
+                    projectIncludes
+                            .add(path.append(include).toPortableString());
                 }
             }
         }
@@ -1014,7 +1015,8 @@ public class ErlProject extends Openable implements IErlProject {
         return result;
     }
 
-    public Collection<IErlModule> getExternalHeaders() throws ErlModelException {
+    public Collection<IErlModule> getExternalIncludes()
+            throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         accept(new IErlElementVisitor() {
 
@@ -1029,7 +1031,7 @@ public class ErlProject extends Openable implements IErlProject {
                 } else if (isExternalOrProject) {
                     if (element instanceof IErlExternal) {
                         final IErlExternal external = (IErlExternal) element;
-                        if (!external.hasHeaders()) {
+                        if (!external.hasIncludes()) {
                             return false;
                         }
                     }
@@ -1056,31 +1058,31 @@ public class ErlProject extends Openable implements IErlProject {
      * @throws BackendException
      * @throws CoreException
      */
-    public IErlModule findIncludeFile(final String fileNameOrPath)
+    public IErlModule findIncludeFromNameOrPath(final String fileNameOrPath)
             throws CoreException, BackendException {
-        final Collection<IErlModule> headers = getIncludes();
-        IErlModule header = findIncludeFileAux(fileNameOrPath, headers);
-        if (header != null) {
-            return header;
+        final Collection<IErlModule> includes = getIncludes();
+        IErlModule include = findIncludeAux(fileNameOrPath, includes);
+        if (include != null) {
+            return include;
         }
-        final Collection<IErlModule> externalHeaders = getExternalHeaders();
-        header = findIncludeFileAux(fileNameOrPath, externalHeaders);
-        if (header != null) {
-            return header;
+        final Collection<IErlModule> externalIncludes = getExternalIncludes();
+        include = findIncludeAux(fileNameOrPath, externalIncludes);
+        if (include != null) {
+            return include;
         }
         final Collection<IErlModule> modules = getModules();
-        return findIncludeFileAux(fileNameOrPath, modules);
+        return findIncludeAux(fileNameOrPath, modules);
     }
 
-    private IErlModule findIncludeFileAux(final String fileNameOrPath,
-            final Collection<IErlModule> headers) throws CoreException {
-        for (final IErlModule header : headers) {
-            if (header.getFilePath().equals(fileNameOrPath)
-                    || header.getName().equals(fileNameOrPath)) {
-                if (header.getParent() instanceof IErlExternal) {
-                    return ErlModule.findExternalHeaderInOpenProjects(header);
+    private IErlModule findIncludeAux(final String fileNameOrPath,
+            final Collection<IErlModule> includes) throws CoreException {
+        for (final IErlModule include : includes) {
+            if (include.getFilePath().equals(fileNameOrPath)
+                    || include.getName().equals(fileNameOrPath)) {
+                if (include.getParent() instanceof IErlExternal) {
+                    return ErlModule.findExternalIncludeInOpenProjects(include);
                 } else {
-                    return header;
+                    return include;
                 }
             }
         }

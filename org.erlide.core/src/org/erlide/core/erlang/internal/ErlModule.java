@@ -574,69 +574,69 @@ public class ErlModule extends Openable implements IErlModule {
             return includedFilesForModule;
         }
         final List<IErlModule> result = Lists.newArrayList();
-        final Collection<ErlangIncludeFile> includes = getIncludedFiles();
+        final Collection<ErlangIncludeFile> includedFiles = getIncludedFiles();
         final IErlProject project = getProject();
         if (project == null) {
             return result;
         }
-        final Collection<IErlModule> headers = project.getIncludes();
-        Collection<IErlModule> externalHeaders = null;
-        Collection<IErlModule> referencedHeaders = null;
+        final Collection<IErlModule> includes = project.getIncludes();
+        Collection<IErlModule> externalIncludes = null;
+        Collection<IErlModule> referencedIncludes = null;
         Collection<IErlModule> modules = null;
-        for (final ErlangIncludeFile include : includes) {
-            final String includeFileName = include.getFilenameLastPart();
-            if (findAllIncludedHeadersAux(checked, result, headers,
+        for (final ErlangIncludeFile includeFile : includedFiles) {
+            final String includeFileName = includeFile.getFilenameLastPart();
+            if (findAllIncludedFilesAux(checked, result, includes,
                     includeFileName)) {
                 continue;
             }
-            if (referencedHeaders == null) {
-                referencedHeaders = Lists.newArrayList();
+            if (referencedIncludes == null) {
+                referencedIncludes = Lists.newArrayList();
                 final Collection<IErlProject> referencedProjects = project
                         .getProjectReferences();
                 for (final IErlProject referencedProject : referencedProjects) {
-                    referencedHeaders.addAll(referencedProject.getIncludes());
+                    referencedIncludes.addAll(referencedProject.getIncludes());
                 }
             }
-            if (findAllIncludedHeadersAux(checked, result, referencedHeaders,
+            if (findAllIncludedFilesAux(checked, result, referencedIncludes,
                     includeFileName)) {
                 continue;
             }
-            if (externalHeaders == null) {
-                externalHeaders = project.getExternalHeaders();
+            if (externalIncludes == null) {
+                externalIncludes = project.getExternalIncludes();
             }
-            if (findAllIncludedHeadersAux(checked, result, externalHeaders,
+            if (findAllIncludedFilesAux(checked, result, externalIncludes,
                     includeFileName)) {
                 continue;
             }
             if (modules == null) {
                 modules = project.getModules();
             }
-            findAllIncludedHeadersAux(checked, result, modules, includeFileName);
+            findAllIncludedFilesAux(checked, result, modules, includeFileName);
         }
         ErlModel.getErlModelCache().putIncludedFilesForModule(this, result);
         return result;
     }
 
-    private boolean findAllIncludedHeadersAux(final List<IErlModule> checked,
+    private boolean findAllIncludedFilesAux(final List<IErlModule> checked,
             final List<IErlModule> result,
-            final Collection<IErlModule> headers, final String includeFileName)
+            final Collection<IErlModule> includes, final String includeFileName)
             throws CoreException {
-        for (final IErlModule header : headers) {
-            if (header.getName().equals(includeFileName)) {
-                if (header.getParent() instanceof IErlExternal) {
-                    result.add(findExternalHeaderInOpenProjects(header));
+        for (final IErlModule include : includes) {
+            if (include.getName().equals(includeFileName)) {
+                if (include.getParent() instanceof IErlExternal) {
+                    result.add(findExternalIncludeInOpenProjects(include));
                 } else {
-                    result.add(header);
+                    result.add(include);
                 }
-                final ErlModule h = (ErlModule) header;
-                result.addAll(h.findAllIncludedFiles(checked));
+                final ErlModule m = (ErlModule) include;
+                result.addAll(m.findAllIncludedFiles(checked));
                 return true;
             }
         }
         return false;
     }
 
-    public static IErlModule findExternalHeaderInOpenProjects(
+    public static IErlModule findExternalIncludeInOpenProjects(
             final IErlModule externalInclude) throws CoreException {
         final String filePath = externalInclude.getFilePath();
         final Collection<IErlProject> projects = externalInclude.getModel()

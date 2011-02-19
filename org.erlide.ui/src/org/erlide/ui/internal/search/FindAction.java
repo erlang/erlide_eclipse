@@ -226,13 +226,12 @@ public abstract class FindAction extends SelectionDispatchAction {
         final ISelection sel = getSelection();
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();
-        final String scannerModuleName = ErlangToolkit
-                .createScannerModuleName(module);
-        OpenResult res;
         try {
-            res = ErlideOpen.open(b, scannerModuleName, offset, ModelUtils
-                    .getImportsAsList(module), "", ErlangCore.getModel()
-                    .getPathVars());
+            final String scannerModuleName = ErlangToolkit
+                    .createScannerModuleName(module);
+            final OpenResult res = ErlideOpen.open(b, scannerModuleName,
+                    offset, ModelUtils.getImportsAsList(module), "", ErlangCore
+                            .getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset,

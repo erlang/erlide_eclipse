@@ -99,7 +99,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return null;
     }
 
-    public boolean hasHeaders() {
+    public boolean hasIncludes() {
         return hasHeaders;
     }
 }

@@ -126,7 +126,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return null;
     }
 
-    public boolean hasHeaders() {
+    public boolean hasIncludes() {
         return true;
     }
 }

@@ -283,11 +283,11 @@ public class ErlideOpen {
         return null;
     }
 
-    public static Collection<String> getHeadersInDir(final Backend backend,
+    public static Collection<String> getIncludesInDir(final Backend backend,
             final String directory) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
-                    "get_headers_in_dir", "s", directory);
+                    "get_includes_in_dir", "s", directory);
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);

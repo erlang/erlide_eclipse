@@ -312,18 +312,16 @@ public class ModelUtils {
     public static List<IErlModule> getModulesWithReferencedProjectsWithPrefix(
             final IErlProject project, final String prefix)
             throws CoreException {
-        final IErlModel model = ErlangCore.getModel();
         final List<IErlModule> result = new ArrayList<IErlModule>();
         if (project == null) {
             return result;
         }
         project.open(null);
         addModulesWithPrefix(prefix, result, project.getModules());
-        for (final IProject p : project.getProject().getReferencedProjects()) {
-            final IErlProject ep = model.findProject(p);
-            if (ep != null) {
-                ep.open(null);
-                addModulesWithPrefix(prefix, result, ep.getModules());
+        for (final IErlProject p : project.getProjectReferences()) {
+            if (p != null) {
+                p.open(null);
+                addModulesWithPrefix(prefix, result, p.getModules());
             }
         }
         return result;

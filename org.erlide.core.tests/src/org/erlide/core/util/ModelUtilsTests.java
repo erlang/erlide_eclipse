@@ -69,7 +69,7 @@ public class ModelUtilsTests {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModulesAndHeaders();
+        ErlideTestUtils.initModulesAndIncludes();
     }
 
     @After
@@ -170,8 +170,8 @@ public class ModelUtilsTests {
         // given
         // a module with includes and record
         final IErlProject project = projects[0];
-        final IErlModule header = ErlideTestUtils
-                .createHeader(project, "a.hrl",
+        final IErlModule include = ErlideTestUtils
+                .createInclude(project, "a.hrl",
                         "-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
         final IErlModule module = ErlideTestUtils
                 .createModule(
@@ -184,7 +184,7 @@ public class ModelUtilsTests {
         final IErlPreprocessorDef preprocessorDef1 = ModelUtils
                 .findPreprocessorDef(module, "rec1", Kind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef2 = ModelUtils
-                .findPreprocessorDef(header, "rec1", Kind.RECORD_DEF);
+                .findPreprocessorDef(include, "rec1", Kind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef3 = ModelUtils
                 .findPreprocessorDef(Arrays.asList(projects), "f.erl", "rec2",
                         Kind.RECORD_DEF);
@@ -194,13 +194,13 @@ public class ModelUtilsTests {
         assertNotNull(preprocessorDef1);
         assertTrue(preprocessorDef1 instanceof IErlRecordDef);
         assertEquals(preprocessorDef1, preprocessorDef2);
-        assertEquals(preprocessorDef1.getParent(), header);
+        assertEquals(preprocessorDef1.getParent(), include);
         assertNotNull(preprocessorDef3);
         assertEquals(preprocessorDef3.getParent(), module);
     }
 
     @Test
-    public void findPreprocessorDefOtpHeaderTest() throws Exception {
+    public void findPreprocessorDefOtpIncludeTest() throws Exception {
         // given
         // a module with includes and record
         final IErlProject project = projects[0];
@@ -398,11 +398,11 @@ public class ModelUtilsTests {
         // given
         // a project with a module and an include with a typespec
         final IErlProject project = projects[0];
-        final String headerName = "a.hrl";
-        final IErlModule header = ErlideTestUtils
-                .createModule(project, headerName,
+        final String includeName = "a.hrl";
+        final IErlModule include = ErlideTestUtils
+                .createModule(project, includeName,
                         "-type date() :: {pos_integer(), pos_integer(), pos_integer()}.\n");
-        header.open(null);
+        include.open(null);
         final IErlModule module = ErlideTestUtils
                 .createModule(
                         project,
@@ -416,13 +416,13 @@ public class ModelUtilsTests {
         // then
         // it should be found
         assertNotNull(typespec);
-        assertEquals(typespec.getParent(), header);
+        assertEquals(typespec.getParent(), include);
     }
 
     @Test
-    public void findPreprocessorDefExternalHeaderOnIncludePathTest()
+    public void findPreprocessorDefExternalIncludeOnIncludePathTest()
             throws Exception {
-        File externalHeader = null;
+        File externalInclude = null;
         IErlProject project = null;
         // given
         // a project with an include dir outside the model, the include file
@@ -433,11 +433,11 @@ public class ModelUtilsTests {
                     ErlideTestUtils.getTmpPath(projectName), projectName);
             final IErlModule module = ErlideTestUtils.createModule(project,
                     "a.erl", "-include(\"x.hrl\").\n");
-            final String headerName = "x.hrl";
-            externalHeader = ErlideTestUtils.createTmpFile(headerName,
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
                     "-record(rec2, {field, another=def}.");
-            final String headerPath = externalHeader.getAbsolutePath();
-            final IPath p = new Path(headerPath).removeLastSegments(1);
+            final String includePath = externalInclude.getAbsolutePath();
+            final IPath p = new Path(includePath).removeLastSegments(1);
             project.setIncludeDirs(Lists.newArrayList(p));
             project.open(null);
             // when
@@ -455,15 +455,15 @@ public class ModelUtilsTests {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
             }
-            if (externalHeader != null && externalHeader.exists()) {
-                externalHeader.delete();
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
             }
         }
     }
 
     @Test
-    public void findPreprocessorDefExternalHeaderPathTest() throws Exception {
-        File externalHeader = null;
+    public void findPreprocessorDefExternalIncludePathTest() throws Exception {
+        File externalInclude = null;
         IErlProject project = null;
         // given
         // a project with an include dir outside the model, the include file
@@ -474,13 +474,13 @@ public class ModelUtilsTests {
                     ErlideTestUtils.getTmpPath(projectName), projectName);
             final IErlModule module = ErlideTestUtils.createModule(project,
                     "a.erl", "-include(\"x.hrl\").\n");
-            final String headerName = "x.hrl";
-            externalHeader = ErlideTestUtils.createTmpFile(headerName,
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
                     "-record(rec2, {field, another=def}.");
-            final String headerPath = externalHeader.getAbsolutePath();
+            final String includePath = externalInclude.getAbsolutePath();
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
-                    externalsFileName, headerPath);
+                    externalsFileName, includePath);
             project.setExternalIncludesFile(externalsFile.getAbsolutePath());
             project.open(null);
             // when
@@ -498,17 +498,17 @@ public class ModelUtilsTests {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
             }
-            if (externalHeader != null && externalHeader.exists()) {
-                externalHeader.delete();
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
             }
         }
     }
 
     @Test
-    public void findPreprocessorDefExternalHeaderOnIncludePathWithPathVariablesTest()
+    public void findPreprocessorDefExternalIncludeOnIncludePathWithPathVariablesTest()
             throws Exception {
         // http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
-        File externalHeader = null;
+        File externalInclude = null;
         IErlProject project = null;
         // given
         // a project with an include dir outside the model, the include file
@@ -519,11 +519,11 @@ public class ModelUtilsTests {
                     ErlideTestUtils.getTmpPath(projectName), projectName);
             final IErlModule module = ErlideTestUtils.createModule(project,
                     "a.erl", "-include(\"x.hrl\").\n");
-            final String headerName = "x.hrl";
-            externalHeader = ErlideTestUtils.createTmpFile(headerName,
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
                     "-record(rec2, {field, another=def}.");
-            final String headerPath = externalHeader.getAbsolutePath();
-            IPath path = new Path(headerPath).removeLastSegments(1);
+            final String includePath = externalInclude.getAbsolutePath();
+            IPath path = new Path(includePath).removeLastSegments(1);
             final IPath[] paths = ErlideTestUtils.splitPathAfter(1, path);
             final IPathVariableManager pathVariableManager = ResourcesPlugin
                     .getWorkspace().getPathVariableManager();
@@ -547,8 +547,8 @@ public class ModelUtilsTests {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
             }
-            if (externalHeader != null && externalHeader.exists()) {
-                externalHeader.delete();
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
             }
         }
     }

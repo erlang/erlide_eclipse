@@ -50,7 +50,7 @@ public class ErlideTestUtils {
 		}
 	}
 
-	public static void initModulesAndHeaders() {
+	public static void initModulesAndIncludes() {
 		modules = Lists.newArrayList();
 	}
 
@@ -63,7 +63,7 @@ public class ErlideTestUtils {
 		return module;
 	}
 
-	public static IErlModule createHeader(final IErlProject project,
+	public static IErlModule createInclude(final IErlProject project,
 			final String moduleName, final String moduleContents)
 			throws CoreException {
 		final IFolder folder = project.getProject().getFolder("include");
