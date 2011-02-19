@@ -18,12 +18,12 @@ import java.util.HashMap;
 import org.erlide.backend.console.BackendShell;
 import org.erlide.backend.events.EventDaemon;
 import org.erlide.backend.events.LogEventHandler;
-import org.erlide.backend.rpc.RpcCallback;
 import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.backend.rpc.RpcCallback;
 import org.erlide.backend.rpc.RpcException;
 import org.erlide.backend.rpc.RpcFuture;
-import org.erlide.backend.rpc.RpcResult;
 import org.erlide.backend.rpc.RpcHelper;
+import org.erlide.backend.rpc.RpcResult;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.jinterface.util.ErlLogger;
@@ -46,7 +46,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
     private static final int EPMD_PORT = 4369;
     private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
-    private static int DEFAULT_TIMEOUT;
+    public static int DEFAULT_TIMEOUT;
     {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {

@@ -276,14 +276,14 @@ public final class RpcHelper {
             final Object... args0) throws SignatureException {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
-        OtpErlangObject res = null;
-        res = RpcHelper.buildRpcCastMsg(gleader, module, fun, args);
+        OtpErlangObject msg = null;
+        msg = RpcHelper.buildRpcCastMsg(gleader, module, fun, args);
         if (logCalls) {
             debugLogCallArgs("cast -> %s:%s(%s)", module, fun, argString(args));
         }
-        RpcHelper.send(node, peer, "rex", res);
+        RpcHelper.send(node, peer, "rex", msg);
         if (CHECK_RPC) {
-            debug("RPC _cast_" + "=> " + res);
+            debug("RPC _cast_" + "=> " + msg);
         }
     }
 
@@ -335,6 +335,33 @@ public final class RpcHelper {
     @SuppressWarnings("unused")
     private static void warn(final Exception e) {
         ErlLogger.debug(e);
+    }
+
+    public static void makeAsyncCbCall(final OtpNode node, final String peer,
+            final RpcCallback cb, final int timeout,
+            final OtpErlangObject gleader, final String module,
+            final String fun, final String signature, final Object... args)
+            throws SignatureException {
+        final RpcFuture future = sendRpcCall(node, peer, false, gleader,
+                module, fun, signature, args);
+        final Runnable target = new Runnable() {
+            public void run() {
+                OtpErlangObject result;
+                try {
+                    result = future.get(timeout);
+                    cb.run(result);
+                } catch (final RpcException e) {
+                    // TODO do we want to treat a timeout differently?
+                    ErlLogger.error("Could not execute RPC " + module + ":"
+                            + fun + " : " + e.getMessage());
+                }
+            }
+        };
+        // We can't use jobs here, it's an Eclipse dependency
+        final Thread thread = new Thread(target);
+        thread.setDaemon(true);
+        thread.setName("async " + module + ":" + fun);
+        thread.start();
     }
 
     private RpcHelper() {

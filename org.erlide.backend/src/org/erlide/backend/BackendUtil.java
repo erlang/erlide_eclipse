@@ -17,6 +17,7 @@ import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpNode;
 
 /**
  * 
@@ -82,6 +83,22 @@ public final class BackendUtil {
         String fUniqueId;
         fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
         return fUniqueId;
+    }
+
+    public static OtpNode createOtpNode(final String cookie) throws IOException {
+        OtpNode node;
+        if (cookie == null) {
+            node = new OtpNode(createJavaNodeName());
+        } else {
+            node = new OtpNode(createJavaNodeName(), cookie);
+        }
+        final String nodeCookie = node.cookie();
+        final int len = nodeCookie.length();
+        final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
+                : nodeCookie;
+        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
+                cookie);
+        return node;
     }
 
 }
