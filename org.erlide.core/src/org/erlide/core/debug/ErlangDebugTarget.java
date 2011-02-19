@@ -33,7 +33,7 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.Backend;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.ErlangFunctionCall;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.jinterface.util.ErlLogger;
@@ -345,7 +345,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return null;
     }
 
-    public ErlCallable getBackend() {
+    public RpcCallSite getBackend() {
         return fBackend;
     }
 

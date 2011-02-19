@@ -8,14 +8,13 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.backend.rpc;
 
-import org.erlide.backend.rpc.RpcFuture;
-import org.erlide.backend.rpc.RpcResult;
+import org.erlide.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface ErlCallable {
+public interface RpcCallSite {
 
     /**
      * typed RPC

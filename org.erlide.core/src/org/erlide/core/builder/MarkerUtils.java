@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Tuple;
 import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
@@ -369,7 +369,7 @@ public final class MarkerUtils {
     }
 
     public static void addDialyzerWarningMarkersFromResultList(
-            final IErlProject project, final ErlCallable backend,
+            final IErlProject project, final RpcCallSite backend,
             final OtpErlangList result) {
         if (result == null) {
             return;

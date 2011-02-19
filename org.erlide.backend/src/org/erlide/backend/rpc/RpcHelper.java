@@ -26,7 +26,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.Signature;
 import com.ericsson.otp.erlang.SignatureException;
 
-public final class RpcUtil {
+public final class RpcHelper {
     public static final int INFINITY = -1;
 
     // use this for debugging
@@ -161,7 +161,7 @@ public final class RpcUtil {
 
         OtpErlangObject res = null;
         final OtpMbox mbox = node.createMbox();
-        res = RpcUtil.buildRpcCall(mbox.self(), gleader, module, fun, args);
+        res = RpcHelper.buildRpcCall(mbox.self(), gleader, module, fun, args);
         if (logCalls) {
             debugLogCallArgs("call -> %s:%s(%s)", module, fun, argString(args));
         }
@@ -277,11 +277,11 @@ public final class RpcUtil {
         final OtpErlangObject[] args = convertArgs(signature, args0);
 
         OtpErlangObject res = null;
-        res = RpcUtil.buildRpcCastMsg(gleader, module, fun, args);
+        res = RpcHelper.buildRpcCastMsg(gleader, module, fun, args);
         if (logCalls) {
             debugLogCallArgs("cast -> %s:%s(%s)", module, fun, argString(args));
         }
-        RpcUtil.send(node, peer, "rex", res);
+        RpcHelper.send(node, peer, "rex", res);
         if (CHECK_RPC) {
             debug("RPC _cast_" + "=> " + res);
         }
@@ -337,6 +337,6 @@ public final class RpcUtil {
         ErlLogger.debug(e);
     }
 
-    private RpcUtil() {
+    private RpcHelper() {
     }
 }

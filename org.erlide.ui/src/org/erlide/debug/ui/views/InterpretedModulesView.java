@@ -31,10 +31,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
-import org.erlide.backend.ErlCallable;
 import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.ErtsProcess;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.debug.ErlangDebugElement;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugTarget;
@@ -279,7 +279,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final String moduleWoExtension = ErlideUtil.withoutExtension(module);
         final IProject project = dti.getItem().getErlProject().getProject();
         final boolean interpret = checked;
-        final ErlCallable backend = erlangDebugTarget.getBackend();
+        final RpcCallSite backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {

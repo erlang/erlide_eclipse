@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -139,7 +139,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final ErlCallable b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         final int offset = selection.getOffset();
         try {
             final IErlProject erlProject = module.getErlProject();
@@ -175,7 +175,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static void openOpenResult(final ErlangEditor editor,
-            final IErlModule module, final ErlCallable backend, final int offset,
+            final IErlModule module, final RpcCallSite backend, final int offset,
             final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException {
@@ -189,7 +189,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static Object findOpenResult(final ErlangEditor editor,
-            final IErlModule module, final ErlCallable backend,
+            final IErlModule module, final RpcCallSite backend,
             final IErlProject erlProject, final OpenResult res, final int offset)
             throws CoreException, BackendException, ErlModelException,
             BadLocationException, OtpErlangRangeException {
@@ -242,7 +242,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     private static IErlElement findLocalCall(final IErlModule module,
-            final ErlCallable backend, final IErlProject erlProject,
+            final RpcCallSite backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
             final boolean checkAllProjects) throws BackendException,
             CoreException {

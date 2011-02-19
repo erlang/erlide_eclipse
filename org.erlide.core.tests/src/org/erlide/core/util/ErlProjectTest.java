@@ -8,7 +8,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -143,7 +143,7 @@ public class ErlProjectTest {
         moduleE.open(null);
         // when
         // looking for lists:reverse/2 and lists:reverse/1
-        final ErlCallable backend = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite backend = ErlangCore.getBackendManager().getIdeBackend();
         final IErlModel model = ErlangCore.getModel();
         final OpenResult res = ErlideOpen.open(backend,
                 ErlangToolkit.createScannerModuleName(moduleE), 49,

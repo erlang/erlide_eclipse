@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Util;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.jinterface.util.ErlLogger;
@@ -18,7 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideXref {
     private static final String ERLIDE_XREF = "erlide_xref";
 
-    public static void addDirs(final ErlCallable backend,
+    public static void addDirs(final RpcCallSite backend,
             final Collection<String> dirs) {
         try {
             backend.call(ERLIDE_XREF, "add_dirs", "ls", dirs);

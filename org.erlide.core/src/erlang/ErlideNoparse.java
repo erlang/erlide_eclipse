@@ -1,7 +1,7 @@
 package erlang;
 
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
@@ -16,7 +16,7 @@ public class ErlideNoparse {
 
     private static final String ERLIDE_NOPARSE = "erlide_noparse";
 
-    public static OtpErlangTuple initialParse(final ErlCallable b,
+    public static OtpErlangTuple initialParse(final RpcCallSite b,
             final String scannerModuleName, final String moduleFileName,
             final String stateDir, final boolean useCaches,
             final boolean updateRefs) {
@@ -34,7 +34,7 @@ public class ErlideNoparse {
         return res;
     }
 
-    public static OtpErlangTuple reparse(final ErlCallable b,
+    public static OtpErlangTuple reparse(final RpcCallSite b,
             final String scannerModuleName) {
         OtpErlangTuple res = null;
         try {
@@ -72,7 +72,7 @@ public class ErlideNoparse {
         return null;
     }
 
-    public static void removeCacheFiles(final ErlCallable backend,
+    public static void removeCacheFiles(final RpcCallSite backend,
             final String scannerModuleName, final String stateDir) {
         try {
             final OtpErlangObject res = backend.call(20000, ERLIDE_NOPARSE,

@@ -13,7 +13,7 @@ package org.erlide.backend.rpc;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
- * Groups callbacks for {@link RpcUtil#rpcCallWithProgress}. Clients should
+ * Groups callbacks for {@link RpcHelper#rpcCallWithProgress}. Clients should
  * extend it locally.
  * 
  */

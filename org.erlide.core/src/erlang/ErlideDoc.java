@@ -4,14 +4,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDoc {
-    public static OtpErlangObject getProposalsWithDoc(final ErlCallable b,
+    public static OtpErlangObject getProposalsWithDoc(final RpcCallSite b,
             final String mod, final String prefix, final String stateDir) {
         OtpErlangObject res = null;
         try {
@@ -23,7 +23,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static OtpErlangObject getModules(final ErlCallable b,
+    public static OtpErlangObject getModules(final RpcCallSite b,
             final String prefix, final List<String> projectModules) {
         OtpErlangObject res = null;
         try {
@@ -36,7 +36,7 @@ public class ErlideDoc {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject getOtpDoc(final ErlCallable ide, final ErlCallable b,
+    public static OtpErlangObject getOtpDoc(final RpcCallSite ide, final RpcCallSite b,
             final int offset, final String stateDir, final String module,
             final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
@@ -55,7 +55,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static String getOtpDocLocation(final ErlCallable b) {
+    public static String getOtpDocLocation(final RpcCallSite b) {
         // OtpErlangObject res = null;
         // try {
         // // commented out since target doesn't exist

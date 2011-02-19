@@ -17,7 +17,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.rpc.RpcFuture;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -96,7 +96,7 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected RpcFuture call() throws BackendException {
-                final ErlCallable b = ErlangCore.getBackendManager()
+                final RpcCallSite b = ErlangCore.getBackendManager()
                         .getIdeBackend();
                 final RpcFuture result = ErlangXref.addProject(b,
                         module.getProject());

@@ -13,7 +13,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
@@ -64,7 +64,7 @@ public class DialyzerUtils {
             final IProject project = p.getProject();
             MarkerUtils.removeDialyzerMarkers(project);
             try {
-                final ErlCallable backend = ErlangCore.getBackendManager()
+                final RpcCallSite backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();

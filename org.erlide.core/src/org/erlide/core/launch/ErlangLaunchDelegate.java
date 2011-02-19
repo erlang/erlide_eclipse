@@ -49,9 +49,9 @@ import org.erlide.backend.Backend;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendPlugin;
-import org.erlide.backend.ErlCallable;
 import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchData;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.ErlangPlugin;
@@ -265,7 +265,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return new ErlangDebugHelper();
     }
 
-    private void addNodesAsDebugTargets(final ErlCallable backend,
+    private void addNodesAsDebugTargets(final RpcCallSite backend,
             final ILaunch launch) {
         final OtpErlangList nodes = ErlideDebug.nodes(backend);
         if (nodes != null) {
@@ -394,7 +394,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     void runInitial(final String module, final String function,
-            final String args, final ErlCallable backend) {
+            final String args, final RpcCallSite backend) {
         ErlLogger.debug("calling startup function %s:%s", module, function);
         try {
             if (module.length() > 0 && function.length() > 0) {

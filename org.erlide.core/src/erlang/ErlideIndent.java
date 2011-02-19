@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -40,7 +40,7 @@ public class ErlideIndent {
     }
 
     @SuppressWarnings("boxing")
-    public static IndentResult indentLine(final ErlCallable b,
+    public static IndentResult indentLine(final RpcCallSite b,
             final String oldLine, final String txt, final String insertedText,
             final int tabw, final boolean useTabs,
             final Map<String, String> prefs) throws BackendException,
@@ -53,7 +53,7 @@ public class ErlideIndent {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject indentLines(final ErlCallable b,
+    public static OtpErlangObject indentLines(final RpcCallSite b,
             final int offset, final int length, final String text,
             final int tabw, final boolean useTabs,
             final Map<String, String> prefs) throws BackendException {
@@ -63,7 +63,7 @@ public class ErlideIndent {
         return o;
     }
 
-    public static OtpErlangObject templateIndentLines(final ErlCallable b,
+    public static OtpErlangObject templateIndentLines(final RpcCallSite b,
             final String prefix, final String text, final int tabw,
             final boolean useTabs, final Map<String, String> prefs)
             throws BackendException {
@@ -74,7 +74,7 @@ public class ErlideIndent {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject call(final ErlCallable b, final String module,
+    public static OtpErlangObject call(final RpcCallSite b, final String module,
             final String fun, final int offset, final int length,
             final String text) {
         try {

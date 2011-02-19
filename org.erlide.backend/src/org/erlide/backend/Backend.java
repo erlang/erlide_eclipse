@@ -18,10 +18,12 @@ import java.util.HashMap;
 import org.erlide.backend.console.BackendShell;
 import org.erlide.backend.events.EventDaemon;
 import org.erlide.backend.events.LogEventHandler;
+import org.erlide.backend.rpc.RpcCallback;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.rpc.RpcException;
 import org.erlide.backend.rpc.RpcFuture;
 import org.erlide.backend.rpc.RpcResult;
-import org.erlide.backend.rpc.RpcUtil;
+import org.erlide.backend.rpc.RpcHelper;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.jinterface.util.ErlLogger;
@@ -38,7 +40,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class Backend extends OtpNodeStatus implements ErlCallable {
+public class Backend extends OtpNodeStatus implements RpcCallSite {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
@@ -48,7 +50,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
     {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcUtil.INFINITY;
+            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
         } else {
             DEFAULT_TIMEOUT = Integer.parseInt(t);
         }
@@ -173,7 +175,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
             return;
         }
         try {
-            RpcUtil.send(getNode(), pid, msg);
+            RpcHelper.send(getNode(), pid, msg);
         } catch (final SignatureException e) {
             // shouldn't happen
             ErlLogger.warn(e);
@@ -185,7 +187,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
             return;
         }
         try {
-            RpcUtil.send(getNode(), getFullNodeName(), name, msg);
+            RpcHelper.send(getNode(), getFullNodeName(), name, msg);
         } catch (final SignatureException e) {
             // shouldn't happen
             ErlLogger.warn(e);
@@ -388,7 +390,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         checkAvailability();
-        return RpcUtil.sendRpcCall(getNode(), getFullNodeName(), logCalls,
+        return RpcHelper.sendRpcCall(getNode(), getFullNodeName(), logCalls,
                 gleader, module, fun, signature, args0);
     }
 
@@ -419,7 +421,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
             throws RpcException, SignatureException {
         checkAvailability();
 
-        final RpcFuture future = RpcUtil.sendRpcCall(fNode, fPeer, logCalls,
+        final RpcFuture future = RpcHelper.sendRpcCall(fNode, fPeer, logCalls,
                 gleader, module, fun, signature, args);
         final Runnable target = new Runnable() {
             public void run() {
@@ -446,7 +448,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
         checkAvailability();
-        final OtpErlangObject result = RpcUtil.rpcCall(getNode(),
+        final OtpErlangObject result = RpcHelper.rpcCall(getNode(),
                 getFullNodeName(), logCalls, gleader, module, fun, timeout,
                 signature, args0);
         return result;
@@ -463,7 +465,7 @@ public class Backend extends OtpNodeStatus implements ErlCallable {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         checkAvailability();
-        RpcUtil.rpcCast(getNode(), getFullNodeName(), logCalls, gleader,
+        RpcHelper.rpcCast(getNode(), getFullNodeName(), logCalls, gleader,
                 module, fun, signature, args0);
     }
 

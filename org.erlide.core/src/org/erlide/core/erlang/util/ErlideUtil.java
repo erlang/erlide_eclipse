@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
@@ -42,7 +42,7 @@ public final class ErlideUtil {
 
     private static final List<String> EMPTY_LIST = Lists.newArrayList();
 
-    public static boolean isAccessible(final ErlCallable backend,
+    public static boolean isAccessible(final RpcCallSite backend,
             final String localDir) {
         File f = null;
         try {

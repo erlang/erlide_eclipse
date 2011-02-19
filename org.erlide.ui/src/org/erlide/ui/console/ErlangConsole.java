@@ -21,8 +21,8 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.erlide.backend.ErlCallable;
 import org.erlide.backend.console.BackendShell;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.backend.ErlideBackend;
 
 public class ErlangConsole extends TextConsole {
@@ -46,7 +46,7 @@ public class ErlangConsole extends TextConsole {
         return new ErlangConsolePage(view, this);
     }
 
-    public ErlCallable getBackend() {
+    public RpcCallSite getBackend() {
         return shell.getBackend();
     }
 

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlCallable;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.ErlideBackend;
@@ -63,7 +63,7 @@ public class CheckDialyzerPltFileHandler extends AbstractHandler implements
                     checkPlt(preferences, monitor, backend);
                 } else {
                     for (final IProject project : projects) {
-                        final ErlCallable backend = backendManager
+                        final RpcCallSite backend = backendManager
                                 .getBuildBackend(project);
                         final DialyzerPreferences preferences = new DialyzerPreferences(
                                 project);
@@ -83,7 +83,7 @@ public class CheckDialyzerPltFileHandler extends AbstractHandler implements
         }
 
         private void checkPlt(final DialyzerPreferences preferences,
-                final IProgressMonitor monitor, final ErlCallable backend)
+                final IProgressMonitor monitor, final RpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException {
             try {
                 preferences.load();

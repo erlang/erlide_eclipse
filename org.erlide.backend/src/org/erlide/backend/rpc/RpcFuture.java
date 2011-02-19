@@ -30,20 +30,20 @@ public class RpcFuture {
     public OtpErlangObject get() throws RpcException {
         if (isDone()) {
             if (logCalls) {
-                RpcUtil.debugLogCallArgs("call <- %s", result);
+                RpcHelper.debugLogCallArgs("call <- %s", result);
             }
             return result;
         }
-        return get(RpcUtil.INFINITY);
+        return get(RpcHelper.INFINITY);
     }
 
     public OtpErlangObject get(final long timeout) throws RpcException {
         if (isDone()) {
             return result;
         }
-        result = RpcUtil.getRpcResult(mbox, timeout, env);
+        result = RpcHelper.getRpcResult(mbox, timeout, env);
         if (logCalls) {
-            RpcUtil.debugLogCallArgs("call <- %s", result);
+            RpcHelper.debugLogCallArgs("call <- %s", result);
         }
         return result;
     }
