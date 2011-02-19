@@ -117,10 +117,10 @@ get_lib_files(Dir) ->
             {ok, []}
     end.
 
-get_headers_in_dir(Dir) ->
+get_includes_in_dir(Dir) ->
     case file:list_dir(Dir) of
         {ok, Files} ->
-            {ok, filter_headers(Files)};
+            {ok, filter_includes(Files)};
         _ ->
             {ok, []}
     end.
@@ -129,17 +129,17 @@ get_headers_in_dir(Dir) ->
 %% Local Functions
 %%
 
-filter_headers(Files) ->
-    filter_headers(Files, []).
+filter_includes(Files) ->
+    filter_includes(Files, []).
 
-filter_headers([], Acc) ->
+filter_includes([], Acc) ->
     lists:reverse(Acc);
-filter_headers([Filename | Rest], Acc) ->
+filter_includes([Filename | Rest], Acc) ->
     case filename:extension(Filename) of
         ".hrl" ->
-            filter_headers(Rest, [Filename | Acc]);
+            filter_includes(Rest, [Filename | Acc]);
         _ ->
-            filter_headers(Rest, Acc)
+            filter_includes(Rest, Acc)
     end.
 
 get_lib_dir(Dir) ->

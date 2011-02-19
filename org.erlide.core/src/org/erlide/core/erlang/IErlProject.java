@@ -111,7 +111,7 @@ public interface IErlProject extends IErlFolder {
 
     Collection<IErlModule> getExternalModules() throws ErlModelException;
 
-    Collection<IErlModule> getExternalHeaders() throws ErlModelException;
+    Collection<IErlModule> getExternalIncludes() throws ErlModelException;
 
     String getExternalModulesString();
 
@@ -168,7 +168,7 @@ public interface IErlProject extends IErlFolder {
 
     Collection<IErlProject> getProjectReferences() throws CoreException;
 
-    public abstract IErlModule findIncludeFile(final String filePath)
+    public abstract IErlModule findIncludeFromNameOrPath(final String filePath)
             throws CoreException, BackendException;
 
     IErlModule getModule(String name) throws ErlModelException;

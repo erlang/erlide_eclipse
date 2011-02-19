@@ -54,7 +54,7 @@ public class ErlProjectTest {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModulesAndHeaders();
+        ErlideTestUtils.initModulesAndIncludes();
     }
 
     @After
@@ -67,13 +67,13 @@ public class ErlProjectTest {
         // given
         // a project with a module and an include including file.hrl
         final IErlProject project = projects[0];
-        final String headerName = "a.hrl";
-        final IErlModule header = ErlideTestUtils
+        final String includeName = "a.hrl";
+        final IErlModule include = ErlideTestUtils
                 .createModule(
                         project,
-                        headerName,
+                        includeName,
                         "-include_lib(\"kernel/include/file.hrl\").\n-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
-        header.open(null);
+        include.open(null);
         final IErlModule module = ErlideTestUtils
                 .createModule(
                         project,
@@ -83,17 +83,17 @@ public class ErlProjectTest {
         module.open(null);
         // when
         // looking for the include
-        final IErlModule header1 = project.findIncludeFile(headerName);
-        final IErlModule header2 = project.findIncludeFile("file.hrl");
+        final IErlModule include1 = project.findIncludeFromNameOrPath(includeName);
+        final IErlModule include2 = project.findIncludeFromNameOrPath("file.hrl");
         // then
         // it should be found
-        assertEquals(header, header1);
-        assertNotNull(header2);
+        assertEquals(include, include1);
+        assertNotNull(include2);
     }
 
     @Test
     public void findExternalIncludeFileOnIncludePath() throws Exception {
-        File externalHeader = null;
+        File externalInclude = null;
         IErlProject project = null;
         // given
         // a project with an include dir outside the model
@@ -101,11 +101,11 @@ public class ErlProjectTest {
             final String projectName = "testprojectx";
             project = ErlideTestUtils.createProject(
                     ErlideTestUtils.getTmpPath(projectName), projectName);
-            final String headerName = "x.hrl";
-            externalHeader = ErlideTestUtils.createTmpFile(headerName,
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
                     "-record(rec2, {field, another=def}.");
-            final String headerPath = externalHeader.getAbsolutePath();
-            final IPath p = new Path(headerPath).removeLastSegments(1);
+            final String includePath = externalInclude.getAbsolutePath();
+            final IPath p = new Path(includePath).removeLastSegments(1);
             project.setIncludeDirs(Lists.newArrayList(p));
             // when
             // looking for the include file
@@ -113,8 +113,8 @@ public class ErlProjectTest {
             // "x.hrl", "");
             project.open(null);
             final IErlModule module = project.findExternalModule(null,
-                    headerPath, true, false);
-            final IErlModule module2 = project.findExternalModule(headerName,
+                    includePath, true, false);
+            final IErlModule module2 = project.findExternalModule(includeName,
                     null, true, false);
             // then
             // it should be found in the model
@@ -124,8 +124,8 @@ public class ErlProjectTest {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
             }
-            if (externalHeader != null && externalHeader.exists()) {
-                externalHeader.delete();
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
             }
         }
     }
@@ -133,7 +133,7 @@ public class ErlProjectTest {
     @Test
     public void findIncludeFileOnIncludePathInOtherProject() throws Exception {
         // http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
-        IErlModule externalHeader = null;
+        IErlModule externalInclude = null;
         IErlProject project = null, project2 = null;
         // given
         // a project with an include dir outside the model
@@ -145,16 +145,16 @@ public class ErlProjectTest {
             project2 = ErlideTestUtils.createProject(
                     ErlideTestUtils.getTmpPath(projectName2), projectName2);
 
-            final String headerName = "x.hrl";
-            externalHeader = ErlideTestUtils.createHeader(project2, "x.hrl",
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createInclude(project2, "x.hrl",
                     "-record(rec2, {field, another=def}.");
-            final String headerPath = externalHeader.getFilePath();
-            final IPath p = new Path(headerPath).removeLastSegments(1);
+            final String includePath = externalInclude.getFilePath();
+            final IPath p = new Path(includePath).removeLastSegments(1);
             project.setIncludeDirs(Lists.newArrayList(p));
             // when
             // looking for the include file
             project.open(null);
-            final IErlModule module = project.findIncludeFile(headerName);
+            final IErlModule module = project.findIncludeFromNameOrPath(includeName);
             // then
             // it should be found in the project defining it
             assertNotNull(module);

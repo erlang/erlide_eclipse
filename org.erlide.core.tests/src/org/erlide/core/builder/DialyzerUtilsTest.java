@@ -48,7 +48,7 @@ public class DialyzerUtilsTest {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModulesAndHeaders();
+        ErlideTestUtils.initModulesAndIncludes();
     }
 
     @After

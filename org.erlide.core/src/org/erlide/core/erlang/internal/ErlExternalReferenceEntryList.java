@@ -98,7 +98,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
             final List<ExternalTreeEntry> externalTree,
             final IErlModelManager modelManager, final String rootName,
             final String rootEntry, final List<String> otherItems,
-            final boolean headerDir) throws ErlModelException {
+            final boolean includeDir) throws ErlModelException {
         final Map<String, IErlExternal> pathToEntryMap = Maps.newHashMap();
         pathToEntryMap.put("root", this);
         IErlExternal parent = null;
@@ -114,7 +114,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 } else {
                     final String name = getNameFromExternalPath(path);
                     final ErlExternalReferenceEntry externalReferenceEntry = new ErlExternalReferenceEntry(
-                            parent, name, path, true, headerDir);
+                            parent, name, path, true, includeDir);
                     pathToEntryMap.put(path, externalReferenceEntry);
                     externalReferenceEntry.open(pm);
                     parent.addChild(externalReferenceEntry);
@@ -124,7 +124,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (otherItems != null) {
             if (parent == null) {
                 parent = new ErlExternalReferenceEntry(this, rootName,
-                        rootEntry, true, headerDir);
+                        rootEntry, true, includeDir);
                 addChild(parent);
             }
             for (final String path : otherItems) {
@@ -196,7 +196,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
-    public boolean hasHeaders() {
+    public boolean hasIncludes() {
         return true;
     }
 

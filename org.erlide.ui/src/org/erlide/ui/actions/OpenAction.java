@@ -230,7 +230,7 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlProject project, final OpenResult res,
             final IErlModel model) throws CoreException, BackendException {
         if (project != null) {
-            return project.findIncludeFile(res.getName());
+            return project.findIncludeFromNameOrPath(res.getName());
         }
         return null;
     }
