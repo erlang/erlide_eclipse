@@ -23,13 +23,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule.ModuleKind;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -42,7 +42,7 @@ public final class ErlideUtil {
 
     private static final List<String> EMPTY_LIST = Lists.newArrayList();
 
-    public static boolean isAccessible(final Backend backend,
+    public static boolean isAccessible(final RpcCallSite backend,
             final String localDir) {
         File f = null;
         try {

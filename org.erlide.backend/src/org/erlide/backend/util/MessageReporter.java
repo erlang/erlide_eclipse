@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.backend.BackendPlugin;
 
 import com.google.common.collect.Lists;
@@ -35,10 +33,8 @@ public abstract class MessageReporter {
 
     private static List<MessageReporter> getAllImplementors() {
         final List<MessageReporter> result = Lists.newArrayList();
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor(BackendPlugin.PLUGIN_ID,
-                        "messageReporter");
+        final IConfigurationElement[] elements = BackendPlugin
+                .getMessageReporterConfigurationElements();
         for (final IConfigurationElement element : elements) {
             try {
                 final MessageReporter provider = (MessageReporter) element

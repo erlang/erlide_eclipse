@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
@@ -29,7 +30,6 @@ import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
@@ -267,7 +267,7 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it
-            final Backend backend = BackendUtils.getBuildOrIdeBackend(project
+            final RpcCallSite backend = BackendUtils.getBuildOrIdeBackend(project
                     .getProject());
             final List<String> modules = ModelUtils
                     .getExternalModulesWithPrefix(backend, "ex", project);

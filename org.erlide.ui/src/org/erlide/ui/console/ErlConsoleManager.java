@@ -7,12 +7,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
+import org.erlide.backend.Backend;
+import org.erlide.backend.IBackendListener;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.IDisposable;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.IBackendListener;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<Backend, IConsole> consoles;
@@ -53,7 +54,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         ErlangCore.getBackendManager().removeBackendListener(this);
     }
 
-    public void moduleLoaded(final Backend backend, final IProject project,
+    public void moduleLoaded(final RpcCallSite backend, final IProject project,
             final String moduleName) {
     }
 }

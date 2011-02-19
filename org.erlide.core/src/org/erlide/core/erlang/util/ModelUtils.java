@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -25,8 +27,6 @@ import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.SourceRange;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -131,7 +131,7 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<String> getExternalModulesWithPrefix(final Backend b,
+    public static List<String> getExternalModulesWithPrefix(final RpcCallSite b,
             final String prefix, final IErlProject erlProject)
             throws CoreException {
         final List<String> result = Lists.newArrayList();
@@ -340,7 +340,7 @@ public class ModelUtils {
         return new String[] { "MODULE", "LINE", "FILE" };
     }
 
-    public static ISourceRange findVariable(final Backend backend,
+    public static ISourceRange findVariable(final RpcCallSite backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,

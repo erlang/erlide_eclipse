@@ -10,12 +10,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlBackend;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.PreferencesHelper;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlBackend;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -203,7 +203,7 @@ public class CompilerPreferences {
         }
         result.add(OtpErlang.mkTuple(new OtpErlangAtom("warn_format"),
                 new OtpErlangLong(warnFormat ? 1 : 0)));
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         if (!allOptions.equals("")) {
             try {
                 final OtpErlangList term = (OtpErlangList) ErlBackend

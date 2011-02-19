@@ -3,7 +3,7 @@
  */
 package org.erlide.core.erlang;
 
-import org.erlide.jinterface.backend.Backend;
+import org.erlide.backend.rpc.RpcCallSite;
 
 /**
  * @author jakob
@@ -13,7 +13,7 @@ public interface IErlExternal extends IErlElement, IParent, IOpenable {
 
     String getExternalName();
 
-    Backend getBackend();
+    RpcCallSite getBackend();
 
     boolean isOTP();
 

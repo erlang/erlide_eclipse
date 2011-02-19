@@ -13,11 +13,11 @@ package org.erlide.core.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IParent;
-import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

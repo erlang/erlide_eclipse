@@ -74,11 +74,11 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlBackend;
+import org.erlide.backend.console.BackendShell;
+import org.erlide.backend.console.IoRequest;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.console.BackendShell;
-import org.erlide.jinterface.backend.console.IoRequest;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

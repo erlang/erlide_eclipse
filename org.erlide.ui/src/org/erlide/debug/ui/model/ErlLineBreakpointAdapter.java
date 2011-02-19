@@ -21,8 +21,8 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.jinterface.backend.ErlDebugConstants;
-import org.erlide.runtime.debug.ErlangLineBreakpoint;
+import org.erlide.backend.ErlDebugConstants;
+import org.erlide.core.debug.ErlangLineBreakpoint;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**

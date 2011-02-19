@@ -34,10 +34,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlFunction;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
@@ -95,7 +95,7 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+            final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
                 return new Object[0];
@@ -129,7 +129,7 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         ErlangXref.start(b);
     }
 
@@ -153,7 +153,7 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final Backend b = ErlangCore.getBackendManager()
+                            final RpcCallSite b = ErlangCore.getBackendManager()
                                     .getIdeBackend();
                             ErlangXref.update(b);
                             treeViewer.refresh();
@@ -191,7 +191,7 @@ public class CallHierarchyView extends ViewPart {
 
     @Override
     public void dispose() {
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         ErlangXref.stop(b);
         super.dispose();
     }

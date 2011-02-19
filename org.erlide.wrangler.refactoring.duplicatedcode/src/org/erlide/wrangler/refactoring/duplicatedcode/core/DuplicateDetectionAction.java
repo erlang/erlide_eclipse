@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.backend.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;

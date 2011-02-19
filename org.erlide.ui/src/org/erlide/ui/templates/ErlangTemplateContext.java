@@ -8,7 +8,7 @@ import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
-import org.erlide.jinterface.backend.BackendException;
+import org.erlide.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.actions.IndentAction;
 

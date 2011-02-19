@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.erlide.jinterface.backend.util.Assert;
+import org.erlide.backend.util.Assert;
 
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 

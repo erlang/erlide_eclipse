@@ -13,7 +13,10 @@ package org.erlide.core.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.backend.ErlBackend;
+import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlComment;
@@ -22,13 +25,10 @@ import org.erlide.core.erlang.IErlImport;
 import org.erlide.core.erlang.IErlMember;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlRecordDef;
-import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.ParserException;
-import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

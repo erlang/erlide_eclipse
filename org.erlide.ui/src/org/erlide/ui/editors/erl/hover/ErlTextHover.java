@@ -38,6 +38,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.erlide.backend.Backend;
+import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.backend.util.Util;
+import org.erlide.core.backend.BackendManager;
 import org.erlide.core.erlang.ErlToken;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlFunction;
@@ -47,10 +51,7 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -273,7 +274,7 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getProject();
-            final Backend b = erlProject == null ? ide : backendManager
+            final RpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
             final IErlModel model = ErlangCore.getModel();

@@ -8,9 +8,9 @@ import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.runtime.debug.ErlangDebugHelper;
 
 public class TestDebugHelper extends ErlangDebugHelper {
     private final File workdir;

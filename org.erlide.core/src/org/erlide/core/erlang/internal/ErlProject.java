@@ -37,9 +37,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
+import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.backend.util.StringUtils;
+import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -60,10 +65,6 @@ import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
-import org.erlide.jinterface.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -204,7 +205,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
-                final Backend backend = BackendUtils
+                final RpcCallSite backend = BackendUtils
                         .getBuildOrIdeBackend(getProject());
                 final Collection<String> includes = ErlideOpen.getIncludesInDir(
                         backend, path.toPortableString());

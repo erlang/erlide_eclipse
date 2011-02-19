@@ -36,8 +36,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendManager;
 import org.erlide.core.erlang.internal.ErlModelManager;
-import org.erlide.runtime.backend.BackendManager;
 
 /**
  * <p>

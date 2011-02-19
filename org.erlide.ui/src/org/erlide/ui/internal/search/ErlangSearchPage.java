@@ -39,13 +39,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -606,7 +606,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 if (module != null) {
                     // TODO how in the world can we find the proper build
                     // backend?
-                    final Backend b = ErlangCore.getBackendManager()
+                    final RpcCallSite b = ErlangCore.getBackendManager()
                             .getIdeBackend();
                     final ISelection ssel = erlangEditor.getSite()
                             .getSelectionProvider().getSelection();

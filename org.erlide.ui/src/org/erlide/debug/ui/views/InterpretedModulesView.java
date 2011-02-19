@@ -31,16 +31,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
+import org.erlide.backend.ErlDebugConstants;
+import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.backend.ErtsProcess;
+import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.core.debug.ErlangDebugElement;
+import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.ErlangDebugTarget;
+import org.erlide.core.debug.IErlangDebugNode;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlDebugConstants;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.backend.ErtsProcess;
-import org.erlide.runtime.debug.ErlangDebugElement;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.IErlangDebugNode;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -279,7 +279,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final String moduleWoExtension = ErlideUtil.withoutExtension(module);
         final IProject project = dti.getItem().getErlProject().getProject();
         final boolean interpret = checked;
-        final Backend backend = erlangDebugTarget.getBackend();
+        final RpcCallSite backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {

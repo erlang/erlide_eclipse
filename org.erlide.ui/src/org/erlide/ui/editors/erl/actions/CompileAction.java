@@ -14,13 +14,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerPreferences;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -44,7 +44,7 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();

@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.backend.rpc.RpcFuture;
+import org.erlide.core.backend.BackendManager;
+import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.util.CoreUtil;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.rpc.RpcFuture;
 import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 
 public class ErlideBuilder {
 
-    public static RpcFuture compileErl(final Backend backend, final IPath fn,
+    public static RpcFuture compileErl(final RpcCallSite backend, final IPath fn,
             final String outputdir, final Collection<IPath> includedirs,
             final OtpErlangList compilerOptions) {
         final List<String> incs = Lists.newArrayList();
@@ -36,7 +36,7 @@ public class ErlideBuilder {
         }
     }
 
-    public static OtpErlangList getSourceClashes(final Backend backend,
+    public static OtpErlangList getSourceClashes(final RpcCallSite backend,
             final String[] dirList) throws BackendException {
         final OtpErlangObject res = backend.call("erlide_builder",
                 "source_clash", "ls", (Object) dirList);
@@ -47,7 +47,7 @@ public class ErlideBuilder {
                 "bad result from erlide_builder:source_clash: " + res);
     }
 
-    public static OtpErlangList getCodeClashes(final Backend b)
+    public static OtpErlangList getCodeClashes(final RpcCallSite b)
             throws BackendException {
         final OtpErlangList res = (OtpErlangList) b.call("erlide_builder",
                 "code_clash", null);
@@ -75,7 +75,7 @@ public class ErlideBuilder {
         }
     }
 
-    public static RpcFuture compileYrl(final Backend backend, final String fn,
+    public static RpcFuture compileYrl(final RpcCallSite backend, final String fn,
             final String output) {
         try {
             return backend.async_call("erlide_builder", "compile_yrl", "ss",

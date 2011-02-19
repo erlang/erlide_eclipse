@@ -16,7 +16,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.erlide.jinterface.backend.util.ProblemData;
+import org.erlide.backend.util.ProblemData;
 
 public class AssemblaHandler extends TicketHandlerImpl {
 

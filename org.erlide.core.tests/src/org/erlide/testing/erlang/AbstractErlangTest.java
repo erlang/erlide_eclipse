@@ -12,8 +12,8 @@ package org.erlide.testing.erlang;
 
 import static org.junit.Assert.fail;
 
+import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
 import org.junit.After;
 import org.junit.Before;
 
@@ -23,7 +23,7 @@ public abstract class AbstractErlangTest {
 
     protected static final OtpErlangObject[] NO_ARGS = new OtpErlangObject[] {};
 
-    private Backend fBackend;
+    private RpcCallSite fBackend;
 
     @Before
     public void setUp() throws Exception {
@@ -35,13 +35,13 @@ public abstract class AbstractErlangTest {
         fBackend = null;
     }
 
-    protected Backend getBackend() {
+    protected RpcCallSite getBackend() {
         return fBackend;
     }
 
     public OtpErlangObject runErlangTest(final String m, final String f,
             final OtpErlangObject... args) {
-        final Backend backend = getBackend();
+        final RpcCallSite backend = getBackend();
         if (backend == null) {
             fail("Backend is null");
             return null;
