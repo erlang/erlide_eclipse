@@ -9,6 +9,6 @@ build -c -t
 perform --properties #{SITE_PRJ}/_buckminster.properties #{SITE_PRJ}#site.p2
 
 import #{WORKSPACE}/#{SITE_PRJ}/sdk.cquery
-build -c -t 
+build 
 
 
