@@ -21,4 +21,5 @@ Export-Package: erlang,
  org.erlide.backend.internal;x-internal:=true,
  org.erlide.backend.rpc,
  org.erlide.backend.runtime,
- org.erlide.backend.util
+ org.erlide.backend.util,
+ org.erlide.common

@@ -26,10 +26,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.BundleContext;
@@ -146,10 +146,10 @@ public class ErlangPlugin extends Plugin {
         platformListener = new PlatformChangeListener();
 
         String dev = "";
-        if (ErlideUtil.isDeveloper()) {
+        if (CommonUtils.isDeveloper()) {
             dev = " erlide developer version ***";
         }
-        if (ErlideUtil.isTest()) {
+        if (CommonUtils.isTest()) {
             dev += " test ***";
         }
         final String version = getFeatureVersion();

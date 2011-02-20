@@ -45,10 +45,10 @@ import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.backend.ErlBackend;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangStatus;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -133,14 +133,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.debug("Starting UI " + Thread.currentThread());
         super.start(context);
 
-        if (ErlideUtil.isDeveloper()) {
+        if (CommonUtils.isDeveloper()) {
             BackendManagerPopup.init();
         }
 
         ErlLogger.debug("Started UI");
 
         erlConMan = new ErlConsoleManager();
-        if (ErlideUtil.isDeveloper()) {
+        if (CommonUtils.isDeveloper()) {
             erlConMan.runtimeAdded(ErlangCore.getBackendManager()
                     .getIdeBackend());
         }

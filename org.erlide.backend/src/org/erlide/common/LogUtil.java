@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.common;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class LogUtil {
@@ -26,7 +25,7 @@ public class LogUtil {
     public static String getReportLocation() {
         String s = System.getProperty("erlide.projectDirectory");
         if (s == null) {
-            if (ErlideUtil.isOnWindows()) {
+            if (CommonUtils.isOnWindows()) {
                 s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
             } else {
                 s = "/proj/tecsas/SHADE/erlide/reports";
