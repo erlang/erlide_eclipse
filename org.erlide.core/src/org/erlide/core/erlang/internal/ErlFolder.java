@@ -20,6 +20,7 @@ import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IParent;
+import org.erlide.core.erlang.util.ErlideUtil;
 
 /**
  * Implementation of folder in erlang model
@@ -205,5 +206,30 @@ public class ErlFolder extends Openable implements IErlFolder {
             ErlModel.getErlModelCache().removeForProject(getErlProject());
         }
         super.clearCaches();
+    }
+
+    public IErlModule findModule(final String includeName,
+            final String includePath) throws ErlModelException {
+        final Collection<IErlModule> modules = getModules();
+        if (includePath != null) {
+            for (final IErlModule module : modules) {
+                final String path = module.getFilePath();
+                if (path != null && path.equals(includePath)) {
+                    return module;
+                }
+            }
+        }
+        boolean hasExtension;
+        if (includeName != null) {
+            hasExtension = ErlideUtil.hasExtension(includeName);
+            for (final IErlModule module : modules) {
+                final String name = hasExtension ? module.getName() : module
+                        .getModuleName();
+                if (name.equals(includeName)) {
+                    return module;
+                }
+            }
+        }
+        return null;
     }
 }

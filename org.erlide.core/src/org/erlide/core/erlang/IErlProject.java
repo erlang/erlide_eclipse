@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
-import org.erlide.jinterface.backend.BackendException;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -103,9 +102,11 @@ public interface IErlProject extends IErlFolder {
      */
     Collection<String> getRequiredProjectNames() throws CoreException;
 
-    Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
+    Collection<IErlModule> getModules() throws ErlModelException;
 
     Collection<IErlModule> getIncludes() throws ErlModelException;
+
+    Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
 
     // IOldErlangProjectProperties getProperties();
 
@@ -164,19 +165,16 @@ public interface IErlProject extends IErlFolder {
 
     void clearCaches();
 
-    IErlModule findExternalModuleFromPath(String path) throws CoreException;
-
-    Collection<IErlProject> getProjectReferences() throws CoreException;
-
-    public abstract IErlModule findIncludeFromNameOrPath(final String filePath)
-            throws CoreException, BackendException;
+    Collection<IErlProject> getProjectReferences() throws ErlModelException;
 
     IErlModule getModule(String name) throws ErlModelException;
 
-    IErlModule getModuleIgnoreCase(String name) throws ErlModelException;
-
-    IErlModule findExternalModule(String moduleName, String modulePath,
+    IErlModule findModule(String moduleName, String modulePath,
             boolean checkReferences, boolean checkAllProjects)
-            throws CoreException;
+            throws ErlModelException;
+
+    IErlModule findInclude(String includeName, String includePath,
+            boolean checkReferences, boolean checkAllProjects)
+            throws ErlModelException;
 
 }

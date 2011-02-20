@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -654,8 +655,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
-    public final void accept(final IErlElementVisitor visitor, final int flags,
-            final IErlElement.Kind leafKind) throws ErlModelException {
+    public final void accept(final IErlElementVisitor visitor,
+            final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            throws ErlModelException {
         getModel().accept(this, visitor, flags, leafKind);
     }
 
@@ -701,6 +703,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public void dispose() {
+    }
+
+    protected ErlModelCache getModelCache() {
+        return ErlModelCache.getDefault();
     }
 
 }

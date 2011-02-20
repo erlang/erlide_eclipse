@@ -230,7 +230,8 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlProject project, final OpenResult res,
             final IErlModel model) throws CoreException, BackendException {
         if (project != null) {
-            return project.findIncludeFromNameOrPath(res.getName());
+            return project.findInclude(res.getName(), res.getPath(), true,
+                    false);
         }
         return null;
     }
@@ -282,8 +283,8 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlElement element, final boolean checkAllProjects)
             throws CoreException {
         if (isTypeDefOrRecordDef(element)) {
-            return ModelUtils.findExternalType(module, res.getName(),
-                    res.getFun(), res.getPath(), project, checkAllProjects);
+            return ModelUtils.findTypeDef(module, res.getName(), res.getFun(),
+                    res.getPath(), project, checkAllProjects);
         }
         final IErlElement result = ModelUtils.findFunction(res.getName(),
                 res.getFunction(), res.getPath(), project, checkAllProjects,

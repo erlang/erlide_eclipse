@@ -1,9 +1,11 @@
 package org.erlide.core.erlang.internal;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IPath;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -33,6 +35,10 @@ public class ErlModelCache implements IDisposable {
     private final ModelChangeListener modelChangeListener;
     private final LRUCache<IErlProject, List<IErlModule>> projectModuleCache;
     private final LRUCache<IErlProject, List<IErlModule>> projectIncludeCache;
+    private final LRUCache<IErlProject, String> projectExternalModulesStringCache;
+    private final LRUCache<IErlProject, String> projectExternalIncludesStringCache;
+    private final LRUCache<IErlProject, Collection<IPath>> projectSourceDirsCache;
+    private final LRUCache<IErlProject, Collection<IPath>> projectIncludeDirsCache;
 
     public static ErlModelCache getDefault() {
         if (fgInstance == null) {
@@ -66,6 +72,14 @@ public class ErlModelCache implements IDisposable {
         projectModuleCache = new LRUCache<IErlProject, List<IErlModule>>(
                 CACHE_SIZE);
         projectIncludeCache = new LRUCache<IErlProject, List<IErlModule>>(
+                CACHE_SIZE);
+        projectExternalModulesStringCache = new LRUCache<IErlProject, String>(
+                CACHE_SIZE);
+        projectExternalIncludesStringCache = new LRUCache<IErlProject, String>(
+                CACHE_SIZE);
+        projectSourceDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
+                CACHE_SIZE);
+        projectIncludeDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
                 CACHE_SIZE);
         modelChangeListener = new ModelChangeListener();
         ErlangCore.getModel().addModelChangeListener(modelChangeListener);
@@ -220,4 +234,59 @@ public class ErlModelCache implements IDisposable {
     public void pathVarsChanged() {
         // FIXME we need to clear some stuff here...
     }
+
+    public String getExternalModulesString(final ErlProject project) {
+        return projectExternalModulesStringCache.get(project);
+    }
+
+    public void putExternalModulesString(final ErlProject project,
+            final String externalModulesString) {
+        if (externalModulesString == null) {
+            projectExternalModulesStringCache.remove(project);
+        } else {
+            projectExternalModulesStringCache.put(project,
+                    externalModulesString);
+        }
+    }
+
+    public String getExternalIncludesString(final ErlProject project) {
+        return projectExternalIncludesStringCache.get(project);
+    }
+
+    public void putExternalIncludesString(final ErlProject project,
+            final String externalModulesString) {
+        if (externalModulesString == null) {
+            projectExternalIncludesStringCache.remove(project);
+        } else {
+            projectExternalIncludesStringCache.put(project,
+                    externalModulesString);
+        }
+    }
+
+    public void putSourceDirs(final ErlProject project,
+            final Collection<IPath> dirs) {
+        if (dirs == null) {
+            projectSourceDirsCache.remove(project);
+        } else {
+            projectSourceDirsCache.put(project, dirs);
+        }
+    }
+
+    public Collection<IPath> getSourceDirs(final ErlProject project) {
+        return projectSourceDirsCache.get(project);
+    }
+
+    public void putIncludeDirs(final ErlProject project,
+            final Collection<IPath> dirs) {
+        if (dirs == null) {
+            projectIncludeDirsCache.remove(project);
+        } else {
+            projectIncludeDirsCache.put(project, dirs);
+        }
+    }
+
+    public Collection<IPath> getIncludeDirs(final ErlProject project) {
+        return projectIncludeDirsCache.get(project);
+    }
+
 }

@@ -25,11 +25,9 @@ import org.erlide.core.erlang.IErlPreprocessorDef;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
@@ -127,18 +125,18 @@ public class ModelUtilsTests {
         // when
         // looking for it
         // within project
-        final IErlElement element1 = ModelUtils.findExternalType(moduleB, "bx",
+        final IErlElement element1 = ModelUtils.findTypeDef(moduleB, "bx",
                 "concat_thing", moduleB.getResource().getLocation()
                         .toPortableString(), projects[0], false);
         // in other project but path given
-        final IErlElement element2 = ModelUtils.findExternalType(moduleB, "bx",
+        final IErlElement element2 = ModelUtils.findTypeDef(moduleB, "bx",
                 "concat_thing", moduleB.getResource().getLocation()
                         .toPortableString(), projects[1], false);
         // in other project no path given, search all projects true
-        final IErlElement element3 = ModelUtils.findExternalType(moduleB, "bx",
+        final IErlElement element3 = ModelUtils.findTypeDef(moduleB, "bx",
                 "concat_thing", null, projects[1], true);
         // in other project no path given, search all projects false, -> null
-        final IErlElement element4 = ModelUtils.findExternalType(moduleB, "bx",
+        final IErlElement element4 = ModelUtils.findTypeDef(moduleB, "bx",
                 "concat_thing", null, projects[1], false);
         // then
         // it should be returned if found
@@ -266,16 +264,21 @@ public class ModelUtilsTests {
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
             // when
-            // looking for it
-            final Backend backend = BackendUtils.getBuildOrIdeBackend(project
-                    .getProject());
-            final List<String> modules = ModelUtils
-                    .getExternalModulesWithPrefix(backend, "ex", project);
+            // looking via prefix
+            final List<String> moduleNames0 = ModelUtils.findModulesWithPrefix(
+                    "ex", project, false);
+            final List<String> modules1 = ModelUtils.findModulesWithPrefix(
+                    "ex", project, true);
+            final List<String> listModules = ModelUtils.findModulesWithPrefix(
+                    "list", project, true);
             // then
-            // we should find it
-            assertEquals(modules.size(), 1);
+            // we should find it iff we check externals
+            assertEquals(0, moduleNames0.size());
+            assertEquals(1, modules1.size());
             assertEquals(ErlideUtil.withoutExtension(externalFileName),
-                    modules.get(0));
+                    modules1.get(0));
+            assertEquals(1, listModules.size());
+            assertEquals("lists", listModules.get(0));
         } finally {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
@@ -307,7 +310,7 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it
-            final IErlModule module = ModelUtils.findExternalModule(null, null,
+            final IErlModule module = ModelUtils.findModule(null, null,
                     absolutePath, true);
             // then
             // we should find it
@@ -340,13 +343,13 @@ public class ModelUtilsTests {
                 "-module(bbc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
         // when
         // looking for module with prefix, it should be found
-        final List<IErlModule> modules = ModelUtils
-                .getModulesWithReferencedProjectsWithPrefix(projects[0], "a");
+        final List<String> moduleNames = ModelUtils.findModulesWithPrefix("a",
+                projects[0], false);
         // then
         // we should find it
-        assertNotNull(modules);
-        assertEquals(1, modules.size());
-        assertEquals(module, modules.get(0));
+        assertNotNull(moduleNames);
+        assertEquals(1, moduleNames.size());
+        assertEquals(module.getModuleName(), moduleNames.get(0));
     }
 
     @Test
@@ -370,7 +373,7 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it with its external module path
-            final IErlModule module = ModelUtils.findExternalModule(null, null,
+            final IErlModule module = ModelUtils.findModule(null, null,
                     absolutePath, true);
             assertNotNull(module);
             final String externalModulePath = ModelUtils
