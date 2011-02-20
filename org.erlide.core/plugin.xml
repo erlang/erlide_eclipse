@@ -107,10 +107,6 @@
       <persistent
             value="true">
       </persistent>
-         point="org.eclipse.debug.core.processFactories">
-      <processFactory
-            class="org.erlide.runtime.backend.internal.ErtsProcessFactory"
-            id="org.erlide.core.backend.ertsprocessfactory"/>
    </extension>
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
