@@ -28,6 +28,7 @@ import org.erlide.backend.ErlBackend;
 import org.erlide.backend.console.BackendShell;
 import org.erlide.backend.console.IoRequest.IoRequestKind;
 import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.core.backend.internal.CodeManager;
@@ -292,6 +293,13 @@ public final class ErlideBackend extends Backend implements IDisposable,
 
     public boolean doLoadOnAllNodes() {
         return getInfo().loadOnAllNodes();
+    }
+
+    public boolean isCompatibleWithProject(final IProject project) {
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final RuntimeVersion projectVersion = erlProject.getRuntimeVersion();
+        return getInfo().getVersion().isCompatible(projectVersion);
     }
 
 }

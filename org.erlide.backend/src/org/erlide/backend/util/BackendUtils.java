@@ -27,7 +27,7 @@ public class BackendUtils {
         return result;
     }
 
-    public static String getErlideNameTag() {
+    public static String getErlideNodeNameTag() {
         String fUniqueId;
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final String location = root.getLocation().toPortableString();

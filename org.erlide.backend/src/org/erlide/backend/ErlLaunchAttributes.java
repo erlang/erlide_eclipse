@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.backend;
 
-
 public interface ErlLaunchAttributes {
 
     final String prefix = BackendPlugin.PREFS_ID;
@@ -45,4 +44,12 @@ public interface ErlLaunchAttributes {
     final String DEBUG_TRACED_MODULES = ".traced_modules";
 
     final String LOAD_ALL_NODES = prefix + ".loadAllNodes";
+
+    final String TRAP_EXIT = prefix + ".trap_exit";
+
+    final String AUTOSTART = prefix + ".autostart";
+
+    final String MANAGED = prefix + ".managed";
+
+    final String MONITORED = prefix + ".monitored";
 }

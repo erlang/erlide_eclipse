@@ -50,14 +50,13 @@ import org.erlide.backend.IBackendListener;
 import org.erlide.backend.epmd.EpmdWatchJob;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
 import org.erlide.backend.util.Tuple;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.backend.internal.ManagedLauncher;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -225,7 +224,8 @@ public final class BackendManager extends OtpNodeStatus implements
         if (b == null) {
             info.setNodeName(version);
             info.setNodeNameSuffix("_"
-                    + org.erlide.backend.util.BackendUtils.getErlideNameTag());
+                    + org.erlide.backend.util.BackendUtils
+                            .getErlideNodeNameTag());
             info.setCookie("erlide");
             info.setHasConsole(false);
             // will add workspace unique id
@@ -316,16 +316,16 @@ public final class BackendManager extends OtpNodeStatus implements
                 info.setNodeName(defLabel);
             } else {
                 final String nodeName = org.erlide.backend.util.BackendUtils
-                        .getErlideNameTag() + "_erlide";
+                        .getErlideNodeNameTag() + "_erlide";
                 info.setNodeName(nodeName);
             }
             info.setCookie("erlide");
-            info.setHasConsole(ErlideUtil.isDeveloper());
+            info.setHasConsole(CommonUtils.isDeveloper());
             ErlLogger.debug("creating IDE backend %s", info.getName());
             final EnumSet<BackendOptions> options = EnumSet.of(
                     BackendOptions.AUTOSTART, BackendOptions.INTERNAL,
                     BackendOptions.IDE);
-            if (!ErlideUtil.isDeveloper()) {
+            if (!CommonUtils.isDeveloper()) {
                 options.add(BackendOptions.NO_CONSOLE);
             }
             ideBackend = createInternalBackend(info, options, null);
@@ -413,14 +413,6 @@ public final class BackendManager extends OtpNodeStatus implements
             remoteStatus(name, false, null);
         }
 
-    }
-
-    public boolean isCompatibleBackend(final IProject project,
-            final ErlideBackend b) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
-        final RuntimeVersion projectVersion = erlProject.getRuntimeVersion();
-        return b.getInfo().getVersion().isCompatible(projectVersion);
     }
 
     public synchronized void addExecutionBackend(final IProject project,

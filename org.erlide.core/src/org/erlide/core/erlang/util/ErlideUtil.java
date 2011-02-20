@@ -71,21 +71,6 @@ public final class ErlideUtil {
         return false;
     }
 
-    public static boolean isDeveloper() {
-        final String dev = System.getProperty("erlide.devel");
-        return dev != null && "true".equals(dev);
-    }
-
-    public static boolean isTest() {
-        final String test = System.getProperty("erlide.test");
-        return test != null && "true".equals(test);
-    }
-
-    public static boolean isClearCacheAvailable() {
-        final String test = System.getProperty("erlide.clearCacheAvailable");
-        return test != null && "true".equals(test);
-    }
-
     private static Boolean fgCacheNoModelCache = null;
 
     public static boolean isNoModelCache() {
@@ -94,16 +79,6 @@ public final class ErlideUtil {
             fgCacheNoModelCache = new Boolean("true".equals(test));
         }
         return fgCacheNoModelCache.booleanValue();
-    }
-
-    private static Boolean fgCacheIsEricssonUser;
-
-    public static boolean isEricssonUser() {
-        if (fgCacheIsEricssonUser == null) {
-            final String dev = System.getProperty("erlide.ericsson.user");
-            fgCacheIsEricssonUser = new Boolean("true".equals(dev));
-        }
-        return fgCacheIsEricssonUser.booleanValue();
     }
 
     public static boolean isModuleExtensionx(final String ext) {
@@ -196,10 +171,6 @@ public final class ErlideUtil {
     public static String basenameWithoutExtension(final String m) {
         final IPath p = new Path(m);
         return withoutExtension(p.lastSegment());
-    }
-
-    public static boolean isOnWindows() {
-        return System.getProperty("os.name").toLowerCase().contains("windows");
     }
 
     private ErlideUtil() {

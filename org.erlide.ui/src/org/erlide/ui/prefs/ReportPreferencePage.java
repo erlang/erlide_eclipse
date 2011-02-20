@@ -37,9 +37,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.backend.ErlBackend;
 import org.erlide.backend.util.ProblemData;
+import org.erlide.common.LogUtil;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.util.LogUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.swtdesigner.SWTResourceManager;

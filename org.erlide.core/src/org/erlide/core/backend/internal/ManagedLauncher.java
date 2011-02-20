@@ -18,8 +18,8 @@ import org.erlide.backend.ErtsProcess;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.backend.util.StringUtils;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.util.LogUtil;
+import org.erlide.common.CommonUtils;
+import org.erlide.common.LogUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class ManagedLauncher implements IDisposable {
@@ -77,7 +77,7 @@ public class ManagedLauncher implements IDisposable {
         final ProcessBuilder builder = new ProcessBuilder(cmds);
         builder.directory(workingDirectory);
         final Map<String, String> env = builder.environment();
-        if (!ErlideUtil.isOnWindows() && ErlideUtil.isEricssonUser()) {
+        if (!CommonUtils.isOnWindows() && CommonUtils.isEricssonUser()) {
             env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
         }
         if (my_env != null) {
@@ -114,8 +114,8 @@ public class ManagedLauncher implements IDisposable {
 
     private String[] adjustCmdlineForCoredump(String[] cmds) {
         final String dump = System.getenv("erlide.internal.coredump");
-        if ("true".equals(dump) && !ErlideUtil.isOnWindows()
-                && ErlideUtil.isEricssonUser()) {
+        if ("true".equals(dump) && !CommonUtils.isOnWindows()
+                && CommonUtils.isEricssonUser()) {
             final String cmd = StringUtils.joinWithSpaces(cmds);
             cmds = new String[] { "tcsh", "-c",
                     "limit coredumpsize unlimited ;" + " exec " + cmd + " +d" };
@@ -151,7 +151,7 @@ public class ManagedLauncher implements IDisposable {
                 // 143 = SIGTERM (probably logout, ignore)
                 // 137 = SIGKILL (probably killed by user)
                 if (v > 1 && v != 143 && v != 129 && v != 137
-                        && ErlideUtil.isEricssonUser()) {
+                        && CommonUtils.isEricssonUser()) {
                     createReport(info, v, msg);
                 }
                 // FIXME backend.setExitStatus(v);
