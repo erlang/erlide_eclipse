@@ -224,7 +224,8 @@ public final class BackendManager extends OtpNodeStatus implements
         if (b == null) {
             info.setNodeName(version);
             info.setNodeNameSuffix("_"
-                    + org.erlide.backend.util.BackendUtils.getErlideNameTag());
+                    + org.erlide.backend.util.BackendUtils
+                            .getErlideNodeNameTag());
             info.setCookie("erlide");
             info.setHasConsole(false);
             // will add workspace unique id
@@ -315,7 +316,7 @@ public final class BackendManager extends OtpNodeStatus implements
                 info.setNodeName(defLabel);
             } else {
                 final String nodeName = org.erlide.backend.util.BackendUtils
-                        .getErlideNameTag() + "_erlide";
+                        .getErlideNodeNameTag() + "_erlide";
                 info.setNodeName(nodeName);
             }
             info.setCookie("erlide");
