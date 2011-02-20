@@ -50,7 +50,6 @@ import org.erlide.backend.IBackendListener;
 import org.erlide.backend.epmd.EpmdWatchJob;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
 import org.erlide.backend.util.Tuple;
@@ -413,14 +412,6 @@ public final class BackendManager extends OtpNodeStatus implements
             remoteStatus(name, false, null);
         }
 
-    }
-
-    public boolean isCompatibleBackend(final IProject project,
-            final ErlideBackend b) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
-        final RuntimeVersion projectVersion = erlProject.getRuntimeVersion();
-        return b.getInfo().getVersion().isCompatible(projectVersion);
     }
 
     public synchronized void addExecutionBackend(final IProject project,
