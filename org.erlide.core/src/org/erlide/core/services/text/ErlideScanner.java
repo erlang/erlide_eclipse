@@ -19,6 +19,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideScanner {
     private static final String ERLIDE_SCANNER = "erlide_scanner_server";
+    private static final Object ENCODING = System.getProperty(
+            "erlide.encoding.__test__", "latin1");
 
     public static void initialScan(final String module, final String path,
             final String initialText, final boolean useCaches) {
@@ -101,8 +103,11 @@ public class ErlideScanner {
             final int offset) throws BackendException {
         OtpErlangObject r1 = null;
         try {
-            r1 = ErlangCore.getBackendManager().getIdeBackend()
-                    .call("erlide_scanner", "light_scan_string", "b", string);
+            r1 = ErlangCore
+                    .getBackendManager()
+                    .getIdeBackend()
+                    .call("erlide_scanner", "light_scan_string", "ba", string,
+                            ENCODING);
         } catch (final Exception e) {
             throw new BackendException("Could not parse string \"" + string
                     + "\": " + e.getMessage());
