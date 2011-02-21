@@ -117,15 +117,16 @@ do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer) ->
 do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     ?D({do_parse, ScannerName, length(Toks)}),
     {UncommentToks, Comments} = erlide_np_util:extract_comments(Toks),
-    %?D({length(UncommentToks), length(Comments)}),
-    %?D({UncommentToks}),
+    ?D({length(UncommentToks), length(Comments)}),
+    ?D({UncommentToks}),
     Functions = erlide_np_util:split_after_dots(UncommentToks),
     ?D(length(Functions)),
     AutoImports = erlide_util:add_auto_imported([]),
 %%     ?D(AutoImports),
     {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
-    ?D(length(Collected)),
+    ?D({'>>',length(Collected)}),
     CommentedCollected = erlide_np_util:get_function_comments(Collected, Comments),
+    ?D(CommentedCollected),
     Model = #model{forms=CommentedCollected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model),
 %%     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
@@ -179,7 +180,12 @@ fixup_form(Other) ->
     Other.
 
 to_binary(Comment) when is_list(Comment) ->
-    iolist_to_binary(Comment);
+    try 
+        iolist_to_binary(Comment) 
+    catch 
+        _:_ -> 
+            unicode:characters_to_binary(Comment) 
+    end;
 to_binary(Other) ->
     Other.
 
