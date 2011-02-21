@@ -13,6 +13,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.backend.Backend;
+import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -21,8 +23,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -61,7 +61,7 @@ public class DialyzerUtils {
             try {
                 final DialyzerPreferences prefs = DialyzerPreferences
                         .get(project);
-                final List<String> pltPaths = prefs.getEnabledPltPaths();
+                final Collection<String> pltPaths = prefs.getEnabledPltPaths();
                 final boolean fromSource = prefs.getFromSource();
                 MarkerUtils.removeDialyzerMarkers(project);
                 final Backend backend = ErlangCore.getBackendManager()

@@ -1,15 +1,21 @@
 package org.erlide.core.builder;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.preferences.PreferencesHelper;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
+import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.google.common.collect.Lists;
 
 public class DialyzerPreferences {
 
@@ -19,6 +25,7 @@ public class DialyzerPreferences {
     private final PreferencesHelper helper;
 
     private String pltPaths;
+    private Collection<String> pltPathsFromPrefs;
     private String enabledPltPaths;
     private boolean fromSource;
     private boolean dialyzeOnCompile;
@@ -68,9 +75,22 @@ public class DialyzerPreferences {
         helper.flush();
     }
 
-    @SuppressWarnings("boxing")
+    private Collection<String> getPLTPathsFromPreferences() {
+
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "default_plt_files";
+        final String pluginId = "org.erlide.ui";
+        final String pltFilesString = service
+                .getString(pluginId, key, "", null);
+        if (pltFilesString.length() > 0) {
+            ErlLogger.debug("%s: '%s'", key, pltFilesString);
+        }
+        return PreferencesUtils.unpackList(pltFilesString, ",");
+    }
+
     public void load() throws BackingStoreException {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
+        pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(
                 DialyzerPreferencesConstants.ENABLED_PLT_PATHS, pltPaths);
         setFromSource(helper.getBoolean(
@@ -96,12 +116,19 @@ public class DialyzerPreferences {
         return fromSource;
     }
 
-    public void setPltPaths(final List<String> pltPaths) {
-        this.pltPaths = PreferencesUtils.packList(pltPaths);
+    public void setPltPaths(final Collection<String> pltPaths) {
+        final List<String> paths = Lists.newArrayList(pltPaths);
+        for (final String path : pltPathsFromPrefs) {
+            paths.remove(path);
+        }
+        this.pltPaths = PreferencesUtils.packList(paths);
     }
 
-    public List<String> getPltPaths() {
-        return PreferencesUtils.unpackList(pltPaths);
+    public Collection<String> getPltPaths() {
+        final List<String> result = Lists.newArrayList();
+        result.addAll(PreferencesUtils.unpackList(pltPaths));
+        result.addAll(pltPathsFromPrefs);
+        return result;
     }
 
     public void setDialyzeOnCompile(final boolean dialyzeOnCompile) {
@@ -112,11 +139,11 @@ public class DialyzerPreferences {
         return dialyzeOnCompile;
     }
 
-    public void setEnabledPltPaths(final List<String> enabledPltPaths) {
+    public void setEnabledPltPaths(final Collection<String> enabledPltPaths) {
         this.enabledPltPaths = PreferencesUtils.packList(enabledPltPaths);
     }
 
-    public List<String> getEnabledPltPaths() {
+    public Collection<String> getEnabledPltPaths() {
         return PreferencesUtils.unpackList(enabledPltPaths);
     }
 }
