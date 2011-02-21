@@ -140,4 +140,10 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     boolean isOnSourcePath();
 
+    boolean isOnIncludePath();
+
+    IErlModule findInclude(String includeName, String includePath,
+            boolean checkReferences, boolean checkAllProjects)
+            throws ErlModelException;
+
 }

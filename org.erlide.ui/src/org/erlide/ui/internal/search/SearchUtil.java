@@ -4,6 +4,7 @@ import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +38,7 @@ import org.erlide.backend.util.StringUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.erlang.IErlElement.AcceptFlags;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlElementVisitor;
 import org.erlide.core.erlang.IErlExternal;
@@ -142,7 +144,8 @@ public class SearchUtil {
             final Collection<IErlProject> erlangProjects = ErlangCore
                     .getModel().getErlangProjects();
             for (final IErlProject i : erlangProjects) {
-                final Collection<IErlModule> modules = i.getModulesAndIncludes();
+                final Collection<IErlModule> modules = i
+                        .getModulesAndIncludes();
                 for (final IErlModule j : modules) {
                     result.addModule(j);
                 }
@@ -195,7 +198,7 @@ public class SearchUtil {
                     }
                     return true;
                 }
-            }, 0, Kind.MODULE);
+            }, EnumSet.noneOf(AcceptFlags.class), Kind.MODULE);
         }
     }
 

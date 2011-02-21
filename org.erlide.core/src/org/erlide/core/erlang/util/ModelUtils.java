@@ -36,6 +36,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import erlang.ErlideOpen;
 
@@ -131,16 +132,21 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<String> getExternalModulesWithPrefix(final RpcCallSite b,
-            final String prefix, final IErlProject erlProject)
-            throws CoreException {
+    public static List<String> findModulesWithPrefix(final String prefix,
+            final IErlProject project, final boolean checkExternals)
+            throws ErlModelException {
         final List<String> result = Lists.newArrayList();
-        final Collection<IErlModule> modules = erlProject.getExternalModules();
-        for (final IErlModule module : modules) {
-            final String name = module.getModuleName();
-            if (name.startsWith(prefix)) {
-                result.add(name);
+        final Set<String> names = Sets.newHashSet();
+        addModuleNamesWithPrefix(prefix, result, names, project.getModules());
+        for (final IErlProject p : project.getProjectReferences()) {
+            if (p != null) {
+                p.open(null);
+                addModuleNamesWithPrefix(prefix, result, names, p.getModules());
             }
+        }
+        if (checkExternals) {
+            addModuleNamesWithPrefix(prefix, result, names,
+                    project.getExternalModules());
         }
         return result;
     }
@@ -172,11 +178,8 @@ public class ModelUtils {
             final IErlModule module) throws CoreException {
         if (moduleName != null) {
             moduleName = resolveMacroValue(moduleName, module);
-            IErlModule module2 = project.getModule(moduleName);
-            if (module2 == null) {
-                module2 = findExternalModule(project, moduleName, modulePath,
-                        checkAllProjects);
-            }
+            final IErlModule module2 = findModule(project, moduleName,
+                    modulePath, checkAllProjects);
             if (module2 != null) {
                 module2.open(null);
                 final IErlFunction function = module2
@@ -190,27 +193,27 @@ public class ModelUtils {
         return null;
     }
 
-    public static IErlModule findExternalModule(final IErlProject project,
+    public static IErlModule findModule(final IErlProject project,
             final String moduleName, final String modulePath,
-            final boolean checkAllProjects) throws CoreException {
+            final boolean checkAllProjects) throws ErlModelException {
         if (project != null) {
-            return project.findExternalModule(moduleName, modulePath, true,
+            return project.findModule(moduleName, modulePath, true,
                     checkAllProjects);
         }
         final IErlModel model = ErlangCore.getModel();
         if (checkAllProjects) {
-            return model.findExternalModule(moduleName, modulePath);
+            return model.findModule(moduleName, modulePath);
         }
         return null;
     }
 
-    public static IErlElement findExternalType(final IErlModule module,
+    public static IErlElement findTypeDef(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
             final IErlProject project, final boolean checkAllProjects)
             throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
-        final IErlModule module2 = findExternalModule(project, moduleName,
-                modulePath, checkAllProjects);
+        final IErlModule module2 = findModule(project, moduleName, modulePath,
+                checkAllProjects);
         if (module2 != null) {
             module2.open(null);
             return module2.findTypespec(typeName);
@@ -309,29 +312,16 @@ public class ModelUtils {
     public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
-    public static List<IErlModule> getModulesWithReferencedProjectsWithPrefix(
-            final IErlProject project, final String prefix)
-            throws CoreException {
-        final List<IErlModule> result = new ArrayList<IErlModule>();
-        if (project == null) {
-            return result;
-        }
-        project.open(null);
-        addModulesWithPrefix(prefix, result, project.getModules());
-        for (final IErlProject p : project.getProjectReferences()) {
-            if (p != null) {
-                p.open(null);
-                addModulesWithPrefix(prefix, result, p.getModules());
-            }
-        }
-        return result;
-    }
-
-    private static void addModulesWithPrefix(final String prefix,
-            final List<IErlModule> result, final Collection<IErlModule> modules) {
+    private static void addModuleNamesWithPrefix(final String prefix,
+            final List<String> result, final Set<String> names,
+            final Collection<IErlModule> modules) {
         for (final IErlModule module : modules) {
-            if (module.getModuleName().startsWith(prefix)) {
-                result.addAll(modules);
+            final String moduleName = module.getModuleName();
+            if (moduleName.startsWith(prefix)) {
+                if (!names.contains(moduleName)) {
+                    result.add(moduleName);
+                    names.add(moduleName);
+                }
             }
         }
     }

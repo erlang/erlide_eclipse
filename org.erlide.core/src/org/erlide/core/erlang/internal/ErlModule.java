@@ -60,7 +60,7 @@ public class ErlModule extends Openable implements IErlModule {
     private long timestamp = IResource.NULL_STAMP;
     private IFile fFile;
     private final ModuleKind moduleKind;
-    protected final String path;
+    protected String path;
     private String initialText;
     private boolean parsed;
     private final String scannerName;
@@ -687,6 +687,19 @@ public class ErlModule extends Openable implements IErlModule {
             }
         }
         return false;
+    }
+
+    public IErlModule findInclude(final String includeName,
+            final String includePath, final boolean checkReferences,
+            final boolean checkAllProjects) throws ErlModelException {
+        final IParent parent = getParent();
+        if (parent instanceof IErlFolder) {
+            final IErlFolder folder = (IErlFolder) parent;
+            folder.open(null);
+            return folder.findModule(includeName, includePath);
+        }
+        return getProject().findInclude(includeName, includePath,
+                checkReferences, checkAllProjects);
     }
 
 }

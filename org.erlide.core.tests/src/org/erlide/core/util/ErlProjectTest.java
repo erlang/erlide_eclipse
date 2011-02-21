@@ -83,8 +83,10 @@ public class ErlProjectTest {
         module.open(null);
         // when
         // looking for the include
-        final IErlModule include1 = project.findIncludeFromNameOrPath(includeName);
-        final IErlModule include2 = project.findIncludeFromNameOrPath("file.hrl");
+        final IErlModule include1 = module.findInclude(includeName, null,
+                false, false);
+        final IErlModule include2 = project.findInclude("file.hrl", null,
+                false, false);
         // then
         // it should be found
         assertEquals(include, include1);
@@ -112,10 +114,10 @@ public class ErlProjectTest {
             // String includeFile = ModelUtils.findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
-            final IErlModule module = project.findExternalModule(null,
-                    includePath, true, false);
-            final IErlModule module2 = project.findExternalModule(includeName,
-                    null, true, false);
+            final IErlModule module = project.findModule(null, includePath,
+                    true, false);
+            final IErlModule module2 = project.findModule(includeName, null,
+                    true, false);
             // then
             // it should be found in the model
             assertNotNull(module);
@@ -154,7 +156,8 @@ public class ErlProjectTest {
             // when
             // looking for the include file
             project.open(null);
-            final IErlModule module = project.findIncludeFromNameOrPath(includeName);
+            final IErlModule module = project.findInclude(includeName, null,
+                    true, true);
             // then
             // it should be found in the project defining it
             assertNotNull(module);
@@ -190,8 +193,8 @@ public class ErlProjectTest {
                 project.getExternalModulesString(), model.getPathVars());
         final IErlElement function = ModelUtils.findFunction(res.getName(),
                 res.getFunction(), res.getPath(), project, false, moduleE);
-        final IErlElement module = project.findExternalModule(
-                function.getModuleName(), res.getPath(), false, false);
+        final IErlElement module = project.findModule(function.getModuleName(),
+                res.getPath(), false, false);
         // then
         // the function should be returned and the module, in External Files
         assertNotNull(function);
@@ -222,7 +225,7 @@ public class ErlProjectTest {
             project.open(null);
             // when
             // looking for it
-            final IErlModule externalModule = project.findExternalModule(
+            final IErlModule externalModule = project.findModule(
                     externalFileName, null, true, false);
             // then
             // we should find it

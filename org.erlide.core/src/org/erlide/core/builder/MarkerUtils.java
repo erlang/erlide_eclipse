@@ -127,7 +127,8 @@ public final class MarkerUtils {
                     ErlLogger.debug("    " + entry.getValue());
 
                     final IErlModule includeFile = erlProject != null ? erlProject
-                            .findIncludeFromNameOrPath(fileName) : null;
+                            .findInclude(fileName, fileName, true, false)
+                            : null;
                     if (includeFile == null) {
                         res = resource;
                     } else {
