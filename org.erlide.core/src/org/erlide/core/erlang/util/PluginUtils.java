@@ -18,12 +18,10 @@ import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideOpen;
 
@@ -57,22 +55,6 @@ public class PluginUtils {
             }
         }
         return result;
-    }
-
-    public static boolean isTracing(final String traceOption) {
-        if (!Platform.inDebugMode()) {
-            return false;
-        }
-        final String globalTraceValue = Platform
-                .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION);
-        final String value = Platform
-                .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION + "/"
-                        + traceOption);
-        if (null != globalTraceValue && globalTraceValue.equals("true")
-                && null != value && value.equals("true")) {
-            return true;
-        }
-        return false;
     }
 
     private static ContainerFilter getIncludePathFilter(final IProject project,

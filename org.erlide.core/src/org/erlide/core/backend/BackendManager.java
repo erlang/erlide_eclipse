@@ -40,6 +40,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.BackendOptions;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendUtil;
 import org.erlide.backend.CodeBundle;
@@ -70,18 +71,8 @@ import com.google.common.collect.Sets;
 public final class BackendManager extends OtpNodeStatus implements
         IEpmdListener {
 
-    public static final String DEFAULT_VERSION = "R13B";
-    public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
-            "R12B", "R13B", "R14A" };
-    public static final String[] SUPPORTED_VERSIONS = new String[] { "",
-            "R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
-
     public enum BackendEvent {
         ADDED, REMOVED, MODULE_LOADED
-    }
-
-    public enum BackendOptions {
-        DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE, LOAD_ALL_NODES
     }
 
     private volatile ErlideBackend ideBackend;

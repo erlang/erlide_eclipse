@@ -12,6 +12,7 @@ package org.erlide.common;
 
 import java.io.File;
 
+import org.eclipse.core.runtime.Platform;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Util;
@@ -81,6 +82,22 @@ public class CommonUtils {
             if (f != null) {
                 f.delete();
             }
+        }
+        return false;
+    }
+
+    public static boolean isTracing(final String traceOption) {
+        if (!Platform.inDebugMode()) {
+            return false;
+        }
+        final String globalTraceValue = Platform
+                .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION);
+        final String value = Platform
+                .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION + "/"
+                        + traceOption);
+        if (null != globalTraceValue && globalTraceValue.equals("true")
+                && null != value && value.equals("true")) {
+            return true;
         }
         return false;
     }
