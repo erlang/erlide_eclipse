@@ -13,9 +13,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.PreferencesUtils;
-import org.erlide.backend.util.Util;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -24,6 +21,8 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.jinterface.backend.Backend;
+import org.erlide.jinterface.backend.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -54,17 +53,18 @@ public class DialyzerUtils {
     }
 
     public static void doDialyze(final IProgressMonitor monitor,
-            final Map<IErlProject, Set<IErlModule>> modules,
-            final DialyzerPreferences prefs) throws InvocationTargetException {
-        final boolean fromSource = prefs.getFromSource();
+            final Map<IErlProject, Set<IErlModule>> modules)
+            throws InvocationTargetException {
         final Set<IErlProject> keySet = modules.keySet();
-        final List<String> pltPaths = PreferencesUtils.unpackList(prefs
-                .getPltPath());
         for (final IErlProject p : keySet) {
             final IProject project = p.getProject();
-            MarkerUtils.removeDialyzerMarkers(project);
             try {
-                final RpcCallSite backend = ErlangCore.getBackendManager()
+                final DialyzerPreferences prefs = DialyzerPreferences
+                        .get(project);
+                final List<String> pltPaths = prefs.getEnabledPltPaths();
+                final boolean fromSource = prefs.getFromSource();
+                MarkerUtils.removeDialyzerMarkers(project);
+                final Backend backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();

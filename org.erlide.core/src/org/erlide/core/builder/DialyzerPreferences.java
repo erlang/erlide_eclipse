@@ -1,11 +1,14 @@
 package org.erlide.core.builder;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.preferences.PreferencesHelper;
+import org.erlide.jinterface.backend.util.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class DialyzerPreferences {
@@ -15,29 +18,38 @@ public class DialyzerPreferences {
 
     private final PreferencesHelper helper;
 
-    private String pltPath;
+    private String pltPaths;
+    private String enabledPltPaths;
     private boolean fromSource;
     private boolean dialyzeOnCompile;
 
     public static DialyzerPreferences get(final IProject project)
             throws CoreException {
-        final DialyzerPreferences prefs = new DialyzerPreferences(project);
         try {
+            final DialyzerPreferences prefs = new DialyzerPreferences();
             prefs.load();
+            if (project != null) {
+                final DialyzerPreferences projectPrefs = new DialyzerPreferences(
+                        project);
+                projectPrefs.load();
+                projectPrefs.pltPaths = prefs.pltPaths;
+                return projectPrefs;
+            } else {
+                return prefs;
+            }
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
             throw new CoreException(new Status(IStatus.ERROR,
                     ErlangPlugin.PLUGIN_ID,
-                    "could not retrieve compiler options"));
+                    "could not retrieve dialyzer options"));
         }
-        return prefs;
     }
 
-    public DialyzerPreferences() {
+    private DialyzerPreferences() {
         helper = PreferencesHelper.getHelper(QUALIFIER);
     }
 
-    public DialyzerPreferences(final IProject project) {
+    private DialyzerPreferences(final IProject project) {
         helper = PreferencesHelper.getHelper(QUALIFIER, project);
     }
 
@@ -46,7 +58,9 @@ public class DialyzerPreferences {
     }
 
     public void store() throws BackingStoreException {
-        helper.putString(DialyzerPreferencesConstants.PLT_PATH, getPltPath());
+        helper.putString(DialyzerPreferencesConstants.PLT_PATHS, pltPaths);
+        helper.putString(DialyzerPreferencesConstants.ENABLED_PLT_PATHS,
+                enabledPltPaths);
         helper.putBoolean(DialyzerPreferencesConstants.FROM_SOURCE,
                 getFromSource());
         helper.putBoolean(DialyzerPreferencesConstants.DIALYZE_ON_COMPILE,
@@ -56,7 +70,9 @@ public class DialyzerPreferences {
 
     @SuppressWarnings("boxing")
     public void load() throws BackingStoreException {
-        setPltPath(helper.getString(DialyzerPreferencesConstants.PLT_PATH, ""));
+        pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
+        enabledPltPaths = helper.getString(
+                DialyzerPreferencesConstants.ENABLED_PLT_PATHS, pltPaths);
         setFromSource(helper.getBoolean(
                 DialyzerPreferencesConstants.FROM_SOURCE, true));
         setDialyzeOnCompile(helper.getBoolean(
@@ -65,8 +81,7 @@ public class DialyzerPreferences {
 
     @Override
     public String toString() {
-        return getPltPath().toString() + ", " + getFromSource() + ", "
-                + getDialyzeOnCompile();
+        return pltPaths + ", " + getFromSource() + ", " + getDialyzeOnCompile();
     }
 
     public void removeAllProjectSpecificSettings() {
@@ -81,12 +96,12 @@ public class DialyzerPreferences {
         return fromSource;
     }
 
-    public void setPltPath(final String pltPath) {
-        this.pltPath = pltPath;
+    public void setPltPaths(final List<String> pltPaths) {
+        this.pltPaths = PreferencesUtils.packList(pltPaths);
     }
 
-    public String getPltPath() {
-        return pltPath;
+    public List<String> getPltPaths() {
+        return PreferencesUtils.unpackList(pltPaths);
     }
 
     public void setDialyzeOnCompile(final boolean dialyzeOnCompile) {
@@ -95,5 +110,13 @@ public class DialyzerPreferences {
 
     public boolean getDialyzeOnCompile() {
         return dialyzeOnCompile;
+    }
+
+    public void setEnabledPltPaths(final List<String> enabledPltPaths) {
+        this.enabledPltPaths = PreferencesUtils.packList(enabledPltPaths);
+    }
+
+    public List<String> getEnabledPltPaths() {
+        return PreferencesUtils.unpackList(enabledPltPaths);
     }
 }

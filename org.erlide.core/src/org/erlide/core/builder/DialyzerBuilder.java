@@ -17,7 +17,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.jinterface.util.ErlLogger;
-import org.osgi.service.prefs.BackingStoreException;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 
@@ -29,22 +28,17 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
     protected IProject[] build(final int kind,
             @SuppressWarnings("rawtypes") final Map args,
             final IProgressMonitor monitor) throws CoreException {
-        final DialyzerPreferences prefs = new DialyzerPreferences();
-        try {
-            prefs.load();
-        } catch (final BackingStoreException e) {
-            return null;
-        }
+        final IProject project = getProject();
+        final DialyzerPreferences prefs = DialyzerPreferences.get(project);
         if (!prefs.getDialyzeOnCompile()) {
             return null;
         }
-        final IProject project = getProject();
         final IErlModel model = ErlangCore.getModel();
         final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
         DialyzerUtils.addModulesFromResource(model, project, modules);
         if (modules.size() != 0) {
             try {
-                DialyzerUtils.doDialyze(monitor, modules, prefs);
+                DialyzerUtils.doDialyze(monitor, modules);
             } catch (final InvocationTargetException e) {
                 ErlLogger.error(e);
                 final String msg = NLS.bind(

@@ -888,10 +888,6 @@
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
     <handler
-          class="org.erlide.ui.handlers.CheckDialyzerPltFileHandler"
-          commandId="org.erlide.ui.command.checkDialyzerPLTFile">
-    </handler>
-    <handler
           class="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler"
           commandId="org.erlide.ui.command.showOutlineFilterDialog">
     </handler>
