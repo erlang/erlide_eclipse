@@ -860,8 +860,8 @@ public class ErlProject extends Openable implements IErlProject {
         String externalIncludesString = modelCache
                 .getExternalIncludesString(this);
         if (externalIncludesString == null) {
-            externalIncludesString = getExternal(External.EXTERNAL_MODULES);
-            modelCache.putExternalModulesString(this, externalIncludesString);
+            externalIncludesString = getExternal(External.EXTERNAL_INCLUDES);
+            modelCache.putExternalIncludesString(this, externalIncludesString);
         }
         return externalIncludesString;
     }
