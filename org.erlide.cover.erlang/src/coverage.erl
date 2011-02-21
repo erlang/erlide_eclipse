@@ -29,10 +29,9 @@ compile(Module, Path) ->
 			{ok, _M} -> 
 				ok;
 			{error, Err} -> 
-				erlide_jrpc:event(?EVENT, #cover_error{place = Module, 
-													   type = compiling,
-													   info = Err}),
-				{error, compilation}
+				{error, #cover_error{place = Module, 
+									 type = compiling,
+									 info = Err}}
 	end.
 
 %compile directory
@@ -70,41 +69,49 @@ prepare(eunit, Arg) ->
 				erlide_jrpc:event(?EVENT, {Arg, test_ok}),
 				ok;
 			Er ->
-				erlide_jrpc:event(?EVENT, #cover_error{place = Arg,
-													   type = testing,
-													   info = Er}),
-				{error, testing}
+				{error, #cover_error{place = Arg,
+									 type = testing,
+									 info = Er}}
 	end.
 
 %creates html report
 create_report(Modules) when is_list(Modules) ->
-    lists:foldl(fun (Module,Acc) ->
-			Res = create_report(Module), 
+	io:format("~p~n", [Modules]),
+	lists:foldl(fun (Module,Acc) ->
+			io:format("~p~n", [Module]),
+			Mod = if
+					  is_list(Module) ->
+						  list_to_atom(Module);
+					  true ->
+						  Module
+				  end,
+			Res = create_report(Mod), 
 			case Res of
 			  {ok,Result} ->
 			      erlide_jrpc:event(?EVENT,Result), 
 			      [Result| Acc];
 			  {error,Reason} ->
 			      erlide_jrpc:event(?EVENT,
-						#cover_error{place = Module, 
+						#cover_error{place = Mod, 
 							     type = 'creating report', 
 							     info = Reason}), 
+				  io:format("error: ~p~n", [Reason]),
 			      Acc
 			end
 		end,[],Modules);
 
 create_report(Module) ->
-    io:format(Module), 
+    io:format("~p~n", Module), 
     ModRes = cover:analyse(Module,module), 
     FunRes = cover:analyse(Module,function), 
     LineRes = cover:analyse(Module,calls,line),  %%calls! 
     case {ModRes,FunRes,LineRes} of
       {{ok,_},{ok,_},{ok,_}} ->
-	  Res = prepare_result(ModRes,FunRes,LineRes,Module), 
-	  
-	  {ok,Res};
-      _ ->
-	  {error,analyse}
+	  		Res = prepare_result(ModRes,FunRes,LineRes,Module), 
+	  		{ok,Res};
+      Error ->
+		  	io:format("~p~n", [Error]),
+			{error,analyse}
     end.
 
 % create index.html file

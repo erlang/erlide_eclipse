@@ -14,15 +14,14 @@
 %% Exported Functions
 %%----------------------------------------------
 -export([start/1,
-		 start/2,
-		 start_link/1,
-		 stop/0,
-	 	% perform/3,
-	 	% prepare_and_perform/3,
-		 prepare/1,
-		 analyse/1,
-	 	 set_includes/1,
-		 set_beam_dir/1]).
+	 start_link/1,
+	 restart/1,
+	 stop/0,
+	 % perform/3,
+	 % prepare_and_perform/3,
+	 prepare/1,
+	 analyse/1,
+	 set_includes/1]).
 
 -export([init/1,
 		 handle_call/3,
@@ -33,14 +32,22 @@
 %% API Functions
 %%----------------------------------------------
 
-start(Type) ->
-	gen_server:start({local, ?MODULE}, ?MODULE, [Type], []).
+start(Nodes) ->
+	gen_server:start({local, ?MODULE}, ?MODULE, [Nodes], []).
 
-start(Type, Nodes) ->
-	gen_server:start({local, ?MODULE}, ?MODULE, [Type, Nodes], []).
+start_link(Nodes) ->
+	gen_server:start_link({local, ?MODULE}, ?MODULE, [Nodes], []).
 
-start_link(Type) ->
-	gen_server:start_link({local, ?MODULE}, ?MODULE, [Type], []).
+% restarting cover
+restart(Nodes) ->
+	case start(Nodes) of
+		{ok, _} ->
+			ok;
+		{error, {already_started, _}} ->
+			already_started;
+		_ ->
+			error
+	end.
 
 stop() ->
 	gen_server:cast(?MODULE, stop).
@@ -49,6 +56,7 @@ stop() ->
 %% over selected modules were performed (external launching)
 %% NameOrPathSrc -> module Name or Path to source files
 %% PathTst -> path to test files (or to module on its own)
+% deprecated
 prepare_and_perform(Type, NameOrPathSrc , PathTst) ->
 	TypeAtom = list_to_atom(Type),
 	case TypeAtom of
@@ -64,6 +72,7 @@ prepare_and_perform(Type, NameOrPathSrc , PathTst) ->
 	end.
 
 %perform coverage (on cover_compiled data - after performing some tests)
+% deprecated
 perform(Type,NameOrPathSrc,PathTst) ->
     TypeAtom = list_to_atom(Type), 
 	case TypeAtom of
@@ -78,51 +87,31 @@ perform(Type,NameOrPathSrc,PathTst) ->
 			gen_server:call(?MODULE, {perform, TypeAtom, PathSrc , PathTst})
 	end.
 
-%prepares modules
-prepare(Modules) ->
-	%%TODO - cover compilation of modules in the list
-	ok.
+%prepares modules - cover compiles them
+prepare(Paths) ->
+	lists:foreach(fun(Path) ->
+						  Mod = list_to_atom(filename:basename(Path, ".erl")),
+						  gen_server:call(?MODULE, {compile, Mod, Path})
+						  end, Paths).
 
+% performes cover analysis and prepares reports
 analyse(Modules) ->
-	%%TODO - prepare report for modules in the list
-	ok.
+	gen_server:call(?MODULE, {analyse, Modules}).
 
 % set include directories
 set_includes(Includes) ->
 	gen_server:call(?MODULE, {includes, Includes}).
-
-% adds beam dir to the code path
-set_beam_dir(Dir) ->
-	gen_server:call(?MODULE, {beam_dir, Dir}).
-
 
 %%----------------------------------------------
 %% Local Functions
 %%----------------------------------------------
 
 %init
-%can be extendnded with the version with multible cover nodes
-init([Type]) ->
-	try cover:start() of
-		{ok, _} ->
-			State = #state{cover_type = Type},
-			{ok, State};
-		{error, Reason} ->
-			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
-												   type = starting,
-												   info = Reason}),
-			{stop, Reason}
-	catch
-		_:_ ->
-			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
-												   type = starting,
-												   info = "cover error - check if it is installed"}),
-			{stop, "cover error - check if it is installed"}
-	end;
-init([Type, Nodes]) ->
+%starts cover on multiple nodes
+init([Nodes]) ->
 	try cover:start(Nodes) of
 		{ok, _} ->
-			State = #state{cover_type = Type},
+			State = #state{},
 			{ok, State};
 		{error, Reason} ->
 			erlide_jrpc:event(?EVENT, #cover_error{place = cover,
@@ -146,10 +135,25 @@ handle_cast(stop, State) ->
 handle_call({includes, Includes}, _From, State) ->
 	{reply, ok, State#state{includes = Includes}};
 
-handle_call({beam_dir, Dir}, _From, State) ->
-	code:add_pathz(Dir),
-	{reply, ok, State};
+handle_call({compile, Module, Path}, _From, State) ->
+	Res = coverage:compile(Module, Path),
+	{reply, Res, State};
 
+handle_call({analyse, Modules}, _From, State) ->
+	io:format("~p~n", [Modules]),
+	ModsOk = coverage:create_report(Modules),
+	io:format("~p~n", [ModsOk]),
+	Path = case ModsOk of
+				#cover_error{} ->
+					erlide_jrpc:event(?EVENT, ModsOk),
+					no_file;
+				_ ->
+					coverage:create_index(ModsOk)
+		   end,
+	{reply, Path, State};
+
+
+% deprecated
 handle_call({perform, module, Module, _Path}, _From, State) ->
 	Report = coverage:create_report(?COVER_DIR, Module),
 	case Report of		
@@ -162,14 +166,17 @@ handle_call({perform, module, Module, _Path}, _From, State) ->
 	end,	
 	{reply, ok, State};
 
+%deprecated
 handle_call({perform, all, Name}, _From, State) ->
 	{reply, ok, State};
 
+%deprecated
 handle_call({perform, application, Name, Src}, _From,  State) ->
 	{reply, ok, State};
 
 
-% call -> covarage with preparation
+% call -> covarage with preparation 
+% deprecated
 handle_call({prep, module, Module, Path}, _From, State) ->
 	PathIdx = case coverage:compile(Module, Path) of
 		ok ->
@@ -198,6 +205,7 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 	erlide_jrpc:event(?EVENT, ?FINISHED),
 	{reply, PathIdx, State};
 
+% deprecated
 handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 	
 	Path = case coverage:compile_dir(PathSrc) of
@@ -252,12 +260,13 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 	
 	{reply, Path, State};
 
+%deprecated
 handle_call({prep, application, Name, Src}, _From, State) ->
 	{reply, ok, State};
 
 %% cast default
 handle_call(_, _From, State) ->
-	{reply, ok, State}.
+	{reply, bad_option, State}.
 
 %terminate
 terminate(normal, _State) ->
@@ -269,6 +278,8 @@ terminate(_Reason, _State) ->
 %%----------------------------------------------
 %% Helpers
 %%----------------------------------------------
+
+% should be removed later
 
 get_modules(Dir) ->
 	filelib:fold_files(Dir,

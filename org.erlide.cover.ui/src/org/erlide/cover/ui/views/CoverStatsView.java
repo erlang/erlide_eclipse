@@ -147,7 +147,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         colCovered.setWidth(150);
 
         colPercentage = new TreeColumn(tree, SWT.RIGHT);
-        colPercentage.setText("Coverage");
+        colPercentage.setText("Coverage %");
         colPercentage.setWidth(150);
 
     }

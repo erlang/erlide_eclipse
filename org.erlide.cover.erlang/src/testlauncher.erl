@@ -9,6 +9,7 @@
 %% Include files
 %%----------------------------------------------
 -include("test.hrl").
+-include("coverage.hrl").
 
 %%----------------------------------------------
 %% Exported Functions
@@ -16,7 +17,8 @@
 -export([start/1,
 		 start_link/1,
 		 stop/0,
-	 	 run_tests/2]).
+	 	 run_tests/2,
+		 set_output_dir/1]).
 
 -export([init/1,
 		 handle_call/3,
@@ -40,6 +42,10 @@ run_tests(Type, Path) ->
 	TypeAtom = list_to_atom(Type),
 	gen_server:call(?MODULE, {test, TypeAtom, Path}).
 
+% adds output dir to the code path
+set_output_dir(Dir) ->
+    gen_server:call(?MODULE,{output_dir,Dir}).
+
 %%----------------------------------------------
 %% Local Functions
 %%----------------------------------------------
@@ -47,6 +53,11 @@ run_tests(Type, Path) ->
 init([Type]) ->
 	State = #test_state{type = Type},
 	{ok, State}.
+
+handle_call({output_dir, Dir}, _From, #test_state{output = DirOld} = State) ->
+	code:del_path(DirOld),
+	code:add_pathz(Dir),
+	{reply, ok, State#test_state{output = Dir}};
 
 handle_call({test, module, Path}, _From, State) ->
 	Module = list_to_atom(filename:basename(Path, ".erl")),
@@ -57,15 +68,22 @@ handle_call({test, module, Path}, _From, State) ->
 	{reply, Res, State};
 
 handle_call({test, all, Path}, _From, State) ->
-	ModulesTst = launcher:get_modules(Path),						%%!
-	lists:foreach(fun(Tst) ->
+	ModulesTst = get_modules(Path),						
+	Res = lists:foldl(fun(Tst, Acc) ->
 						  TestA = list_to_atom(Tst),
 								  code:purge(TestA),
-								  code:load_file(TestA)
-						  end,
+								  code:load_file(TestA),
+				  		  case {Acc, coverage:prepare(State#test_state.type, TestA)} of
+							  {ok, ok} ->
+								  ok;
+							  _ ->
+								  #cover_error{place = Path,
+									 type = testing,
+									 info = ""}
+						  end
+						  end, ok,
 						  ModulesTst),
-	Res = coverage:prepare(State#test_state.type, {dir, Path}),
-	{reply, ok, State}.
+	{reply, Res, State}.
 
 handle_cast(stop, State) ->
 	{stop, normal, State}.
@@ -75,6 +93,18 @@ terminate(normal, _State) ->
 	init:stop(0);
 terminate(_Reason, _State) ->
 	init:stop(1).
+
+%%----------------------------------------------
+%% Helpers
+%%----------------------------------------------
+
+get_modules(Dir) ->
+	filelib:fold_files(Dir,
+					   ".*\.erl",
+					   true,
+					   fun(F, Acc) -> 
+								[filename:basename(F, ".erl") | Acc]
+					   end, []).
 
 
 

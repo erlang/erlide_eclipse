@@ -4,5 +4,6 @@
 %%-------------------------------------------------------------
 
 %state
--record(test_state, {type}).
+-record(test_state, {type,
+					 output = ""}).
 
