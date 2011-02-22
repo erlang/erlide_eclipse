@@ -23,6 +23,7 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.BackendUtil;
 import org.erlide.backend.CodeBundle;
 import org.erlide.backend.ErlBackend;
 import org.erlide.backend.console.BackendShell;
@@ -56,7 +57,12 @@ public final class ErlideBackend extends Backend implements IDisposable,
     private boolean managed = false;
 
     public ErlideBackend(final RuntimeInfo info) throws BackendException {
-        super(info);
+        this(info, BackendUtil.buildLocalNodeName(info.getNodeName(), true));
+    }
+
+    public ErlideBackend(final RuntimeInfo info, final String peer)
+            throws BackendException {
+        super(info, peer);
         codeManager = new CodeManager(this);
     }
 

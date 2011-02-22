@@ -42,6 +42,12 @@ import com.ericsson.otp.erlang.SignatureException;
 
 public class Backend extends OtpNodeStatus implements RpcCallSite {
 
+    public static final String[] SUPPORTED_VERSIONS = new String[] { "",
+            "R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
+    public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
+            "R12B", "R13B", "R14A" };
+    public static final String DEFAULT_VERSION = "R13B";
+
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
     private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
@@ -63,7 +69,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
     private boolean fDebug;
     private final RuntimeInfo fInfo;
     private OtpNode fNode;
-    private String fPeer;
+    private final String fPeer;
     private int restarted = 0;
     private boolean stopped = false;
     private EventDaemon eventDaemon;
@@ -71,18 +77,15 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
     private boolean watch = true;
     private BackendShellManager shellManager;
     private boolean logCalls = false;
-    public static final String[] SUPPORTED_VERSIONS = new String[] { "",
-    "R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
-    public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
-    "R12B", "R13B", "R14A" };
-    public static final String DEFAULT_VERSION = "R13B";
 
-    protected Backend(final RuntimeInfo info) throws BackendException {
+    protected Backend(final RuntimeInfo info, final String peer)
+            throws BackendException {
         if (info == null) {
             throw new BackendException(
                     "Can't create backend without runtime information");
         }
         fInfo = info;
+        fPeer = peer;
     }
 
     /**
@@ -224,9 +227,6 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-
-            // FIXME
-            fPeer = BackendUtil.buildLocalNodeName(label, true);
 
             eventBox = getNode().createMbox("rex");
             int tries = 20;
