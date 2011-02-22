@@ -70,10 +70,10 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.backend.util.PreferencesUtils;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.PluginUtils;
 import org.erlide.core.erlang.util.ResourceUtil;
 import org.erlide.ui.ErlideUIPlugin;
@@ -642,7 +642,7 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
-            if (ErlideUtil.isErlangFileContentFileName(resource.getName())
+            if (CommonUtils.isErlangFileContentFileName(resource.getName())
                     && !resource.isLinked()
                     && !resource.getResourceAttributes().isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {

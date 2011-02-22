@@ -35,12 +35,12 @@ import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.ErtsProcess;
 import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugElement;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.IErlangDebugNode;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -276,7 +276,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
     private void interpretOrDeinterpret(final DebugTab.DebugTreeItem dti,
             final boolean checked) {
         final String module = dti.getItem().getName();
-        final String moduleWoExtension = ErlideUtil.withoutExtension(module);
+        final String moduleWoExtension = CommonUtils.withoutExtension(module);
         final IProject project = dti.getItem().getErlProject().getProject();
         final boolean interpret = checked;
         final RpcCallSite backend = erlangDebugTarget.getBackend();

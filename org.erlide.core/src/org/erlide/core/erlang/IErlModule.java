@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.common.ModuleKind;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
 
@@ -36,10 +37,6 @@ import org.erlide.core.erlang.util.ErlangIncludeFile;
  * </p>
  */
 public interface IErlModule extends IErlElement, IParent, IOpenable {
-
-    public enum ModuleKind {
-        BAD, HRL, ERL, YRL
-    }
 
     /**
      * Returns the smallest element within this module that includes the given

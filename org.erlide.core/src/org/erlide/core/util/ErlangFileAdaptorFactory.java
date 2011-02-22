@@ -2,9 +2,9 @@ package org.erlide.core.util;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlideUtil;
 
 public class ErlangFileAdaptorFactory implements IAdapterFactory {
 
@@ -20,7 +20,7 @@ public class ErlangFileAdaptorFactory implements IAdapterFactory {
             if (adaptableObject instanceof IFile) {
                 final IFile file = (IFile) adaptableObject;
                 final String fileName = file.getName();
-                if (ErlideUtil.isErlangFileContentFileName(fileName)) {
+                if (CommonUtils.isErlangFileContentFileName(fileName)) {
                     return ErlangCore.getModel().findModule(file);
                 }
             }

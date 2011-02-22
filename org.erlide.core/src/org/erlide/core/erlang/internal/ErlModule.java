@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.common.CommonUtils;
+import org.erlide.common.ModuleKind;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlScanner;
 import org.erlide.core.erlang.ErlToken;
@@ -47,7 +49,6 @@ import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.SourceRange;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ErlangIncludeFile;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -73,7 +74,7 @@ public class ErlModule extends Openable implements IErlModule {
             final boolean useCaches) {
         super(parent, name);
         fFile = file;
-        moduleKind = ErlideUtil.nameToModuleKind(name);
+        moduleKind = CommonUtils.nameToModuleKind(name);
         this.path = path;
         this.initialText = initialText;
         parsed = false;
@@ -410,7 +411,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public String getModuleName() {
-        return ErlideUtil.withoutExtension(getName());
+        return CommonUtils.withoutExtension(getName());
     }
 
     public void disposeScanner() {

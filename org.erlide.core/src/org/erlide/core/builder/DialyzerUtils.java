@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.backend.Backend;
 import org.erlide.backend.util.Util;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -22,7 +23,6 @@ import org.erlide.core.erlang.IErlFolder;
 import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ErlideUtil;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -109,12 +109,12 @@ public class DialyzerUtils {
         final IFolder ebin = project.getFolder(ep.getOutputLocation());
         for (final IErlModule m : modules.get(ep)) {
             final String name = m.getName();
-            if (ErlideUtil.hasErlExtension(name)) {
+            if (CommonUtils.hasErlExtension(name)) {
                 if (fromSource) {
                     final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());
                 } else {
-                    final String beamName = ErlideUtil.withoutExtension(name)
+                    final String beamName = CommonUtils.withoutExtension(name)
                             + ".beam";
                     final IResource beam = ebin.findMember(beamName);
                     if (beam != null) {

@@ -42,6 +42,8 @@ import org.eclipse.ui.services.IDisposable;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.backend.util.Util;
+import org.erlide.common.CommonUtils;
+import org.erlide.common.ModuleKind;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
@@ -57,7 +59,6 @@ import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -359,7 +360,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                         .getModulesWithReferencedProjectsWithPrefix(erlProject,
                                 prefix);
                 for (final IErlModule m : modules) {
-                    if (m.getModuleKind() == IErlModule.ModuleKind.ERL) {
+                    if (m.getModuleKind() == ModuleKind.ERL) {
                         final String name = m.getModuleName();
                         if (!allErlangFiles.contains(name)) {
                             allErlangFiles.add(name);
@@ -370,7 +371,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 final List<String> mods = ModelUtils
                         .getExternalModulesWithPrefix(b, prefix, erlProject);
                 for (final String m : mods) {
-                    final String name = ErlideUtil.basenameWithoutExtension(m);
+                    final String name = CommonUtils.basenameWithoutExtension(m);
                     if (!allErlangFiles.contains(name)) {
                         allErlangFiles.add(name);
                     }
@@ -506,7 +507,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final List<IErlModule> modules = ModelUtils
                     .getModulesWithReferencedProjectsWithPrefix(project, prefix);
             for (final IErlModule m : modules) {
-                if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
+                if (CommonUtils.withoutExtension(m.getModuleName()).equals(
                         moduleName)) {
                     foundInModel = addFunctionsFromModule(offset, prefix,
                             arityOnly, result, m);

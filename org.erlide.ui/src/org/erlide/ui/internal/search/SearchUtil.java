@@ -34,6 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.backend.util.StringUtils;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -130,7 +131,7 @@ public class SearchUtil {
 
     private static void addFileToScope(final IFile file,
             final ErlSearchScope result) {
-        if (ErlideUtil.hasModuleExtension(file.getName())) {
+        if (CommonUtils.hasModuleExtension(file.getName())) {
             final IErlModule module = ErlangCore.getModel().findModule(file);
             result.addModule(module);
         }
@@ -142,7 +143,8 @@ public class SearchUtil {
             final Collection<IErlProject> erlangProjects = ErlangCore
                     .getModel().getErlangProjects();
             for (final IErlProject i : erlangProjects) {
-                final Collection<IErlModule> modules = i.getModulesAndIncludes();
+                final Collection<IErlModule> modules = i
+                        .getModulesAndIncludes();
                 for (final IErlModule j : modules) {
                     result.addModule(j);
                 }

@@ -4,13 +4,13 @@ import java.util.EnumSet;
 
 import org.erlide.backend.util.StringUtils;
 import org.erlide.backend.util.Util;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.IErlAttribute;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlFunction;
 import org.erlide.core.erlang.IErlFunctionClause;
 import org.erlide.core.erlang.IErlMacroDef;
 import org.erlide.core.erlang.IErlRecordDef;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.search.FunctionPattern;
 import org.erlide.core.search.IncludePattern;
 import org.erlide.core.search.MacroPattern;
@@ -217,7 +217,7 @@ public abstract class ErlangSearchPattern {
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = ErlideUtil
+            final String withoutExtension = CommonUtils
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,

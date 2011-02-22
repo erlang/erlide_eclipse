@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.backend;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,12 +29,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.backend.ErlLaunchAttributes;
-import org.erlide.backend.ErtsProcess;
 import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.common.CommonUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -89,7 +85,7 @@ public class BackendData extends GenericBackendData {
             final IMarker m = bp.getMarker();
             final IResource r = m.getResource();
             final String name = r.getName();
-            if (ErlideUtil.hasErlExtension(name)) {
+            if (CommonUtils.hasErlExtension(name)) {
                 final IProject p = r.getProject();
                 if (projects.contains(p)) {
                     final String s = p.getName() + ":" + name;

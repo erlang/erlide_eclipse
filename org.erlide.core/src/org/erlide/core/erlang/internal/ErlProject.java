@@ -45,6 +45,7 @@ import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.backend.util.Util;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -167,7 +168,7 @@ public class ErlProject extends Openable implements IErlProject {
                     children.add(erlFolder);
                 } else if (element instanceof IFile) {
                     final IFile file = (IFile) element;
-                    if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
+                    if (CommonUtils.isErlangFileContentFileName(file.getName())) {
                         final IErlModule m = (IErlModule) modelManager
                                 .create(file);
                         children.add(m);
@@ -207,8 +208,8 @@ public class ErlProject extends Openable implements IErlProject {
             if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
                 final RpcCallSite backend = BackendUtils
                         .getBuildOrIdeBackend(getProject());
-                final Collection<String> includes = ErlideOpen.getIncludesInDir(
-                        backend, path.toPortableString());
+                final Collection<String> includes = ErlideOpen
+                        .getIncludesInDir(backend, path.toPortableString());
                 for (final String include : includes) {
                     projectIncludes
                             .add(path.append(include).toPortableString());
@@ -587,7 +588,7 @@ public class ErlProject extends Openable implements IErlProject {
         if (ModelUtils.isExternalFilesProject(fProject)) {
             for (final IErlElement child : getChildren()) {
                 if (child instanceof IErlModule
-                        && ErlideUtil.hasErlExtension(child.getName())) {
+                        && CommonUtils.hasErlExtension(child.getName())) {
                     result.add((IErlModule) child);
                 }
             }
@@ -637,7 +638,7 @@ public class ErlProject extends Openable implements IErlProject {
             if (ModelUtils.isExternalFilesProject(fProject)) {
                 for (final IErlElement child : getChildren()) {
                     if (child instanceof IErlModule
-                            && ErlideUtil.hasModuleExtension(child.getName())) {
+                            && CommonUtils.hasModuleExtension(child.getName())) {
                         result.add((IErlModule) child);
                     }
                 }
@@ -774,7 +775,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     IErlModule getModuleAux(final String name, final boolean ignoreCase)
             throws ErlModelException {
-        final boolean hasExtension = ErlideUtil.hasExtension(name);
+        final boolean hasExtension = CommonUtils.hasExtension(name);
         final Collection<IErlModule> modules = getModules();
         for (final IErlModule module : modules) {
             final String moduleName = hasExtension ? module.getName() : module
@@ -1167,7 +1168,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
         if (moduleName != null) {
             final String moduleFileName;
-            if (!ErlideUtil.hasModuleExtension(moduleName)) {
+            if (!CommonUtils.hasModuleExtension(moduleName)) {
                 moduleFileName = moduleName + ".erl";
             } else {
                 moduleFileName = moduleName;

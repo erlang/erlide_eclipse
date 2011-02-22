@@ -17,6 +17,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
@@ -28,7 +29,6 @@ import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.BackendUtils;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
@@ -274,7 +274,7 @@ public class ModelUtilsTests {
             // then
             // we should find it
             assertEquals(modules.size(), 1);
-            assertEquals(ErlideUtil.withoutExtension(externalFileName),
+            assertEquals(CommonUtils.withoutExtension(externalFileName),
                     modules.get(0));
         } finally {
             if (externalFile != null && externalFile.exists()) {

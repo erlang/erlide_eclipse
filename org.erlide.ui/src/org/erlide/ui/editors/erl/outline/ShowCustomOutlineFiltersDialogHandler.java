@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.common.CommonUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.osgi.service.prefs.BackingStoreException;
@@ -97,11 +97,11 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
                 false);
         final String userDefinedPatterns = prefsNode.get(
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
-        oldUserDefinedPatterns.addAll(ErlideUtil.unpackList(
+        oldUserDefinedPatterns.addAll(CommonUtils.unpackList(
                 userDefinedPatterns, SEPARATOR));
         final String enabledFilterIDs = prefsNode.get(
                 PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
-        oldEnabledFilterIDs.addAll(ErlideUtil.unpackList(enabledFilterIDs,
+        oldEnabledFilterIDs.addAll(CommonUtils.unpackList(enabledFilterIDs,
                 SEPARATOR));
         return areUserDefinedPatternsEnabled;
     }
@@ -114,9 +114,9 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED,
                 areUserDefinedPatternsEnabled);
         prefsNode.put(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS,
-                ErlideUtil.packList(userDefinedPatterns, SEPARATOR));
+                CommonUtils.packList(userDefinedPatterns, SEPARATOR));
         prefsNode.put(PreferenceConstants.OUTLINE_ENABLED_FILTERS,
-                ErlideUtil.packList(enabledFilterIDs, SEPARATOR));
+                CommonUtils.packList(enabledFilterIDs, SEPARATOR));
         try {
             prefsNode.flush();
         } catch (final BackingStoreException e) {
