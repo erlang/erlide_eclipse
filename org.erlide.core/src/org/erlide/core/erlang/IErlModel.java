@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -281,7 +280,13 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     IErlModule findModuleIgnoreCase(String name) throws ErlModelException;
 
-    public IErlElement innermostThat(final IErlElement el,
+    IErlModule findModule(String moduleName, String modulePath)
+            throws ErlModelException;
+
+    IErlModule findInclude(final String includeName, final String includePath)
+            throws ErlModelException;
+
+    IErlElement innermostThat(final IErlElement el,
             final IErlangFirstThat firstThat);
 
     OtpErlangList getPathVars();
@@ -297,6 +302,4 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     IErlProject newProject(final String name, final String path)
             throws ErlModelException;
 
-    IErlModule findExternalModule(String moduleName, String modulePath)
-            throws CoreException;
 }

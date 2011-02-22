@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.erlide.core.erlang;
 
+import java.util.EnumSet;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
@@ -32,34 +34,8 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
- */
-/**
- * @author jakob
- *
- */
-/**
- * @author jakob
- *
- */
-/**
- * @author jakob
- *
- */
-/**
- * @author jakob
- *
- */
-/**
- * @author jakob
- *
- */
-/**
- * @author jakob
- *
- */
-/**
- * @author jakob
  * 
+ * @author jakob
  */
 public interface IErlElement extends IAdaptable, IDisposable {
 
@@ -244,7 +220,9 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     // static final int VISIT_REFERENCED = 0x0001;
     // static final int VISIT_EXTERNALS = 0x0002;
-    static final int VISIT_LEAFS_ONLY = 0x0004;
+    enum AcceptFlags {
+        LEAFS_ONLY, CHILDREN_FIRST
+    };
 
     /**
      * The good ole visitor pattern
@@ -254,8 +232,8 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * @param leafKind
      * @throws ErlModelException
      */
-    void accept(IErlElementVisitor visitor, int flags, IErlElement.Kind leafKind)
-            throws ErlModelException;
+    void accept(IErlElementVisitor visitor, EnumSet<AcceptFlags> flags,
+            IErlElement.Kind leafKind) throws ErlModelException;
 
     // TODO StyledString? but this needs jface-stuff, which we don't want in a
     // non-ui class, probably we should get rid of this one and put everything

@@ -13,6 +13,7 @@ package org.erlide.core.erlang.internal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -477,30 +478,14 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) throws ErlModelException {
-        return findModuleAux(name, false);
+        return ErlProject.findModule(null, name, null, false, false, false,
+                true);
     }
 
     public IErlModule findModuleIgnoreCase(final String name)
             throws ErlModelException {
-        return findModuleAux(name, true);
-    }
-
-    private IErlModule findModuleAux(final String name, final boolean ignoreCase)
-            throws ErlModelException {
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof ErlProject) {
-                final ErlProject p = (ErlProject) e;
-                try {
-                    final IErlModule m = p.getModuleAux(name, ignoreCase);
-                    if (m != null) {
-                        return m;
-                    }
-                } catch (final ErlModelException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
-        return null;
+        return ErlProject
+                .findModule(null, name, null, true, false, false, true);
     }
 
     public IErlProject createOtpProject(final IProject project)
@@ -558,13 +543,14 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public final void accept(final IErlElement element,
-            final IErlElementVisitor visitor, final int flags,
+            final IErlElementVisitor visitor, final EnumSet<AcceptFlags> flags,
             final IErlElement.Kind leafKind) throws ErlModelException {
         if (element.getKind() == leafKind) {
             visitor.visit(element);
         } else {
             boolean visitChildren = true;
-            if ((flags & IErlElement.VISIT_LEAFS_ONLY) == 0) {
+            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
+                    && !flags.contains(AcceptFlags.CHILDREN_FIRST)) {
                 visitChildren = visitor.visit(element);
             }
             if (visitChildren && element instanceof IParent) {
@@ -595,6 +581,10 @@ public class ErlModel extends Openable implements IErlModel {
                 // // FIXME how do we do that?
                 // }
                 // }
+            }
+            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
+                    && flags.contains(AcceptFlags.CHILDREN_FIRST)) {
+                visitor.visit(element);
             }
         }
     }
@@ -648,20 +638,16 @@ public class ErlModel extends Openable implements IErlModel {
         return module.findFunction(new ErlangFunction(r.function, r.arity));
     }
 
-    public IErlModule findExternalModule(final String moduleName,
-            final String modulePath) throws CoreException {
-        IErlModule module = ErlProject.getModuleFromCacheByNameOrPath(null,
-                moduleName, modulePath);
-        if (module != null) {
-            return module;
-        }
-        for (final IErlProject project : getErlangProjects()) {
-            module = project.findExternalModule(moduleName, modulePath, false,
-                    false);
-            if (module != null) {
-                return module;
-            }
-        }
-        return null;
+    public IErlModule findModule(final String moduleName,
+            final String modulePath) throws ErlModelException {
+        return ErlProject.findModule(null, moduleName, modulePath, false, true,
+                false, true);
     }
+
+    public IErlModule findInclude(final String includeName,
+            final String includePath) throws ErlModelException {
+        return ErlProject.findModule(null, includeName, includePath, false,
+                false, false, true);
+    }
+
 }

@@ -199,6 +199,9 @@ public final class BackendManager extends OtpNodeStatus implements
             throws BackendException {
         final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 project);
+        if (erlProject == null) {
+            return null;
+        }
         final RuntimeInfo info = erlProject.getRuntimeInfo();
         if (info == null) {
             ErlLogger.info("Project %s has no runtime info, using ide",
