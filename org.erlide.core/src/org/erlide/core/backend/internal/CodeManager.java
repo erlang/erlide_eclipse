@@ -19,11 +19,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.eclipse.core.runtime.Path;
 import org.erlide.backend.Backend;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.CodeBundle;
 import org.erlide.backend.ErlBackend;
+import org.erlide.backend.util.BackendUtils;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlangCore;
@@ -136,19 +136,19 @@ public class CodeManager {
                 }
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
-                    final Path path = new Path(s);
-                    if (path.getFileExtension() != null
-                            && "beam".compareTo(path.getFileExtension()) == 0) {
-                        final String m = path.removeFileExtension()
-                                .lastSegment();
-                        // ErlLogger.debug(" " + m);
+                    final String beamModuleName = BackendUtils
+                            .getBeamModuleName(s);
+                    if (beamModuleName != null) {
+                        // ErlLogger.debug(" " + beamModuleName);
                         try {
-                            final boolean ok = loadBeam(m, b.getEntry(s));
+                            final boolean ok = loadBeam(beamModuleName,
+                                    b.getEntry(s));
                             if (!ok) {
-                                ErlLogger.error("Could not load %s", m);
+                                ErlLogger.error("Could not load %s",
+                                        beamModuleName);
                             }
                             ErlangCore.getBackendManager().moduleLoaded(
-                                    backend, null, m);
+                                    backend, null, beamModuleName);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
                         }
@@ -267,11 +267,9 @@ public class CodeManager {
         }
         while (e.hasMoreElements()) {
             final String s = (String) e.nextElement();
-            final Path path = new Path(s);
-            if (path.getFileExtension() != null
-                    && "beam".compareTo(path.getFileExtension()) == 0) {
-                final String m = path.removeFileExtension().lastSegment();
-                unloadBeam(m);
+            final String beamModuleName = BackendUtils.getBeamModuleName(s);
+            if (beamModuleName != null) {
+                unloadBeam(beamModuleName);
             }
         }
     }

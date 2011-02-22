@@ -27,12 +27,18 @@ public class ErlangDebugOptionsManager implements ILaunchesListener,
         return fgDebugOptionsManager;
     }
 
-    public void startup() {
+    public void start() {
         // lazy initialization will occur on the first launch
         final DebugPlugin debugPlugin = DebugPlugin.getDefault();
         debugPlugin.getLaunchManager().addLaunchListener(this);
         debugPlugin.getBreakpointManager().addBreakpointListener(this);
         // EvaluationContextManager.startup();
+    }
+
+    public void shutdown() {
+        final DebugPlugin debugPlugin = DebugPlugin.getDefault();
+        debugPlugin.getLaunchManager().removeLaunchListener(this);
+        debugPlugin.getBreakpointManager().removeBreakpointListener(this);
     }
 
     public void launchesRemoved(final ILaunch[] launches) {

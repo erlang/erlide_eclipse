@@ -22,6 +22,8 @@ import com.google.common.collect.Maps;
 
 public class ErlLaunchData {
 
+    public static final String PROJECT_NAME_SEPARATOR = ";";
+
     public List<String> interpretedModules;
     public final int debugFlags;
     public final String xtraArgs;
@@ -45,7 +47,8 @@ public class ErlLaunchData {
     public ErlLaunchData(final ILaunchConfiguration config,
             final boolean internal) throws CoreException {
         prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "").trim();
-        projectNames = prjs.length() == 0 ? new String[] {} : prjs.split(";");
+        projectNames = prjs.length() == 0 ? new String[] {} : prjs
+                .split(PROJECT_NAME_SEPARATOR);
         module = config.getAttribute(ErlLaunchAttributes.MODULE, "").trim();
         function = config.getAttribute(ErlLaunchAttributes.FUNCTION, "").trim();
         args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS, "").trim();

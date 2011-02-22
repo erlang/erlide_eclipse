@@ -585,6 +585,10 @@
                 optional="false">
           </commandParameter>
        </command>
+       <command
+             id="org.erlide.ui.command1"
+             name="name">
+       </command>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -1535,6 +1539,13 @@
             class="org.erlide.debug.ui.model.ErlBreakpointAdapterFactory">
          <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
       </factory>
+      <factory
+            adaptableType="org.eclipse.ui.IEditorInput"
+            class="org.erlide.ui.util.EditorInputToModuleAdapterFactory">
+         <adapter
+               type="org.erlide.core.erlang.IErlElement">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -1602,15 +1613,24 @@
           modes="run,debug">
         <contextualLaunch>
             <enablement>
-               <with variable="selection">
-                  <count value="1"/>
-               	  <iterate>
-                     <adapt type="org.erlide.core.erlang.IErlProject">
-		             </adapt>
-		          </iterate>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.erlide.core.erlang.IErlElement">
+                     </adapt>
+                  </iterate>
                </with>
             </enablement>
          </contextualLaunch>
+        <configurationType
+              id="org.erlide.core.launch.erlangProcess">
+        </configurationType>
+        <perspective
+              id="org.erlide.ui.perspectives.ErlangPerspective">
+        </perspective>
     </shortcut>
  </extension>
     <extension
@@ -1826,13 +1846,6 @@
             verticalRulerPreferenceKey="definitionOccurrenceIndicationInVerticalRuler"
             verticalRulerPreferenceValue="false">
       </specification>
-   </extension>
-   <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.erlide.ui.internal.search.ReferencesInWorkspaceHandler"
-            commandId="org.erlide.ui.search.references.in.workspace">
-      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">

@@ -39,6 +39,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
+import org.erlide.backend.Backend;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.backend.util.Util;
@@ -55,7 +56,7 @@ import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.BackendUtils;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -176,7 +177,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
                 rc = ErlideContextAssist.checkRecordCompletion(
-                        BackendUtils.getBuildOrIdeBackend(project), before);
+                        CoreUtil.getBuildOrIdeBackend(project), before);
             }
             if (rc != null && rc.isNameWanted()) {
                 flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -255,7 +256,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final RpcCallSite backend = BackendUtils.getBuildOrIdeBackend(project);
+        final Backend backend = CoreUtil.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
@@ -349,14 +350,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         }
     }
 
-    private List<ICompletionProposal> getModules(final RpcCallSite b,
+    private List<ICompletionProposal> getModules(final RpcCallSite backend,
             final int offset, final String prefix) throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
         if (module != null) {
             final IErlProject project = module.getProject();
             final List<String> names = ModelUtils.findModulesWithPrefix(prefix,
                     project, true);
-            final OtpErlangObject res = ErlideDoc.getModules(b, prefix, names);
+            final OtpErlangObject res = ErlideDoc.getModules(backend, prefix,
+                    names);
             if (res instanceof OtpErlangList) {
                 final OtpErlangList resList = (OtpErlangList) res;
                 for (final OtpErlangObject o : resList) {

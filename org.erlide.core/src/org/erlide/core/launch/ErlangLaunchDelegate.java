@@ -54,6 +54,7 @@ import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchData;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.backend.util.BackendUtils;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.ErlideBackend;
@@ -376,12 +377,12 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
                     final String s = (String) e.nextElement();
                     final Path path = new Path(s);
                     if (path.lastSegment().equals(beamname)) {
-                        if (path.getFileExtension() != null
-                                && "beam".compareTo(path.getFileExtension()) == 0) {
-                            final String m = path.removeFileExtension()
-                                    .lastSegment();
+                        final String beamModuleName = BackendUtils
+                                .getBeamModuleName(path);
+                        if (beamModuleName != null) {
                             try {
-                                return BeamUtil.getBeamBinary(m, b.getEntry(s));
+                                return BeamUtil.getBeamBinary(beamModuleName,
+                                        b.getEntry(s));
                             } catch (final Exception ex) {
                                 ErlLogger.warn(ex);
                             }
