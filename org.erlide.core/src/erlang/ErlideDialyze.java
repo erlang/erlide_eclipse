@@ -10,7 +10,9 @@ import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
@@ -58,6 +60,26 @@ public class ErlideDialyze {
             return backend.call("erlide_dialyze", "check_plt", "s", plt);
         } catch (final BackendException e) {
             ErlLogger.debug(e);
+        }
+        return null;
+    }
+
+    public static List<String> getPltFiles(final Backend backend,
+            final String pltFiles) throws BackendException {
+        final OtpErlangObject o = backend.call("erlide_dialyze",
+                "get_plt_files", "s", pltFiles);
+        if (Util.isOk(o)) {
+            final OtpErlangTuple t = (OtpErlangTuple) o;
+            final OtpErlangObject e1 = t.elementAt(1);
+            if (e1 instanceof OtpErlangList) {
+                final OtpErlangList l = (OtpErlangList) e1;
+                final List<String> result = Lists.newArrayListWithCapacity(l
+                        .arity());
+                for (final OtpErlangObject i : l) {
+                    result.add(Util.stringValue(i));
+                }
+                return result;
+            }
         }
         return null;
     }

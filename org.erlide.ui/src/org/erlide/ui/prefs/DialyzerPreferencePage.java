@@ -291,6 +291,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             final DialyzerPreferences p = DialyzerPreferences.get(project);
             return p.hasOptionsAtLowestScope();
         } catch (final CoreException e) {
+        } catch (final BackendException e) {
         }
         return false;
     }
@@ -501,6 +502,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
         try {
             prefs = DialyzerPreferences.get(fProject);
         } catch (final CoreException e) {
+            // FIXME apply to status line or setErrorMessage
+        } catch (final BackendException e) {
             // FIXME apply to status line or setErrorMessage
         }
     }
