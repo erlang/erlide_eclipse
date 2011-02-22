@@ -9,13 +9,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.backend.BackendException;
 import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.preferences.PreferencesHelper;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
+
+import erlang.ErlideDialyze;
 
 public class DialyzerPreferences {
 
@@ -31,7 +35,7 @@ public class DialyzerPreferences {
     private boolean dialyzeOnCompile;
 
     public static DialyzerPreferences get(final IProject project)
-            throws CoreException {
+            throws CoreException, BackendException {
         try {
             final DialyzerPreferences prefs = new DialyzerPreferences();
             prefs.load();
@@ -75,7 +79,8 @@ public class DialyzerPreferences {
         helper.flush();
     }
 
-    private Collection<String> getPLTPathsFromPreferences() {
+    private Collection<String> getPLTPathsFromPreferences()
+            throws BackendException {
 
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
@@ -85,10 +90,11 @@ public class DialyzerPreferences {
         if (pltFilesString.length() > 0) {
             ErlLogger.debug("%s: '%s'", key, pltFilesString);
         }
-        return PreferencesUtils.unpackList(pltFilesString, ",");
+        return ErlideDialyze.getPltFiles(ErlangCore.getBackendManager()
+                .getIdeBackend(), pltFilesString);
     }
 
-    public void load() throws BackingStoreException {
+    public void load() throws BackingStoreException, BackendException {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
         pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(

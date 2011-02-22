@@ -10,7 +10,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
+import org.erlide.backend.BackendException;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.builder.internal.BuilderMessages;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModel;
@@ -25,11 +29,16 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
     // private static final BuilderHelper helper = new BuilderHelper();
 
     @Override
-    protected IProject[] build(final int kind,
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes")
+    final Map args, final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
-        final DialyzerPreferences prefs = DialyzerPreferences.get(project);
+        DialyzerPreferences prefs;
+        try {
+            prefs = DialyzerPreferences.get(project);
+        } catch (final BackendException e1) {
+            throw new CoreException(new Status(IStatus.ERROR,
+                    ErlangPlugin.PLUGIN_ID, e1.toString()));
+        }
         if (!prefs.getDialyzeOnCompile()) {
             return null;
         }
