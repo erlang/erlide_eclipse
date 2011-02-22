@@ -35,12 +35,12 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.ErlLaunchData;
 import org.erlide.backend.ErtsProcess;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -140,7 +140,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
-        final String name = ErlideUtil.packList(projectNames, "_");
+        final String name = CommonUtils.packList(projectNames, "_");
         // try and find one
         final ILaunchConfiguration[] launchConfigurations = launchManager
                 .getLaunchConfigurations();
@@ -157,7 +157,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
                 .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE);
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
-        wc.setAttribute(ErlLaunchAttributes.PROJECTS, ErlideUtil.packList(
+        wc.setAttribute(ErlLaunchAttributes.PROJECTS, CommonUtils.packList(
                 projectNames, ErlLaunchData.PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.get(0)
                 .getRuntimeInfo().getName());

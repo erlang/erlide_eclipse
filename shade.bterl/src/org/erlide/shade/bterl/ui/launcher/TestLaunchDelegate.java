@@ -25,11 +25,11 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.backend.Backend;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.events.ErlangEvent;
 import org.erlide.backend.events.EventHandler;
-import org.erlide.backend.runtime.RuntimeInfoManager;
 import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.core.backend.ErlideBackend;
@@ -250,7 +250,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String bterlPath = getBterlPath();
         System.out.println("... internal path = " + bterlPath);
 
-        final String runtimeName = RuntimeInfoManager.getDefault()
+        final String runtimeName = BackendCore.getRuntimeInfoManager()
                 .getRuntime(new RuntimeVersion("R13B"), "").getName();
 
         final List<String> paths = Lists.newArrayList();

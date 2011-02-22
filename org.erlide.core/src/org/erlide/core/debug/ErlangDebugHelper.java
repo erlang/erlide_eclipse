@@ -6,10 +6,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 import erlang.ErlideDebug;
@@ -46,7 +46,7 @@ public class ErlangDebugHelper {
             r.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {
         }
-        final String beam = ErlideUtil.withoutExtension(module) + ".beam";
+        final String beam = CommonUtils.withoutExtension(module) + ".beam";
         return r.getFile(beam);
     }
 

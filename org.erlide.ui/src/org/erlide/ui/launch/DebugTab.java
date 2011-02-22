@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlElement;
@@ -55,7 +56,6 @@ import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.internal.ErlExternalReferenceEntry;
 import org.erlide.core.erlang.internal.ErlExternalReferenceEntryList;
 import org.erlide.core.erlang.internal.ErlOtpExternalReferenceEntryList;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.launch.ErlangLaunchDelegate;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
@@ -429,7 +429,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 final IErlProject p = (IErlProject) model.getChildNamed(pm[0]);
                 final String mName = pm[1];
                 try {
-                    final String s = ErlideUtil
+                    final String s = CommonUtils
                             .isErlangFileContentFileName(mName) ? mName : mName
                             + ".erl";
                     module = p.getModule(s);

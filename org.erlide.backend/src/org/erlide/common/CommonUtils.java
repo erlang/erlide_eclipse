@@ -11,8 +11,13 @@
 package org.erlide.common;
 
 import java.io.File;
+import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.Util;
@@ -22,8 +27,11 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.collect.Lists;
 
 public class CommonUtils {
+
+    private static final List<String> EMPTY_LIST = Lists.newArrayList();
 
     private static Boolean fgCacheIsEricssonUser;
 
@@ -100,5 +108,109 @@ public class CommonUtils {
             return true;
         }
         return false;
+    }
+
+    public static boolean hasExtension(final String name) {
+        final int i = name.lastIndexOf('.');
+        return i != -1;
+    }
+
+    public static String withoutExtension(final String name) {
+        final int i = name.lastIndexOf('.');
+        if (i == -1) {
+            return name;
+        }
+        return name.substring(0, i);
+    }
+
+    public static boolean hasErlideExternalExtension(final String name) {
+        final IPath path = new Path(name);
+        final String fileExtension = path.getFileExtension();
+        return fileExtension != null && fileExtension.equals(".erlidex");
+    }
+
+    public static String basenameWithoutExtension(final String m) {
+        final IPath p = new Path(m);
+        return withoutExtension(p.lastSegment());
+    }
+
+    public static boolean isErlangFileContentFileName(final String fileName) {
+        final IContentTypeManager contentTypeManager = Platform
+                .getContentTypeManager();
+        final IContentType[] contentTypes = contentTypeManager
+                .findContentTypesFor(fileName);
+        for (final IContentType contentType : contentTypes) {
+            if (contentType.getId().equals("org.erlide.core.content.erlang")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String packList(final Iterable<String> strs, final String sep) {
+        final StringBuilder result = new StringBuilder();
+        for (final String s : strs) {
+            result.append(s).append(sep);
+        }
+        return result.length() > 0 ? result.substring(0,
+                result.length() - sep.length()) : "";
+    }
+
+    public static String packArray(final String[] strs, final String sep) {
+        final StringBuilder result = new StringBuilder();
+        for (final String s : strs) {
+            result.append(s).append(sep);
+        }
+        return result.length() > 0 ? result.substring(0,
+                result.length() - sep.length()) : "";
+    }
+
+    public static IPath[] unpackArray(final String str, final String sep) {
+        return CommonUtils.unpackList(str, sep).toArray(new IPath[0]);
+    }
+
+    public static List<String> unpackList(final String string, final String sep) {
+        if (string.length() == 0) {
+            return EMPTY_LIST;
+        }
+        final String[] v = string.split(sep);
+        final List<String> result = Lists.newArrayListWithCapacity(v.length);
+        for (final String s : v) {
+            result.add(s);
+        }
+        return result;
+    }
+
+    public static ModuleKind extensionToModuleKind(final String ext) {
+        if (ext == null) {
+            return ModuleKind.BAD;
+        }
+        if (ext.equalsIgnoreCase("hrl")) {
+            return ModuleKind.HRL;
+        }
+        if (ext.equalsIgnoreCase("erl")) {
+            return ModuleKind.ERL;
+        }
+        if (ext.equalsIgnoreCase("yrl")) {
+            return ModuleKind.YRL;
+        }
+        return ModuleKind.BAD;
+    }
+
+    public static ModuleKind nameToModuleKind(final String name) {
+        final IPath p = new Path(name);
+        return extensionToModuleKind(p.getFileExtension());
+    }
+
+    public static boolean isModuleExtensionx(final String ext) {
+        return CommonUtils.extensionToModuleKind(ext) != ModuleKind.BAD;
+    }
+
+    public static boolean hasModuleExtension(final String name) {
+        return CommonUtils.nameToModuleKind(name) != ModuleKind.BAD;
+    }
+
+    public static boolean hasErlExtension(final String name) {
+        return CommonUtils.nameToModuleKind(name) == ModuleKind.ERL;
     }
 }

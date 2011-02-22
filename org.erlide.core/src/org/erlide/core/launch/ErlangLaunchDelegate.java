@@ -56,13 +56,13 @@ import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.BackendUtils;
 import org.erlide.backend.util.BeamUtil;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -311,7 +311,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final IMarker m = bp.getMarker();
             final IResource r = m.getResource();
             final String name = r.getName();
-            if (ErlideUtil.hasErlExtension(name)) {
+            if (CommonUtils.hasErlExtension(name)) {
                 final IProject p = r.getProject();
                 if (projects.contains(p)) {
                     final String s = p.getName() + ":" + name;

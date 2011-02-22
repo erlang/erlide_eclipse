@@ -44,6 +44,7 @@ import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.backend.util.PreferencesUtils;
 import org.erlide.backend.util.Util;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -162,7 +163,7 @@ public class ErlProject extends Openable implements IErlProject {
                     children.add(erlFolder);
                 } else if (element instanceof IFile) {
                     final IFile file = (IFile) element;
-                    if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
+                    if (CommonUtils.isErlangFileContentFileName(file.getName())) {
                         final IErlModule m = (IErlModule) modelManager
                                 .create(file);
                         children.add(m);
@@ -582,7 +583,7 @@ public class ErlProject extends Openable implements IErlProject {
         if (ModelUtils.isExternalFilesProject(fProject)) {
             for (final IErlElement child : getChildren()) {
                 if (child instanceof IErlModule
-                        && ErlideUtil.hasErlExtension(child.getName())) {
+                        && CommonUtils.hasErlExtension(child.getName())) {
                     result.add((IErlModule) child);
                 }
             }
@@ -631,7 +632,7 @@ public class ErlProject extends Openable implements IErlProject {
             if (ModelUtils.isExternalFilesProject(fProject)) {
                 for (final IErlElement child : getChildren()) {
                     if (child instanceof IErlModule
-                            && ErlideUtil.hasModuleExtension(child.getName())) {
+                            && CommonUtils.hasModuleExtension(child.getName())) {
                         result.add((IErlModule) child);
                     }
                 }
@@ -770,6 +771,7 @@ public class ErlProject extends Openable implements IErlProject {
         try {
             return findModule(this, name, null, false, false, false, false);
         } catch (final ErlModelException e) {
+            final boolean hasExtension = CommonUtils.hasExtension(name);
             return null;
         }
     }
@@ -1100,7 +1102,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }
         if (moduleName != null) {
-            final boolean hasExtension = ErlideUtil.hasExtension(moduleName);
+            final boolean hasExtension = CommonUtils.hasExtension(moduleName);
             for (final IErlModule module2 : modules) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
@@ -1141,7 +1143,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }
         if (includeName != null) {
-            final boolean hasExtension = ErlideUtil.hasExtension(includeName);
+            final boolean hasExtension = CommonUtils.hasExtension(includeName);
             for (final IErlModule module2 : modules) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();

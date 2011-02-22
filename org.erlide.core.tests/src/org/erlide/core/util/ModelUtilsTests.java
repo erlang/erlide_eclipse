@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
@@ -26,7 +27,6 @@ import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlTypespec;
 import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
@@ -275,7 +275,7 @@ public class ModelUtilsTests {
             // we should find it iff we check externals
             assertEquals(0, moduleNames0.size());
             assertEquals(1, modules1.size());
-            assertEquals(ErlideUtil.withoutExtension(externalFileName),
+            assertEquals(CommonUtils.withoutExtension(externalFileName),
                     modules1.get(0));
             assertEquals(1, listModules.size());
             assertEquals("lists", listModules.get(0));

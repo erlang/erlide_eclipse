@@ -1,4 +1,4 @@
-package org.erlide.core.backend;
+package org.erlide.backend;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.backend.ErtsProcess;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class GenericBackendData {

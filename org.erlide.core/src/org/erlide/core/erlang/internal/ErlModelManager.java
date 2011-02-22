@@ -37,6 +37,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
+import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.erlang.ErlElementDelta;
 import org.erlide.core.erlang.ErlModelException;
@@ -224,7 +225,7 @@ public final class ErlModelManager implements IErlModelManager {
                 }
             }
         }
-        if (ErlideUtil.isErlangFileContentFileName(file.getName())) {
+        if (CommonUtils.isErlangFileContentFileName(file.getName())) {
             return createModuleFrom(file, parent);
         }
         return null;
@@ -250,7 +251,7 @@ public final class ErlModelManager implements IErlModelManager {
             return null;
         }
         final String name = file.getName();
-        if (ErlideUtil.isErlangFileContentFileName(name)) {
+        if (CommonUtils.isErlangFileContentFileName(name)) {
             final IErlModule module = new ErlModule(parent, name, null, file,
                     file.getLocation().toPortableString(), true);
             if (parent != null) {
@@ -367,7 +368,7 @@ public final class ErlModelManager implements IErlModelManager {
                                     + " for " + resource.getLocation());
                         }
                         final boolean erlangFile = resource.getType() == IResource.FILE
-                                && ErlideUtil
+                                && CommonUtils
                                         .isErlangFileContentFileName(resource
                                                 .getName());
                         final boolean erlangProject = resource.getType() == IResource.PROJECT

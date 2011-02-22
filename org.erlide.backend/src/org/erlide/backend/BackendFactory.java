@@ -8,11 +8,8 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.backend;
 
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendUtil;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.util.BackendUtils;
 import org.erlide.common.CommonUtils;
@@ -20,10 +17,7 @@ import org.erlide.jinterface.util.ErlLogger;
 
 public class BackendFactory {
 
-    final BackendManager backendManager;
-
-    public BackendFactory(final BackendManager backendManager) {
-        this.backendManager = backendManager;
+    public BackendFactory() {
     }
 
     public Backend createIdeBackend() {

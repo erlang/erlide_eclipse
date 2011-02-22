@@ -43,6 +43,8 @@ import org.erlide.backend.Backend;
 import org.erlide.backend.rpc.RpcCallSite;
 import org.erlide.backend.util.StringUtils;
 import org.erlide.backend.util.Util;
+import org.erlide.common.CommonUtils;
+import org.erlide.common.ModuleKind;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
