@@ -3,12 +3,14 @@ package org.erlide.cover.core.api;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.erlang.IErlModuleMap;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.cover.core.CoverException;
@@ -42,10 +44,13 @@ public class Configuration implements IConfiguration {
 
         if (project == null)
             throw new CoverException("no project set");
-        IErlModule module = project.getModule(name);
+        IErlModule module = null; //project.getModule(name);
+        IErlModuleMap m = ErlangCore.getModuleMap();
+        Set<IErlModule> mods = ErlangCore.getModuleMap().getModulesByName(name);
+            module = mods.iterator().next();
         if (module != null)
             modules.add(module);
-      
+        
         // else: no such module??
     }
 

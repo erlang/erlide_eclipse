@@ -71,7 +71,7 @@ public class CoveragePerformer implements CoverAPI {
             List<OtpErlangObject> names = new ArrayList<OtpErlangObject>(
                     coverNodes.size());
             for (String name : coverNodes) {
-                names.add(new OtpErlangList(name));
+                names.add(new OtpErlangAtom(name));
             }
 
             OtpErlangList nodesList = new OtpErlangList(
@@ -127,8 +127,8 @@ public class CoveragePerformer implements CoverAPI {
         List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
         for (IErlModule module : config.getModules()) {
-            log.debug(module.getName());
-            modules.add(new OtpErlangList(module.getName()));
+            log.debug(module.getModuleName());
+            modules.add(new OtpErlangList(module.getModuleName()));
         }
 
         try {

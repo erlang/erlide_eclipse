@@ -150,6 +150,9 @@ handle_call({analyse, Modules}, _From, State) ->
 				_ ->
 					coverage:create_index(ModsOk)
 		   end,
+	
+	erlide_jrpc:event(?EVENT, ?FINISHED),
+	
 	{reply, Path, State};
 
 

@@ -101,7 +101,7 @@ create_report(Modules) when is_list(Modules) ->
 		end,[],Modules);
 
 create_report(Module) ->
-    io:format("~p~n", Module), 
+    io:format("~p~n", [Module]), 
     ModRes = cover:analyse(Module,module), 
     FunRes = cover:analyse(Module,function), 
     LineRes = cover:analyse(Module,calls,line),  %%calls! 

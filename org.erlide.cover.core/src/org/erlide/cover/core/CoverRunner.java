@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.erlide.cover.constants.TestConstants;
 import org.erlide.cover.core.api.CoveragePerformer;
 import org.erlide.cover.core.api.IConfiguration;
@@ -54,40 +55,66 @@ public class CoverRunner extends Thread {
 
             // TODO handle res
 
-            log.debug(config.getOutputDir().toString());
-            
+            log.debug(config.getProject().getProject().getLocation());
+            IPath ppath = config.getProject().getProject().getLocation();
+            log.debug(ppath.append(config.getOutputDir()));
+
             res = CoverBackend
                     .getInstance()
                     .getBackend()
                     .call(TestConstants.TEST_ERL_BACKEND,
                             TestConstants.FUN_OUTPUT_DIR, "s",
-                            config.getOutputDir().toString());
+                            ppath.append(config.getOutputDir()).toString());
 
             // TODO handle res
 
             perf.setCoverageConfiguration(config);
 
-            List<String> testDirs = new LinkedList<String>();
-            for (IPath p : config.getSourceDirs()) {
-                testDirs.add(p.append("test").toString());
-            }
-            testDirs.add(config.getProject().getProject().getLocation()
-                    .append("test").toString());
-            
-            for(String path : testDirs) {
-                log.debug(path);
-                
+            switch (CoverBackend.getInstance().getSettings().getType()) {
+            case MODULE:
+
+                log.debug(config.getModules().iterator().next().getFilePath());
+
                 CoverBackend
-                .getInstance()
-                .getBackend()
-                .call(TestConstants.TEST_ERL_BACKEND,
-                        TestConstants.FUN_TEST, "ss", 
-                        CoverBackend.getInstance().getSettings().getType().name(),
-                        path);
+                        .getInstance()
+                        .getBackend()
+                        .call(TestConstants.TEST_ERL_BACKEND,
+                                TestConstants.FUN_TEST,
+                                "ss",
+                                CoverBackend.getInstance().getSettings()
+                                        .getType().name().toLowerCase(),
+                                config.getModules().iterator().next()
+                                        .getFilePath());
+                break;
+            case ALL:
+                List<String> testDirs = new LinkedList<String>();
+                for (IPath p : config.getSourceDirs()) {
+                    log.debug(p);
+                    if (!p.toString().endsWith("test")) // !
+                        testDirs.add(ppath.append(p).append("test").toString());
+                }
+                testDirs.add(ppath.append("test").toString());
+
+                for (String path : testDirs) {
+                    log.debug(path);
+
+                    CoverBackend
+                            .getInstance()
+                            .getBackend()
+                            .call(TestConstants.TEST_ERL_BACKEND,
+                                    TestConstants.FUN_TEST,
+                                    "ss",
+                                    CoverBackend.getInstance().getSettings()
+                                            .getType().name().toLowerCase(),
+                                    path);
+                }
+                break;
+            default:
+                break;
             }
 
             perf.analyse();
-            
+
         } catch (CoverException e) {
             e.printStackTrace();
             CoverBackend.getInstance().handleError(
