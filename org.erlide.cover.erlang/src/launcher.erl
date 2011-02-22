@@ -135,8 +135,8 @@ handle_cast(stop, State) ->
 handle_call({includes, Includes}, _From, State) ->
 	{reply, ok, State#state{includes = Includes}};
 
-handle_call({compile, Module, Path}, _From, State) ->
-	Res = coverage:compile(Module, Path),
+handle_call({compile, Module, Path}, _From, #state{includes = Includes} = State) ->
+	Res = coverage:compile(Module, Path, Includes),
 	{reply, Res, State};
 
 handle_call({analyse, Modules}, _From, State) ->

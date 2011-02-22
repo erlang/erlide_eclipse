@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.core.CoverBackend;
@@ -98,7 +99,30 @@ public class CoveragePerformer implements CoverAPI {
     public synchronized void setCoverageConfiguration(IConfiguration conf)
             throws CoverException {
         config = conf;
-
+        IPath ppath = config.getProject().getProject().getLocation();
+        
+        // set include files
+        List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
+                .getModules().size());
+        for (IPath include : config.getIncludeDirs()) {
+            log.debug(ppath.append(include));
+            includes.add(new OtpErlangList(ppath.append(include).toString()));
+        }
+        
+        OtpErlangObject res;
+        try {
+            res = CoverBackend
+            .getInstance()
+            .getBackend()
+            .call(CoverConstants.COVER_ERL_BACKEND,
+                    CoverConstants.FUN_SET_INCLUDES, "x", includes);
+        } catch (BackendException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        // TODO: handle res
+        
         // preparation - cover compilation
         List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
@@ -108,7 +132,7 @@ public class CoveragePerformer implements CoverAPI {
         }
 
         try {
-            OtpErlangObject res = CoverBackend
+            res = CoverBackend
                     .getInstance()
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,

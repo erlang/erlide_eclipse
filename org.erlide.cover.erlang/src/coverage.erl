@@ -13,7 +13,7 @@
 %%----------------------------------------------
 %% Exported Functions
 %%----------------------------------------------
--export([compile/2,
+-export([compile/3,
 		 compile_dir/1,
 		 prepare/2,
 		 create_report/1,
@@ -24,8 +24,10 @@
 %%----------------------------------------------
 
 %compile module
-compile(Module, Path) ->
-	case cover:compile(Path) of		%%TODO: include files	
+compile(Module, Path, Includes) ->
+	IOptions = [{i, Dir} || Dir <- Includes],
+	Options = [{d, 'TEST'} | IOptions],
+	case cover:compile(Path, Options) of		%%TODO: include files	
 			{ok, _M} -> 
 				ok;
 			{error, Err} -> 
