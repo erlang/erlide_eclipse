@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="junit.rmap">
+    <cq:rootRequest name="projectz" componentType="buckminster"/>
+</cq:componentQuery>
