@@ -7,6 +7,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendPlugin;
 
 import com.google.common.collect.Lists;
@@ -37,6 +39,18 @@ public class BackendUtils {
         fUniqueId = Long.toHexString(location.hashCode() & 0xFFFFF) + "_"
                 + user + "_" + timestamp;
         return fUniqueId.replaceAll("[^a-zA-Z0-9_-]", "");
+    }
+
+    public static String getBeamModuleName(final String path) {
+        return getBeamModuleName(new Path(path));
+    }
+
+    public static String getBeamModuleName(final IPath path) {
+        if (path.getFileExtension() != null
+                && "beam".equals(path.getFileExtension())) {
+            return path.removeFileExtension().lastSegment();
+        }
+        return null;
     }
 
 }

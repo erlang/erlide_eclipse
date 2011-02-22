@@ -117,6 +117,7 @@ public class ErlangPlugin extends Plugin {
         try {
             ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
             ErlangCore.getModelManager().shutdown();
+            ErlangDebugOptionsManager.getDefault().shutdown();
             platformListener.dispose();
         } finally {
             logger.dispose();
@@ -180,7 +181,7 @@ public class ErlangPlugin extends Plugin {
                         }
                     }
                 });
-        ErlangDebugOptionsManager.getDefault().startup();
+        ErlangDebugOptionsManager.getDefault().start();
         ErlLogger.debug("Started CORE");
     }
 

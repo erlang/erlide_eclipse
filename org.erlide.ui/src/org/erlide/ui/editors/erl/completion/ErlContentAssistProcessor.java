@@ -56,7 +56,7 @@ import org.erlide.core.erlang.IErlRecordDef;
 import org.erlide.core.erlang.IErlRecordField;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.BackendUtils;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -177,7 +177,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
                 rc = ErlideContextAssist.checkRecordCompletion(
-                        BackendUtils.getBuildOrIdeBackend(project), before);
+                        CoreUtil.getBuildOrIdeBackend(project), before);
             }
             if (rc != null && rc.isNameWanted()) {
                 flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -256,7 +256,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(project);
+        final Backend backend = CoreUtil.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

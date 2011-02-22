@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.Path;
+import org.erlide.backend.util.BackendUtils;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.Tuple;
 import org.erlide.jinterface.util.ErlLogger;
@@ -63,11 +63,10 @@ public class CodeBundle {
     public Collection<String> getPluginCode() {
         final List<String> result = new ArrayList<String>();
         for (final Tuple<String, CodeContext> dir : paths) {
-            final Path path = new Path(dir.o1);
-            if (path.getFileExtension() != null
-                    && "beam".compareTo(path.getFileExtension()) == 0) {
-                final String m = path.removeFileExtension().lastSegment();
-                result.add(m);
+            final String beamModuleName = BackendUtils
+                    .getBeamModuleName(dir.o1);
+            if (beamModuleName != null) {
+                result.add(beamModuleName);
             }
         }
         return result;

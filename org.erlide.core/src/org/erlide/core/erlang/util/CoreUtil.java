@@ -13,14 +13,23 @@ package org.erlide.core.erlang.util;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.erlide.backend.Backend;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.CharOperation;
 import org.erlide.backend.util.Util;
+import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -224,6 +233,35 @@ public final class CoreUtil {
                     strBin.toString());
             b.input(cmd);
         }
+    }
+
+    public static Backend getBuildOrIdeBackend(final IProject project) {
+        final BackendManager backendManager = ErlangCore.getBackendManager();
+        if (project != null) {
+            try {
+                return backendManager.getBuildBackend(project);
+            } catch (final BackendException e) {
+            }
+        }
+        return backendManager.getIdeBackend();
+    }
+
+    public static IProject[] getErlangLaunchConfigurationProjects(
+            final ILaunchConfiguration configuration) throws CoreException {
+        final String projectNamesString = configuration.getAttribute(
+                ErlLaunchAttributes.PROJECTS, "");
+        final String[] projectNames = projectNamesString.split(";");
+        final List<IProject> projects = new ArrayList<IProject>();
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        for (final String s : projectNames) {
+            if (s != null && s.length() > 0) {
+                final IProject p = root.getProject(s);
+                if (p != null) {
+                    projects.add(p);
+                }
+            }
+        }
+        return projects.toArray(new IProject[projects.size()]);
     }
 
 }

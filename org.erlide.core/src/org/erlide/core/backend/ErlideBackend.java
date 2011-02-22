@@ -29,6 +29,7 @@ import org.erlide.backend.console.BackendShell;
 import org.erlide.backend.console.IoRequest.IoRequestKind;
 import org.erlide.backend.runtime.RuntimeInfo;
 import org.erlide.backend.runtime.RuntimeVersion;
+import org.erlide.backend.util.BackendUtils;
 import org.erlide.backend.util.BeamUtil;
 import org.erlide.backend.util.IDisposable;
 import org.erlide.core.backend.internal.CodeManager;
@@ -260,21 +261,23 @@ public final class ErlideBackend extends Backend implements IDisposable,
             final BackendManager backendManager = ErlangCore
                     .getBackendManager();
             for (final File f : dir.listFiles()) {
-                final Path path = new Path(f.getPath());
-                if (path.getFileExtension() != null
-                        && "beam".compareTo(path.getFileExtension()) == 0) {
-                    final String m = path.removeFileExtension().lastSegment();
+                final Path beamPath = new Path(f.getPath());
+                final String beamModuleName = BackendUtils
+                        .getBeamModuleName(beamPath);
+                if (beamModuleName != null) {
                     try {
                         boolean ok = false;
-                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
-                                path);
+                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(
+                                beamModuleName, beamPath);
                         if (bin != null) {
-                            ok = ErlBackend.loadBeam(this, m, bin);
+                            ok = ErlBackend.loadBeam(this, beamModuleName, bin);
                         }
                         if (!ok) {
-                            ErlLogger.error("Could not load %s", m);
+                            ErlLogger
+                                    .error("Could not load %s", beamModuleName);
                         }
-                        backendManager.moduleLoaded(this, project, m);
+                        backendManager.moduleLoaded(this, project,
+                                beamModuleName);
                     } catch (final Exception ex) {
                         ErlLogger.warn(ex);
                     }

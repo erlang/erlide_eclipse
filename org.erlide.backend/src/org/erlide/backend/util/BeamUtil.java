@@ -16,7 +16,6 @@ import org.eclipse.core.internal.runtime.Activator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.backend.BackendPlugin;
 import org.erlide.jinterface.util.ErlLogger;
@@ -153,21 +152,20 @@ public class BeamUtil {
                 }
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
-                    final Path path = new Path(s);
-                    if (path.getFileExtension() != null
-                            && "beam".compareTo(path.getFileExtension()) == 0) {
-                        final String m = path.removeFileExtension()
-                                .lastSegment();
+                    final String beamModuleName = BackendUtils
+                            .getBeamModuleName(s);
+                    if (beamModuleName != null) {
                         final URL url = b.getEntry(s);
-                        ErlLogger.debug(" unpack: " + m);
-                        final File beam = new File(ebinDir, m + ".erl");
+                        ErlLogger.debug(" unpack: " + beamModuleName);
+                        final File beam = new File(ebinDir, beamModuleName
+                                + ".beam");
                         try {
                             beam.createNewFile();
                             final FileOutputStream fs = new FileOutputStream(
                                     beam);
                             try {
-                                final OtpErlangBinary bin = getBeamBinary(m,
-                                        url);
+                                final OtpErlangBinary bin = getBeamBinary(
+                                        beamModuleName, url);
                                 fs.write(bin.binaryValue());
                             } finally {
                                 fs.close();

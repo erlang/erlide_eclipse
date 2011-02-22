@@ -14,7 +14,7 @@ import org.erlide.core.erlang.IErlExternal;
 import org.erlide.core.erlang.IErlModelManager;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.BackendUtils;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -57,7 +57,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = moduleMap
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final RpcCallSite backend = BackendUtils
+            final RpcCallSite backend = CoreUtil
                     .getBuildOrIdeBackend(getErlProject().getProject());
             final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {

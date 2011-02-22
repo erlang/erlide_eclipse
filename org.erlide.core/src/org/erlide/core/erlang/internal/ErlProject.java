@@ -60,7 +60,7 @@ import org.erlide.core.erlang.IOldErlangProjectProperties;
 import org.erlide.core.erlang.IOpenable;
 import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.internal.ErlModel.External;
-import org.erlide.core.erlang.util.BackendUtils;
+import org.erlide.core.erlang.util.CoreUtil;
 import org.erlide.core.erlang.util.ErlideUtil;
 import org.erlide.core.erlang.util.ModelUtils;
 import org.erlide.core.preferences.OldErlangProjectProperties;
@@ -184,7 +184,7 @@ public class ErlProject extends Openable implements IErlProject {
         if (ModelUtils.isExternalFilesProject(getProject())) {
             return;
         }
-        final Backend backend = BackendUtils.getBuildOrIdeBackend(getProject());
+        final Backend backend = CoreUtil.getBuildOrIdeBackend(getProject());
         final String name = backend.getInfo().getName();
         children.add(new ErlOtpExternalReferenceEntryList(this, name, backend));
     }
@@ -200,7 +200,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !project.getLocation().isPrefixOf(path)) {
-                final RpcCallSite backend = BackendUtils
+                final RpcCallSite backend = CoreUtil
                         .getBuildOrIdeBackend(getProject());
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());
