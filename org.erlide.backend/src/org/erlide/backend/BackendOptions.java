@@ -1,5 +1,5 @@
 package org.erlide.backend;
 
 public enum BackendOptions {
-    DEBUG, AUTOSTART, TRAP_EXIT, NO_CONSOLE, INTERNAL, IDE, LOAD_ALL_NODES
+    DEBUG, AUTOSTART, NO_CONSOLE, INTERNAL, IDE, LOAD_ALL_NODES
 }

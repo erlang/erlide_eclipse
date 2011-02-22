@@ -200,14 +200,6 @@ public class BackendData extends GenericBackendData {
         config.setAttribute(ErlLaunchAttributes.CONSOLE, console);
     }
 
-    public boolean useTrapExit() {
-        return getBooleanAttribute(ErlLaunchAttributes.TRAP_EXIT, true);
-    }
-
-    public void setTrapExit(final boolean trap_exit) {
-        config.setAttribute(ErlLaunchAttributes.TRAP_EXIT, trap_exit);
-    }
-
     public boolean isDebug() {
         return debug;
     }

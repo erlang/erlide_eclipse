@@ -173,7 +173,6 @@ public final class BackendManager extends OtpNodeStatus implements
             b.initErlang(monitorNode, watchNode);
             b.registerStatusHandler(this);
             b.setDebug(options.contains(BackendOptions.DEBUG));
-            b.setTrapExit(options.contains(BackendOptions.TRAP_EXIT));
         }
         notifyBackendChange(b, BackendEvent.ADDED, null, null);
     }

@@ -109,9 +109,6 @@ public final class ErlideBackend extends Backend implements IDisposable,
         codeManager.unregister(b);
     }
 
-    public void setTrapExit(final boolean contains) {
-    }
-
     public void streamAppended(final String text, final IStreamMonitor monitor) {
         if (monitor == proxy.getOutputStreamMonitor()) {
             // System.out.println(getName() + " OUT " + text);
