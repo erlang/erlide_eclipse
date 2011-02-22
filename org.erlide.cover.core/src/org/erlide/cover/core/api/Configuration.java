@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.ErlangCore;
@@ -23,11 +24,13 @@ public class Configuration implements IConfiguration {
 
     private IErlProject project;
     private List<IErlModule> modules;
-    
+
     private OldErlangProjectProperties props;
+    private Logger log; // logger
 
     public Configuration() {
         modules = new LinkedList<IErlModule>();
+        log = Logger.getLogger(getClass());
     }
 
     public void setProject(String name) {
@@ -35,14 +38,17 @@ public class Configuration implements IConfiguration {
         props = new OldErlangProjectProperties(project.getProject());
     }
 
-    public void addModule(String name) throws 
-            ErlModelException, CoverException {
-        
+    public void addModule(String name) throws ErlModelException, CoverException {
+
         if (project == null)
             throw new CoverException("no project set");
-        modules.add(project.getModule(name));
+        IErlModule module = project.getModule(name);
+        if (module != null)
+            modules.add(module);
+      
+        // else: no such module??
     }
-    
+
     public void addModule(IErlModule module) {
         modules.add(module);
     }

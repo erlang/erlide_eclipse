@@ -16,6 +16,7 @@ import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.jinterface.backend.BackendException;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -136,8 +137,15 @@ public class CoveragePerformer implements CoverAPI {
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_ANALYSE, "x", modules);
+            
+            
+            if(res instanceof OtpErlangAtom && res.toString().equals("no_file"))
+                return;  // do sth more then??
+            
+            final StatsTreeModel model = StatsTreeModel.getInstance();
+            model.setIndex(res.toString().substring(1,
+                    res.toString().length() - 1));
 
-            // TODO check the res
         } catch (BackendException e) {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
