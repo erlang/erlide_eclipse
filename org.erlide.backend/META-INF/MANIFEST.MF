@@ -23,3 +23,4 @@ Export-Package: erlang,
  org.erlide.backend.runtime,
  org.erlide.backend.util,
  org.erlide.common
+Eclipse-ExtensibleAPI: true
