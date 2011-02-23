@@ -7,11 +7,9 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ICoverageStats;
-import org.erlide.cover.views.model.ModuleStats;
-import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.cover.views.model.ObjectType;
 
 /**
  * Label provider for statistics view
@@ -23,30 +21,35 @@ public class StatsViewLabelProvider extends LabelProvider implements
         ITableLabelProvider {
 
     public Image getColumnImage(final Object element, final int columnIndex) {
-        Image img;
+        Image img = null;
+
+        final ICoverageObject statsEl = (ICoverageObject) element;
+
         switch (columnIndex) {
         case 0:
-            if (element instanceof ModuleStats) {
+            ObjectType type = statsEl.getType();
 
-                /*
-                 * IErlModule m = ErlangCore.getModel().
-                 * findModule(((ModuleStats)element).getLabel()); img =
-                 * ErlangElementImageProvider .getErlImageDescriptor(m,
-                 * ErlangElementImageProvider.SMALL_ICONS). createImage();
-                 */
-                // TODO: correct the image size
-                img = null;
-
-            } else {
-                img = null;
+            switch (type) {
+            case FUNCTION:
+                 // TODO: find a picture
+                break;
+            case MODULE:
+             /*   IErlModule m = ErlangCore.getModel().findModule(
+                        ((ModuleStats) element).getLabel());
+                img = ErlangElementImageProvider.getErlImageDescriptor(m,
+                        ErlangElementImageProvider.SMALL_ICONS).createImage();*/
+                break;
+            case FOLDER:
+                break;
+            case PROJECT:
+                break;
             }
             break;
         case 3:
-            final ICoverageStats statsEl = (ICoverageStats) element;
-            img = drawPercentage(statsEl.getPrecentage());
+
+            img = drawPercentage(statsEl.getPercentage());
             break;
         default:
-            img = null;
         }
 
         return img;
@@ -67,8 +70,8 @@ public class StatsViewLabelProvider extends LabelProvider implements
             text = Integer.toString(statsEl.getCoverCount());
             break;
         case 3:
-            
-            text = String.format("%.2f ", statsEl.getPrecentage()) + "%";
+
+            text = String.format("%.2f ", statsEl.getPercentage()) + "%";
             break;
         }
         return text;

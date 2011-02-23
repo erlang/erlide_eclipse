@@ -37,5 +37,11 @@ public interface CoverAPI {
      * Perform cover analises based on present configuration
      */
     public void analyse() throws CoverException;
+    
+    /**
+     * Enables checking configuration
+     * @return
+     */
+    public IConfiguration getConfig();
 
 }

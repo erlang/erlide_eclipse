@@ -21,6 +21,10 @@ public class FunctionStats extends StatsTreeObject {
     private int lineStart;  // first line of the function
     private int lineEnd;	// last line of the function
 
+    public FunctionStats() {
+        super(ObjectType.FUNCTION);
+    }
+    
     public int getArity() {
         return arity;
     }

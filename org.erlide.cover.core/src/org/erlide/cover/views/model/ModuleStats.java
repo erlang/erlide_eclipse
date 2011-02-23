@@ -14,6 +14,9 @@ public class ModuleStats extends StatsTreeObject {
     private final List<LineResult> lineResults = 
     	new LinkedList<LineResult>(); 	// results per line
     
+    public ModuleStats() {
+        super(ObjectType.MODULE);
+    }
 
     public List<LineResult> getLineResults() {
         return lineResults;

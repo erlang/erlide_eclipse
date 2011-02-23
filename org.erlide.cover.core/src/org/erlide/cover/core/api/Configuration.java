@@ -1,8 +1,8 @@
 package org.erlide.cover.core.api;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -25,13 +25,13 @@ import org.erlide.cover.core.CoverException;
 public class Configuration implements IConfiguration {
 
     private IErlProject project;
-    private List<IErlModule> modules;
+    private Map<String, IErlModule> modules;
 
     private OldErlangProjectProperties props;
     private Logger log; // logger
 
     public Configuration() {
-        modules = new LinkedList<IErlModule>();
+        modules = new HashMap<String,IErlModule>();
         log = Logger.getLogger(getClass());
     }
 
@@ -49,21 +49,21 @@ public class Configuration implements IConfiguration {
         Set<IErlModule> mods = ErlangCore.getModuleMap().getModulesByName(name);
             module = mods.iterator().next();
         if (module != null)
-            modules.add(module);
+            modules.put(name, module);
         
         // else: no such module??
     }
 
     public void addModule(IErlModule module) {
-        modules.add(module);
+        modules.put(module.getModuleName(), module);
     }
 
     public IErlProject getProject() {
         return project;
     }
 
-    public List<IErlModule> getModules() {
-        return modules;
+    public Collection<IErlModule> getModules() {
+        return modules.values();
     }
 
     public IPath getOutputDir() {
@@ -76,6 +76,10 @@ public class Configuration implements IConfiguration {
 
     public Collection<IPath> getIncludeDirs() {
         return props.getIncludeDirs();
+    }
+
+    public IErlModule getModule(String name) {
+        return modules.get(name);
     }
 
 }

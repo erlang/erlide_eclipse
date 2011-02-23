@@ -20,9 +20,7 @@ public interface ICoverageStats {
 
     public void setCoverCount(int count);
 
-    public double getPrecentage();
-
-    public void setPercentage(double count);
+    public double getPercentage();
 
     public String[] getStringArray();
 

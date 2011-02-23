@@ -11,7 +11,7 @@ public class StatsTreeModel {
 
     private static StatsTreeModel model;
 
-    private StatsTreeObject root;
+    private ICoverageObject root;
 
     private StatsTreeModel() {
         initialize();
@@ -24,7 +24,7 @@ public class StatsTreeModel {
         return model;
     }
 
-    public IStatsTreeObject getRoot() {
+    public ICoverageObject getRoot() {
         return root;
     }
 
@@ -32,7 +32,6 @@ public class StatsTreeModel {
         root.removeAllChildren();
         root.setLiniesCount(0);
         root.setCoverCount(0);
-        root.setPercentage(0.0);
 
         ModuleSet.clear();
     }
@@ -42,15 +41,18 @@ public class StatsTreeModel {
         final int cov = root.getCoverCount() + coveredLines;
         root.setLiniesCount(all);
         root.setCoverCount(cov);
-        root.setPercentage(cov / (double) all * 100);
     }
 
     public void setIndex(final String path) {
         root.setHtmlPath(path);
     }
-
+    
+    public void setRootLabel(final String name) {
+        root.setLabel(name);
+    }
+    
     private void initialize() {
-        root = new StatsTreeObject("total", 0, 0, 0);
+        root = new StatsTreeObject("total", 0, 0, ObjectType.PROJECT);
 
     }
 

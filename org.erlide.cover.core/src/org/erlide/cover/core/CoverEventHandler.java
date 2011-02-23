@@ -5,13 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.erlide.cover.core.api.CoveragePerformer;
+import org.erlide.cover.core.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
-import org.erlide.cover.views.model.ICoverageStats;
-import org.erlide.cover.views.model.IStatsTreeObject;
+import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.LineResult;
 import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
+import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.cover.views.model.StatsTreeObject;
 import org.erlide.jinterface.backend.events.ErlangEvent;
 import org.erlide.jinterface.backend.events.EventHandler;
 
@@ -32,19 +35,16 @@ public class CoverEventHandler extends EventHandler {
     private static final String COVER_FIN = "cover_fin";
     private static final String COVER_ERROR = "cover_error";
     private static final String COVER_RES = "module_res";
-    private static final String INDEX = "index";
 
     private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
-    private int moduleNum;
-    private int counter;
     private ICoverAnnotationMarker annotationMarker;
 
-    private Logger log; //log
-    
+    private Logger log; // log
+
     public CoverEventHandler() {
         log = Logger.getLogger(this.getClass());
     }
-    
+
     public void addListener(final ICoverObserver listener) {
         log.debug("adding listener");
         listeners.add(listener);
@@ -91,28 +91,6 @@ public class CoverEventHandler extends EventHandler {
     }
 
     /**
-     * @deprecated
-     * @param msg
-     * @return
-     */
-    @Deprecated
-    private boolean gotIndex(final OtpErlangObject msg) {
-        if (msg instanceof OtpErlangTuple) {
-            final OtpErlangTuple resTuple = (OtpErlangTuple) msg;
-            if (resTuple.elementAt(0) instanceof OtpErlangAtom
-                    && resTuple.elementAt(0).toString().equals(INDEX)) {
-
-                final String htmlPath = resTuple.elementAt(1).toString();
-                StatsTreeModel.getInstance()
-                        .setIndex(
-                                htmlPath.substring(1, htmlPath.toString()
-                                        .length() - 1));
-            }
-        }
-        return false;
-    }
-
-    /**
      * When coverage results came
      * 
      * @param msg
@@ -124,9 +102,6 @@ public class CoverEventHandler extends EventHandler {
             if (resTuple.elementAt(0) instanceof OtpErlangAtom
                     && ((OtpErlangAtom) resTuple.elementAt(0)).atomValue()
                             .equals(COVER_RES)) {
-
-                final StatsTreeModel model = StatsTreeModel.getInstance();
-                final IStatsTreeObject root = model.getRoot();
 
                 final String moduleName = resTuple.elementAt(1).toString();
 
@@ -148,7 +123,6 @@ public class CoverEventHandler extends EventHandler {
                 moduleStats.setHtmlPath(htmlPath);
                 moduleStats.setLiniesCount(allLines);
                 moduleStats.setCoverCount(coveredLines);
-                moduleStats.setPercentage(percent);
 
                 prepLineResults((OtpErlangList) resTuple.elementAt(6),
                         moduleStats);
@@ -156,15 +130,7 @@ public class CoverEventHandler extends EventHandler {
                 prepFuncResults((OtpErlangList) resTuple.elementAt(7),
                         moduleStats);
 
-                final ICoverageStats moduleOld = root.findChild(moduleStats
-                        .getLabel());
-                if (moduleOld != null) {
-                    allLines -= moduleOld.getLinesCount();
-                    coveredLines -= moduleOld.getCoverCount();
-                }
-                model.addTotal(allLines, coveredLines);
-
-                root.addChild(moduleStats.getLabel(), moduleStats);
+                addModuleToTree(moduleStats);
 
                 ModuleSet.add(moduleStats);
 
@@ -173,6 +139,43 @@ public class CoverEventHandler extends EventHandler {
             return false;
         }
         return false;
+    }
+
+    // adds module to the statistics tree
+    private void addModuleToTree(ModuleStats moduleStats) {
+
+        ICoverageObject root = StatsTreeModel.getInstance().getRoot();
+
+        IConfiguration config = CoveragePerformer.getPerformer().getConfig();
+
+        String ppath = config.getProject().getProject().getLocation()
+                .toString();
+        String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
+        mpath = mpath.substring(ppath.length());
+        log.debug(ppath);
+        log.debug(mpath);
+
+        String[] parts = mpath.split("/"); // TODO ! platform independent?
+
+        root.setLiniesCount(root.getLinesCount() + moduleStats.getLinesCount());
+        root.setCoverCount(root.getCoverCount() + moduleStats.getCoverCount());
+
+        for (int i = 1; i < parts.length - 1; i++) {
+
+            ICoverageObject tmp = root.findChild(parts[i]);
+            if (tmp == null) {
+                tmp = new StatsTreeObject(ObjectType.FOLDER);
+                tmp.setLabel(parts[i]);
+            }
+            tmp.setLiniesCount(tmp.getLinesCount()
+                    + moduleStats.getLinesCount());
+            tmp.setCoverCount(tmp.getCoverCount() + moduleStats.getCoverCount());
+            root.addChild(parts[i], tmp);
+            root = tmp;
+        }
+
+        root.addChild(moduleStats.getLabel(), moduleStats);
+
     }
 
     private void prepFuncResults(final OtpErlangList funcList,
@@ -190,13 +193,10 @@ public class CoverEventHandler extends EventHandler {
             final int allLines = Integer.parseInt(res.elementAt(3).toString());
             final int coveredLines = Integer.parseInt(res.elementAt(4)
                     .toString());
-            final double percent = Double.parseDouble(res.elementAt(5)
-                    .toString());
 
             func.setLabel(name);
             func.setLiniesCount(allLines);
             func.setCoverCount(coveredLines);
-            func.setPercentage(percent);
             func.setArity(arity);
 
             stats.addChild(func.getLabel(), func);

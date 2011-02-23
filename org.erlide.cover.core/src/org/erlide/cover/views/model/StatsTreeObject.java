@@ -11,33 +11,38 @@ import java.util.Map;
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  */
-public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
+public class StatsTreeObject implements ICoverageObject {
+
+    private ObjectType type;
 
     private String label; // name
     private int all; // total line number
     private int covered; // covered line number
-    private double percentage; // percentage
     private String htmlPath; // name of html file
 
-    private IStatsTreeObject parent;
-    private final Map<String, StatsTreeObject> children;
+    private ICoverageObject parent;
+    private final Map<String, ICoverageObject> children;
 
-    public StatsTreeObject() {
-        children = new HashMap<String, StatsTreeObject>();
+    public StatsTreeObject(ObjectType type) {
+        this.type = type;
+        children = new HashMap<String, ICoverageObject>();
     }
 
-    public StatsTreeObject(final IStatsTreeObject parent) {
-        this();
+    public StatsTreeObject(final ICoverageObject parent, ObjectType type) {
+        this(type);
         this.parent = parent;
     }
 
     public StatsTreeObject(final String label, final int all,
-            final int covered, final double percentage) {
-        this();
+            final int covered, ObjectType type) {
+        this(type);
         this.label = label;
         this.all = all;
         this.covered = covered;
-        this.percentage = percentage;
+    }
+
+    public ObjectType getType() {
+        return type;
     }
 
     public String getLabel() {
@@ -49,7 +54,7 @@ public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
 
         final StringBuffer bf = new StringBuffer();
         bf.append(label).append(" ").append(all).append(" ").append(covered)
-                .append(" ").append(percentage).append('\n');
+                .append(" ").append(getPercentage()).append('\n');
 
         for (final IStatsTreeObject child : children.values()) {
             bf.append('\t').append(child.toString()).append('\n');
@@ -63,7 +68,8 @@ public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
     }
 
     public void setParent(final IStatsTreeObject parent) {
-        this.parent = parent;
+        if (parent instanceof ICoverageObject)
+            this.parent = (ICoverageObject) parent;
     }
 
     public IStatsTreeObject getParent() {
@@ -71,8 +77,8 @@ public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
     }
 
     public void addChild(final String name, final IStatsTreeObject child) {
-        if (child instanceof StatsTreeObject) {
-            children.put(name, (StatsTreeObject) child);
+        if (child instanceof ICoverageObject) {
+            children.put(name, (ICoverageObject) child);
             child.setParent(this);
         }
     }
@@ -109,12 +115,10 @@ public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
         covered = count;
     }
 
-    public double getPrecentage() {
-        return percentage;
-    }
-
-    public void setPercentage(final double count) {
-        percentage = count;
+    public double getPercentage() {
+        if (all > 0)
+            return covered / (double) all * 100;
+        return 0;
     }
 
     public void removeAllChildren() {
@@ -123,7 +127,8 @@ public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
 
     public String[] getStringArray() {
         return new String[] { label, Integer.toString(all),
-                Integer.toString(covered), String.format("%.2f", percentage) };
+                Integer.toString(covered),
+                String.format("%.2f", getPercentage()) };
     }
 
     public String getHtmlPath() {
@@ -134,7 +139,7 @@ public class StatsTreeObject implements IStatsTreeObject, ICoverageStats {
         this.htmlPath = htmlPath;
     }
 
-    public ICoverageStats findChild(final String name) {
+    public ICoverageObject findChild(final String name) {
         return children.get(name);
     }
 

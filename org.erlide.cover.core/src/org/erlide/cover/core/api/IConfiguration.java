@@ -27,7 +27,9 @@ public interface IConfiguration {
      * 
      * @return
      */
-    public List<IErlModule> getModules();
+    public Collection<IErlModule> getModules();
+    
+    public IErlModule getModule(String name);
     
     public IPath getOutputDir();
     

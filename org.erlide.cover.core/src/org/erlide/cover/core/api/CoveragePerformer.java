@@ -99,6 +99,9 @@ public class CoveragePerformer implements CoverAPI {
     public synchronized void setCoverageConfiguration(IConfiguration conf)
             throws CoverException {
         config = conf;
+        
+        StatsTreeModel.getInstance().setRootLabel(config.getProject().getName());
+        
         IPath ppath = config.getProject().getProject().getLocation();
         
         // set include files
@@ -174,6 +177,10 @@ public class CoveragePerformer implements CoverAPI {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }
+    }
+
+    public IConfiguration getConfig() {
+        return config;
     }
 
 }

@@ -24,6 +24,6 @@ public interface IStatsTreeObject extends IAdaptable {
 
     public boolean hasChildren();
 
-    public ICoverageStats findChild(String name);
-
+    public ObjectType getType();
+    
 }
