@@ -7,9 +7,16 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
+import org.erlide.core.erlang.IErlModule;
+import org.erlide.cover.core.api.CoveragePerformer;
+import org.erlide.cover.core.api.IConfiguration;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ICoverageStats;
 import org.erlide.cover.views.model.ObjectType;
+import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**
  * Label provider for statistics view
@@ -24,6 +31,8 @@ public class StatsViewLabelProvider extends LabelProvider implements
         Image img = null;
 
         final ICoverageObject statsEl = (ICoverageObject) element;
+        
+        IConfiguration config = CoveragePerformer.getPerformer().getConfig();
 
         switch (columnIndex) {
         case 0:
@@ -34,14 +43,19 @@ public class StatsViewLabelProvider extends LabelProvider implements
                  // TODO: find a picture
                 break;
             case MODULE:
-             /*   IErlModule m = ErlangCore.getModel().findModule(
-                        ((ModuleStats) element).getLabel());
+                IErlModule m = config.getModule(statsEl.getLabel());
                 img = ErlangElementImageProvider.getErlImageDescriptor(m,
-                        ErlangElementImageProvider.SMALL_ICONS).createImage();*/
+                        ErlangElementImageProvider.SMALL_ICONS).createImage();
                 break;
             case FOLDER:
+                img = PlatformUI.getWorkbench()
+                .getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER).createImage();
                 break;
             case PROJECT:
+                img = PlatformUI.getWorkbench()
+                .getSharedImages()
+                .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT).createImage();
                 break;
             }
             break;
