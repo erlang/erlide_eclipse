@@ -11,7 +11,10 @@
 package org.erlide.ui.launch;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -46,6 +49,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
@@ -57,7 +61,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
-        final List<IErlProject> projects = Lists.newArrayList();
+        final Set<IErlProject> projects = Sets.newHashSet();
         final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
         for (final Object element : structuredSelection.toArray()) {
             if (!(element instanceof IResource)) {
@@ -66,20 +70,39 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             final IErlElement erlElement = ErlangCore.getModel().findElement(
                     (IResource) element);
             final IErlProject project = erlElement.getErlProject();
-            if (project != null && !projects.contains(project)) {
+            if (project != null) {
                 projects.add(project);
             }
         }
         if (projects.isEmpty()) {
             return;
         }
+        projects.addAll(getDependentProjects(projects));
+        final List<IErlProject> projectList = Lists.newArrayList(projects);
+        Collections.sort(projectList, new Comparator<IErlProject>() {
+            public int compare(final IErlProject o1, final IErlProject o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         try {
-            doLaunch(mode, projects);
+            doLaunch(mode, projectList);
         } catch (final CoreException e) {
             final IWorkbench workbench = PlatformUI.getWorkbench();
             final Shell shell = workbench.getActiveWorkbenchWindow().getShell();
             MessageDialog.openError(shell, "Error", e.getStatus().getMessage());
         }
+    }
+
+    private Collection<IErlProject> getDependentProjects(
+            final Set<IErlProject> projects) {
+        final Set<IErlProject> depProjects = Sets.newHashSet();
+        for (final IErlProject project : projects) {
+            try {
+                depProjects.addAll(project.getProjectReferences());
+            } catch (final ErlModelException e) {
+            }
+        }
+        return depProjects;
     }
 
     public void launch(final IEditorPart editor, final String mode) {
@@ -104,8 +127,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         }
     }
 
-    private void doLaunch(final String mode, final List<IErlProject> projects)
-            throws CoreException {
+    private void doLaunch(final String mode,
+            final Collection<IErlProject> projects) throws CoreException {
         final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(
                 projects, mode);
         try {
@@ -135,7 +158,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private ILaunchConfiguration getLaunchConfiguration(
-            final List<IErlProject> projects, final String mode)
+            final Collection<IErlProject> projects, final String mode)
             throws CoreException {
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -159,8 +182,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlLaunchAttributes.PROJECTS, CommonUtils.packList(
                 projectNames, ErlLaunchData.PROJECT_NAME_SEPARATOR));
-        wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.get(0)
-                .getRuntimeInfo().getName());
+        wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.iterator()
+                .next().getRuntimeInfo().getName());
         wc.setAttribute(ErlLaunchAttributes.NODE_NAME, name);
         wc.setAttribute(ErlLaunchAttributes.CONSOLE, true);
         wc.setAttribute(ErlLaunchAttributes.INTERNAL, false);
@@ -176,7 +199,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         return wc.doSave();
     }
 
-    private IResource[] getProjectResources(final List<IErlProject> projects) {
+    private IResource[] getProjectResources(
+            final Collection<IErlProject> projects) {
         final List<IResource> result = Lists.newArrayListWithCapacity(projects
                 .size());
         for (final IErlProject project : projects) {
@@ -185,7 +209,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         return result.toArray(new IResource[0]);
     }
 
-    private List<String> getProjectNames(final List<IErlProject> projects) {
+    private List<String> getProjectNames(final Collection<IErlProject> projects) {
         final List<String> result = Lists.newArrayListWithCapacity(projects
                 .size());
         for (final IErlProject project : projects) {
@@ -195,7 +219,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private List<String> getProjectAndModuleNames(
-            final List<IErlProject> projects) throws ErlModelException {
+            final Collection<IErlProject> projects) throws ErlModelException {
         final List<String> moduleNames = Lists.newArrayList();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> modules = project.getModules();
@@ -208,7 +232,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private ILaunchConfiguration addInterpretedModules(
-            final List<IErlProject> projects,
+            final Collection<IErlProject> projects,
             final ILaunchConfiguration launchConfiguration)
             throws CoreException {
         final List<String> moduleNames = getProjectAndModuleNames(projects);
