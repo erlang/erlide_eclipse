@@ -17,6 +17,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.common.CommonUtils;
+import org.erlide.core.erlang.ErlModelException;
 import org.erlide.core.erlang.IErlElement;
 import org.erlide.core.erlang.IErlElement.Kind;
 import org.erlide.core.erlang.IErlFunction;
@@ -554,6 +555,16 @@ public class ModelUtilsTests {
                 externalInclude.delete();
             }
         }
+    }
+
+    @Test
+    public void demoProjectsShouldBeInWorkspace() throws ErlModelException {
+        final IErlProject p1 = ErlideTestUtils.getExistingProject("p1");
+        final IErlProject p2 = ErlideTestUtils.getExistingProject("p2");
+        assertNotNull(p1);
+        assertNotNull(p2);
+        p1.makeConsistent(null);
+        p2.makeConsistent(null);
     }
 
 }

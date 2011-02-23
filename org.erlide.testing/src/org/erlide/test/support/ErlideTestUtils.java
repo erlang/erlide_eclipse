@@ -138,6 +138,12 @@ public class ErlideTestUtils {
 		return erlProject;
 	}
 
+	public static IErlProject getExistingProject(final String name) {
+		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		final IProject project = root.getProject(name);
+		return ErlangCore.getModel().getErlangProject(project);
+	}
+
 	private static void createFolderHelper(final IFolder folder)
 			throws CoreException {
 		if (!folder.exists()) {
@@ -217,7 +223,9 @@ public class ErlideTestUtils {
 			for (final IErlElement child : children) {
 				if (child instanceof IErlProject) {
 					final IErlProject project = (IErlProject) child;
-					deleteProject(project);
+					if (project.getName().startsWith("testproject")) {
+						deleteProject(project);
+					}
 				}
 			}
 		} catch (final CoreException e) {
@@ -240,9 +248,9 @@ public class ErlideTestUtils {
 	}
 
 	public static IPath[] splitPathAfter(final int i, final IPath p) {
-	    final IPath last = p.removeFirstSegments(i);
-	    final IPath first = p.removeLastSegments(p.segmentCount() - i);
-	    return new IPath[] { first, last };
+		final IPath last = p.removeFirstSegments(i);
+		final IPath first = p.removeLastSegments(p.segmentCount() - i);
+		return new IPath[] { first, last };
 	}
 
 }
