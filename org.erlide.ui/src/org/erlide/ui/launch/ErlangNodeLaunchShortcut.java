@@ -133,8 +133,6 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
                 projects, mode);
         try {
             bringConsoleViewToFront();
-            mode.equals(ILaunchManager.DEBUG_MODE);
-
             launchConfiguration.launch(mode, null);
         } catch (final CoreException e) {
             // TODO Auto-generated catch block
