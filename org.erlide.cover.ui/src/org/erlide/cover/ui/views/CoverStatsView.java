@@ -44,6 +44,7 @@ import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**
  * View for coverage statistics
@@ -102,7 +103,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         containerLayout.marginHeight = 0;
         containerLayout.verticalSpacing = 3;
         parent.setLayout(containerLayout);
-
+        
         viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
                 | SWT.V_SCROLL);
         drillDownAdapter = new DrillDownAdapter(viewer);

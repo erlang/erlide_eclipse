@@ -1,5 +1,7 @@
 package org.erlide.cover.ui.views.helpers;
 
+import org.apache.log4j.Logger;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
@@ -26,12 +28,14 @@ import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
  */
 public class StatsViewLabelProvider extends LabelProvider implements
         ITableLabelProvider {
+    
+    private Logger log = Logger.getLogger(getClass());
 
     public Image getColumnImage(final Object element, final int columnIndex) {
         Image img = null;
 
         final ICoverageObject statsEl = (ICoverageObject) element;
-        
+
         IConfiguration config = CoveragePerformer.getPerformer().getConfig();
 
         switch (columnIndex) {
@@ -40,7 +44,8 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
             switch (type) {
             case FUNCTION:
-                 // TODO: find a picture
+                img = JavaUI.getSharedImages().getImageDescriptor(
+                                org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PRIVATE).createImage();
                 break;
             case MODULE:
                 IErlModule m = config.getModule(statsEl.getLabel());
@@ -48,14 +53,14 @@ public class StatsViewLabelProvider extends LabelProvider implements
                         ErlangElementImageProvider.SMALL_ICONS).createImage();
                 break;
             case FOLDER:
-                img = PlatformUI.getWorkbench()
-                .getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER).createImage();
+                img = PlatformUI.getWorkbench().getSharedImages()
+                        .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER)
+                        .createImage();
                 break;
             case PROJECT:
-                img = PlatformUI.getWorkbench()
-                .getSharedImages()
-                .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT).createImage();
+                img = PlatformUI.getWorkbench().getSharedImages()
+                        .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT)
+                        .createImage();
                 break;
             }
             break;
@@ -93,14 +98,14 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
     private Image drawPercentage(final double percentage) {
 
-        final Image img = new Image(Display.getCurrent(), new Rectangle(2, 2,
-                85, 15));
+        final Image img = new Image(Display.getCurrent(), new Rectangle(2, 3,
+                20, 8));
 
         final GC graphic = new GC(img);
         graphic.setForeground(new Color(Display.getCurrent(), 60, 140, 10));
         graphic.setBackground(new Color(Display.getCurrent(), 60, 140, 10));
-        graphic.drawRectangle(2, 2, 80, 10);
-        graphic.fillRectangle(2, 2, (int) (80 * percentage / 100), 10);
+        graphic.drawRectangle(0, 0, 18, 6);
+        graphic.fillRectangle(1, 1, (int) (16 * percentage / 100), 5);
 
         return img;
     }

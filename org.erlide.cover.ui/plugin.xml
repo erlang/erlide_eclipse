@@ -6,7 +6,7 @@
          point="org.eclipse.ui.views">
       <view
             name="Coverage Statistics"
-            icon="icons/sample.gif"
+            icon="icons/coverageView.gif"
             category="org.erlide.views"
             class="org.erlide.cover.ui.views.CoverStatsView"
             id="org.erlide.cover.core.views.TestResultView">
