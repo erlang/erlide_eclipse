@@ -505,6 +505,9 @@ public class DialyzerPreferencePage extends PropertyPage implements
         if (dialyzeCheckbox != null) {
             dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
         }
+        if (noCheckPLTCheckbox != null) {
+            noCheckPLTCheckbox.setSelection(prefs.getNoCheckPLT());
+        }
         super.performDefaults();
     }
 
