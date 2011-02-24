@@ -581,6 +581,7 @@ public class ErlModule extends Openable implements IErlModule {
             return result;
         }
         final Collection<IErlModule> includes = project.getIncludes();
+        includes.addAll(getLocalIncludes());
         Collection<IErlModule> externalIncludes = null;
         Collection<IErlModule> referencedIncludes = null;
         Collection<IErlModule> modules = null;
@@ -615,6 +616,18 @@ public class ErlModule extends Openable implements IErlModule {
             findAllIncludedFilesAux(checked, result, modules, includeFileName);
         }
         ErlModel.getErlModelCache().putIncludedFilesForModule(this, result);
+        return result;
+    }
+
+    private Collection<IErlModule> getLocalIncludes() throws ErlModelException {
+        final List<IErlModule> result = Lists.newArrayList();
+        final IParent parent = getParent();
+        for (final IErlElement child : parent.getChildrenOfKind(Kind.MODULE)) {
+            if (child instanceof IErlModule
+                    && CommonUtils.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
+                result.add((IErlModule) child);
+            }
+        }
         return result;
     }
 

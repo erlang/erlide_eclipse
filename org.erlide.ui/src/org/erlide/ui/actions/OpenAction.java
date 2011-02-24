@@ -31,6 +31,7 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
+import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -175,8 +176,8 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static void openOpenResult(final ErlangEditor editor,
-            final IErlModule module, final RpcCallSite backend, final int offset,
-            final IErlProject erlProject, final OpenResult res)
+            final IErlModule module, final RpcCallSite backend,
+            final int offset, final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException {
         final Object found = findOpenResult(editor, module, backend,
@@ -230,8 +231,13 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlProject project, final OpenResult res,
             final IErlModel model) throws CoreException, BackendException {
         if (project != null) {
-            return project.findInclude(res.getName(), res.getPath(), true,
-                    false);
+            final IErlModule include = project.findInclude(res.getName(),
+                    res.getPath(), true, false);
+            if (include != null) {
+                return include;
+            }
+            final IParent parent = module.getParent();
+            return parent.getChildNamed(res.getName());
         }
         return null;
     }
