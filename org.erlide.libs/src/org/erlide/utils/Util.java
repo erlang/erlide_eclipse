@@ -1309,22 +1309,6 @@ public final class Util {
         }
     }
 
-    public static OtpErlangList listValue(final OtpErlangObject o) {
-        if (o instanceof OtpErlangList) {
-            return (OtpErlangList) o;
-        } else if (o instanceof OtpErlangString) {
-            final OtpErlangString erlangString = (OtpErlangString) o;
-            final int[] codePoints = OtpErlangString
-                    .stringToCodePoints(erlangString.stringValue());
-            final OtpErlangObject elements[] = new OtpErlangObject[codePoints.length];
-            for (int i = 0; i < codePoints.length; i++) {
-                elements[i] = new OtpErlangLong(codePoints[i]);
-            }
-            return new OtpErlangList(elements);
-        }
-        return null;
-    }
-
     /**
      * Return true if it's the atom ok or a tuple {ok, ...}
      * 
@@ -1439,6 +1423,22 @@ public final class Util {
             }
         }
         return defaultValue;
+    }
+
+    public static OtpErlangList listValue(final OtpErlangObject o) {
+        if (o instanceof OtpErlangList) {
+            return (OtpErlangList) o;
+        } else if (o instanceof OtpErlangString) {
+            final OtpErlangString erlangString = (OtpErlangString) o;
+            final int[] codePoints = OtpErlangString
+                    .stringToCodePoints(erlangString.stringValue());
+            final OtpErlangObject elements[] = new OtpErlangObject[codePoints.length];
+            for (int i = 0; i < codePoints.length; i++) {
+                elements[i] = new OtpErlangLong(codePoints[i]);
+            }
+            return new OtpErlangList(elements);
+        }
+        return null;
     }
 
 }
