@@ -128,8 +128,10 @@ public class DialyzerPreferences {
 
     public void setPltPaths(final Collection<String> pltPaths) {
         final List<String> paths = Lists.newArrayList(pltPaths);
-        for (final String path : pltPathsFromPrefs) {
-            paths.remove(path);
+        if (pltPathsFromPrefs != null) {
+            for (final String path : pltPathsFromPrefs) {
+                paths.remove(path);
+            }
         }
         this.pltPaths = PreferencesUtils.packList(paths);
     }
