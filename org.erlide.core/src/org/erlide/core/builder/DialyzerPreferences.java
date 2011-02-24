@@ -33,6 +33,7 @@ public class DialyzerPreferences {
     private String enabledPltPaths;
     private boolean fromSource;
     private boolean dialyzeOnCompile;
+    private boolean noCheckPLT;
 
     public static DialyzerPreferences get(final IProject project)
             throws CoreException, BackendException {
@@ -76,6 +77,7 @@ public class DialyzerPreferences {
                 getFromSource());
         helper.putBoolean(DialyzerPreferencesConstants.DIALYZE_ON_COMPILE,
                 getDialyzeOnCompile());
+        helper.putBoolean(DialyzerPreferencesConstants.NO_CHECK_PLT, noCheckPLT);
         helper.flush();
     }
 
@@ -103,6 +105,8 @@ public class DialyzerPreferences {
                 DialyzerPreferencesConstants.FROM_SOURCE, true));
         setDialyzeOnCompile(helper.getBoolean(
                 DialyzerPreferencesConstants.DIALYZE_ON_COMPILE, false));
+        noCheckPLT = helper.getBoolean(
+                DialyzerPreferencesConstants.NO_CHECK_PLT, true);
     }
 
     @Override
@@ -133,7 +137,9 @@ public class DialyzerPreferences {
     public Collection<String> getPltPaths() {
         final List<String> result = Lists.newArrayList();
         result.addAll(PreferencesUtils.unpackList(pltPaths));
-        result.addAll(pltPathsFromPrefs);
+        if (pltPathsFromPrefs != null) {
+            result.addAll(pltPathsFromPrefs);
+        }
         return result;
     }
 
@@ -145,11 +151,19 @@ public class DialyzerPreferences {
         return dialyzeOnCompile;
     }
 
+    public boolean getNoCheckPLT() {
+        return noCheckPLT;
+    }
+
     public void setEnabledPltPaths(final Collection<String> enabledPltPaths) {
         this.enabledPltPaths = PreferencesUtils.packList(enabledPltPaths);
     }
 
     public Collection<String> getEnabledPltPaths() {
         return PreferencesUtils.unpackList(enabledPltPaths);
+    }
+
+    public void setNoCheckPLT(final boolean noCheckPLT) {
+        this.noCheckPLT = noCheckPLT;
     }
 }

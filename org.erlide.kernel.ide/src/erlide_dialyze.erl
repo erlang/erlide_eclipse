@@ -14,13 +14,13 @@
 %%
 %% Exported Functions
 %%
--export([dialyze/4, format_warning/1, check_plt/1, get_plt_files/1]).
+-export([dialyze/5, format_warning/1, check_plt/1, get_plt_files/1]).
 
 %%
 %% API Functions
 %%
 
-dialyze(Files, Plts, Includes, FromSource) ->
+dialyze(Files, Plts, Includes, FromSource, NoCheckPLT) ->
     ?D([Files, Plts, Includes]),
     From = case FromSource of
 	       true -> src_code;
@@ -33,10 +33,11 @@ dialyze(Files, Plts, Includes, FromSource) ->
                         {plts, Plts}
                 end,
     case catch dialyzer:run([{files_rec, Files}, 
-			     PltOption, 
-			     {check_plt, false},
-			     {from, From},
-			     {include_dirs, Includes}]) of
+                             PltOption, 
+                             {check_plt, false},
+                             {from, From},
+                             {include_dirs, Includes},
+                             {check_plt, not NoCheckPLT}]) of
 	{_ErrorOrExit, E} ->
 	    {error, flat(E)};
 	Result ->
