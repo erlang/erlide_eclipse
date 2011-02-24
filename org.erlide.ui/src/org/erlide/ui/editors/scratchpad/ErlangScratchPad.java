@@ -269,8 +269,6 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
         esg = new ErlangSearchActionGroup(getSite()) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-        // openAction = new OpenAction(getSite(), getExternalModules(),
-        // getExternalIncludes());
         openAction = new OpenAction(getSite());
         openAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
@@ -415,6 +413,7 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
                  * @seeorg.eclipse.jface.text.information.IInformationProvider#
                  * getSubject(org.eclipse.jface.text.ITextViewer, int)
                  */
+
                 @Override
                 public IRegion getSubject(final ITextViewer textViewer,
                         final int invocationOffset) {
@@ -434,6 +433,7 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
                  * 
                  * @since 3.0
                  */
+
                 @Override
                 public IInformationControlCreator getInformationPresenterControlCreator() {
                     return fControlCreator;
@@ -569,6 +569,7 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
     }
 
     // Auto-saving when quitting or closing, through ISaveablePart2
+
     @Override
     public int promptToSaveOnClose() {
         doSave(getProgressMonitor());

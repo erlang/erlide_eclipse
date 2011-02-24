@@ -62,7 +62,7 @@ public final class OpenDeclarationAction extends Action {
                         final ErlangEditor editor = input.getEditor();
                         OpenAction.openOpenResult(editor, editor.getModule(),
                                 BackendCore.getBackendManager().getIdeBackend()
-                                        .getRpcSite(), -1, null, or);
+                                        .getRpcSite(), -1, null, or, null);
                     } catch (final Exception e) {
                         e.printStackTrace();
                     }

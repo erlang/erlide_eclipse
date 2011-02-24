@@ -44,6 +44,14 @@ public class ErlideOpen {
         return new OpenResult(res);
     }
 
+    @SuppressWarnings("boxing")
+    public static OpenResult openText(final IRpcSite backend,
+            final String text, final int offset) throws RpcException {
+        final OtpErlangObject res = backend.call("erlide_open", "open_text",
+                "si", text, offset);
+        return new OpenResult(res);
+    }
+
     public static OtpErlangTuple mkContext(final String externalModules,
             final String externalIncludes, final OtpErlangList pathVars,
             final Collection<IPath> extraSourcePaths,

@@ -314,8 +314,7 @@ public class ErlTextHover implements ITextHover,
                 final OpenResult or = new OpenResult(t);
                 element = or;
                 final Object found = OpenAction.findOpenResult(editor, module,
-                        b, erlProject, or, offset);
-                // ErlLogger.debug("found:" + found);
+                        b, erlProject, or, editor.getElementAt(offset, true));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
                     final String comment = HoverUtil

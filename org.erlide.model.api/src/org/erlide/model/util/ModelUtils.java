@@ -164,20 +164,22 @@ public class ModelUtils {
     }
 
     public static String resolveMacroValue(final String definedName,
-            final IErlModule m) {
-        if ("?MODULE".equals(definedName)) {
-            return m.getModuleName();
-        }
-        final IErlPreprocessorDef def = m.findPreprocessorDef(
-                StringUtils.withoutInterrogationMark(definedName),
-                Kind.MACRO_DEF);
-        if (def != null) {
-            final String extra = def.getExtra();
-            final int p = extra.indexOf(',');
-            if (p != -1) {
-                final String s = extra.substring(p + 1).trim();
-                if (s.length() > 0) {
-                    return s;
+            final IErlModule module) {
+        if (module != null) {
+            if ("?MODULE".equals(definedName)) {
+                return module.getModuleName();
+            }
+            final IErlPreprocessorDef def = module.findPreprocessorDef(
+                    StringUtils.withoutInterrogationMark(definedName),
+                    Kind.MACRO_DEF);
+            if (def != null) {
+                final String extra = def.getExtra();
+                final int p = extra.indexOf(',');
+                if (p != -1) {
+                    final String s = extra.substring(p + 1).trim();
+                    if (s.length() > 0) {
+                        return s;
+                    }
                 }
             }
         }
