@@ -137,6 +137,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private Button fEditButton;
     private Button fRemoveButton;
     private Button fUpdatePLTButton;
+    private Button noCheckPLTCheckbox;
     private final List<String> shownPLTFiles;
 
     public DialyzerPreferencePage() {
@@ -161,6 +162,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         createPltSelection(group);
         createPltCheck(group);
         createFromSelection(group);
+        createPltNoCheckbox(group);
         enableButtons();
 
         if (isProjectPreferencePage()) {
@@ -171,6 +173,13 @@ public class DialyzerPreferencePage extends PropertyPage implements
         performDefaults();
 
         return prefsComposite;
+    }
+
+    private void createPltNoCheckbox(final Composite group) {
+        final Composite comp = new Composite(group, SWT.NONE);
+        comp.setLayout(new GridLayout(2, false));
+        noCheckPLTCheckbox = new Button(comp, SWT.CHECK);
+        noCheckPLTCheckbox.setText("Do not check PLT on dialyzer run");
     }
 
     private void createPltCheck(final Composite group) {
@@ -469,6 +478,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 }
                 prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
                 prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
+                prefs.setNoCheckPLT(noCheckPLTCheckbox.getSelection());
                 prefs.store();
             }
         } catch (final BackingStoreException e) {
@@ -617,11 +627,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, monitor, backend);
                 }
-            } catch (final DialyzerErrorException e) {
-                return newErrorStatus(e);
-            } catch (final BackendException e) {
-                return newErrorStatus(e);
-            } catch (final BackingStoreException e) {
+            } catch (final Exception e) {
                 return newErrorStatus(e);
             } finally {
                 monitor.done();

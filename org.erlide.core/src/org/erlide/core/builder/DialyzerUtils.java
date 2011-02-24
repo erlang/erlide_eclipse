@@ -63,6 +63,7 @@ public class DialyzerUtils {
                         .get(project);
                 final Collection<String> pltPaths = prefs.getEnabledPltPaths();
                 final boolean fromSource = prefs.getFromSource();
+                final boolean noCheckPLT = prefs.getNoCheckPLT();
                 MarkerUtils.removeDialyzerMarkers(project);
                 final Backend backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);
@@ -73,7 +74,7 @@ public class DialyzerUtils {
                         includeDirs, fromSource);
                 monitor.subTask("Dialyzing " + getFileNames(names));
                 final OtpErlangObject result = ErlideDialyze.dialyze(backend,
-                        files, pltPaths, includeDirs, fromSource);
+                        files, pltPaths, includeDirs, fromSource, noCheckPLT);
                 checkDialyzeError(result);
                 MarkerUtils.addDialyzerWarningMarkersFromResultList(p, backend,
                         (OtpErlangList) result);

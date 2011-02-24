@@ -23,7 +23,8 @@ public class ErlideDialyze {
 
     public static OtpErlangObject dialyze(final Backend backend,
             final Collection<String> files, final Collection<String> pltPaths,
-            final Collection<IPath> includeDirs, final boolean fromSource) {
+            final Collection<IPath> includeDirs, final boolean fromSource,
+            final Object noCheckPLT) {
         final List<String> incs = Lists.newArrayList();
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
@@ -32,8 +33,8 @@ public class ErlideDialyze {
             final int timeout = files.size() * FILE_TIMEOUT
                     + includeDirs.size() * INCLUDE_TIMEOUT + LONG_TIMEOUT;
             final OtpErlangObject result = backend.call(timeout,
-                    "erlide_dialyze", "dialyze", "lslslso", files, pltPaths,
-                    incs, fromSource);
+                    "erlide_dialyze", "dialyze", "lslslsoo", files, pltPaths,
+                    incs, fromSource, noCheckPLT);
             ErlLogger.debug("result %s", result.toString());
             return result;
         } catch (final Exception e) {
