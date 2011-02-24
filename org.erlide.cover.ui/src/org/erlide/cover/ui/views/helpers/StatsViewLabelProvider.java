@@ -105,7 +105,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
         graphic.setForeground(new Color(Display.getCurrent(), 60, 140, 10));
         graphic.setBackground(new Color(Display.getCurrent(), 60, 140, 10));
         graphic.drawRectangle(0, 0, 18, 6);
-        graphic.fillRectangle(1, 1, (int) (16 * percentage / 100), 5);
+        graphic.fillRectangle(1, 1, (int) (17 * percentage / 100), 5);
 
         return img;
     }

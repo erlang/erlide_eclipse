@@ -12,8 +12,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -38,13 +36,13 @@ import org.erlide.cover.ui.actions.ClearCoverageAction;
 import org.erlide.cover.ui.actions.HideCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
 import org.erlide.cover.ui.actions.OpenItemAction;
+import org.erlide.cover.ui.actions.SaveAction;
 import org.erlide.cover.ui.actions.ShowCoverageAction;
 import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**
  * View for coverage statistics
@@ -270,17 +268,10 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeSaveAction() {
-        save = new Action() {
-
-            @Override
-            public void run() {
-                showMessage("Action save");
-            }
-        };
+        save = new SaveAction();
         save.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT));
         save.setToolTipText("Save coverage results");
-        save.setEnabled(false);
     }
 
     private void makeRefreshAction() {
