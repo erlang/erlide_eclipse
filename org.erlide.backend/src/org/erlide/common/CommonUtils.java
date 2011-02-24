@@ -48,7 +48,7 @@ public class CommonUtils {
     public static boolean isEricssonUser() {
         if (fgCacheIsEricssonUser == null) {
             final String dev = System.getProperty("erlide.ericsson.user");
-            fgCacheIsEricssonUser = new Boolean("true".equals(dev));
+            fgCacheIsEricssonUser = Boolean.valueOf("true".equals(dev));
         }
         return fgCacheIsEricssonUser.booleanValue();
     }

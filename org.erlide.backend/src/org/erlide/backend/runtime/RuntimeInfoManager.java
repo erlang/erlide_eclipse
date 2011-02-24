@@ -192,7 +192,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         return rt;
     }
 
-    public void removeRuntime(final String name) {
+    public synchronized void removeRuntime(final String name) {
         fRuntimes.remove(name);
         if (erlideRuntime.getName().equals(name)) {
             erlideRuntime = fRuntimes.values().iterator().next();
