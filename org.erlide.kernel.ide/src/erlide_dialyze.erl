@@ -52,7 +52,12 @@ check_plt(Plt) ->
 
 get_plt_files(PltFiles) ->
     Files = string:tokens(PltFiles, ","),
-    get_plt_files(Files, []).
+    case get_plt_files(Files, []) of
+		[L | _]=R when is_list(L) ->
+			{ok, R};
+		_ ->
+			no_files_found
+	end.
 
 %%
 %% Local Functions
