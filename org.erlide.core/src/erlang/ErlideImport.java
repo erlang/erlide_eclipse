@@ -5,9 +5,9 @@ package erlang;
 
 import java.util.List;
 
-import org.erlide.backend.BackendException;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.core.erlang.ErlProjectImport;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.model.erlang.ErlProjectImport;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

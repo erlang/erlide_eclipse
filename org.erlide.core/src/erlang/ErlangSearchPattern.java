@@ -2,21 +2,21 @@ package erlang;
 
 import java.util.EnumSet;
 
-import org.erlide.backend.util.StringUtils;
-import org.erlide.backend.util.Util;
-import org.erlide.common.CommonUtils;
-import org.erlide.core.erlang.IErlAttribute;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlMacroDef;
-import org.erlide.core.erlang.IErlRecordDef;
-import org.erlide.core.search.FunctionPattern;
-import org.erlide.core.search.IncludePattern;
-import org.erlide.core.search.MacroPattern;
-import org.erlide.core.search.RecordFieldPattern;
-import org.erlide.core.search.RecordPattern;
-import org.erlide.core.search.TypeRefPattern;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.StringUtils;
+import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.IErlAttribute;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlMacroDef;
+import org.erlide.core.model.erlang.IErlRecordDef;
+import org.erlide.core.services.search.FunctionPattern;
+import org.erlide.core.services.search.IncludePattern;
+import org.erlide.core.services.search.MacroPattern;
+import org.erlide.core.services.search.RecordFieldPattern;
+import org.erlide.core.services.search.RecordPattern;
+import org.erlide.core.services.search.TypeRefPattern;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

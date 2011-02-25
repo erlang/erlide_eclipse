@@ -1,6 +1,6 @@
 package erlang;
 
-import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.model.erlang.ErlangCore;
 
 /**
  * Stores Erlide backends for wrangler , and has interface to access them

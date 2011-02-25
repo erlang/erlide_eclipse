@@ -37,27 +37,18 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.BackendOptions;
-import org.erlide.backend.BackendUtil;
-import org.erlide.backend.CodeBundle;
-import org.erlide.backend.CodeBundle.CodeContext;
-import org.erlide.backend.ErlLaunchAttributes;
-import org.erlide.backend.ErtsProcess;
-import org.erlide.backend.IBackendListener;
-import org.erlide.backend.epmd.EpmdWatchJob;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.backend.util.MessageReporter;
-import org.erlide.backend.util.MessageReporter.ReporterPosition;
-import org.erlide.backend.util.Tuple;
-import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.CodeBundle.CodeContext;
+import org.erlide.core.backend.epmd.EpmdWatchJob;
 import org.erlide.core.backend.internal.ManagedLauncher;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.MessageReporter;
+import org.erlide.core.common.Tuple;
+import org.erlide.core.common.MessageReporter.ReporterPosition;
+import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.util.ErlLogger;
@@ -217,7 +208,7 @@ public final class BackendManager extends OtpNodeStatus implements
         if (b == null) {
             info.setNodeName(version);
             info.setNodeNameSuffix("_"
-                    + org.erlide.backend.util.BackendUtils
+                    + org.erlide.core.common.BackendUtils
                             .getErlideNodeNameTag());
             info.setCookie("erlide");
             info.setHasConsole(false);
@@ -308,7 +299,7 @@ public final class BackendManager extends OtpNodeStatus implements
             if (defLabel != null) {
                 info.setNodeName(defLabel);
             } else {
-                final String nodeName = org.erlide.backend.util.BackendUtils
+                final String nodeName = org.erlide.core.common.BackendUtils
                         .getErlideNodeNameTag() + "_erlide";
                 info.setNodeName(nodeName);
             }

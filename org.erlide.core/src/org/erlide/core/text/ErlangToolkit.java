@@ -1,8 +1,8 @@
 package org.erlide.core.text;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.backend.util.Assert;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.common.Assert;
+import org.erlide.core.model.erlang.IErlModule;
 
 public class ErlangToolkit {
 

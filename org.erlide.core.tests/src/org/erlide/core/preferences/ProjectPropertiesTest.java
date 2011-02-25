@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

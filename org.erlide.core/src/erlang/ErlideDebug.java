@@ -6,12 +6,12 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.BackendUtil;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.Util;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendUtil;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.common.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

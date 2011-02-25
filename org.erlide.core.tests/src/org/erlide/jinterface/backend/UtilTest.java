@@ -2,7 +2,7 @@ package org.erlide.jinterface.backend;
 
 import static org.junit.Assert.assertEquals;
 
-import org.erlide.backend.util.Util;
+import org.erlide.core.common.Util;
 import org.junit.Test;
 
 public class UtilTest {

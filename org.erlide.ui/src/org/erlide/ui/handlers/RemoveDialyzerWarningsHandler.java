@@ -10,7 +10,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.erlide.core.builder.MarkerUtils;
+import org.erlide.core.services.builder.MarkerUtils;
 
 public class RemoveDialyzerWarningsHandler extends AbstractHandler implements
         IHandler {

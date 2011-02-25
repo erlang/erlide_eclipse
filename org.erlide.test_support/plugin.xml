@@ -35,21 +35,21 @@
 <extension
       point="org.eclipse.core.runtime.adapters">
    <factory
-         adaptableType="org.erlide.core.erlang.IErlFunction"
+         adaptableType="org.erlide.core.model.erlang.IErlFunction"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.core.erlang.IErlFunctionClause"
+         adaptableType="org.erlide.core.model.erlang.IErlFunctionClause"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.core.erlang.IErlModule"
+         adaptableType="org.erlide.core.model.erlang.IErlModule"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">

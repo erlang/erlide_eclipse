@@ -15,9 +15,9 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 
 import com.ericsson.otp.erlang.OtpErlangList;

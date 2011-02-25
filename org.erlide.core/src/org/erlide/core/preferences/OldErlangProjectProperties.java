@@ -21,11 +21,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.backend.runtime.RuntimeVersion;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.runtime.RuntimeVersion;
+import org.erlide.core.model.erlang.IOldErlangProjectProperties;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

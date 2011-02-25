@@ -2,7 +2,7 @@ package org.erlide.ui;
 
 import org.erlide.ui.util.PopupDialog;
 
-public class MessageReporter extends org.erlide.backend.util.MessageReporter {
+public class MessageReporter extends org.erlide.core.common.MessageReporter {
 
     public MessageReporter() {
     }

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.backend.BackendException;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.Util;
+import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.common.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

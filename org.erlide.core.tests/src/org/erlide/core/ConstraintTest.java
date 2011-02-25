@@ -24,7 +24,7 @@ public class ConstraintTest {
 
         jdep = new JDepend();
 
-        jdep.setComponents("org.erlide.jinterface,org.erlide.backend,org.erlide.core.backend,org.erlide.core.erlang,org.erlide.core,org.erlide.debug,org.erlide.common,java,org.eclipse,org.osgi,com,erlang");
+        jdep.setComponents("org.erlide.jinterface,org.erlide.core.backend,org.erlide.core.backend,org.erlide.core.model.erlang,org.erlide.core,org.erlide.debug,org.erlide.core.common,java,org.eclipse,org.osgi,com,erlang");
 
         // jdep.addDirectory(getPathToPlugin("org.erlide.jinterface"));
         // jdep.addDirectory(getPathToPlugin("org.erlide.core"));
@@ -32,7 +32,7 @@ public class ConstraintTest {
         analyzed = jdep.analyze();
 
         final JavaPackage jinterface = jdep.getPackage("org.erlide.jinterface");
-        final JavaPackage common = jdep.getPackage("org.erlide.common");
+        final JavaPackage common = jdep.getPackage("org.erlide.core.common");
         final JavaPackage core = jdep.getPackage("org.erlide.core");
         final JavaPackage erlang = jdep.getPackage("erlang");
 
@@ -72,7 +72,7 @@ public class ConstraintTest {
      */
 
     public void testOnePackage() {
-        final JavaPackage p = jdep.getPackage("org.erlide.backend");
+        final JavaPackage p = jdep.getPackage("org.erlide.core.backend");
 
         Assert.assertEquals("Cycle exists: " + p.getName(), false,
                 p.containsCycle());

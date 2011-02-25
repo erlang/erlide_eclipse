@@ -12,9 +12,9 @@ import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.search.ModuleLineFunctionArityRef;
+import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

@@ -1,7 +1,7 @@
 package org.erlide.ui.editors.erl.outline.filters;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.erlang.IErlTypespec;
+import org.erlide.core.model.erlang.IErlTypespec;
 
 public class TypespecFilter extends ErlangViewerFilter {
 

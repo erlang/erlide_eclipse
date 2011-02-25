@@ -1,7 +1,7 @@
 package erlang;
 
-import org.erlide.backend.NoBackendException;
-import org.erlide.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.NoBackendException;
+import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

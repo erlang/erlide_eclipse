@@ -42,12 +42,12 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IOpenable;
+import org.erlide.core.model.erlang.IParent;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 

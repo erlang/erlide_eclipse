@@ -311,9 +311,6 @@ public final class TypeConverter {
         return java2erlang(obj, Signature.parse(type)[0]);
     }
 
-    /**
-     * @noreference This method is not intended to be referenced by clients.
-     */
     @SuppressWarnings("boxing")
     public static OtpErlangObject java2erlang(final Object obj,
             final Signature type) throws SignatureException {
