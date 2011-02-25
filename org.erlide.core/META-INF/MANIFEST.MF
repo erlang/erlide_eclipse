@@ -7,6 +7,15 @@ Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: erlang,
+ org.erlide.backend,
+ org.erlide.backend.console,
+ org.erlide.backend.epmd,
+ org.erlide.backend.events,
+ org.erlide.backend.internal;x-internal:=true,
+ org.erlide.backend.rpc,
+ org.erlide.backend.runtime,
+ org.erlide.backend.util,
+ org.erlide.common,
  org.erlide.core,
  org.erlide.core.backend,
  org.erlide.core.backend.internal;x-internal:=true,
@@ -47,8 +56,7 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.erlide.jinterface,
- org.erlide.libs,
- org.erlide.backend
+ org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .

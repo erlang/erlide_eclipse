@@ -20,10 +20,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.common.CommonUtils;
@@ -272,6 +276,26 @@ public class ErlangPlugin extends Plugin {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
                 ErlangStatus.INTERNAL_ERROR.getValue(),
                 "Erlide internal error", e));
+    }
+
+    public static IExtensionPoint getCodepathExtension() {
+        final IExtensionRegistry reg = Platform.getExtensionRegistry();
+        return reg.getExtensionPoint(PLUGIN_ID, "codepath");
+    }
+
+    public static IConfigurationElement[] getCodepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "codepath");
+    }
+
+    public static IConfigurationElement[] getSourcepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "sourcePathProvider");
+    }
+
+    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "messageReporter");
     }
 
     public static void log(final String msg, final Throwable thr) {

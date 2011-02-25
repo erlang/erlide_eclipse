@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
-import org.erlide.backend.BackendPlugin;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -138,7 +138,7 @@ public class BeamUtil {
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 
-        final IConfigurationElement[] els = BackendPlugin
+        final IConfigurationElement[] els = ErlangPlugin
                 .getCodepathConfigurationElements();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();

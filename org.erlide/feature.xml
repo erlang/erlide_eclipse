@@ -57,7 +57,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.erlide.jinterface"/>
-      <import plugin="org.erlide.backend" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.erlide.core"/>
       <import plugin="org.erlide.libs" version="1.1.4" match="greaterOrEqual"/>
       <import plugin="org.erlide.kernel.builder"/>

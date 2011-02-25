@@ -41,7 +41,6 @@ import org.erlide.backend.Backend;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendOptions;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendUtil;
 import org.erlide.backend.CodeBundle;
 import org.erlide.backend.CodeBundle.CodeContext;
@@ -55,6 +54,7 @@ import org.erlide.backend.util.MessageReporter;
 import org.erlide.backend.util.MessageReporter.ReporterPosition;
 import org.erlide.backend.util.Tuple;
 import org.erlide.common.CommonUtils;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.internal.ManagedLauncher;
 import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlProject;
@@ -487,7 +487,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public void loadCodepathExtensions() {
-        final IExtensionPoint exPnt = BackendPlugin.getCodepathExtension();
+        final IExtensionPoint exPnt = ErlangPlugin.getCodepathExtension();
         // TODO listen to changes to the registry!
 
         final IExtension[] extensions = exPnt.getExtensions();

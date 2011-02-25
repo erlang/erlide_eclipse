@@ -49,7 +49,6 @@ import org.erlide.backend.Backend;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendOptions;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.ErlDebugConstants;
 import org.erlide.backend.ErlLaunchData;
 import org.erlide.backend.rpc.RpcCallSite;
@@ -355,7 +354,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private OtpErlangBinary getBeam(final String module, final Backend backend) {
         final Bundle b = Platform.getBundle("org.erlide.kernel.debugger");
         final String beamname = module + ".beam";
-        final IConfigurationElement[] els = BackendPlugin
+        final IConfigurationElement[] els = ErlangPlugin
                 .getCodepathConfigurationElements();
         // TODO: this code assumes that the debugged target and the
         // erlide-plugin uses the same Erlang version, how can we escape this?

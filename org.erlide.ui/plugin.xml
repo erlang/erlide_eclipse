@@ -1868,7 +1868,7 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.backend.messageReporter">
+         point="org.erlide.core.messageReporter">
       <messageReporter
             class="org.erlide.ui.MessageReporter">
       </messageReporter>

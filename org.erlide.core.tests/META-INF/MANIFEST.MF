@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.erlide.core,
  org.erlide.core.bdd,
  org.erlide.core.preferences,
+ org.erlide.jinterface.backend,
  org.erlide.test.support,
  org.erlide.testing.erlang;x-internal:=true
 Require-Bundle: org.erlide.testing.libs;bundle-version="0.8.8",

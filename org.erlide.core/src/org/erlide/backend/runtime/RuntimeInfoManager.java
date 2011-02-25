@@ -25,8 +25,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.util.PreferencesUtils;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -90,7 +90,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         loadDefaultPrefs();
 
         IEclipsePreferences root = new DefaultScope()
-                .getNode(BackendPlugin.PREFS_ID + "/runtimes");
+                .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
         loadPrefs(root);
         root = getRootPreferenceNode();
         loadPrefs(root);
@@ -156,7 +156,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     protected IEclipsePreferences getRootPreferenceNode() {
         return new InstanceScope()
-                .getNode(BackendPlugin.PREFS_ID + "/runtimes");
+                .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
     }
 
     public void setRuntimes(final Collection<RuntimeInfo> elements) {

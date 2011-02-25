@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.erlide.backend.BackendPlugin;
+import org.erlide.core.ErlangPlugin;
 
 import com.google.common.collect.Lists;
 
@@ -33,7 +33,7 @@ public abstract class MessageReporter {
 
     private static List<MessageReporter> getAllImplementors() {
         final List<MessageReporter> result = Lists.newArrayList();
-        final IConfigurationElement[] elements = BackendPlugin
+        final IConfigurationElement[] elements = ErlangPlugin
                 .getMessageReporterConfigurationElements();
         for (final IConfigurationElement element : elements) {
             try {

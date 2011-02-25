@@ -6,46 +6,40 @@ import java.util.List;
 
 import jdepend.framework.JDepend;
 import jdepend.framework.JavaPackage;
-import junit.framework.TestCase;
 
-import org.junit.Test;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 
 import com.google.common.collect.Lists;
 
-public class ConstraintTest extends TestCase {
+public class ConstraintTest {
 
     private JDepend jdep;
-    private Collection analyzed;
+    private Collection<JavaPackage> analyzed;
     private List<JavaPackage> myPackages;
 
-    public ConstraintTest(String name) {
-        super(name);
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
+    @BeforeClass
     protected void setUp() throws IOException {
 
         jdep = new JDepend();
 
         jdep.setComponents("org.erlide.jinterface,org.erlide.backend,org.erlide.core.backend,org.erlide.core.erlang,org.erlide.core,org.erlide.debug,org.erlide.common,java,org.eclipse,org.osgi,com,erlang");
 
-        jdep.addDirectory(getPathToPlugin("org.erlide.jinterface"));
-        jdep.addDirectory(getPathToPlugin("org.erlide.backend"));
-        jdep.addDirectory(getPathToPlugin("org.erlide.core"));
+        // jdep.addDirectory(getPathToPlugin("org.erlide.jinterface"));
+        // jdep.addDirectory(getPathToPlugin("org.erlide.core"));
 
         analyzed = jdep.analyze();
 
-        JavaPackage jinterface = jdep.getPackage("org.erlide.jinterface");
-        JavaPackage common = jdep.getPackage("org.erlide.common");
-        JavaPackage backend = jdep.getPackage("org.erlide.backend");
-        JavaPackage core = jdep.getPackage("org.erlide.core");
-        JavaPackage erlang = jdep.getPackage("erlang");
+        final JavaPackage jinterface = jdep.getPackage("org.erlide.jinterface");
+        final JavaPackage common = jdep.getPackage("org.erlide.common");
+        final JavaPackage core = jdep.getPackage("org.erlide.core");
+        final JavaPackage erlang = jdep.getPackage("erlang");
 
-        myPackages = Lists.newArrayList(erlang, jinterface, common, backend,
-                core);
+        myPackages = Lists.newArrayList(erlang, jinterface, common, core);
     }
 
-    private String getPathToPlugin(String name) {
+    private String getPathToPlugin(final String name) {
         return "c:/apps/erlide/" + name + "/bin";
     }
 
@@ -53,18 +47,17 @@ public class ConstraintTest extends TestCase {
      * Tests that the package dependency constraint is met for the analyzed
      * packages.
      */
-    @Test
+
     public void testMatch() {
-        for (JavaPackage p : myPackages) {
+        for (final JavaPackage p : myPackages) {
             System.out.println(p.getName().replaceAll("org.erlide.", "")
                     + " = " + print(p.getEfferents()));
         }
     }
 
-    private String print(Collection list) {
-        StringBuilder result = new StringBuilder();
-        for (Object op : list) {
-            JavaPackage p = (JavaPackage) op;
+    private String print(final Collection<JavaPackage> list) {
+        final StringBuilder result = new StringBuilder();
+        for (final JavaPackage p : list) {
             if (myPackages.contains(p)) {
                 result.append(", ").append(
                         p.getName().replaceAll("org.erlide.", ""));
@@ -77,20 +70,21 @@ public class ConstraintTest extends TestCase {
      * Tests that a single package does not contain any package dependency
      * cycles.
      */
-    @Test
-    public void testOnePackage() {
-        JavaPackage p = jdep.getPackage("org.erlide.backend");
 
-        assertEquals("Cycle exists: " + p.getName(), false, p.containsCycle());
+    public void testOnePackage() {
+        final JavaPackage p = jdep.getPackage("org.erlide.backend");
+
+        Assert.assertEquals("Cycle exists: " + p.getName(), false,
+                p.containsCycle());
     }
 
     /**
      * Tests that a package dependency cycle does not exist for any of the
      * analyzed packages.
      */
-    @Test
+
     public void testAllPackages() {
-        assertEquals("Cycles exist", false, jdep.containsCycles());
+        Assert.assertEquals("Cycles exist", false, jdep.containsCycles());
     }
 
 }
