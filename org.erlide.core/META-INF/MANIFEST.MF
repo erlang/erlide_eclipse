@@ -46,8 +46,7 @@ Export-Package: erlang,
    org.eclipse.core.resources,
    org.eclipse.core.runtime,
    org.eclipse.debug.core",
- org.erlide.core.text,
- org.erlide.core.util
+ org.erlide.core.text
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
