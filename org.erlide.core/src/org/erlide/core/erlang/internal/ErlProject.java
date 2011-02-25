@@ -1121,23 +1121,23 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     static IErlModule findInclude(final IErlProject project,
-            final String includeName, final String modulePath,
+            final String includeName, final String includePath,
             final boolean ignoreCase, final boolean checkExternals,
             final boolean checkReferences, final boolean checkAllProjects)
             throws ErlModelException {
         if (project != null) {
             final IErlModule module = getModuleFromCacheByNameOrPath(
-                    (ErlProject) project, includeName, modulePath);
+                    (ErlProject) project, includeName, includePath);
             if (module != null && module.isOnIncludePath()) {
                 return module;
             }
         }
         final Collection<IErlModule> modules = getAllIncludes(project,
                 checkExternals, checkReferences, checkAllProjects);
-        if (modulePath != null) {
+        if (includePath != null) {
             for (final IErlModule module2 : modules) {
                 final String path2 = module2.getFilePath();
-                if (path2 != null && modulePath.equals(path2)) {
+                if (path2 != null && includePath.equals(path2)) {
                     return module2;
                 }
             }
@@ -1251,8 +1251,12 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     public IErlModule findInclude(final String includeName,
-            final String includePath, final boolean checkReferences,
-            final boolean checkAllProjects) throws ErlModelException {
+            final String includePath, final IErlModule includedFrom,
+            final boolean checkReferences, final boolean checkAllProjects)
+            throws ErlModelException {
+        // Here we should use includedFrom to make sure we check the parent of
+        // the module for local includes
+        xxx
         return findInclude(this, includeName, includePath, false, true,
                 checkReferences, checkAllProjects);
     }
@@ -1265,7 +1269,7 @@ public class ErlProject extends Openable implements IErlProject {
      */
     public IErlModule findModule(final String includeName,
             final String includePath) throws ErlModelException {
-        return findInclude(includeName, includePath, false, false);
+        return findInclude(includeName, includePath, null, false, false);
     }
 
     @Override

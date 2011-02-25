@@ -713,7 +713,7 @@ public class ErlModule extends Openable implements IErlModule {
             return folder.findModule(includeName, includePath);
         }
         return getProject().findInclude(includeName, includePath,
-                checkReferences, checkAllProjects);
+                null, checkReferences, checkAllProjects);
     }
 
 }

@@ -175,7 +175,7 @@ public interface IErlProject extends IErlFolder {
             throws ErlModelException;
 
     IErlModule findInclude(String includeName, String includePath,
-            boolean checkReferences, boolean checkAllProjects)
+            IErlModule includedFrom, boolean checkReferences, boolean checkAllProjects)
             throws ErlModelException;
 
 }

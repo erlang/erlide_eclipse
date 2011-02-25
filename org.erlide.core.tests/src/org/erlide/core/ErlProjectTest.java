@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -86,7 +86,7 @@ public class ErlProjectTest {
         final IErlModule include1 = module.findInclude(includeName, null,
                 false, false);
         final IErlModule include2 = project.findInclude("file.hrl", null,
-                false, false);
+                null, false, false);
         // then
         // it should be found
         assertEquals(include, include1);
@@ -157,7 +157,7 @@ public class ErlProjectTest {
             // looking for the include file
             project.open(null);
             final IErlModule module = project.findInclude(includeName, null,
-                    true, true);
+                    null, true, true);
             // then
             // it should be found in the project defining it
             assertNotNull(module);

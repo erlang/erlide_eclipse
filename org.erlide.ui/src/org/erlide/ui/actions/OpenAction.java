@@ -232,7 +232,7 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlModel model) throws CoreException, BackendException {
         if (project != null) {
             final IErlModule include = project.findInclude(res.getName(),
-                    res.getPath(), true, false);
+                    res.getPath(), null, true, false);
             if (include != null) {
                 return include;
             }
