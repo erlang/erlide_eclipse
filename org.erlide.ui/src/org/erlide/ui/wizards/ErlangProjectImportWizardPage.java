@@ -71,7 +71,7 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.util.PluginUtils;
+import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 

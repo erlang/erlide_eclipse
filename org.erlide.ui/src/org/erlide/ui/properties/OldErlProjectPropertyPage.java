@@ -20,11 +20,11 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.preferences.ProjectPreferencesConstants;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.internal.ProjectPreferencesConstants;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;

@@ -1,6 +1,6 @@
 package org.erlide.ui.tests;
 
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

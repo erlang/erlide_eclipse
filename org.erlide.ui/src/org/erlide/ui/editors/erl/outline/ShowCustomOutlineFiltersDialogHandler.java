@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.erlide.common.CommonUtils;
+import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.osgi.service.prefs.BackingStoreException;

@@ -14,12 +14,12 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.backend.ErtsProcess;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.backend.util.IDisposable;
-import org.erlide.backend.util.StringUtils;
-import org.erlide.common.CommonUtils;
-import org.erlide.common.LogUtil;
+import org.erlide.core.backend.ErtsProcess;
+import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.IDisposable;
+import org.erlide.core.common.LogUtil;
+import org.erlide.core.common.StringUtils;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class ManagedLauncher implements IDisposable {

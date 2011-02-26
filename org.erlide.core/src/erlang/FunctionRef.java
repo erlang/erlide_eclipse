@@ -1,6 +1,6 @@
 package erlang;
 
-import org.erlide.core.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
 

@@ -7,12 +7,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.erlide.backend.Backend;
-import org.erlide.backend.IBackendListener;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.IDisposable;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.common.IDisposable;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {

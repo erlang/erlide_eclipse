@@ -3,11 +3,11 @@ package erlang;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.Util;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.search.ModuleLineFunctionArityRef;
-import org.erlide.core.text.ErlangToolkit;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.util.ErlangToolkit;
+import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

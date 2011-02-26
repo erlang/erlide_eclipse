@@ -289,10 +289,10 @@
          <enabledWhen>
             <or>
                <instanceof
-                     value="org.erlide.core.debug.IErlangBreakpoint">
+                     value="org.erlide.core.model.debug.IErlangBreakpoint">
                </instanceof>
                <adapt
-                     type="org.erlide.core.debug.IErlangBreakpoint">
+                     type="org.erlide.core.model.debug.IErlangBreakpoint">
                </adapt>
             </or>
          </enabledWhen>
@@ -333,7 +333,7 @@
       <objectContribution
             adaptable="false"
             id="org.erlide.runtime.debug.ErlangBreakpointActions"
-            objectClass="org.erlide.runtime.debug.ErlangLineBreakpoint">
+            objectClass="org.erlide.core.model.debug.ErlangLineBreakpoint">
          <action
                class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
                definitionId="org.erlide.ui.debug.breakpoint.properties"
@@ -406,7 +406,7 @@
  <extension
        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
     <launchConfigurationTypeImage
-          configTypeID="org.erlide.core.launch.erlangProcess"
+          configTypeID="org.erlide.core.services.launching.erlangProcess"
           icon="icons/erl/erlang-notext016.gif"
           id="org.erlide.ui.launch.launchConfigurationTypeImage.erlangNode"/>
  </extension>
@@ -1277,20 +1277,20 @@
                   </test>
                </and>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.erlang.IErlElement">
                </instanceof>
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
                <adapt
-                     type="org.erlide.core.erlang.IErlModule">
+                     type="org.erlide.core.model.erlang.IErlModule">
                </adapt>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.erlang.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1326,14 +1326,14 @@
                      value="org.eclipse.core.resources.IProject">
                </instanceof>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.erlang.IErlElement">
                </instanceof>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.erlang.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1387,7 +1387,7 @@
                      type="org.eclipse.core.resources.IFile">
                </adapt>
                <instanceof
-                     value="org.erlide.core.erlang.IErlModule">
+                     value="org.erlide.core.model.erlang.IErlModule">
                </instanceof>
             </or>
          </selectionEnablement>
@@ -1543,7 +1543,7 @@
             adaptableType="org.eclipse.ui.IEditorInput"
             class="org.erlide.ui.util.EditorInputToModuleAdapterFactory">
          <adapter
-               type="org.erlide.core.erlang.IErlElement">
+               type="org.erlide.core.model.erlang.IErlElement">
          </adapter>
       </factory>
    </extension>
@@ -1601,7 +1601,7 @@
     <launchConfigurationTabGroup
           class="org.erlide.ui.launch.ErlangNodeTabGroup"
           id="org.erlide.ui.launch.launchConfigurationTabGroup.erlangNode"
-          type="org.erlide.core.launch.erlangProcess"/>
+          type="org.erlide.core.services.launching.erlangProcess"/>
  </extension>
  <extension
        point="org.eclipse.debug.ui.launchShortcuts">
@@ -1619,14 +1619,14 @@
                         ifEmpty="false"
                         operator="and">
                      <adapt
-                           type="org.erlide.core.erlang.IErlElement">
+                           type="org.erlide.core.model.erlang.IErlElement">
                      </adapt>
                   </iterate>
                </with>
             </enablement>
          </contextualLaunch>
         <configurationType
-              id="org.erlide.core.launch.erlangProcess">
+              id="org.erlide.core.services.launching.erlangProcess">
         </configurationType>
         <perspective
               id="org.erlide.ui.perspectives.ErlangPerspective">
@@ -1868,7 +1868,7 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.backend.messageReporter">
+         point="org.erlide.core.messageReporter">
       <messageReporter
             class="org.erlide.ui.MessageReporter">
       </messageReporter>

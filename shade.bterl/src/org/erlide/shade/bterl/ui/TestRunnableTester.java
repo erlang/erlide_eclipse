@@ -9,10 +9,10 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.shade.bterl.builder.ErlTestNature;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchShortcut;
 

@@ -3,7 +3,7 @@ package erlang;
 import java.util.Collection;
 import java.util.Set;
 
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlModule;
 
 import com.google.common.collect.Sets;
 

@@ -11,7 +11,6 @@ Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
  org.eclipse.ui.console,
  org.eclipse.debug.ui,
  org.erlide.jinterface;bundle-version="0.8.4",
- org.erlide.backend;bundle-version="0.9.5",
  org.erlide.core;bundle-version="0.8.4",
  org.erlide.ui;bundle-version="0.8.4"
 Bundle-ActivationPolicy: lazy

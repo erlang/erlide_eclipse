@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.BackendUtils;
-import org.erlide.backend.util.SourcePathProvider;
-import org.erlide.backend.util.Util;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.common.BackendUtils;
+import org.erlide.core.common.SourcePathProvider;
+import org.erlide.core.common.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;

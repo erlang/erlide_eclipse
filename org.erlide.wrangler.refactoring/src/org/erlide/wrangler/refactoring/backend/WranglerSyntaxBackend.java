@@ -11,8 +11,8 @@
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.rpc.RpcResult;
+import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo.Type;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;

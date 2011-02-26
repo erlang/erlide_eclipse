@@ -40,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.backend.Backend;
+import org.erlide.core.backend.Backend;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.tracing.core.ITraceNodeObserver;
 import org.erlide.tracing.core.ProcessFlag;

@@ -15,7 +15,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
 
 public class ErlReconciler implements IReconciler {

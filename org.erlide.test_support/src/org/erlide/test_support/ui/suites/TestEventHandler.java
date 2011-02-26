@@ -1,7 +1,7 @@
 package org.erlide.test_support.ui.suites;
 
-import org.erlide.backend.events.ErlangEvent;
-import org.erlide.backend.events.EventHandler;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
 
 public class TestEventHandler extends EventHandler {
 
