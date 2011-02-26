@@ -57,8 +57,7 @@ public class ConstraintTest {
     }
 
     private String getPathToPlugin(final String name) {
-        // return "c:/apps/erlide/" + name + "/bin";
-        return "c:/users/vlad/projects/erlide/" + name + "/bin";
+        return System.getenv("WORKSPACE") + "/" + name + "/bin";
     }
 
     /**
@@ -67,21 +66,12 @@ public class ConstraintTest {
      */
     @Test
     public void printAll() {
-        final List<JavaPackage> all = Lists.newArrayList(analyzed);
-        Collections.sort(all, new Comparator<JavaPackage>() {
-            public int compare(final JavaPackage o1, final JavaPackage o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        for (final JavaPackage p : all) {
-            System.out.println(p.getName());
-        }
-        System.out.println("-----");
         for (final JavaPackage p : myPackages) {
             System.out.println(p.getName().replaceAll("org.erlide.", "")
                     + " = " + print(p.getEfferents()));
         }
 
+        final List<JavaPackage> all = Lists.newArrayList(analyzed);
         Collections.sort(all, new Comparator<JavaPackage>() {
             public int compare(final JavaPackage o1, final JavaPackage o2) {
                 if (o1 == o2) {
@@ -91,7 +81,7 @@ public class ConstraintTest {
                         && o2.getEfferents().contains(o1)) {
                     return 0;
                 }
-                return o1.getEfferents().contains(o2) ? 1 : -1;
+                return o1.getEfferents().contains(o2) ? -1 : 1;
             }
         });
         printMatrix(all);
@@ -99,7 +89,7 @@ public class ConstraintTest {
 
     private void printMatrix(final List<JavaPackage> packages) {
         final int n = packages.size();
-        final char[][] mx = new char[n][n];
+        final char[][] mx = new char[n][n + 1];
 
         for (int i = 0; i < n; i++) {
             final JavaPackage p = packages.get(i);
@@ -114,6 +104,7 @@ public class ConstraintTest {
                     mx[i][j] = '-';
                 }
             }
+            mx[i][n] = (char) (i % 10 + '0');
 
         }
 
@@ -121,12 +112,12 @@ public class ConstraintTest {
             System.out.println(i + ": " + packages.get(i).getName());
         }
         for (int i = 0; i < n; i++) {
-            System.out.print(i);
+            System.out.print(i % 10);
         }
         System.out.println();
 
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < n + 1; j++) {
                 System.out.print(mx[i][j]);
             }
             System.out.println();
