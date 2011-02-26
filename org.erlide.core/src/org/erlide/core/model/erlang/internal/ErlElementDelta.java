@@ -1,9 +1,12 @@
-package org.erlide.core.model.erlang;
+package org.erlide.core.model.erlang.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResourceDelta;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElementDelta;
+import org.erlide.core.model.erlang.IParent;
 
 import com.google.common.collect.Lists;
 

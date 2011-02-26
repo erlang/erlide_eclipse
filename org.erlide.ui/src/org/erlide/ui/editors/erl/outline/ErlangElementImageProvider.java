@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFolder;
 import org.erlide.core.model.erlang.IErlFunction;

@@ -1,7 +1,9 @@
-package org.erlide.core.model.erlang;
+package org.erlide.core.model.erlang.util;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.IErlProject;
 
 @SuppressWarnings("rawtypes")
 public class ProjectAdapterFactory implements IAdapterFactory {

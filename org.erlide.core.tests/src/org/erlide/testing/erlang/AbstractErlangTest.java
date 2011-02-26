@@ -12,8 +12,8 @@ package org.erlide.testing.erlang;
 
 import static org.junit.Assert.fail;
 
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.rpc.RpcCallSite;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.junit.After;
 import org.junit.Before;
 

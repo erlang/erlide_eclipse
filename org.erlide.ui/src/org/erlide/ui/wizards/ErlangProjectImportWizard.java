@@ -42,9 +42,8 @@ import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.erlang.ErlProjectImport;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.jinterface.util.ErlLogger;
@@ -52,6 +51,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.osgi.service.prefs.BackingStoreException;
 
+import erlang.ErlProjectImport;
 import erlang.ErlideImport;
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard

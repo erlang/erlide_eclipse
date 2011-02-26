@@ -8,11 +8,11 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -25,8 +25,8 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.SourceRange;
 import org.erlide.core.model.erlang.IErlElement.Kind;
+import org.erlide.core.model.erlang.internal.SourceRange;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

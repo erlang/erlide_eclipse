@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.erlang.ErlElementDelta;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlElementDelta;

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation
  *******************************************************************************/
-package org.erlide.core.model.erlang;
+package org.erlide.core;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -33,10 +33,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
 
 /**

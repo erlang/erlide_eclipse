@@ -45,6 +45,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
@@ -61,7 +62,6 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;
 import org.erlide.core.model.debug.ErlangDebugTarget;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 

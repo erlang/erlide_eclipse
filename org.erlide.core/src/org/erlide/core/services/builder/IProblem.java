@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation
  ****************************************************************************/
-package org.erlide.core.model.erlang;
+package org.erlide.core.services.builder;
 
 /**
  * Description of a Erlang problem, as detected by the compiler or some of the

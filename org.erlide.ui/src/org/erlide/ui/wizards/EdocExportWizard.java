@@ -27,7 +27,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.util.ErlLogger;
 

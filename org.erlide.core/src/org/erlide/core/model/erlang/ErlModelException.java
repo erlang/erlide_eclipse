@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.erlide.core.model.erlang.internal.ErlModelStatus;
 
 /**
  * A checked exception representing a failure in the Erlang model. Erlang model

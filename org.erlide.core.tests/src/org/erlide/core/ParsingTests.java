@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.erlide.core.erlang.TestingSupport;
 import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.internal.ErlParser;

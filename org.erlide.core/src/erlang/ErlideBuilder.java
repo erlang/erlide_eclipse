@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;
 

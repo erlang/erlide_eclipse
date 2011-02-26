@@ -13,11 +13,11 @@ package org.erlide.core.model.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.ErlBackend;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlElement;

@@ -14,6 +14,7 @@ package org.erlide.core.model.erlang;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.ErlangCore;
 
 /**
  * An Erlang folder is a collection of colder with erlang files. It knows

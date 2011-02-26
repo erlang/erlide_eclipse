@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugOptionsManager;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.platform.PlatformChangeListener;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.BundleContext;

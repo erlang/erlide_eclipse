@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.CodeBundle;
@@ -26,7 +27,6 @@ import org.erlide.core.backend.ErlBackend;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.BeamUtil;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;

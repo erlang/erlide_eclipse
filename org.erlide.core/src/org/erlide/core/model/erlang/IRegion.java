@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
+import org.erlide.core.ErlangCore;
+
 /**
  * A Erlang model region describes a hierarchical set of elements. Regions are
  * often used to describe a set of elements to be considered when performing

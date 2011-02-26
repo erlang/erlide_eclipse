@@ -23,6 +23,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendManager;
@@ -32,7 +33,6 @@ import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.CharOperation;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

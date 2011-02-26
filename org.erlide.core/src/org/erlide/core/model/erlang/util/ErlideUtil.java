@@ -18,11 +18,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.util.ErlLogger;
 

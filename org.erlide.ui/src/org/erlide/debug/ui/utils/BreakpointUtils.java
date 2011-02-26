@@ -1,7 +1,7 @@
 package org.erlide.debug.ui.utils;
 
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.erlide.core.model.erlang.ErlangCore;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;

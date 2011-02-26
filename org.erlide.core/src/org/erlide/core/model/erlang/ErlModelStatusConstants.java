@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
+import org.erlide.core.ErlangCore;
+
 /**
  * Status codes used with Erlang model status objects.
  * <p>

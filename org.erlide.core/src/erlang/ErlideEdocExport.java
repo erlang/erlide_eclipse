@@ -13,10 +13,10 @@ package erlang;
 import java.util.Collection;
 import java.util.Map;
 
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcException;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

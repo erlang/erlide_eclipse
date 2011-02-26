@@ -8,9 +8,9 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.common.StringUtils;
-import org.erlide.core.model.erlang.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModel;
