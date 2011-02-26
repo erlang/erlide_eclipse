@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.preferences;
+package org.erlide.core.model.erlang.internal;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;

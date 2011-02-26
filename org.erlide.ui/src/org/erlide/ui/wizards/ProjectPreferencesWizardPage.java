@@ -36,8 +36,8 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.backend.runtime.RuntimeVersion;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.core.preferences.PathSerializer;
+import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
+import org.erlide.core.model.erlang.internal.PathSerializer;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.swtdesigner.SWTResourceManager;

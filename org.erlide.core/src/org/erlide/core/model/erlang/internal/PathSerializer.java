@@ -1,4 +1,4 @@
-package org.erlide.core.preferences;
+package org.erlide.core.model.erlang.internal;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

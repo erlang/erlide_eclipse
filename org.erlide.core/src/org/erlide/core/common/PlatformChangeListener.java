@@ -1,4 +1,4 @@
-package org.erlide.core.platform;
+package org.erlide.core.common;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;

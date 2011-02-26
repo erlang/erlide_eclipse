@@ -15,7 +15,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlBackend;
 import org.erlide.core.backend.rpc.RpcCallSite;
-import org.erlide.core.preferences.PreferencesHelper;
+import org.erlide.core.model.erlang.internal.PreferencesHelper;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlang;

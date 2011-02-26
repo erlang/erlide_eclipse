@@ -64,7 +64,6 @@ import org.erlide.core.model.erlang.internal.ErlModel.External;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.model.erlang.util.ModelUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 

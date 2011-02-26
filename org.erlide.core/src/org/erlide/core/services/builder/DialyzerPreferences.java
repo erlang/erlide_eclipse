@@ -13,7 +13,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.preferences.PreferencesHelper;
+import org.erlide.core.model.erlang.internal.PreferencesHelper;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
