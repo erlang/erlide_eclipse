@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.preferences;
+package org.erlide.core.common;
 
 /**
  * Base64 is a helper class for converting byte arrays to and from base 64
  * encoded Strings.
  * 
  */
-class Base64 {
+public class Base64 {
 
     private static final byte EQUAL_SIGN = (byte) '=';
 

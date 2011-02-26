@@ -26,8 +26,8 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOldErlangProjectProperties;
+import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.core.text.ErlangToolkit;
 
 import com.google.common.collect.Lists;
 

@@ -15,7 +15,7 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.internal.ErlParser;
-import org.erlide.core.text.ErlangToolkit;
+import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
