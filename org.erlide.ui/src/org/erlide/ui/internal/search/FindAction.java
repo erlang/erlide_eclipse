@@ -31,7 +31,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;

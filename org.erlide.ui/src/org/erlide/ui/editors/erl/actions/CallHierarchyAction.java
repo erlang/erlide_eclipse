@@ -18,7 +18,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.FunctionRef;

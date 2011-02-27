@@ -9,7 +9,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;

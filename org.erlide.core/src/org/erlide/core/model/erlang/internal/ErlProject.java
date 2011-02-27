@@ -41,7 +41,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.backend.runtime.RuntimeVersion;
 import org.erlide.core.common.CommonUtils;

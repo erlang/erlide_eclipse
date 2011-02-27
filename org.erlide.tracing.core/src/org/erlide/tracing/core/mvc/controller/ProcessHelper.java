@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracedNode;

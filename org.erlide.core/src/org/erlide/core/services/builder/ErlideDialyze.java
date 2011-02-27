@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.jinterface.util.ErlLogger;
 

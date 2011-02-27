@@ -3,7 +3,7 @@ package org.erlide.core.services.search;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ErlangToolkit;

@@ -8,7 +8,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;

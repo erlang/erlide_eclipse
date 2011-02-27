@@ -15,7 +15,6 @@ Export-Package: org.erlide.core,
  org.erlide.core.backend.rpc,
  org.erlide.core.backend.runtime,
  org.erlide.core.common,
- org.erlide.core.internal;x-internal:=true,
  org.erlide.core.model.debug;
   x-friends:="org.erlide.ui,
    org.erlide.test_support,

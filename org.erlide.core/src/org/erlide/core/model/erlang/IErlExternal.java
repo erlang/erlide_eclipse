@@ -3,7 +3,7 @@
  */
 package org.erlide.core.model.erlang;
 
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 
 /**
  * @author jakob

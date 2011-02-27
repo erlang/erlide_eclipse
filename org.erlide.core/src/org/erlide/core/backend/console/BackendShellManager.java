@@ -8,12 +8,12 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.backend.console;
 
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.common.IDisposable;
 
 class BackendShellManager implements IDisposable {

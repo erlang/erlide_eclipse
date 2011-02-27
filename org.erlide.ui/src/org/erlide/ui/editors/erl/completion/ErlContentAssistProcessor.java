@@ -40,7 +40,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.ModuleKind;
 import org.erlide.core.common.StringUtils;

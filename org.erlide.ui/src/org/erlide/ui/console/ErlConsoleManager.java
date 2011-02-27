@@ -11,7 +11,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.IBackendListener;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.IDisposable;
 import org.erlide.jinterface.util.ErlLogger;
 

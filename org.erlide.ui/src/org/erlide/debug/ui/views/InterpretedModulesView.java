@@ -34,7 +34,7 @@ import org.eclipse.ui.PartInitException;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErtsProcess;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugElement;
 import org.erlide.core.model.debug.ErlangDebugHelper;

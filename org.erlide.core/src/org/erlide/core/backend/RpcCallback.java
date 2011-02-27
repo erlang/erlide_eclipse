@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.rpc;
+package org.erlide.core.backend;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

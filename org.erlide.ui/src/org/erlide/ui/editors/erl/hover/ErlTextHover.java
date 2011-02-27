@@ -41,7 +41,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendManager;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.core.model.erlang.IErlFunction;

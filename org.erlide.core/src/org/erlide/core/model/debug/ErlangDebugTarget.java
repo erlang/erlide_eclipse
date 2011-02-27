@@ -34,7 +34,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.jinterface.util.ErlLogger;
 

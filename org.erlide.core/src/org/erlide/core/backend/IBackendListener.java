@@ -11,7 +11,6 @@
 package org.erlide.core.backend;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.backend.rpc.RpcCallSite;
 
 public interface IBackendListener {
 

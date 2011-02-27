@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.backend.rpc;
 
+import org.erlide.core.backend.RpcCallback;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
 

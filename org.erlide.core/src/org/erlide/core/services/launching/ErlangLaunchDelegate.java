@@ -54,7 +54,7 @@ import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchData;
 import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.BeamUtil;

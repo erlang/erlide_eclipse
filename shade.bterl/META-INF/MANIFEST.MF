@@ -30,3 +30,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.shade.bterl,
  org.erlide.shade.bterl.ui.launcher
+Import-Package: org.erlide.shade.bterl

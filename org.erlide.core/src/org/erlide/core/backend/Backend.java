@@ -18,13 +18,12 @@ import java.util.HashMap;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.rpc.RpcCallSite;
-import org.erlide.core.backend.rpc.RpcCallback;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcHelper;
 import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.IDisposable;
 import org.erlide.jinterface.util.ErlLogger;
 

@@ -27,6 +27,7 @@ import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.internal.CodeManager;
 import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.backend.runtime.RuntimeVersion;
+import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;

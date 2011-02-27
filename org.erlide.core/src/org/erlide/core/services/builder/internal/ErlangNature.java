@@ -7,7 +7,7 @@
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
-package org.erlide.core.internal;
+package org.erlide.core.services.builder.internal;
 
 import java.util.ArrayList;
 import java.util.List;

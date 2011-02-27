@@ -62,7 +62,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendEvalResult;
 import org.erlide.core.backend.ErlBackend;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;

@@ -5,7 +5,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.IBackendListener;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;

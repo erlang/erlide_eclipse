@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendManager;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
 import org.jbehave.core.annotations.Given;

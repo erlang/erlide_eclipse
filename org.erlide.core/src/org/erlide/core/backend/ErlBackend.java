@@ -3,7 +3,6 @@ package org.erlide.core.backend;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;

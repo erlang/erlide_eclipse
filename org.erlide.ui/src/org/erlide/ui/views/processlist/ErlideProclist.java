@@ -1,7 +1,7 @@
 package org.erlide.ui.views.processlist;
 
 import org.erlide.core.backend.NoBackendException;
-import org.erlide.core.backend.rpc.RpcCallSite;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

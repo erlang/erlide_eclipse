@@ -29,6 +29,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.erlide.core.backend.internal.InitialCall;
 import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.util.ErlLogger;
