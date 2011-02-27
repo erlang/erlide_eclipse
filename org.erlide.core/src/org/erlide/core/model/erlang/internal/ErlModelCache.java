@@ -14,12 +14,12 @@ import org.erlide.core.model.erlang.IErlModelChangeListener;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import erlang.ErlideOpen.ExternalTreeEntry;
 
 public class ErlModelCache implements IDisposable {
 

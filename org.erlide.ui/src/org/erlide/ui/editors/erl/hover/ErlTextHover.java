@@ -51,6 +51,8 @@ import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlideDoc;
+import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
@@ -65,8 +67,6 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlideDoc;
-import erlang.OpenResult;
 
 public class ErlTextHover implements ITextHover,
         IInformationProviderExtension2, ITextHoverExtension,

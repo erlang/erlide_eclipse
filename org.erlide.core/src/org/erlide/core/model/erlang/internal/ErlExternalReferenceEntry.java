@@ -11,10 +11,10 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.services.search.ErlideOpen;
 
 import com.google.common.collect.Lists;
 
-import erlang.ErlideOpen;
 
 public class ErlExternalReferenceEntry extends Openable implements IErlExternal {
 

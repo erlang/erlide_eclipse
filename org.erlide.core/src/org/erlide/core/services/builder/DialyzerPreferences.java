@@ -19,7 +19,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
-import erlang.ErlideDialyze;
 
 public class DialyzerPreferences {
 

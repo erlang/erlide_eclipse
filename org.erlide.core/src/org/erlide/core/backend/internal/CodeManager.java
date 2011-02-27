@@ -33,7 +33,6 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-import erlang.ErlangCode;
 
 public class CodeManager {
 

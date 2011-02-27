@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.jinterface.util.ErlLogger;

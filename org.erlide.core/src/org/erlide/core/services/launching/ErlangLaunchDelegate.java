@@ -62,6 +62,7 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;
 import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlideDebug;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -73,7 +74,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Maps;
 
-import erlang.ErlideDebug;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 

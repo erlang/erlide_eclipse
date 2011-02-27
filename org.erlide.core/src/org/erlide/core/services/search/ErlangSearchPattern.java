@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import java.util.EnumSet;
 
@@ -11,12 +11,6 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMacroDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
-import org.erlide.core.services.search.FunctionPattern;
-import org.erlide.core.services.search.IncludePattern;
-import org.erlide.core.services.search.MacroPattern;
-import org.erlide.core.services.search.RecordFieldPattern;
-import org.erlide.core.services.search.RecordPattern;
-import org.erlide.core.services.search.TypeRefPattern;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

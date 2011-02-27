@@ -11,9 +11,9 @@ import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.util.ErlLogger;
 
-import erlang.ErlideOpen;
 
 public class ErlOtpExternalReferenceEntryList extends Openable implements
         IErlExternal {

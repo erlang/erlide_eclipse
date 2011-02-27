@@ -29,7 +29,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-import erlang.ErlideDialyze;
 
 public class DialyzerUtils {
 

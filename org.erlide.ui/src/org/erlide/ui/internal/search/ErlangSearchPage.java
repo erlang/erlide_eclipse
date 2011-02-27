@@ -46,6 +46,12 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -53,12 +59,6 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 import com.google.common.collect.Lists;
 
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlangSearchPattern.SearchFor;
-import erlang.ErlideOpen;
-import erlang.OpenResult;
 
 public class ErlangSearchPage extends DialogPage implements ISearchPage {
 

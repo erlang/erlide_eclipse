@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.search.ErlideOpen;
 
-import erlang.ErlideOpen;
 
 /**
  * Simple utility functions

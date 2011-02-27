@@ -64,13 +64,13 @@ import org.erlide.core.model.erlang.internal.ErlModel.External;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import erlang.ErlideOpen;
 
 /**
  * Handle for an Erlang Project.

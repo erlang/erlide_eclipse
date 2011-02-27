@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.model.debug;
 
 import java.util.ArrayList;
 import java.util.List;

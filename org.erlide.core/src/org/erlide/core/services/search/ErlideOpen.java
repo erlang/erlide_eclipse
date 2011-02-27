@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +20,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
+
 public class ErlideOpen {
 
     public static String getIncludeLib(final RpcCallSite backend, String s)
@@ -33,9 +34,10 @@ public class ErlideOpen {
         return s;
     }
 
-    public static OtpErlangObject getSourceFromModule(final RpcCallSite backend,
-            final OtpErlangList pathVars, final String mod,
-            final String externalModules) throws BackendException {
+    public static OtpErlangObject getSourceFromModule(
+            final RpcCallSite backend, final OtpErlangList pathVars,
+            final String mod, final String externalModules)
+            throws BackendException {
         final OtpErlangObject res2 = backend.call("erlide_open",
                 "get_source_from_module", "ax", mod,
                 mkContext(externalModules, null, pathVars, null, null));
@@ -73,7 +75,7 @@ public class ErlideOpen {
         return result;
     }
 
-    static OtpErlangTuple mkContext(final String externalModules,
+    public static OtpErlangTuple mkContext(final String externalModules,
             final String externalIncludes, final OtpErlangList pathVars,
             final Collection<String> extraSourcePaths,
             final Collection<OtpErlangObject> imports) {
@@ -283,8 +285,8 @@ public class ErlideOpen {
         return null;
     }
 
-    public static Collection<String> getIncludesInDir(final RpcCallSite backend,
-            final String directory) {
+    public static Collection<String> getIncludesInDir(
+            final RpcCallSite backend, final String directory) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_includes_in_dir", "s", directory);

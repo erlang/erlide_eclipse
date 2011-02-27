@@ -46,6 +46,7 @@ import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.core.services.builder.internal.BuilderVisitor;
+import org.erlide.core.services.builder.internal.ErlideBuilder;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -55,7 +56,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Sets;
 
-import erlang.ErlideBuilder;
 
 public final class BuilderHelper {
 

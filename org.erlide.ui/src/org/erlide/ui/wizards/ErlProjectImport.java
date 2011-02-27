@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.ui.wizards;
 
 import java.util.ArrayList;
 import java.util.Collection;

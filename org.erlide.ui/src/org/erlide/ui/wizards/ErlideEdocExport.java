@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package erlang;
+package org.erlide.ui.wizards;
 
 import java.util.Collection;
 import java.util.Map;

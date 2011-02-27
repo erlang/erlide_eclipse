@@ -21,12 +21,12 @@ import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlideDebug;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-import erlang.ErlideDebug;
 
 public class ErlangDebuggerBackendListener implements IBackendListener {
     public void runtimeRemoved(final Backend backend) {

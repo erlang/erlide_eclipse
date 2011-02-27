@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.ui.views.processlist;
 
 import org.erlide.core.backend.NoBackendException;
 import org.erlide.core.backend.rpc.RpcCallSite;

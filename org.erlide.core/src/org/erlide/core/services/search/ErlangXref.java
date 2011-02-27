@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
@@ -13,6 +14,7 @@ import org.erlide.jinterface.util.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+
 
 public final class ErlangXref {
 

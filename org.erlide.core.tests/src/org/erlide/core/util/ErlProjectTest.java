@@ -18,6 +18,8 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.OpenResult;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,8 +29,6 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import erlang.ErlideOpen;
-import erlang.OpenResult;
 
 public class ErlProjectTest {
 

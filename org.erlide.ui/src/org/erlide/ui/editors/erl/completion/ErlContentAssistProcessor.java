@@ -61,6 +61,9 @@ import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.codeassist.ErlideContextAssist;
+import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
+import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
@@ -79,9 +82,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import erlang.ErlideContextAssist;
-import erlang.ErlideContextAssist.RecordCompletion;
-import erlang.ErlideDoc;
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor,
         IDisposable {

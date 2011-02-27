@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ErlangToolkit;
-import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -18,6 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
+
 
 public class ErlideSearchServer {
 

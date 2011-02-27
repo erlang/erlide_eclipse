@@ -10,13 +10,13 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.common.Util;
+import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-import erlang.ErlideIndent;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will

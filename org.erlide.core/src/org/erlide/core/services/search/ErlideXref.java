@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.search;
 
 import java.util.ArrayList;
 import java.util.Collection;

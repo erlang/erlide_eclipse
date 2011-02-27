@@ -15,13 +15,13 @@ import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.util.CoreUtil;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
 
-import erlang.ErlideOpen;
-import erlang.ErlideOpen.ExternalTreeEntry;
 
 public class ErlExternalReferenceEntryList extends Openable implements
         IErlExternal {

@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlElementVisitor;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -55,7 +56,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-import erlang.FunctionRef;
 
 /**
  * Implementation of

@@ -37,12 +37,12 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
-import erlang.ErlangXref;
-import erlang.FunctionRef;
 
 public class CallHierarchyView extends ViewPart {
     Tree tree;

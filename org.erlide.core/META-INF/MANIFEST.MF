@@ -6,8 +6,7 @@ Bundle-Version: 0.10.1.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: erlang,
- org.erlide.core,
+Export-Package: org.erlide.core,
  org.erlide.core.backend,
  org.erlide.core.backend.console,
  org.erlide.core.backend.epmd,
@@ -44,7 +43,8 @@ Export-Package: erlang,
    org.osgi.framework,
    org.eclipse.core.resources,
    org.eclipse.core.runtime,
-   org.eclipse.debug.core"
+   org.eclipse.debug.core",
+ org.erlide.core.services.text
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,

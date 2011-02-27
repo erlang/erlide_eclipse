@@ -21,17 +21,17 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
 
-import erlang.ErlangXref;
-import erlang.FunctionRef;
 
 public class CallHierarchyAction extends Action {
 

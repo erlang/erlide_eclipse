@@ -21,7 +21,6 @@ import org.erlide.core.ErlangCore;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
-import erlang.FunctionRef;
 
 /**
  * Represent the root Erlang element corresponding to the workspace. Since there

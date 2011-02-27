@@ -50,25 +50,25 @@ import org.erlide.core.model.erlang.IErlElement.AcceptFlags;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.FunctionPattern;
 import org.erlide.core.services.search.IncludePattern;
 import org.erlide.core.services.search.MacroPattern;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
+import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Sets;
 
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlangSearchPattern.SearchFor;
-import erlang.OpenResult;
 
 public class SearchUtil {
 

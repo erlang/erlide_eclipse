@@ -26,13 +26,13 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
+import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-import erlang.ErlideIndent;
 
 public class ErlangTextEditorAction extends TextEditorAction {
     final protected String fErlModule;

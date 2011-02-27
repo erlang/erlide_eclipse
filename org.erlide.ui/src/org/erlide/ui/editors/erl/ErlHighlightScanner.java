@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.ErlToken;
+import org.erlide.core.services.text.ErlideScanner;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
@@ -34,7 +35,6 @@ import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
 import org.osgi.service.prefs.Preferences;
 
-import erlang.ErlideScanner;
 
 /**
  * Erlang syntax scanner

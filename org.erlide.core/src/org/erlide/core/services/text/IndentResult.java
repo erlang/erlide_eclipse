@@ -1,4 +1,4 @@
-package erlang;
+package org.erlide.core.services.text;
 
 import org.erlide.core.common.Util;
 
