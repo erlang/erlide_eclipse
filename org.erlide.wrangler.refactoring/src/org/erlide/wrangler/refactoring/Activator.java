@@ -89,7 +89,7 @@ public class Activator extends AbstractUIPlugin {
          * wranglerSrcPath); ErlangCode .addPathA(mb, wranglerAppPath);
          * ErlLogger.debug( "Wrangler path has been added." );
          * 
-         * RpcResult res = mb.call_noexception ("code", "load_file", "a",
+         * RpcResultImpl res = mb.call_noexception ("code", "load_file", "a",
          * "wrangler"); res = mb.call_noexception( "code", "load_file", "a",
          * "refac_util"); ErlLogger.debug(
          * "Wrangler's path is added to Erlang with result:" + res.isOk() +

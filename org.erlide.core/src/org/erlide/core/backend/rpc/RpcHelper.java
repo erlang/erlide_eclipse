@@ -11,6 +11,7 @@
 package org.erlide.core.backend.rpc;
 
 import org.erlide.core.backend.RpcCallback;
+import org.erlide.core.backend.internal.RpcFutureImpl;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.TypeConverter;
 
@@ -153,7 +154,7 @@ public final class RpcHelper {
      * @return
      * @throws RpcException
      */
-    public static synchronized RpcFuture sendRpcCall(final OtpNode node,
+    public static synchronized RpcFutureImpl sendRpcCall(final OtpNode node,
             final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
@@ -170,7 +171,7 @@ public final class RpcHelper {
         if (CHECK_RPC) {
             debug("RPC " + mbox.hashCode() + "=> " + res);
         }
-        return new RpcFuture(mbox, module + ":" + fun + "/" + args0.length,
+        return new RpcFutureImpl(mbox, module + ":" + fun + "/" + args0.length,
                 logCalls);
     }
 

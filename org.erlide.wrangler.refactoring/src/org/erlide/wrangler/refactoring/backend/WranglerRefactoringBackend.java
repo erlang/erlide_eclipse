@@ -107,14 +107,14 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
             final String signature, final Object... parameters) {
         /*
          * ErlLogger .info("Wrangler call: " + makeLogStr(functionName,
-         * parameters)); RpcResult res = backend.call_noexception(MODULE,
+         * parameters)); RpcResultImpl res = backend.call_noexception(MODULE,
          * functionName, signature, parameters);
          */
         return callWithoutParser(-1, functionName, signature, parameters);
     }
 
     /**
-     * Send an RPC without using any RpcResult parser
+     * Send an RPC without using any RpcResultImpl parser
      * 
      * @param timeout
      *            timeout for the RPC
@@ -124,7 +124,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            signature for the parameters
      * @param parameters
      *            parameters
-     * @return RpcResult object
+     * @return RpcResultImpl object
      */
     public RpcResult callWithoutParser(final int timeout,
             final String functionName, final String signature,
@@ -184,7 +184,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            signature
      * @param parameters
      *            function parameters
-     * @return RpcResult wrapped result
+     * @return RpcResultImpl wrapped result
      */
     public RpcResult callInspection(final String functionName,
             final String signature, final Object... parameters) {

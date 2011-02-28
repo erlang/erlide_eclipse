@@ -34,7 +34,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.backend.internal.RpcFutureImpl;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.internal.BuildNotifier;
 import org.erlide.core.services.builder.internal.BuilderMessages;
@@ -155,7 +155,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                 backend.addProjectPath(project);
 
                 notifier.setProgressPerCompilationUnit(1.0f / n);
-                final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
+                final Map<RpcFutureImpl, IResource> results = new HashMap<RpcFutureImpl, IResource>();
                 for (final BuildResource bres : resourcesToBuild) {
                     notifier.checkCancel();
                     final IResource resource = bres.getResource();
@@ -163,14 +163,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     if ("erl".equals(resource.getFileExtension())) {
                         final String outputDir = erlProject.getOutputLocation()
                                 .toString();
-                        final RpcFuture f = helper.startCompileErl(project,
+                        final RpcFutureImpl f = helper.startCompileErl(project,
                                 bres, outputDir, backend, compilerOptions,
                                 kind == IncrementalProjectBuilder.FULL_BUILD);
                         if (f != null) {
                             results.put(f, resource);
                         }
                     } else if ("yrl".equals(resource.getFileExtension())) {
-                        final RpcFuture f = helper.startCompileYrl(project,
+                        final RpcFutureImpl f = helper.startCompileYrl(project,
                                 resource, backend, compilerOptions);
                         if (f != null) {
                             results.put(f, resource);
@@ -181,13 +181,13 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                     }
                 }
 
-                final List<Entry<RpcFuture, IResource>> done = new ArrayList<Entry<RpcFuture, IResource>>();
-                final List<Entry<RpcFuture, IResource>> waiting = new ArrayList<Entry<RpcFuture, IResource>>(
+                final List<Entry<RpcFutureImpl, IResource>> done = new ArrayList<Entry<RpcFutureImpl, IResource>>();
+                final List<Entry<RpcFutureImpl, IResource>> waiting = new ArrayList<Entry<RpcFutureImpl, IResource>>(
                         results.entrySet());
 
                 // TODO should use some kind of notification!
                 while (waiting.size() > 0) {
-                    for (final Entry<RpcFuture, IResource> result : waiting) {
+                    for (final Entry<RpcFutureImpl, IResource> result : waiting) {
                         notifier.checkCancel();
                         OtpErlangObject r;
                         try {

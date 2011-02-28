@@ -37,8 +37,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.rpc.RpcException;
+import org.erlide.core.backend.internal.RpcFutureImpl;
 import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.common.ModuleKind;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
@@ -446,7 +447,7 @@ public final class BuilderHelper {
         }
     }
 
-    public RpcFuture startCompileErl(final IProject project,
+    public RpcFutureImpl startCompileErl(final IProject project,
             final BuildResource bres, final String outputDir0,
             final RpcCallSite backend, final OtpErlangList compilerOptions,
             final boolean force) {
@@ -538,7 +539,7 @@ public final class BuilderHelper {
         return beamPath;
     }
 
-    public RpcFuture startCompileYrl(final IProject project,
+    public RpcFutureImpl startCompileYrl(final IProject project,
             final IResource resource, final RpcCallSite backend,
             final OtpErlangList compilerOptions) {
         // final IPath projectPath = project.getLocation();

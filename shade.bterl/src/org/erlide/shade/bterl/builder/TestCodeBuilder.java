@@ -29,7 +29,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.backend.internal.RpcFutureImpl;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
@@ -135,7 +135,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Set<BuildResource> resourcesToBuild,
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
-            final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
+            final Map<RpcFutureImpl, IResource> results = new HashMap<RpcFutureImpl, IResource>();
             RpcCallSite backend;
             try {
                 backend = ErlangCore.getBackendManager().getBuildBackend(
@@ -169,19 +169,19 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                             + resource.getFullPath().toString() + " :: "
                             + outputDir + " -- " + compilerOptions);
                 }
-                final RpcFuture f = helper.startCompileErl(project, bres,
+                final RpcFutureImpl f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
                     results.put(f, resource);
                 }
             }
-            final List<Entry<RpcFuture, IResource>> done = Lists.newArrayList();
-            final List<Entry<RpcFuture, IResource>> waiting = Lists
+            final List<Entry<RpcFutureImpl, IResource>> done = Lists.newArrayList();
+            final List<Entry<RpcFutureImpl, IResource>> waiting = Lists
                     .newArrayList(results.entrySet());
 
             // TODO should use some kind of notification!
             while (waiting.size() > 0) {
-                for (final Entry<RpcFuture, IResource> entry : waiting) {
+                for (final Entry<RpcFutureImpl, IResource> entry : waiting) {
                     if (monitor.isCanceled()) {
                         return;
                     }

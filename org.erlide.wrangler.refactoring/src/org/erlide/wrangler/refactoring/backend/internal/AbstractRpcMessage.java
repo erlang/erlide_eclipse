@@ -19,7 +19,7 @@ import org.erlide.wrangler.refactoring.exception.WranglerException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * Abstract class for parsing RpcResult objects
+ * Abstract class for parsing RpcResultImpl objects
  * 
  * @author Gyorgy Orosz
  * @version %I%, %G%
