@@ -25,12 +25,15 @@ public class SaveAction extends Action {
 
     public static final String DIR_NAME = "cover_stats";
 
-    private Logger log; // logger
+    private Logger log = Logger.getLogger(getClass()); // logger
+    
 
     @Override
     public void run() {
 
         StringBuilder statName = new StringBuilder();
+        statName.append("cov_").append(
+                StatsTreeModel.getInstance().getTimestamp());
 
         IPath location = Activator.getDefault().getStateLocation()
                 .append(DIR_NAME);

@@ -1,13 +1,17 @@
 package org.erlide.cover.views.model;
 
+import java.io.Serializable;
+
 /**
  * Line coverage results
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * 
  */
-public class LineResult implements Comparable<LineResult> {
+public class LineResult implements Comparable<LineResult>, Serializable {
 
+    private static final long serialVersionUID = 1L;
+   
     private final int lineNum;
     private final int lineCalls;
 

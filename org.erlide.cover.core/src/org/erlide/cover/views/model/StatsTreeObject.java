@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public class StatsTreeObject implements ICoverageObject {
 
+    private static final long serialVersionUID = 1L;
+
     private ObjectType type;
 
     private String label; // name

@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class ModuleStats extends StatsTreeObject {
 
+    private static final long serialVersionUID = 1L;
+
     private final List<LineResult> lineResults = 
     	new LinkedList<LineResult>(); 	// results per line
     
@@ -26,6 +28,7 @@ public class ModuleStats extends StatsTreeObject {
         lineResults.add(lr);
     }
     
+    @Override
     public void addChild(final String name, final IStatsTreeObject child) {
     	
     	super.addChild(name, child);

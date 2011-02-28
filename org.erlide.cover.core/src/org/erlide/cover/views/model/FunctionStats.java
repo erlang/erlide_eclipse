@@ -17,6 +17,8 @@ import org.erlide.core.erlang.util.ErlangFunction;
  */
 public class FunctionStats extends StatsTreeObject {
 
+    private static final long serialVersionUID = 1L;
+
     private int arity; 		// function arity
     private int lineStart;  // first line of the function
     private int lineEnd;	// last line of the function
@@ -51,9 +53,6 @@ public class FunctionStats extends StatsTreeObject {
     	
     	if(lineEnd != 0)
     		return lineEnd;
-    	
-    	String mName = ((StatsTreeObject)getParent()).getLabel();
-    	IErlModule m = ErlangCore.getModel().findModule(mName);
     	
     	List<Integer> numList = new LinkedList<Integer>();
     	for(IStatsTreeObject obj : getParent().getChildren()) {
