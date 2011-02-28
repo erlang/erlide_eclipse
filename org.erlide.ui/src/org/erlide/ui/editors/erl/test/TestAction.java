@@ -11,7 +11,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
+import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.core.services.text.ErlideScanner;
 import org.erlide.jinterface.util.ErlLogger;
 

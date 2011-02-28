@@ -38,8 +38,8 @@ import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.services.launching.ErlangLaunchDelegate;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
 import org.osgi.framework.Bundle;
 
@@ -66,7 +66,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         try {
             BTERL_WATCHER_INIT_DEBUGGER = (OtpErlangTuple) TermParser
                     .getParser().parse("{bterl_watcher, init_debugger}");
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
         }
     }
 
@@ -306,7 +306,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final String args2 = ErlUtils.format("{~x,~s,~x,~x,~s}", e_flags,
                     cmd, trace, cb, workdirPath).toString();
             wc.setAttribute(ErlLaunchAttributes.ARGUMENTS, args2);
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final SignatureException e) {

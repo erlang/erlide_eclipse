@@ -16,7 +16,6 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
@@ -28,7 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-
 
 public class ErlProjectTest {
 
@@ -185,10 +183,10 @@ public class ErlProjectTest {
         moduleE.open(null);
         // when
         // looking for lists:reverse/2 and lists:reverse/1
-        final RpcCallSite backend = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite backend = ErlangCore.getBackendManager()
+                .getIdeBackend();
         final IErlModel model = ErlangCore.getModel();
-        final OpenResult res = ErlideOpen.open(backend,
-                ErlangToolkit.createScannerModuleName(moduleE), 49,
+        final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
                 ModelUtils.getImportsAsList(moduleE),
                 project.getExternalModulesString(), model.getPathVars());
         final IErlElement function = ModelUtils.findFunction(res.getName(),

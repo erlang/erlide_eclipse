@@ -35,7 +35,6 @@ import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.util.ErlangFunction;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
@@ -47,7 +46,6 @@ import org.erlide.ui.util.ErlModelUtils;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
-
 
 /**
  * This action opens a Erlang editor on a Erlang element or file.
@@ -145,8 +143,7 @@ public class OpenAction extends SelectionDispatchAction {
         try {
             final IErlProject erlProject = module.getErlProject();
             final IErlModel model = ErlangCore.getModel();
-            final OpenResult res = ErlideOpen.open(b,
-                    ErlangToolkit.createScannerModuleName(module), offset,
+            final OpenResult res = ErlideOpen.open(b, module, offset,
                     ModelUtils.getImportsAsList(module),
                     erlProject.getExternalModulesString(), model.getPathVars());
             ErlLogger.debug("open " + res);

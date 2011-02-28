@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -35,7 +36,7 @@ public class TermParser {
         return new TermParser();
     }
 
-    public OtpErlangObject parse(final String s) throws ParserException {
+    public OtpErlangObject parse(final String s) throws TermParserException {
         OtpErlangObject value = cache.get(s);
         if (value == null) {
             value = parse(scan(s));
@@ -45,7 +46,7 @@ public class TermParser {
     }
 
     private static OtpErlangObject parse(final List<Token> tokens)
-            throws ParserException {
+            throws TermParserException {
         if (tokens.size() == 0) {
             return null;
         }
@@ -71,23 +72,23 @@ public class TermParser {
             result = parseTuple(tokens, new Stack<OtpErlangObject>());
             break;
         case TUPLEEND:
-            throw new ParserException("unexpected " + t.toString());
+            throw new TermParserException("unexpected " + t.toString());
         case LISTSTART:
             result = parseList(tokens, new Stack<OtpErlangObject>(), null);
             break;
         case LISTEND:
-            throw new ParserException("unexpected " + t.toString());
+            throw new TermParserException("unexpected " + t.toString());
         case COMMA:
-            throw new ParserException("unexpected " + t.toString());
+            throw new TermParserException("unexpected " + t.toString());
         default:
-            throw new ParserException("unknown token" + t.toString());
+            throw new TermParserException("unknown token" + t.toString());
         }
         return result;
     }
 
     private static OtpErlangObject parseList(final List<Token> tokens,
             final Stack<OtpErlangObject> stack, final OtpErlangObject tail)
-            throws ParserException {
+            throws TermParserException {
         if (tokens.size() == 0) {
             return null;
         }
@@ -118,7 +119,7 @@ public class TermParser {
     }
 
     private static OtpErlangObject parseTuple(final List<Token> tokens,
-            final Stack<OtpErlangObject> stack) throws ParserException {
+            final Stack<OtpErlangObject> stack) throws TermParserException {
         if (tokens.size() == 0) {
             return null;
         }
@@ -128,7 +129,7 @@ public class TermParser {
             return new OtpErlangTuple(stack.toArray(new OtpErlangObject[0]));
         } else {
             if (t.kind == TokenKind.CONS) {
-                throw new ParserException("cons is invalid in tuple");
+                throw new TermParserException("cons is invalid in tuple");
             } else {
                 stack.push(parse(tokens));
                 if (tokens.get(0).kind == TokenKind.COMMA) {

@@ -5,8 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -27,7 +27,7 @@ public class RpcSteps {
 
     @When("a rpc is done with args $m:$f($a)")
     public void aRpcIsDoneWith(final String m, final String f, final String a)
-            throws BackendException, ParserException {
+            throws BackendException, TermParserException {
         System.out.println("WHEN " + m + ":" + f + " " + a);
         final OtpErlangObject args = termParser.parse(a);
         final String sig = "x";
@@ -35,7 +35,7 @@ public class RpcSteps {
     }
 
     @Then("the result should be $value")
-    public void theResultShouldBe(final String value) throws ParserException {
+    public void theResultShouldBe(final String value) throws TermParserException {
         System.out.println("THEN " + value + " expect " + value);
         final OtpErlangObject v = termParser.parse(value);
         assertThat("ok", result.equals(v));

@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IResource;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
+import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

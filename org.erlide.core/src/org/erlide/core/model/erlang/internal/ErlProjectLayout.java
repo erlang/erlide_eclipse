@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.Bindings;
-import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.util.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -47,7 +47,7 @@ public class ErlProjectLayout {
     }
 
     public ErlProjectLayout(final OtpErlangObject layout)
-            throws ParserException, OtpErlangException {
+            throws TermParserException, OtpErlangException {
         final Bindings b = ErlUtils.match("{layout,S,I,E,D,P}", layout);
         final Collection<OtpErlangObject> s = b.getList("S");
         final Collection<OtpErlangObject> i = b.getList("I");
@@ -200,7 +200,7 @@ public class ErlProjectLayout {
                 final String v = b.getAtom("V");
                 final String path = b.getString("P");
                 return new Path(v).append(new Path(path));
-            } catch (final ParserException e) {
+            } catch (final TermParserException e) {
                 return null;
             }
         }

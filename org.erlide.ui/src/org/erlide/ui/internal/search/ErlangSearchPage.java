@@ -44,21 +44,19 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
-import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 import com.google.common.collect.Lists;
-
 
 public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
@@ -614,9 +612,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                     final int offset = textSel.getOffset();
                     OpenResult res;
                     try {
-                        final String scannerModuleName = ErlangToolkit
-                                .createScannerModuleName(module);
-                        res = ErlideOpen.open(b, scannerModuleName, offset,
+                        res = ErlideOpen.open(b, module, offset,
                                 ModelUtils.getImportsAsList(module), "",
                                 ErlangCore.getModel().getPathVars());
                     } catch (final BackendException e) {

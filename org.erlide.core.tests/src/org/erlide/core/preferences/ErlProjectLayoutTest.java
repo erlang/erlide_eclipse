@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.model.erlang.internal.ErlProjectLayout;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.util.TermParserException;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +36,7 @@ public class ErlProjectLayoutTest {
     }
 
     @Test
-    public void checkOtpLayout() throws ParserException {
+    public void checkOtpLayout() throws TermParserException {
         final OtpErlangObject expected = ErlUtils
                 .parse("{layout,[\"src\"],[\"include\"],"
                         + "\"ebin\",[\"doc\"],\"priv\"}");
@@ -45,7 +45,7 @@ public class ErlProjectLayoutTest {
 
     @Test
     public void shouldConvertfromTermAndBack() throws OtpErlangException,
-            ParserException {
+            TermParserException {
         final ErlProjectLayout layout = new ErlProjectLayout(input);
         assertEquals("convert from term and back", input, layout.asTerm());
     }

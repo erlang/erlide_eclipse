@@ -29,7 +29,7 @@ import org.erlide.core.services.text.ErlideNoparse;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.Bindings;
-import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.util.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -81,7 +81,7 @@ public final class ErlParser {
             Bindings bindings = null;
             try {
                 bindings = ErlUtils.match("{ok, {_, Forms, Comments}, _}", res);
-            } catch (final ParserException e) {
+            } catch (final TermParserException e) {
                 e.printStackTrace();
             }
             if (bindings != null) {

@@ -12,6 +12,7 @@ package org.erlide.jinterface.util;
 
 import java.util.Collection;
 
+
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -207,7 +208,7 @@ public class IOServer implements Runnable {
             } else {
                 return error;
             }
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
             e.printStackTrace();
         } catch (final OtpErlangException e) {
             e.printStackTrace();

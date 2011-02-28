@@ -17,7 +17,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.Bindings;
-import org.erlide.jinterface.util.ParserException;
+import org.erlide.jinterface.util.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -88,7 +88,7 @@ public class ResultsView extends ViewPart {
                     handleEvent(msg);
                     treeViewer.refresh();
                     control.update();
-                } catch (final ParserException e) {
+                } catch (final TermParserException e) {
                     e.printStackTrace();
                 } catch (final OtpErlangException e) {
                     // TODO Auto-generated catch block
@@ -99,7 +99,7 @@ public class ResultsView extends ViewPart {
         });
     }
 
-    private void handleEvent(final OtpErlangObject msg) throws ParserException,
+    private void handleEvent(final OtpErlangObject msg) throws TermParserException,
             OtpErlangException {
         final OtpErlangTuple tuple = (OtpErlangTuple) msg;
         final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();

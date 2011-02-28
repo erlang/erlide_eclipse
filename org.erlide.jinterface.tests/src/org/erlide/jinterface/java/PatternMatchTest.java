@@ -13,8 +13,8 @@ import junit.framework.Assert;
 
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.Bindings;
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.erlide.jinterface.util.internal.BindingsImpl;
 import org.junit.Test;
 
@@ -164,7 +164,7 @@ public class PatternMatchTest {
         Assert.assertNull(r);
     }
 
-    @Test(expected = ParserException.class)
+    @Test(expected = TermParserException.class)
     public void testMatch_ellipsis_5() throws Exception {
         ErlUtils.match("[X | Y, Z]", "[x,y,z]");
     }

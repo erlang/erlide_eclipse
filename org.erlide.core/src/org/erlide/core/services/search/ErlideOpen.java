@@ -10,6 +10,8 @@ import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -19,7 +21,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
-
 
 public class ErlideOpen {
 
@@ -46,13 +47,14 @@ public class ErlideOpen {
 
     @SuppressWarnings("boxing")
     public static OpenResult open(final RpcCallSite backend,
-            final String scannerName, final int offset,
+            final IErlModule module, final int offset,
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws BackendException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<String> extra = getExtraSourcePaths();
+        final String scanner = ErlangToolkit.createScannerModuleName(module);
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
-                scannerName, offset,
+                scanner, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
         // ErlLogger.debug(">>>> " + res);
         return new OpenResult(res);

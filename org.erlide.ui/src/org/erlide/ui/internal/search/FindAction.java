@@ -37,13 +37,12 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -51,7 +50,6 @@ import org.erlide.ui.internal.ExceptionHandler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 /**
  * Abstract class for Java search actions.
@@ -227,10 +225,8 @@ public abstract class FindAction extends SelectionDispatchAction {
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();
         try {
-            final String scannerModuleName = ErlangToolkit
-                    .createScannerModuleName(module);
-            final OpenResult res = ErlideOpen.open(b, scannerModuleName,
-                    offset, ModelUtils.getImportsAsList(module), "", ErlangCore
+            final OpenResult res = ErlideOpen.open(b, module, offset,
+                    ModelUtils.getImportsAsList(module), "", ErlangCore
                             .getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil

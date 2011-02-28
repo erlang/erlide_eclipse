@@ -121,14 +121,13 @@ import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.erlang.util.ErlangToolkit;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -159,7 +158,6 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
-
 
 /**
  * The actual editor itself
@@ -2196,8 +2194,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
-            final String scannerModuleName = ErlangToolkit
-                    .createScannerModuleName(theModule);
             final ErlideBackend ideBackend = ErlangCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
@@ -2207,10 +2203,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             }
             try {
                 final int offset = selection.getOffset();
-                final OpenResult res = ErlideOpen.open(ideBackend,
-                        scannerModuleName, offset, ModelUtils
-                                .getImportsAsList(theModule), "", ErlangCore
-                                .getModel().getPathVars());
+                final OpenResult res = ErlideOpen.open(ideBackend, theModule,
+                        offset, ModelUtils.getImportsAsList(theModule), "",
+                        ErlangCore.getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);
