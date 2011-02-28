@@ -84,7 +84,7 @@ public class IOServer implements Runnable {
         if (callback == null) {
             return error;
         }
-        IBindings b;
+        Bindings b;
         try {
             if (arequest instanceof OtpErlangTuple) {
                 final OtpErlangTuple request = (OtpErlangTuple) arequest;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
-import org.erlide.core.backend.internal.RpcFutureImpl;
+import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcResult;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -32,7 +32,7 @@ public interface RpcCallSite {
     RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args);
 
-    RpcFutureImpl async_call(final String m, final String f,
+    RpcFuture async_call(final String m, final String f,
             final String signature, final Object... args)
             throws BackendException;
 

@@ -37,9 +37,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.internal.RpcFutureImpl;
-import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcException;
+import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.common.ModuleKind;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
@@ -56,7 +55,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Sets;
-
 
 public final class BuilderHelper {
 
@@ -175,7 +173,8 @@ public final class BuilderHelper {
         return result;
     }
 
-    public void checkForClashes(final RpcCallSite backend, final IProject project) {
+    public void checkForClashes(final RpcCallSite backend,
+            final IProject project) {
         try {
             final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
             for (final OtpErlangObject elem : res.elements()) {
@@ -447,7 +446,7 @@ public final class BuilderHelper {
         }
     }
 
-    public RpcFutureImpl startCompileErl(final IProject project,
+    public RpcFuture startCompileErl(final IProject project,
             final BuildResource bres, final String outputDir0,
             final RpcCallSite backend, final OtpErlangList compilerOptions,
             final boolean force) {
@@ -539,7 +538,7 @@ public final class BuilderHelper {
         return beamPath;
     }
 
-    public RpcFutureImpl startCompileYrl(final IProject project,
+    public RpcFuture startCompileYrl(final IProject project,
             final IResource resource, final RpcCallSite backend,
             final OtpErlangList compilerOptions) {
         // final IPath projectPath = project.getLocation();

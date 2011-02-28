@@ -7,7 +7,7 @@ import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.SignatureException;
 
-public interface IBindings {
+public interface Bindings {
 
     public abstract OtpErlangObject get(final String name);
 

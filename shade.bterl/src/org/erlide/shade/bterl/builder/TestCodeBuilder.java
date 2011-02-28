@@ -2,7 +2,6 @@ package org.erlide.shade.bterl.builder;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,7 +28,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.internal.RpcFutureImpl;
+import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
@@ -41,6 +40,7 @@ import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class TestCodeBuilder extends IncrementalProjectBuilder {
@@ -135,7 +135,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Set<BuildResource> resourcesToBuild,
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
-            final Map<RpcFutureImpl, IResource> results = new HashMap<RpcFutureImpl, IResource>();
+            final Map<RpcFuture, IResource> results = Maps.newHashMap();
             RpcCallSite backend;
             try {
                 backend = ErlangCore.getBackendManager().getBuildBackend(
@@ -169,19 +169,19 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                             + resource.getFullPath().toString() + " :: "
                             + outputDir + " -- " + compilerOptions);
                 }
-                final RpcFutureImpl f = helper.startCompileErl(project, bres,
+                final RpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
                     results.put(f, resource);
                 }
             }
-            final List<Entry<RpcFutureImpl, IResource>> done = Lists.newArrayList();
-            final List<Entry<RpcFutureImpl, IResource>> waiting = Lists
+            final List<Entry<RpcFuture, IResource>> done = Lists.newArrayList();
+            final List<Entry<RpcFuture, IResource>> waiting = Lists
                     .newArrayList(results.entrySet());
 
             // TODO should use some kind of notification!
             while (waiting.size() > 0) {
-                for (final Entry<RpcFutureImpl, IResource> entry : waiting) {
+                for (final Entry<RpcFuture, IResource> entry : waiting) {
                     if (monitor.isCanceled()) {
                         return;
                     }

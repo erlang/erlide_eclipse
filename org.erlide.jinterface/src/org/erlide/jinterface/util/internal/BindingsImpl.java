@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.erlide.jinterface.util.IBindings;
+import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -28,20 +28,20 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
-public final class Bindings implements IBindings {
+public final class BindingsImpl implements Bindings {
 
     private final Map<String, OtpErlangObject> bindings;
 
-    public Bindings() {
+    public BindingsImpl() {
         bindings = new HashMap<String, OtpErlangObject>();
     }
 
-    public Bindings(final IBindings binds) {
+    public BindingsImpl(final Bindings binds) {
         this();
         merge(binds);
     }
 
-    public void merge(final IBindings binds) {
+    public void merge(final Bindings binds) {
         bindings.putAll(binds.getAll());
     }
 

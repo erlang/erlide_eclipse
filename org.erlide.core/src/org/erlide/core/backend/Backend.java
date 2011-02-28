@@ -18,10 +18,9 @@ import java.util.HashMap;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.internal.RpcFutureImpl;
 import org.erlide.core.backend.internal.RpcResultImpl;
-import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcException;
+import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcHelper;
 import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtime.RuntimeInfo;
@@ -116,7 +115,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         }
     }
 
-    public RpcFutureImpl async_call(final String m, final String f,
+    public RpcFuture async_call(final String m, final String f,
             final String signature, final Object... args)
             throws BackendException {
         try {
@@ -392,7 +391,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         return stopped;
     }
 
-    private RpcFutureImpl makeAsyncCall(final OtpErlangObject gleader,
+    private RpcFuture makeAsyncCall(final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         checkAvailability();
@@ -400,7 +399,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
                 gleader, module, fun, signature, args0);
     }
 
-    protected RpcFutureImpl makeAsyncCall(final String module, final String fun,
+    protected RpcFuture makeAsyncCall(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException,
             SignatureException {
         return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,

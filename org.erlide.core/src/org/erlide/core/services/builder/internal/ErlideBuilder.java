@@ -10,7 +10,7 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendManager;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.internal.RpcFutureImpl;
+import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.jinterface.util.ErlLogger;
 
@@ -20,8 +20,9 @@ import com.google.common.collect.Lists;
 
 public class ErlideBuilder {
 
-    public static RpcFutureImpl compileErl(final RpcCallSite backend, final IPath fn,
-            final String outputdir, final Collection<IPath> includedirs,
+    public static RpcFuture compileErl(final RpcCallSite backend,
+            final IPath fn, final String outputdir,
+            final Collection<IPath> includedirs,
             final OtpErlangList compilerOptions) {
         final List<String> incs = Lists.newArrayList();
         for (final IPath p : includedirs) {
@@ -75,8 +76,8 @@ public class ErlideBuilder {
         }
     }
 
-    public static RpcFutureImpl compileYrl(final RpcCallSite backend, final String fn,
-            final String output) {
+    public static RpcFuture compileYrl(final RpcCallSite backend,
+            final String fn, final String output) {
         try {
             return backend.async_call("erlide_builder", "compile_yrl", "ss",
                     fn, output);

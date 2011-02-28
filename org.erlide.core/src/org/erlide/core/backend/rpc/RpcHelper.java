@@ -154,7 +154,7 @@ public final class RpcHelper {
      * @return
      * @throws RpcException
      */
-    public static synchronized RpcFutureImpl sendRpcCall(final OtpNode node,
+    public static synchronized RpcFuture sendRpcCall(final OtpNode node,
             final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)

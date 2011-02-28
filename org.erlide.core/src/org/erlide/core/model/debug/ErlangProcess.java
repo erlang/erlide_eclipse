@@ -202,7 +202,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
             return;
         }
         OtpErlangObject savedStackTrace = null;
-        // Bindings b = ErlUtils.match("{ST:t, F:l, }", stackAndBindings);
+        // BindingsImpl b = ErlUtils.match("{ST:t, F:l, }", stackAndBindings);
         OtpErlangObject el0 = stackAndBindings.elementAt(0);
         if (el0 instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) el0;

@@ -28,7 +28,7 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.services.text.ErlideNoparse;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.IBindings;
+import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -78,7 +78,7 @@ public final class ErlParser {
             res = ErlideNoparse.reparse(b, scannerName);
         }
         if (Util.isOk(res)) {
-            IBindings bindings = null;
+            Bindings bindings = null;
             try {
                 bindings = ErlUtils.match("{ok, {_, Forms, Comments}, _}", res);
             } catch (final ParserException e) {

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.erlide.jinterface.util.internal.Bindings;
+import org.erlide.jinterface.util.internal.BindingsImpl;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -62,35 +62,35 @@ public final class ErlUtils {
         return result;
     }
 
-    public static IBindings match(final String pattern, final String term)
+    public static Bindings match(final String pattern, final String term)
             throws ParserException {
-        return match(parse(pattern), parse(term), new Bindings());
+        return match(parse(pattern), parse(term), new BindingsImpl());
     }
 
-    public static IBindings match(final String pattern,
+    public static Bindings match(final String pattern,
             final OtpErlangObject term) throws ParserException {
-        return match(parse(pattern), term, new Bindings());
+        return match(parse(pattern), term, new BindingsImpl());
     }
 
-    public static IBindings match(final String pattern,
-            final OtpErlangObject term, final IBindings bindings)
+    public static Bindings match(final String pattern,
+            final OtpErlangObject term, final Bindings bindings)
             throws ParserException {
         return match(parse(pattern), term, bindings);
     }
 
-    public static IBindings match(final String pattern, final String term,
-            final IBindings bindings) throws ParserException {
+    public static Bindings match(final String pattern, final String term,
+            final Bindings bindings) throws ParserException {
         return match(parse(pattern), parse(term), bindings);
     }
 
-    public static IBindings match(final OtpErlangObject pattern,
+    public static Bindings match(final OtpErlangObject pattern,
             final OtpErlangObject term) {
-        return match(pattern, term, new Bindings());
+        return match(pattern, term, new BindingsImpl());
     }
 
-    public static IBindings match(final OtpErlangObject pattern,
+    public static Bindings match(final OtpErlangObject pattern,
             final String term) throws ParserException {
-        return match(pattern, parse(term), new Bindings());
+        return match(pattern, parse(term), new BindingsImpl());
     }
 
     /**
@@ -109,8 +109,8 @@ public final class ErlUtils {
      * TODO should we throw an exception instead?
      * 
      */
-    public static IBindings match(final OtpErlangObject pattern,
-            final OtpErlangObject term, final IBindings bindings) {
+    public static Bindings match(final OtpErlangObject pattern,
+            final OtpErlangObject term, final Bindings bindings) {
         if (pattern == null && term == null) {
             return bindings;
         }
@@ -125,7 +125,7 @@ public final class ErlUtils {
             if (var.getName().equals("_")) {
                 return bindings;
             }
-            final IBindings result = new Bindings(bindings);
+            final Bindings result = new BindingsImpl(bindings);
             final OtpErlangObject old = bindings.get(var.getName());
             if (old == null) {
                 // no previous binding
@@ -150,8 +150,8 @@ public final class ErlUtils {
         return null;
     }
 
-    private static IBindings matchList(final OtpErlangObject pattern,
-            final OtpErlangObject term, final IBindings bindings) {
+    private static Bindings matchList(final OtpErlangObject pattern,
+            final OtpErlangObject term, final Bindings bindings) {
         final OtpErlangList lpattern = (OtpErlangList) pattern;
         final OtpErlangList lterm = (OtpErlangList) term;
         final int patternArity = lpattern.arity();
@@ -166,7 +166,7 @@ public final class ErlUtils {
                 && lpattern.isProper() != lterm.isProper()) {
             return null;
         }
-        IBindings rez = bindings;
+        Bindings rez = bindings;
         for (int i = 0; i < patternArity; i++) {
             rez = match(lpattern.elementAt(i), lterm.elementAt(i), rez);
             if (rez == null) {
@@ -223,13 +223,13 @@ public final class ErlUtils {
         }
     }
 
-    private static IBindings matchTuple(final OtpErlangObject[] patterns,
-            final OtpErlangObject[] terms, final IBindings bindings,
+    private static Bindings matchTuple(final OtpErlangObject[] patterns,
+            final OtpErlangObject[] terms, final Bindings bindings,
             final boolean list) {
         if (patterns.length != terms.length) {
             return null;
         }
-        IBindings result = new Bindings(bindings);
+        Bindings result = new BindingsImpl(bindings);
         for (int i = 0; i < patterns.length; i++) {
             result = match(patterns[i], terms[i], result);
             if (result == null) {
