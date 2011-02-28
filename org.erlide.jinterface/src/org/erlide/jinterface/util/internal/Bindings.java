@@ -36,13 +36,13 @@ public final class Bindings implements IBindings {
         bindings = new HashMap<String, OtpErlangObject>();
     }
 
-    public Bindings(final Bindings other) {
+    public Bindings(final IBindings binds) {
         this();
-        merge(other);
+        merge(binds);
     }
 
-    public void merge(final Bindings other) {
-        bindings.putAll(other.bindings);
+    public void merge(final IBindings binds) {
+        bindings.putAll(binds.getAll());
     }
 
     public OtpErlangObject get(final String name) {

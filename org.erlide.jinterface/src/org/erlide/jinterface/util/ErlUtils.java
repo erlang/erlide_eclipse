@@ -62,24 +62,24 @@ public final class ErlUtils {
         return result;
     }
 
-    public static Bindings match(final String pattern, final String term)
+    public static IBindings match(final String pattern, final String term)
             throws ParserException {
         return match(parse(pattern), parse(term), new Bindings());
     }
 
-    public static Bindings match(final String pattern,
+    public static IBindings match(final String pattern,
             final OtpErlangObject term) throws ParserException {
         return match(parse(pattern), term, new Bindings());
     }
 
     public static IBindings match(final String pattern,
-            final OtpErlangObject term, final Bindings bindings)
+            final OtpErlangObject term, final IBindings bindings)
             throws ParserException {
         return match(parse(pattern), term, bindings);
     }
 
     public static IBindings match(final String pattern, final String term,
-            final Bindings bindings) throws ParserException {
+            final IBindings bindings) throws ParserException {
         return match(parse(pattern), parse(term), bindings);
     }
 
@@ -109,8 +109,8 @@ public final class ErlUtils {
      * TODO should we throw an exception instead?
      * 
      */
-    public static Bindings match(final OtpErlangObject pattern,
-            final OtpErlangObject term, final Bindings bindings) {
+    public static IBindings match(final OtpErlangObject pattern,
+            final OtpErlangObject term, final IBindings bindings) {
         if (pattern == null && term == null) {
             return bindings;
         }
@@ -125,7 +125,7 @@ public final class ErlUtils {
             if (var.getName().equals("_")) {
                 return bindings;
             }
-            final Bindings result = new Bindings(bindings);
+            final IBindings result = new Bindings(bindings);
             final OtpErlangObject old = bindings.get(var.getName());
             if (old == null) {
                 // no previous binding
@@ -150,8 +150,8 @@ public final class ErlUtils {
         return null;
     }
 
-    private static Bindings matchList(final OtpErlangObject pattern,
-            final OtpErlangObject term, final Bindings bindings) {
+    private static IBindings matchList(final OtpErlangObject pattern,
+            final OtpErlangObject term, final IBindings bindings) {
         final OtpErlangList lpattern = (OtpErlangList) pattern;
         final OtpErlangList lterm = (OtpErlangList) term;
         final int patternArity = lpattern.arity();
@@ -166,7 +166,7 @@ public final class ErlUtils {
                 && lpattern.isProper() != lterm.isProper()) {
             return null;
         }
-        Bindings rez = bindings;
+        IBindings rez = bindings;
         for (int i = 0; i < patternArity; i++) {
             rez = match(lpattern.elementAt(i), lterm.elementAt(i), rez);
             if (rez == null) {
@@ -223,13 +223,13 @@ public final class ErlUtils {
         }
     }
 
-    private static Bindings matchTuple(final OtpErlangObject[] patterns,
-            final OtpErlangObject[] terms, final Bindings bindings,
+    private static IBindings matchTuple(final OtpErlangObject[] patterns,
+            final OtpErlangObject[] terms, final IBindings bindings,
             final boolean list) {
         if (patterns.length != terms.length) {
             return null;
         }
-        Bindings result = new Bindings(bindings);
+        IBindings result = new Bindings(bindings);
         for (int i = 0; i < patterns.length; i++) {
             result = match(patterns[i], terms[i], result);
             if (result == null) {

@@ -3,15 +3,11 @@ package org.erlide.jinterface.util;
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.jinterface.util.internal.Bindings;
-
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.SignatureException;
 
 public interface IBindings {
-
-    public abstract void merge(final Bindings other);
 
     public abstract OtpErlangObject get(final String name);
 
