@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *******************************************************************************/
 
-package org.erlide.core.model.erlang;
+package org.erlide.core.services.text;
 
 import org.erlide.jinterface.util.ErlLogger;
 

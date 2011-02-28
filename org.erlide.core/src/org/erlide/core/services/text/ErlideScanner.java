@@ -8,7 +8,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Assert;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 

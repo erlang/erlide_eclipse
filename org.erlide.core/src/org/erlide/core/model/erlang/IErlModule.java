@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.common.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
+import org.erlide.core.services.text.ErlToken;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or

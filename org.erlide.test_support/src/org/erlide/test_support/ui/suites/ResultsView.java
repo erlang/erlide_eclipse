@@ -15,8 +15,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.IBindings;
 import org.erlide.jinterface.util.ParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -116,14 +116,14 @@ public class ResultsView extends ViewPart {
             // value = Dir
         } else if ("start".equals(tag)) {
             // value = {Module, Function}
-            final Bindings bindings = ErlUtils.match("{M:a,F:a}", value);
+            final IBindings bindings = ErlUtils.match("{M:a,F:a}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             test = findCase(mod, fun);
             test.setRunning();
         } else if ("result".equals(tag)) {
             // value = {Module, Function, Result}
-            final Bindings bindings = ErlUtils.match("{M:a,F:a,R}", value);
+            final IBindings bindings = ErlUtils.match("{M:a,F:a,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             final OtpErlangObject result = bindings.get("R");
@@ -139,7 +139,7 @@ public class ResultsView extends ViewPart {
             }
         } else if ("fail".equals(tag)) {
             // value = {{Module, Function}, [Locations], Reason
-            final Bindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
+            final IBindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             final OtpErlangObject locations = bindings.get("L");
@@ -148,7 +148,7 @@ public class ResultsView extends ViewPart {
             test.setFailed(reason, locations);
         } else if ("skip".equals(tag)) {
             // value = {Module, Function, Comment
-            final Bindings bindings = ErlUtils.match("{M:a,F:a,C}", value);
+            final IBindings bindings = ErlUtils.match("{M:a,F:a,C}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
             final OtpErlangObject reason = bindings.get("C");
@@ -156,7 +156,7 @@ public class ResultsView extends ViewPart {
             test.setSkipped(reason);
         } else if ("done".equals(tag)) {
             // value = Module, Log, {Successful,Failed,Skipped}, [Results]}
-            final Bindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}",
+            final IBindings bindings = ErlUtils.match("{M,L,{S:i,F:i,K:i},R}",
                     value);
             final int successful = bindings.getInt("S");
             final int failed = bindings.getInt("F");

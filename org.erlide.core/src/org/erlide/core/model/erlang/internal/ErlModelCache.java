@@ -8,13 +8,13 @@ import java.util.Set;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.common.LRUCache;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModelChangeListener;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.jinterface.util.LRUCache;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

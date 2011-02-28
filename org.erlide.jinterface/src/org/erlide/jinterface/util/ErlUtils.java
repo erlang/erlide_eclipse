@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.erlide.jinterface.util.internal.Bindings;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -70,23 +72,23 @@ public final class ErlUtils {
         return match(parse(pattern), term, new Bindings());
     }
 
-    public static Bindings match(final String pattern,
+    public static IBindings match(final String pattern,
             final OtpErlangObject term, final Bindings bindings)
             throws ParserException {
         return match(parse(pattern), term, bindings);
     }
 
-    public static Bindings match(final String pattern, final String term,
+    public static IBindings match(final String pattern, final String term,
             final Bindings bindings) throws ParserException {
         return match(parse(pattern), parse(term), bindings);
     }
 
-    public static Bindings match(final OtpErlangObject pattern,
+    public static IBindings match(final OtpErlangObject pattern,
             final OtpErlangObject term) {
         return match(pattern, term, new Bindings());
     }
 
-    public static Bindings match(final OtpErlangObject pattern,
+    public static IBindings match(final OtpErlangObject pattern,
             final String term) throws ParserException {
         return match(pattern, parse(term), new Bindings());
     }

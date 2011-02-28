@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.IBindings;
 import org.erlide.jinterface.util.ParserException;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -48,7 +48,7 @@ public class ErlProjectLayout {
 
     public ErlProjectLayout(final OtpErlangObject layout)
             throws ParserException, OtpErlangException {
-        final Bindings b = ErlUtils.match("{layout,S,I,E,D,P}", layout);
+        final IBindings b = ErlUtils.match("{layout,S,I,E,D,P}", layout);
         final Collection<OtpErlangObject> s = b.getList("S");
         final Collection<OtpErlangObject> i = b.getList("I");
         final OtpErlangObject e = b.get("E");
@@ -196,7 +196,7 @@ public class ErlProjectLayout {
             return new Path(((OtpErlangString) p).stringValue());
         } else if (p instanceof OtpErlangTuple) {
             try {
-                final Bindings b = ErlUtils.match("{V,P}", p);
+                final IBindings b = ErlUtils.match("{V,P}", p);
                 final String v = b.getAtom("V");
                 final String path = b.getString("P");
                 return new Path(v).append(new Path(path));

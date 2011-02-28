@@ -1,13 +1,19 @@
 package org.erlide.core.backend.internal;
 
+import java.io.File;
+
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.common.Util;
 import org.erlide.jinterface.util.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlangCode {
 
@@ -54,7 +60,8 @@ public final class ErlangCode {
         return result;
     }
 
-    public static void delete(final RpcCallSite fBackend, final String moduleName) {
+    public static void delete(final RpcCallSite fBackend,
+            final String moduleName) {
         try {
             fBackend.call("code", "delete", "a", moduleName);
         } catch (final Exception e) {
@@ -73,4 +80,32 @@ public final class ErlangCode {
         }
     }
 
+    public static boolean isAccessible(final RpcCallSite backend,
+            final String localDir) {
+        File f = null;
+        try {
+            f = new File(localDir);
+            final OtpErlangObject r = backend.call("file", "read_file_info",
+                    "s", localDir);
+            if (Util.isOk(r)) {
+                final OtpErlangTuple result = (OtpErlangTuple) r;
+                final OtpErlangTuple info = (OtpErlangTuple) result
+                        .elementAt(1);
+                final String access = info.elementAt(3).toString();
+                final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
+                return ("read".equals(access) || "read_write".equals(access))
+                        && (mode & 4) == 4;
+            }
+
+        } catch (final OtpErlangRangeException e) {
+            ErlLogger.error(e);
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+        } finally {
+            if (f != null) {
+                f.delete();
+            }
+        }
+        return false;
+    }
 }

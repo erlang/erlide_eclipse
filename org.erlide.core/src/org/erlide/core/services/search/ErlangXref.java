@@ -8,9 +8,9 @@ import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.IBindings;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -63,7 +63,7 @@ public final class ErlangXref {
         try {
             final OtpErlangObject r = b.call("erlide_xref", "function_use",
                     "aai", mod, fun, arity);
-            final Bindings bind = ErlUtils.match("{ok, L}", r);
+            final IBindings bind = ErlUtils.match("{ok, L}", r);
             if (bind == null) {
                 return new FunctionRef[0];
             }

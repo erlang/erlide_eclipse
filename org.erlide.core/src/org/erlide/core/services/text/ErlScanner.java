@@ -8,10 +8,9 @@
  *     Eric Merritt
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.model.erlang;
+package org.erlide.core.services.text;
 
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.services.text.ErlideScanner;
 
 
 /**

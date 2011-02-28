@@ -11,10 +11,11 @@ package org.erlide.jinterface.java;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.IBindings;
 import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.internal.Bindings;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -80,13 +81,13 @@ public class PatternMatchTest {
     public void testMatch_novar() throws Exception {
         final OtpErlangObject p = ErlUtils.parse("[a, {b}]");
         final OtpErlangObject t1 = ErlUtils.parse("[a, {b}]");
-        final Bindings r = ErlUtils.match(p, t1);
+        final IBindings r = ErlUtils.match(p, t1);
         Assert.assertNotNull(r);
     }
 
     @Test
     public void testMatch() throws Exception {
-        final Bindings r = ErlUtils.match("[W, V]", "[a, b]");
+        final IBindings r = ErlUtils.match("[W, V]", "[a, b]");
         Assert.assertEquals(r.get("W"), new OtpErlangAtom("a"));
         Assert.assertEquals(r.get("V"), new OtpErlangAtom("b"));
     }
@@ -95,51 +96,51 @@ public class PatternMatchTest {
     public void testMatch_0() throws Exception {
         final Bindings b = new Bindings();
         b.put("W", new OtpErlangAtom("a"));
-        final Bindings r = ErlUtils.match("[W, V]", "[a, b]", b);
+        final IBindings r = ErlUtils.match("[W, V]", "[a, b]", b);
         Assert.assertNotNull(r);
         Assert.assertEquals(r.get("V"), new OtpErlangAtom("b"));
     }
 
     @Test
     public void testMatch_1() throws Exception {
-        final Bindings r = ErlUtils.match("[W, V]", "[\"a\", {[1, 2]}]");
+        final IBindings r = ErlUtils.match("[W, V]", "[\"a\", {[1, 2]}]");
         Assert.assertEquals(r.get("W"), new OtpErlangString("a"));
         Assert.assertEquals(r.get("V"), ErlUtils.parse("{[1, 2]}"));
     }
 
     @Test
     public void testMatch_same() throws Exception {
-        final Bindings r = ErlUtils.match("[W, {V}]", "[a, {a}]");
+        final IBindings r = ErlUtils.match("[W, {V}]", "[a, {a}]");
         Assert.assertEquals(r.get("W"), new OtpErlangAtom("a"));
     }
 
     @Test
     public void testMatch_any() throws Exception {
-        final Bindings r = ErlUtils.match("[_, {_}]", "[a, {b}]");
+        final IBindings r = ErlUtils.match("[_, {_}]", "[a, {b}]");
         Assert.assertNotNull(r);
     }
 
     @Test
     public void testMatch_same_fail() throws Exception {
-        final Bindings r = ErlUtils.match("[W, {W}]", "[a, {b}]");
+        final IBindings r = ErlUtils.match("[W, {W}]", "[a, {b}]");
         Assert.assertNull(r);
     }
 
     @Test
     public void testMatch_sig_a() throws Exception {
-        final Bindings r = ErlUtils.match("W:a", "zzz");
+        final IBindings r = ErlUtils.match("W:a", "zzz");
         Assert.assertEquals(r.get("W"), new OtpErlangAtom("zzz"));
     }
 
     @Test
     public void testMatch_sig_i() throws Exception {
-        final Bindings r = ErlUtils.match("W:i", "222");
+        final IBindings r = ErlUtils.match("W:i", "222");
         Assert.assertEquals(r.get("W"), new OtpErlangLong(222));
     }
 
     @Test
     public void testMatch_sig_fail() throws Exception {
-        final Bindings r = ErlUtils.match("W:i", "zzz");
+        final IBindings r = ErlUtils.match("W:i", "zzz");
         Assert.assertNull(r);
     }
 
@@ -151,7 +152,7 @@ public class PatternMatchTest {
 
     @Test
     public void testMatch_ellipsis_2() throws Exception {
-        final Bindings r = ErlUtils.match("[X | T]", "[x,y,z]");
+        final IBindings r = ErlUtils.match("[X | T]", "[x,y,z]");
         Assert.assertNotNull(r);
         Assert.assertEquals(new OtpErlangAtom("x"), r.get("X"));
         Assert.assertEquals(termParser.parse("[y,z]"), r.get("T"));
@@ -159,7 +160,7 @@ public class PatternMatchTest {
 
     @Test()
     public void testMatch_ellipsis_4() throws Exception {
-        final Bindings r = ErlUtils.match("[X | y]", "[x,y,z]");
+        final IBindings r = ErlUtils.match("[X | y]", "[x,y,z]");
         Assert.assertNull(r);
     }
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,9 +27,9 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     private static final long serialVersionUID = -5423610637179253987L;
     private final int max;
 
-    public LRUCache(final int MAX_ENTRIES) {
-        super(MAX_ENTRIES, .75F, true);
-        max = MAX_ENTRIES;
+    public LRUCache(final int max_entries) {
+        super(max_entries, .75F, true);
+        max = max_entries;
     }
 
     @Override

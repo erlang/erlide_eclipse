@@ -1,8 +1,8 @@
 package org.erlide.core.backend.events;
 
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.IBindings;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -48,7 +48,7 @@ public class LogEventHandler extends EventHandler {
             return;
         }
         try {
-            final Bindings b = ErlUtils.match("{K:a,M}", event.data);
+            final IBindings b = ErlUtils.match("{K:a,M}", event.data);
             final String kind = ((OtpErlangAtom) b.get("K")).atomValue();
             final OtpErlangObject amsg = b.get("M");
             ErlLogger.debug("%s: %s", kind, ErlUtils.asString(amsg));
