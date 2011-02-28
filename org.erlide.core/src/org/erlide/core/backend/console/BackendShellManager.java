@@ -15,8 +15,11 @@ import java.util.HashMap;
 
 import org.erlide.core.backend.Backend;
 import org.erlide.core.common.IDisposable;
+import org.erlide.jinterface.ErlLogger;
 
-class BackendShellManager implements IDisposable {
+import com.ericsson.otp.erlang.OtpErlangPid;
+
+public class BackendShellManager implements IDisposable {
 
     private final Backend backend;
     private final HashMap<String, BackendShell> fShells;
@@ -34,7 +37,18 @@ class BackendShellManager implements IDisposable {
     public synchronized BackendShell openShell(final String id) {
         BackendShell shell = getShell(id);
         if (shell == null) {
-            shell = new BackendShell(this.backend, id);
+            OtpErlangPid server = null;
+            if (backend.isDistributed()) {
+                try {
+                    server = ErlideReshd.start(backend);
+                } catch (final Exception e) {
+                    ErlLogger.warn(e);
+                }
+            }
+            shell = new BackendShell(this.backend, id, server);
+            final ConsoleEventHandler handler = new ConsoleEventHandler(shell,
+                    backend.getFullNodeName());
+            backend.getEventDaemon().addHandler(handler);
             fShells.put(id, shell);
         }
         return shell;

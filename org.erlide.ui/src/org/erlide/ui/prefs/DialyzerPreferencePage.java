@@ -58,7 +58,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendManager;
+import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;

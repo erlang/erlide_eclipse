@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.backend.BackendManager;
+import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PlatformChangeListener;
 import org.erlide.core.model.debug.ErlangDebugOptionsManager;

@@ -12,10 +12,9 @@ package org.erlide.core.backend;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Collection;
-import java.util.HashMap;
 
 import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.internal.RpcResultImpl;
@@ -23,9 +22,8 @@ import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcHelper;
 import org.erlide.core.backend.rpc.RpcResult;
-import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.BackendUtil;
-import org.erlide.core.common.IDisposable;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -367,7 +365,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
 
     public void initializeRuntime() throws IOException {
         dispose(true);
-        shellManager = new BackendShellManager();
+        shellManager = new BackendShellManager(this);
 
         final String cookie = getInfo().getCookie();
         if (cookie == null) {
@@ -627,45 +625,6 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         final String direction = incoming ? "in" : "out";
         ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
                 direction, info));
-    }
-
-    private class BackendShellManager implements IDisposable {
-
-        private final HashMap<String, BackendShell> fShells;
-
-        public BackendShellManager() {
-            fShells = new HashMap<String, BackendShell>();
-        }
-
-        public BackendShell getShell(final String id) {
-            final BackendShell shell = fShells.get(id);
-            return shell;
-        }
-
-        public synchronized BackendShell openShell(final String id) {
-            BackendShell shell = getShell(id);
-            if (shell == null) {
-                shell = new BackendShell(Backend.this, id);
-                fShells.put(id, shell);
-            }
-            return shell;
-        }
-
-        public synchronized void closeShell(final String id) {
-            final BackendShell shell = getShell(id);
-            if (shell != null) {
-                fShells.remove(id);
-                shell.close();
-            }
-        }
-
-        public void dispose() {
-            final Collection<BackendShell> c = fShells.values();
-            for (final BackendShell backendShell : c) {
-                backendShell.close();
-            }
-            fShells.clear();
-        }
     }
 
     public BackendShell getShell(final String id) {

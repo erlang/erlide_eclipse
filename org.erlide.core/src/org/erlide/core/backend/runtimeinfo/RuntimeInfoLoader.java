@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.runtime;
+package org.erlide.core.backend.runtimeinfo;
 
 import org.erlide.core.common.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;

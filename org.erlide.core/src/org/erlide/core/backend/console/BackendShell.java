@@ -16,9 +16,6 @@ import java.util.List;
 
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
-import org.erlide.core.backend.events.ErlangEvent;
-import org.erlide.core.backend.events.EventHandler;
-import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -29,42 +26,34 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BackendShell {
 
-    private final Backend fBackend;
+    private final Backend backend;
     private OtpErlangPid server;
     private final String fId;
     private ConsoleEventHandler handler;
 
-    public BackendShell(final Backend backend, final String id) {
-        fBackend = backend;
+    public BackendShell(final Backend backend, final String id,
+            final OtpErlangPid server) {
+        this.backend = backend;
         fId = id;
-        if (backend.isDistributed()) {
-            try {
-                server = ErlideReshd.start(fBackend);
-            } catch (final Exception e) {
-                ErlLogger.warn(e);
-            }
-            handler = new ConsoleEventHandler();
-            backend.getEventDaemon().addHandler(handler);
-        }
+        this.server = server;
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
     }
 
     public void close() {
         if (server != null) {
-            fBackend.send(server, new OtpErlangAtom("stop"));
+            backend.send(server, new OtpErlangAtom("stop"));
         }
         server = null;
     }
 
     public void send(final String string) {
         if (server != null) {
-            fBackend.send(server, OtpErlang.mkTuple(new OtpErlangAtom("input"),
+            backend.send(server, OtpErlang.mkTuple(new OtpErlangAtom("input"),
                     new OtpErlangString(string)));
-        }
-        if (!fBackend.isDistributed()) {
+        } else {
             try {
-                fBackend.input(string);
+                backend.input(string);
             } catch (final IOException e) {
                 e.printStackTrace();
             }
@@ -72,24 +61,11 @@ public class BackendShell {
     }
 
     public Backend getBackend() {
-        return fBackend;
+        return backend;
     }
 
     public String getId() {
         return fId;
-    }
-
-    public class ConsoleEventHandler extends EventHandler {
-
-        @Override
-        protected void doHandleEvent(final ErlangEvent event) throws Exception {
-            if (!event.matchTopicAndNode("io_server",
-                    fBackend.getFullNodeName())) {
-                return;
-            }
-            // ErlLogger.debug("************>>> " + event);
-            add(event.data);
-        }
     }
 
     private static final int MAX_REQUESTS = 5000;
@@ -213,7 +189,7 @@ public class BackendShell {
     public void dispose() {
         final ConsoleEventHandler handler2 = getHandler();
         if (handler2 != null) {
-            fBackend.getEventDaemon().removeHandler(handler2);
+            backend.getEventDaemon().removeHandler(handler2);
         }
         listeners.clear();
     }

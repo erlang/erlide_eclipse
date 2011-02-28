@@ -24,9 +24,11 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
+import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.backend.internal.CodeManager;
-import org.erlide.core.backend.runtime.RuntimeInfo;
-import org.erlide.core.backend.runtime.RuntimeVersion;
+import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.BeamUtil;
@@ -103,7 +105,7 @@ public final class ErlideBackend extends Backend implements IDisposable,
         ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
     }
 
-    public void register(final CodeBundle bundle) {
+    public void register(final CodeBundleImpl bundle) {
         codeManager.register(bundle);
     }
 

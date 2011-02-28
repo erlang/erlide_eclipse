@@ -41,14 +41,14 @@ public class CodeManager {
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
 
-    private final List<CodeBundle> registeredBundles;
+    private final List<CodeBundleImpl> registeredBundles;
 
     // only to be called by ErlideBackend
     public CodeManager(final ErlideBackend b) {
         backend = b;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
-        registeredBundles = new ArrayList<CodeBundle>();
+        registeredBundles = new ArrayList<CodeBundleImpl>();
     }
 
     public void addPath(final boolean usePathZ, final String path) {
@@ -75,7 +75,7 @@ public class CodeManager {
         }
     }
 
-    public void register(final CodeBundle b) {
+    public void register(final CodeBundleImpl b) {
         registeredBundles.add(b);
         registerBundle(b);
     }

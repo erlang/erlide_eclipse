@@ -13,7 +13,7 @@ package org.erlide.ui.views;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 
 public class BackendLabelProvider extends LabelProvider {
 

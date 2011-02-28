@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.backend.manager;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,10 +39,22 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.CodeBundle.CodeContext;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendOptions;
+import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.ErlideBackendVisitor;
+import org.erlide.core.backend.ErtsProcess;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.epmd.EpmdWatchJob;
+import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.backend.internal.ManagedLauncher;
-import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.internal.CodeBundleImpl.CodeContext;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.MessageReporter;
@@ -71,7 +83,7 @@ public final class BackendManager extends OtpNodeStatus implements
     private final Map<IProject, Set<ErlideBackend>> executionBackends;
     private final Map<String, ErlideBackend> buildBackends;
     final List<IBackendListener> listeners;
-    private final Map<Bundle, CodeBundle> codeBundles;
+    private final Map<Bundle, CodeBundleImpl> codeBundles;
 
     private final EpmdWatcher epmdWatcher;
     private final Set<ErlideBackend> allBackends;
@@ -156,7 +168,7 @@ public final class BackendManager extends OtpNodeStatus implements
         b.initializeRuntime();
         if (b.isDistributed()) {
             b.connect();
-            for (final CodeBundle bb : codeBundles.values()) {
+            for (final CodeBundleImpl bb : codeBundles.values()) {
                 b.register(bb);
             }
             final boolean monitorNode = options.contains(BackendOptions.IDE)
@@ -365,7 +377,7 @@ public final class BackendManager extends OtpNodeStatus implements
         if (p != null) {
             return;
         }
-        final CodeBundle pp = new CodeBundle(b, paths, init);
+        final CodeBundleImpl pp = new CodeBundleImpl(b, paths, init);
         codeBundles.put(b, pp);
         forEachBackend(new ErlideBackendVisitor() {
             public void visit(final ErlideBackend bb) {

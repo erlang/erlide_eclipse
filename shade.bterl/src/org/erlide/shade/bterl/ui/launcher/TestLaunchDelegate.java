@@ -32,7 +32,7 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
-import org.erlide.core.backend.runtime.RuntimeVersion;
+import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.services.launching.ErlangLaunchDelegate;

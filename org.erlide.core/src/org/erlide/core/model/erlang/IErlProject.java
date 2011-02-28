@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.runtime.RuntimeInfo;
-import org.erlide.core.backend.runtime.RuntimeVersion;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**

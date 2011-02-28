@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.runtime;
+package org.erlide.core.backend.runtimeinfo;
 
 import java.util.ArrayList;
 import java.util.Collection;

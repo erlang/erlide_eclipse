@@ -8,9 +8,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.backend.manager;
 
-import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendData;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.CommonUtils;

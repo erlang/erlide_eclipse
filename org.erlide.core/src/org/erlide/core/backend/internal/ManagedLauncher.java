@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.backend.ErtsProcess;
-import org.erlide.core.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.common.LogUtil;
