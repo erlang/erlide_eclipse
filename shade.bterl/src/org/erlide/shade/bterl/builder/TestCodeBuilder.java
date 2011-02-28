@@ -33,7 +33,7 @@ import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.core.services.builder.internal.BuilderMessages;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 

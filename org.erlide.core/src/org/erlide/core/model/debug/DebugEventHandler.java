@@ -2,7 +2,7 @@ package org.erlide.core.model.debug;
 
 import java.util.Collection;
 
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

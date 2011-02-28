@@ -27,7 +27,7 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.core.services.text.IndentResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;

@@ -2,7 +2,7 @@ package org.erlide.ui.views.processlist;
 
 import org.erlide.core.backend.NoBackendException;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

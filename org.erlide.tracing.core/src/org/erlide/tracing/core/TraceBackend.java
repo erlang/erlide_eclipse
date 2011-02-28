@@ -26,7 +26,7 @@ import org.erlide.core.backend.ErtsProcess;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.backend.runtime.RuntimeInfo;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.mvc.model.TraceCollections;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 import org.erlide.tracing.core.mvc.model.TracedNode;

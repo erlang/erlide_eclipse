@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.erlide.jinterface.util.internal.BindingsImpl;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.TypeConverter;
+import org.erlide.jinterface.internal.BindingsImpl;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -50,7 +52,7 @@ public final class ErlUtils {
      * type signature of the argument, so that automatic conversion Java->Erlang
      * can be done. See TypeConverter.java2erlang for details.
      * 
-     * @see org.erlide.jinterface.util.TypeConverter
+     * @see org.erlide.jinterface.TypeConverter
      */
     public static OtpErlangObject format(final String fmt, final Object... args)
             throws TermParserException, SignatureException {

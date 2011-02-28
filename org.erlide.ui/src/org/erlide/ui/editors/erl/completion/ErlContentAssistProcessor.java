@@ -64,7 +64,7 @@ import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.codeassist.ErlideContextAssist;
 import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.core.services.search.ErlideDoc;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;

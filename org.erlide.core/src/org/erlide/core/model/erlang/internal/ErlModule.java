@@ -49,7 +49,7 @@ import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.services.text.ErlScanner;
 import org.erlide.core.services.text.ErlToken;
 import org.erlide.core.services.text.ErlangToolkit;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;

@@ -47,7 +47,7 @@ import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.internal.ErlElementDelta;
 import org.erlide.core.model.erlang.util.ElementChangedEvent;
 import org.erlide.core.model.erlang.util.IElementChangedListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;

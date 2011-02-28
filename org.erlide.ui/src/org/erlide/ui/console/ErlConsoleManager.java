@@ -13,7 +13,7 @@ import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.IDisposable;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<Backend, IConsole> consoles;

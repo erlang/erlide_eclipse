@@ -12,6 +12,8 @@ package org.erlide.jinterface.util;
 
 import java.util.Collection;
 
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

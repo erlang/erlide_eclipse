@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class LogUtil {
 

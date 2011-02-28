@@ -17,7 +17,7 @@ import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;

@@ -26,7 +26,7 @@ import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.IDisposable;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;

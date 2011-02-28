@@ -1,8 +1,8 @@
 package org.erlide.core.backend.events;
 
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.Bindings;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

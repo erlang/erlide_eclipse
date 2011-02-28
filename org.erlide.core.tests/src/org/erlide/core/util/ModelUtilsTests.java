@@ -29,7 +29,7 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

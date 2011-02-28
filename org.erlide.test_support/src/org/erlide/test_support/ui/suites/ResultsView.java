@@ -15,8 +15,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -53,7 +53,7 @@ import org.erlide.core.model.erlang.IWorkingCopy;
 import org.erlide.core.model.erlang.util.ElementChangedEvent;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.model.erlang.util.IElementChangedListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

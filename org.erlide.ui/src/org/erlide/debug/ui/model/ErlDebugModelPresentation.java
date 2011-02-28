@@ -22,7 +22,7 @@ import org.erlide.core.model.debug.ErlangStackFrame;
 import org.erlide.core.model.debug.ErlangUninterpretedStackFrame;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;

@@ -36,7 +36,7 @@ import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.ErlangFunctionCall;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

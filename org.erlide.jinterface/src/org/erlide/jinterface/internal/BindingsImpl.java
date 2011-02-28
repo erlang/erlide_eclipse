@@ -8,15 +8,15 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util.internal;
+package org.erlide.jinterface.internal;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.erlide.jinterface.util.Bindings;
-import org.erlide.jinterface.util.TypeConverter;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;

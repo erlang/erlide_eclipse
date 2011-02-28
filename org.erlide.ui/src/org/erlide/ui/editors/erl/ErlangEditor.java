@@ -128,7 +128,7 @@ import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;

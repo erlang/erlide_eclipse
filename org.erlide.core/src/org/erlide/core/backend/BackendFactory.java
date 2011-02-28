@@ -14,7 +14,7 @@ import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class BackendFactory {
 

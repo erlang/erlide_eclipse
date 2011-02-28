@@ -11,11 +11,11 @@ package org.erlide.jinterface.java;
 
 import junit.framework.Assert;
 
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.internal.BindingsImpl;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
-import org.erlide.jinterface.util.internal.BindingsImpl;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

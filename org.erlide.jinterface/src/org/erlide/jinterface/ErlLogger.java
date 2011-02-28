@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util;
+package org.erlide.jinterface;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -15,7 +15,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.rpc.RpcResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;

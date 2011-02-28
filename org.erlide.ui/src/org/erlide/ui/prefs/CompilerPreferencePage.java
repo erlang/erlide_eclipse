@@ -50,7 +50,7 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.CompilerPreferences;
 import org.erlide.core.services.builder.CompilerPreferencesConstants;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CompilerPreferencePage extends PropertyPage implements

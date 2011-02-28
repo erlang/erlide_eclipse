@@ -50,7 +50,7 @@ import org.erlide.core.backend.ErlBackend;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.editors.erl.completion.ErlangContextType;

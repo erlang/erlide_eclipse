@@ -63,7 +63,7 @@ import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 

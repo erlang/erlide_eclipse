@@ -12,7 +12,7 @@ import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.util.CoreUtil;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

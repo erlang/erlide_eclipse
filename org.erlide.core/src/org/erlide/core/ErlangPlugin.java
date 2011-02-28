@@ -34,7 +34,7 @@ import org.erlide.core.backend.BackendManager;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PlatformChangeListener;
 import org.erlide.core.model.debug.ErlangDebugOptionsManager;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.prefs.BackingStoreException;

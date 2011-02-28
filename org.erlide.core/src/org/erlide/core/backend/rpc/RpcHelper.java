@@ -12,8 +12,8 @@ package org.erlide.core.backend.rpc;
 
 import org.erlide.core.backend.RpcCallback;
 import org.erlide.core.backend.internal.RpcFutureImpl;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.jinterface.util.TypeConverter;
+import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

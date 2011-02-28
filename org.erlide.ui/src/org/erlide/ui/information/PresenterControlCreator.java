@@ -27,7 +27,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;

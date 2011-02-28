@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.core.services.builder.IProblem;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class BuildNotifier {
 

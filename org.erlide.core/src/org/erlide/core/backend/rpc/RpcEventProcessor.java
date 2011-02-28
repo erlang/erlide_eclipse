@@ -1,7 +1,7 @@
 package org.erlide.core.backend.rpc;
 
 import org.erlide.core.backend.Backend;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangExit;

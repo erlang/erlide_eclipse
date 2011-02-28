@@ -20,7 +20,7 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.common.LogUtil;
 import org.erlide.core.common.StringUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class ManagedLauncher implements IDisposable {
 

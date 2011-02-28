@@ -51,7 +51,7 @@ import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;

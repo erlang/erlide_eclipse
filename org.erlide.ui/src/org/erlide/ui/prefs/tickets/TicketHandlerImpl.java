@@ -21,7 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.erlide.core.common.ProblemData;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public abstract class TicketHandlerImpl implements TicketHandler {
 

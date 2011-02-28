@@ -27,7 +27,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.services.text.ErlideIndent;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

@@ -26,9 +26,9 @@ import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.services.text.ErlideNoparse;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.Bindings;
 import org.erlide.jinterface.util.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

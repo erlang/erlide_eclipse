@@ -66,7 +66,7 @@ public final class PreferencesHelper {
                 .getBundleContext();
         final ServiceReference ref = bc.getServiceReference(PackageAdmin.class
                 .getName());
-        PackageAdmin _packageAdmin;
+        final PackageAdmin _packageAdmin;
         if (ref != null) {
             _packageAdmin = (PackageAdmin) bc.getService(ref);
             final Version version = _packageAdmin.getBundle(

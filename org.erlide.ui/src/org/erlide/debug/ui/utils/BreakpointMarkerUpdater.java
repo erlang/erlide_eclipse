@@ -26,7 +26,7 @@ import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.model.debug.ErlangDebugTarget;
 import org.erlide.core.model.debug.ErlangLineBreakpoint;
 import org.erlide.core.model.debug.IErlangBreakpoint;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * This class provides a mechanism to correct the placement of a breakpoint

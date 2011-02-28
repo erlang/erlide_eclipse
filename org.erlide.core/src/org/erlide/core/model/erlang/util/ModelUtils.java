@@ -28,7 +28,7 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.internal.SourceRange;
 import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

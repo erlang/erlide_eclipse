@@ -37,7 +37,7 @@ import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 

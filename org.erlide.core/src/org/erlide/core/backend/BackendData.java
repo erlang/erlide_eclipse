@@ -32,7 +32,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.core.backend.internal.InitialCall;
 import org.erlide.core.backend.runtime.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 

@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class RuntimeInfoManager implements IPreferenceChangeListener {

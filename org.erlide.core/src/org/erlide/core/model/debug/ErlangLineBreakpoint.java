@@ -27,7 +27,7 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
 import org.erlide.core.services.builder.MarkerUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 
 public class ErlangLineBreakpoint extends Breakpoint implements

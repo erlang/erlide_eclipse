@@ -2,7 +2,7 @@ package org.erlide.core.backend.events;
 
 import java.util.Collection;
 
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public abstract class EventHandler {
 

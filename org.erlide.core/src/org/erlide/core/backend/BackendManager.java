@@ -49,9 +49,9 @@ import org.erlide.core.common.MessageReporter;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.MessageReporter.ReporterPosition;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
-import org.erlide.jinterface.util.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpNodeStatus;

@@ -48,7 +48,7 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlStructureCreator extends StructureCreator {

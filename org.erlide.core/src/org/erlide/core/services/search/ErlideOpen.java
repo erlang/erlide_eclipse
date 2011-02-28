@@ -12,7 +12,7 @@ import org.erlide.core.common.SourcePathProvider;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.services.text.ErlangToolkit;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

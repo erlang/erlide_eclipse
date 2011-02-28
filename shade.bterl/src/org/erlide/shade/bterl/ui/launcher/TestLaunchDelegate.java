@@ -36,7 +36,7 @@ import org.erlide.core.backend.runtime.RuntimeVersion;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.services.launching.ErlangLaunchDelegate;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;

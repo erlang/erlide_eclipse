@@ -48,7 +48,7 @@ import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

@@ -63,7 +63,7 @@ import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;
 import org.erlide.core.model.debug.ErlangDebugTarget;
 import org.erlide.core.model.debug.ErlideDebug;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.common.Util;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

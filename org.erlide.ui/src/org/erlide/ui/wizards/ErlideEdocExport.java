@@ -17,7 +17,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcException;
-import org.erlide.jinterface.util.TypeConverter;
+import org.erlide.jinterface.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

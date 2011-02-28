@@ -16,7 +16,7 @@ import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider

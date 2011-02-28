@@ -53,7 +53,7 @@ import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.text.ErlToken;
 import org.erlide.core.services.text.ErlangToolkit;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
