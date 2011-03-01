@@ -13,9 +13,9 @@ package org.erlide.core.backend.manager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
+import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.BackendUtil;
-import org.erlide.core.common.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.ErlLogger;
 

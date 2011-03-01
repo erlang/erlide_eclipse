@@ -14,10 +14,10 @@ import java.io.IOException;
 
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.RpcCallback;
+import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcHelper;
-import org.erlide.core.common.BackendUtil;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

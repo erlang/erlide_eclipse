@@ -39,7 +39,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.ErlBackend;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.LogUtil;
-import org.erlide.core.common.ProblemData;
 import org.erlide.jinterface.ErlLogger;
 
 import com.swtdesigner.SWTResourceManager;

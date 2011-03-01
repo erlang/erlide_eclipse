@@ -17,13 +17,13 @@ import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
+import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.internal.RpcResultImpl;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcHelper;
 import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.BackendUtil;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

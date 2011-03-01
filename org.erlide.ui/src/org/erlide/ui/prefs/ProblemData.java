@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.ui.prefs;
 
 public class ProblemData {
     public String summary;

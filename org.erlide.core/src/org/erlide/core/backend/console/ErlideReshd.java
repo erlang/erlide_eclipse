@@ -2,7 +2,7 @@ package org.erlide.core.backend.console;
 
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.common.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtil;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

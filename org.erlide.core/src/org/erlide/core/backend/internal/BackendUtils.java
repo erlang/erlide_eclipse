@@ -1,4 +1,4 @@
-package org.erlide.core.common;
+package org.erlide.core.backend.internal;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.common.SourcePathProvider;
 
 import com.google.common.collect.Lists;
 

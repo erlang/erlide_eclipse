@@ -7,11 +7,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.core.backend.internal;
 
 import java.io.IOException;
 import java.net.InetAddress;
 
+import org.erlide.core.common.Util;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

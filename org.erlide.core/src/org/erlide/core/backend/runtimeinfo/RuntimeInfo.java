@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.erlide.core.common.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtil;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";

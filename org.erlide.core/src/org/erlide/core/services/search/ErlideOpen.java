@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.common.BackendUtils;
+import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;

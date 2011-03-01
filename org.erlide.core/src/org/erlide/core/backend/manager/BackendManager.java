@@ -51,11 +51,11 @@ import org.erlide.core.backend.ErtsProcess;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.epmd.EpmdWatchJob;
+import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.backend.internal.ManagedLauncher;
 import org.erlide.core.backend.internal.CodeBundleImpl.CodeContext;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.BackendUtil;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.MessageReporter;
 import org.erlide.core.common.Tuple;
@@ -220,7 +220,7 @@ public final class BackendManager extends OtpNodeStatus implements
         if (b == null) {
             info.setNodeName(version);
             info.setNodeNameSuffix("_"
-                    + org.erlide.core.common.BackendUtils
+                    + org.erlide.core.backend.internal.BackendUtils
                             .getErlideNodeNameTag());
             info.setCookie("erlide");
             info.setHasConsole(false);
@@ -311,7 +311,7 @@ public final class BackendManager extends OtpNodeStatus implements
             if (defLabel != null) {
                 info.setNodeName(defLabel);
             } else {
-                final String nodeName = org.erlide.core.common.BackendUtils
+                final String nodeName = org.erlide.core.backend.internal.BackendUtils
                         .getErlideNodeNameTag() + "_erlide";
                 info.setNodeName(nodeName);
             }
