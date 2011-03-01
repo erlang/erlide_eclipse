@@ -268,7 +268,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeSaveAction() {
-        save = new SaveAction();
+        save = new SaveAction(viewer.getControl().getShell());
         save.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT));
         save.setToolTipText("Save coverage results");
