@@ -47,6 +47,11 @@ public class SaveAction extends Action {
                 .append(DIR_NAME);
         final File dir = location.toFile();
 
+        if (!dir.exists() && !dir.mkdir()) {
+            reportError("Can not save results!");
+            return;
+        }
+        
         // open input dialog
 
         InputDialog nameDialog = new InputDialog(shell,
@@ -83,11 +88,6 @@ public class SaveAction extends Action {
 
         log.debug(location);
         log.debug(name);
-
-        if (!dir.exists() && !dir.mkdir()) {
-            reportError("Can not save results!");
-            return;
-        }
 
         ObjectOutputStream objOutStream;
         try {

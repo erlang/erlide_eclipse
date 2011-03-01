@@ -36,6 +36,7 @@ import org.erlide.cover.ui.actions.ClearCoverageAction;
 import org.erlide.cover.ui.actions.HideCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
 import org.erlide.cover.ui.actions.OpenItemAction;
+import org.erlide.cover.ui.actions.RestoreAction;
 import org.erlide.cover.ui.actions.SaveAction;
 import org.erlide.cover.ui.actions.ShowCoverageAction;
 import org.erlide.cover.ui.annotations.EditorTracker;
@@ -254,17 +255,10 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeRestoreAction() {
-        restore = new Action() {
-
-            @Override
-            public void run() {
-                showMessage("Action save");
-            }
-        };
+        restore = new RestoreAction(viewer.getControl().getShell());
         restore.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
         restore.setToolTipText("Restore previous results");
-        restore.setEnabled(false);
     }
 
     private void makeSaveAction() {
