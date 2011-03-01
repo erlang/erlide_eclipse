@@ -86,7 +86,7 @@ public class ErlProjectTest {
         final IErlModule include1 = module.findInclude(includeName, null,
                 false, false);
         final IErlModule include2 = project.findInclude("file.hrl", null,
-                null, false, false);
+                false, false);
         // then
         // it should be found
         assertEquals(include, include1);
@@ -157,7 +157,7 @@ public class ErlProjectTest {
             // looking for the include file
             project.open(null);
             final IErlModule module = project.findInclude(includeName, null,
-                    null, true, true);
+                    true, true);
             // then
             // it should be found in the project defining it
             assertNotNull(module);

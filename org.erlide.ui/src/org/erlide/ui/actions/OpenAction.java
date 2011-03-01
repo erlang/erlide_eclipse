@@ -31,7 +31,6 @@ import org.erlide.core.erlang.IErlModel;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.IErlProject;
 import org.erlide.core.erlang.IErlRecordDef;
-import org.erlide.core.erlang.IParent;
 import org.erlide.core.erlang.ISourceRange;
 import org.erlide.core.erlang.ISourceReference;
 import org.erlide.core.erlang.util.ErlangFunction;
@@ -230,14 +229,18 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findInclude(final IErlModule module,
             final IErlProject project, final OpenResult res,
             final IErlModel model) throws CoreException, BackendException {
-        if (project != null) {
-            final IErlModule include = project.findInclude(res.getName(),
-                    res.getPath(), null, true, false);
+        if (module != null) {
+            final IErlModule include = module.findInclude(res.getName(),
+                    res.getPath(), true, false);
             if (include != null) {
                 return include;
             }
-            final IParent parent = module.getParent();
-            return parent.getChildNamed(res.getName());
+        } else if (project != null) {
+            final IErlModule include = project.findInclude(res.getName(),
+                    res.getPath(), true, false);
+            if (include != null) {
+                return include;
+            }
         }
         return null;
     }
