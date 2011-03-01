@@ -14,6 +14,7 @@ import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
@@ -25,7 +26,6 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.internal.SourceRange;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
@@ -38,7 +38,6 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 public class ModelUtils {
 
@@ -103,7 +102,7 @@ public class ModelUtils {
         final IErlElement childNamed = ErlangCore.getModel().getChildNamed(
                 path.get(0));
         ErlLogger.debug(">>childNamed %s", (childNamed == null ? "<null>"
-                : childNamed));
+                : childNamed.getName()));
         if (childNamed instanceof IParent) {
             IParent parent = (IParent) childNamed;
             final int n = path.size() - 1;
