@@ -60,6 +60,7 @@ import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOldErlangProjectProperties;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.internal.ErlModel.External;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
@@ -70,7 +71,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 /**
  * Handle for an Erlang Project.
@@ -582,7 +582,7 @@ public class ErlProject extends Openable implements IErlProject {
         if (ModelUtils.isExternalFilesProject(fProject)) {
             for (final IErlElement child : getChildren()) {
                 if (child instanceof IErlModule
-                        && CommonUtils.hasErlExtension(child.getName())) {
+                        && ModuleKind.hasErlExtension(child.getName())) {
                     result.add((IErlModule) child);
                 }
             }
@@ -631,7 +631,7 @@ public class ErlProject extends Openable implements IErlProject {
             if (ModelUtils.isExternalFilesProject(fProject)) {
                 for (final IErlElement child : getChildren()) {
                     if (child instanceof IErlModule
-                            && CommonUtils.hasModuleExtension(child.getName())) {
+                            && ModuleKind.hasModuleExtension(child.getName())) {
                         result.add((IErlModule) child);
                     }
                 }

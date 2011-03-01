@@ -73,7 +73,7 @@ public class ErlModule extends Openable implements IErlModule {
             final boolean useCaches) {
         super(parent, name);
         fFile = file;
-        moduleKind = CommonUtils.nameToModuleKind(name);
+        moduleKind = ModuleKind.nameToModuleKind(name);
         this.path = path;
         this.initialText = initialText;
         parsed = false;
@@ -378,8 +378,8 @@ public class ErlModule extends Openable implements IErlModule {
      * (non-Javadoc)
      * 
      * @see
-     * org.erlide.core.model.erlang.IErlModule#postReconcile(org.eclipse.core.runtime
-     * .IProgressMonitor)
+     * org.erlide.core.model.erlang.IErlModule#postReconcile(org.eclipse.core
+     * .runtime .IProgressMonitor)
      */
     public synchronized void postReconcile(final IProgressMonitor mon) {
         try {
@@ -623,7 +623,7 @@ public class ErlModule extends Openable implements IErlModule {
         final IParent parent = getParent();
         for (final IErlElement child : parent.getChildrenOfKind(Kind.MODULE)) {
             if (child instanceof IErlModule
-                    && CommonUtils.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
+                    && ModuleKind.nameToModuleKind(child.getName()) == ModuleKind.HRL) {
                 result.add((IErlModule) child);
             }
         }

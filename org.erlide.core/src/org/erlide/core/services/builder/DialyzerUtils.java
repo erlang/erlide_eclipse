@@ -23,12 +23,12 @@ import org.erlide.core.model.erlang.IErlFolder;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.ModuleKind;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
-
 
 public class DialyzerUtils {
 
@@ -109,7 +109,7 @@ public class DialyzerUtils {
         final IFolder ebin = project.getFolder(ep.getOutputLocation());
         for (final IErlModule m : modules.get(ep)) {
             final String name = m.getName();
-            if (CommonUtils.hasErlExtension(name)) {
+            if (ModuleKind.hasErlExtension(name)) {
                 if (fromSource) {
                     final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());

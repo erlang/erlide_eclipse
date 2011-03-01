@@ -35,10 +35,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.AcceptFlags;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlElementVisitor;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlFunctionClause;
@@ -46,12 +47,13 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.IErlElement.AcceptFlags;
-import org.erlide.core.model.erlang.IErlElement.Kind;
+import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.core.services.search.FunctionPattern;
 import org.erlide.core.services.search.IncludePattern;
 import org.erlide.core.services.search.MacroPattern;
@@ -61,14 +63,11 @@ import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
-import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Sets;
-
 
 public class SearchUtil {
 
@@ -133,7 +132,7 @@ public class SearchUtil {
 
     private static void addFileToScope(final IFile file,
             final ErlSearchScope result) {
-        if (CommonUtils.hasModuleExtension(file.getName())) {
+        if (ModuleKind.hasModuleExtension(file.getName())) {
             final IErlModule module = ErlangCore.getModel().findModule(file);
             result.addModule(module);
         }

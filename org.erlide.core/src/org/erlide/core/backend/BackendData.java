@@ -31,7 +31,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.core.backend.internal.InitialCall;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -86,7 +86,7 @@ public class BackendData extends GenericBackendData {
             final IMarker m = bp.getMarker();
             final IResource r = m.getResource();
             final String name = r.getName();
-            if (CommonUtils.hasErlExtension(name)) {
+            if (ModuleKind.hasErlExtension(name)) {
                 final IProject p = r.getProject();
                 if (projects.contains(p)) {
                     final String s = p.getName() + ":" + name;

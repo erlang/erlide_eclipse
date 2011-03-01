@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
-import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -145,36 +144,4 @@ public class CommonUtils {
         return result;
     }
 
-    public static ModuleKind extensionToModuleKind(final String ext) {
-        if (ext == null) {
-            return ModuleKind.BAD;
-        }
-        if (ext.equalsIgnoreCase("hrl")) {
-            return ModuleKind.HRL;
-        }
-        if (ext.equalsIgnoreCase("erl")) {
-            return ModuleKind.ERL;
-        }
-        if (ext.equalsIgnoreCase("yrl")) {
-            return ModuleKind.YRL;
-        }
-        return ModuleKind.BAD;
-    }
-
-    public static ModuleKind nameToModuleKind(final String name) {
-        final IPath p = new Path(name);
-        return extensionToModuleKind(p.getFileExtension());
-    }
-
-    public static boolean isModuleExtensionx(final String ext) {
-        return CommonUtils.extensionToModuleKind(ext) != ModuleKind.BAD;
-    }
-
-    public static boolean hasModuleExtension(final String name) {
-        return CommonUtils.nameToModuleKind(name) != ModuleKind.BAD;
-    }
-
-    public static boolean hasErlExtension(final String name) {
-        return CommonUtils.nameToModuleKind(name) == ModuleKind.ERL;
-    }
 }
