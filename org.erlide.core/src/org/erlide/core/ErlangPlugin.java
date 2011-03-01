@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -55,20 +53,12 @@ public class ErlangPlugin extends Plugin {
     public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
 
     private static ErlangPlugin plugin;
-    private ResourceBundle resourceBundle;
     private PlatformChangeListener platformListener;
     private ErlLogger logger;
 
     public ErlangPlugin() {
         super();
         plugin = this;
-        try {
-            resourceBundle = ResourceBundle
-                    .getBundle("org.erlide.core.ErlangPluginResources");
-        } catch (final MissingResourceException x) {
-            x.printStackTrace();
-            resourceBundle = null;
-        }
     }
 
     /**
@@ -81,33 +71,6 @@ public class ErlangPlugin extends Plugin {
             plugin = new ErlangPlugin();
         }
         return plugin;
-    }
-
-    /**
-     * Returns the string from the plugin's resource bundle, or 'key' if not
-     * found.
-     * 
-     * @param key
-     *            The resource
-     * @return The identified string
-     */
-    public static String getResourceString(final String key) {
-        final ResourceBundle bundle = ErlangPlugin.getDefault()
-                .getResourceBundle();
-        try {
-            return bundle != null ? bundle.getString(key) : key;
-        } catch (final MissingResourceException e) {
-            return key;
-        }
-    }
-
-    /**
-     * Returns the plugin's resource bundle,
-     * 
-     * @return The requested bundle
-     */
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle;
     }
 
     /*
