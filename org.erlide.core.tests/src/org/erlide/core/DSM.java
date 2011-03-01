@@ -52,6 +52,7 @@ public class DSM {
 
     final Map<JavaPackage, Pkg> dsm = Maps.newHashMap();
 
+    @SuppressWarnings("unchecked")
     public DSM(final List<JavaPackage> input) {
         for (final JavaPackage p : input) {
             final Pkg r = new Pkg(p);

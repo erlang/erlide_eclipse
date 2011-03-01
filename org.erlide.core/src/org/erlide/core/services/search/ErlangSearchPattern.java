@@ -57,14 +57,14 @@ public abstract class ErlangSearchPattern {
     // search for
     public enum SearchFor {
         FUNCTION, MACRO, RECORD, INCLUDE, TYPE, VARIABLE, RECORD_FIELD;
-    };
+    }
 
     public EnumSet<SearchFor> allSearchFor = EnumSet.allOf(SearchFor.class);
 
     // limit to
     public enum LimitTo {
         REFERENCES, DEFINITIONS, ALL_OCCURRENCES
-    };
+    }
 
     public EnumSet<LimitTo> allLimitTo = EnumSet.allOf(LimitTo.class);
 

@@ -223,7 +223,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
     // static final int VISIT_EXTERNALS = 0x0002;
     enum AcceptFlags {
         LEAFS_ONLY, CHILDREN_FIRST
-    };
+    }
 
     /**
      * The good ole visitor pattern

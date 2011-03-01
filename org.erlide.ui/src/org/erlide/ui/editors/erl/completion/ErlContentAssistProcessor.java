@@ -41,12 +41,11 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.common.CommonUtils;
-import org.erlide.core.common.ModuleKind;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlImport;
@@ -57,7 +56,6 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ModelUtils;
@@ -81,7 +79,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 public class ErlContentAssistProcessor implements IContentAssistProcessor,
         IDisposable {
@@ -116,7 +113,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         AUTO_IMPORTED_FUNCTIONS,
         ARITY_ONLY,
         UNEXPORTED_ONLY
-    };
+    }
 
     // private static final int DECLARED_FUNCTIONS = 1;
     // private static final int EXTERNAL_FUNCTIONS = 2;
