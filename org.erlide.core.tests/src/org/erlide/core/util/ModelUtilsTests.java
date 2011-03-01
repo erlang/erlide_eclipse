@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
@@ -26,7 +27,6 @@ import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlTypespec;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
@@ -448,9 +448,9 @@ public class ModelUtilsTests {
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
                     .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
-            final Collection<IErlProject> projects = Lists
+            final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            ModelUtils.findPreprocessorDef(projects, "a.erl", "rec2",
+            ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
                     Kind.RECORD_DEF);
             // then
             // it should be found
@@ -491,9 +491,9 @@ public class ModelUtilsTests {
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
                     .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
-            final Collection<IErlProject> projects = Lists
+            final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            ModelUtils.findPreprocessorDef(projects, "a.erl", "rec2",
+            ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
                     Kind.RECORD_DEF);
             // then
             // it should be found
@@ -540,9 +540,9 @@ public class ModelUtilsTests {
             // looking for the record def
             final IErlPreprocessorDef preprocessorDef = ModelUtils
                     .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
-            final Collection<IErlProject> projects = Lists
+            final Collection<IErlProject> myprojects = Lists
                     .newArrayList(project);
-            ModelUtils.findPreprocessorDef(projects, "a.erl", "rec2",
+            ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
                     Kind.RECORD_DEF);
             // then
             // it should be found
