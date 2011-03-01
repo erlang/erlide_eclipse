@@ -74,7 +74,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Maps;
 
-
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     private ErlangDebugTarget target;
@@ -395,9 +394,10 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     void runInitial(final String module, final String function,
             final String args, final RpcCallSite backend) {
-        ErlLogger.debug("calling startup function %s:%s", module, function);
         try {
             if (module.length() > 0 && function.length() > 0) {
+                ErlLogger.debug("calling startup function %s:%s(%s)", module,
+                        function, args);
                 if (args.length() > 0) {
                     backend.cast(module, function, "s", args);
                 } else {

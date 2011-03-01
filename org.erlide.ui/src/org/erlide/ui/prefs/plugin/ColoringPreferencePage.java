@@ -76,7 +76,8 @@ import org.erlide.ui.util.PixelConverter;
 public class ColoringPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
 
-    private static final String COMPILER_TASK_TAGS = ErlangCoreOptions.COMPILER_TASK_TAGS;
+    private static final String COMPILER_TASK_TAGS = ErlangCoreOptions.COMPILER_TASK_TAGS
+            .getValue();
 
     public static final String COLORS_QUALIFIER = ErlideUIPlugin.PLUGIN_ID
             + "/editor/colors/";

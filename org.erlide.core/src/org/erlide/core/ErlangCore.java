@@ -10,22 +10,12 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -33,10 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
@@ -50,18 +37,6 @@ import org.erlide.core.model.erlang.internal.ErlModelManager;
  * </p>
  */
 public final class ErlangCore {
-
-    /**
-     * The identifier for the Erlang model (value
-     * <code>"org.erlide.core.model.erlang.erlangmodel"</code>).
-     */
-    public static final String MODEL_ID = ErlangPlugin.PLUGIN_ID
-            + ".erlangmodel"; //$NON-NLS-1$
-
-    /**
-     * Name of the handle id attribute in a Erlang marker.
-     */
-    public static final String ATT_HANDLE_ID = "org.erlide.core.model.erlang.internal.ErlModelManager.handleId"; //$NON-NLS-1$
 
     public static final IErlModelManager getModelManager() {
         return ErlModelManager.getDefault();
@@ -80,88 +55,6 @@ public final class ErlangCore {
     // return getModelManager().getErlangModel().getErlangProject(project)
     // .getProperties();
     // }
-
-    /**
-     * If runtime is not set, try to locate one. The first one found as below is
-     * set as default. All "obvious" runtimes found are stored.
-     * <ul>
-     * <li>A system property <code>erlide.runtime</code> can be set to point to
-     * a location.</li>
-     * <li>A preference in the default scope
-     * <code>org.erlide.core/default_runtime</code> can be set to point to a
-     * location.</li>
-     * <li>Look for existing Erlang runtimes in a few obvious places and install
-     * them, choosing a suitable one as default.</li>
-     * </ul>
-     * 
-     */
-    public static void initializeRuntimesList() {
-        if (BackendCore.getRuntimeInfoManager().getDefaultRuntime() != null) {
-            return;
-        }
-        final String[] locations = {
-                System.getProperty("erlide.runtime"),
-                new DefaultScope().getNode("org.erlide.core").get(
-                        "default_runtime", null), "c:/program files",
-                "c:/programs", "c:/", "c:/apps",
-                System.getProperty("user.home"), "/usr", "/usr/local",
-                "/usr/local/lib", "/Library/Frameworks/erlang/Versions" };
-        for (final String loc : locations) {
-            final Collection<File> roots = findRuntime(loc);
-            for (final File root : roots) {
-                final RuntimeInfo rt = new RuntimeInfo();
-                rt.setOtpHome(root.getPath());
-                rt.setName(root.getName());
-                final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
-                        .getRoot();
-                final String location = wroot.getLocation().toPortableString();
-                rt.setWorkingDir(location);
-                BackendCore.getRuntimeInfoManager().addRuntime(rt);
-            }
-        }
-        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(BackendCore
-                .getRuntimeInfoManager().getRuntimes());
-        Collections.sort(list, new Comparator<RuntimeInfo>() {
-            public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
-                final int x = o2.getVersion().compareTo(o1.getVersion());
-                if (x != 0) {
-                    return x;
-                }
-                return o2.getName().compareTo(o1.getName());
-            }
-        });
-        if (list.size() > 0) {
-            BackendCore.getRuntimeInfoManager().setDefaultRuntime(
-                    list.get(0).getName());
-            BackendCore.getRuntimeInfoManager().setErlideRuntime(
-                    BackendCore.getRuntimeInfoManager().getDefaultRuntime());
-        }
-    }
-
-    private static Collection<File> findRuntime(final String loc) {
-        final Collection<File> result = new ArrayList<File>();
-        if (loc == null) {
-            return result;
-        }
-        final File folder = new File(loc);
-        if (!folder.exists()) {
-            return result;
-        }
-        final File[] candidates = folder.listFiles(new FileFilter() {
-            public boolean accept(final File pathname) {
-                return pathname.isDirectory()
-                        && (pathname.getName().startsWith("erl")
-                                || pathname.getName().startsWith("Erl") || pathname
-                                .getName().startsWith("R"));
-            }
-        });
-        for (final File f : candidates) {
-            if (RuntimeInfo.validateLocation(f.getPath())) {
-                result.add(f);
-            }
-        }
-        return result;
-    }
 
     /**
      * Returns a table of all known configurable options with their default
@@ -357,7 +250,8 @@ public final class ErlangCore {
             defaultOptions.put(propertyName, preferences.get(propertyName, ""));
         }
         // get encoding through resource plugin
-        defaultOptions.put(ErlangCoreOptions.CORE_ENCODING, getEncoding());
+        defaultOptions.put(ErlangCoreOptions.CORE_ENCODING.getValue(),
+                getEncoding());
 
         return defaultOptions;
     }
@@ -382,45 +276,6 @@ public final class ErlangCore {
             }
         }
         return ResourcesPlugin.getEncoding();
-    }
-
-    /**
-     * Configures the given marker attribute map for the given Erlang element.
-     * Used for markers, which denote a Erlang element rather than a resource.
-     * 
-     * @param attributes
-     *            the mutable marker attribute map (key type:
-     *            <code>String</code>, value type: <code>String</code>)
-     * @param element
-     *            the Erlang element for which the marker needs to be configured
-     */
-    public static void addErlangElementMarkerAttributes(
-            final Map<String, String> attributes, final IErlElement element) {
-        // if (element instanceof IMember)
-        // element = ((IMember) element).getClassFile();
-        if (attributes != null && element != null) {
-            attributes.put(ErlangCore.ATT_HANDLE_ID, "element handle id");
-        }
-    }
-
-    /**
-     * Configures the given marker for the given Erlang element. Used for
-     * markers, which denote a Erlang element rather than a resource.
-     * 
-     * @param marker
-     *            the marker to be configured
-     * @param element
-     *            the Erlang element for which the marker needs to be configured
-     * @throws CoreException
-     *             if the <code>IMarker.setAttribute</code> on the marker fails
-     */
-    public static void configureErlangElementMarker(final IMarker marker,
-            final IErlElement element) throws CoreException {
-        // if (element instanceof IMember)
-        // element = ((IMember) element).getClassFile();
-        if (marker != null && element != null) {
-            marker.setAttribute(ErlangCore.ATT_HANDLE_ID, "element handle id");
-        }
     }
 
     /**
