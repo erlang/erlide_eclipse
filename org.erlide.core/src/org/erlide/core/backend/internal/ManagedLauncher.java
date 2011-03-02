@@ -19,6 +19,8 @@ import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.common.LogUtil;
+import org.erlide.core.common.MessageReporter;
+import org.erlide.core.common.MessageReporter.ReporterPosition;
 import org.erlide.core.common.StringUtils;
 import org.erlide.jinterface.ErlLogger;
 
@@ -61,13 +63,19 @@ public class ManagedLauncher implements IDisposable {
 
         runtime = createRuntime(my_env, cmds, workingDirectory);
 
-        final ErtsProcess erts = new ErtsProcess(launch, runtime,
-                info.getNodeName(), null);
-        launch.addProcess(erts);
-        proxy = erts.getStreamsProxy();
+        if (runtime != null) {
+            final ErtsProcess erts = new ErtsProcess(launch, runtime,
+                    info.getNodeName(), null);
+            launch.addProcess(erts);
+            proxy = erts.getStreamsProxy();
 
-        ErlLogger.debug(runtime.toString());
-        checkIfRuntimeIsRunning();
+            ErlLogger.debug(runtime.toString());
+            checkIfRuntimeIsRunning();
+        } else {
+            MessageReporter
+                    .show("Could not start Erlang runtime, please check your configuration",
+                            ReporterPosition.CENTER);
+        }
 
         startWatcher(info, workingDirectory);
     }
