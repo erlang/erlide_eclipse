@@ -476,8 +476,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final IErlModule module =
 
         ModelUtils.findModule(erlProject, moduleName, null, checkAllProjects);
-        addFunctionsFromModule(offset, prefix, arityOnly, result, module);
-        // } else {
+        if (module != null) {
+            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
+        }
+
         // boolean foundInModel = false;
         // // first check in project, refs and external modules
         // final List<IErlModule> modules = ModelUtils
@@ -487,7 +489,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         // moduleName)) {
         // foundInModel = addFunctionsFromModule(offset, prefix,
         // arityOnly, result, m);
-        // }
         // }
         //
         // // then check built stuff and otp
