@@ -255,7 +255,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeRestoreAction() {
-        restore = new RestoreAction(viewer.getControl().getShell());
+        restore = new RestoreAction(viewer);
         restore.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_OBJ_FOLDER));
         restore.setToolTipText("Restore previous results");

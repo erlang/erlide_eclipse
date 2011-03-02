@@ -5,7 +5,7 @@ package org.erlide.cover.views.model;
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  *
- */
+ */    
 public enum ObjectType {
     PROJECT,
     FOLDER,

@@ -31,6 +31,10 @@ public class StatsTreeModel implements Serializable {
         return model;
     }
 
+    public static void changeInstance(StatsTreeModel mod) {
+        model = mod;
+    }
+    
     public ICoverageObject getRoot() {
         return root;
     }
@@ -79,7 +83,6 @@ public class StatsTreeModel implements Serializable {
 
     private void initialize() {
         root = new StatsTreeObject("total", 0, 0, ObjectType.PROJECT);
-
     }
 
 }

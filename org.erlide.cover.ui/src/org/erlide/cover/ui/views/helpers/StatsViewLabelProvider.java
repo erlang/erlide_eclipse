@@ -1,5 +1,7 @@
 package org.erlide.cover.ui.views.helpers;
 
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -12,6 +14,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.erlide.core.erlang.ErlangCore;
 import org.erlide.core.erlang.IErlModule;
 import org.erlide.cover.core.api.CoveragePerformer;
 import org.erlide.cover.core.api.IConfiguration;
@@ -28,7 +31,7 @@ import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
  */
 public class StatsViewLabelProvider extends LabelProvider implements
         ITableLabelProvider {
-    
+
     private Logger log = Logger.getLogger(getClass());
 
     public Image getColumnImage(final Object element, final int columnIndex) {
@@ -36,19 +39,24 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
         final ICoverageObject statsEl = (ICoverageObject) element;
 
-        IConfiguration config = CoveragePerformer.getPerformer().getConfig();
-
         switch (columnIndex) {
         case 0:
             ObjectType type = statsEl.getType();
 
             switch (type) {
             case FUNCTION:
-                img = JavaUI.getSharedImages().getImageDescriptor(
-                                org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PRIVATE).createImage();
+                img = JavaUI
+                        .getSharedImages()
+                        .getImageDescriptor(
+                                org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PRIVATE)
+                        .createImage();
                 break;
             case MODULE:
-                IErlModule m = config.getModule(statsEl.getLabel());
+                Set<IErlModule> mods = ErlangCore.getModuleMap()
+                        .getModulesByName(statsEl.getLabel());
+                IErlModule m = mods.iterator().next();
+                if (m == null)
+                    return null;
                 img = ErlangElementImageProvider.getErlImageDescriptor(m,
                         ErlangElementImageProvider.SMALL_ICONS).createImage();
                 break;
