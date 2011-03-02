@@ -80,6 +80,10 @@
             		</or>
            		 </iterate>
               </with>
+              <systemTest
+                    property="shade.bterl.false"
+                    value="true">
+              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
@@ -104,6 +108,10 @@
             		</or>
            		 </iterate>
               </with>
+              <systemTest
+                    property="shade.bterl.false"
+                    value="true">
+              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
@@ -128,6 +136,10 @@
             		</or>
            		 </iterate>
               </with>
+              <systemTest
+                    property="shade.bterl.false"
+                    value="true">
+              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType

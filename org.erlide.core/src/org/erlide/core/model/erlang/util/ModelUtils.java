@@ -102,7 +102,7 @@ public class ModelUtils {
         final IErlElement childNamed = ErlangCore.getModel().getChildNamed(
                 path.get(0));
         ErlLogger.debug(">>childNamed %s", (childNamed == null ? "<null>"
-                : childNamed));
+                : childNamed.getName()));
         if (childNamed instanceof IParent) {
             IParent parent = (IParent) childNamed;
             final int n = path.size() - 1;

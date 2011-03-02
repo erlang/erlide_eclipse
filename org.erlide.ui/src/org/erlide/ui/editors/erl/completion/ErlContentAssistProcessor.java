@@ -473,17 +473,20 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 .getProject();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule module = ModelUtils.findModule(erlProject, moduleName,
+        final IErlModule theModule = ModelUtils.findModule(erlProject, moduleName,
                 null, checkAllProjects);
-        if (ModelUtils.isOtpModule(module)) {
-            final String stateDir = ErlideUIPlugin.getDefault()
-                    .getStateLocation().toString();
-            final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-                    moduleName, prefix, stateDir);
-            addFunctionProposalsWithDoc(offset, prefix, result, res, null,
-                    arityOnly);
-        } else {
-            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
+        if (theModule != null) {
+            if (ModelUtils.isOtpModule(theModule)) {
+                final String stateDir = ErlideUIPlugin.getDefault()
+                        .getStateLocation().toString();
+                final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+                        moduleName, prefix, stateDir);
+                addFunctionProposalsWithDoc(offset, prefix, result, res, null,
+                        arityOnly);
+            } else {
+                addFunctionsFromModule(offset, prefix, arityOnly, result,
+                        theModule);
+            }
         }
         return result;
     }
