@@ -473,33 +473,18 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 .getProject();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule module =
-
-        ModelUtils.findModule(erlProject, moduleName, null, checkAllProjects);
-        addFunctionsFromModule(offset, prefix, arityOnly, result, module);
-        // } else {
-        // boolean foundInModel = false;
-        // // first check in project, refs and external modules
-        // final List<IErlModule> modules = ModelUtils
-        // .getModulesWithReferencedProjectsWithPrefix(project, prefix);
-        // for (final IErlModule m : modules) {
-        // if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
-        // moduleName)) {
-        // foundInModel = addFunctionsFromModule(offset, prefix,
-        // arityOnly, result, m);
-        // }
-        // }
-        //
-        // // then check built stuff and otp
-        // if (!foundInModel) {
-        // final String stateDir = ErlideUIPlugin.getDefault()
-        // .getStateLocation().toString();
-        // final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-        // moduleName, prefix, stateDir);
-        // addFunctionProposalsWithDoc(offset, prefix, result, res, null,
-        // arityOnly);
-        // }
-        // }
+        final IErlModule module = ModelUtils.findModule(erlProject, moduleName,
+                null, checkAllProjects);
+        if (ModelUtils.isOtpModule(module)) {
+            final String stateDir = ErlideUIPlugin.getDefault()
+                    .getStateLocation().toString();
+            final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+                    moduleName, prefix, stateDir);
+            addFunctionProposalsWithDoc(offset, prefix, result, res, null,
+                    arityOnly);
+        } else {
+            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
+        }
         return result;
     }
 

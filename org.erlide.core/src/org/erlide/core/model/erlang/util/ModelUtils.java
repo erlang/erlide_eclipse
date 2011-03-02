@@ -14,6 +14,7 @@ import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
@@ -25,7 +26,6 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.internal.SourceRange;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
@@ -38,7 +38,6 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 
 public class ModelUtils {
 
@@ -343,6 +342,18 @@ public class ModelUtils {
             return new SourceRange(start, length);
         }
         return range;
+    }
+
+    public static boolean isOtpModule(final IErlModule module) {
+        IParent parent = module.getParent();
+        while (parent instanceof IErlExternal) {
+            final IErlExternal external = (IErlExternal) parent;
+            if (external.isOTP()) {
+                return true;
+            }
+            parent = external.getParent();
+        }
+        return false;
     }
 
 }
