@@ -125,6 +125,21 @@ binary_3_test_() ->
     ?Test_indent(SIndent, S).
 
 %%
+%% http://www.assembla.com/spaces/erlide/tickets/787-indent---confused-by-macros-in-case-clauses
+macros_in_predicates_test_() ->
+    S = ""++
+            "foo() ->\n"++
+            "case A of\n"++
+            "?B when C == ?D ;\n"++
+            "E == F ->",
+    SIndent = ""++
+                  "foo() ->\n"++
+                  "    case A of\n"++
+                  "        ?B when C == ?D ;\n"++
+                  "                E == F ->",
+    ?Test_indent(SIndent, S).
+
+%%
 %% Local Functions
 %%
 
