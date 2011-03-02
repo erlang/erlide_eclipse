@@ -32,7 +32,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ErlangFunction;
-import org.erlide.test_support.ui.suites.ResultsView;
+import org.erlide.test_support.ui.suites.TestResultsView;
 
 public class TestLaunchShortcut implements ILaunchShortcut {
 
@@ -60,9 +60,9 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                     System.out.println("NULL backend for bterl");
                     return;
                 }
-                final ResultsView view = (ResultsView) PlatformUI
+                final TestResultsView view = (TestResultsView) PlatformUI
                         .getWorkbench().getActiveWorkbenchWindow()
-                        .getActivePage().showView(ResultsView.VIEW_ID);
+                        .getActivePage().showView(TestResultsView.VIEW_ID);
                 if (view != null) {
                     view.clearEvents();
                     backend.getEventDaemon().addHandler(view.getEventHandler());

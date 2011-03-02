@@ -2,11 +2,14 @@ package org.erlide.test_support.ui.suites;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -18,6 +21,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
+import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -25,7 +29,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public class ResultsView extends ViewPart {
+public class TestResultsView extends ViewPart {
     public static final String VIEW_ID = "org.erlide.test_support.views.testresults";
 
     private final TestEventHandler eventHandler;
@@ -36,7 +40,7 @@ public class ResultsView extends ViewPart {
     private final List<TestCaseData> events;
     private Label label;
 
-    public ResultsView() {
+    public TestResultsView() {
         eventHandler = new TestEventHandler(this);
         events = Lists.newArrayList();
     }
@@ -58,6 +62,16 @@ public class ResultsView extends ViewPart {
         treeViewer = new TreeViewer(control, SWT.NONE);
         treeViewer.setSorter(new TestResultSorter());
         final Tree tree = treeViewer.getTree();
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDoubleClick(final MouseEvent e) {
+                final Object data = tree.getSelection()[0].getData();
+                if (data instanceof TestCaseData) {
+                    final TestCaseData testData = (TestCaseData) data;
+                    openTestInEditor(testData);
+                }
+            }
+        });
         tree.setLinesVisible(true);
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         treeViewer.setLabelProvider(new TestResultsLabelProvider());
@@ -67,11 +81,21 @@ public class ResultsView extends ViewPart {
         initToolbar();
     }
 
+    protected void openTestInEditor(final TestCaseData testData) {
+        try {
+            // TODO these utilities don't know about test code paths!!!
+            ErlModelUtils.openMF(testData.getModule(), testData.getFunction());
+        } catch (final CoreException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initToolbar() {
-        final Action action = new ClearResultsAction(treeViewer, events);
         final IActionBars actionBars = getViewSite().getActionBars();
         final IMenuManager dropDownMenu = actionBars.getMenuManager();
         final IToolBarManager toolBar = actionBars.getToolBarManager();
+
+        final Action action = new ClearResultsAction(treeViewer, events);
         dropDownMenu.add(action);
         toolBar.add(action);
     }
@@ -99,8 +123,8 @@ public class ResultsView extends ViewPart {
         });
     }
 
-    private void handleEvent(final OtpErlangObject msg) throws TermParserException,
-            OtpErlangException {
+    private void handleEvent(final OtpErlangObject msg)
+            throws TermParserException, OtpErlangException {
         final OtpErlangTuple tuple = (OtpErlangTuple) msg;
         final String tag = ((OtpErlangAtom) tuple.elementAt(0)).atomValue();
         final OtpErlangObject value = tuple.elementAt(1);

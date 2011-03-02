@@ -9,7 +9,7 @@
    </category>
    <view
          category="erlide.test.views"
-         class="org.erlide.test_support.ui.suites.ResultsView"
+         class="org.erlide.test_support.ui.suites.TestResultsView"
          id="org.erlide.test_support.views.testresults"
          name="Test results"
          restorable="true">
