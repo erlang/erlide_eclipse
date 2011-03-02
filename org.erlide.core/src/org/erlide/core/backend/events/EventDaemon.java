@@ -21,6 +21,7 @@ public class EventDaemon implements IBackendListener {
     volatile boolean stopped = false;
     List<EventHandler> handlers = new ArrayList<EventHandler>();
     final Object handlersLock = new Object();
+    final List<ErlangEvent> events = Lists.newArrayList();
 
     final static boolean DEBUG = "true".equals(System
             .getProperty("erlide.event.daemon"));
@@ -85,7 +86,6 @@ public class EventDaemon implements IBackendListener {
         public void run() {
             try {
                 OtpErlangObject msg = null;
-                final List<ErlangEvent> events = Lists.newArrayList();
                 do {
                     try {
                         msg = backend.receiveEvent(200);
@@ -128,6 +128,10 @@ public class EventDaemon implements IBackendListener {
                 }
             }
         }
+    }
+
+    public void postEvent(final String topic, final OtpErlangObject event) {
+        events.add(new ErlangEvent(topic, event, null));
     }
 
 }

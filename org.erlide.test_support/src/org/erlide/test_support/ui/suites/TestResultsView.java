@@ -132,8 +132,7 @@ public class TestResultsView extends ViewPart {
         TestCaseData test;
         if ("init".equals(tag)) {
             // value = {Dir, Suite, Case}
-            final String title = value.toString();
-            label.setText(">>> " + title);
+            label.setText("Started: " + formatTitle(value));
         } else if ("start_failed".equals(tag)) {
             // value = ?
         } else if ("log_started".equals(tag)) {
@@ -191,6 +190,22 @@ public class TestResultsView extends ViewPart {
         }
     }
 
+    private String formatTitle(final OtpErlangObject value) {
+        try {
+            final Bindings b = ErlUtils.match("{D,S,C}", value);
+            final String suite = b.getAtom("S");
+            final String tcase = b.getAtom("C");
+            if (tcase.length() == 0) {
+                return "suite " + suite;
+            } else {
+                return "suite " + suite + "; case " + tcase;
+            }
+        } catch (final TermParserException e) {
+        } catch (final OtpErlangException e) {
+        }
+        return value.toString();
+    }
+
     private TestCaseData findCase(final String mod, final String fun) {
         for (final TestCaseData data : events) {
             if (data.getModule().equals(mod) && data.getFunction().equals(fun)) {
@@ -205,6 +220,11 @@ public class TestResultsView extends ViewPart {
     public void clearEvents() {
         events.clear();
         treeViewer.refresh();
+    }
+
+    public void setMessage(final String string) {
+        label.setText(string);
+        label.update();
     }
 
 }
