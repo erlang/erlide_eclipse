@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="jdepend-2.9.1.jar" sourcepath="jdepend.zip"/>
 	<classpathentry exported="true" kind="lib" path="quickcheck-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="quickcheck-src-generator-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="mockito-all-1.6.jar"/>

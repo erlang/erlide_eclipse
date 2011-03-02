@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -23,22 +24,22 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.backend.runtime.RuntimeInfoManager;
-import org.erlide.backend.runtime.RuntimeVersion;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlDebugConstants;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.backend.events.ErlangEvent;
-import org.erlide.jinterface.backend.events.EventHandler;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
+import org.erlide.core.common.PreferencesUtils;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.services.launching.ErlangLaunchDelegate;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
-import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.launch.ErlangLaunchDelegate;
+import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
 import org.osgi.framework.Bundle;
 
@@ -65,22 +66,25 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         try {
             BTERL_WATCHER_INIT_DEBUGGER = (OtpErlangTuple) TermParser
                     .getParser().parse("{bterl_watcher, init_debugger}");
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
         }
     }
 
     private String testcase;
     private String suite;
     private String mode;
-    private String project;
+    private String projectName;
     private File workdir;
+    private IProject project;
 
     @Override
     public void launch(final ILaunchConfiguration cfg, final String amode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
 
-        project = cfg.getAttribute(TestLaunchAttributes.PROJECT, "");
+        projectName = cfg.getAttribute(TestLaunchAttributes.PROJECT, "");
+        project = ResourcesPlugin.getWorkspace().getRoot()
+                .getProject(projectName);
         mode = ILaunchManager.DEBUG_MODE.equals(amode) ? amode : cfg
                 .getAttribute(TestLaunchAttributes.MODE, "");
         final String wdir = cfg.getAttribute(TestLaunchAttributes.WORKDIR, "");
@@ -113,8 +117,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         }
         runMakeLinks(monitor);
 
-        final ILaunchConfiguration cfg = setupConfiguration(config, project,
-                workdir);
+        final ILaunchConfiguration cfg = setupConfiguration(config,
+                projectName, workdir);
 
         final String amode = ILaunchManager.DEBUG_MODE.equals(mode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
@@ -246,7 +250,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String bterlPath = getBterlPath();
         System.out.println("... internal path = " + bterlPath);
 
-        final String runtimeName = RuntimeInfoManager.getDefault()
+        final String runtimeName = BackendCore.getRuntimeInfoManager()
                 .getRuntime(new RuntimeVersion("R13B"), "").getName();
 
         final List<String> paths = Lists.newArrayList();
@@ -302,7 +306,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final String args2 = ErlUtils.format("{~x,~s,~x,~x,~s}", e_flags,
                     cmd, trace, cb, workdirPath).toString();
             wc.setAttribute(ErlLaunchAttributes.ARGUMENTS, args2);
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final SignatureException e) {

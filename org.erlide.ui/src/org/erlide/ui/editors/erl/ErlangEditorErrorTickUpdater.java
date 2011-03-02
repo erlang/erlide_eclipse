@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.IProblemChangedListener;
 

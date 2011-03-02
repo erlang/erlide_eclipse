@@ -51,71 +51,85 @@ intro_new_var(FileName, Start={_SLine,_SCol}, End={_ELine, _ECol}, NewVarName, S
 intro_new_var_eclipse(FileName, Start, End, NewVarName, SearchPaths, TabWidth) ->
     intro_new_var(FileName, Start, End, NewVarName, SearchPaths, TabWidth, eclipse).
 
-
 intro_new_var(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewVarName0, SearchPaths, TabWidth, Editor) ->
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":intro_new_var(" ++ "\"" ++
-	FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ 
-	integer_to_list(Col) ++ "}," ++  "{" ++ integer_to_list(Line1) ++ ", " 
-        ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewVarName0 ++ "\","
-	++ integer_to_list(TabWidth) ++ ").",
-    case refac_misc:is_var_name(NewVarName0) of 
+    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":intro_new_var(" ++ "\"" ++ 
+	    FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ 
+	      integer_to_list(Col) ++ "}," ++ "{" ++ integer_to_list(Line1) ++ ", "
+        ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewVarName0 ++ "\"," ++ integer_to_list(TabWidth) ++ ").",
+    case refac_util:is_var_name(NewVarName0) of
 	true -> ok;
 	false -> throw({error, "Invalid new variable name."})
     end,
     NewVarName = list_to_atom(NewVarName0),
-    {ok, {AnnAST, _Info}} = refac_util:parse_annotate_file(FileName, true, SearchPaths,TabWidth),
+    {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     case interface_api:pos_to_expr(AnnAST, Start, End) of
 	{ok, Exp} ->
 	    Exp;
-	{error, _} -> 
+	{error, _} ->
 	    throw({error, "You have not selected an expression, "
-		   "or the function containing the expression does not parse."}),
+			  "or the function containing the expression does not parse."}),
 	    Exp = none
     end,
     case interface_api:expr_to_fun(AnnAST, Exp) of
 	{ok, Fun} ->
 	    Fun;
-	{error, _} -> 
+	{error, _} ->
 	    throw({error, "You have not selected an expression within a function."}),
 	    Fun = none
     end,
-    ok=cond_check(Fun, Exp, NewVarName),
-    intro_new_var_1(FileName, AnnAST,Fun, Exp, NewVarName, Editor, TabWidth, Cmd).
+    ok = cond_check(Fun, Exp, NewVarName),
+    intro_new_var_1(FileName, AnnAST, Fun, Exp, NewVarName, Editor, TabWidth, Cmd).
 
 intro_new_var_1(FileName, AnnAST, Fun, Expr, NewVarName, Editor, TabWidth, Cmd) ->
     AnnAST1 = do_intro_new_var(AnnAST, Fun, Expr, NewVarName),
     case Editor of
-      emacs ->
-	  Res = [{{FileName, FileName}, AnnAST1}],
-	  refac_util:write_refactored_files_for_preview(Res, TabWidth, Cmd),
-	  {ok, [FileName]};
-      eclipse ->
-	  FileFormat =  refac_util:file_format(FileName),
-	  FileContent = refac_prettypr:print_ast(FileFormat, AnnAST1, TabWidth),
-	  {ok, [{FileName, FileName, FileContent}]}
+	emacs ->
+	    Res = [{{FileName, FileName}, AnnAST1}],
+	    refac_write_file:write_refactored_files_for_preview(Res, TabWidth, Cmd),
+	    {ok, [FileName]};
+	eclipse ->
+	    FileFormat = refac_util:file_format(FileName),
+	    FileContent = refac_prettypr:print_ast(FileFormat, AnnAST1, TabWidth),
+	    {ok, [{FileName, FileName, FileContent}]}
     end.
 
 cond_check(Form, Expr, NewVarName) ->
+    ok=variable_replaceable(Expr),
     {Body, Statement} = get_inmost_enclosing_body_expr(Form, Expr),
-    ExprFVs = refac_misc:get_free_vars(Expr),
-    SEnvs = refac_misc:get_env_vars(Statement),
-    case ExprFVs -- SEnvs of
-      [] ->
-	  ok;
-      Vs ->
-	  Msg = io_lib:format("The exprssion selected contains locally "
-			      "declared variables(s) ~p.", [Vs]),
-	  throw({error, lists:flatten(Msg)})
+    ExprFVs = refac_util:get_free_vars(Expr),
+    SEnvs = refac_util:get_env_vars(Statement),
+    Vs = [V||{V, Loc}<-ExprFVs--SEnvs, Loc/={0,0}],
+    case Vs of
+        [] ->
+	    ok;
+	_ ->
+	    Msg = io_lib:format("The exprssion selected contains locally "
+				"declared variables(s) ~p.", [Vs]),
+	    throw({error, lists:flatten(Msg)})
     end,
     BodyBdVars = get_bound_vars(refac_syntax:block_expr(Body)),
-    ExistingVars =  element(1, lists:unzip(BodyBdVars ++ SEnvs)),
+    ExistingVars = element(1, lists:unzip(BodyBdVars ++ SEnvs)),
     case lists:member(NewVarName, ExistingVars) of
 	true ->
 	    throw({error, "The new variable name conflicts with, or shadows, "
-		   "existing variable declarations."});
+			  "existing variable declarations."});
 	false -> ok
     end.
-    
+
+variable_replaceable(Exp) ->
+    Ann = refac_syntax:get_ann(Exp),
+    case lists:keysearch(category, 1, Ann) of
+	{value, {category, record_field}} ->
+	    throw({error, "Record field cannot be replaced by a variable."});
+	{value, {category, record_type}} ->
+	    throw({error, "Record type cannot be replaced by a variable."});
+	{value, {category, guard_expression}} ->
+            throw({error, "Introducing a variable in a guard expression is not supported."});
+        {value, {category, {macro_name, Num, _}}} when Num/=none ->
+	    throw({error, "Replacing a macro name with a variable is not supported."});
+	_ -> ok
+    end.
+
 get_bound_vars(Tree) ->
     F = fun (T, B) ->
 		As = refac_syntax:get_ann(T),
@@ -124,7 +138,7 @@ get_bound_vars(Tree) ->
 		    _ -> B
 		end
 	end,
-    lists:usort(refac_syntax_lib:fold(F, [], Tree)).
+    lists:usort(ast_traverse_api:fold(F, [], Tree)).
 
 do_intro_new_var(AnnAST, FunForm, Expr, NewVarName) ->
     NewFun = do_intro_new_var_in_fun(FunForm, Expr, NewVarName),
@@ -164,47 +178,105 @@ do_insert_and_replace(Node, Expr, NewVarName) ->
     MatchExpr = make_match_expr(Expr, NewVarName),
     ExprPos = refac_syntax:get_pos(Expr),
     Body = case refac_syntax:type(Node) of
-	     clause ->
-		 refac_syntax:clause_body(Node);
-	     block_expr ->
-		 refac_syntax:block_expr_body(Node);
-	     try_expr ->
-		 refac_syntax:try_expr_body(Node)
+	       clause ->
+		   refac_syntax:clause_body(Node);
+	       block_expr ->
+		   refac_syntax:block_expr_body(Node);
+	       try_expr ->
+		   refac_syntax:try_expr_body(Node)
 	   end,
     Fun = fun (ExprStatement) ->
-		  {Start, End} = refac_misc:get_start_end_loc(ExprStatement),
-		  case Start =< ExprPos andalso ExprPos =< End of
-		    true ->
-			  {ExprStatement1, _}= replace_expr_with_var(Expr, NewVarName,
-								     ExprStatement),
-			  [MatchExpr, ExprStatement1];
-		    false ->
-			[ExprStatement]
-		  end
-	  end,
-    NewBody = [E1 || E <- Body, E1 <- Fun(E)],
+                  Range = refac_util:get_start_end_loc_with_comment(ExprStatement),
+                  NewExpr=refac_syntax:copy_pos(ExprStatement, refac_util:update_ann(MatchExpr, {range, Range})),
+                  {ExprStatement1, _} = replace_expr_with_var(Expr, NewVarName, ExprStatement),
+                  [NewExpr, ExprStatement1]
+          end,
+    {Body1, Body2} = lists:splitwith(
+                       fun(E) ->
+                               {Start, End} = refac_util:get_start_end_loc(E),
+                               not (Start=<ExprPos andalso ExprPos=<End)
+                       end, Body),
+    NewBody =case Body2 of 
+                 [] ->  
+                     Body1; 
+                 [B|Bs] ->
+                     [B1,B2] = Fun(B),
+                     case refac_syntax:type(B2)==variable andalso Bs/=[] of
+                         true ->
+                             Body1++[B1|Bs];
+                         false ->
+                             case {lists:reverse(Body1), Bs} of
+                                 {[], []} ->
+                                     [B1,refac_syntax:add_ann({layout, vertical}, B2)];
+                                 {[], [B3|Bs1]} ->
+                                     {{BL, _}, _} = refac_util:get_start_end_loc(B),
+                                     {{B3L, _},_} = refac_util:get_start_end_loc(B3),
+                                     case BL==B3L of 
+                                         true ->
+                                             B21=refac_syntax:add_ann({layout, horizontal}, B2),
+                                             B31=refac_syntax:add_ann({layout, horizontal}, B3),
+                                             [B1, B21, B31|Bs1];
+                                         false ->
+                                             B21=refac_syntax:add_ann({layout, vertical}, B2),
+                                             B31=refac_syntax:add_ann({layout, vertical}, B3),
+                                             [B1, B21, B31|Bs1]
+                                     end;
+                                 {[B0|_], []} ->
+                                     {{B0L, _},_} =refac_util:get_start_end_loc(B0),
+                                     {{BL, _}, _} = refac_util:get_start_end_loc(B),
+                                     case B0L==BL of 
+                                         true ->
+                                     B21=refac_syntax:add_ann({layout, horizontal}, B2),
+                                             Body1++[B1,B21];
+                                         false->
+                                             B21=refac_syntax:add_ann({layout, vertical}, B2),
+                                             Body1++[B1, B21]
+                                     end;
+                                 {[B0|_], [B3|Bs1]} ->
+                                     {{B0L, _},_} =refac_util:get_start_end_loc(B0),
+                                     {{BL, _}, _} = refac_util:get_start_end_loc(B),
+                                     B21= case B0L==BL of 
+                                              true ->
+                                          refac_syntax:add_ann({layout, horizontal}, B2);
+                                              false->
+                                                  refac_syntax:add_ann({layout, vertical}, B2)
+                                          end,
+                                     {{B3L, _},_} = refac_util:get_start_end_loc(B3),
+                                     case BL==B3L of 
+                                         true ->
+                                             B31=refac_syntax:add_ann({layout, horizontal}, B3),
+                                             Body1++[B1, B21, B31|Bs1];
+                                         false ->
+                                             B31=refac_syntax:add_ann({layout, vertical}, B3),
+                                             Body1++[B1, B21, B31|Bs1]
+                                     end
+                             end
+                     end
+             end,
     case refac_syntax:type(Node) of
-      clause ->
-	  Pat = refac_syntax:clause_patterns(Node),
-	  Guard = refac_syntax:clause_guard(Node),
-	  refac_syntax:clause(Pat, Guard, NewBody);
-      block_expr ->
-	  refac_syntax:block_expr(NewBody);
-      try_expr ->
-	  C = refac_syntax:try_expr_clauses(Node),
-	  H = refac_syntax:try_expr_handlers(Node),
-	  A = refac_syntax:try_expr_after(Node),
-	  refac_syntax:try_expr(NewBody, C, H, A)
+	clause ->
+	    Pat = refac_syntax:clause_patterns(Node),
+	    Guard = refac_syntax:clause_guard(Node),
+	    refac_util:rewrite(Node, refac_syntax:clause
+                                       (Pat, Guard, NewBody));
+	block_expr ->
+	    refac_util:rewrite(Node,refac_syntax:block_expr(NewBody));
+	try_expr ->
+	    C = refac_syntax:try_expr_clauses(Node),
+	    H = refac_syntax:try_expr_handlers(Node),
+	    A = refac_syntax:try_expr_after(Node),
+	    refac_util:rewrite(Node,refac_syntax:try_expr(NewBody, C, H, A))
     end.
+
 
 replace_expr_with_var(Expr, NewVarName, ExprStatement) ->
     ast_traverse_api:stop_tdTP(fun do_replace_expr_with_var/2,
 			       ExprStatement, {Expr, NewVarName}).
 
 do_replace_expr_with_var(Node, {Expr, NewVarName}) ->
-    case Node of 
+    case Node of
 	Expr ->
-	    NewVarExpr = refac_misc:rewrite(
+	    NewVarExpr = refac_util:rewrite(
 			   Expr,refac_syntax:variable(NewVarName)),
 	    {NewVarExpr, true};
 	_ -> {Node, false}
@@ -212,16 +284,19 @@ do_replace_expr_with_var(Node, {Expr, NewVarName}) ->
 
 make_match_expr(Expr, NewVarName) ->
     Pat = refac_syntax:variable(NewVarName),
-    refac_syntax:match_expr(Pat, Expr).
+    PreComs = refac_syntax:get_precomments(Expr),
+    PostComs=refac_syntax:get_postcomments(Expr),
+    Expr1=refac_syntax:set_precomments(refac_syntax:set_postcomments(Expr, []),[]),
+    MatchExpr=refac_syntax:match_expr(Pat, Expr1),
+    refac_syntax:set_precomments(refac_syntax:set_postcomments(MatchExpr, PostComs), PreComs).
 
-
-get_inmost_enclosing_clause(Form, Expr) ->
+get_inmost_enclosing_clause(Form, Expr) -> 
     ExprPos = refac_syntax:get_pos(Expr),
     Fun = fun (Node, S) ->
-		  Type =  refac_syntax:type(Node),
+		  Type = refac_syntax:type(Node),
 		  case lists:member(Type, [clause, block_expr, try_expr]) of
 		      true ->
-			  Body = case Type of 
+			  Body = case Type of
 				     clause ->
 					 refac_syntax:clause_body(Node);
 				     block_expr ->
@@ -229,31 +304,31 @@ get_inmost_enclosing_clause(Form, Expr) ->
 				     try_expr ->
 					 refac_syntax:try_expr_body(Node)
 				 end,
-			  {Start, _End} = refac_misc:get_range(hd(Body)),
-			  {_, End} = refac_misc:get_range(lists:last(Body)),
+			  {Start, _End} = refac_util:get_range(hd(Body)),
+			  {_, End} = refac_util:get_range(lists:last(Body)),
 			  case Start =< ExprPos andalso ExprPos =< End of
 			      true ->
-				 [{Node, End}|S];
+				  [{Node, End}| S];
 			      _ -> S
 			  end;
 		      _ ->
 			  S
 		  end
-	  end,		 
-    Res = lists:keysort(2, refac_syntax_lib:fold(Fun, [], Form)),
+	  end,
+    Res = lists:keysort(2, ast_traverse_api:fold(Fun, [], Form)),
     case Res of
 	[{Node, _}| _] ->
-	  Node;
+	    Node;
 	_ -> throw({error, "Wrangler internal error."})
     end.
 
 get_inmost_enclosing_body_expr(Form, Expr) ->
     ExprPos = refac_syntax:get_pos(Expr),
     Fun = fun (Node, S) ->
-		  Type =  refac_syntax:type(Node),
+		  Type = refac_syntax:type(Node),
 		  case lists:member(Type, [clause, block_expr, try_expr]) of
 		      true ->
-			  Body = case Type of 
+			  Body = case Type of
 				     clause ->
 					 refac_syntax:clause_body(Node);
 				     block_expr ->
@@ -261,8 +336,8 @@ get_inmost_enclosing_body_expr(Form, Expr) ->
 				     try_expr ->
 					 refac_syntax:try_expr_body(Node)
 				 end,
-			  {Start, _End} = refac_misc:get_range(hd(Body)),
-			  {_, End} = refac_misc:get_range(lists:last(Body)),
+			  {Start, _End} = refac_util:get_range(hd(Body)),
+			  {_, End} = refac_util:get_range(lists:last(Body)),
 			  case Start =< ExprPos andalso ExprPos =< End of
 			      true ->
 				  EnclosingExpr = get_enclosing_expr(Body, Expr),
@@ -273,26 +348,23 @@ get_inmost_enclosing_body_expr(Form, Expr) ->
 			  S
 		  end
 	  end,
-    Res = lists:keysort(2, refac_syntax_lib:fold(Fun, [], Form)),
+    Res = lists:keysort(2, ast_traverse_api:fold(Fun, [], Form)),
     case Res of
 	[{Body, _, E}| _] ->
 	    {Body, E};
-	_ -> 
+	_ ->
 	    throw({error, "Wrangler failed to perform this refactoring."})
     end.
 
 get_enclosing_expr(Body, Expr) ->
     ExprPos = refac_syntax:get_pos(Expr),
-    Fun = fun(ExprStatement) ->
-		  {Start, End} = refac_misc:get_start_end_loc(ExprStatement),
-		  case Start =< ExprPos andalso
-		      ExprPos =< End of 
+    Fun = fun (ExprStatement) ->
+		  {Start, End} = refac_util:get_start_end_loc(ExprStatement),
+		  case Start =< ExprPos andalso  ExprPos =< End of
 		      true ->
 			  [ExprStatement];
 		      false ->
 			  []
 		  end
 	  end,
-    hd(lists:append([Fun(B)||B<-Body])).
-
-
+    hd(lists:append([Fun(B) || B <- Body])).

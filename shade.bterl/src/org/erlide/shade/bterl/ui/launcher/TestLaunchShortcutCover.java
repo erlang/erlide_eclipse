@@ -19,5 +19,4 @@ public class TestLaunchShortcutCover extends TestLaunchShortcut {
         }
         return cfg;
     }
-
 }

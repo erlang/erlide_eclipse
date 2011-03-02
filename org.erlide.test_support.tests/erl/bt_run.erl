@@ -9,22 +9,22 @@
 
 run(Dir, Suite, Arg, Cb) ->
 	?Info({"BT_RUN RUN", Dir, Suite, Arg, Cb}),
-	spawn(fun()->run(Cb) end),
+	spawn(fun()->arun(Dir, Suite, Arg, Cb) end),
 	ok.
 
-run(Cb) ->
+arun(Dir, Suite, Arg, Cb) ->
 	timer:sleep(100),
 	notify(Cb, init, {"",s,c}),
 	Z=(catch blabla_SUITE:f()),
 	?Info(Z),
-	do_tests(Cb, ?NUM_TESTS).
+	do_tests(Dir, Suite, Arg, Cb, ?NUM_TESTS).
 
-do_tests(Cb, 0) ->
-	stop(Cb);
-do_tests(Cb, N) ->
+do_tests(Dir, Suite, Arg, Cb, 0) ->
+	stop(Dir, Suite, Arg, Cb);
+do_tests(Dir, Suite, Arg, Cb, N) ->
 	F=list_to_atom("f"++[?NUM_TESTS-N+$1]),
 	notify(Cb, tc_start, {m,F}),
-	timer:sleep(800),
+	apply(Dir, Suite, Arg),
 	case N of
 		2 ->	
 			notify(Cb, tc_fail, {{m,F}, [], reason});
@@ -35,10 +35,10 @@ do_tests(Cb, N) ->
 		_ ->
 			notify(Cb, tc_result, {m, F, ok})
 	end,
-	do_tests(Cb, N-1).
+	do_tests(Dir, Suite, Arg, Cb, N-1).
 
-stop(Cb) ->
-	notify(Cb, done, {m, "", {3,4,5}, []}),
+stop(Dir, Suite, Arg, Cb) ->
+	notify(Cb, done, {Dir, Suite, {3,4,5}, []}),
 	ok.
 	
 

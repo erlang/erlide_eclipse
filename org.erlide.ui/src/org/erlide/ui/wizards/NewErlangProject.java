@@ -35,15 +35,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IOldErlangProjectProperties;
+import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
+import org.erlide.core.model.erlang.util.PluginUtils;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * Creates a new erlide project in the Eclipse workbench.
@@ -214,16 +216,19 @@ public class NewErlangProject extends Wizard implements INewWizard {
             buildPaths(monitor, root, project, bprefs.getSourceDirs());
             buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(project);
-            prefs.copyFrom(bprefs);
-            prefs.store();
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(project);
+            erlProject.setAllProperties(bprefs);
 
             // TODO add code path to backend
             // final String out = project.getLocation().append(
             // prefs.getOutputDir()).toString();
-        } catch (final CoreException x) {
-            reportError(x);
+        } catch (final CoreException e) {
+            ErlLogger.debug(e);
+            reportError(e);
+        } catch (final BackingStoreException e) {
+            ErlLogger.debug(e);
+            reportError(e);
         } finally {
             monitor.done();
         }

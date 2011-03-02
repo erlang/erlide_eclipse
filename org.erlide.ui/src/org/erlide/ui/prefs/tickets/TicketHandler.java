@@ -13,7 +13,7 @@ package org.erlide.ui.prefs.tickets;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.erlide.jinterface.backend.util.ProblemData;
+import org.erlide.ui.prefs.ProblemData;
 
 public interface TicketHandler {
 

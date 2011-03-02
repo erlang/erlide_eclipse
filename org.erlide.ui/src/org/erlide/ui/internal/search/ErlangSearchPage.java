@@ -39,26 +39,24 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 import com.google.common.collect.Lists;
-
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlangSearchPattern.SearchFor;
-import erlang.ErlideOpen;
-import erlang.OpenResult;
 
 public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
@@ -606,7 +604,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 if (module != null) {
                     // TODO how in the world can we find the proper build
                     // backend?
-                    final Backend b = ErlangCore.getBackendManager()
+                    final RpcCallSite b = ErlangCore.getBackendManager()
                             .getIdeBackend();
                     final ISelection ssel = erlangEditor.getSite()
                             .getSelectionProvider().getSelection();
@@ -614,9 +612,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                     final int offset = textSel.getOffset();
                     OpenResult res;
                     try {
-                        final String scannerModuleName = ErlangToolkit
-                                .createScannerModuleName(module);
-                        res = ErlideOpen.open(b, scannerModuleName, offset,
+                        res = ErlideOpen.open(b, module, offset,
                                 ModelUtils.getImportsAsList(module), "",
                                 ErlangCore.getModel().getPathVars());
                     } catch (final BackendException e) {

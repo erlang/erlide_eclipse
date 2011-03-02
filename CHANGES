@@ -1,3 +1,28 @@
+List of user visible changes between 0.10.1 and 0.10.2 (20110301)
+
+for developers: the APIs have changed and they will keep changing, hopefully to something that is actually usable.
+
+d5acb87 Make sure includes in same dir as module is considered when finding things (NO TEST YET!)
+3db903f https://www.assembla.com/spaces/erlide/tickets/782-dialyzer---add-checkbox-to-skip-plt-checks
+7b634c6 quicklaunch: autoinclude dependent projects
+03bdb94 http://www.assembla.com/spaces/erlide/tickets/764-dialyzer---add-a-way-to-specify-plt-files-from-the-outside#last_comment
+7b1c351 allow unicode chars in comments
+0857aec http://www.assembla.com/spaces/erlide/tickets/764-dialyzer---add-a-way-to-specify-plt-files-from-the-outside
+effefa2 remove sdk feature from update site
+419fc1b http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
+71cde8a http://www.assembla.com/spaces/erlide/tickets/757-erlang-model---command-line-option-to-turn-off-caching
+845a71a http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
+b73ca7b http://www.assembla.com/spaces/erlide/tickets/734-make-modelutils-use-erlang-model--not-resource-model
+f0f52fd Clear project settings caches when project properties are changed (i.e. applied in the project property dialog). Move more from ModelUtils to model. Make sure Exceptions are propagated all the way to UI code (where they should be handled)
+3485a64 754-trying-to-open-an-erlang-debug-configuration-hangs-the-whole-eclipse
+f32762f http://www.assembla.com/spaces/erlide/tickets/745-navigation---use-include-path-for-external-includes Fixed again...
+b505b5b http://www.assembla.com/spaces/erlide/tickets/723-outline---custom-filters
+36c0275 http://www.assembla.com/spaces/erlide/tickets/745-navigation---use-include-path-for-external-includes Fixed again...
+c809647 http://www.assembla.com/spaces/erlide/tickets/732-navigation--merge-open-and-hover-code
+ace0fc2 updated to be consisitent with wrangler-0.9.2 Emacs version.
+f1bb551 http://www.assembla.com/spaces/erlide/tickets/727-dialyzer---better-gui-for-multiple-plt-files
+9b9667c http://www.assembla.com/spaces/erlide/tickets/682-dialyzer---multiple-plt-files (preliminary but well working GUI)
+
 List of user visible changes between 0.10.0 and 0.10.1 (20110216)
 
 d5edcf0 754-trying-to-open-an-erlang-debug-configuration-hangs-the-whole-eclipse

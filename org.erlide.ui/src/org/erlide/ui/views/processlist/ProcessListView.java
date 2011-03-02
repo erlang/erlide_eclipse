@@ -43,11 +43,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.events.ErlangEvent;
-import org.erlide.jinterface.backend.events.EventHandler;
-import org.erlide.runtime.backend.ErlideBackend;
-import org.erlide.runtime.backend.ErlideBackendVisitor;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.ErlideBackendVisitor;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 
@@ -57,7 +57,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-import erlang.ErlideProclist;
 
 /**
  * 

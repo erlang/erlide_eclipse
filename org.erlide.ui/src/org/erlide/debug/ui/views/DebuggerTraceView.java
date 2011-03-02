@@ -43,12 +43,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlangDebugTarget.TraceChangedEventData;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
-import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.ErlangDebugTarget.TraceChangedEventData;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -552,30 +554,36 @@ public class DebuggerTraceView extends AbstractDebugView implements
     //
     // }
 
-    protected void gotoModuleLine(final String module, final int line) {
-        final IWorkbenchWindow dwindow = ErlideUIPlugin
+    protected void gotoModuleLine(final String moduleName, final int line) {
+        final IWorkbenchWindow window = ErlideUIPlugin
                 .getActiveWorkbenchWindow();
-        if (dwindow == null) {
+        if (window == null) {
             return;
         }
-        final IWorkbenchPage page = dwindow.getActivePage();
+        final IWorkbenchPage page = window.getActivePage();
         if (page == null) {
             return;
         }
 
         IEditorPart part = null;
         final IErlModel model = ErlangCore.getModel();
-        final IErlModule m = model.findModule(module);
+        IErlModule module;
+        try {
+            module = model.findModule(moduleName);
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e);
+            return;
+        }
         IEditorInput input = null;
-        input = EditorUtility.getEditorInput(m);
+        input = EditorUtility.getEditorInput(module);
         if (input != null) {
-            final String editorId = EditorUtility.getEditorID(input, m);
+            final String editorId = EditorUtility.getEditorID(input, module);
             if (editorId != null) {
                 try {
                     part = page.openEditor(input, editorId);
                 } catch (final PartInitException e) {
-                    ErlideUIPlugin.errorDialog(dwindow.getShell(),
-                            "Go to File", "Exception occurred", e); //
+                    ErlideUIPlugin.errorDialog(window.getShell(), "Go to File",
+                            "Exception occurred", e); //
                 }
             }
         }

@@ -107,6 +107,12 @@ public class PreferenceConstants {
 
     public static final String ERLANG_OUTLINE_LINK_WITH_EDITOR = "erlangOutlineLinkWithEditor"; //$NON-NLS-1$
 
+    public static final String OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED = "erlangOutlineCustomPatternFiltersEnabled"; //$NON-NLS-1$
+
+    public static final String OUTLINE_CUSTOM_PATTERN_FILTERS = "erlangOutlineCustomPatternFilters"; //$NON-NLS-1$
+
+    public static final String OUTLINE_ENABLED_FILTERS = "erlangOutlineEnabledFilters"; //$NON-NLS-1$
+
     public static enum Color {
         ALICEBLUE(240, 248, 255),
 

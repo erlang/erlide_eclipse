@@ -19,9 +19,9 @@ import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
 

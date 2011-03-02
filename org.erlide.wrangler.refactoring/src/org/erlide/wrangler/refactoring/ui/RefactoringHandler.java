@@ -25,9 +25,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
@@ -79,7 +80,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
@@ -432,10 +432,8 @@ public class RefactoringHandler extends AbstractHandler {
                     for (int i = 0; i < reslist.arity(); ++i) {
                         final OtpErlangTuple restuple = (OtpErlangTuple) reslist
                                 .elementAt(i);
-                        final OtpErlangString msg = (OtpErlangString) restuple
-                                .elementAt(1);
-                        final String formattedString = formatWarningString(msg
-                                .stringValue());
+                        final String formattedString = formatWarningString(ErlUtils
+                                .asString(restuple.elementAt(1)));
                         WarningViewManager.addWarningMessage(formattedString);
                     }
                 }

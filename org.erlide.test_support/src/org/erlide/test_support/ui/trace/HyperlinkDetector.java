@@ -8,7 +8,7 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.ErlModelUtils;
 
 public class HyperlinkDetector extends AbstractHyperlinkDetector {

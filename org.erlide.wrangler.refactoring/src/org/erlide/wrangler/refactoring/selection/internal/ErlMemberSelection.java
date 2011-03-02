@@ -12,9 +12,9 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlMember;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;

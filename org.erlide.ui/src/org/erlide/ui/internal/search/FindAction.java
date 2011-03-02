@@ -29,29 +29,27 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlAttribute;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlPreprocessorDef;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.model.erlang.IErlAttribute;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlPreprocessorDef;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlideOpen;
-import erlang.OpenResult;
 
 /**
  * Abstract class for Java search actions.
@@ -222,17 +220,14 @@ public abstract class FindAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         final ISelection sel = getSelection();
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();
-        final String scannerModuleName = ErlangToolkit
-                .createScannerModuleName(module);
-        OpenResult res;
         try {
-            res = ErlideOpen.open(b, scannerModuleName, offset, ModelUtils
-                    .getImportsAsList(module), "", ErlangCore.getModel()
-                    .getPathVars());
+            final OpenResult res = ErlideOpen.open(b, module, offset,
+                    ModelUtils.getImportsAsList(module), "", ErlangCore
+                            .getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
                     .getSearchPatternFromOpenResultAndLimitTo(module, offset,

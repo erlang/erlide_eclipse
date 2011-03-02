@@ -41,23 +41,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFolder;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.internal.ErlExternalReferenceEntry;
-import org.erlide.core.erlang.internal.ErlExternalReferenceEntryList;
-import org.erlide.core.erlang.internal.ErlOtpExternalReferenceEntryList;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.backend.ErlDebugConstants;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.launch.ErlangLaunchDelegate;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFolder;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IOpenable;
+import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntry;
+import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntryList;
+import org.erlide.core.model.erlang.internal.ErlOtpExternalReferenceEntryList;
+import org.erlide.core.services.launching.ErlangLaunchDelegate;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
 
 /**
@@ -237,8 +237,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                     }
                     final IErlModel model = ErlangCore.getModel();
                     for (final String projName : projNames) {
-                        final IErlElement prj = model
-                                .getErlangProject(projName);
+                        final IErlElement prj = model.getChildNamed(projName);
                         getRoot().addAllErlangModules(prj);
                     }
                 }
@@ -425,24 +424,28 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final IErlModel model = ErlangCore.getModel();
         for (final String i : interpret) {
             final String[] pm = i.split(":");
-            IErlModule m = null;
+            IErlModule module = null;
             if (pm.length > 1) {
-                final IErlProject p = model.getErlangProject(pm[0]);
+                final IErlProject p = (IErlProject) model.getChildNamed(pm[0]);
                 final String mName = pm[1];
                 try {
-                    final String s = ErlideUtil
+                    final String s = CommonUtils
                             .isErlangFileContentFileName(mName) ? mName : mName
                             + ".erl";
-                    m = p.getModule(s);
+                    module = p.getModule(s);
                 } catch (final ErlModelException e) {
                     ErlLogger.warn(e);
                 }
             } else {
-                m = model.findModule(i + ".erl");
+                try {
+                    module = model.findModule(i);
+                } catch (final ErlModelException e) {
+                    module = null;
+                }
             }
-            if (m != null) {
-                if (!interpretedModules.contains(m)) {
-                    interpretedModules.add(m);
+            if (module != null) {
+                if (!interpretedModules.contains(module)) {
+                    interpretedModules.add(module);
                 }
             }
         }

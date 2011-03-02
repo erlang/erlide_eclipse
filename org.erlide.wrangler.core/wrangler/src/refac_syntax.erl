@@ -141,7 +141,9 @@
 	 meta/1, module_qualifier/2, module_qualifier_argument/1,
 	 module_qualifier_body/1, nil/0, normalize_list/1,
 	 operator/1, operator_literal/1, operator_name/1,
-	 parentheses/1, parentheses_body/1, prefix_expr/2,
+	 parentheses/1, parentheses_body/1,
+         fake_parentheses/1, fake_parentheses_body/1,
+         prefix_expr/2,
 	 prefix_expr_argument/1, prefix_expr_operator/1,
 	 qualified_name/1, qualified_name_segments/1,
 	 query_expr/1, query_expr_body/1, receive_expr/1,
@@ -1654,8 +1656,9 @@ is_atom(Node, Value) ->
 
 atom_value(Node) ->
     case unwrap(Node) of
-      {atom, _, Name} -> Name;
-      Node1 -> data(Node1)
+        {atom, _, Name} when is_list(Name) -> list_to_atom(Name);
+        {atom, _, Name} -> Name;
+        Node1 -> data(Node1)
     end.
 
 %% =====================================================================
@@ -2036,10 +2039,11 @@ list_elements(Node, As) ->
       list ->
 	    As1 = lists:reverse(list_prefix(Node)) ++ As,
 	    case list_suffix(Node) of
-	    none -> As1;
-	    Tail -> list_elements(Tail, As1)
-	  end;
-      nil -> As
+                none -> As1;
+                Tail ->
+                    list_elements(Tail, As1)
+            end;
+        nil -> As
     end.
 
 %% =====================================================================
@@ -2326,8 +2330,8 @@ binary_field_types(Node) ->
 			   end,
 		  %% TODO: the type info is not accurate here;
                   %% should change the parse to return tokens of type
-		  %% instead of kust values.
-		  unfold_binary_field_types(Types, {L, C+10}) 
+		  %% instead of just values.
+		  unfold_binary_field_types(Types, {L, C+4}) 
 	  end;
       Node1 -> (data(Node1))#binary_field.types
     end.
@@ -2756,65 +2760,99 @@ attribute_arguments(Node) ->
     case unwrap(Node) of
       {attribute, Pos, Name, Data} ->
 	  case Name of
-	    module ->
-		{M1, Vs} = case Data of
-			     {M0, Vs0} -> {M0, unfold_variable_names(Vs0, Pos)};
-			     M0 -> {M0, none}
-			   end,
-		M2 = if is_list(M1) ->
-			    qualified_name([atom(A) || A <- M1]);
-			true -> atom(M1)
-		     end,
-		M = set_pos(M2, Pos),
-		if Vs == none -> [M];
-		   true -> [M, set_pos(list(Vs), Pos)]
-		end;
-	    export ->
-		[set_pos(list(unfold_function_names(Data, Pos)), Pos)];
-	    import ->
-		case Data of
-		  {Module, Imports} ->
-		      [if is_list(Module) ->
-			      qualified_name([atom(A) || A <- Module]);
-			  true -> set_pos(atom(Module), Pos)
-		       end,
-		       set_pos(list(unfold_function_names(Imports, Pos)),
-			       Pos)];
-		  _ -> [qualified_name([atom(A) || A <- Data])]
-		end;
-	    file ->
-		{File, Line} = Data,
-		[set_pos(string(File), Pos),
-		 set_pos(integer(Line), Pos)];
-	    record ->
-		%% Note that we create a tuple as container
-		%% for the second argument!
-		{Type, Entries} = Data,
-		[set_pos(atom(Type), Pos),
-		 set_pos(tuple(unfold_record_fields(Entries)), Pos)];
-	     spec ->
+              module ->
+                  {M1, Vs} = case Data of
+                                 {M0, Vs0} -> {M0, unfold_variable_names(Vs0, Pos)};
+                                 M0 -> {M0, none}
+                             end,
+                  M2 = if is_list(M1) ->
+                               M3=[set_pos(atom(A),P) || {atom, P, A} <- M1],
+                               set_pos(qualified_name(M3), get_pos(hd(M3)));
+                          true -> {atom, P, A}=M1, 
+                                  set_pos(atom(A),P)
+                       end,
+                  if Vs == none -> [M2];
+                     true -> [M2, set_pos(list(Vs), get_pos(hd(Vs)))]
+                  end;
+              export -> 
+                  [Data];
+              import ->
+                  case Data of
+                      {Module, Imports} ->
+                          M1=if is_list(Module) ->
+                                     Ms=qualified_name([set_pos(atom(A), Pos1)
+                                                        || {_,Pos1, A} <-Module]),
+                                     set_pos(Ms, get_pos(hd(Module)));
+                                true -> 
+                                     {_, Pos1, A} = Module,
+                                     set_pos(atom(A), Pos1)
+                             end,
+                          [M1, Imports];
+                      _ -> 
+                          Ms = qualified_name([set_pos(atom(A), Pos1) 
+                                               || {_, Pos1,A} <- Data]),
+                          [set_pos(Ms, get_pos(hd(Data)))]
+                  end;
+              file ->
+                  {{string, Pos1, File}, {integer, Pos2, Line}}=Data,
+                  [set_pos(string(File), Pos1),
+                   set_pos(integer(Line), Pos2)];
+              record ->
+                  %% Note that we create a tuple as container
+                  %% for the second argument!
+                  {Type, Entries} = Data,
+                  {atom, Pos1,T}=Type,
+                  Fields=unfold_record_fields(Entries),
+                  Pos2 = case Entries of 
+                             [] -> Pos;
+                             _ -> get_pos(hd(Fields))
+                         end,
+                  [set_pos(atom(T), Pos1),
+                   set_pos(tuple(Fields), Pos2)];
+              spec ->
   		  {FunSpec, TypeSpec} = Data,
   		  case FunSpec of 
-  		      {Fun, Arity} -> [set_pos(tuple([set_pos(atom(Fun),Pos), set_pos(integer(Arity),Pos)]), Pos),list(TypeSpec)];
+  		      {Fun, Arity} -> [set_pos(tuple([set_pos(atom(Fun),Pos), 
+                                                      set_pos(integer(Arity),Pos)]), Pos),
+                                       list(TypeSpec)];
 		      {Mod, Fun,Arity} ->
-			  [set_pos(tuple([set_pos(atom(Mod), Pos), set_pos(atom(Fun),Pos), set_pos(integer(Arity),Pos)]), Pos),list(TypeSpec)]
+			  [set_pos(tuple([set_pos(atom(Mod), Pos), 
+                                          set_pos(atom(Fun),Pos), 
+                                          set_pos(integer(Arity),Pos)]), Pos),
+                           list(TypeSpec)]
   		  end;	
 	      type ->
-		  {TypeName, TypeSpec1, TypeSpec2} = Data,
+                  {TypeName, TypeSpec1, TypeSpec2} = Data,
 		  case TypeName of 
 		      {_TypeName1, _TypeName2} ->
 			  [];  %% FIX THIS (TYPED RECORD).
 		      %% set_pos(atom(TypeName2), Pos),set_pos(list(TypeSpec1),Pos), list(TypeSpec2)];
-		       _ ->
-			  [set_pos(atom(TypeName), Pos), TypeSpec1, list(TypeSpec2)]			     
+		       _  when TypeSpec2 ==[] ->
+                           [set_pos(atom(TypeName), Pos), TypeSpec1];
+                      _ ->
+                          [set_pos(atom(TypeName), Pos), TypeSpec1, list(TypeSpec2)]			     
 		  end;
 	      _ ->
-	       [set_pos(abstract(Data), Pos)]
+                  [set_pos_rec(abstract(Data), Pos)]
 	  end;
       Node1 -> (data(Node1))#attribute.args
     end.
 
+set_pos_rec(Node, Pos) ->
+    full_buTP(fun (T, _Others) -> 
+                      set_pos(T, Pos)
+              end, Node, {}).
+
   
+full_buTP(Fun, Tree, Others) ->
+    case subtrees(Tree) of
+        [] -> Fun(Tree, Others); 
+        Gs ->
+            Gs1 = [[full_buTP(Fun, T, Others) || T <- G] || G <- Gs],
+            Tree1 = make_tree(type(Tree), Gs1),
+            Fun(copy_attrs(Tree, Tree1), Others)
+    end.
+
 
 %% =====================================================================
 %% @spec arity_qualifier(Body::syntaxTree(), Arity::syntaxTree()) ->
@@ -5134,16 +5172,32 @@ revert_implicit_fun(Node) ->
     Pos = get_pos(Node),
     Name = implicit_fun_name(Node),
     case type(Name) of
-      arity_qualifier ->
-	  F = arity_qualifier_body(Name),
-	  A = arity_qualifier_argument(Name),
-	  case {type(F), type(A)} of
-	    {atom, integer} ->
-		{'fun', Pos, {function, concrete(F), concrete(A)}};
-	    _ -> Node
-	  end;
-      _ -> Node
+	arity_qualifier ->
+	    F = arity_qualifier_body(Name),
+	    A = arity_qualifier_argument(Name),
+	    case {type(F), type(A)} of
+		{atom, integer} ->
+		    {'fun', Pos,
+		     {function, concrete(F), concrete(A)}};
+		_ ->
+		    Node
+	    end;
+	module_qualifier ->
+	    M = module_qualifier_argument(Name),
+	    Name1 = module_qualifier_body(Name),
+	    F = arity_qualifier_body(Name1),
+	    A = arity_qualifier_argument(Name1),
+	    case {type(M), type(F), type(A)} of
+		{atom, atom, integer} ->
+		    {'fun', Pos,
+		     {function, concrete(M), concrete(F), concrete(A)}};
+		_ ->
+		    Node
+	    end;
+	_ ->
+	    Node
     end.
+
 
 %% =====================================================================
 %% @spec implicit_fun_name(Node::syntaxTree()) -> syntaxTree()
@@ -5259,6 +5313,12 @@ parentheses(Expr) -> tree(parentheses, Expr).
 
 revert_parentheses(Node) -> parentheses_body(Node).
 
+
+fake_parentheses(Expr) -> tree(fake_parentheses, Expr).
+
+revert_fake_parentheses(Node) -> fake_parentheses_body(Node).
+
+
 %% =====================================================================
 %% @spec parentheses_body(syntaxTree()) -> syntaxTree()
 %%
@@ -5267,6 +5327,8 @@ revert_parentheses(Node) -> parentheses_body(Node).
 %% @see parentheses/1
 
 parentheses_body(Node) -> data(Node).
+
+fake_parentheses_body(Node) -> data(Node).
 
 %% =====================================================================
 %% @spec macro(Name) -> syntaxTree()
@@ -5570,6 +5632,8 @@ revert_root(Node) ->
 		revert_nil(Node);
 	     parentheses -> 
 		revert_parentheses(Node);
+             fake_parentheses -> 
+		revert_fake_parentheses(Node);
 	     prefix_expr -> 
 		revert_prefix_expr(Node);
 	     qualified_name -> 
@@ -5779,6 +5843,7 @@ subtrees(T) ->
 		[[module_qualifier_argument(T)],
 		 [module_qualifier_body(T)]];
 	    parentheses -> [[parentheses_body(T)]];
+            fake_parentheses -> [[fake_parentheses_body(T)]];
 	    prefix_expr ->
 		[[prefix_expr_operator(T)], [prefix_expr_argument(T)]];
 	    qualified_name -> [qualified_name_segments(T)];
@@ -5903,6 +5968,7 @@ make_tree(macro, [[N], A]) -> macro(N, A);
 make_tree(match_expr, [[P], [E]]) -> match_expr(P, E);
 make_tree(module_qualifier, [[M], [N]]) ->
     module_qualifier(M, N);
+make_tree(fake_parentheses, [[E]]) -> fake_parentheses(E);
 make_tree(parentheses, [[E]]) -> parentheses(E);
 make_tree(prefix_expr, [[F], [A]]) -> prefix_expr(F, A);
 make_tree(qualified_name, [S]) -> qualified_name(S);
@@ -6200,19 +6266,19 @@ is_printable(S) -> io_lib:printable_list(S).
 %% Support functions for transforming lists of function names
 %% specified as `arity_qualifier' nodes.
 
-%% unfold_function_names(Ns, Pos) ->
-%%     F = fun ({Atom, Arity}) ->
-%% 		N = arity_qualifier(atom(Atom), integer(Arity)),
-%% 		set_pos(N, Pos)
+%% %% unfold_function_names(Ns, Pos) ->
+%% %%     F = fun ({Atom, Arity}) ->
+%% %% 		N = arity_qualifier(atom(Atom), integer(Arity)),
+%% %% 		set_pos(N, Pos)
+%% %% 	end,
+%% %%     [F(N) || N <- Ns].
+
+%% unfold_function_names(Ns, _Pos) ->
+%%     F = fun ({{atom, Pos1, Atom},{integer, Pos2, Arity}}) ->
+%% 		N = arity_qualifier(set_pos(atom(Atom), Pos1), set_pos(integer(Arity),Pos2)),
+%% 		set_pos(N, Pos1)
 %% 	end,
 %%     [F(N) || N <- Ns].
-
-unfold_function_names(Ns, _Pos) ->
-    F = fun ({{atom, Pos1, Atom},{integer, Pos2, Arity}}) ->
-		N = arity_qualifier(set_pos(atom(Atom), Pos1), set_pos(integer(Arity),Pos2)),
-		set_pos(N, Pos1)
-	end,
-    [F(N) || N <- Ns].
 
 fold_function_names(Ns) ->
     [fold_function_name(N) || N <- Ns].
@@ -6228,8 +6294,8 @@ fold_function_name(N) ->
 fold_variable_names(Vs) ->
     [variable_name(V) || V <- Vs].
 
-unfold_variable_names(Vs, Pos) ->
-    [set_pos(variable(V), Pos) || V <- Vs].
+unfold_variable_names(Vs, _Pos) ->
+    [set_pos(variable(V), P) || {var, P, V} <- Vs].
 
 %% Support functions for qualified names ("foo.bar.baz",
 %% "erl.lang.lists", etc.). The representation overlaps with the weird

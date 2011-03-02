@@ -26,11 +26,11 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.erlide.core.erlang.ErlToken;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.services.text.ErlToken;
+import org.erlide.core.services.text.ErlideScanner;
+import org.erlide.jinterface.ErlLogger;
 
-import erlang.ErlideScanner;
 
 class ErlangEditorBracketInserter implements VerifyKeyListener,
         ILinkedModeListener {

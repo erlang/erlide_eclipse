@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlang tracing for Erlide (java classes)
 Bundle-SymbolicName: org.erlide.tracing.core;singleton:=true
-Bundle-Version: 0.2.5.qualifier
+Bundle-Version: 0.2.6.qualifier
 Bundle-Activator: org.erlide.tracing.core.Activator
 Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
  org.erlide.tracing.ttbe;bundle-version="0.1.0",
@@ -11,7 +11,6 @@ Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
  org.eclipse.ui.console,
  org.eclipse.debug.ui,
  org.erlide.jinterface;bundle-version="0.8.4",
- org.erlide.backend;bundle-version="0.9.5",
  org.erlide.core;bundle-version="0.8.4",
  org.erlide.ui;bundle-version="0.8.4"
 Bundle-ActivationPolicy: lazy

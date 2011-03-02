@@ -2,7 +2,6 @@ package org.erlide.shade.bterl.builder;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,22 +25,22 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.builder.BuildResource;
-import org.erlide.core.builder.BuilderHelper;
-import org.erlide.core.builder.internal.BuilderMessages;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.rpc.RpcFuture;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.builder.BuildResource;
+import org.erlide.core.services.builder.BuilderHelper;
+import org.erlide.core.services.builder.internal.BuilderMessages;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class TestCodeBuilder extends IncrementalProjectBuilder {
@@ -136,8 +135,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Set<BuildResource> resourcesToBuild,
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
-            final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
-            Backend backend;
+            final Map<RpcFuture, IResource> results = Maps.newHashMap();
+            RpcCallSite backend;
             try {
                 backend = ErlangCore.getBackendManager().getBuildBackend(
                         project);
@@ -484,8 +483,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
         final IErlProject erlprj = ErlangCore.getModel().findProject(myProject);
-        final IOldErlangProjectProperties props = erlprj.getProperties();
-        final Collection<IPath> srcDirs = props.getSourceDirs();
+        final Collection<IPath> srcDirs = erlprj.getSourceDirs();
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
         for (final IPath src : srcDirs) {
             if (src.isPrefixOf(rpath)) {

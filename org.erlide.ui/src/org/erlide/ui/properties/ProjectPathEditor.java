@@ -20,7 +20,7 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
+import org.erlide.core.common.PreferencesUtils;
 import org.erlide.ui.util.FolderSelectionDialog;
 import org.erlide.ui.util.StatusInfo;
 import org.erlide.ui.util.TypedElementSelectionValidator;

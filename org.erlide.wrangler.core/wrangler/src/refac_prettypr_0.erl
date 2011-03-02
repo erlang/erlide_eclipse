@@ -45,7 +45,7 @@
 -export([above/2, beside/2, best/3, break/1, empty/0, floating/1,
 	 floating/3, follow/2, follow/3, format/1, format/2, format/3,
 	 nest/2, par/1, par/2, sep/1, text/1, text/2, null_text/1, text_par/1,
-	 text_par/2, text_par/3]).
+	 text_par/2, text_par/3, horizontal/1]).
 
 -export([layout/2, layout/3]). %% added by Huiqing Li
 
@@ -515,6 +515,7 @@ format(D, W, R, TabWidth) ->
 %%
 %% A `text' node simply represents a string (which should not contain
 %% linefeed or carriage return characters). A `nest' node specifies a
+
 %% relative indentation (in number of character positions) of a
 %% document. The indentation could be a negative number. A `beside' node
 %% specifies a horizontal composition of two documents, and an `above'
@@ -564,8 +565,8 @@ layout(N, #text{s = S}, _D, Cs,  TabWidth) ->
 layout(_N, null, _D, Cs, _TabWidth) ->
     Cs.
 
-indent(N, Cs,  TabWidth) when N >= TabWidth ->
-    indent(N - TabWidth, [$\t| Cs],  TabWidth);
+%% indent(N, Cs,  TabWidth) when N >= TabWidth ->
+%%     indent(N - TabWidth, [$\t| Cs],  TabWidth);
 indent(N, Cs,  TabWidth) when N > 0 ->
     indent(N - 1, [$\s| Cs],  TabWidth);
 indent(_N, Cs, _TabWidth) ->

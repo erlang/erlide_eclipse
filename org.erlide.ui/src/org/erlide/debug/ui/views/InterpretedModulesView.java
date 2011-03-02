@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
@@ -30,16 +31,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlDebugConstants;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.backend.ErtsProcess;
-import org.erlide.runtime.debug.ErlangDebugElement;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.IErlangDebugNode;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErtsProcess;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.debug.ErlangDebugElement;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.IErlangDebugNode;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -275,10 +276,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
     private void interpretOrDeinterpret(final DebugTab.DebugTreeItem dti,
             final boolean checked) {
         final String module = dti.getItem().getName();
-        final String moduleWoExtension = ErlideUtil.withoutExtension(module);
-        final String project = dti.getItem().getErlProject().getName();
+        final String moduleWoExtension = CommonUtils.withoutExtension(module);
+        final IProject project = dti.getItem().getErlProject().getProject();
         final boolean interpret = checked;
-        final Backend backend = erlangDebugTarget.getBackend();
+        final RpcCallSite backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {

@@ -20,10 +20,12 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.backend.runtime.RuntimeInfoManager;
-import org.erlide.core.preferences.ProjectPreferencesConstants;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.internal.ProjectPreferencesConstants;
+import org.erlide.jinterface.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
@@ -83,7 +85,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        final Collection<RuntimeInfo> rs = RuntimeInfoManager.getDefault()
+        final Collection<RuntimeInfo> rs = BackendCore.getRuntimeInfoManager()
                 .getRuntimes();
         final String[][] runtimes = new String[rs.size()][2];
         final Iterator<RuntimeInfo> it = rs.iterator();
@@ -102,5 +104,15 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
     }
 
     public void init(final IWorkbench workbench) {
+    }
+
+    @Override
+    public boolean performOk() {
+        final IProject project = (IProject) getElement().getAdapter(
+                IProject.class);
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        erlProject.clearCaches();
+        return super.performOk();
     }
 }

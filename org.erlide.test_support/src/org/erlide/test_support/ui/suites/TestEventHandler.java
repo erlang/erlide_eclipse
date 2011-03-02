@@ -1,13 +1,13 @@
 package org.erlide.test_support.ui.suites;
 
-import org.erlide.jinterface.backend.events.ErlangEvent;
-import org.erlide.jinterface.backend.events.EventHandler;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
 
 public class TestEventHandler extends EventHandler {
 
-    private final ResultsView view;
+    private final TestResultsView view;
 
-    public TestEventHandler(final ResultsView view) {
+    public TestEventHandler(final TestResultsView view) {
         this.view = view;
     }
 

@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -108,11 +108,6 @@ public class ErlangTracingDialog extends Dialog {
     }
 
     public void initializeFrom(final ILaunch launch) {
-        //
-        //
-        // final läs från preferenser (om det finns några)... final eller så tar
-        // final vi lc från launch (i final st f launch?)
-        //
         // final List<String> traces;
         // String prjs;
         // try {

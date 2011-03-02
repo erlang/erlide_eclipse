@@ -33,10 +33,12 @@
 %%%-------------------------------------------------------------------
 -module(wrangler_modulegraph_server).
 
+-export([get_client_files/2]).
+
 -behaviour(gen_server).
 
 %% API
--export([start_modulegraph_server/0, get_client_files/2, get_called_modules/2]).
+-export([start_modulegraph_server/0, get_client_files_basic/2, get_called_modules/2]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -56,9 +58,8 @@
 start_modulegraph_server() ->
     gen_server:start_link({local, wrangler_modulegraph_server}, ?MODULE, [], []).
 
-
 %%-spec get_client_files/2::(filename(), [dir()]) -> [filename()].			       
-get_client_files(File, SearchPaths) ->
+get_client_files_basic(File, SearchPaths) ->
     gen_server:call(wrangler_modulegraph_server, {get_client_files, File, SearchPaths}, 5000000).
 
 
@@ -141,3 +142,24 @@ code_change(_OldVsn, State, _Extra) ->
 %%--------------------------------------------------------------------
 %%% Internal functions
 %%--------------------------------------------------------------------
+
+
+
+%%===============================================================================
+%% @doc Return the list of files (Erlang modules) which make use of the functions 
+%% defined in File.
+%%-spec(get_client_files(File::filename(), SearchPaths::[dir()]) -> [filename()]).
+
+get_client_files(File, SearchPaths) ->
+    File1 = filename:absname(filename:join(filename:split(File))),
+    ClientFiles = get_client_files_basic(File1, SearchPaths),
+    case ClientFiles of
+	[] ->
+	    ?wrangler_io("\nWARNING: this module does not have "
+			 "any client modules, please check the "
+			 "search paths to ensure that this is "
+			 "correct!\n", []);
+	_ -> ok
+    end,
+    HeaderFiles = refac_util:expand_files(SearchPaths, ".hrl"),
+    ClientFiles ++ HeaderFiles.

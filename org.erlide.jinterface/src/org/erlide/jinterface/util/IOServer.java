@@ -12,6 +12,9 @@ package org.erlide.jinterface.util;
 
 import java.util.Collection;
 
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -22,16 +25,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 
 /**
- * This is a thread implementing an Erlang io server.
+ * An Erlang io_server.
  */
 public class IOServer implements Runnable {
 
     private final IOCallback callback;
     private final OtpMbox mbox;
-
-    public static enum Encoding {
-        latin1, unicode;
-    }
 
     public IOServer(final OtpMbox box, final IOCallback callback) {
         this.callback = callback;
@@ -97,14 +96,14 @@ public class IOServer implements Runnable {
                 if ("put_chars".equals(tag)) {
                     b = ErlUtils.match("{put_chars, Chars}", request);
                     if (b != null) {
-                        return callback.putChars(from, Encoding.latin1,
+                        return callback.putChars(from, IOEncoding.latin1,
                                 b.get("Chars"));
                     }
 
                     b = ErlUtils.match("{put_chars, Enc:a, Chars}", request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
-                        return callback.putChars(from, Encoding.valueOf(enc),
+                        return callback.putChars(from, IOEncoding.valueOf(enc),
                                 b.get("Chars"));
                     }
 
@@ -113,8 +112,8 @@ public class IOServer implements Runnable {
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
                         final Collection<OtpErlangObject> a = b.getList("A");
-                        return callback
-                                .putChars(from, Encoding.latin1, m, f, a);
+                        return callback.putChars(from, IOEncoding.latin1, m, f,
+                                a);
                     }
 
                     b = ErlUtils.match("{put_chars, Enc:a, M:a, F:a, A}",
@@ -124,26 +123,26 @@ public class IOServer implements Runnable {
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
                         final Collection<OtpErlangObject> a = b.getList("A");
-                        return callback.putChars(from, Encoding.valueOf(enc),
+                        return callback.putChars(from, IOEncoding.valueOf(enc),
                                 m, f, a);
                     }
                     return error;
                 } else if ("get_until".equals(tag)) {
                     b = ErlUtils.match("{get_until, Prompt}", request);
                     if (b != null) {
-                        return callback.getUntil(Encoding.latin1,
+                        return callback.getUntil(IOEncoding.latin1,
                                 b.get("Prompt"));
                     }
                     b = ErlUtils.match("{get_until, Prompt, N:i}", request);
                     if (b != null) {
                         final long n = b.getLong("N");
-                        return callback.getUntil(Encoding.latin1,
+                        return callback.getUntil(IOEncoding.latin1,
                                 b.get("Prompt"), n);
                     }
                     b = ErlUtils.match("{get_until, Enc:a, Prompt}", request);
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
-                        return callback.getUntil(Encoding.valueOf(enc),
+                        return callback.getUntil(IOEncoding.valueOf(enc),
                                 b.get("Prompt"));
                     }
                     b = ErlUtils.match("{get_until, Enc:a, Prompt, N:i}",
@@ -151,7 +150,7 @@ public class IOServer implements Runnable {
                     if (b != null) {
                         final String enc = b.getAtom("Enc");
                         final long n = b.getLong("N");
-                        return callback.getUntil(Encoding.valueOf(enc),
+                        return callback.getUntil(IOEncoding.valueOf(enc),
                                 b.get("Prompt"), n);
                     }
                     b = ErlUtils.match("{get_until, Prompt, M:a, F:a, A}",
@@ -160,7 +159,7 @@ public class IOServer implements Runnable {
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
                         final Collection<OtpErlangObject> a = b.getList("A");
-                        return callback.getUntil(Encoding.latin1,
+                        return callback.getUntil(IOEncoding.latin1,
                                 b.get("Prompt"), m, f, a);
                     }
                     b = ErlUtils
@@ -171,7 +170,7 @@ public class IOServer implements Runnable {
                         final String m = b.getAtom("M");
                         final String f = b.getAtom("F");
                         final Collection<OtpErlangObject> a = b.getList("A");
-                        return callback.getUntil(Encoding.valueOf(enc),
+                        return callback.getUntil(IOEncoding.valueOf(enc),
                                 b.get("Prompt"), m, f, a);
                     }
                 } else if ("requests".equals(tag)) {
@@ -211,7 +210,7 @@ public class IOServer implements Runnable {
             } else {
                 return error;
             }
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
             e.printStackTrace();
         } catch (final OtpErlangException e) {
             e.printStackTrace();

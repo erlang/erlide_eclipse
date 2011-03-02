@@ -26,7 +26,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
-import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
+import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlDamagerRepairer;

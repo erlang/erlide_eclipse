@@ -59,10 +59,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendEvalResult;
-import org.erlide.jinterface.backend.ErlBackend;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendEvalResult;
+import org.erlide.core.backend.ErlBackend;
+import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
@@ -105,7 +105,7 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+            final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
             final BackendEvalResult r = ErlBackend.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();

@@ -18,7 +18,7 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlDamagerRepairer extends DefaultDamagerRepairer {
 

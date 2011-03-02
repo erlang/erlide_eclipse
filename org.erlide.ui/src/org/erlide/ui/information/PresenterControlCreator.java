@@ -24,9 +24,10 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
@@ -38,7 +39,6 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.BrowserInput;
 import org.erlide.ui.views.EdocView;
 
-import erlang.OpenResult;
 
 public final class PresenterControlCreator extends
         AbstractReusableInformationControlCreator {

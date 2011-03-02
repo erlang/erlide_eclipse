@@ -18,7 +18,6 @@
 %% Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 %% USA
 %%
-%% Author contact: richardc@csd.uu.se
 %%
 %% $Id: refac_prettypr.erl,v 1.4 2008/04/30 09:28:12 hl Exp $
 %%
@@ -34,19 +33,14 @@
 
 -module(refac_prettypr).
 
--export([format/1,print_ast/2, print_ast/3]).
+-export([format/1,print_ast/2, print_ast/3, 
+         print_ast_and_get_changes/3, print_a_form/4]).
 
- %% For casestudy purpose.
--export([no_of_changed_funs_toks/1]).
+%% this should removed to refac_util.
+-export([has_parentheses/2]).
 
-%% This functions are not actually used.
--export([format/2,best/1,best/2,layout/1,lay_string/1,
-	 layout/2,get_ctxt_precedence/1,set_ctxt_precedence/2,
-	 get_ctxt_paperwidth/1,set_ctxt_paperwidth/2,
-	 get_ctxt_linewidth/1,set_ctxt_linewidth/2,
-	 get_ctxt_hook/1,set_ctxt_hook/2,get_ctxt_user/1,
-	 set_ctxt_user/2]).
-
+%% used by testing.
+-export([calc_levenshtein_dist/3, levenshtein_dist/3]).
 
 -import(refac_prettypr_0,
 	[text/1,nest/2,above/2,beside/2,sep/1,par/1,par/2,
@@ -69,15 +63,20 @@
 -define(TabWidth, 8).
 
 -record(ctxt,
-	{prec = 0,sub_indent = 2,break_indent = 4,
-	 clause = undefined,hook = ?NOHOOK,paper = ?PAPER,
-	 ribbon = ?RIBBON,user = ?NOUSER,
-	 tokens = [],
+	{prec = 0,
+         sub_indent = 2,
+         break_indent = 4,
+	 clause = undefined,
+         hook = ?NOHOOK,
+         paper = ?PAPER,
+	 ribbon = ?RIBBON,
+         user = ?NOUSER,
+ 	 tokens = [],
 	 tabwidth=?TabWidth,
+         check_bracket = false,
 	 format = unknown}).
 
 
-%% Start of added by HL
 %% ====================================================================
 %% user-program guided pretty-printing of an abstract syntax tree which
 %% must be a form list.
@@ -89,243 +88,148 @@ print_ast(FileFmt, AST, TabWidth) ->
     print_ast(FileFmt, AST, [], TabWidth).
 
 print_ast(FileFmt, AST, Options, TabWidth) ->
+    element(1, print_ast_and_get_changes(FileFmt, AST, Options, TabWidth)).
+
+print_ast_and_get_changes(FileFmt, AST, TabWidth) ->
+    print_ast_and_get_changes(FileFmt, AST, [], TabWidth).
+
+print_ast_and_get_changes(FileFmt, AST, Options, TabWidth) ->
     Fs = refac_syntax:form_list_elements(AST),
-    vertical_concat(Fs, FileFmt, Options, TabWidth).
+    %% {FmStrs, C} = lists:unzip([print_a_form(reset_attrs(F), FileFmt, Options, TabWidth)|| F<-Fs]),
+    {FmStrs, C} = lists:unzip([print_a_form(F, FileFmt, Options, TabWidth)|| F<-Fs]),
+    Content = lists:append(FmStrs),
+    {NoFunsChanged, NoToksRemoved, NoToksAdded} =lists:unzip3(C),
+    Change={lists:sum(NoFunsChanged), 
+            lists:sum(NoToksRemoved),
+            lists:sum(NoToksAdded)},
+    {Content, Change}.
+
+print_a_form(Form, FileFmt, Options, TabWidth) ->
+    %% refac_io:format("Form:\n~p\n", [Form]),
+    case form_not_changed(Form) of
+        true ->
+            FormStr=refac_util:concat_toks(refac_util:get_toks(Form)),
+            {FormStr, {0, 0, 0}};
+        false ->
+            print_a_form_and_get_changes(Form, FileFmt, Options, TabWidth)
+    end.
  
-print_form(F,Ctxt,Fun) ->
-    {Paper,Ribbon} = get_paper_ribbon_width(F),
-    best(Fun(F,Ctxt),Paper,Ribbon).
-
-vertical_concat(Forms, FileFmt, Options, TabWidth) ->
-    vertical_concat(Forms, FileFmt, Options, "", TabWidth).
-
-vertical_concat([], _FileFormat, _Options, Acc, _TabWidth) ->
-    Acc;
-vertical_concat([Form| T], FileFormat, Options, Acc, TabWidth) ->
-    UseOriginalCode = form_not_changed(Form),
-    Delimitor = case FileFormat of
-		    dos -> "\r\n";
-		    mac -> "\r";
-		    _ -> "\n"
-		end,
-    Acc1 = case UseOriginalCode orelse Acc=="" of
-	       true ->
-		   Acc;
-	       false ->
-		   Acc ++ Delimitor ++ Delimitor
-	   end,
-    Str = case UseOriginalCode of
-	      true ->
-		  refac_util:concat_toks(refac_misc:get_toks(Form));
-	      false ->
-		  print_a_form(Form, FileFormat, Options, TabWidth)
-	  end,
-    vertical_concat(T, FileFormat, Options, Acc1++Str, TabWidth).
-
-
-print_a_form(Form, FileFormat, Options) ->
-    print_a_form(Form, FileFormat, Options, ?TabWidth).
-
-print_a_form(Form, FileFormat, Options, TabWidth) ->
-    Ctxt = #ctxt{hook  = 
-		     proplists:get_value(hook,Options,?NOHOOK),
+       
+print_a_form_and_get_changes(Form, FileFormat, Options, TabWidth) ->
+    Ctxt = #ctxt{hook  = proplists:get_value(hook,Options,?NOHOOK),
 		 paper = proplists:get_value(paper,Options,?PAPER),
 		 ribbon = proplists:get_value(ribbon,Options,?RIBBON),
 		 user = proplists:get_value(user,Options),
 		 format = FileFormat,
 		 tabwidth = TabWidth,
-		 tokens = refac_misc:get_toks(Form)},
-    E = print_form(Form,reset_prec(Ctxt),fun lay/2),
-    Str1 = refac_prettypr_0:layout(E,FileFormat,TabWidth),
-    remove_trailing_whitespace(Str1).
+		 tokens = refac_util:get_toks(Form)},
+    OrigFormStr=refac_util:concat_toks(refac_util:get_toks(Form)),
+    NewFormStr0= print_form(Form,reset_prec(Ctxt),fun lay/2),
+    %% NewFormStr0=erl_prettypr:format(Form),
+    NewFormStr=repair_new_form_str(OrigFormStr, NewFormStr0, TabWidth,FileFormat),
+    {ok, OrigToks, _} = refac_scan:string(OrigFormStr),
+    {ok, NewToks, _} = refac_scan:string(NewFormStr),
+    Change =get_changes(OrigToks, NewToks),
+    {NewFormStr, Change}.
+   
+
+get_changes(OrigToks, NewToks) ->
+    OrigToks1 = remove_locs_whites_and_comments(OrigToks),
+    NewToks1 = remove_locs(NewToks),
+    ToksRemoved = OrigToks1 -- NewToks1,
+    ToksAdded = NewToks1 -- OrigToks1,
+    {1, length(ToksRemoved), length(ToksAdded)}.
+
  
+print_form(Form,Ctxt,Fun) ->
+    Paper = Ctxt#ctxt.paper,
+    Ribbon = Ctxt#ctxt.ribbon,
+    D=best(Fun(Form,Ctxt),Paper,Ribbon),
+    FileFormat = Ctxt#ctxt.format,
+    TabWidth = Ctxt#ctxt.tabwidth,
+    FStr0=refac_prettypr_0:layout(D,FileFormat,TabWidth),
+    FStr=remove_trailing_whitespace(FStr0, TabWidth, FileFormat), 
+    Toks = refac_util:get_toks(Form),
+    if Toks ==[] ->
+            Delimitor = get_delimitor(FileFormat),
+            Delimitor++Delimitor++FStr; 
+       true ->
+            FStr
+    end.
+
+
+get_delimitor(FileFormat) ->        
+    case FileFormat of
+        dos -> "\r\n";
+        mac -> "\r";
+        _ -> "\n"
+    end.
+  
 is_special_form(Form) ->
     case refac_syntax:type(Form) of
-	error_marker -> true;
-	comment -> true;
+	error_marker -> 
+            true;
+	comment -> 
+            true; 
 	attribute ->
-	    case refac_syntax:atom_value(refac_syntax:attribute_name(Form)) of
+	    AtrName = refac_syntax:attribute_name(Form),
+            case refac_syntax:atom_value(AtrName) of
 		type -> true;
 		spec -> true;
-		record -> [_R, FieldTuple] = refac_syntax:attribute_arguments(Form),
-			  Fields = refac_syntax:tuple_elements(FieldTuple),
-			  lists:any(fun (Field) -> case refac_syntax:type(Field) of
-						       typed_record_field ->
-							   true;
-						       _ -> false
-						   end
-				    end, Fields);
+		record -> 
+                    [_R, FieldTuple] = refac_syntax:attribute_arguments(Form),
+                    Fields = refac_syntax:tuple_elements(FieldTuple),
+                    lists:any(fun(F) ->  
+                                      refac_syntax:type(F)==typed_record_field
+                              end, Fields);
 		_ -> false
 	    end;
 	_ -> false
     end.
 
 form_not_changed(Form) ->
-    case is_special_form(Form) of 
-	true -> true;   %% These forms are not touched by Wrangler at the 
-                        %% moment, but this might change!
+    case is_special_form(Form) of
+	true ->
+            %% This might change!
+            true;  
 	false ->
-	    Toks = refac_misc:get_toks(Form),
-	    case Toks of 
-		[] -> false;
-		_ ->
-		    try 
-			Str = refac_util:concat_toks(Toks),
-			{ok, Toks1, _} = refac_scan:string(Str, {1,1}, ?TabWidth, 'unix'),
-			OriginalForm = refac_epp_dodger:normal_parser(Toks1, []),
-			
-			NewStr = format(Form, []),
-			{ok, Toks2, _} = refac_scan:string(NewStr, {1,1}, ?TabWidth, 'unix'),
-			NewForm = refac_epp_dodger:normal_parser(Toks2, []),
-			best(OriginalForm) == best(NewForm)
-		    of
-			Res -> Res
-		    catch
-			_E1:_E2 ->
-			    false
-		    end
-	    end
-    end.
-    
-%% Do this still need this function?
-get_paper_ribbon_width(Form) ->
-    case refac_syntax:type(Form) of
-	attribute -> {?PAPER, ?RIBBON};
-	_ ->
-	  Fun = fun (T, Acc) ->
-			{S, E} = refac_misc:get_start_end_loc(T),
-			[S, E] ++ Acc
-		end,
-	  AllRanges = refac_syntax_lib:fold(Fun, [], Form),
-	  {Start, End} = refac_misc:get_start_end_loc(Form),
-	  GroupedRanges = refac_misc:group_by(1, lists:filter(fun (Loc) ->
-								      (Loc >= Start) and (Loc =< End)
-							      end, AllRanges)),
-	  case (AllRanges == []) or (GroupedRanges == []) of
-	    true -> {?PAPER, ?RIBBON};
-	      _ ->
-		  MinMaxCols = lists:map(fun (Rs) -> Cols = [Col||{_, Col}<-Rs],
-						     case Cols of
-							 [] -> {1, 80};
-							 _ -> {lists:min(Cols), lists:max(Cols)}
-						     end
-					 end, GroupedRanges),
-		  Paper = lists:max([Max||{_Min, Max}<-MinMaxCols]),
-		  Ribbon = lists:max([Max-Min+1|| {Min, Max}<-MinMaxCols]),
-		  Paper1 = case Paper < ?PAPER of
-			       true -> ?PAPER;
-			       _ -> Paper
-			   end,
-		  Ribbon1 = case Ribbon < ?RIBBON of
-				true -> ?RIBBON;
-				_ -> Ribbon
-			    end,
-		  {Paper1 + 5, Ribbon1 + 5}  %% adjustion to take the ending tokens such as brackets/commas into account.
-	  end
+            Toks = refac_util:get_toks(Form),
+            case Toks of
+                [] -> false;
+                _ ->
+                    form_not_change_1(Form)
+            end
     end.
 
-%% End of added by HL.
-%% =====================================================================
-%% =====================================================================
-%% The following functions examine and modify contexts:
 
+form_not_change_1(Form) ->
+    try
+        Toks = refac_util:get_toks(Form),
+        Str = refac_util:concat_toks(Toks),
+        {ok,Toks1,_} = refac_scan:string(Str,{1,1},?TabWidth,unix),
+        OriginalForm = refac_epp_dodger:normal_parser(Toks1,[]),
+        NewStr = format(Form,[]),
+        {ok,Toks2,_} =
+            refac_scan:string(NewStr,{1,1},?TabWidth,unix),
+        NewForm = refac_epp_dodger:normal_parser(Toks2,[]),
+        best(OriginalForm) == best(NewForm)
+    of 
+        Res -> Res
+    catch 
+        _E1:_E2 -> 
+            false
+    end.
 
-%% @spec (context()) -> context()
-%% @doc Returns the operator precedence field of the prettyprinter
-%% context.
-%%
-%% @see set_ctxt_precedence/2
-
-
-get_ctxt_precedence(Ctxt) -> Ctxt#ctxt.prec.
-
-%% @spec (context(), integer()) -> context()
-%%
-%% @doc Updates the operator precedence field of the prettyprinter
-%% context. See the <code>erl_parse</code> module for operator
-%% precedences.
-%%
-%% @see erl_parse
-%% @see get_ctxt_precedence/1
-
-
-set_ctxt_precedence(Ctxt,Prec) -> set_prec(Ctxt,Prec).
 
 set_prec(Ctxt,Prec) ->
-    Ctxt#ctxt{prec = Prec}.    % used internally
+    Ctxt#ctxt{prec = Prec}.   
 
 
 reset_prec(Ctxt) ->
-    set_prec(Ctxt,0).    % used internally
+    set_prec(Ctxt,0).    
 
-
-%% @spec (context()) -> integer()
-%% @doc Returns the paper widh field of the prettyprinter context.
-%% @see set_ctxt_paperwidth/2
-
-
-get_ctxt_paperwidth(Ctxt) -> Ctxt#ctxt.paper.
-
-%% @spec (context(), integer()) -> context()
-%%
-%% @doc Updates the paper widh field of the prettyprinter context.
-%%
-%% <p> Note: changing this value (and passing the resulting context to a
-%% continuation function) does not affect the normal formatting, but may
-%% affect user-defined behaviour in hook functions.</p>
-%%
-%% @see get_ctxt_paperwidth/1
-
-
-set_ctxt_paperwidth(Ctxt,W) -> Ctxt#ctxt{paper = W}.
-
-%% @spec (context()) -> integer()
-%% @doc Returns the line widh field of the prettyprinter context.
-%% @see set_ctxt_linewidth/2
-
-
-get_ctxt_linewidth(Ctxt) -> Ctxt#ctxt.ribbon.
-
-%% @spec (context(), integer()) -> context()
-%%
-%% @doc Updates the line widh field of the prettyprinter context.
-%%
-%% <p> Note: changing this value (and passing the resulting context to a
-%% continuation function) does not affect the normal formatting, but may
-%% affect user-defined behaviour in hook functions.</p>
-%%
-%% @see get_ctxt_linewidth/1
-
-
-set_ctxt_linewidth(Ctxt,W) -> Ctxt#ctxt{ribbon = W}.
-
-%% @spec (context()) -> hook()
-%% @doc Returns the hook function field of the prettyprinter context.
-%% @see set_ctxt_hook/2
-
-
-get_ctxt_hook(Ctxt) -> Ctxt#ctxt.hook.
-
-%% @spec (context(), hook()) -> context()
-%% @doc Updates the hook function field of the prettyprinter context.
-%% @see get_ctxt_hook/1
-
-
-set_ctxt_hook(Ctxt,Hook) -> Ctxt#ctxt{hook = Hook}.
-
-%% @spec (context()) -> term()
-%% @doc Returns the user data field of the prettyprinter context.
-%% @see set_ctxt_user/2
-
-
-get_ctxt_user(Ctxt) -> Ctxt#ctxt.user.
-
-%% @spec (context(), term()) -> context()
-%% @doc Updates the user data field of the prettyprinter context.
-%% @see get_ctxt_user/1
-
-
-set_ctxt_user(Ctxt,X) -> Ctxt#ctxt{user = X}.
+reset_check_bracket(Ctxt) ->
+    Ctxt#ctxt{check_bracket=false}.
 
 %% =====================================================================
 %% @spec format(Tree::syntaxTree()) -> string()
@@ -440,12 +344,6 @@ best(Node,Options) ->
     L = proplists:get_value(ribbon,Options,?RIBBON),
     best(layout(Node,Options),W,L).
 
-%% =====================================================================
-%% @spec layout(Tree::syntaxTree()) -> document()
-%% @equiv layout(Tree, [])
-
-
-layout(Node) -> layout(Node,[]).
 
 %% =====================================================================
 %% @spec layout(Tree::syntaxTree(), Options::[term()]) -> document()
@@ -479,87 +377,91 @@ layout(Node,Options) ->
 	    
 lay(Node,Ctxt) ->
     case refac_syntax:get_ann(Node) of
-      [] ->
-	  %% Hooks are not called if there are no annotations.
-	  lay_1(Node,Ctxt);
-      _As ->
-	  case Ctxt#ctxt.hook of
+        [] ->
+            %% Hooks are not called if there are no annotations.
+            lay_1(Node,Ctxt);
+        _As ->
+            case Ctxt#ctxt.hook of
 	    ?NOHOOK -> lay_1(Node,Ctxt);
-	    Hook -> Hook(Node,Ctxt,fun lay_1/2)
-	  end
+                Hook -> Hook(Node,Ctxt,fun lay_1/2)
+            end
     end.
 
 %% This handles attached comments:
-
-
 lay_1(Node, Ctxt) ->
     case refac_syntax:has_comments(Node) of
-      true ->
-	  {{NodeStartLn, _}, {NodeEndLn, _}} = refac_misc:get_start_end_loc(Node),
-	  D1 = lay_2(Node, Ctxt),
-	  PreCs = refac_syntax:get_precomments(Node),
-	  PostCs = refac_syntax:get_postcomments(Node),
-	  D2 = case PostCs of
-		 [] ->
-		     D1;
-		 _ ->
-		     PostCsLn = element(1, refac_syntax:get_pos(hd(PostCs))),
-		     case PostCsLn > NodeEndLn + 1 of
-		       true ->
-			   lay_postcomments(refac_syntax:get_postcomments(Node), above(D1, text("")));
-		       false ->
-			   lay_postcomments(refac_syntax:get_postcomments(Node), D1)
-		     end
-	       end,
-	  case PreCs of
-	    [] -> D2;
-	    _ -> LastPreC = lists:last(PreCs),
-		 PreCLn = element(1, refac_syntax:get_pos(LastPreC)),
-		 LastPreCLines = length(refac_syntax:comment_text(LastPreC)),
-		 case NodeStartLn > PreCLn + LastPreCLines of
-		   true ->
-		       lay_precomments(refac_syntax:get_precomments(Node), above(text(""), D2));
-		   false ->
-		       lay_precomments(refac_syntax:get_precomments(Node), D2)
-		 end
-	  end;
-      false -> 
+	true ->
+            D1 = lay_2(Node, Ctxt),
+	    PreCs = refac_syntax:get_precomments(Node),
+	    PostCs = refac_syntax:get_postcomments(Node),
+            {{NodeStartLine, NodeStartCol},{NodeEndLn, _}} = get_start_end_loc(Node),
+	    D2 = lay_postcomments_1(PostCs, D1, NodeEndLn),
+            lay_precomments(PreCs, D2, {NodeStartLine, NodeStartCol});
+	false ->
 	    lay_2(Node, Ctxt)
     end.
 
 %% For pre-comments, all padding is ignored.
+%% this might change the layout of comments!
+lay_precomments([],D, _) -> D;
+lay_precomments(Cs,D, {DStartLine, DStartCol}) ->
+    D0 =stack_comments(Cs,false),
+    LastCom = lists:last(Cs),
+    {_, Col} = refac_syntax:get_pos(hd(Cs)),
+    {Line, _Col} = refac_syntax:get_pos(LastCom),
+    LastComTest = refac_syntax:comment_text(LastCom),
+    Offset = lists:min([abs(DStartCol-Col),0]),
+    N = DStartLine-(Line+length(LastComTest)),
+    case N=<0 orelse Line ==0 orelse DStartLine==0 of
+        true ->
+            above(D0, nest(Offset, D));
+        false ->
+            vertical([D0, white_lines(N), nest(Offset,D)])
+    end.
+   
 
-
-lay_precomments([],D) -> D;
-lay_precomments(Cs,D) ->
-    above(floating(break(stack_comments(Cs,false)),-1,-1),D).
-
+lay_postcomments_1([], D, _) -> D;
+lay_postcomments_1(Cs, D, DEndLn) ->
+    {PostCsLn, _} = refac_syntax:get_pos(hd(Cs)),
+    case PostCsLn >= DEndLn + 1 of
+        true ->
+            lay_postcomments(Cs, above(D, text("")));
+        false ->
+            lay_postcomments(Cs, D)
+    end.
+    
 %% For postcomments, individual padding is added.
-
-
 lay_postcomments([],D) -> D;
 lay_postcomments(Cs,D) ->
-    beside(D,floating(break(stack_comments(Cs,true)),1,0)).
+    D0 =floating(break(stack_comments(Cs,true)),1,0),
+    beside(D,D0).
 
 %% Format (including padding, if `Pad' is `true', otherwise not)
 %% and stack the listed comments above each other,
-
-
 stack_comments([C| Cs],Pad) ->
-    D = stack_comment_lines(refac_syntax:comment_text(C)),
+    ComText=refac_syntax:comment_text(C),
+    D = stack_comment_lines(ComText),
     D1 = case Pad of
-	   true ->
-	       P = case refac_syntax:comment_padding(C) of
-		     none -> ?PADDING;
-		     P1 -> P1
-		   end,
-	       beside(text(spaces(P)),D);
+             true ->
+                 P = case refac_syntax:comment_padding(C) of
+                         none -> ?PADDING;
+                         P1 -> P1
+                     end,
+                 beside(text(spaces(P)),D);
 	   false -> D
 	 end,
     case Cs of
-      [] ->
-	  D1;    % done
-      _ -> above(D1,stack_comments(Cs,Pad))
+        [] ->
+            D1;    % done
+        _ -> 
+            {L,_} = refac_syntax:get_pos(C),
+            {L1, _} = refac_syntax:get_pos(hd(Cs)),
+            N = L1 - (L+length(ComText)-1),
+            if N>1 ->
+                    vertical([D1, white_lines(N-1),stack_comments(Cs, Pad)]);
+               true ->
+                    above(D1,stack_comments(Cs,Pad))
+            end
     end;
 stack_comments([],_) -> empty().
 
@@ -578,632 +480,827 @@ stack_comment_lines([]) -> empty().
 add_comment_prefix(S) -> [$%| S].
 
 %% This part ignores annotations and comments:
-
 lay_2(Node, Ctxt) ->
     case refac_syntax:type(Node) of
-      %% We list literals and other common cases first.
-      variable -> text(refac_syntax:variable_literal(Node));
-      atom ->
-	    Lit = refac_syntax:atom_literal(Node),
-	    case hd(Lit) of
-		39 -> text("'" ++ atom_to_list(refac_syntax:atom_value(Node)) ++ "'");
-	    _ -> text(Lit)
-	  end;
-	integer -> text(refac_syntax:integer_literal(Node));
+	%% We list literals and other common cases first.
+	variable -> 
+            text(refac_syntax:variable_literal(Node));
+	atom ->
+            As= refac_syntax:get_ann(Node),
+            case lists:keysearch(qatom, 1, As) of
+                {value, _} ->
+                    Lit = atom_to_list(refac_syntax:atom_value(Node)),
+                    text("'"++Lit++"'");
+                false ->
+                    Lit = refac_syntax:atom_literal(Node),
+                    text(Lit)
+            end;
+        integer -> 
+	    text(refac_syntax:integer_literal(Node));
 	float ->
 	    text(tidy_float(refac_syntax:float_literal(Node)));
-	text -> text(refac_syntax:text_string(Node));
+	text -> 
+	    text(refac_syntax:text_string(Node));
+	string ->  
+	    Str = refac_syntax:string_literal(Node),
+	    StrVal = "\"" ++ refac_syntax:string_value(Node) ++ "\"",
+	    case lists:keysearch(toks, 1, refac_syntax:get_ann(Node)) of
+		{value, {toks, StrToks}} ->
+		    Str1 = io_lib:write_string(
+			     lists:concat(lists:map
+					    (fun ({string, _, S}) 
+						 -> S 
+					     end, StrToks))),
+		    case Str1 == Str of
+			true -> lay_string(StrToks);
+			_ -> lay_string(StrVal, Ctxt)
+		    end;
+		_ -> lay_string(StrVal, Ctxt)
+	    end;
+	nil -> 
+            text("[]");
+	tuple ->
+            Es0 = refac_syntax:tuple_elements(Node),
+	    Sep = get_separator(Es0, Ctxt, ","),
+	    Es = seq(Es0, floating(text(Sep)), reset_check_bracket(reset_prec(Ctxt)), fun lay/2),
+	    Es1=lay_elems(fun refac_prettypr_0:par/1, Es,Es0, Ctxt),
+            {{StartLn, StartCol}, {EndLn, EndCol}} = get_start_end_loc(Node),
+            case Es0 of
+                [] ->
+                    beside(text("{"), text("}"));
+                _ ->
+                    {HdStartLn, HdStartCol} = 
+                        get_start_loc_with_comment(hd(Es0)),
+                    {LastEndLn, _LastEndCol} = 
+                        get_end_loc_with_comment(lists:last(Es0)),
+                    N = HdStartLn - StartLn,
+                    Offset = HdStartCol - StartCol, 
+                    D1 =case N=<0 orelse HdStartLn==0 orelse StartLn==0 of 
+                            true ->
+                                Pad = HdStartCol-StartCol-1,
+                                case Pad>0 andalso HdStartCol/=0 andalso StartCol/=0 of 
+                                    true ->
+                                        beside(text("{"), beside(text(spaces(Pad)), Es1));
+                                    _ ->
+                                        beside(text("{"), Es1)
+                                end;
+                            _ ->
+                                above(text("{"), nest(Offset, Es1))
+                        end,
+                    N1 = EndLn - LastEndLn,
+                    case N1=<0  orelse HdStartLn==0 orelse StartLn==0 of 
+                        true ->
+                            beside(D1, text("}"));
+                        false ->
+                            above(D1, nest(EndCol - StartCol, text("}")))
+                    end
+            end;
+	list -> 
+            lay_list(Node, Ctxt);
+	operator ->
+	    Op = refac_syntax:operator_literal(Node),
+            floating(text(Op));
+        infix_expr ->
+            Left = refac_syntax:infix_expr_left(Node),
+	    Operator = refac_syntax:infix_expr_operator(Node),
+	    Right = refac_syntax:infix_expr_right(Node),
+	    {PrecL, Prec, PrecR} = case refac_syntax:type(Operator) of
+				       operator ->
+					   inop_prec(refac_syntax:operator_name(Operator));
+				       _ -> {0, 0, 0}
+				   end,
+            Ctxt2 = reset_check_bracket(set_prec(Ctxt, PrecL)),
+	    D1 = maybe_parentheses_1(lay(Left, Ctxt2), Left, Ctxt2),
+	    D2 = lay(Operator, reset_prec(Ctxt)),
+            Ctxt3 = reset_check_bracket(set_prec(Ctxt, PrecR)),
+	    D3 = maybe_parentheses_1(lay(Right, Ctxt3), Right, Ctxt3),
+            {{_LeftStartLn, LeftStartCol},{LeftEndLn, _LeftEndCol}} = get_start_end_loc(Left),
+	    {OpStartLn, OpStartCol} = get_start_loc_with_comment(Operator),
+	    {RightStartLn, RightStartCol} = get_start_loc_with_comment(Right),
+	    D12 = case OpStartLn == LeftEndLn andalso OpStartLn =/= 0 of
+		      true -> refac_prettypr_0:horizontal([D1, D2]);
+		      false when OpStartLn-LeftEndLn==1 ->
+                          above(D1, nest(OpStartCol-LeftStartCol-1, D2));
+		      _ -> par([D1, D2], Ctxt#ctxt.sub_indent)
+		  end,
+            D4 = case OpStartLn == RightStartLn andalso OpStartLn =/= 0 of
+		     true ->
+			 refac_prettypr_0:horizontal([D12, D3]);
+		     false when RightStartLn-OpStartLn==1 ->
+                         above(D12, nest(RightStartCol-LeftStartCol, D3));
+		     _ ->
+			 par([D12, D3], Ctxt#ctxt.sub_indent)
+		 end,
+            maybe_parentheses_2(D4, Node, Prec, Ctxt);
+	prefix_expr ->  
+	    %% done;
+	    Operator = refac_syntax:prefix_expr_operator(Node),
+	    PrefixArg = refac_syntax:prefix_expr_argument(Node),
+	    {{Prec, PrecR}, Name} = case refac_syntax:type(Operator) of
+					operator ->
+					    N = refac_syntax:operator_name(Operator),
+					    {preop_prec(N), N};
+					_ -> {{0, 0}, any}
+				    end,
+	    D1 = lay(Operator, reset_check_bracket(reset_prec(Ctxt))),
+            Ctxt1 = reset_check_bracket(set_prec(Ctxt, PrecR)),                            
+            D2 = maybe_parentheses_1(lay(PrefixArg, Ctxt1), PrefixArg, Ctxt1),
+            {OpEndLn, OpEndCol} = get_end_loc_with_comment(Operator),
+	    {ArgStartLn, ArgStartCol} = get_start_loc_with_comment(PrefixArg),
+	    D3=case ArgStartLn-OpEndLn==0 andalso ArgStartLn/=0 of 
+		   true -> 
+		       S=text(empty_str(lists:min([abs(ArgStartCol-OpEndCol-1), 1]))),
+                       beside(beside(D1, S), D2);
+		   false when  ArgStartLn-OpEndLn==1 ->
+		       above(D1, nest(ArgStartCol-OpEndCol, D2));
+		   _ ->
+		       case Name of
+			   '+' -> beside(D1, D2);
+			   '-' -> beside(D1, D2);
+			   _ ->
+			       par([D1, D2], Ctxt#ctxt.sub_indent)
+		       end
+	       end,
+    	    maybe_parentheses(D3, Prec, Ctxt);
+	application ->  
+            {PrecL, Prec} = func_prec(),
+            Op =refac_syntax:application_operator(Node),     
+            Args = refac_syntax:application_arguments(Node),
+            D = lay(Op,reset_check_bracket(set_prec(Ctxt, PrecL))),
+            Sep = get_separator(Args, Ctxt, ","),
+	    Ctxt1 =case length(Args)==1 andalso 
+                       lists:member(refac_syntax:type(hd(Args)),
+                                    [macro, infix_expr]) of
+                       true ->
+                           Ctxt#ctxt{check_bracket=true};
+                       false ->
+                           Ctxt
+                   end,
+            As =seq(Args, floating(text(Sep)), reset_prec(Ctxt1), fun lay/2),
+            D1 = case Args of
+                     [] ->
+			 beside(D, beside(text("("), text(")")));
+                     _ ->
+                         ArgsD=lay_elems(fun refac_prettypr_0:par/1,As, Args, Ctxt),
+                         {OpStartLoc,OpEndLoc}=get_start_end_loc(Op),
+                         ArgsD1=make_args(Args, ArgsD,Ctxt,OpEndLoc,'(',')'),
+                         LeftBracketLoc=get_keyword_loc_after('(', Ctxt, OpEndLoc),
+                         append_elems(fun horizontal/1,
+                                      {D, {OpStartLoc, OpEndLoc}},
+                                      {ArgsD1, {LeftBracketLoc, LeftBracketLoc}})
+                 end,
+            maybe_parentheses(D1, Prec, Ctxt);
+	match_expr ->    
+            {PrecL, Prec, PrecR} = inop_prec('='),
+	    Left = refac_syntax:match_expr_pattern(Node),
+	    Right = refac_syntax:match_expr_body(Node),
+	    D1 = lay(Left, reset_check_bracket(set_prec(Ctxt, PrecL))),
+	    D2 = lay(Right, reset_check_bracket(set_prec(Ctxt, PrecR))),
+	    {LStart, LEnd} = get_start_end_loc(Left),
+	    {RStart, REnd} = get_start_end_loc(Right),
+            EqLoc = get_keyword_loc_after('=',Ctxt, LEnd),
+            LeftEq=append_elems(fun refac_prettypr_0:horizontal/1, 
+				{D1, {LStart, LEnd}}, {text("="), {EqLoc, EqLoc}}),
+            D3=append_elems(fun refac_prettypr_0:horizontal/1, 
+                            {LeftEq, {LStart, EqLoc}},
+			    {D2,{RStart, REnd}}),
+	    maybe_parentheses(D3, Prec, Ctxt);
+	underscore ->
+	    text("_");
+	clause ->  
+	    %% Done;
+	    %% The style used for a clause depends on its context
+	    Ctxt1 = reset_check_bracket((reset_prec(Ctxt))#ctxt{clause = undefined}),
+	    Pats = refac_syntax:clause_patterns(Node),
+	    Body = refac_syntax:clause_body(Node),
+	    Sep = get_separator(Pats, Ctxt, ","),
+	    PatDocs = seq(Pats, floating(text(Sep)), Ctxt1, fun lay/2),
+	    D1 = lay_elems(fun refac_prettypr_0:par/1, PatDocs, Pats, Ctxt),
+	    Guard=refac_syntax:clause_guard(Node),
+	    D2 = case Guard of
+		     none -> none;
+		     G -> lay(G,Ctxt1)
+		 end,
+	    BodyDocs = seq(Body, floating(text(",")), Ctxt1, fun lay/2),
+	    D3 = lay_body_elems(BodyDocs, Body, Ctxt1),
+	    HeadLastLn = case refac_syntax:clause_guard(Node) of
+			     none -> case Pats of
+					 [] -> get_start_line_with_comment(Node);
+					 _ -> case get_end_line_with_comment(Pats) of
+						  0 -> get_start_line_with_comment(Node);
+						  L -> L
+					      end
+				     end;
+			     _ -> get_end_line_with_comment(refac_syntax:clause_guard(Node))
+			 end,
+	    HeadStartLoc={_,HeadStartCol} = get_start_loc(Node),
+            HdB=hd(Body),
+            {_BodyStartLn, BodyStartCol} = get_start_loc(HdB),
+            {BodyStartLn, _BodyStartCol} = get_start_loc_with_comment(HdB),
+            BodyStartLoc={BodyStartLn, BodyStartCol},
+	    SameLine = {BodyStartLoc, {HeadStartCol, HeadLastLn}},
+            case Ctxt#ctxt.clause of
+		fun_expr -> 
+		    make_fun_clause(D1, D2, D3, Node, Ctxt, SameLine, HeadStartLoc);
+		{function, N} -> 
+		    make_fun_clause(N, D1, D2, D3, Node,Ctxt, SameLine, HeadStartLoc);
+		if_expr -> 
+		    make_if_clause(D1, D2, D3, Ctxt, SameLine);
+		cond_expr -> 
+		    make_if_clause(D1, D2, D3, Ctxt, SameLine);
+		case_expr ->
+		    make_case_clause(D1, D2, D3, Node,Ctxt, SameLine);
+		receive_expr -> 
+		    make_case_clause(D1, D2, D3, Node,Ctxt, SameLine);
+		try_expr -> 
+		    make_case_clause(D1, D2, D3, Node, Ctxt, SameLine);
+		{rule, N} ->
+		    make_rule_clause(N, D1, D2, D3, Node, Ctxt, SameLine);
+		undefined ->
+		    %% If a clause is formatted out of context, we
+		    %% use a "fun-expression" clause style.
+		    make_fun_clause(D1, D2, D3, Guard, Ctxt, SameLine, HeadStartLoc)
+	    end;
+	function ->  
+	    %% Comments on the name itself will be repeated for each
+	    %% clause, but that seems to be the best way to handle it.
+	    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+	    D1 = lay(refac_syntax:function_name(Node), Ctxt1),
+	    D2 = lay_clauses(refac_syntax:function_clauses(Node), {function, D1}, Ctxt1),
+	    beside(D2, floating(text(".")));
+	case_expr -> 
+            Ctxt1 = reset_prec(Ctxt),
+	    Arg = refac_syntax:case_expr_argument(Node),
+            Cs = refac_syntax:case_expr_clauses(Node),
+	    D1 = lay(Arg, reset_check_bracket(Ctxt1)),
+            D2 = lay_clauses(Cs, case_expr, reset_check_bracket(Ctxt1)),
+            {CsStartLn, CsStartCol} = get_start_loc_with_comment(hd(Cs)),
+            {CaseStartLine, CaseStartCol} = refac_syntax:get_pos(Node),
+            {{ArgStartLine, ArgStartCol}, ArgEndLoc={ArgEndLine, _ArgEndCol}} = get_start_end_loc(Arg),
+            CaseArgD=case CaseStartLine==ArgStartLine orelse ArgStartLine==0 
+	         	 orelse CaseStartLine==0 of 
+	         	 true when CaseStartLine==0 ->
+	         	     refac_prettypr_0:horizontal([text("case"), D1]);
+                         true ->
+                             P = ArgStartCol-CaseStartCol-4,
+                             horizontal([text("case"), text(spaces(P)), D1]);
+	         	 false ->
+	         	     above(text("case"),nest(ArgStartCol-CaseStartCol, D1))
+                     end,
+	    {OfStartLn, OfStartCol} = get_keyword_loc_after('of', Ctxt, ArgEndLoc),
+            CaseArgOfD = case OfStartLn -ArgEndLine==1 of 
+	         	     true ->
+	         		 above(CaseArgD, nest(OfStartCol-CaseStartCol, text("of")));
+	         	     false ->
+                                 refac_prettypr_0:horizontal([CaseArgD, text("of")])
+	         	 end,
+            CaseArgOfCsD=case OfStartLn==CsStartLn andalso OfStartLn/=0 of 
+                             true ->
+                                 P1 = CsStartCol - OfStartCol -2,
+                                 horizontal([CaseArgOfD, text(spaces(P1)), D2]);
+                             false when OfStartLn/=0->
+                                 above(CaseArgOfD, nest(CsStartCol-CaseStartCol, D2));
+                             _->
+                                 above(CaseArgOfD, nest(Ctxt1#ctxt.sub_indent, D2))
+                         end,
+            CsEndLoc={CsEndLn, _CsEndCol} = get_end_loc_with_comment(lists:last(Cs)),
+            {EndStartLn, _EndStartCol} = get_keyword_loc_after("end", Ctxt, CsEndLoc),
+            case CsEndLn == EndStartLn andalso EndStartLn/=0 of
+                true ->
+                    refac_prettypr_0:horizontal([CaseArgOfCsD, text("end")]);
+                false ->
+                    sep([CaseArgOfCsD, text("end")])
+            end;
+       	if_expr ->  
+	    %% Done
+	    Ctxt1 = reset_prec(Ctxt),
+	    Cs=refac_syntax:if_expr_clauses(Node),
+	    D = lay_clauses(Cs, if_expr, reset_check_bracket(Ctxt1)),
+            append_keywords("if", "end", D, Cs, Ctxt1);
+	cond_expr ->  
+	    %% Done;
+	    Ctxt1 = reset_prec(Ctxt),
+	    Cs=refac_syntax:cond_expr_clauses(Node),
+	    D = lay_clauses(Cs, cond_expr, reset_check_bracket(Ctxt1)),
+	    append_keywords("cond", "end", D, Cs, Ctxt1);
+	fun_expr ->  
+	    %% Done;
+	    Ctxt1 = reset_prec(Ctxt),
+	    Cs=refac_syntax:fun_expr_clauses(Node),
+	    D = lay_clauses(Cs, fun_expr, reset_check_bracket(Ctxt1)),
+	    append_keywords("fun", "end", D, Cs, Ctxt1);
+	module_qualifier -> 
+	    %% Done;
+	    {PrecL, _Prec, PrecR} = inop_prec(':'),
+            Arg =refac_syntax:module_qualifier_argument(Node),
+            Body =refac_syntax:module_qualifier_body(Node),
+	    D1 = lay(Arg, reset_check_bracket(set_prec(Ctxt, PrecL))),
+	    D2 = lay(Body, reset_check_bracket(set_prec(Ctxt, PrecR))),
+	    beside(D1, beside(text(":"), D2));
+	qualified_name ->  
+	    Ss = refac_syntax:qualified_name_segments(Node),
+	    lay_qualified_name(Ss, Ctxt);
+	arity_qualifier ->  
+	    %% Done;
+	    Ctxt1 = reset_prec(Ctxt),
+            B = refac_syntax:arity_qualifier_body(Node), 
+            Arg = refac_syntax:arity_qualifier_argument(Node),
+	    D1 = lay(B, reset_check_bracket(Ctxt1)),
+	    D2 = lay(Arg, reset_check_bracket(Ctxt1)),
+	    beside(D1, beside(text("/"), D2));
+	attribute -> 
+            Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+	    N = refac_syntax:attribute_name(Node),
+	    case refac_syntax:attribute_arguments(Node) of
+		none -> 
+		    D =lay(N, Ctxt1),
+		    beside(floating(text("-")), beside(D, floating(text("."))));
+		Args ->
+                    Sep = get_separator(Args, Ctxt1, ","),
+                    As = seq(Args, floating(text(Sep)), Ctxt1, fun lay/2),
+                    D = lay_elems(fun refac_prettypr_0:par/1, As, Args, Ctxt),
+                    D2=beside(lay(N, Ctxt1), beside(text("("), beside(D, floating(text(")"))))),
+		    beside(floating(text("-")), beside(D2, floating(text("."))))
+	    end;
+	binary ->   
+	    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+	    Fields = refac_syntax:binary_fields(Node),
+	    Sep = get_separator(Fields, Ctxt, ","),
+	    Es = seq(Fields, floating(text(Sep)), Ctxt1, fun lay/2),
+	    D = lay_elems(fun refac_prettypr_0:par/1, Es, Fields, Ctxt1),
+	    beside(floating(text("<<")), beside(D, floating(text(">>"))));
+	binary_field ->
+	    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+	    D1 = lay(refac_syntax:binary_field_body(Node), Ctxt1),
+	    D2 = case refac_syntax:binary_field_types(Node) of
+		     [] -> 
+			 empty();
+		     Ts ->
+			 beside(floating(text("/")), 
+                                lay_bit_types(Ts, Ctxt1))
+		 end,
+	    beside(D1, D2);
+	block_expr -> 
+	    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+	    Body = refac_syntax:block_expr_body(Node),
+	    Es = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
+	    D=lay_body_elems(Es, Body, Ctxt1),
+	    append_keywords("begin", "end", D, Body, Ctxt);
+	catch_expr ->  
+                {Prec, PrecR} = preop_prec('catch'),
+		Body =refac_syntax:catch_expr_body(Node),
+                Ctxt1 =reset_check_bracket(set_prec(Ctxt, PrecR)),
+		D = maybe_parentheses_1(lay(Body, Ctxt), Body, Ctxt1),
+		D1 = append_leading_keyword("catch", D, Body, Ctxt),
+		maybe_parentheses_2(D1, Node, Prec, Ctxt);
+        class_qualifier -> 
+                Ctxt1 = reset_check_bracket(set_prec(Ctxt, max_prec())),
+		D1 = lay(refac_syntax:class_qualifier_argument(Node), Ctxt1),
+		D2 = lay(refac_syntax:class_qualifier_body(Node), Ctxt1),
+		beside(D1, beside(text(":"), D2));
+	comment ->
+		D = stack_comment_lines(refac_syntax:comment_text(Node)),
+                case refac_syntax:comment_padding(Node) of
+		    none -> floating(break(D));
+		    P -> floating(break(beside(text(spaces(P)), D)))
+		end;
+	conjunction -> 
+                Body = refac_syntax:conjunction_body(Node),
+		Sep = get_separator(Body, Ctxt, ","),
+		Es = seq(Body, floating(text(Sep)), reset_check_bracket(reset_prec(Ctxt)),
+                         fun lay/2),
+		lay_elems(fun refac_prettypr_0:par/1, Es, Body, Ctxt);
+	disjunction -> 
+                Body = refac_syntax:disjunction_body(Node),
+		Es = seq(Body, floating(text(";")), reset_check_bracket(reset_prec(Ctxt)),
+                         fun lay/2),
+		lay_elems(fun refac_prettypr_0:sep/1, Es, Body, Ctxt);
+	error_marker -> 
+                Ctxt1=reset_check_bracket(reset_prec(Ctxt)),
+                E = refac_syntax:error_marker_info(Node),
+		beside(text("** "), beside(lay_error_info(E, Ctxt1), text(" **")));
+	eof_marker ->
+		empty();
+	form_list ->
+                Forms = refac_syntax:form_list_elements(Node),
+		Es = seq(Forms, none, reset_check_bracket(reset_prec(Ctxt)), 
+                         fun lay/2),
+		vertical_sep(text(""), Es);
+	generator -> 
+		Pat = refac_syntax:generator_pattern(Node),
+		Body = refac_syntax:generator_body(Node),
+		lay_generator(Ctxt, Pat, Body);
+	binary_generator ->
+                Pat = refac_syntax:binary_generator_pattern(Node),
+		Body = efac_syntax:binary_generator_body(Node),
+		lay_generator(Ctxt, Pat, Body);
+	implicit_fun ->
+                Ctxt1=reset_check_bracket(reset_prec(Ctxt)),
+                D = lay(refac_syntax:implicit_fun_name(Node), Ctxt1),
+		beside(floating(text("fun ")), D);
+	list_comp ->  
+                lay_comp(Node, Ctxt, list_comp_template, list_comp_body,
+                         "[", "]");
+        binary_comp ->
+                lay_comp(Node, Ctxt, binary_comp_template,
+                         binary_comp_body, "<< ", " >>");
+	macro ->
+                Ctxt1 = reset_prec(Ctxt),
+                N = refac_syntax:macro_name(Node),
+                Args = refac_syntax:macro_arguments(Node),
+                Sep = get_separator(Args, Ctxt1, ","),
+                D = case Args of
+		      none ->
+		          lay(N, reset_check_bracket(Ctxt1));
+	              [] -> beside(lay(N, reset_check_bracket(Ctxt1)), text("()"));
+                      _ ->
+                          Ctxt2 = case length(Args) of
+                                      1 ->
+                                           Ctxt1#ctxt{check_bracket=true};
+                                      _ -> reset_check_bracket(Ctxt1)
+                                  end,
+                          As=seq_1(Args, floating(text(Sep)), reset_prec(Ctxt2), fun lay/2),
+                          ArgsD=lay_elems(fun refac_prettypr_0:par/1, As, Args, Ctxt1),
+			  OpEndLoc = get_end_loc_with_comment(N),
+			  ArgsD1=make_args(Args, ArgsD,Ctxt1,OpEndLoc,'(',')'),
+			  beside(lay(N, Ctxt1),ArgsD1)
+                  end,
+                D1 = beside(floating(text("?")), D),
+                maybe_parentheses_1(D1, Node, Ctxt);
+        parentheses ->
+                Body =refac_syntax:parentheses_body(Node),
+                D = lay(Body, reset_check_bracket(reset_prec(Ctxt))),
+                lay_parentheses(D);
+        fake_parentheses ->
+                Body =refac_syntax:fake_parentheses_body(Node),
+                lay(Body, reset_prec(Ctxt));
+	query_expr ->
+                Ctxt1 = reset_prec(Ctxt),
+                Body = refac_syntax:query_expr_body(Node),
+                D = lay(Body, reset_check_bracket(Ctxt1)),
+                append_keywords("query", "end", D, Body, Ctxt1);
+        receive_expr ->
+                Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+                Cs=refac_syntax:receive_expr_clauses(Node),
+                D1 = lay_clauses(Cs, receive_expr, Ctxt1),
+                case refac_syntax:receive_expr_timeout(Node) of
+                    none ->
+                        append_keywords("receive", "end", D1, Cs, Ctxt);
+                    T ->
+                        D3 = lay(T, Ctxt1),
+                        A = refac_syntax:receive_expr_action(Node),
+                        As=seq(A, floating(text(", ")), Ctxt1, fun lay/2),
+                        D4 = lay_elems(fun refac_prettypr_0:sep/1, As, A, Ctxt),
+                        AStartLoc=get_start_loc_with_comment(hd(A)),
+                        {{HeadStartLn, HeadStartCol}, {HeadLastLn, _}} = refac_util:get_start_end_loc_with_comment(T),
+                        D5 =append_clause_body(D4, D3, Ctxt1, {AStartLoc, {HeadStartCol, HeadLastLn}}),
+                        D2= append_leading_keyword("receive", D1, Cs, Ctxt),
+                        D6 = append_keywords("after", "end", D5, [T|A], Ctxt),
+                        {EndLn, _} = case Cs of 
+                                         [] -> refac_syntax:get_pos(Node);
+                                         _ ->get_end_loc(Cs)
+                                     end,
+                        case HeadStartLn == EndLn andalso EndLn/=0 of
+                            true ->
+                                refac_prettypr_0:horizontal([D2,D6]);
+                            false ->
+                                above(D2, D6)
+                        end
+                end;
+	record_access ->
+                {PrecL, Prec, PrecR} = inop_prec('#'),
+                Arg =refac_syntax:record_access_argument(Node),
+                Field =refac_syntax:record_access_field(Node),
+                D1 = lay(Arg, reset_check_bracket(set_prec(Ctxt, PrecL))),
+                D2 = beside(floating(text(".")), 
+                            lay(Field, reset_check_bracket(set_prec(Ctxt, PrecR)))),
+                D3 = case refac_syntax:record_access_type(Node) of
+                         none -> D2;
+                         T ->
+                             beside(beside(floating(text("#")), 
+                                           lay(T, reset_check_bracket(reset_prec(Ctxt)))), D2)
+                     end,
+                maybe_parentheses(beside(D1, D3), Prec, Ctxt);
+             record_expr ->
+                {PrecL, Prec, _} = inop_prec('#'),
+                Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+                Arg = refac_syntax:record_expr_argument(Node),
+                Type = refac_syntax:record_expr_type(Node), 
+                Fields = refac_syntax:record_expr_fields(Node),
+                D1 = lay(Type, Ctxt1),
+                Sep = get_separator(Fields, Ctxt, ","),
+                Fs =seq(Fields, floating(text(Sep)), Ctxt1, fun lay/2),
+                D2 = beside(floating(text("#")), D1),
+                D3 = case Arg of
+                         none -> D2;
+                         A ->
+                             Ctxt2 = reset_check_bracket(set_prec(Ctxt, PrecL)),
+                             AD = maybe_parentheses_1(lay(A, Ctxt2), A, Ctxt2),
+                             beside(AD, D2)
+                     end,
+                D4 = case Fields of 
+                         [] ->
+                             beside(D3, beside(text("{"), text("}")));
+                         _ ->
+                             FieldsD = lay_elems(fun refac_prettypr_0:par/1, Fs, Fields, Ctxt1),
+                             ExprStartLoc = get_start_loc(Node),
+                             TypeEndLoc = get_end_loc(Type),
+                             FieldsD1 = make_args(Fields,FieldsD,Ctxt,TypeEndLoc,'{','}'),
+                             LeftBracketLoc = get_keyword_loc_after('{', Ctxt1, TypeEndLoc),
+                             append_elems(fun horizontal_1/1, {D3, {ExprStartLoc, TypeEndLoc}},
+                                          {FieldsD1, {LeftBracketLoc, LeftBracketLoc}})
+                     end,
+              maybe_parentheses(D4, Prec, Ctxt);
+       	record_field ->
+                Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+                D1 = lay(refac_syntax:record_field_name(Node), Ctxt1),
+                case refac_syntax:record_field_value(Node) of
+                    none -> D1;
+                    V -> D2 = lay(V, Ctxt1),
+                         {LStart, LEnd} = get_start_end_loc(refac_syntax:record_field_name(Node)),
+                         {RStart, REnd} = get_start_end_loc(V),
+                         EqLoc = get_keyword_loc_after('=', Ctxt, LEnd),
+                         LeftEq=append_elems(fun refac_prettypr_0:horizontal/1,
+                                             {D1, {LStart, LEnd}}, {text("="), {EqLoc, EqLoc}}),
+                         %%append_elems(fun ([Doc1,Doc2]) ->
+                         %%                     follow(Doc1, Doc2, Ctxt#ctxt.break_indent)
+                         %%             end, {LeftEq, {LStart, EqLoc}},
+                         %%             {D2,{RStart, REnd}})
+                         append_elems(fun refac_prettypr_0:horizontal/1,
+                                      {LeftEq, {LStart, EqLoc}},
+                                      {D2,{RStart, REnd}})
+                end;
+	record_index_expr ->
+                {Prec, PrecR} = preop_prec('#'),
+                Type =refac_syntax:record_index_expr_type(Node),
+                Field = refac_syntax:record_index_expr_field(Node),
+                D1 = lay(Type, reset_check_bracket(reset_prec(Ctxt))),
+                D2 = lay(Field, reset_check_bracket(set_prec(Ctxt, PrecR))),
+                D3 = beside(beside(floating(text("#")), D1),
+                            beside(floating(text(".")), D2)),
+                maybe_parentheses(D3, Prec, Ctxt);
+	rule ->
+                Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+                D1 = lay(refac_syntax:rule_name(Node), Ctxt1),
+                D2 = lay_clauses(refac_syntax:rule_clauses(Node), {rule, D1}, Ctxt1),
+                beside(D2, floating(text(".")));
+	size_qualifier ->
+                Ctxt1 = reset_check_bracket(set_prec(Ctxt, max_prec())),
+                Body = refac_syntax:size_qualifier_body(Node),
+                Arg = refac_syntax:size_qualifier_argument(Node),
+                D1 = lay(Body, Ctxt1),
+                D2 = lay(Arg, Ctxt1),
+                beside(D1, beside(text(":"), D2));
+      	try_expr ->
+	   Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+	   Body = refac_syntax:try_expr_body(Node),
+	   {BodyStart, BodyEnd} = get_start_end_loc(Body),
+	   TryLoc = get_keyword_loc_before('try', Ctxt1, BodyStart),
+	   Bs =seq(Body,floating(text(",")),Ctxt1,fun lay/2),
+	   D1 = lay_body_elems(Bs, Body, Ctxt1),
+	   {_NodeStart, NodeEnd} = get_start_end_loc(Node),
+	   EndLoc = get_keyword_loc_before('end', Ctxt1, NodeEnd),
+	   Es0 = [{text("end"), {EndLoc, NodeEnd}}],
+	   Es1 = {append_leading_keyword("try", D1, Body, Ctxt1), {TryLoc, BodyEnd}},
+	   Es2 = case refac_syntax:try_expr_after(Node) of
+		     [] -> Es0;
+		     As ->
+			 AsDocs= seq(As,floating(text(",")),Ctxt1,fun lay/2),
+			 D2 = lay_elems(fun refac_prettypr_0:sep/1, AsDocs, As, Ctxt),
+			 {AsStart, AsEnd} = get_start_end_loc(As),
+			 AfterLoc=get_keyword_loc_before('after', Ctxt1, AsStart),
+			 [{append_leading_keyword("after", D2, As, Ctxt1), {AfterLoc, AsEnd}}
+			  |Es0]
+		 end,
+	   Es3 = case refac_syntax:try_expr_handlers(Node) of
+		     [] -> Es2;
+		     Hs ->
+			 D3 = lay_clauses(Hs,try_expr,Ctxt1),
+			 {HsStart, HsEnd} = get_start_end_loc(Hs),
+			 CatchLoc = get_keyword_loc_before('catch', Ctxt1, HsStart),
+			 [{append_leading_keyword("catch", D3, Hs, Ctxt1), {CatchLoc, HsEnd}}|Es2]
+		 end,
+	   case refac_syntax:try_expr_clauses(Node) of
+	       [] ->
+		   lay_body_elems_2([Es1|Es3],Ctxt1,[],{{1,1},{1,1}});
+	       Cs ->
+                   D4 = lay_clauses(Cs, try_expr, Ctxt1),
+		   {CsStart, CsEnd} = get_start_end_loc(Cs),
+                   OfLoc=get_keyword_loc_before('of', Ctxt1, CsStart),
+                   Es4 = {append_leading_keyword("of", D4, Cs, Ctxt1),{OfLoc, CsEnd}},
+                   lay_body_elems_2([Es1,Es4|Es3], Ctxt1, [], {{1,1},{1,1}})
+	   end;
 	char ->
-	    V = refac_syntax:char_value(Node),
+	   V = refac_syntax:char_value(Node),
 	   case is_integer(V) and (V > 127) of
 	       true -> {ok, [Num], _} = io_lib:fread("~u", integer_to_list(V)),
 		       [CharStr] = io_lib:fwrite("~.8B", [Num]),
-		       text("$\\" ++ CharStr);   %% "
-	       _ when is_atom(V)-> 
-                 text(atom_to_list(V));
-               _ -> text(refac_syntax:char_literal(Node))
-	   end;
-      string ->  %% done;
-	  Str = refac_syntax:string_literal(Node),
-	  StrVal = "\"" ++ refac_syntax:string_value(Node) ++ "\"",
-	  case lists:keysearch(toks, 1, refac_syntax:get_ann(Node)) of
-	    {value, {toks, StrToks}} ->
-		Str1 = io_lib:write_string(lists:concat(lists:map(fun ({string, _, S}) -> S end, StrToks))),
-		case Str1 == Str of
-		  true -> lay_string(StrToks);
-		  _ -> lay_string(StrVal, Ctxt)
-		end;
-	    _ -> lay_string(StrVal, Ctxt)
-	  end;
-      nil -> text("[]");
-      tuple -> %% done;
-          Es0=refac_syntax:tuple_elements(Node),
-	  Sep = get_separator(Es0, Ctxt#ctxt.tokens, ","),
-	  Es = seq(Es0, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
-	  beside(floating(text("{")),
-		 beside(lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:tuple_elements(Node)), floating(text("}"))));
-      list ->   %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  Node1 = refac_syntax:compact_list(Node),
-	  PrefixElems = refac_syntax:list_prefix(Node1),
-	  Sep = get_separator(PrefixElems, Ctxt#ctxt.tokens, ","),
-	  D0 = seq(PrefixElems, floating(text(Sep)), Ctxt1, fun lay/2),
-	  D1 = lay_elems(fun refac_prettypr_0:par/1, D0, PrefixElems),
-	  D = case refac_syntax:list_suffix(Node1) of
-		none -> beside(D1, floating(text("]")));
-		S ->
-		    EndLn = get_end_line(lists:last(PrefixElems)),
-		    StartLn = get_start_line(S),
-		    case (EndLn == 0) or (StartLn == 0) of
-		      true ->
-			  follow(D1, beside(floating(text("| ")), beside(lay(S, Ctxt1), floating(text("]")))));
-		      _ ->
-			  case StartLn - EndLn of
-			    0 ->
-				beside(D1, beside(floating(text("| ")), beside(lay(S, Ctxt1), floating(text("]")))));
-			    1 ->
-				above(D1, beside(floating(text("| ")), beside(lay(S, Ctxt1), floating(text("]")))));
-			    _ ->
-				follow(D1, beside(floating(text("| ")), beside(lay(S, Ctxt1), floating(text("]")))))
-			  end
-		    end
-	      end,
-	  beside(floating(text("[")), D);
-      operator ->
-	  Op = refac_syntax:operator_literal(Node),
-	  case lists:member(Op, ["bnot", "not", "div", "rem",
-				 "band", "and", "bor", "bxor", 
-                                 "bsl", "bsr", "or", "xor", 
-				 "andalso","orelse", "catch"]) of
-	      true ->
-		  floating(text(" "++Op++" "));
-	      false ->
-		  Op1 = get_operator_text(Node, Ctxt#ctxt.tokens, Op),
-		  floating(text(Op1))
-	  end;
-      infix_expr ->  %% done;
-	  Left = refac_syntax:infix_expr_left(Node),
-	  Operator = refac_syntax:infix_expr_operator(Node),
-	  Right = refac_syntax:infix_expr_right(Node),
-	  {PrecL, Prec, PrecR} = case refac_syntax:type(Operator) of
-				   operator ->
-				       inop_prec(refac_syntax:operator_name(Operator));
-				   _ -> {0, 0, 0}
-				 end,
-	  D1 = maybe_parentheses_1(lay(Left, set_prec(Ctxt, PrecL)),Left, Ctxt),
-	  D2 = lay(Operator, reset_prec(Ctxt)),
-	  D3 = maybe_parentheses_1(lay(Right, set_prec(Ctxt, PrecR)),Right, Ctxt),
-	  LeftEndLn = get_end_line(Left),
-	  OpStartLn = get_start_line(Operator),
-	  RightStartLn = get_start_line(Right),
-	  D12 = case OpStartLn == LeftEndLn andalso OpStartLn =/= 0 of
-	 	  true -> horizontal([D1, D2]);
-	 	  false -> par([D1, D2], Ctxt#ctxt.sub_indent)
-		end,
-	  D4 = case OpStartLn == RightStartLn andalso OpStartLn =/= 0 of
-		 true ->
-		     case D3 of
-		       {sep, [D| Ds], N, P} ->
-			   {sep, [horizontal([D12, D])| Ds], N, P};
-		       {beside, {sep, [D| Ds], N, P}, Ds1} ->
-			   {beside, {sep, [horizontal([D12, D])| Ds], N, P}, Ds1};
-		       {beside, {beside, {sep, [D| Ds], N, P}, {text, [1, 32]}}, Ds1} ->
-			   {beside, {beside, {sep, [horizontal([D12, D])| Ds], N, P}, {text, [1, 32]}}, Ds1};
-		       _ ->
-			   horizontal([D12, D3])
-		     end;
-	 	 _ -> par([D12, D3], Ctxt#ctxt.sub_indent)
-	        end,
-	  maybe_parentheses(D4, Prec, Ctxt);
-      prefix_expr ->  %% done;
-	  Operator = refac_syntax:prefix_expr_operator(Node),
-	  PrefixArg = refac_syntax:prefix_expr_argument(Node),
-	  {{Prec, PrecR}, Name} = case refac_syntax:type(Operator) of
-				    operator ->
-					N = refac_syntax:operator_name(Operator),
-					{preop_prec(N), N};
-				    _ -> {{0, 0}, any}
-				  end,
-	  D1 = lay(Operator, reset_prec(Ctxt)),
-	  D2 = lay(PrefixArg, set_prec(Ctxt, PrecR)),
-	  D3 = case Name of
-		 '+' -> beside(D1, D2);
-		 '-' -> beside(D1, D2);
-		 _ ->
-		     OpEndLn = get_end_line(Operator),
-		     ArgStartLn = get_start_line(PrefixArg),
-		     case (OpEndLn == 0) or (ArgStartLn == 0) of
-		       true -> par([D1, D2], Ctxt#ctxt.sub_indent);
-		       _ ->
-			   case ArgStartLn - OpEndLn of
-			     0 -> beside(beside(D1, text(" ")), D2);
-			     1 -> above(D1, nest(Ctxt#ctxt.sub_indent, D2));
-			     _ -> par([D1, D2], Ctxt#ctxt.sub_indent)
-			   end
-		     end
-	       end,
-	  maybe_parentheses(D3, Prec, Ctxt);
-      application ->  %% done.
-	  {PrecL, Prec} = func_prec(),
-	  D = lay(refac_syntax:application_operator(Node), set_prec(Ctxt, PrecL)),
-	  Args = refac_syntax:application_arguments(Node),			   
-	  Sep = get_separator(Args, Ctxt#ctxt.tokens, ","),
-	  As = seq(Args, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
-	  Op = refac_syntax:application_operator(Node),
-	  D1 = case Args of
-		 [] ->
-		     beside(D, beside(text("("), text(")")));
-		 [H| _] ->
-		     EndLn = get_end_line(Op),
-		     StartLn = get_start_line(H),
-		     case StartLn - EndLn == 1 of
-		       true ->
-			   above(beside(D, text("(")),
-				 nest(Ctxt#ctxt.sub_indent, beside(lay_elems(fun refac_prettypr_0:par/1,
-									     As, Args), floating(text(")")))));
-		       false ->
-			   beside(D, beside(text("("), beside(lay_elems(fun refac_prettypr_0:par/1,
-									As, Args), floating(text(")")))))
-		     end
-	       end,
-	  maybe_parentheses(D1, Prec, Ctxt);
-      match_expr ->         %% done;
-	  {PrecL, Prec, PrecR} = inop_prec('='),
-	  Left = refac_syntax:match_expr_pattern(Node),
-	  Right = refac_syntax:match_expr_body(Node),
-	  EndLn = get_end_line(Left),
-	  StartLn = get_start_line(Right),
-	  D1 = lay(refac_syntax:match_expr_pattern(Node), set_prec(Ctxt, PrecL)),
-	  D2 = lay(refac_syntax:match_expr_body(Node), set_prec(Ctxt, PrecR)),
-	  D3 = case (EndLn == 0) or (StartLn == 0) of
-		 true ->
-		     follow(beside(D1, floating(text(" ="))), D2, Ctxt#ctxt.break_indent);
-		 false ->
-		     case EndLn == StartLn of
-		       true -> beside(beside(D1, text(" = ")), D2);
-		       _ ->
-			   above(beside(D1, text(" =")), nest(Ctxt#ctxt.break_indent, D2))
-		     end
-	       end,
-	  maybe_parentheses(D3, Prec, Ctxt);
-      underscore -> text("_");
-      clause ->  %% done;
-	  %% The style used for a clause depends on its context
-	  Ctxt1 = (reset_prec(Ctxt))#ctxt{clause = undefined},
-	  Pats = refac_syntax:clause_patterns(Node),
-	  Body = refac_syntax:clause_body(Node),
-	  Sep = get_separator(Pats, Ctxt#ctxt.tokens, ","),
-	  PatDocs = seq(Pats, floating(text(Sep)), Ctxt1, fun lay/2),
-	  D1 = lay_elems(fun refac_prettypr_0:par/1, PatDocs, Pats),
-       	  D2 = case refac_syntax:clause_guard(Node) of
-	  	 none -> none;
-	  	 G -> lay(G, Ctxt1)
-	       end,
-	  BodyDocs = seq(Body, floating(text(",")), Ctxt1, fun lay/2),
-	  D3 = lay_body_elems(fun refac_prettypr_0:sep/1, BodyDocs, Body),
-	  HeadLastLn = case refac_syntax:clause_guard(Node) of
-	  		 none -> case Pats of
-	  			   [] -> get_start_line(Node);
-	  			   _ ->  case get_end_line(Pats) of 
-					     0 -> get_start_line(Node);
-					     L ->L
-					 end
-	  			 end;
-	  		 _ -> get_end_line(refac_syntax:clause_guard(Node))
-	  	       end,
-	  BodyStartLn = get_start_line(hd(Body)),
-	  SameLine = {BodyStartLn, HeadLastLn},
-	  case Ctxt#ctxt.clause of
-	    fun_expr -> make_fun_clause(D1, D2, D3, Ctxt, SameLine);
-	    {function, N} -> make_fun_clause(N, D1, D2, D3, Ctxt, SameLine);
-	    if_expr -> make_if_clause(D1, D2, D3, Ctxt, SameLine);
-	    cond_expr -> make_if_clause(D1, D2, D3, Ctxt, SameLine);
-	    case_expr ->
-		  make_case_clause(D1, D2, D3, Ctxt, SameLine);
-	    receive_expr -> make_case_clause(D1, D2, D3, Ctxt, SameLine);
-	    try_expr -> make_case_clause(D1, D2, D3, Ctxt, SameLine);
-	    {rule, N} -> make_rule_clause(N, D1, D2, D3, Ctxt, SameLine);
-	    undefined ->
-	  	%% If a clause is formatted out of context, we
-	  	%% use a "fun-expression" clause style.
-	  	make_fun_clause(D1, D2, D3, Ctxt, SameLine)
-	  end;
-      function ->  %% done;
-	  %% Comments on the name itself will be repeated for each
-	  %% clause, but that seems to be the best way to handle it.
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:function_name(Node), Ctxt1),
-	  D2 = lay_clauses(refac_syntax:function_clauses(Node), {function, D1}, Ctxt1),
-	  beside(D2, floating(text(".")));
-      case_expr ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:case_expr_argument(Node), Ctxt1),
-	  D2 = lay_clauses(refac_syntax:case_expr_clauses(Node), case_expr, Ctxt1),
-	  sep([par([follow(text("case"), D1, Ctxt1#ctxt.break_indent), text("of")], Ctxt1#ctxt.break_indent),
-	       nest(Ctxt1#ctxt.break_indent, D2), text("end")]);
-      if_expr ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D = lay_clauses(refac_syntax:if_expr_clauses(Node), if_expr, Ctxt1),
-	  sep([follow(text("if"), D, Ctxt1#ctxt.break_indent), text("end")]);
-      cond_expr ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D = lay_clauses(refac_syntax:cond_expr_clauses(Node), cond_expr, Ctxt1),
-	  sep([text("cond"), nest(Ctxt1#ctxt.break_indent, D), text("end")]);
-      fun_expr ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D = lay_clauses(refac_syntax:fun_expr_clauses(Node), fun_expr, Ctxt1),
-	  sep([follow(text("fun"), D, Ctxt1#ctxt.break_indent), text("end")]);
-      module_qualifier ->  %% done;
-	  {PrecL, _Prec, PrecR} = inop_prec(':'),
-	  D1 = lay(refac_syntax:module_qualifier_argument(Node), set_prec(Ctxt, PrecL)),
-	  D2 = lay(refac_syntax:module_qualifier_body(Node), set_prec(Ctxt, PrecR)),
-	  beside(D1, beside(text(":"), D2));
-      qualified_name ->  %% done;
-	  Ss = refac_syntax:qualified_name_segments(Node),
-	  lay_qualified_name(Ss, Ctxt);
-      %%
-      %% The rest is in alphabetical order
-      %%
-      arity_qualifier ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:arity_qualifier_body(Node), Ctxt1),
-	  D2 = lay(refac_syntax:arity_qualifier_argument(Node), Ctxt1),
-	  beside(D1, beside(text("/"), D2));
-      attribute ->  %% done;
-	  %% The attribute name and arguments are formatted similar to
-	  %% a function call, but prefixed with a "-" and followed by
-	  %% a period. If the arguments is `none', we only output the
-	  %% attribute name, without following parentheses.
-	  Ctxt1 = reset_prec(Ctxt),
-	  N = refac_syntax:attribute_name(Node),
-	  D = case refac_syntax:attribute_arguments(Node) of
-		none -> lay(N, Ctxt1);
-		Args ->
-		    Sep = get_separator(Args, Ctxt#ctxt.tokens, ","),
-		    As = seq(Args, floating(text(Sep)), Ctxt1, fun lay/2),
-		    beside(lay(N, Ctxt1), beside(text("("), beside(lay_elems(fun refac_prettypr_0:par/1, As, Args), floating(text(")")))))
-	      end,
-	  beside(floating(text("-")), beside(D, floating(text("."))));
-      binary ->   %% done
-	  Ctxt1 = reset_prec(Ctxt),
-	  Fields = refac_syntax:binary_fields(Node),
-	  Sep = get_separator(Fields, Ctxt#ctxt.tokens, ","),
-	  Es = seq(Fields, floating(text(Sep)), Ctxt1, fun lay/2),
-	  beside(floating(text("<<")), beside(lay_elems(fun refac_prettypr_0:par/1, Es, Fields), floating(text(">>"))));
-      binary_field ->
-	  Ctxt1 = reset_prec(Ctxt),
-	  D = lay(refac_syntax:binary_field_body(Node), Ctxt1),
-	  %% Begin of modification of HL
-	  Body = refac_syntax:binary_field_body(Node),
-	  D1 = case refac_syntax:type(Body) of
-		 size_qualifier -> D;
-		 _ ->
-		     case refac_syntax:type(Body) == variable orelse
-			    refac_syntax:type(Body) == underscore orelse refac_syntax:is_literal(Body) == true
-			 of
-		       true -> D;
-		       false ->
-			   case refac_syntax:type(Body) of
-			     macro -> case lists:keysearch(with_bracket, 1, refac_syntax:get_ann(Body)) of
-					{value, {with_bracket, true}} ->
-					    beside(floating(text("(")), beside(D, floating(text(")"))));
-					_ -> D
-				      end;
-			     _ -> beside(floating(text("(")), beside(D, floating(text(")"))))
-			   end
-		     end
-	       end,
-	  %% End of modification by HL
-	  D2 = case refac_syntax:binary_field_types(Node) of
-		 [] -> empty();
-		 Ts ->
-		     beside(floating(text("/")), lay_bit_types(Ts, Ctxt1))
-	       end,
-	  beside(D1, D2);
-      block_expr -> %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  Body = refac_syntax:block_expr_body(Node),
-	  Es = seq(Body, floating(text(", ")), Ctxt1, fun lay/2),
-	  sep([text("begin"), nest(Ctxt1#ctxt.break_indent, lay_body_elems(fun refac_prettypr_0:sep/1, Es, Body)), text("end")]);
-      catch_expr ->  %% done;
-	  {Prec, PrecR} = preop_prec('catch'),
-	  D = lay(refac_syntax:catch_expr_body(Node), set_prec(Ctxt, PrecR)),
-	  D1 = follow(text("catch"), D, Ctxt#ctxt.break_indent),
-	  maybe_parentheses(D1, Prec, Ctxt);
-      class_qualifier ->  %% done;
-	  Ctxt1 = set_prec(Ctxt, max_prec()),
-	  D1 = lay(refac_syntax:class_qualifier_argument(Node), Ctxt1),
-	  D2 = lay(refac_syntax:class_qualifier_body(Node), Ctxt1),
-	  beside(D1, beside(text(":"), D2));
-      comment ->
-	  D = stack_comment_lines(refac_syntax:comment_text(Node)),
-	  %% Default padding for standalone comments is empty.
-	  case refac_syntax:comment_padding(Node) of
-	    none -> floating(break(D));
-	    P -> floating(break(beside(text(spaces(P)), D)))
-	  end;
-      conjunction -> %% done;
-	  Body = refac_syntax:conjunction_body(Node),
-	  Sep = get_separator(Body, Ctxt#ctxt.tokens, ","),
-	  Es = seq(Body, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
-	  lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:conjunction_body(Node));
-      disjunction -> %% done;
-	  %% For clarity, we don't paragraph-format
-	  %% disjunctions; only conjunctions (see above).
-	  Es = seq(refac_syntax:disjunction_body(Node), floating(text(";")), reset_prec(Ctxt), fun lay/2),
-	  lay_elems(fun refac_prettypr_0:sep/1, Es, refac_syntax:disjunction_body(Node));
-      error_marker ->  %% done;
-	  E = refac_syntax:error_marker_info(Node),
-	  beside(text("** "), beside(lay_error_info(E, reset_prec(Ctxt)), text(" **")));
-      eof_marker -> empty();
-      form_list ->
-	  Es = seq(refac_syntax:form_list_elements(Node), none, reset_prec(Ctxt), fun lay/2),
-	  %% I leave this as it is. (HL).
-	  vertical_sep(text(""), Es);
-      generator -> %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:generator_pattern(Node), Ctxt1),
-	  D2 = lay(refac_syntax:generator_body(Node), Ctxt1),
-	  D1EndLn = get_end_line(refac_syntax:generator_pattern(Node)),
-	  D2StartLn = get_start_line(refac_syntax:generator_body(Node)),
-	  case (D1EndLn == 0) or (D2StartLn == 0) of
-	    true ->
-		par([D1, beside(text("<- "), D2)], Ctxt1#ctxt.break_indent);
-	    _ ->
-		case D2StartLn - D1EndLn of
-		  0 -> beside(D1, beside(text(" <- "), D2));
-		  1 -> above(D1, nest(Ctxt#ctxt.break_indent, beside(text("<- "), D2)));
-		  _ -> par([D1, beside(text("<- "), D2)], Ctxt1#ctxt.sub_indent)
-		end
-	  end;
-      binary_generator ->
-	      Ctxt1 = reset_prec(Ctxt),
-	      D1 = lay(erl_syntax:binary_generator_pattern(Node), Ctxt1),
-	      D2 = lay(erl_syntax:binary_generator_body(Node), Ctxt1),
-	      D1EndLn = get_end_line(refac_syntax:generator_pattern(Node)),
-	      D2StartLn = get_start_line(refac_syntax:generator_body(Node)),
-	      case (D1EndLn == 0) or (D2StartLn == 0) of
-		  true ->
-		      par([D1, beside(text("<- "), D2)], Ctxt1#ctxt.break_indent);
-		  _ ->
-		      case D2StartLn - D1EndLn of
-			  0 -> beside(D1, beside(text(" <- "), D2));
-			  1 -> above(D1, nest(Ctxt#ctxt.break_indent, beside(text("<- "), D2)));
-			  _ -> par([D1, beside(text("<- "), D2)], Ctxt1#ctxt.sub_indent)
-		      end
-	      end;
-      implicit_fun -> %%done;
-	  D = lay(refac_syntax:implicit_fun_name(Node), reset_prec(Ctxt)),
-	  beside(floating(text("fun ")), D);
-      list_comp ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:list_comp_template(Node), Ctxt1),
-	  Es0 =refac_syntax:list_comp_body(Node),
-	  Sep = get_separator(Es0, Ctxt#ctxt.tokens, ","),
-	  Es = seq(Es0, floating(text(Sep)), Ctxt1, fun lay/2),
-	  D2 = lay_elems(fun refac_prettypr_0:par/1, Es, refac_syntax:list_comp_body(Node)),
-	  D1EndLn = get_end_line(refac_syntax:list_comp_template(Node)),
-	  D2StartLn = get_start_line(hd(refac_syntax:list_comp_body(Node))),
-	  D3 = case (D2StartLn - D1EndLn == 0) and (D1EndLn =/= 0) of
-		 true -> beside(D1, beside(floating(text(" || ")), beside(D2, floating(text("]")))));
-		 _ -> par([D1, beside(floating(text("|| ")), beside(D2, floating(text("]"))))])
-	       end,
-	  beside(floating(text("[")), D3);
-      binary_comp ->
-	    Ctxt1 = reset_prec(Ctxt),
-	    D1 = lay(erl_syntax:binary_comp_template(Node), Ctxt1),
-	    D2 = par(seq(erl_syntax:binary_comp_body(Node),
-			 floating(text(",")), Ctxt1,
-			 fun lay/2)),
-	    beside(floating(text("<< ")),
-		   par([D1, beside(floating(text(" || ")),
-				   beside(D2, floating(text(" >>"))))]));
-      macro ->  %%done;
-	  %% This is formatted similar to a normal function call, but
-	  %% prefixed with a "?".
-	  Ctxt1 = reset_prec(Ctxt),
-	  N = refac_syntax:macro_name(Node),
-	  Args = refac_syntax:macro_arguments(Node),
-	  D = case Args of
-		[H| _] ->
-		    EndLn = get_end_line(N),
-		    StartLn = get_start_line(H),
-		    Sep = get_separator(Args, Ctxt#ctxt.tokens, ","),
-		    As = seq(Args, floating(text(Sep)), reset_prec(Ctxt), fun lay/2),
-		    case StartLn > EndLn of
-		      true ->
-			  above(beside(lay(N, Ctxt1), text("(")),
-				nest(Ctxt1#ctxt.sub_indent,
-				     beside(lay_elems(fun refac_prettypr_0:par/1, As, Args), floating(text(")")))));
-		      false ->
-			  beside(lay(N, Ctxt1), beside(text("("),
-						       beside(lay_elems(fun refac_prettypr_0:par/1, As, Args), floating(text(")")))))
-		    end;
-		[] -> beside(lay(N, Ctxt1), text("()"));
-		none -> lay(N, Ctxt1)
-	      end,
-	  D1 = beside(floating(text("?")), D),
-	  case Ctxt#ctxt.prec of
-	    P when P > 0 ->
-		case lists:keysearch(with_bracket, 1, refac_syntax:get_ann(Node)) of
-		  {value, {with_bracket, true}} ->
-		      lay_parentheses(D1, Ctxt);
-		  _ -> D1
-		end;
-	    _ -> D1
-	  end;
-      parentheses ->  %% done;
-	  D = lay(refac_syntax:parentheses_body(Node), reset_prec(Ctxt)),
-	  lay_parentheses(D, Ctxt);
-      query_expr ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D = lay(refac_syntax:query_expr_body(Node), Ctxt1),
-	  sep([text("query"), nest(Ctxt1#ctxt.break_indent, D), text("end")]);
-      receive_expr ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay_clauses(refac_syntax:receive_expr_clauses(Node), receive_expr, Ctxt1),
-	  D2 = case refac_syntax:receive_expr_timeout(Node) of
-		 none -> D1;
-		 T ->
-		     D3 = lay(T, Ctxt1),
-		     A = refac_syntax:receive_expr_action(Node),
-		     D4 = lay_elems(fun refac_prettypr_0:sep/1, seq(A, floating(text(", ")), Ctxt1, fun lay/2), A),
-		     sep([D1, follow(floating(text("after")), append_clause_body(D4, D3, Ctxt1, {1, 1}), Ctxt1#ctxt.break_indent)])
-	       end,
-	  sep([text("receive"), nest(Ctxt1#ctxt.break_indent, D2), text("end")]);
-      record_access ->
-	  {PrecL, Prec, PrecR} = inop_prec('#'),
-	  D1 = lay(refac_syntax:record_access_argument(Node), set_prec(Ctxt, PrecL)),
-	  D2 = beside(floating(text(".")), lay(refac_syntax:record_access_field(Node), set_prec(Ctxt, PrecR))),
-	  D3 = case refac_syntax:record_access_type(Node) of
-		 none -> D2;
-		 T ->
-		     beside(beside(floating(text("#")), lay(T, reset_prec(Ctxt))), D2)
-	       end,
-	  maybe_parentheses(beside(D1, D3), Prec, Ctxt);
-      record_expr ->  %% done;
-	  {PrecL, Prec, _} = inop_prec('#'),
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:record_expr_type(Node), Ctxt1),
-	  Fields = refac_syntax:record_expr_fields(Node),
-	  Sep = get_separator(Fields, Ctxt#ctxt.tokens, ","),
-	  D2 = lay_elems(fun refac_prettypr_0:par/1, seq(refac_syntax:record_expr_fields(Node), floating(text(Sep)), Ctxt1, fun lay/2), Fields),
-	  D3 = beside(beside(floating(text("#")), D1), beside(text("{"), beside(D2, floating(text("}"))))),
-	  D4 = case refac_syntax:record_expr_argument(Node) of
-		 none -> D3;
-		 A -> beside(lay(A, set_prec(Ctxt, PrecL)), D3)
-	       end,
-	  maybe_parentheses(D4, Prec, Ctxt);
-      record_field ->  %% done;
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:record_field_name(Node), Ctxt1),
-	  case refac_syntax:record_field_value(Node) of
-	    none -> D1;
-	    V -> D2 = lay(V, Ctxt1),
-		 D1EndLn = get_end_line(refac_syntax:record_field_name(Node)),
-		 D2StartLn = get_start_line(V),
-		 case (D2StartLn - D1EndLn == 0) and (D1EndLn =/= 0) of
-		   true -> beside(D1, beside(text(" = "), D2));
-		   _ -> par([D1, floating(text(" = ")), D2], Ctxt1#ctxt.break_indent)
-		 end
-	  end;
-      record_index_expr ->  %% done
-	  {Prec, PrecR} = preop_prec('#'),
-	  D1 = lay(refac_syntax:record_index_expr_type(Node), reset_prec(Ctxt)),
-	  D2 = lay(refac_syntax:record_index_expr_field(Node), set_prec(Ctxt, PrecR)),
-	  D3 = beside(beside(floating(text("#")), D1), beside(floating(text(".")), D2)),
-	  maybe_parentheses(D3, Prec, Ctxt);
-      rule -> %% done.
-	  %% Comments on the name will be repeated; cf.
-	  %% `function'.
-	  Ctxt1 = reset_prec(Ctxt),
-	  D1 = lay(refac_syntax:rule_name(Node), Ctxt1),
-	  D2 = lay_clauses(refac_syntax:rule_clauses(Node), {rule, D1}, Ctxt1),
-	  beside(D2, floating(text(".")));
-      size_qualifier -> %%done;
-	  Ctxt1 = set_prec(Ctxt, max_prec()),
-	  Body = refac_syntax:size_qualifier_body(Node),
-	  D1 = case refac_syntax:type(Body) == variable orelse refac_syntax:type(Body) == underscore orelse refac_syntax:is_literal(Body) == true
-		   of
-		 true -> lay(Body, Ctxt1);
-		 false ->
-		     case refac_syntax:type(Body) of
-		       macro -> case lists:keysearch(with_bracket, 1, refac_syntax:get_ann(Body)) of
-				  {value, {with_bracket, true}} ->
-				      beside(floating(text("(")), beside(lay(Body, Ctxt1), floating(text(")"))));
-				  _ -> lay(Body, Ctxt1)
-				end;
-		       _ -> beside(floating(text("(")), beside(lay(Body, Ctxt1), floating(text(")"))))
-		     end
-	       end,
-	  D2 = lay(refac_syntax:size_qualifier_argument(Node), Ctxt1),
-	  beside(D1, beside(text(":"), D2));
-      try_expr ->
-	      Ctxt1 = reset_prec(Ctxt),
-	      Body = refac_syntax:try_expr_body(Node),
-	      D1 = lay_body_elems(fun refac_prettypr_0:sep/1, seq(Body,floating(text(", ")),Ctxt1,fun lay/2),Body),			 
-	      Es0 = [text("end")],
-	      Es1 = case refac_syntax:try_expr_after(Node) of
-			[] -> Es0;
-			As ->
-			    D2 = lay_elems(fun refac_prettypr_0:sep/1,seq(As,floating(text(", ")),Ctxt1,fun lay/2), As),
-			    [text("after"),nest(Ctxt1#ctxt.break_indent,D2)| Es0]
-		    end,
-	      Es2 = case refac_syntax:try_expr_handlers(Node) of
-			[] -> Es1;
-			Hs ->
-			    D3 = lay_clauses(Hs,try_expr,Ctxt1),
-			    [text("catch"),nest(Ctxt1#ctxt.break_indent,D3)| Es1]
-		    end,
-	      {L,C}=refac_syntax:get_pos(hd(Body)),
-	      TryLineNum=get_prev_keyword_line_num(Ctxt1#ctxt.tokens, {L,C}, 'try'),
-	      case refac_syntax:try_expr_clauses(Node) of
-		  [] -> 
-		      case TryLineNum==L andalso TryLineNum/=0 of 
-			  true ->
-			      sep([beside(text("try "),nest(Ctxt1#ctxt.break_indent, D1))| Es2]);
-			  false ->
-			      sep([text("try"),nest(Ctxt1#ctxt.break_indent, D1)| Es2])
-	    	      end;
-		  Cs ->
-		      {_, {L0,C0}} = refac_misc:get_range(lists:last(Body)),
-		      OfLineNum = get_post_keyword_line_num(Ctxt1#ctxt.tokens, {L0,C0}, 'of'),
-		      D4 = lay_clauses(Cs, try_expr, Ctxt1),
-		      Es3 = [nest(Ctxt1#ctxt.break_indent, D4)| Es2],
-		      case TryLineNum==L andalso TryLineNum/=0 of 
-			  true ->
-			      case OfLineNum==L0 andalso L0/=0 of
-				  true ->
-				      sep([beside(text("try "), beside(nest(Ctxt1#ctxt.break_indent, D1), text(" of")))| Es3]);
-				  false ->
-				      sep([beside(text("try "),nest(Ctxt1#ctxt.break_indent, D1)), text("of")| Es3])
-			      end;
-			  false ->
-			      case OfLineNum==L0 andalso L0/=0 of
-				  true ->
-				      sep([text("try"), nest(Ctxt1#ctxt.break_indent, D1)| Es3]);
-				  false ->
-				      sep([text("try"), nest(Ctxt1#ctxt.break_indent, D1), text("of")| Es3])
-			      end
-		      end
-	      end;
-	  warning_marker ->
-	      E = refac_syntax:warning_marker_info(Node),
-	      beside(text("%% WARNING: "), lay_error_info(E, reset_prec(Ctxt)));
-	   type -> empty();  %% tempory fix!!
-	   typed_record_field -> empty() %% tempory fix!!!
-      end.
+		       text("$\\" ++ CharStr);
+	       _ when is_atom(V) ->
+		      text(atom_to_list(V));
+	       _ -> text(refac_syntax:char_literal(Node))
+	   end; %% "
+       warning_marker ->
+           E = refac_syntax:warning_marker_info(Node),
+          beside(text("%% WARNING: "), lay_error_info(E, reset_prec(Ctxt)));
+	type -> empty();  %% tempory fix!!
+      	typed_record_field -> empty() %% tempory fix!!!
+    end.
 
-lay_parentheses(D,_Ctxt) ->
+lay_list(Node, Ctxt) ->
+    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+    Node1 = refac_syntax:compact_list(Node),
+    PrefixElems = refac_syntax:list_prefix(Node1),
+    Sep = get_separator(PrefixElems, Ctxt, ","),
+    D0 = seq(PrefixElems, floating(text(Sep)), Ctxt1, fun lay/2),
+    D1 = lay_elems(fun refac_prettypr_0:par/1, D0, PrefixElems, Ctxt),
+    {{StartLn, StartCol}, {EndLn, EndCol}} = get_start_end_loc(Node),
+    {PrefixStart={PrefixStartLn, PrefixStartCol},
+     PrefixEnd= {PrefixEndLn, _PrefixEndCol}} =
+        case PrefixElems of
+            [] ->
+                {{0,0},0,0};
+            _ ->
+                {get_start_loc_with_comment(hd(PrefixElems)),
+                 get_end_loc_with_comment(lists:last(PrefixElems))}
+        end,
+    N = PrefixStartLn - StartLn,
+    Offset = PrefixStartCol - StartCol,
+    case refac_syntax:list_suffix(Node1) of
+        none ->
+            D2 =case N =< 0 of
+                    true ->
+                        Pad = PrefixStartCol-StartCol-1,
+                        case Pad>0 of
+                            true ->
+                                %% beside(text("["), beside(text(spaces(Pad)), D1));
+                                beside(text("["), D1);
+                            false ->
+                                beside(text("["), D1)
+                        end;
+                    _ ->
+                        above(text("["), nest(Offset, D1))
+                end,
+            N1 = EndLn - PrefixEndLn,
+            case N1 =< 0 orelse EndLn==0 orelse PrefixEndLn==0 of
+                true ->
+                    beside(D2, text("]"));
+                false ->
+                    above(D2, nest(EndCol - StartCol, text("]")))
+            end;
+	S ->
+            D2 = lay(S, Ctxt1),
+            {SuffixStart, SuffixEnd={SuffixEndLn,_}} = refac_util:get_start_end_loc_with_comment(S),
+            {BarLn, BarCol} = get_keyword_loc_before('|', Ctxt1, SuffixStart),
+            BarD2=append_elems(fun refac_prettypr_0:horizontal/1,
+                               {text("|"), {{BarLn, BarCol}, {BarLn, BarCol}}},
+                               {D2, {SuffixStart, SuffixEnd}}),
+            D1BarD2=append_elems(fun refac_prettypr_0:par/1, {D1, {PrefixStart, PrefixEnd}},
+                                 {BarD2,{{BarLn, BarCol}, SuffixEnd}}),
+            D3 = case N =< 0 of
+                     true ->
+                         Pad = PrefixStartCol-StartCol-1,
+                         case Pad>0 of
+                             true ->  
+                                 %% this cause problem when the first element is removed.
+                                 %% beside(text("["), beside(text(spaces(Pad)), D1BarD2));
+                                 beside(text("["), D1BarD2);
+                             false ->
+                                 beside(text("["), D1BarD2)
+                         end;
+                     _ ->
+                         above(text("["), nest(Offset, D1BarD2))
+                 end,
+            N1 = EndLn - SuffixEndLn,
+            case N1 =< 0 orelse EndLn==0 orelse SuffixEndLn==0 of
+                true ->
+                    beside(D3, text("]"));
+                false ->
+                    above(D3, nest(EndCol - StartCol, text("]")))
+            end
+    end.
+
+lay_generator(Ctxt, Pat, Body) ->
+    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+    D1 = lay(Pat,Ctxt1),
+    D2 = lay(Body,Ctxt1),
+    D1EndLn = get_end_line_with_comment(Pat),
+    BodyStartLoc={D2StartLn, _} = get_start_loc_with_comment(Body),
+    {_, D1StartCol} = get_start_loc(Pat),
+    {_, D2StartCol} = get_start_loc(Body),
+    case (D1EndLn==0) or (D2StartLn==0) of
+	true ->
+	    par([D1,beside(text("<- "),D2)],Ctxt#ctxt.break_indent);
+	_ ->
+	    case D2StartLn-D1EndLn of
+		0 -> beside(D1,beside(text(" <- "),D2));
+		1 -> 
+                    {ArrowLn, ArrowCol} = 
+                        get_keyword_loc_before('<-', Ctxt, BodyStartLoc ),
+                    if ArrowLn ==D1EndLn ->
+                            Offset = D2StartCol -D1StartCol,
+                            above(beside(D1, text("<-")),nest(Offset,D2));
+                       true ->
+                            above(D1,nest(ArrowCol-D1StartCol,beside(text("<- "),D2)))
+                    end;
+		_ -> par([D1,beside(text("<- "),D2)],Ctxt#ctxt.break_indent)
+	    end
+    end.
+
+
+lay_comp(Node, Ctxt, Fun1, Fun2, Tok1, Tok2) ->
+    Ctxt1 = reset_check_bracket(reset_prec(Ctxt)),
+    Temp = refac_syntax:Fun1(Node),
+    D1 = lay(Temp,Ctxt1),
+    Body = refac_syntax:Fun2(Node),
+    Sep = get_separator(Body,Ctxt,","),
+    Es = seq(Body,floating(text(Sep)),Ctxt1,fun lay/2),
+    D2 = lay_elems(fun refac_prettypr_0:par/1,Es,Body,Ctxt),
+    {TempStart,TempEnd} = get_start_end_loc(Temp),
+    {BodyStart,BodyEnd} = get_start_end_loc(Body),
+    {BarLn,BarCol} =
+        get_keyword_loc_before('||',Ctxt,BodyStart),
+    BarD2 = append_elems(fun refac_prettypr_0:horizontal/1,
+                         {text("||"),{{BarLn,BarCol},{BarLn,BarCol + 1}}},
+                         {D2,{BodyStart,BodyEnd}}),
+    D1BarD2 =
+        append_elems(fun refac_prettypr_0:par/1,{D1,{TempStart,TempEnd}},
+                     {BarD2,{{BarLn,BarCol},BodyEnd}}),
+    beside(floating(text(Tok1)),beside(D1BarD2,floating(text(Tok2)))).
+
+lay_parentheses(D) ->
     beside(floating(text("(")),beside(D,floating(text(")")))).
 
 maybe_parentheses(D,Prec,Ctxt) ->
     case Ctxt#ctxt.prec of
-      P when P > Prec -> lay_parentheses(D,Ctxt);
-      _ -> D
-    end.
+        P when P > Prec -> lay_parentheses(D);
+        _ -> 
+            D
+    end.  
 
+maybe_parentheses_2(D, Node, Prec, Ctxt) ->
+    case Ctxt#ctxt.prec of
+        P when P > Prec -> lay_parentheses(D);
+        _ -> 
+            maybe_parentheses_1(D, Node, Ctxt)
+    end. 
+    
 maybe_parentheses_1(D, Node, Ctxt) ->
     Str=refac_prettypr_0:format(D),
-    case hd(Str)==$\( andalso lists:last(Str)==$\) of 
-	true ->
-	    D;
-	false ->
-	    case has_parentheses(Node, Ctxt#ctxt.tokens) of 
-		true ->		
-		   lay_parentheses(D, Ctxt); 
-		false ->
-		    D
-	    end
+    case already_has_parentheses(Str) of 
+        true ->
+            D;
+        false ->
+            case need_parentheses(Node, Ctxt) of 
+                true ->		
+                    lay_parentheses(D); 
+                false ->
+                    D
+            end
     end.
+    
+
+already_has_parentheses("")->
+    false;
+already_has_parentheses(Str) ->
+     case hd(Str)==$\( andalso lists:last(Str)==$\) of 
+         true ->
+             SubStr =lists:sublist(Str, 2, length(Str)-2),
+             true==well_formed_parentheses(SubStr);
+         false ->
+             false
+     end.
+well_formed_parentheses(Str) ->
+    Pars =[C||C<-Str, C==$\( orelse C==$\)],
+    well_formed_parentheses(Pars, {0,0}).
+well_formed_parentheses([], {L, R})-> 
+    case {L, R} of 
+        {0,0} -> true;
+        _ -> {false, {L, R}}
+    end;
+well_formed_parentheses([C|Cs], {L, R}) -> 
+    case C of 
+        $\( -> 
+           well_formed_parentheses(Cs, {L+1, R});
+        $\) ->
+            case L>0 of
+                true->
+                    well_formed_parentheses(Cs, {L-1, R});
+                false ->
+                    well_formed_parentheses(Cs, {L, R+1})
+            end
+    end.
+                    
+                
 lay_qualified_name([S| Ss1] = Ss,Ctxt) ->
+    Ctxt1 = reset_check_bracket(Ctxt),
     case refac_syntax:type(S) of
       atom ->
 	  case refac_syntax:atom_value(S) of
-	    '' -> beside(text("."),lay_qualified_name_1(Ss1,Ctxt));
-	    _ -> lay_qualified_name_1(Ss,Ctxt)
+	    '' -> beside(text("."),lay_qualified_name_1(Ss1,Ctxt1));
+	    _ -> lay_qualified_name_1(Ss,Ctxt1)
 	  end;
-      _ -> lay_qualified_name_1(Ss,Ctxt)
+      _ -> lay_qualified_name_1(Ss,Ctxt1)
     end.
 
 lay_qualified_name_1([S],Ctxt) -> lay(S,Ctxt);
@@ -1274,36 +1371,72 @@ split_string_2([X| Xs],N,L,As) ->
 %% that the elements have type `clause'; it just sets up the proper
 %% context and arranges the elements suitably for clauses.
 
-
-lay_clauses(Cs,Type,Ctxt) ->   %%done.
+lay_clauses(Cs,Type,Ctxt) ->
     CsDocs = seq(Cs,floating(text(";")),
 		 Ctxt#ctxt{clause = Type},fun lay/2),
-    lay_body_elems(fun vertical/1, CsDocs, Cs).
+    lay_body_elems(CsDocs, Cs, Ctxt).
+    
 
 %% Note that for the clause-making functions, the guard argument
 %% can be `none', which has different interpretations in different
 %% contexts.
 
 
-make_fun_clause(P,G,B,Ctxt,SameLine) ->
-    make_fun_clause(none,P,G,B,Ctxt, SameLine).
+make_fun_clause(P,G,B, CsNode, Ctxt,SameLine, HeadStartLoc) ->
+    make_fun_clause(none,P,G,B,CsNode, Ctxt,SameLine, HeadStartLoc).
 
-make_fun_clause(N,P,G,B,Ctxt, SameLine) ->
-    D = make_fun_clause_head(N,P,Ctxt),
-    make_case_clause(D,G,B,Ctxt, SameLine).
+make_fun_clause(N,P,G,B, CsNode, Ctxt, SameLine, HeadStartLoc={_Ln, _Col}) ->
+    Pats =refac_syntax:clause_patterns(CsNode),
+    D = make_fun_clause_head(N,P,Pats,Ctxt,HeadStartLoc),
+    make_case_clause(D,G,B,CsNode,Ctxt,SameLine).
+    
 
-make_fun_clause_head(N,P,Ctxt) ->
-    D = lay_parentheses(P,Ctxt),
+make_fun_clause_head(N,P, Pats, Ctxt,FunNameLoc = {StartLine, StartCol}) ->
+    D =make_args(Pats, P,Ctxt,FunNameLoc,'(',')'),
+    {LeftBracketLine,LeftBracketCol} = get_keyword_loc_after('(',Ctxt,FunNameLoc),
     if N == none -> D;
-       true -> beside(N,D)
+       true ->
+            case LeftBracketLine==StartLine of
+                true ->
+                    beside(N,D);
+                false ->
+                    above(N,nest(LeftBracketCol-StartCol,D))
+            end
     end.
 
-make_rule_clause(N,P,G,B,Ctxt, SameLine) ->
-    D = make_fun_clause_head(N,P,Ctxt),
+make_args([], _, _, _, LeftBracket,RightBracket) ->
+    beside(text(atom_to_list(LeftBracket)),text(atom_to_list(RightBracket)));
+make_args(Pats, P,Ctxt,FunNameLoc,LeftBracket,RightBracket) ->
+    {LeftBracketLine,LeftBracketCol} = 
+	get_keyword_loc_after(LeftBracket,Ctxt,FunNameLoc),
+    {{PatStartLine, PatStartCol}, {PatEndLine, _PatEndCol}} =
+        refac_util:get_start_end_loc_with_comment(Pats),
+    {RightBracketLine,RightBracketCol} =
+	get_right_bracket_loc(Ctxt#ctxt.tokens,{LeftBracketLine,LeftBracketCol},
+                              LeftBracket, RightBracket),
+    D0 = case {RightBracketLine,RightBracketCol}=={0,0} orelse 
+	     RightBracketLine==PatEndLine orelse PatEndLine==0
+	 of
+	     true ->
+		 beside(P,text(atom_to_list(RightBracket)));
+	     _ ->
+		 above(P,nest(RightBracketCol - PatStartCol,text(atom_to_list(RightBracket))))
+	 end,
+    case {LeftBracketLine,LeftBracketCol}=={0,0} orelse 
+	LeftBracketLine==PatStartLine orelse PatStartLine==0 of
+   	true ->
+	    beside(text(atom_to_list(LeftBracket)),D0);
+	_ ->
+	    above(text(atom_to_list(LeftBracket)),nest(PatStartCol-LeftBracketCol,D0))
+    end.
+
+make_rule_clause(N,P,G,B, CsNode, Ctxt, SameLine) ->
+    Pats =refac_syntax:clause_patterns(CsNode),
+    D = make_fun_clause_head(N,P,Pats, Ctxt,{0,0}),
     append_rule_body(B,append_guard(G,D,Ctxt),Ctxt, SameLine).
 
-make_case_clause(P,G,B,Ctxt, SameLine) ->
-    append_clause_body(B,append_guard(G,P,Ctxt),Ctxt, SameLine).
+make_case_clause(P,G,B,CsNode,Ctxt,SameLine) ->
+    append_clause_body(B,append_guard(G,P,CsNode,Ctxt),Ctxt, SameLine).
 
 make_if_clause(_P,G,B,Ctxt, SameLine) ->
     %% We ignore the patterns; they should be empty anyway.
@@ -1312,32 +1445,48 @@ make_if_clause(_P,G,B,Ctxt, SameLine) ->
 	 end,
     append_clause_body(B,G1,Ctxt, SameLine).
 
-append_clause_body(B,D,Ctxt, SameLine={BodyStartLn, HeadLastLn}) ->
-    Arrow = case BodyStartLn==HeadLastLn andalso BodyStartLn/=0 of 
- 		true -> text(" -> ");
- 		_ -> text(" ->")
- 	    end,
-    append_clause_body(B,D,floating(Arrow),Ctxt, SameLine).
 
+append_rule_body(B,D,Ctxt, SameLine) ->
+    append_clause_body(B,D, ':-',Ctxt, SameLine).
 
-append_rule_body(B,D,Ctxt, SameLine={BodyStartLn, HeadLastLn}) ->
-    R = case BodyStartLn==HeadLastLn andalso BodyStartLn/=0 of
- 	    true -> text(" :- ");
- 	    _ -> text(" :-")
- 	end,
-    append_clause_body(B,D,floating(R),Ctxt, SameLine).
+append_clause_body(B,D,Ctxt, SameLine) ->
+    append_clause_body(B,D,'->',Ctxt, SameLine).
 
-append_clause_body(B,D,S,Ctxt, _SameLine={BodyStartLn, HeadLastLn}) ->
-    case BodyStartLn==0 orelse HeadLastLn==0 of 
+append_clause_body(B,D, Symbol,Ctxt, _SameLine={{BodyStartLn,BodyStartCol}, 
+					       {HeadStartCol, HeadLastLn}}) ->
+    S=text(" "++atom_to_list(Symbol)),
+    S1=text(" "++atom_to_list(Symbol)++" "),
+    case  BodyStartLn == 0 orelse HeadLastLn == 0 of
 	true ->
-	     above(beside(D,S),nest(Ctxt#ctxt.break_indent,B));
+	    sep([beside(D,S),nest(Ctxt#ctxt.break_indent,B)]);
 	false ->
-	    case BodyStartLn-HeadLastLn of 
+            case BodyStartLn-HeadLastLn  of 
 		0 ->
-		    beside(beside(D,S), nest(Ctxt#ctxt.break_indent,B));
-		1 -> above(beside(D,S),nest(Ctxt#ctxt.break_indent,B));
-		2 -> above(beside(D,S), nest(Ctxt#ctxt.break_indent,above(text(""),B)));
-		_  -> sep([beside(D, S), nest(Ctxt#ctxt.break_indent, B)])
+		    beside(beside(D,S1),B);
+		N when N>=1->
+		    Offset=BodyStartCol-HeadStartCol,
+                    {SLn, SCol} = get_keyword_loc_before(Symbol,Ctxt,
+							 {BodyStartLn, BodyStartCol}),
+                    D1=case SLn-HeadLastLn=<0 orelse SLn==0 of
+			   true ->
+			       beside(D, S);
+			   false when SLn-HeadLastLn>1->
+                               SD=nest(SCol-HeadStartCol, text(atom_to_list(Symbol))),
+			       vertical([D, white_lines(SLn-HeadLastLn-1), SD]);
+                           _ ->
+                               SD=nest(SCol-HeadStartCol, text(atom_to_list(Symbol))),
+                               vertical([D,SD])
+                       end,
+                    case SLn==BodyStartLn of 
+			true ->
+			    refac_prettypr_0:horizontal([D1, B]);
+                        _ when BodyStartLn-SLn>1 ->
+                            vertical([D1, white_lines(BodyStartLn-SLn-1), nest(Offset,B)]);
+                        _ ->
+                            vertical([D1, nest(Offset, B)])
+		    end;
+		_ ->
+		    sep([beside(D, S), nest(Ctxt#ctxt.break_indent, B)])
 	    end
     end.
 
@@ -1345,6 +1494,106 @@ append_guard(none,D,_) -> D;
 append_guard(G,D,Ctxt) ->
     par([D,follow(text("when"),G,Ctxt#ctxt.sub_indent)],
 	Ctxt#ctxt.break_indent).
+
+
+append_guard(none,D,_CsNode,_) -> 
+      D;
+append_guard(G,D,CsNode,Ctxt) ->
+    Guard= refac_syntax:clause_guard(CsNode),
+    {{StartLn, StartCol},{_EndLn, _EndCol}}=get_start_end_loc(Guard),
+    {WhenLn, WhenCol}=get_prev_keyword_loc(Ctxt#ctxt.tokens, {StartLn, StartCol}, 'when'),
+    Pats = refac_syntax:clause_patterns(CsNode),
+    {{_PStartLn, _PStartCol}, {PEndLn, _PEndCol}}=get_start_end_loc(Pats),
+    {_,CsStartCol} = get_start_loc_with_comment(CsNode),
+    D1= case WhenLn-PEndLn==1 of 
+	    true ->
+		above(D, nest(WhenCol-CsStartCol, text("when")));
+	    false when WhenLn/=0 andalso WhenLn==PEndLn->
+		refac_prettypr_0:horizontal([D, text("when")]);
+	    _ ->
+		par([D, text("when")], Ctxt#ctxt.break_indent)
+	end,
+    case WhenLn/=0 andalso WhenLn==StartLn of
+	true ->
+	    refac_prettypr_0:horizontal([D1, G]);
+	false when StartLn-WhenLn==1 ->
+	    above(D1, nest(StartCol-CsStartCol, G));
+	_ ->
+	    par([D1, G], Ctxt#ctxt.break_indent)
+    end.
+
+append_elems(Fun, {D1, {{_D1StartLn, D1StartCol}, {D1EndLn, D1EndCol}}}, 
+	     {D2, {{D2StartLn, D2StartCol}, _D2End}}) -> 
+    case D1EndLn==0 orelse D2StartLn==0 orelse D2StartLn<D1EndLn of
+	true ->
+	    Fun([D1,D2]);
+	false when D1EndLn==D2StartLn ->
+	    Gap = D2StartCol -D1EndCol-1,
+	    S = text(empty_str(Gap)),
+            beside(D1, beside(S, D2));
+	_ ->
+	    Nest=D2StartCol-D1StartCol,
+	    above(D1, nest(Nest, D2))
+    end.
+
+append_keywords(KeyWord1, KeyWord2, CsD, Node, Ctxt) ->
+    {{CsStartLn, CsStartCol}, {CsEndLn, CsEndCol}} = get_start_end_loc(Node),
+    {KeyWord1Line, KeyWord1Col} =
+	get_keyword_loc_before(list_to_atom(KeyWord1), Ctxt,
+			       {CsStartLn, CsStartCol}),
+    {KeyWord2Line, _KeyWord2Col} =
+	get_keyword_loc_after(list_to_atom(KeyWord2), Ctxt,
+			      {CsEndLn, CsEndCol}),
+    KeyWord1CsD = case KeyWord1Line == 0 of
+		      false when KeyWord1Line==CsStartLn ->
+			  Gap =CsStartCol-(KeyWord1Col+length(KeyWord1)),
+			  Space=text(empty_str(Gap)),
+			  [horizontal([text(KeyWord1), Space, CsD])];
+		      false when CsStartLn-KeyWord1Line>=1 ->
+			  [above(text(KeyWord1), nest(CsStartCol-KeyWord1Col, CsD))];
+		      _ ->
+			 case lists:member(KeyWord1, ["if", "fun"]) of
+			     true ->
+				 [follow(text(KeyWord1), CsD, Ctxt#ctxt.break_indent)];
+			     false ->
+				 [text(KeyWord1), nest(Ctxt#ctxt.sub_indent, CsD)]
+			 end
+		  end,
+    case KeyWord2Line == 0 of
+	false when KeyWord2Line==CsEndLn ->
+	    refac_prettypr_0:horizontal(KeyWord1CsD++[text(KeyWord2)]);
+	false when KeyWord2Line-CsEndLn>=1 ->
+	    above(sep(KeyWord1CsD), text(KeyWord2));
+                  %% nest(KeyWord2Col-KeyWord1Col, text(KeyWord2)));
+	_ ->
+	    sep(KeyWord1CsD ++ [text(KeyWord2)])
+    end.
+
+append_leading_keyword(KeyWord, _, [],_Ctxt) ->
+    text(KeyWord);
+append_leading_keyword(KeyWord, CsD, Node, Ctxt) ->
+    {CsStartLn, CsStartCol} = case is_list(Node) of
+				  true -> get_start_loc(hd(Node));
+				  false -> get_start_loc(Node)
+			      end,
+    {KeyWordLine, KeyWordCol} =
+	get_keyword_loc_before(list_to_atom(KeyWord), Ctxt,
+			       {CsStartLn, CsStartCol}),
+    case KeyWordLine == 0 of
+	false when KeyWordLine==CsStartLn ->
+	    Gap =case CsStartCol-(KeyWordCol+length(KeyWord)) of
+                     G when G>1 ->
+                         G;
+                     _ -> 1
+                 end,           
+	    Space=text(empty_str(Gap)),
+	    horizontal([text(KeyWord), Space, CsD]);
+	false when CsStartLn-KeyWordLine>=1 ->
+	    above(text(KeyWord), nest(CsStartCol-KeyWordCol, CsD));
+	_ ->
+	    sep([text(KeyWord), nest(Ctxt#ctxt.sub_indent, CsD)])
+    end.
+   
 
 lay_bit_types([T],Ctxt) -> lay(T,Ctxt);
 lay_bit_types([T| Ts],Ctxt) ->
@@ -1366,12 +1615,22 @@ lay_error_info(T,Ctxt) -> lay_concrete(T,Ctxt).
 lay_concrete(T,Ctxt) ->
     lay(refac_syntax:abstract(T),Ctxt).
 
-seq([H| T],Separator,Ctxt,Fun) ->
+seq_1([H|T],Separator,Ctxt,Fun) ->
     case T of
-	[] -> [Fun(H,Ctxt)];
+        [] -> [maybe_parentheses_1(Fun(H,Ctxt), H, Ctxt)];
 	_->
-	    [maybe_append(Separator,Fun(H,Ctxt))| seq(T,Separator,
-						      Ctxt,Fun)]
+	    [maybe_append(Separator,maybe_parentheses_1(Fun(H,Ctxt),H, Ctxt))|
+             seq_1(T,Separator,Ctxt,Fun)]
+    end;
+seq_1([],_,_,_) -> [empty()].
+
+
+seq([H|T],Separator,Ctxt,Fun) ->
+    case T of
+        [] -> [Fun(H,Ctxt)];
+	_->
+	    [maybe_append(Separator,Fun(H,Ctxt))|
+             seq(T,Separator,Ctxt,Fun)]
     end;
 seq([],_,_,_) -> [empty()].
 
@@ -1414,111 +1673,162 @@ tidy_float_2([$e| Cs]) -> tidy_float_2([$e,$+| Cs]);
 tidy_float_2([_C| Cs]) -> tidy_float_2(Cs);
 tidy_float_2([]) -> [].
 
+
 %% =====================================================================
 
-get_start_line(Node) ->
-    PreComs = refac_syntax:get_precomments(Node),
-    {{L, _C}, _} = get_start_end_loc(Node),
-    case PreComs of
-	[] -> L;
-	_ -> element(1, refac_syntax:get_pos(hd(PreComs)))
-    end.
-
-get_end_line(Node) ->
-    PostComs = refac_syntax:get_postcomments(Node),
-    {_, {L, _C}} = get_start_end_loc(Node),
-    case PostComs of
-	[] -> L;
-      _ -> LastCom = lists:last(PostComs),
-	   LastComText = refac_syntax:comment_text(LastCom),
-	   element(1, refac_syntax:get_pos(LastCom)) +
-	       length(LastComText) - 1
-    end.
-
-get_start_end_loc(Node) ->	     
-    {Starts, Ends} = 
-	case is_list(Node) of 
-	    true ->
-		lists:unzip([refac_misc:get_start_end_loc(N)||N<-Node]);
-	    false ->
-		lists:unzip([refac_misc:get_start_end_loc(N)||N<-[Node]])
-	end,
-    {Starts1, Ends1} = {lists:usort(Starts)--[{0,0}], lists:usort(Ends)--[{0,0}]},
-    Start=case Starts1==[] of 
-	      true -> {0,0};
-	      false ->
-		  hd(Starts1)
-	  end,
-    End = case Ends1==[] of 
-	      true -> {0,0};
-	      false ->
-		  lists:last(Ends1)
-	  end,
-    {Start, End}.
- 
 horizontal([D]) -> D;
 horizontal([D| Ds]) -> beside(beside(D, nil()),horizontal(Ds));
 horizontal([]) -> [].
 
-lay_elems(_Fun, _ElemDocs,[]) -> null;
-lay_elems(Fun, ElemDocs,Elems) ->
-    ARanges = lists:map(fun (A) ->
-				{get_start_line(A), get_end_line(A)}
-			end,
-			Elems),
-    lay_elems_1(Fun, lists:zip(ElemDocs,ARanges),[],0).
+horizontal_1([D]) -> D;
+horizontal_1([D| Ds]) -> beside(D,horizontal_1(Ds));
+horizontal_1([]) -> [].
 
-lay_elems_1(Fun, [], Acc, _LastLine) ->
-    Docs = lists:map(fun (Ds) -> horizontal(Ds) end, Acc),
-    Fun(lists:reverse(Docs));
-lay_elems_1(Fun, [{D, {_SLn, ELn}}| Ts], [], _LastLn) ->
-    lay_elems_1(Fun, Ts, [[D]], ELn);
-lay_elems_1(Fun, [{D, {SLn, ELn}}| Ts], [H| T], LastLn) ->
-    case SLn == 0 orelse LastLn == 0 orelse SLn < LastLn of
+
+lay_elems(_Fun, _ElemDocs,[], _Ctxt) -> null;
+lay_elems(Fun, ElemDocs,Elems,Ctxt) ->
+    ARanges = [refac_util:get_start_end_loc_with_comment(E) || E <- Elems],
+    case lists:all(fun(R) -> R=={{0,0},{0,0}} end, ARanges) of 
 	true ->
-	    lay_elems_1(Fun, Ts, [H ++ [D]| T], ELn);
+	    Fun(ElemDocs);
 	false ->
-	    case SLn - LastLn of
-		0 -> lay_elems_1(Fun, Ts, [H ++ [D]| T], ELn);
-		1 ->
-		lay_elems_1(Fun, Ts, [[above(horizontal(H), D)]| T], ELn);
-		_ ->
-		lay_elems_1(Fun, Ts, [[above(horizontal(H), above(text(""), D))]| T], ELn)
-	    end
+            lay_elems_1(lists:zip(ElemDocs,ARanges), Ctxt,[],{{1,1},{1,1}}, 1)
     end.
 
-
-lay_body_elems(_Fun, _ElemDocs,[]) -> null;
-lay_body_elems(Fun, ElemDocs,Elems) ->
-    ARanges = lists:map(fun (A) ->
-				{get_start_line(A), get_end_line(A)}
-			end,
-			Elems),
-    lay_body_elems_1(Fun, lists:zip(ElemDocs,ARanges),[],0).
-
-lay_body_elems_1(Fun, [], Acc, _LastLine) ->
+lay_elems_1([], _Ctxt, Acc, _LastLine, _LastOffset) ->
     Docs = lists:map(fun (Ds) -> horizontal(Ds) end, Acc),
-    Fun(lists:reverse(Docs));
-lay_body_elems_1(Fun, [{D, {_SLn, ELn}}| Ts], [], _LastLn) ->
-    lay_body_elems_1(Fun, Ts, [[D]], ELn);
-lay_body_elems_1(Fun, [{D, {SLn, ELn}}| Ts], [H| T], LastLn) ->
-    case SLn == 0 orelse LastLn == 0 orelse SLn < LastLn of
-	true -> 
-	    lay_body_elems_1(Fun, Ts, [[above(horizontal(H), D)]| T], ELn);
-	false ->
-	    case SLn - LastLn of
-		0 -> 
-		    lay_body_elems_1(Fun, Ts, [H ++ [D]| T], ELn);
-		1 ->
-		    lay_body_elems_1(Fun, Ts, [[above(horizontal(H), D)]| T], ELn);
-		_ ->
-		    lay_body_elems_1(Fun, Ts, [[above(horizontal(H), above(text(""), D))]| T], ELn)
-	    end
+    vertical(lists:reverse(Docs));
+lay_elems_1([{D, SE={{_SLn, SCol}, {_ELn, _ECol}}}|Ts], Ctxt, [], _LastLn, _StartOffset) ->
+    lay_elems_1(Ts, Ctxt, [[D]], SE, SCol);
+lay_elems_1([{D, SE={{SLn, SCol}, {_ELn, _ECol}}}| Ts], Ctxt, [H| T], 
+	     _LastLoc={{_LastSLn, _LastSCol}, {LastELn, LastECol}}, StartOffset) ->
+    case SLn == 0 orelse LastELn == 0 orelse SLn =< LastELn of
+	true ->
+	    lay_elems_1(Ts, Ctxt, [H ++ [D]| T], SE, StartOffset);
+	false  when SLn-LastELn==1->
+	    lay_elems_1(Ts, Ctxt, [[nest(SCol-StartOffset, D)], H|T], SE, StartOffset);
+        _ ->
+            case SLn-LastELn>1 andalso 
+                real_white_line(Ctxt#ctxt.tokens, {LastELn, LastECol}, {SLn, SCol}) of
+                true->
+                    lay_elems_1(Ts, Ctxt, [[above(white_lines(SLn-LastELn-1),
+                                                       nest(SCol-StartOffset, D))], H|T],
+                                SE, StartOffset);
+                false ->
+                    lay_elems_1(Ts, Ctxt, [H ++ [D]| T], SE, StartOffset)
+            end
     end.
-  
-nil() -> text("").
 
-get_prev_keyword_line_num(FormToks, StartPos, KeyWord)->
+  
+lay_body_elems(_ElemDocs,[], _Ctxt) -> null;
+lay_body_elems(ElemDocs,Elems, Ctxt) ->
+    lay_body_elems_1(lists:zip(ElemDocs, Elems), Ctxt, [], {{1,1},{1,1}}).
+   
+
+lay_body_elems_1([], _Ctxt, Acc, _LastRange) ->
+    Docs = lists:map(fun (Ds) -> refac_prettypr_0:horizontal(Ds) end, Acc),
+    vertical(lists:reverse(Docs));
+lay_body_elems_1([{D, Elem}| Ts],  Ctxt,[], _LastLoc) ->
+    {SLoc, ELoc} = refac_util:get_start_end_loc_with_comment(Elem),
+    lay_body_elems_1(Ts,  Ctxt,[[D]], {SLoc, ELoc});
+lay_body_elems_1([{D, Elem}| Ts], Ctxt, [H| T], 
+		 _LastLoc={{_LastSLn, _LastSCol}, {LastELn, LastECol}}) ->
+    Range={{SLn, SCol},{_ELn, _ECol}} = refac_util:get_start_end_loc_with_comment(Elem),
+    As = refac_syntax:get_ann(Elem),
+    case lists:keysearch(layout, 1, As) of 
+        {value, {layout, horizontal}} ->
+            lay_body_elems_1(Ts,  Ctxt,[H ++ [D]| T], Range);
+        {value, {layout, vertical}} ->
+            lay_body_elems_1(Ts,  Ctxt,[[D],H|T], Range);
+         false ->
+            case SLn == 0 orelse LastELn == 0 orelse SLn < LastELn of
+                true -> 
+                    lay_body_elems_1(Ts,  Ctxt,[[D],H|T], Range);
+                false -> 
+                    case SLn - LastELn of
+                        0 ->
+                            lay_body_elems_1(Ts,  Ctxt,[H ++ [D]| T], Range);
+                        1 ->
+                            lay_body_elems_1(Ts,  Ctxt,[[D], H|T], Range);
+                        N ->
+                            case N>1 andalso 
+                                real_white_line(Ctxt#ctxt.tokens, {LastELn, LastECol}, {SLn, SCol}) of
+                                true->
+                                    lay_body_elems_1(Ts,  Ctxt, [[above(white_lines(N-1),D)], H|T],Range);
+                                false ->
+                                    lay_body_elems_1(Ts,  Ctxt,[[D],H|T], Range)
+                            end
+                    end
+            end
+    end.
+
+
+lay_body_elems_2([], _Ctxt, Acc, _LastRange) ->
+    Docs = lists:map(fun (Ds) -> refac_prettypr_0:horizontal(Ds) end, Acc),
+    vertical(lists:reverse(Docs));
+lay_body_elems_2([{D, {SLoc, ELoc}}| Ts],  Ctxt,[], _LastLoc) ->
+    lay_body_elems_2(Ts,  Ctxt,[[D]], {SLoc, ELoc});
+lay_body_elems_2([{D,Range={{SLn, SCol}, {_ELn, _ECol}}}| Ts], Ctxt, [H| T], 
+		 _LastLoc={{_LastSLn, _LastSCol}, {LastELn, LastECol}}) ->
+    case SLn == 0 orelse LastELn == 0 orelse SLn < LastELn of
+        true -> 
+            lay_body_elems_2(Ts,  Ctxt,[[D],H|T], Range);
+        false -> 
+            case SLn - LastELn of
+                0 ->
+                    lay_body_elems_2(Ts,  Ctxt,[H ++ [D]| T], Range);
+                        1 ->
+                    lay_body_elems_2(Ts,  Ctxt,[[D], H|T], Range);
+                N ->
+                    case N>1 andalso 
+                        real_white_line(Ctxt#ctxt.tokens, {LastELn, LastECol}, {SLn, SCol}) of
+                        true->
+                            lay_body_elems_2(Ts,  Ctxt, [[above(white_lines(N-1),D)], H|T],Range);
+                        false ->
+                            lay_body_elems_2(Ts,  Ctxt,[[D],H|T], Range)
+                    end
+            end
+    end.
+      
+
+empty_str(N) when N<1 
+                  -> "";
+empty_str(N) -> 
+    lists:append(lists:duplicate(N, " ")). 
+
+nil() -> text("").    
+    
+white_lines(N) ->
+    case N>1 of 
+        true ->
+            above(text(""), 
+                  white_lines(N-1));
+        _ ->
+            text("")
+    end.
+
+real_white_line(Toks, _Loc1, _Loc2) when Toks==[] ->
+    false;
+real_white_line(Toks, Loc1, Loc2) ->
+    Toks1 = lists:dropwhile(fun(T)->
+                                    token_loc(T)=<Loc1
+                            end, Toks),
+    case Toks1 of
+        [] ->
+            false;
+        [_T|Toks2] ->
+            Toks3=lists:takewhile(fun(T)->
+                                          token_loc(T)<Loc2
+                                  end, Toks2),
+            lists:all(fun(T) ->
+                              is_whitespace_or_comment(T) orelse
+                                  size(T)==2
+                      end, Toks3)
+    end.
+    
+    
+
+get_prev_keyword_loc(FormToks, StartPos, KeyWord)->
     Ts1 = lists:takewhile(
 	    fun(T) ->
 		    token_loc(T)=<StartPos
@@ -1528,37 +1838,124 @@ get_prev_keyword_line_num(FormToks, StartPos, KeyWord)->
 			end, lists:reverse(Ts1)),
     case Ts2 of 
 	[] ->
-	    0;
+	    {0,0};
 	[T1|_] ->
-	    element(1, token_loc(T1))
+	    token_loc(T1)
     end.
 
-get_post_keyword_line_num(FormToks, EndPos, KeyWord)->
-    Ts1 = lists:dropwhile(
-	    fun(T) ->
-		    token_loc(T)=<EndPos
-	    end, FormToks),
-    Ts2=lists:dropwhile(fun(T)->
-				element(1, T)/=KeyWord
-			end, Ts1),
-    case Ts2 of 
+get_keyword_loc_after(_Keyword, #ctxt{tokens=Toks}, _Pos) when Toks==[] ->
+    {0,0};
+get_keyword_loc_after(Keyword,#ctxt{tokens=Toks}, Pos) ->
+    FirstLoc = token_loc(hd(Toks)),
+    LastLoc  = token_loc(lists:last(Toks)),
+    case FirstLoc >= Pos orelse LastLoc =< Pos of 
+        true -> {0,0};
+        false ->
+            get_keyword_loc_after_1(Keyword, Toks, Pos)
+    end.
+get_keyword_loc_after_1(Keyword, Toks,Pos)->
+    Toks1 = lists:dropwhile(fun (T) ->
+                                    token_loc(T) =< Pos 
+                            end, Toks),
+    case Toks1 of
 	[] ->
-	    0;
-	[T1|_] ->
-	    element(1, token_loc(T1))
-    end.
-	    
-token_loc(T) ->
-    case T of
-      {_, L, _V} -> L;
-      {_, L1} -> L1
+	    {0,0};
+	_ ->
+	    {Toks2, Toks3} = lists:splitwith(
+                               fun (T) ->
+                                       token_val(T) =/=Keyword 
+                               end, Toks1),
+	    case Toks3 of 
+		[] ->
+		    {0,0};   
+		_ ->
+		    case lists:all(fun(T)-> is_whitespace_or_comment(T) orelse 
+			 token_val(T)=='(' orelse token_val(T)==')'end, Toks2) of
+                        true ->
+                            token_loc(hd(Toks3));
+                        _ ->
+                            {0,0}
+		  end
+	    end
     end.
 
+
+
+get_keyword_loc_before(_Keyword, #ctxt{tokens=Toks}, _Pos) when Toks==[] ->
+    {0,0};
+get_keyword_loc_before(Keyword,#ctxt{tokens=Toks}, Pos) ->
+    FirstLoc = token_loc(hd(Toks)),
+    LastLoc  = token_loc(lists:last(Toks)),
+    case FirstLoc >= Pos orelse LastLoc =< Pos of 
+        true -> {0,0};
+        false ->
+            get_keyword_loc_before_1(Keyword, Toks, Pos)
+    end.
+    
+get_keyword_loc_before_1(Keyword, Toks,Pos)->
+    Toks1 = lists:takewhile(fun (T) -> token_loc(T)< Pos end, Toks),
+    case Toks1 of
+	[] ->
+	    {0,0};
+	_ ->
+	    {Toks2, Toks3} = lists:splitwith(
+                               fun (T) -> 
+                                       token_val(T) =/=Keyword 
+                               end, lists:reverse(Toks1)),
+	    case Toks3 of 
+		[] ->
+		    {0,0};   
+		_ ->
+		    case lists:all(fun(T)-> 
+                                           is_whitespace_or_comment(T) orelse 
+                                               token_val(T)=='(' orelse 
+                                               token_val(T)==')'
+                                   end, Toks2) of
+			true ->
+			    token_loc(hd(Toks3));
+			_ ->
+			    {0,0}
+		    end
+	    end
+    end.
+
+
+get_right_bracket_loc(Toks,LeftLoc,LeftBracket,RightBracket) ->
+    Toks1 = lists:dropwhile(fun (T) -> 
+				    token_loc(T) =< LeftLoc orelse
+					is_whitespace_or_comment(T)
+                            end, Toks),
+    case Toks1 of
+	[] ->
+	    {0,0};
+	_ ->	
+	    get_right_bracket_loc_1(Toks1,0,LeftBracket,RightBracket)
+    end.
+
+get_right_bracket_loc_1([],_,_,_) ->
+    {0,0};
+get_right_bracket_loc_1([T|Toks1],UnBalanced,LeftBracket,RightBracket) ->
+    case token_val(T) of
+	LeftBracket ->
+	    get_right_bracket_loc_1(Toks1,UnBalanced + 1,LeftBracket,RightBracket);
+	RightBracket ->
+	    case UnBalanced of
+		0 ->
+		    token_loc(T);
+		_ ->
+		    get_right_bracket_loc_1(Toks1,UnBalanced-1,LeftBracket,RightBracket)
+	    end;
+	_ ->
+	    get_right_bracket_loc_1(Toks1,UnBalanced,LeftBracket,RightBracket)
+    end.
+
+		    
 get_separator(_NodeList, [], Default) ->
     Default;
 get_separator([],_, Default) ->
     Default;
-get_separator(NodeList, Toks, Default) when is_list(NodeList) -> 
+get_separator(NodeList, Ctxt, Default) when is_list(NodeList) -> 
+    Toks = Ctxt#ctxt.tokens,
     NodeToks = get_node_toks(Toks,NodeList),
     NodeListToks = lists:append([get_node_toks(Toks, Elem)||
 				    Elem<-NodeList]),
@@ -1575,9 +1972,8 @@ get_separator(NodeList, Toks, Default) when is_list(NodeList) ->
 		    ", "
 	    end
     end;
-get_separator(_Node, _Toks, Default) ->
+get_separator(_Node, _Ctxt, Default) ->
     Default.
-
 
 get_node_toks(Toks, Node) ->
     {Start, End} = get_start_end_loc(Node),
@@ -1609,137 +2005,445 @@ get_comma_tokens([T|Ts], {OnlyComma, CommaWithSpace}) ->
 	_ ->
 	    get_comma_tokens(Ts,  {OnlyComma, CommaWithSpace})
     end.
-get_operator_text(Node, Toks, Default) ->
-    case Toks of
-	[] ->
-	    Default;
-	_ ->
-	    {Start, End} =get_start_end_loc(Node),
-	    case Start =={0,0} orelse End=={0,0} of 
-		true -> Default;
-		_ ->
-		    Toks1 = 
-			lists:takewhile(
-			  fun(T) ->
-				  token_loc(T)<Start
-			  end, Toks),
-		    Toks2 =lists:dropwhile(
-			     fun(T) ->
-				     token_loc(T)=<End
-			     end, Toks),
-		    Pre=case lists:reverse(Toks1) of
-			    [{whitespace, _,_}|_] ->
-				" ";
-			    _ ->
-				""
-			end,
-		    Post = case Toks2 of
-			       [{whitespace, _,_}|_] ->
-				   " ";
-			       _ ->
-				   ""
-			   end,   
-		    Pre ++ Default++Post
-	    end
+
+
+need_parentheses(Node, Ctxt) ->
+    case Ctxt#ctxt.check_bracket of 
+        true ->
+            has_parentheses(Node, Ctxt#ctxt.tokens, "((", "))");
+        false ->
+            As = refac_syntax:get_ann(Node),
+            case lists:keysearch(with_bracket, 1, As) of
+                {value, {with_bracket, true}} ->
+                    true;
+                {value, {with_bracket, false}} ->
+                    false;
+                _ ->
+                    has_parentheses(Node, Ctxt#ctxt.tokens, "(", ")")
+            end
     end.
 
-remove_trailing_whitespace(Str) ->
-    remove_trailing_whitespace(Str, []).
-
-remove_trailing_whitespace([], Acc) ->
-    lists:reverse(Acc);
-remove_trailing_whitespace([$,,$ ,$\r| S], Acc) ->
-    remove_trailing_whitespace(S, [$\r,$,| Acc]);
-remove_trailing_whitespace([$,,$ ,$\n| S], Acc) ->
-    remove_trailing_whitespace(S, [$\n,$,| Acc]);
-remove_trailing_whitespace([C| S], Acc) ->
-    remove_trailing_whitespace(S, [C| Acc]).
-
+%% the proper way should be to modify the paser to keep the 
+%% the brackets!!!
 
 has_parentheses(Node, Toks) ->
-    precedent_by_open_bracket(Node, Toks) andalso 
-	followed_by_close_bracket(Node, Toks).
+    has_parentheses(Node, Toks, "(", ")").
 
-precedent_by_open_bracket(Node, Toks)->		  
-    {StartLoc,_EndLoc} = get_start_end_loc(Node),
-    Toks1 = lists:reverse(lists:takewhile(fun (B) -> element(2, B) =/= StartLoc end, Toks)),
-    Toks2 = lists:dropwhile(fun (B) -> case B of
-					   {whitespace, _, _} -> true;
-					   _ -> false
-				       end
-			    end, Toks1),
-     case Toks2 of
-	[{'(', _}|_] ->
-	    true;
-	_ ->
-	    false
+has_parentheses(Node, Toks, Left, Right)->		  
+    {StartLoc,EndLoc} = get_start_end_loc(Node),
+    Toks0 = [T||T<-Toks, not is_whitespace_or_comment(T)],
+    {Toks1, Toks2} = lists:splitwith(
+                       fun(T) ->
+                               token_loc(T)<StartLoc
+                       end, Toks0),
+    {Toks21, Ts2} = lists:splitwith(
+              fun(T) -> 
+                      token_loc(T) =< EndLoc 
+              end, Toks2),
+    Ts1Str=refac_util:concat_toks(lists:reverse(Toks1)),
+    Ts2Str=refac_util:concat_toks(Ts2),
+    Str21 =refac_util:concat_toks(Toks21),
+    case well_formed_parentheses(Str21) of
+        true ->
+            lists:prefix(Left, Ts1Str) andalso
+                lists:prefix(Right, Ts2Str);
+        {false, {L, R}} ->
+            StrL =lists:append(lists:duplicate(R, "(")),
+            StrR= lists:append(lists:duplicate(L, ")")),
+            lists:prefix(Right++StrR , Ts2Str) andalso
+                lists:prefix(Left++StrL, Ts1Str)
     end.
-
-
-followed_by_close_bracket(Node, Toks)->		  
-    {_, EndLoc} = get_start_end_loc(Node),
-    Toks1 = lists:dropwhile(fun (B) -> element(2, B) =/= EndLoc end, Toks),
-    case Toks1 of 
-	[] -> false;
-	[_|T1] ->
-	    Toks2 = lists:dropwhile(fun (B) -> case B of
-						   {whitespace, _, _} -> true;
-						   _ -> false
-					       end
-				    end, T1),
-	     case Toks2 of
-		[{')', _}|_] ->
-		    true;
-		_ ->
-		    false
-	    end
-    end.
-
-
-no_of_changed_funs_toks(AST) ->
-    Forms = refac_syntax:form_list_elements(AST),
-    Res =[case form_not_changed(Form) of 
-	      true -> {0, 0, 0};
-	      false ->
-		  {ToksRemoved, ToksAdded} =
-		      change_of_tokens(Form),
-		  {1, ToksRemoved, ToksAdded}
-	  end || Form <-Forms],
-    {ChangedFuns, TotalToksRemoved, TotalToksAdded} =
-	lists:unzip3(Res),
-    {lists:sum(ChangedFuns), lists:sum(TotalToksRemoved),
-     lists:sum(TotalToksAdded)}.
-
-change_of_tokens(Form) ->
-    OriginalToks = rm_loc_in_toks(refac_misc:get_toks(Form)),
-    {ok, NewToks0, _} = refac_scan:string(print_a_form(Form, undefined, [])),
-    NewToks = rm_loc_in_toks(NewToks0),
-    ToksRemoved = OriginalToks--NewToks,
-    ToksAdded = NewToks--OriginalToks,
-    {length(ToksRemoved), length(ToksAdded)}.
-
-
-rm_loc_in_toks(Ts) ->
-    [rm_loc_in_a_tok(T)||T<-Ts, not(is_whitespace_or_comment(T))].
-
-rm_loc_in_a_tok(T) ->
-    D = {0,0},
-    case T of 
-	{var, _L, V} -> {var, D, V};
-	{integer, _L, V} -> {integer, D, V};
-	{string, _L, V} -> {string, D, V};
-	{float, _L, V} -> {float, D, V}; 
-	{char, _L, V}  -> {char, D, V};
-	{atom, _L, V} -> {atom, D, V};
-	{A, _L} ->{A, D};
-	Other  -> 
-	    Other
-    end.
-
-
+  
+   
+%%===============================================================
+is_whitespace({whitespace, _, _}) ->
+    true;
+is_whitespace(_) ->
+    false.
+	
 is_whitespace_or_comment({whitespace, _, _}) ->
     true;
 is_whitespace_or_comment({comment, _, _}) ->
     true;
 is_whitespace_or_comment(_) -> false.
 
+
+token_loc(T) ->
+    case T of
+      {_, L, _V} -> L;
+      {_, L1} -> L1
+    end.
+
+token_val(T) ->
+    case T of
+      {_, _, V} -> V;
+      {V, _} -> V
+    end.
+
+remove_trailing_whitespace(Str, TabWidth, FileFormat) ->
+    {ok, Toks, _} = refac_scan_with_layout:string(Str,{1,1}, TabWidth, FileFormat),
+    remove_trailing_whitespace(Toks, []).
+remove_trailing_whitespace([], Acc) ->
+    refac_util:concat_toks(lists:reverse(Acc));
+remove_trailing_whitespace([{',',L},{whitespace, _, ' '}, {whitespace, L1, '\r'}| S], Acc) ->
+    remove_trailing_whitespace(S, [{whitespace, L1, '\r'},{',',L}| Acc]);
+remove_trailing_whitespace([{',',L},{whitespace, _, ' '}, {whitespace, L1, '\n'}| S], Acc) ->
+    remove_trailing_whitespace(S, [{whitespace, L1, '\n'},{',',L}| Acc]);
+remove_trailing_whitespace([C| S], Acc) ->
+    remove_trailing_whitespace(S, [C| Acc]).
+
+
+remove_trailing_whites(Str) ->
+    Str1=lists:dropwhile(fun(S)->
+                                 lists:member(S, [$\n, $\r, $\t, $\s])
+                         end, lists:reverse(Str)),
+    lists:reverse(Str1).
+    
+get_leading_whites(OriginalToks) ->
+    Ts1=lists:takewhile(fun(Ts) ->
+                                all_whites(Ts)
+                        end, OriginalToks),
+    refac_util:concat_toks(lists:append(Ts1)).
+
+get_trailing_whites(Str) ->   
+    lists:reverse(lists:takewhile(fun(S) ->
+                                          lists:member(S, [$\n, $\r, $\t, $\s])
+                                  end, lists:reverse(Str))).
+    
+
+%% =====================================================================
+
+get_start_loc(Node) ->
+    {L, _} = get_start_end_loc(Node),
+    L.
+
+get_end_loc(Node) ->
+    {_, L} = get_start_end_loc(Node),
+    L.
+get_start_end_loc(Node)->
+    refac_util:get_start_end_loc(Node).
+
+get_start_line_with_comment(Node) ->
+    {{L, _}, _} = refac_util:get_start_end_loc_with_comment(Node),
+    L.
+   
+get_end_line_with_comment(Node) ->
+    {_, {L, _}} = refac_util:get_start_end_loc_with_comment(Node),
+    L.
+
+get_start_loc_with_comment(Node) ->
+    {Start, _}= refac_util:get_start_end_loc_with_comment(Node),
+    Start.
+
+get_end_loc_with_comment(Node) ->
+    {_, End}=refac_util:get_start_end_loc_with_comment(Node),
+    End.
+
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+repair_new_form_str("", NewFormStr, _TabWidth, _FileFormat) -> NewFormStr;
+repair_new_form_str(OldFormStr, NewFormStr, TabWidth, FileFormat)->
+    {ok, OldToks0, _} = refac_scan_with_layout:string(OldFormStr,{1,1}, TabWidth, FileFormat),
+    OldToksByLine =group_toks_by_line(OldToks0),
+    Str1 = get_leading_whites(OldToksByLine),
+    Str2 = get_trailing_whites(OldFormStr),
+    NewFormStr1=Str1++remove_trailing_whites(NewFormStr)++Str2,
+    {ok, NewToks0, _} = refac_scan_with_layout:string(NewFormStr1, {1,1}, TabWidth, FileFormat),
+    NewToksByLine = group_toks_by_line(NewToks0),
+    DiffByLine = levenshtein_dist(OldToksByLine, NewToksByLine, TabWidth),
+    %% refac_io:format("DiffByLine:\n~p\n", [DiffByLine]),
+    repair_form_layout(DiffByLine, TabWidth).
+    
+ 
+repair_form_layout(DiffByLine, TabWidth) ->
+    repair_form_layout(DiffByLine, none, TabWidth, []).
+repair_form_layout([], _, _TabWidth, Acc) ->
+    refac_util:concat_toks(lists:append(lists:reverse(Acc)));
+repair_form_layout([{'*', LineToks}|Lines], PrevDiff, TabWidth, Acc) ->
+    case all_whites(LineToks) of
+        true ->
+            repair_form_layout(Lines, PrevDiff, TabWidth,[LineToks|Acc]);
+        false ->
+            repair_form_layout(Lines, '*', TabWidth,[LineToks|Acc])
+    end;
+repair_form_layout([{'d', _LineToks}|Lines], _PrevDiff, TabWidth, Acc) ->
+    repair_form_layout(Lines, 'd', TabWidth, Acc);
+repair_form_layout([{'i', LineToks}|Lines], _PrevDiff, TabWidth, Acc) ->
+    repair_form_layout(Lines, 'i', TabWidth, [LineToks|Acc]);
+repair_form_layout([{'s', OldLineToks, NewLineToks}|Lines], PrevDiff, TabWidth, Acc) ->
+    case has_editing_change(OldLineToks, NewLineToks) of
+        true ->
+            case Lines of 
+                [{i, Toks}|Lines1] ->
+                    case refac_util:concat_toks(remove_whites(Toks)) of
+                        S when S=="->" orelse S=="of" ->
+                            case remove_loc_and_whites(OldLineToks)--
+                                remove_loc_and_whites(NewLineToks) of
+                                [T={A, _}] when A=='->' orelse A=='of' ->
+                                    case has_layout_change(OldLineToks, NewLineToks, TabWidth) of 
+                                        false ->
+                                            repair_form_layout(Lines1, '*', TabWidth, [OldLineToks|Acc]);
+                                        true ->
+                                            NewLineToks1 = insert_token_at_end(NewLineToks, T),
+                                            NewLineToks2 = recover_tab_keys(OldLineToks, NewLineToks1, TabWidth),
+                                            repair_form_layout(Lines, 's', TabWidth, [NewLineToks2|Acc])
+                                    end;
+                                _ ->
+                                    NewLineToks1 = recover_tab_keys(OldLineToks, NewLineToks, TabWidth),
+                                    repair_form_layout(Lines, 's', TabWidth, [NewLineToks1|Acc])
+                            end;
+                        _ ->
+                            NewLineToks1 = recover_tab_keys(OldLineToks, NewLineToks, TabWidth),
+                            repair_form_layout(Lines, 's', TabWidth, [NewLineToks1|Acc])
+                    end;
+                _ ->
+                    NewLineToks1 = recover_tab_keys(OldLineToks, NewLineToks, TabWidth),
+                    repair_form_layout(Lines, 's', TabWidth, [NewLineToks1|Acc])
+            end;
+        false ->
+            %% layout change.
+            case PrevDiff of 
+                '*' ->
+                    repair_form_layout(Lines, '*', TabWidth, [OldLineToks|Acc]);
+                _ ->
+                    case all_whites_or_comments(OldLineToks) of 
+                        true ->
+                            Lines1 = lists:dropwhile(
+                                       fun(L) ->
+                                               all_whites_or_comments(element(2,L))
+                                       end, Lines),
+                            case Lines1 of
+                                [{'s', Toks1, Toks2}|_] ->
+                                    case has_layout_change(Toks1, Toks2, TabWidth) of 
+                                        true ->
+                                            NewLineToks1 = recover_tab_keys(OldLineToks, NewLineToks, TabWidth),
+                                            repair_form_layout(Lines, 's', TabWidth, [NewLineToks1|Acc]);
+                                        false ->
+                                            repair_form_layout(Lines, '*', TabWidth, [OldLineToks|Acc])
+                                    end;
+                                _ ->
+                                    repair_form_layout(Lines, '*', TabWidth, [OldLineToks|Acc])
+                            end;                                
+                        false ->
+                            NewLineToks1 = recover_tab_keys(OldLineToks, NewLineToks, TabWidth),
+                            repair_form_layout(Lines, 's', TabWidth, [NewLineToks1|Acc])
+                    end
+            end
+    end.
+
+has_editing_change(Toks1, Toks2) ->
+    remove_loc_and_whites(Toks1) =/=
+        remove_loc_and_whites(Toks2).
+
+has_layout_change(Toks1, Toks2, TabWidth) ->
+    Toks11 = expand_tab_keys(Toks1, TabWidth),
+    Toks21 = expand_tab_keys(Toks2, TabWidth),
+    Whites1 = lists:takewhile(fun(T) -> is_whitespace(T) end, Toks11),
+    Whites2 = lists:takewhile(fun(T) -> is_whitespace(T) end, Toks21),
+    length(Whites1)/=length(Whites2).
+                                      
+                                    
+    
+recover_tab_keys(OldToks, NewToks, TabWidth)->
+    TabToks =lists:takewhile(fun(T)-> is_tab_token(T) end, OldToks),
+    {WhiteToks, Toks1}=lists:splitwith(fun(T) -> 
+                                               case T of
+                                                   {whitespace, _L, ' '} ->
+                                                       true;
+                                                   _ -> false
+                                               end
+                                       end, NewToks),
+    recover_tab_keys(TabToks, WhiteToks, TabWidth, [])++Toks1.
+
+recover_tab_keys([], WhiteSpaces, _TabWidth, Acc) ->
+    lists:reverse(Acc)++WhiteSpaces;
+recover_tab_keys([T={whitespace, _, '\t'}], WhiteSpaces, TabWidth, Acc) ->
+    case length(WhiteSpaces)>=TabWidth of
+        true ->
+            recover_tab_keys([], lists:nthtail(TabWidth, WhiteSpaces), TabWidth, [T|Acc]);
+        false ->
+            lists:reverse(Acc)++WhiteSpaces
+    end;
+recover_tab_keys([T={whitespace, _, '\t'}|Ts], WhiteSpaces, TabWidth, Acc) ->
+    case length(WhiteSpaces)>=TabWidth of
+        true ->
+            recover_tab_keys(Ts, lists:nthtail(TabWidth, WhiteSpaces), TabWidth, [T|Acc]);
+        false ->
+           lists:reverse(Acc)++WhiteSpaces
+    end.
+
+group_toks_by_line(Toks) ->
+    Toks1 =[case T  of 
+		{K, {L,_C}, V} -> {K, L, V};
+		{K, {L,_C}} -> {K, L}
+	    end || T <-Toks],
+    group_toks_by_line_1(Toks1,[]).
+
+group_toks_by_line_1([],Acc) -> lists:reverse(Acc);
+group_toks_by_line_1(Toks = [T| _Ts],Acc) ->
+    L = element(2,T),
+    {Toks1, Toks2} = 
+	lists:partition(fun (T1) ->
+				element(2,T1) == L
+			end,
+			Toks),
+    group_toks_by_line_1(Toks2,[Toks1|Acc]).
+
+
+insert_token_at_end(Toks, T) ->
+    {Toks1, Toks2} = list:splitwith(
+                       fun(Tok) ->
+                               is_whitespace_or_comment(Tok)
+                       end, lists:reverse(Toks)),
+    lists:reverse(Toks1++[T|Toks2]).
+    
+                        
+is_tab_token({whitespace, _, '\t'}) ->
+    true;
+is_tab_token(_) ->
+    false.
+
+                                    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+calc_levenshtein_dist(OldToks, NewToks, TabWidth) ->
+    OldLen = length(OldToks),
+    NewLen = length(NewToks),
+    Is =lists:seq(0, OldLen),
+    Js= lists:seq(0, NewLen),
+    InitAcc=[{{I,0},I}||I<-Is] ++ [{{0, J}, J}||J<-Js],
+    Matrix=levenshtein_dist(OldToks, NewToks, OldLen, NewLen, TabWidth, {1, 1}, InitAcc),
+    {value, {_, Val}} = lists:keysearch({OldLen, NewLen}, 1, Matrix),
+    Val.
+    
+
+levenshtein_dist(OldToks, NewToks, TabWidth) ->
+    OldLen = length(OldToks),
+    NewLen = length(NewToks),
+    Is =lists:seq(0, OldLen),
+    Js= lists:seq(0, NewLen),
+    InitAcc=[{{I,0},I}||I<-Is] ++ [{{0, J}, J}||J<-Js],
+    Matrix=levenshtein_dist(OldToks, NewToks, OldLen, NewLen, TabWidth, {1, 1}, InitAcc),
+    get_edit_ops(Matrix, OldToks, NewToks, OldLen, NewLen, TabWidth, []). 
+    
+
+
+levenshtein_dist(_OldToks, _NewToks, _OldLen, NewLen, _TabWidth, {_I, J}, Acc)
+  when J>NewLen ->  Acc;
+levenshtein_dist(OldToks, NewToks, OldLen, NewLen, TabWidth, {I, J}, Acc)
+  when I>OldLen ->
+    levenshtein_dist(OldToks, NewToks, OldLen, NewLen, TabWidth, {1, J+1}, Acc);
+levenshtein_dist(OldToks, NewToks, OldLen, NewLen, TabWidth, {I, J}, Acc) ->
+    Cost = case same(lists:nth(I, OldToks), lists:nth(J, NewToks), TabWidth) of
+               true ->
+                   0;
+               false ->
+                   1
+           end,
+    {value, {_, Del}} = lists:keysearch({I-1, J}, 1,Acc),
+    {value, {_, Ins}} = lists:keysearch({I, J-1}, 1,Acc),
+    {value, {_, Sub}} = lists:keysearch({I-1, J-1},1, Acc),
+    Min = lists:min([Del+1, Ins+1, Sub+Cost]),
+    levenshtein_dist(OldToks, NewToks, OldLen, NewLen, TabWidth, {I+1, J}, 
+                                               [{{I,J},Min}|Acc]).
+
+get_edit_ops(_Matrix, _OldToks, _NewToks, I, J, _TabWidth, Acc) 
+  when I=<0 andalso J=<0 ->
+    Acc;
+get_edit_ops(Matrix, OldToks, NewToks, I, J, TabWidth, Acc) 
+  when I=<0 ->
+    Jth = lists:nth(J, NewToks),
+    get_edit_ops(Matrix, OldToks, NewToks, I, J-1, TabWidth, [{'i', Jth}|Acc]);
+get_edit_ops(Matrix, OldToks, NewToks, I, J, TabWidth, Acc) 
+  when  J=<0 ->
+    Ith = lists:nth(I, OldToks),
+    get_edit_ops(Matrix, OldToks, NewToks, I-1, J, TabWidth, [{'d', Ith}|Acc]);
+get_edit_ops(Matrix, OldToks, NewToks, I, J, TabWidth,Acc) ->
+    Ith = lists:nth(I, OldToks),
+    Jth = lists:nth(J, NewToks),
+    case same(Ith, Jth, TabWidth) of
+        true ->
+            get_edit_ops(Matrix, OldToks, NewToks, I-1, J-1, TabWidth, [{'*', Ith}|Acc]);
+        false ->
+            {value, {_, Del}} = lists:keysearch({I-1, J}, 1,Matrix),
+            {value, {_, Ins}} = lists:keysearch({I, J-1}, 1,Matrix),
+            {value, {_, Sub}} = lists:keysearch({I-1, J-1},1, Matrix),
+                   case lists:min([Del, Ins, Sub]) of
+                Ins ->
+                    get_edit_ops(Matrix, OldToks, NewToks, I, J-1, TabWidth, [{'i', Jth}|Acc]);
+                Del ->
+                    get_edit_ops(Matrix, OldToks, NewToks, I-1, J, TabWidth, [{'d', Ith}|Acc]);
+                Sub ->
+                    get_edit_ops(Matrix, OldToks, NewToks, I-1, J-1, TabWidth, [{'s', Ith, Jth}|Acc])
+            end
+    end.
+
+
+same(Toks1, Toks2, TabWidth) ->
+    case all_whites(Toks1) andalso all_whites(Toks2) of 
+	true ->
+	    true;
+	false ->
+	    same_toks_1(Toks1, Toks2, TabWidth)
+    end.
+same_toks_1(Toks1, Toks2, TabWidth) ->
+    Toks11=expand_tab_keys(Toks1, TabWidth),
+    Toks21=expand_tab_keys(Toks2, TabWidth),
+    Toks12=remove_whites_after_first_non_white_token(remove_locs(Toks11)),
+    Toks22=remove_whites_after_first_non_white_token(remove_locs(Toks21)),
+    Toks12==Toks22.
+
+
+all_whites_or_comments(Toks) ->
+     lists:all(fun(T) ->
+                       is_whitespace_or_comment(T) 
+               end, Toks).
+    
+all_whites(Toks) ->
+    lists:all(fun(T) ->
+		      is_whitespace(T) 
+	      end, Toks).
+
+expand_tab_keys(Toks, TabWidth) ->
+    lists:append([case T of 
+		      {whitespace, L, '\t'} ->
+			  lists:duplicate(TabWidth, {whitespace, L, ' '});
+		      _ -> [T]
+		  end || T<-Toks]).
+
+
+remove_whites_after_first_non_white_token(Toks) ->
+    {Toks1, Toks2}=lists:splitwith(fun(T) ->
+					   is_whitespace_or_comment(T)
+				   end, Toks),
+    Toks1++[T||T<-Toks2, not is_whitespace(T)].
+
+remove_loc(T) ->
+    case T of
+        {K, _L, V} -> {K, 0, V};
+        {K, _L} -> {K, 0};
+	 _ -> T
+    end.
+
+remove_locs(Toks) when is_list(Toks) ->
+    [remove_loc(T)|| T<-Toks];
+remove_locs(Others) ->
+    Others.
+
+remove_loc_and_whites(Toks) ->
+    [remove_loc(T)||T<-Toks,
+         not is_whitespace(T)].
+
+remove_whites(Toks) ->
+    [T||T<-Toks, not is_whitespace(T)].
+
+remove_locs_whites_and_comments(Toks) ->
+    [remove_loc(T)||T<-Toks,
+         not is_whitespace_or_comment(T)].
+
+%%% known problems:
+%% patchFroIdLines([Line, X| []]) ->
+%%     a:patchTheFroId(Line).
+
+%% negative indent is a problem.

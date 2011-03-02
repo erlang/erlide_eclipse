@@ -2,8 +2,8 @@ package org.erlide.jinterface.java;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -20,90 +20,90 @@ public class JInterfaceTest {
     private final TermParser termParser = TermParser.getParser();
 
     @Test
-    public void atom_1() throws ParserException {
+    public void atom_1() throws TermParserException {
         final OtpErlangAtom r = (OtpErlangAtom) termParser.parse("hello");
         Assert.assertEquals(r.atomValue(), "hello");
     }
 
     @Test
-    public void atom_2() throws ParserException {
+    public void atom_2() throws TermParserException {
         final OtpErlangAtom r = (OtpErlangAtom) termParser.parse("hello   ");
         Assert.assertEquals(r.atomValue(), "hello");
     }
 
     @Test
-    public void atom_3() throws ParserException {
+    public void atom_3() throws TermParserException {
         final OtpErlangAtom r = (OtpErlangAtom) termParser.parse("   hello");
         Assert.assertEquals(r.atomValue(), "hello");
     }
 
     @Test
-    public void number_1() throws ParserException {
+    public void number_1() throws TermParserException {
         final OtpErlangLong r = (OtpErlangLong) termParser.parse("321");
         Assert.assertEquals(r.longValue(), 321);
     }
 
     @Test
-    public void var_1() throws ParserException {
+    public void var_1() throws TermParserException {
         final OtpPatternVariable r = (OtpPatternVariable) termParser
                 .parse("Hello");
         Assert.assertEquals(r.getName(), "Hello");
     }
 
     @Test
-    public void var_2() throws ParserException {
+    public void var_2() throws TermParserException {
         final OtpPatternVariable r = (OtpPatternVariable) termParser.parse("_");
         Assert.assertEquals(r.getName(), "_");
     }
 
     @Test
-    public void string_1() throws ParserException {
+    public void string_1() throws TermParserException {
         final OtpErlangString r = (OtpErlangString) termParser
                 .parse("\"Hello\"");
         Assert.assertEquals(r.stringValue(), "Hello");
     }
 
     @Test
-    public void string_2() throws ParserException {
+    public void string_2() throws TermParserException {
         final OtpErlangString r = (OtpErlangString) termParser
                 .parse("\"Hello world!\"");
         Assert.assertEquals(r.stringValue(), "Hello world!");
     }
 
     @Test
-    public void placeholder_1() throws ParserException {
+    public void placeholder_1() throws TermParserException {
         final OtpFormatPlaceholder r = (OtpFormatPlaceholder) termParser
                 .parse("~hello");
         Assert.assertEquals(r.getName(), "hello");
     }
 
     @Test
-    public void list_1() throws ParserException {
+    public void list_1() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[]");
         Assert.assertEquals("[]", r.toString());
     }
 
     @Test
-    public void list_2() throws ParserException {
+    public void list_2() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[a,2,b,4]");
         Assert.assertEquals("[a,2,b,4]", r.toString());
     }
 
     @Test
-    public void list_3() throws ParserException {
+    public void list_3() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[a,2,b|4]");
         Assert.assertEquals("[a,2,b|4]", r.toString());
     }
 
     @Test
-    public void list_4() throws ParserException {
+    public void list_4() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser
                 .parse("[ax , [ 2  , b ], 4 ,5]");
         Assert.assertEquals("[ax,[2,b],4,5]", r.toString());
     }
 
     @Test
-    public void sublist_1() throws ParserException {
+    public void sublist_1() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[a,2,b,4]");
         final OtpErlangList s = (OtpErlangList) termParser.parse("[2,b,4]");
         final OtpErlangObject ss = r.getTail();
@@ -111,7 +111,7 @@ public class JInterfaceTest {
     }
 
     @Test
-    public void sublist_2() throws ParserException {
+    public void sublist_2() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3|4]");
         final OtpErlangList s = (OtpErlangList) termParser.parse("[2,3|4]");
         final OtpErlangObject ss = r.getTail();
@@ -119,7 +119,7 @@ public class JInterfaceTest {
     }
 
     @Test
-    public void sublist_4() throws ParserException {
+    public void sublist_4() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3,4]");
         final OtpErlangList s = (OtpErlangList) termParser.parse("[3,4]");
         final OtpErlangObject ss = r.getNthTail(2);
@@ -127,7 +127,7 @@ public class JInterfaceTest {
     }
 
     @Test
-    public void sublist_3() throws ParserException {
+    public void sublist_3() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3|4]");
         final OtpErlangList s = (OtpErlangList) termParser.parse("[3|4]");
         final OtpErlangObject ss = r.getNthTail(2);
@@ -135,28 +135,28 @@ public class JInterfaceTest {
     }
 
     @Test
-    public void sublist_4a() throws ParserException {
+    public void sublist_4a() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3,4]");
         final OtpErlangObject ss = r.getNthTail(0);
         Assert.assertEquals(r, ss);
     }
 
     @Test
-    public void sublist_4b() throws ParserException {
+    public void sublist_4b() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3,4]");
         final OtpErlangObject ss = r.getNthTail(4);
         Assert.assertEquals(new OtpErlangList(), ss);
     }
 
     @Test
-    public void sublist_4c() throws ParserException {
+    public void sublist_4c() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3,4]");
         final OtpErlangObject ss = r.getNthTail(5);
         Assert.assertEquals(null, ss);
     }
 
     @Test
-    public void sublist_4d() throws ParserException {
+    public void sublist_4d() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3|4]");
         final OtpErlangObject s = termParser.parse("4");
         final OtpErlangObject ss = r.getNthTail(3);
@@ -164,7 +164,7 @@ public class JInterfaceTest {
     }
 
     @Test
-    public void sublist_5() throws ParserException {
+    public void sublist_5() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3,4]");
         final OtpErlangObject ss = r.getNthTail(2);
         final OtpOutputStream out = new OtpOutputStream();
@@ -182,7 +182,7 @@ public class JInterfaceTest {
     }
 
     @Test
-    public void sublist_6() throws ParserException {
+    public void sublist_6() throws TermParserException {
         final OtpErlangList r = (OtpErlangList) termParser.parse("[1,2,3|4]");
         final OtpErlangObject ss = r.getNthTail(2);
         final OtpOutputStream out = new OtpOutputStream();

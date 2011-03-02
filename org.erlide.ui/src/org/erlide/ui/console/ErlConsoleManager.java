@@ -3,15 +3,17 @@ package org.erlide.ui.console;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.erlide.backend.util.IDisposable;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.IBackendListener;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.common.IDisposable;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<Backend, IConsole> consoles;
@@ -52,7 +54,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         ErlangCore.getBackendManager().removeBackendListener(this);
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final RpcCallSite backend, final IProject project,
             final String moduleName) {
     }
 }

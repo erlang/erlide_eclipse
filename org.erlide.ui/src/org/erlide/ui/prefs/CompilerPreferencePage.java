@@ -40,17 +40,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.builder.CompilerPreferences;
-import org.erlide.core.builder.CompilerPreferencesConstants;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.NoBackendException;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.ErlBackend;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.NoBackendException;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.builder.CompilerPreferences;
+import org.erlide.core.services.builder.CompilerPreferencesConstants;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CompilerPreferencePage extends PropertyPage implements

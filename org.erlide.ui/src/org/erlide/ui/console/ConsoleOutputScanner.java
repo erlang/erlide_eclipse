@@ -19,7 +19,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.erlide.jinterface.backend.console.IoRequest;
+import org.erlide.core.backend.console.IoRequest;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.util.IColorManager;
 

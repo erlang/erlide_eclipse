@@ -165,34 +165,31 @@ build_scc_callgraph(DirList) ->
 			      end, CallerCalleesWithDef),
     {Sccs, E} = refac_callgraph:construct(CallerCalleesWithDef),
     #callgraph{callercallee = CallerCallees, scc_order = Sccs, external_calls = E}.
-    
-   
 
 %%-spec(build_callercallee_callgraph/1::([dir()]) -> 
 %%	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
 build_callercallee_callgraph(DirList) ->
     Files = refac_util:expand_files(DirList, ".erl"),
-    lists:flatmap(fun(FName) ->do_build_callgraph(FName, DirList)
+    lists:flatmap(fun (FName) -> do_build_callgraph(FName, DirList)
 		  end, Files).
-    
-   
+
 %%-spec(do_build_callgraph/2::(filename(), [dir()]) -> 
 %%	     [{{{atom(), atom(), integer()}, syntaxTree()}, [{atom(), atom(), integer()}]}]).
 do_build_callgraph(FName, DirList) ->
-    {ok, {AnnAST, Info}} = refac_util:parse_annotate_file(FName, true, DirList),
+    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, DirList),
     {value, {module, ModName}} = lists:keysearch(module, 1, Info),
     F1 = fun (T, S) ->
 		 case refac_syntax:type(T) of
 		     function ->
 			 FunName = refac_syntax:data(refac_syntax:function_name(T)),
 			 Arity = refac_syntax:function_arity(T),
-			 Caller ={{ModName, FunName, Arity}, T},   %% should remove the actual function AST.!!!
+			 Caller = {{ModName, FunName, Arity}, T},   %% should remove the actual function AST.!!!
 			 CalledFuns = called_funs(T),
 			 ordsets:add_element({Caller, CalledFuns}, S);
 		     _ -> S
 		 end
 	 end,
-    lists:usort(refac_syntax_lib:fold(F1, ordsets:new(), AnnAST)).
+    lists:usort(ast_traverse_api:fold(F1, ordsets:new(), AnnAST)).
 
 %%-spec(called_funs/1::(syntaxTree()) ->
 %%	     [{modulename(), functionname(), functionarity()}]).
@@ -202,33 +199,33 @@ called_funs(Node) ->
 		      atom ->
 			  case lists:keysearch(type, 1, refac_syntax:get_ann(T)) of
 			      {value, {type, {f_atom, [M, F, A]}}} ->
-				  case is_atom(M) andalso M =/= '_' andalso
-				      is_atom(F) andalso F =/= '_' of
+				  case is_atom(M) andalso M =/= '_' andalso 
+					 is_atom(F) andalso F =/= '_'
+				      of
 				      true ->
 					  ordsets:add_element({M, F, A}, S);
-				      false->
+				      false ->
 					  S
 				  end;
 			      _ -> S
 			  end;
 		      _ -> S
 		  end
-	end,
-    Fun1 =fun(C,S) ->
-		  refac_syntax_lib:fold(Fun, S, C)
-	  end,		  
-    Fun2 = fun(F, S) ->
+	  end,
+    Fun1 = fun (C,S) ->
+		   ast_traverse_api:fold(Fun, S, C)
+	   end,
+    Fun2 = fun (F, S) ->
 		   case refac_syntax:type(F) of
-		       function ->refac_syntax:function_clauses(F)++S;
+		       function -> refac_syntax:function_clauses(F)++S;
 		       _ -> S
 		   end
-	 end,
-    Cs = refac_syntax_lib:fold(Fun2,[], Node),	
-    case Cs of 
+	   end,
+    Cs = ast_traverse_api:fold(Fun2, [], Node),
+    case Cs of
 	[] -> called_funs_1(Node);
 	_ -> ordsets:from_list(lists:foldl(Fun1, ordsets:new(), Cs))
     end.
-
 
 called_funs_1(Tree) ->
     Fun = fun (T, S) ->
@@ -236,61 +233,58 @@ called_funs_1(Tree) ->
 		      application ->
 			  Op = refac_syntax:application_operator(T),
 			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
-			      {value, {fun_def, {M, F, A, _, _}}} 
-				when M =/= '_' andalso F =/= '_' ->
+			      {value, {fun_def, {M, F, A, _, _}}}
+				  when M =/= '_' andalso F =/= '_' ->
 				  ordsets:add_element({M, F, A}, S);
 			      _ -> S
 			  end;
 		      implicit_fun ->
 			  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(T)) of
-			      {value, {fun_def, {M, F, A, _, _}}} 
-				when M =/= '_' andalso F =/= '_' ->
+			      {value, {fun_def, {M, F, A, _, _}}}
+				  when M =/= '_' andalso F =/= '_' ->
 				  ordsets:add_element({M, F, A}, S);
 			      _ -> S
 			  end;
 		      _ -> S
-		end
-	end,
-    ordsets:from_list(refac_syntax_lib:fold(Fun, ordsets:new(), Tree)).
+		  end
+	  end,
+    ordsets:from_list(ast_traverse_api:fold(Fun, ordsets:new(), Tree)).
 
-
-
-    
 get_sorted_funs(ModName, AnnAST) ->
     F1 = fun (T, S) ->
 		 case refac_syntax:type(T) of
-		   function ->
-		       FunName = refac_syntax:data(refac_syntax:function_name(T)),
-		       Arity = refac_syntax:function_arity(T),
-		       Caller = {{ModName, FunName, Arity}, T},
-		       CalledFuns = called_funs(T),
-		       ordsets:add_element({Caller, CalledFuns}, S);
-		   _ -> S
+		     function ->
+			 FunName = refac_syntax:data(refac_syntax:function_name(T)),
+			 Arity = refac_syntax:function_arity(T),
+			 Caller = {{ModName, FunName, Arity}, T},
+			 CalledFuns = called_funs(T),
+			 ordsets:add_element({Caller, CalledFuns}, S);
+		     _ -> S
 		 end
 	 end,
-    CallerCallees = lists:usort(refac_syntax_lib:fold(F1, ordsets:new(), AnnAST)),
+    CallerCallees = lists:usort(ast_traverse_api:fold(F1, ordsets:new(), AnnAST)),
     {Sccs, _E} = refac_callgraph:construct(CallerCallees),
     lists:append(Sccs).
 
 %%-spec(fun_callgraph_to_png/1::([filename()|dir()]) -> ok).
 fun_callgraph_to_png(FileNameDirs) ->
     Files = refac_util:expand_files(FileNameDirs, ".erl"),
-    lists:foreach(fun(FName)->
+    lists:foreach(fun (FName) ->
 			  %% refac_io:format("currentfile:\n~p\n", [FName]),
 			  BaseName = filename:basename(FName, ".erl"),
-			  DotFileName=BaseName++"_callgraph.dot",
-			  PngFileName =BaseName++"_callgraph.png",
+			  DotFileName = BaseName++"_callgraph.dot",
+			  PngFileName = BaseName++"_callgraph.png",
 			  fun_callgraph_to_dot(DotFileName, FName),
-			  os:cmd("dot -Tpng "++DotFileName++" > "++PngFileName)			  
+			  os:cmd("dot -Tpng "++DotFileName++" > "++PngFileName)
 		  end, Files).
 
 %%-spec(fun_callgraph_to_dot/1::([filename()|dir()]) -> ok).
 fun_callgraph_to_dot(FileNameDirs) ->
     Files = refac_util:expand_files(FileNameDirs, ".erl"),
-    lists:foreach(fun(FName)->
+    lists:foreach(fun (FName) ->
 			  %% refac_io:format("currentfile:\n~p\n", [FName]),
 			  BaseName = filename:basename(FName, ".erl"),
-			  DotFileName=BaseName++"_callgraph.dot",
+			  DotFileName = BaseName++"_callgraph.dot",
 			  fun_callgraph_to_dot(DotFileName, FName)
 		  end, Files).
 
@@ -372,11 +366,11 @@ calc_dim(String) ->
   calc_dim(String, 1, 0, 0).
 
 calc_dim("\\n" ++ T, H, TmpW, MaxW) ->
-  calc_dim(T, H+1, 0, refac_misc:max(TmpW, MaxW));
-calc_dim([_|T], H, TmpW, MaxW) ->
-  calc_dim(T, H, TmpW+1, MaxW);
+    calc_dim(T, H+1, 0, refac_util:max(TmpW, MaxW));
+calc_dim([_| T], H, TmpW, MaxW) ->
+    calc_dim(T, H, TmpW+1, MaxW);
 calc_dim([], H, TmpW, MaxW) ->
-  {refac_misc:max(TmpW, MaxW), H}.
+    {refac_util:max(TmpW, MaxW), H}.
 
 
 edge_format(V1, V2) ->

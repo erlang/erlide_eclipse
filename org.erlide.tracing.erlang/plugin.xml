@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.erlide.backend.codepath">
+         point="org.erlide.core.codepath">
       <beam_dir
             context="builder"
             path="/ebin">

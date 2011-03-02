@@ -15,14 +15,14 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.ErlangLineBreakpoint;
-import org.erlide.runtime.debug.ErlangProcess;
-import org.erlide.runtime.debug.ErlangStackFrame;
-import org.erlide.runtime.debug.ErlangUninterpretedStackFrame;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlangLineBreakpoint;
+import org.erlide.core.model.debug.ErlangProcess;
+import org.erlide.core.model.debug.ErlangStackFrame;
+import org.erlide.core.model.debug.ErlangUninterpretedStackFrame;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -170,8 +170,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlModule module = ModelUtils.openExternal(null, lfs
-                        .getFullPath().toString());
+                final IErlModule module = ModelUtils.findModule(null,
+                        null, lfs.getFullPath().toString(), true);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
                 e.printStackTrace();

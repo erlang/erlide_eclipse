@@ -12,10 +12,10 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -89,7 +89,7 @@ public class Activator extends AbstractUIPlugin {
          * wranglerSrcPath); ErlangCode .addPathA(mb, wranglerAppPath);
          * ErlLogger.debug( "Wrangler path has been added." );
          * 
-         * RpcResult res = mb.call_noexception ("code", "load_file", "a",
+         * RpcResultImpl res = mb.call_noexception ("code", "load_file", "a",
          * "wrangler"); res = mb.call_noexception( "code", "load_file", "a",
          * "refac_util"); ErlLogger.debug(
          * "Wrangler's path is added to Erlang with result:" + res.isOk() +

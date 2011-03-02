@@ -107,24 +107,28 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlAttribute;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlMember;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.ISourceRange;
-import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.search.ModuleLineFunctionArityRef;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlAttribute;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.ISourceReference;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.ErlideSearchServer;
+import org.erlide.core.services.search.ModuleLineFunctionArityRef;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
@@ -147,7 +151,6 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
-import org.erlide.ui.editors.erl.outline.MemberFilterActionGroup;
 import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
@@ -155,12 +158,6 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
-
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlideOpen;
-import erlang.ErlideSearchServer;
-import erlang.OpenResult;
 
 /**
  * The actual editor itself
@@ -515,7 +512,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
         setAction("Compile file", compileAction);
 
-        if (ErlideUtil.isTest()) {
+        if (CommonUtils.isTest()) {
             testAction = new TestAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "Test.", this, getModule());
@@ -535,7 +532,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         markAsStateDependentAction("CallHierarchy", true);
         markAsSelectionDependentAction("CallHierarchy", true);
 
-        if (ErlideUtil.isClearCacheAvailable()) {
+        if (CommonUtils.isClearCacheAvailable()) {
             clearCacheAction = new ClearCacheAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "ClearCache.", this);
@@ -584,10 +581,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected void editorContextMenuAboutToShow(final IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
 
-        if (ErlideUtil.isTest()) {
+        if (CommonUtils.isTest()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         }
-        if (ErlideUtil.isClearCacheAvailable()) {
+        if (CommonUtils.isClearCacheAvailable()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
                     clearCacheAction);
         }
@@ -1038,8 +1035,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     private boolean isLinkedToOutlinePage() {
-        final IEclipsePreferences prefsNode = MemberFilterActionGroup
-                .getPrefsNode();
+        final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final boolean isLinkingEnabled = prefsNode.getBoolean(
                 PreferenceConstants.ERLANG_OUTLINE_LINK_WITH_EDITOR, true);
         return isLinkingEnabled;
@@ -2198,8 +2194,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
-            final String scannerModuleName = ErlangToolkit
-                    .createScannerModuleName(theModule);
             final ErlideBackend ideBackend = ErlangCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
@@ -2209,10 +2203,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             }
             try {
                 final int offset = selection.getOffset();
-                final OpenResult res = ErlideOpen.open(ideBackend,
-                        scannerModuleName, offset, ModelUtils
-                                .getImportsAsList(theModule), "", ErlangCore
-                                .getModel().getPathVars());
+                final OpenResult res = ErlideOpen.open(ideBackend, theModule,
+                        offset, ModelUtils.getImportsAsList(theModule), "",
+                        ErlangCore.getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);
