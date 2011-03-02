@@ -37,7 +37,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     public static final String STATUS_WAITING = "waiting";

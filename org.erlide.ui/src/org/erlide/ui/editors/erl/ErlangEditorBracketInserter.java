@@ -31,7 +31,6 @@ import org.erlide.core.services.text.ErlToken;
 import org.erlide.core.services.text.ErlideScanner;
 import org.erlide.jinterface.ErlLogger;
 
-
 class ErlangEditorBracketInserter implements VerifyKeyListener,
         ILinkedModeListener {
 

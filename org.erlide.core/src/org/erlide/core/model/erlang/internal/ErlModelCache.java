@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-
 public class ErlModelCache implements IDisposable {
 
     private static final int CACHE_SIZE = 100; // TODO make a more educated

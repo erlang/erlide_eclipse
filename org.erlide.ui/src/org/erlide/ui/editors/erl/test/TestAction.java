@@ -15,7 +15,6 @@ import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.core.services.text.ErlideScanner;
 import org.erlide.jinterface.ErlLogger;
 
-
 /**
  * @author jakob
  * 

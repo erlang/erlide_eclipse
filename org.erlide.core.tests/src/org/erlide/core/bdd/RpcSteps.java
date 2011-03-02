@@ -35,7 +35,8 @@ public class RpcSteps {
     }
 
     @Then("the result should be $value")
-    public void theResultShouldBe(final String value) throws TermParserException {
+    public void theResultShouldBe(final String value)
+            throws TermParserException {
         System.out.println("THEN " + value + " expect " + value);
         final OtpErlangObject v = termParser.parse(value);
         assertThat("ok", result.equals(v));

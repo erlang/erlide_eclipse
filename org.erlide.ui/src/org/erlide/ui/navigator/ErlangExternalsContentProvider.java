@@ -10,11 +10,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 

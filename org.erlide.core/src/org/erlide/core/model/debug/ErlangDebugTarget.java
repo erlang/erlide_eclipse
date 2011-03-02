@@ -47,7 +47,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 public class ErlangDebugTarget extends ErlangDebugElement implements
         IDebugTarget, IErlangDebugNode {
 

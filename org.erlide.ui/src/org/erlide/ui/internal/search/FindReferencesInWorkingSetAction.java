@@ -17,7 +17,6 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-
 /**
  * Finds references of the selected element in working sets. The action is
  * applicable to selections representing a Java element.

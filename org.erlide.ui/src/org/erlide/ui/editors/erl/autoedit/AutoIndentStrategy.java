@@ -32,7 +32,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
-
 /**
  * The erlang auto indent strategy
  * 
@@ -82,7 +81,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+            final RpcCallSite b = ErlangCore.getBackendManager()
+                    .getIdeBackend();
             final int tabw = getTabWidthFromPreferences();
 
             final Map<String, String> prefs = new TreeMap<String, String>();

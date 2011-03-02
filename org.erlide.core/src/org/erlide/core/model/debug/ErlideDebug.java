@@ -115,8 +115,9 @@ public class ErlideDebug {
     }
 
     @SuppressWarnings("boxing")
-    public static boolean interpret(final RpcCallSite backend, final String module,
-            final boolean distributed, final boolean interpret) {
+    public static boolean interpret(final RpcCallSite backend,
+            final String module, final boolean distributed,
+            final boolean interpret) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug",
                     "interpret", "soo", module, distributed, interpret);
@@ -177,7 +178,8 @@ public class ErlideDebug {
         }
     }
 
-    public static void suspend(final RpcCallSite backend, final OtpErlangPid meta) {
+    public static void suspend(final RpcCallSite backend,
+            final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "suspend", "x", meta);
         } catch (final BackendException e) {
@@ -197,7 +199,8 @@ public class ErlideDebug {
         return null;
     }
 
-    public static void stepOver(final RpcCallSite backend, final OtpErlangPid meta) {
+    public static void stepOver(final RpcCallSite backend,
+            final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "step_over", "x", meta);
         } catch (final BackendException e) {
@@ -205,7 +208,8 @@ public class ErlideDebug {
         }
     }
 
-    public static void stepReturn(final RpcCallSite backend, final OtpErlangPid meta) {
+    public static void stepReturn(final RpcCallSite backend,
+            final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "step_return", "x", meta);
         } catch (final BackendException e) {
@@ -213,7 +217,8 @@ public class ErlideDebug {
         }
     }
 
-    public static void stepInto(final RpcCallSite backend, final OtpErlangPid meta) {
+    public static void stepInto(final RpcCallSite backend,
+            final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "step_into", "x", meta);
         } catch (final BackendException e) {
@@ -329,8 +334,8 @@ public class ErlideDebug {
         return "error";
     }
 
-    public static OtpErlangObject distributeDebuggerCode(final RpcCallSite backend,
-            final List<OtpErlangTuple> modules) {
+    public static OtpErlangObject distributeDebuggerCode(
+            final RpcCallSite backend, final List<OtpErlangTuple> modules) {
         try {
             final OtpErlangObject o = backend.call("erlide_debug",
                     "distribute_debugger_code", "lx", modules);

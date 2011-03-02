@@ -43,7 +43,6 @@ import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
-
 public class CallHierarchyView extends ViewPart {
     Tree tree;
     TreeViewer treeViewer;
@@ -95,7 +94,8 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+            final RpcCallSite b = ErlangCore.getBackendManager()
+                    .getIdeBackend();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
                 return new Object[0];
@@ -153,8 +153,8 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final RpcCallSite b = ErlangCore.getBackendManager()
-                                    .getIdeBackend();
+                            final RpcCallSite b = ErlangCore
+                                    .getBackendManager().getIdeBackend();
                             ErlangXref.update(b);
                             treeViewer.refresh();
                         }

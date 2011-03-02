@@ -78,8 +78,8 @@ public class ErlBackend {
      * @return OtpErlangobject
      * @throws ErlangParseException
      */
-    public static OtpErlangObject parseTerm(final RpcCallSite b, final String string)
-            throws BackendException {
+    public static OtpErlangObject parseTerm(final RpcCallSite b,
+            final String string) throws BackendException {
         OtpErlangObject r1 = null;
         try {
             r1 = b.call("erlide_backend", "parse_term", "s", string);
@@ -150,8 +150,8 @@ public class ErlBackend {
         return ((OtpErlangString) r1).stringValue();
     }
 
-    public static BackendEvalResult eval(final RpcCallSite b, final String string,
-            final OtpErlangObject bindings) {
+    public static BackendEvalResult eval(final RpcCallSite b,
+            final String string, final OtpErlangObject bindings) {
         final BackendEvalResult result = new BackendEvalResult();
         try {
             OtpErlangObject r1;
@@ -217,8 +217,8 @@ public class ErlBackend {
         }
     }
 
-    public static String prettyPrint(final RpcCallSite b, final OtpErlangObject e)
-            throws BackendException {
+    public static String prettyPrint(final RpcCallSite b,
+            final OtpErlangObject e) throws BackendException {
         OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
         p = b.call("lists", "flatten", "x", p);
         return ((OtpErlangString) p).stringValue();
@@ -231,7 +231,8 @@ public class ErlBackend {
         return res;
     }
 
-    public static void startTracer(final RpcCallSite b, final OtpErlangPid tracer) {
+    public static void startTracer(final RpcCallSite b,
+            final OtpErlangPid tracer) {
         try {
             ErlLogger.debug("Start tracer to %s", tracer);
             b.call("erlide_backend", "start_tracer", "ps", tracer);

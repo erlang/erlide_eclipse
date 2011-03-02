@@ -29,8 +29,9 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
     // private static final BuilderHelper helper = new BuilderHelper();
 
     @Override
-    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes")
-    final Map args, final IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(final int kind,
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
         DialyzerPreferences prefs;
         try {

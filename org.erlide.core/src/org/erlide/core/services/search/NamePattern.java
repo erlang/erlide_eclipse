@@ -1,6 +1,5 @@
 package org.erlide.core.services.search;
 
-
 public abstract class NamePattern extends ErlangSearchPattern {
 
     private final String name;

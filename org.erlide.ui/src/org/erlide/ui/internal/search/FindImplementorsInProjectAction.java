@@ -14,7 +14,6 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-
 /**
  * Finds references to the selected element in the enclosing project of the
  * selected element. The action is applicable to selections representing a Java

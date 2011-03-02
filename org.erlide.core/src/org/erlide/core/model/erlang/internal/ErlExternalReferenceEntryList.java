@@ -22,7 +22,6 @@ import org.erlide.jinterface.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
 
-
 public class ErlExternalReferenceEntryList extends Openable implements
         IErlExternal {
 

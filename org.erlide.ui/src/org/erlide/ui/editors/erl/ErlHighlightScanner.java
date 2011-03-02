@@ -35,7 +35,6 @@ import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
 import org.osgi.service.prefs.Preferences;
 
-
 /**
  * Erlang syntax scanner
  * 

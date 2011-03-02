@@ -22,8 +22,8 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
+import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.jinterface.ErlLogger;
 
 public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {

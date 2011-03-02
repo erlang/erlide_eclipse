@@ -56,7 +56,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-
 /**
  * Implementation of
  * <code>IErlModel<code>. The Erlang Model maintains a cache of

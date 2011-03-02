@@ -40,7 +40,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-
 /**
  * @author jakob
  * 

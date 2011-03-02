@@ -17,7 +17,6 @@ import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-
 /**
  * Our sample action implements workbench action delegate. The action proxy will
  * be created by the workbench and shown in the UI. When the user tries to use

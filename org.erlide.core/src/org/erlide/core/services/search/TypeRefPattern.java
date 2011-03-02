@@ -2,7 +2,6 @@ package org.erlide.core.services.search;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-
 public class TypeRefPattern extends ErlangSearchPattern {
 
     private final String module;

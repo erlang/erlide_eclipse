@@ -36,6 +36,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlElementDelta;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModel;
@@ -43,7 +44,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.internal.ErlElementDelta;
 import org.erlide.core.model.erlang.util.ElementChangedEvent;
 import org.erlide.core.model.erlang.util.IElementChangedListener;
@@ -1106,8 +1106,8 @@ public class DefaultErlangFoldingStructureProvider implements
      * (non-Javadoc)
      * 
      * @see
-     * org.erlide.core.model.erlang.IErlModelChangeListener#elementChanged(org.erlide
-     * .core.erlang.IErlElement)
+     * org.erlide.core.model.erlang.IErlModelChangeListener#elementChanged(org
+     * .erlide .core.erlang.IErlElement)
      */
     public void elementChanged(final IErlElement element) {
         // TODO fixa elementchangelistener n?n g?ng

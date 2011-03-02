@@ -15,7 +15,6 @@ import org.erlide.jinterface.util.ErlUtils;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-
 public final class ErlangXref {
 
     public static void start(final RpcCallSite b) {
@@ -58,8 +57,8 @@ public final class ErlangXref {
     }
 
     @SuppressWarnings("boxing")
-    public static FunctionRef[] functionUse(final RpcCallSite b, final String mod,
-            final String fun, final int arity) {
+    public static FunctionRef[] functionUse(final RpcCallSite b,
+            final String mod, final String fun, final int arity) {
         try {
             final OtpErlangObject r = b.call("erlide_xref", "function_use",
                     "aai", mod, fun, arity);

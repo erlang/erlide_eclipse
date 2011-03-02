@@ -32,7 +32,6 @@ import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-
 public class CodeManager {
 
     private final Backend backend;

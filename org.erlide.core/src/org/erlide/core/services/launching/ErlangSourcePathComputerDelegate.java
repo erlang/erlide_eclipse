@@ -24,7 +24,8 @@ public class ErlangSourcePathComputerDelegate implements
             final ILaunchConfiguration configuration,
             final IProgressMonitor monitor) throws CoreException {
         final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
-        final IProject[] projects = CoreUtil.getErlangLaunchConfigurationProjects(configuration);
+        final IProject[] projects = CoreUtil
+                .getErlangLaunchConfigurationProjects(configuration);
         for (final IProject p : projects) {
             containers.add(new ProjectSourceContainer(p, false));
         }

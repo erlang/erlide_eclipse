@@ -12,7 +12,6 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 
-
 public class ErlangDebugHelper {
 
     public void interpret(final RpcCallSite backend, final IProject project,

@@ -30,7 +30,6 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
-
 /**
  * Property page used to set the project's edoc location
  */

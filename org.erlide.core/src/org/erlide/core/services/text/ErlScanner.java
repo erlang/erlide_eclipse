@@ -12,7 +12,6 @@ package org.erlide.core.services.text;
 
 import org.erlide.core.common.IDisposable;
 
-
 /**
  * Erlang syntax scanner
  */

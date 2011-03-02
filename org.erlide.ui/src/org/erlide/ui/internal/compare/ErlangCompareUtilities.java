@@ -26,10 +26,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 
 class ErlangCompareUtilities {
 

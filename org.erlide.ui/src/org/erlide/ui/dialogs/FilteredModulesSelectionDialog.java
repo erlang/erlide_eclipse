@@ -80,7 +80,6 @@ import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
-
 /**
  * Shows a list of resources to the user with a text entry field for a string
  * pattern used to filter the list of resources.

@@ -8,7 +8,7 @@ public class ThrowingProviders {
      * Creates a {@link ThrowingProvider} that will return the given values
      */
     public static <Result, E extends Throwable> ThrowingProviderBuilder<Result, E> of(
-            Result... results) {
+            final Result... results) {
         return new ThrowingProviderBuilder<Result, E>().of(results);
     }
 
@@ -16,7 +16,7 @@ public class ThrowingProviders {
      * Creates a {@link ThrowingProvider} that will throw the given exceptions
      */
     public static <Result, E extends Throwable> ThrowingProviderBuilder<Result, E> throwing(
-            E... exceptions) {
+            final E... exceptions) {
         return new ThrowingProviderBuilder<Result, E>().throwing(exceptions);
     }
 
@@ -31,7 +31,7 @@ public class ThrowingProviders {
         /**
          * Chains additional results for this provider to return
          */
-        public ThrowingProviderBuilder<Result, E> of(Result... results) {
+        public ThrowingProviderBuilder<Result, E> of(final Result... results) {
             for (final Result result : results) {
                 delegates.add(new ThrowingProvider<Result, E>() {
                     public Result get() {
@@ -45,7 +45,8 @@ public class ThrowingProviders {
         /**
          * Chains additional exceptions for this provider to throw
          */
-        public ThrowingProviderBuilder<Result, E> throwing(E... exceptions) {
+        public ThrowingProviderBuilder<Result, E> throwing(
+                final E... exceptions) {
             for (final E exception : exceptions) {
                 delegates.add(new ThrowingProvider<Result, E>() {
                     public Result get() throws E {

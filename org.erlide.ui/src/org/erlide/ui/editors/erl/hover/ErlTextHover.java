@@ -67,7 +67,6 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 public class ErlTextHover implements ITextHover,
         IInformationProviderExtension2, ITextHoverExtension,
         ITextHoverExtension2 {

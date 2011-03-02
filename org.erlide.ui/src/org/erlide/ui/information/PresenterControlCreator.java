@@ -39,7 +39,6 @@ import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.BrowserInput;
 import org.erlide.ui.views.EdocView;
 
-
 public final class PresenterControlCreator extends
         AbstractReusableInformationControlCreator {
 

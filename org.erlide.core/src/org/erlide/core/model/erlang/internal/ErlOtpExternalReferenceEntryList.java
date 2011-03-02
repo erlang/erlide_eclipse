@@ -14,7 +14,6 @@ import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
 
-
 public class ErlOtpExternalReferenceEntryList extends Openable implements
         IErlExternal {
 

@@ -51,7 +51,6 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.osgi.service.prefs.BackingStoreException;
 
-
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
     // {
     private IStructuredSelection selection;

@@ -105,7 +105,8 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+            final RpcCallSite b = ErlangCore.getBackendManager()
+                    .getIdeBackend();
             final BackendEvalResult r = ErlBackend.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();

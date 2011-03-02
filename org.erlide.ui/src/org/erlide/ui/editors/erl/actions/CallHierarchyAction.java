@@ -32,7 +32,6 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
 
-
 public class CallHierarchyAction extends Action {
 
     private final ErlangEditor editor;

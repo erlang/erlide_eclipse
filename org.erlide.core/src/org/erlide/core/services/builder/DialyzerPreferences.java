@@ -19,7 +19,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
-
 public class DialyzerPreferences {
 
     private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID

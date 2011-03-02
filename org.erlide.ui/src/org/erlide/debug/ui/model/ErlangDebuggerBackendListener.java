@@ -27,7 +27,6 @@ import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-
 public class ErlangDebuggerBackendListener implements IBackendListener {
     public void runtimeRemoved(final Backend backend) {
     }
@@ -124,8 +123,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private boolean isModuleRunningInInterpreter(
-            final ErlangDebugTarget erlangDebugTarget, final RpcCallSite backend,
-            final String moduleName) {
+            final ErlangDebugTarget erlangDebugTarget,
+            final RpcCallSite backend, final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug
                     .getAllModulesOnStack(backend, metaPid);

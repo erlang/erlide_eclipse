@@ -49,7 +49,8 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
     /*
      * (non-Javadoc)
      * 
-     * @see org.erlide.core.model.erlang.internal.ErlElement#equals(java.lang.Object)
+     * @see
+     * org.erlide.core.model.erlang.internal.ErlElement#equals(java.lang.Object)
      */
     @Override
     public boolean equals(final Object o) {

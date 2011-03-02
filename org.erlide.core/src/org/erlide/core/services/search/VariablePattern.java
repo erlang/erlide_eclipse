@@ -6,7 +6,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 public class VariablePattern extends ErlangSearchPattern {
 
     private final String functionName;

@@ -15,7 +15,6 @@ import org.erlide.core.services.search.ErlideOpen;
 
 import com.google.common.collect.Lists;
 
-
 public class ErlExternalReferenceEntry extends Openable implements IErlExternal {
 
     private final String entry;

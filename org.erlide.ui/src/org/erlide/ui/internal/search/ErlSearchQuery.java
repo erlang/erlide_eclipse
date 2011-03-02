@@ -22,7 +22,6 @@ import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-
 public class ErlSearchQuery implements ISearchQuery {
     private final ErlangSearchPattern pattern;
     private final ErlSearchScope scope;

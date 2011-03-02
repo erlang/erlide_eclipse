@@ -55,8 +55,8 @@ public class ErlModelUtils {
             final ErlangFunction function, final String modulePath,
             final IErlModule module, final IErlProject project,
             final boolean checkAllProjects) throws CoreException {
-        final IErlModule module2 = ModelUtils.findModule(project,
-                moduleName, modulePath, checkAllProjects);
+        final IErlModule module2 = ModelUtils.findModule(project, moduleName,
+                modulePath, checkAllProjects);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
             return openFunctionInEditor(function, editor);
@@ -150,8 +150,8 @@ public class ErlModelUtils {
             path = ue.getURI().getPath();
         }
         if (path != null) {
-            final IErlModule module = ModelUtils.findModule(null, null,
-                    path, true);
+            final IErlModule module = ModelUtils.findModule(null, null, path,
+                    true);
             if (module != null) {
                 return module;
             }
@@ -172,8 +172,8 @@ public class ErlModelUtils {
     }
 
     public static void openModule(final String moduleName) throws CoreException {
-        final IErlModule module = ModelUtils.findModule(null,
-                moduleName, null, true);
+        final IErlModule module = ModelUtils.findModule(null, moduleName, null,
+                true);
         if (module != null) {
             EditorUtility.openInEditor(module);
         }

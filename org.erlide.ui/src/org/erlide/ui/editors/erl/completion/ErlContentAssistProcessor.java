@@ -473,8 +473,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 .getProject();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule theModule = ModelUtils.findModule(erlProject, moduleName,
-                null, checkAllProjects);
+        final IErlModule theModule = ModelUtils.findModule(erlProject,
+                moduleName, null, checkAllProjects);
         if (theModule != null) {
             if (ModelUtils.isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()

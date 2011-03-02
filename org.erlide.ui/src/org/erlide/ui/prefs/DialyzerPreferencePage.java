@@ -64,14 +64,13 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
-import org.erlide.core.services.builder.ErlideDialyze;
 import org.erlide.core.services.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.core.services.builder.ErlideDialyze;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
-
 
 public class DialyzerPreferencePage extends PropertyPage implements
         IWorkbenchPreferencePage {

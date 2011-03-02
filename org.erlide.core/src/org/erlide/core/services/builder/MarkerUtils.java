@@ -43,7 +43,6 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-
 public final class MarkerUtils {
 
     private static final String FIXME = "FIXME";

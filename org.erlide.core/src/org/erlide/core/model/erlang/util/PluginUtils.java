@@ -24,7 +24,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.search.ErlideOpen;
 
-
 /**
  * Simple utility functions
  * 
