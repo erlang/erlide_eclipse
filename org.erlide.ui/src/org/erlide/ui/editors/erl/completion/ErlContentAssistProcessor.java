@@ -473,34 +473,21 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 .getProject();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule module =
-
-        ModelUtils.findModule(erlProject, moduleName, null, checkAllProjects);
-        if (module != null) {
-            addFunctionsFromModule(offset, prefix, arityOnly, result, module);
+        final IErlModule theModule = ModelUtils.findModule(erlProject, moduleName,
+                null, checkAllProjects);
+        if (theModule != null) {
+            if (ModelUtils.isOtpModule(theModule)) {
+                final String stateDir = ErlideUIPlugin.getDefault()
+                        .getStateLocation().toString();
+                final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
+                        moduleName, prefix, stateDir);
+                addFunctionProposalsWithDoc(offset, prefix, result, res, null,
+                        arityOnly);
+            } else {
+                addFunctionsFromModule(offset, prefix, arityOnly, result,
+                        theModule);
+            }
         }
-
-        // boolean foundInModel = false;
-        // // first check in project, refs and external modules
-        // final List<IErlModule> modules = ModelUtils
-        // .getModulesWithReferencedProjectsWithPrefix(project, prefix);
-        // for (final IErlModule m : modules) {
-        // if (ErlideUtil.withoutExtension(m.getModuleName()).equals(
-        // moduleName)) {
-        // foundInModel = addFunctionsFromModule(offset, prefix,
-        // arityOnly, result, m);
-        // }
-        //
-        // // then check built stuff and otp
-        // if (!foundInModel) {
-        // final String stateDir = ErlideUIPlugin.getDefault()
-        // .getStateLocation().toString();
-        // final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(b,
-        // moduleName, prefix, stateDir);
-        // addFunctionProposalsWithDoc(offset, prefix, result, res, null,
-        // arityOnly);
-        // }
-        // }
         return result;
     }
 

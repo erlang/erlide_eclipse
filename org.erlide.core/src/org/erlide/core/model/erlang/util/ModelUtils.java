@@ -345,4 +345,16 @@ public class ModelUtils {
         return range;
     }
 
+    public static boolean isOtpModule(final IErlModule module) {
+        IParent parent = module.getParent();
+        while (parent instanceof IErlExternal) {
+            final IErlExternal external = (IErlExternal) parent;
+            if (external.isOTP()) {
+                return true;
+            }
+            parent = external.getParent();
+        }
+        return false;
+    }
+
 }
