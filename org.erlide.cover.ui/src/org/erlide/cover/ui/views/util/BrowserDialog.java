@@ -2,9 +2,8 @@ package org.erlide.cover.ui.views.util;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -13,8 +12,8 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.erlide.cover.ui.Activator;
+import org.erlide.cover.ui.Images;
 
 /**
  * Dialog for HTML browser
@@ -41,7 +40,6 @@ public class BrowserDialog extends Dialog {
 
     public BrowserDialog(final Shell parent, final int style) {
         super(parent, style);
-
     }
 
     public void open() {
@@ -94,8 +92,8 @@ public class BrowserDialog extends Dialog {
         GridLayout compLayout = new GridLayout();
         compLayout.makeColumnsEqualWidth = true;
         compLayout.numColumns = 4;
-        compLayout.marginLeft = 300;
-        compLayout.marginRight = 300;
+        compLayout.marginLeft = 330;
+        compLayout.marginRight = 330;
         GridData compLData = new GridData();
         compLData.widthHint = 521;
         compLData.heightHint = 33;
@@ -105,25 +103,89 @@ public class BrowserDialog extends Dialog {
         prev = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData prevLData = new GridData();
         prev.setLayoutData(prevLData);
-        prev.setText("prev");
+       // prev.setText("prev");
+        prev.addSelectionListener(prevListener);
+        prev.setImage(Activator.getImageDescriptor(Images.PREV).createImage());
 
         next = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData nextLData = new GridData();
         next.setLayoutData(nextLData);
-        next.setText("next");
-
-        up = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
-        GridData upLData = new GridData();
-        up.setLayoutData(upLData);
-        up.setText("up");
+       // next.setText("next");
+        next.addSelectionListener(nextListener);
+        next.setImage(Activator.getImageDescriptor(Images.NEXT).createImage());
 
         home = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData homeLData = new GridData();
         home.setLayoutData(homeLData);
-        home.setText("down");
-
+       // home.setText("down");
+        home.addSelectionListener(homeListener);
+        home.setImage(Activator.getImageDescriptor(Images.HOME).createImage());
+        
+        up = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
+        GridData upLData = new GridData();
+        up.setLayoutData(upLData);
+       // up.setText("up");
+        up.addSelectionListener(upListener);
+        up.setImage(Activator.getImageDescriptor(Images.UP).createImage());
+        
         dialogShell.setLocation(getParent().toDisplay(100, 100));
 
     }
+    
+    private SelectionListener prevListener = new SelectionListener() {
+
+        public void widgetSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    };
+    
+    private SelectionListener nextListener = new SelectionListener() {
+
+        public void widgetSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    };
+    
+    private SelectionListener upListener = new SelectionListener() {
+
+        public void widgetSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    };
+    
+    private SelectionListener homeListener = new SelectionListener() {
+
+        public void widgetSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    };
     
 }
