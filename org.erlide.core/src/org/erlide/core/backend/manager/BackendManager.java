@@ -293,7 +293,7 @@ public final class BackendManager extends OtpNodeStatus implements
                     } catch (final BackendException e) {
                         final String msg = "Could not start IDE backend: "
                                 + e.getMessage();
-                        MessageReporter.show(msg, ReporterPosition.MODAL);
+                        MessageReporter.showError(msg, ReporterPosition.MODAL);
                         ErlLogger.error(msg);
                     }
                 }

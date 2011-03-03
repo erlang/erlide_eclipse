@@ -73,7 +73,8 @@ public class ManagedLauncher implements IDisposable {
             checkIfRuntimeIsRunning();
         } else {
             MessageReporter
-                    .show("Could not start Erlang runtime, please check your configuration",
+                    .showError(
+                            "Could not start Erlang runtime, please check your configuration",
                             ReporterPosition.CENTER);
         }
 

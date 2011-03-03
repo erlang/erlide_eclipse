@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.common.MessageReporter;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
@@ -66,6 +67,8 @@ public class CompileAction extends Action {
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);
         }
+        MessageReporter.showInfo(String.format("File '%s' was compiled.",
+                resource.getName()));
     }
 
     public IWorkbenchSite getSite() {

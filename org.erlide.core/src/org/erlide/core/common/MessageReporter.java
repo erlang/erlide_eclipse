@@ -13,22 +13,53 @@ public abstract class MessageReporter {
         CENTER, CORNER, MODAL
     }
 
-    public void displayMessage(final String message) {
-        displayMessage(message, ReporterPosition.CORNER);
+    public enum MessageType {
+        ERROR, WARNING, INFO;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        };
+
     }
 
-    abstract public void displayMessage(String message, ReporterPosition style);
+    abstract public void displayMessage(MessageType type, String message,
+            ReporterPosition style);
 
-    public static void show(final String message) {
-        show(message, ReporterPosition.CORNER);
+    public static void showError(final String message) {
+        show(MessageType.ERROR, message, ReporterPosition.CORNER);
     }
 
-    public static void show(final String message, final ReporterPosition style) {
+    public static void showWarning(final String message) {
+        show(MessageType.WARNING, message, ReporterPosition.CORNER);
+    }
+
+    public static void showInfo(final String message) {
+        show(MessageType.INFO, message, ReporterPosition.CORNER);
+    }
+
+    public static void showError(final String message,
+            final ReporterPosition style) {
+        show(MessageType.ERROR, message, style);
+    }
+
+    public static void showWarning(final String message,
+            final ReporterPosition style) {
+        show(MessageType.WARNING, message, style);
+    }
+
+    public static void showInfo(final String message,
+            final ReporterPosition style) {
+        show(MessageType.INFO, message, style);
+    }
+
+    public static void show(final MessageType type, final String message,
+            final ReporterPosition style) {
         final List<MessageReporter> reporters = getAllImplementors();
         for (final MessageReporter reporter : reporters) {
-            reporter.displayMessage(message, style);
+            reporter.displayMessage(type, message, style);
         }
-        System.out.println("MSG::: " + message);
+        System.out.println(type + "::: " + message);
     }
 
     private static List<MessageReporter> getAllImplementors() {
