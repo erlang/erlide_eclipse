@@ -41,6 +41,7 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelChangeListener;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
@@ -195,8 +196,10 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlProject makeErlangProject(final IProject project) {
         final IErlProject ep = new ErlProject(project, this);
-        ErlLogger.debug("ep " + ep);
+        ErlLogger.debug("makeErlangProject " + ep);
         addChild(ep);
+        final ErlModelCache cache = getModelCache();
+        cache.newProjectCreated();
         return ep;
     }
 
@@ -477,14 +480,14 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) throws ErlModelException {
-        return ErlProject.findModule(null, name, null, false, false, false,
-                true);
+        return ErlProject.findModule(null, name, null, false, false,
+                Scope.ALL_PROJECTS);
     }
 
     public IErlModule findModuleIgnoreCase(final String name)
             throws ErlModelException {
-        return ErlProject
-                .findModule(null, name, null, true, false, false, true);
+        return ErlProject.findModule(null, name, null, true, false,
+                Scope.ALL_PROJECTS);
     }
 
     public IErlProject createOtpProject(final IProject project)
@@ -640,13 +643,13 @@ public class ErlModel extends Openable implements IErlModel {
     public IErlModule findModule(final String moduleName,
             final String modulePath) throws ErlModelException {
         return ErlProject.findModule(null, moduleName, modulePath, false, true,
-                false, true);
+                Scope.ALL_PROJECTS);
     }
 
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
         return ErlProject.findModule(null, includeName, includePath, false,
-                false, false, true);
+                false, Scope.ALL_PROJECTS);
     }
 
 }

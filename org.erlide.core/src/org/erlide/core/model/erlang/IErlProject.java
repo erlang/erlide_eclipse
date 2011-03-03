@@ -170,12 +170,14 @@ public interface IErlProject extends IErlFolder {
 
     IErlModule getModule(String name) throws ErlModelException;
 
-    IErlModule findModule(String moduleName, String modulePath,
-            boolean checkReferences, boolean checkAllProjects)
+    enum Scope {
+        PROJECT_ONLY, REFERENCED_PROJECTS, ALL_PROJECTS
+    };
+
+    IErlModule findModule(String moduleName, String modulePath, Scope scope)
             throws ErlModelException;
 
-    IErlModule findInclude(String includeName, String includePath,
-            boolean checkReferences, boolean checkAllProjects)
+    IErlModule findInclude(String includeName, String includePath, Scope scope)
             throws ErlModelException;
 
 }

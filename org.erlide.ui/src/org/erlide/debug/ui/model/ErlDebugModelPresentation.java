@@ -21,6 +21,7 @@ import org.erlide.core.model.debug.ErlangProcess;
 import org.erlide.core.model.debug.ErlangStackFrame;
 import org.erlide.core.model.debug.ErlangUninterpretedStackFrame;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
@@ -171,7 +172,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
                 final IErlModule module = ModelUtils.findModule(null, null, lfs
-                        .getFullPath().toString(), true);
+                        .getFullPath().toString(), Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
                 e.printStackTrace();

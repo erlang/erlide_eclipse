@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.ErlangCore;
@@ -15,7 +14,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
@@ -81,11 +79,12 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
             if (parent == ErlangCore.getModel() && filePath != null) {
-                try {
-                    // FIXME shouldn't this call be assigned to something!?
-                    ModelUtils.findModule(null, null, filePath, true);
-                } catch (final CoreException e) {
-                }
+                // try {
+                // FIXME shouldn't this call be assigned to something!?
+                // ModelUtils.findModule(null, null, filePath,
+                // Scope.ALL_PROJECTS);
+                // } catch (final CoreException e) {
+                // }
                 parent = elt.getParent();
             }
             if (parent instanceof IErlModule) {

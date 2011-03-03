@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.services.text.ErlToken;
@@ -139,8 +140,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     boolean isOnIncludePath();
 
-    IErlModule findInclude(String includeName, String includePath,
-            boolean checkReferences, boolean checkAllProjects)
+    IErlModule findInclude(String includeName, String includePath, Scope scope)
             throws ErlModelException;
 
 }

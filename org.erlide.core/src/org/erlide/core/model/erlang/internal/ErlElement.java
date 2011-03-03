@@ -461,9 +461,14 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         if (fChildren.size() > 0) {
             buffer.append("{");
         }
+        int i = 0;
         for (final IErlElement element : fChildren) {
             ((ErlElement) element).toString(tab + 1, buffer);
             buffer.append(","); //$NON-NLS-1$
+            if (++i > 3) {
+                buffer.append("...");
+                break;
+            }
         }
         if (fChildren.size() > 0) {
             buffer.deleteCharAt(buffer.length() - 1);

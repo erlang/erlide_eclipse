@@ -38,6 +38,7 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.IParent;
@@ -87,7 +88,7 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        ErlModel.getErlModelCache().putModule(this);
+        getModelCache().putModule(this);
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
@@ -703,16 +704,15 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlModule findInclude(final String includeName,
-            final String includePath, final boolean checkReferences,
-            final boolean checkAllProjects) throws ErlModelException {
+            final String includePath, final Scope scope)
+            throws ErlModelException {
         final IParent parent = getParent();
         if (parent instanceof IErlFolder) {
             final IErlFolder folder = (IErlFolder) parent;
             folder.open(null);
             return folder.findModule(includeName, includePath);
         }
-        return getProject().findInclude(includeName, includePath,
-                checkReferences, checkAllProjects);
+        return getProject().findInclude(includeName, includePath, scope);
     }
 
 }

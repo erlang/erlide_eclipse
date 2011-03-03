@@ -31,6 +31,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -125,8 +126,8 @@ public final class MarkerUtils {
                     ErlLogger.debug("    " + entry.getValue());
 
                     final IErlModule includeFile = erlProject != null ? erlProject
-                            .findInclude(fileName, fileName, true, false)
-                            : null;
+                            .findInclude(fileName, fileName,
+                                    Scope.REFERENCED_PROJECTS) : null;
                     if (includeFile == null) {
                         res = resource;
                     } else {
