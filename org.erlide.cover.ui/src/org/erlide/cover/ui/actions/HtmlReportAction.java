@@ -27,8 +27,8 @@ public class HtmlReportAction extends Action {
     private Shell shell;
     private TreeViewer viewer;
 
-    private Logger log;     // logger
-    
+    private Logger log; // logger
+
     public HtmlReportAction(final TreeViewer viewer) {
         shell = viewer.getControl().getShell();
         this.viewer = viewer;
@@ -46,7 +46,8 @@ public class HtmlReportAction extends Action {
         log.debug(selection.getClass().getName());
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type", null);
+                    Activator.PLUGIN_ID,
+                    "Internall error occured: bad sellection type", null);
             StatusManager.getManager().handle(executionStatus,
                     StatusManager.SHOW);
             return;
@@ -61,8 +62,7 @@ public class HtmlReportAction extends Action {
         final StatsTreeObject selObj = (StatsTreeObject) treeSelection
                 .getFirstElement();
 
-        final BrowserDialog browser = new BrowserDialog(shell, SWT.DIALOG_TRIM
-                | SWT.RESIZE);
+        final BrowserDialog browser = new BrowserDialog(shell);
 
         if (selObj instanceof FunctionStats) {
             final ModuleStats module = (ModuleStats) selObj.getParent();
@@ -73,5 +73,4 @@ public class HtmlReportAction extends Action {
 
         browser.open();
     }
-
 }
