@@ -494,6 +494,12 @@
             id="org.erlide.ui.search.implementors.in.workspace"
             name="Definitions in Workspace">
       </command>
+      <!--command   TODO reenable this when erl_tidy doesn't destroy formatting
+            categoryId="org.erlide.ui.erlideCategory"
+            description="Clean Up..."
+            id="org.erlide.ui.actions.cleanUp"
+            name="Clean Up...">
+      </command-->
       <command
             categoryId="org.eclipse.search.ui.category.search"
             description="Definitions in Project"
