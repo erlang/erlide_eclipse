@@ -32,7 +32,9 @@ public class BackendManagerPopup implements BackendListener {
     }
 
     public void runtimeAdded(final Backend b) {
-        ErlLogger.debug("$$ added backend " + b.getInfo().getName());
+        ErlLogger.debug("$$ added backend " + b);
+        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
+        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
@@ -45,7 +47,7 @@ public class BackendManagerPopup implements BackendListener {
     }
 
     public void runtimeRemoved(final Backend b) {
-        ErlLogger.debug("$$ removed backend " + b.getInfo().getName());
+        ErlLogger.debug("$$ removed backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {

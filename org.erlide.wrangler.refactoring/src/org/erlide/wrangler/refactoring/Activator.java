@@ -55,31 +55,19 @@ public class Activator extends AbstractUIPlugin {
      *             detailed exception about the loading process errors
      */
 
-    private void initWrangler() throws CoreException { /*
-                                                        * try { Path pluginPath
-                                                        * = getPluginPath();
-                                                        * IPath wranglerRootPath
-                                                        * = pluginPath
-                                                        * .append("wrangler");
-                                                        * String
-                                                        * wranglerEbinPath =
-                                                        * wranglerRootPath
-                                                        * .append("ebin")
-                                                        * .toOSString(); String
-                                                        * wranglerAppPath =
-                                                        * wranglerRootPath
-                                                        * .append("app")
-                                                        * .toOSString();
-                                                        * 
-                                                        * String wranglerSrcPath
-                                                        * = wranglerRootPath
-                                                        * .append("erl")
-                                                        * .toOSString();
-                                                        * 
-                                                        * ErlLogger.debug(
-                                                        * "Wrangler beam files found at: "
-                                                        * + wranglerEbinPath);
-                                                        */
+    private void initWrangler() throws CoreException {
+        /*
+         * try { Path pluginPath = getPluginPath(); IPath wranglerRootPath =
+         * pluginPath .append("wrangler"); String wranglerEbinPath =
+         * wranglerRootPath .append("ebin") .toOSString(); String
+         * wranglerAppPath = wranglerRootPath .append("app") .toOSString();
+         * 
+         * String wranglerSrcPath = wranglerRootPath .append("erl")
+         * .toOSString();
+         * 
+         * ErlLogger.debug( "Wrangler beam files found at: " +
+         * wranglerEbinPath);
+         */
         final Backend mb = ErlangCore.getBackendManager().getIdeBackend();
 
         ErlLogger.debug("Managed backend found:" + mb.getJavaNodeName());

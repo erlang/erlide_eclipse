@@ -11,10 +11,8 @@
 package org.erlide.core.backend.manager;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,7 +24,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -34,11 +31,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.BackendOptions;
@@ -46,16 +42,11 @@ import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlideBackendVisitor;
 import org.erlide.core.backend.ErtsProcess;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.epmd.EpmdWatchJob;
 import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.backend.internal.CodeBundleImpl.CodeContext;
-import org.erlide.core.backend.internal.ManagedLauncher;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.CommonUtils;
-import org.erlide.core.common.MessageReporter;
-import org.erlide.core.common.MessageReporter.ReporterPosition;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.ErlLogger;
@@ -84,6 +75,9 @@ public final class BackendManager extends OtpNodeStatus implements
 
     private final EpmdWatcher epmdWatcher;
     private final Set<Backend> allBackends;
+    private final EpmdWatchJob epmdWatcherJob;
+    private final BackendManagerLaunchListener launchListener;
+    private final BackendFactory factory;
 
     @SuppressWarnings("synthetic-access")
     private static final class LazyBackendManagerHolder {
@@ -104,94 +98,22 @@ public final class BackendManager extends OtpNodeStatus implements
 
         // ManagedLauncher.startEpmdProcess();
         epmdWatcher = new EpmdWatcher();
+        epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
         epmdWatcher.addEpmdListener(this);
         new EpmdWatchJob(epmdWatcher).schedule(100);
 
+        launchListener = new BackendManagerLaunchListener(this, DebugPlugin
+                .getDefault().getLaunchManager());
+        factory = new BackendFactory();
+
         // TODO remove this when all users have cleaned up
         cleanupInternalLCs();
-    }
-
-    public Backend createBackend(final RuntimeInfo info,
-            final Set<BackendOptions> options, final ILaunch launch,
-            final Map<String, String> env) throws BackendException {
-        final String nodeName = info.getNodeName();
-        final boolean exists = EpmdWatcher.findRunningNode(nodeName);
-        Backend b = null;
-
-        final boolean isRemoteNode = nodeName.contains("@");
-        boolean watch = true;
-        if (exists || isRemoteNode) {
-            ErlLogger.debug("create standalone " + options + " backend '"
-                    + info + "' " + Thread.currentThread());
-            b = new Backend(info);
-            watch = false;
-        } else if (options.contains(BackendOptions.AUTOSTART)) {
-            ErlLogger.debug("create managed " + options + " backend '" + info
-                    + "' " + Thread.currentThread());
-            b = new Backend(info);
-
-            final ManagedLauncher launcher = new ManagedLauncher(launch, info,
-                    env);
-            final IStreamsProxy streamsProxy = launcher.getStreamsProxy();
-            b.setStreamsProxy(streamsProxy);
-            b.setManaged(true);
-        }
-        if (b == null) {
-            ErlLogger.error("Node %s not found, could not launch!", nodeName);
-            return null;
-        }
-        addBackend(b);
-        b.setLaunch(launch);
-        if (launch != null) {
-            DebugPlugin.getDefault().getLaunchManager().addLaunchListener(b);
-        }
-        try {
-            initializeBackend(options, b, watch);
-        } catch (final IOException e) {
-            ErlLogger.error(e);
-            // throw new BackendException(e);
-        }
-        return b;
     }
 
     private void addBackend(final Backend b) {
         synchronized (allBackends) {
             allBackends.add(b);
         }
-    }
-
-    private void initializeBackend(final Set<BackendOptions> options,
-            final Backend b, final boolean watchNode) throws IOException {
-        b.initializeRuntime();
-        if (b.isDistributed()) {
-            b.connect();
-            for (final CodeBundleImpl bb : codeBundles.values()) {
-                b.register(bb);
-            }
-            final boolean monitorNode = options.contains(BackendOptions.IDE)
-                    && "true".equals(System.getProperty("erlide.monitor.ide"));
-            b.initErlang(monitorNode, watchNode);
-            b.registerStatusHandler(this);
-            b.setDebug(options.contains(BackendOptions.DEBUG));
-        }
-        notifyBackendChange(b, BackendEvent.ADDED, null, null);
-    }
-
-    private Backend createInternalBackend(final RuntimeInfo info,
-            final Set<BackendOptions> options, final Map<String, String> env)
-            throws BackendException {
-        final ILaunchConfiguration launchConfig = getLaunchConfiguration(info,
-                options);
-        ILaunch launch;
-        try {
-            launch = launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, false);
-        } catch (final CoreException e) {
-            e.printStackTrace();
-            return null;
-        }
-        final Backend b = createBackend(info, options, launch, env);
-        return b;
     }
 
     public Backend getBuildBackend(final IProject project)
@@ -215,19 +137,13 @@ public final class BackendManager extends OtpNodeStatus implements
         final String version = info.getVersion().asMajor().toString();
         Backend b = buildBackends.get(version);
         if (b == null) {
-            info.setNodeName(version);
-            info.setNodeNameSuffix("_"
-                    + org.erlide.core.backend.internal.BackendUtils
-                            .getErlideNodeNameTag());
-            info.setCookie("erlide");
-            info.setHasConsole(false);
-            // will add workspace unique id
-            final EnumSet<BackendOptions> options = EnumSet.of(
-                    BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE,
-                    BackendOptions.INTERNAL);
-            b = createInternalBackend(info, options, null);
+            b = factory.createBuildBackend(info);
             buildBackends.put(version, b);
         }
+        b.addProjectPath(project);
+        notifyBackendChange(b, BackendEvent.ADDED, null, null);
+
+        ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;
     }
 
@@ -284,47 +200,14 @@ public final class BackendManager extends OtpNodeStatus implements
         if (ideBackend == null) {
             synchronized (ideBackendLock) {
                 if (ideBackend == null) {
-                    try {
-                        createIdeBackend();
-                    } catch (final BackendException e) {
-                        final String msg = "Could not start IDE backend: "
-                                + e.getMessage();
-                        MessageReporter.showError(msg, ReporterPosition.MODAL);
-                        ErlLogger.error(msg);
-                    }
+                    ideBackend = factory.createIdeBackend();
+                    notifyBackendChange(ideBackend, BackendEvent.ADDED, null,
+                            null);
                 }
             }
         }
         // System.out.println(">>> " + ideBackend);
         return ideBackend;
-    }
-
-    private void createIdeBackend() throws BackendException {
-        final RuntimeInfo info = RuntimeInfo.copy(BackendCore
-                .getRuntimeInfoManager().getErlideRuntime(), false);
-        if (info != null) {
-            final String defLabel = BackendUtil.getLabelProperty();
-            if (defLabel != null) {
-                info.setNodeName(defLabel);
-            } else {
-                final String nodeName = org.erlide.core.backend.internal.BackendUtils
-                        .getErlideNodeNameTag() + "_erlide";
-                info.setNodeName(nodeName);
-            }
-            info.setCookie("erlide");
-            info.setHasConsole(CommonUtils.isDeveloper());
-            ErlLogger.debug("creating IDE backend %s", info.getName());
-            final EnumSet<BackendOptions> options = EnumSet.of(
-                    BackendOptions.AUTOSTART, BackendOptions.INTERNAL,
-                    BackendOptions.IDE);
-            if (!CommonUtils.isDeveloper()) {
-                options.add(BackendOptions.NO_CONSOLE);
-            }
-            ideBackend = createInternalBackend(info, options, null);
-        } else {
-            ErlLogger.error("There is no erlideRuntime defined! "
-                    + "Could not start IDE backend.");
-        }
     }
 
     public void addBackendListener(final BackendListener listener) {
@@ -374,7 +257,7 @@ public final class BackendManager extends OtpNodeStatus implements
             return;
         }
         final CodeBundleImpl pp = new CodeBundleImpl(b, paths, init);
-        codeBundles.put(b, pp);
+        getCodeBundles().put(b, pp);
         forEachBackend(new ErlideBackendVisitor() {
             public void visit(final Backend bb) {
                 bb.register(pp);
@@ -383,7 +266,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     private CodeBundle findBundle(final Bundle b) {
-        return codeBundles.get(b);
+        return getCodeBundles().get(b);
     }
 
     public void forEachBackend(final ErlideBackendVisitor visitor) {
@@ -419,7 +302,8 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public synchronized void removeExecutionBackend(final IProject project,
-            final RpcCallSite b) {
+            final Backend b) {
+        b.removeProjectPath(project);
         Set<Backend> list = executionBackends.get(project);
         if (list == null) {
             list = Sets.newHashSet();
@@ -438,7 +322,7 @@ public final class BackendManager extends OtpNodeStatus implements
             for (final Entry<IProject, Set<Backend>> e : executionBackends
                     .entrySet()) {
                 for (final Backend be : e.getValue()) {
-                    final String bnode = be.getInfo().getNodeName();
+                    final String bnode = be.getRuntimeInfo().getNodeName();
                     if (BackendUtil.buildLocalNodeName(bnode, true)
                             .equals(node)) {
                         removeExecutionBackend(e.getKey(), be);
@@ -552,5 +436,25 @@ public final class BackendManager extends OtpNodeStatus implements
     public void removeBackendsForLaunch(final ILaunch launch) {
         // TODO Auto-generated method stub
 
+    }
+
+    public void createExecutionBackend(final ILaunch launch) {
+        final BackendData data = new BackendData(launch);
+        ErlLogger.debug("create execution backend " + data.getNodeName());
+        final Backend b = factory.createBackend(data);
+        addBackend(b);
+        notifyBackendChange(b, BackendEvent.ADDED, null, null);
+    }
+
+    public void dispose() {
+        final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
+                .getLaunches();
+        launchListener.launchesTerminated(launches);
+        launchListener.dispose();
+        epmdWatcherJob.stop();
+    }
+
+    public Map<Bundle, CodeBundleImpl> getCodeBundles() {
+        return codeBundles;
     }
 }

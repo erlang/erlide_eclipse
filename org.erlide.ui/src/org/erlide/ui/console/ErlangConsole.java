@@ -61,8 +61,8 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + shell.getBackend().getInfo().toString() + " "
-                + shell.hashCode();
+        return "Erlang: " + shell.getBackend().getRuntimeInfo().toString()
+                + " " + shell.hashCode();
     }
 
     @Override

@@ -121,7 +121,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final String amode = ILaunchManager.DEBUG_MODE.equals(mode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
-        super.doLaunch(cfg, amode, launch, true, null);
+        // super.doLaunch(cfg, amode, launch, true, null);
 
         final Backend backend = ErlangCore.getBackendManager()
                 .getBackendForLaunch(launch);

@@ -26,6 +26,7 @@ public class EpmdWatchJob extends Job {
     private static final int defaultInterval = 2000;
     private int interval = defaultInterval;
     private final EpmdWatcher watcher;
+    private boolean isStopped;
 
     public EpmdWatchJob(final EpmdWatcher aWatcher, final int anInterval) {
         super("Checking EPMD for new backends");
@@ -33,6 +34,7 @@ public class EpmdWatchJob extends Job {
 
         watcher = aWatcher;
         interval = anInterval < 0 ? defaultInterval : anInterval;
+        isStopped = false;
 
         setSystem(true);
         setPriority(SHORT);
@@ -47,7 +49,9 @@ public class EpmdWatchJob extends Job {
 
         watcher.checkEpmd();
 
-        this.schedule(interval);
+        if (!isStopped) {
+            this.schedule(interval);
+        }
         return Status.OK_STATUS;
     }
 
@@ -57,6 +61,10 @@ public class EpmdWatchJob extends Job {
 
     public int getInterval() {
         return interval;
+    }
+
+    public void stop() {
+        isStopped = true;
     }
 
 }

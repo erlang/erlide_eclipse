@@ -38,14 +38,14 @@ public class CodeManager {
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
 
-    private final List<CodeBundleImpl> registeredBundles;
+    private final List<CodeBundle> registeredBundles;
 
     // only to be called by ErlideBackend
     public CodeManager(final Backend b) {
         backend = b;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
-        registeredBundles = new ArrayList<CodeBundleImpl>();
+        registeredBundles = new ArrayList<CodeBundle>();
     }
 
     public void addPath(final boolean usePathZ, final String path) {
@@ -72,7 +72,7 @@ public class CodeManager {
         }
     }
 
-    public void register(final CodeBundleImpl b) {
+    public void register(final CodeBundle b) {
         registeredBundles.add(b);
         registerBundle(b);
     }
@@ -104,7 +104,7 @@ public class CodeManager {
 
         final Bundle b = p.getBundle();
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
-                + backend.getInfo().getName());
+                + backend.getRuntimeInfo().getName());
 
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
@@ -194,13 +194,13 @@ public class CodeManager {
                     externalPath);
             if (accessible) {
                 ErlLogger.debug("adding %s to code path for %s:: %s",
-                        externalPath, backend, backend.getInfo());
+                        externalPath, backend, backend.getRuntimeInfo());
                 ErlangCode.addPathA(backend, externalPath);
                 return;
             } else {
                 ErlLogger.info("external code path %s for %s "
                         + "is not accessible, using plugin code", externalPath,
-                        backend, backend.getInfo());
+                        backend, backend.getRuntimeInfo());
             }
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
@@ -211,11 +211,11 @@ public class CodeManager {
                         localDir);
                 if (accessible) {
                     ErlLogger.debug("adding %s to code path for %s:: %s",
-                            localDir, backend, backend.getInfo());
+                            localDir, backend, backend.getRuntimeInfo());
                     ErlangCode.addPathA(backend, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundle()
-                            .getSymbolicName(), backend.getInfo());
+                            .getSymbolicName(), backend.getRuntimeInfo());
                     loadPluginCode(p);
                 }
             }

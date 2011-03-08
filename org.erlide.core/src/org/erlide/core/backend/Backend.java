@@ -13,35 +13,55 @@ package org.erlide.core.backend;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IContributor;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchesListener2;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.console.BackendShell;
-import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.internal.BackendUtil;
-import org.erlide.core.backend.internal.BackendUtils;
-import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.backend.internal.CodeManager;
+import org.erlide.core.backend.internal.InitialCall;
 import org.erlide.core.backend.internal.RpcResultImpl;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcHelper;
 import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.core.backend.runtime.ErlRuntime;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.model.debug.ErlangDebugNode;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlideDebug;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.CoreUtil;
@@ -49,10 +69,12 @@ import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -61,84 +83,58 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
+import com.google.common.collect.Lists;
 
-public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
-        IStreamListener, ILaunchesListener2 {
-
-    public static final String[] SUPPORTED_VERSIONS = new String[] { "",
-            "R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
-    public static final String[] SUPPORTED_MAIN_VERSIONS = new String[] { "",
-            "R12B", "R13B", "R14A" };
-    public static final String DEFAULT_VERSION = "R13B";
+public class Backend implements RpcCallSite, IDisposable, IStreamListener {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
-    private static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
-            "erlide.connect.delay", "300"));
     public static int DEFAULT_TIMEOUT;
     {
-        final String t = System.getProperty("erlide.rpc.timeout", "9000");
-        if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
-        } else {
-            DEFAULT_TIMEOUT = Integer.parseInt(t);
-        }
+        setDefaultTimeout();
     }
 
-    private boolean available = false;
+    private final RuntimeInfo info;
+    private final ErlRuntime runtime;
     private String currentVersion;
     private OtpMbox eventBox;
-    private int exitStatus = -1;
-    private boolean fDebug;
-    private final RuntimeInfo fInfo;
-    private OtpNode fNode;
-    private final String fPeer;
-    private int restarted = 0;
     private boolean stopped = false;
     private EventDaemon eventDaemon;
-    private boolean monitor = false;
-    private boolean watch = true;
     private BackendShellManager shellManager;
-    private boolean logCalls = false;
     private final CodeManager codeManager;
-    private IStreamsProxy proxy;
     private ILaunch launch;
-    private boolean managed = false;
+    private final boolean managed = false;
+    private final BackendData data;
+    private boolean disposable;
 
-    protected Backend(final RuntimeInfo info, final String peer)
-            throws BackendException {
+    public Backend(final BackendData data) throws BackendException {
+        info = data.getRuntimeInfo();
         if (info == null) {
             throw new BackendException(
                     "Can't create backend without runtime information");
         }
-        fInfo = info;
-        fPeer = peer;
+        runtime = new ErlRuntime(info.getNodeName(), info.getCookie());
+        this.data = data;
         codeManager = new CodeManager(this);
+        disposable = false;
+
+        launch = data.getLaunch();
+        if (launch != null) {
+            disposable = true;
+            setLaunch(launch);
+        }
     }
 
-    public Backend(final RuntimeInfo info) throws BackendException {
-        this(info, BackendUtil.buildLocalNodeName(info.getNodeName(), true));
-    }
-
-    /**
-     * typed RPC
-     * 
-     */
     public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
         return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
-    /**
-     * typed RPC with timeout
-     * 
-     * @throws ConversionException
-     */
     public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
-            final OtpErlangObject result = makeCall(timeout, m, f, signature,
-                    args);
+            final OtpErlangObject result = runtime.makeCall(timeout, m, f,
+                    signature, args);
             return new RpcResultImpl(result);
         } catch (final RpcException e) {
             return RpcResultImpl.error(e.getMessage());
@@ -151,7 +147,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
             final String signature, final Object... args)
             throws BackendException {
         try {
-            return makeAsyncCall(m, f, signature, args);
+            return runtime.makeAsyncCall(m, f, signature, args);
         } catch (final RpcException e) {
             throw new BackendException(e);
         } catch (final SignatureException e) {
@@ -163,7 +159,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
             final String f, final String signature, final Object... args)
             throws BackendException {
         try {
-            makeAsyncCbCall(cb, m, f, signature, args);
+            runtime.makeAsyncCbCall(cb, m, f, signature, args);
         } catch (final RpcException e) {
             throw new BackendException(e);
         } catch (final SignatureException e) {
@@ -174,7 +170,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
     public void cast(final String m, final String f, final String signature,
             final Object... args) throws BackendException {
         try {
-            makeCast(m, f, signature, args);
+            runtime.makeCast(m, f, signature, args);
         } catch (final RpcException e) {
             throw new BackendException(e);
         } catch (final SignatureException e) {
@@ -187,11 +183,6 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
-    /**
-     * typed RPC with timeout, throws Exception
-     * 
-     * @throws ConversionException
-     */
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
             throws BackendException {
@@ -202,7 +193,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
             final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... a) throws BackendException {
         try {
-            return makeCall(timeout, gleader, m, f, signature, a);
+            return runtime.makeCall(timeout, gleader, m, f, signature, a);
         } catch (final RpcException e) {
             throw new BackendException(e);
         } catch (final SignatureException e) {
@@ -211,7 +202,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
     }
 
     public void send(final OtpErlangPid pid, final Object msg) {
-        if (!available) {
+        if (!runtime.isAvailable()) {
             return;
         }
         try {
@@ -223,7 +214,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
     }
 
     public void send(final String name, final Object msg) {
-        if (!available) {
+        if (!runtime.isAvailable()) {
             return;
         }
         try {
@@ -242,37 +233,14 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         return eventBox.receive(timeout);
     }
 
-    private synchronized void checkAvailability() throws RpcException {
-        if (!available) {
-            if (exitStatus >= 0 && restarted < 3) {
-                restart();
-            } else {
-                final String msg = "could not restart backend %s (exitstatus=%d restarted=%d)";
-                throw new RpcException(String.format(msg, getInfo(),
-                        exitStatus, restarted));
-            }
-        }
-    }
-
     public void connect() {
         final String label = getName();
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
+            eventBox = getNode().createMbox("rex");
             wait_for_epmd();
 
-            eventBox = getNode().createMbox("rex");
-            int tries = 20;
-            while (!available && tries > 0) {
-                ErlLogger.debug("# ping...");
-                available = getNode().ping(getFullNodeName(),
-                        RETRY_DELAY + (20 - tries) * RETRY_DELAY / 5);
-                tries--;
-            }
-            if (available) {
-                available = waitForCodeServer();
-            }
-
-            if (available) {
+            if (waitForCodeServer()) {
                 ErlLogger.debug("connected!");
             } else {
                 ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
@@ -280,23 +248,24 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
 
         } catch (final BackendException e) {
             ErlLogger.error(e);
-            available = false;
             ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
         }
     }
 
     public void dispose() {
-        try {
-            if (launch != null) {
-                launch.terminate();
-            }
-        } catch (final DebugException e) {
-            e.printStackTrace();
-        }
-        dispose(false);
-    }
+        // TODO review!
+        if (disposable) {
 
-    public void dispose(final boolean restart) {
+            try {
+                if (launch != null) {
+                    launch.terminate();
+                }
+            } catch (final DebugException e) {
+                e.printStackTrace();
+            }
+        }
+        // FIXME need to stop process too, via ErtsProcess
+
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {
             shellManager.dispose();
@@ -307,9 +276,6 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         }
         if (eventDaemon != null) {
             eventDaemon.stop();
-        }
-        if (restart) {
-            return;
         }
     }
 
@@ -328,36 +294,32 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
     }
 
     public OtpErlangPid getEventPid() {
-        final OtpMbox box = getEventBox();
-        if (box == null) {
+        final OtpMbox eventBox = getEventBox();
+        if (eventBox == null) {
             return null;
         }
-        return box.self();
+        return eventBox.self();
     }
 
-    public RuntimeInfo getInfo() {
-        return fInfo;
-    }
-
-    public String getJavaNodeName() {
-        return getNode().node();
+    public RuntimeInfo getRuntimeInfo() {
+        return info;
     }
 
     public String getName() {
-        if (fInfo == null) {
+        if (info == null) {
             return "<not_connected>";
         }
-        return fInfo.getNodeName();
+        return info.getNodeName();
     }
 
     public String getFullNodeName() {
-        synchronized (fPeer) {
-            return fPeer;
+        synchronized (runtime) {
+            return runtime.getNodeName();
         }
     }
 
     private synchronized OtpNode getNode() {
-        return fNode;
+        return runtime.getNode();
     }
 
     private String getScriptId() throws BackendException {
@@ -372,11 +334,10 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         return "";
     }
 
-    private boolean init(final OtpErlangPid jRex, final boolean aMonitor,
-            final boolean aWatch) {
+    private boolean init(final OtpErlangPid jRex, final boolean monitor,
+            final boolean watch) {
         try {
-            // reload(backend);
-            call("erlide_kernel_common", "init", "poo", jRex, aMonitor, aWatch);
+            call("erlide_kernel_common", "init", "poo", jRex, monitor, watch);
             // TODO should use extension point!
             call("erlide_kernel_builder", "init", "");
             call("erlide_kernel_ide", "init", "");
@@ -387,182 +348,15 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         }
     }
 
-    public synchronized void initErlang(final boolean doMonitor,
-            final boolean aWatch) {
-        final boolean inited = init(getEventPid(), doMonitor, aWatch);
-        if (!inited) {
-            setAvailable(false);
-        }
-        monitor = doMonitor;
-        watch = aWatch;
-        initEventDaemon();
-        ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
-    }
-
-    private void initEventDaemon() {
-        eventDaemon = new EventDaemon(this);
-        eventDaemon.start();
-        eventDaemon.addHandler(new LogEventHandler());
-    }
-
-    public void initializeRuntime() throws IOException {
-        dispose(true);
-        shellManager = new BackendShellManager(this);
-
-        final String cookie = getInfo().getCookie();
-        if (cookie == null) {
-            fNode = new OtpNode(BackendUtil.createJavaNodeName());
-        } else {
-            fNode = new OtpNode(BackendUtil.createJavaNodeName(), cookie);
-        }
-        final String nodeCookie = fNode.cookie();
-        final int len = nodeCookie.length();
-        final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
-                : nodeCookie;
-        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
-                cookie);
-    }
-
-    public boolean isDebug() {
-        return fDebug;
-    }
-
     public boolean isStopped() {
         return stopped;
     }
 
-    private RpcFuture makeAsyncCall(final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws RpcException, SignatureException {
-        checkAvailability();
-        return RpcHelper.sendRpcCall(getNode(), getFullNodeName(), logCalls,
-                gleader, module, fun, signature, args0);
-    }
-
-    protected RpcFuture makeAsyncCall(final String module, final String fun,
-            final String signature, final Object... args0) throws RpcException,
-            SignatureException {
-        return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,
-                args0);
-    }
-
-    protected void makeAsyncCbCall(final RpcCallback cb, final int timeout,
-            final String module, final String fun, final String signature,
-            final Object... args) throws RpcException, SignatureException {
-        makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
-                signature, args);
-    }
-
-    protected void makeAsyncCbCall(final RpcCallback cb, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException, SignatureException {
-        makeAsyncCbCall(cb, DEFAULT_TIMEOUT, new OtpErlangAtom("user"), module,
-                fun, signature, args);
-    }
-
-    private void makeAsyncCbCall(final RpcCallback cb, final int timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException, SignatureException {
-        checkAvailability();
-
-        final RpcFuture future = RpcHelper.sendRpcCall(fNode, fPeer, logCalls,
-                gleader, module, fun, signature, args);
-        final Runnable target = new Runnable() {
-            public void run() {
-                OtpErlangObject result;
-                try {
-                    result = future.get(timeout);
-                    cb.run(result);
-                } catch (final RpcException e) {
-                    // TODO do we want to treat a timeout differently?
-                    ErlLogger.error("Could not execute RPC " + module + ":"
-                            + fun + " : " + e.getMessage());
-                }
-            }
-        };
-        // We can't use jobs here, it's an Eclipse dependency
-        final Thread thread = new Thread(target);
-        thread.setDaemon(true);
-        thread.setName("async " + module + ":" + fun);
-        thread.start();
-    }
-
-    protected OtpErlangObject makeCall(final int timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException, SignatureException {
-        checkAvailability();
-        final OtpErlangObject result = RpcHelper.rpcCall(getNode(),
-                getFullNodeName(), logCalls, gleader, module, fun, timeout,
-                signature, args0);
-        return result;
-    }
-
-    protected OtpErlangObject makeCall(final int timeout, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException, SignatureException {
-        return makeCall(timeout, new OtpErlangAtom("user"), module, fun,
-                signature, args0);
-    }
-
-    protected void makeCast(final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws SignatureException, RpcException {
-        checkAvailability();
-        RpcHelper.rpcCast(getNode(), getFullNodeName(), logCalls, gleader,
-                module, fun, signature, args0);
-    }
-
-    protected void makeCast(final String module, final String fun,
-            final String signature, final Object... args0)
-            throws SignatureException, RpcException {
-        makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
-    }
-
     public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
-        if (getNode() != null) {
-            getNode().registerStatusHandler(handler);
-            getNode().registerStatusHandler(this);
-        }
+        getNode().registerStatusHandler(handler);
     }
 
-    public synchronized void restart() {
-        exitStatus = -1;
-        if (available) {
-            return;
-        }
-        restarted++;
-        ErlLogger.info("restarting runtime for %s", toString());
-        if (getNode() != null) {
-            getNode().close();
-            fNode = null;
-        }
-        try {
-            initializeRuntime();
-            connect();
-            initErlang(monitor, watch);
-        } catch (final IOException e) {
-            ErlLogger.error(e);
-        }
-        codeManager.reRegisterBundles();
-        // initErlang();
-        // fixme eventdaemon
-    }
-
-    public synchronized void setAvailable(final boolean up) {
-        available = up;
-    }
-
-    public void setDebug(final boolean b) {
-        fDebug = b;
-    }
-
-    public synchronized void setExitStatus(final int v) {
-        exitStatus = v;
-    }
-
-    protected void setRemoteRex(final OtpErlangPid watchdog) {
+    private void setRemoteRex(final OtpErlangPid watchdog) {
         try {
             getEventBox().link(watchdog);
         } catch (final OtpErlangExit e) {
@@ -573,7 +367,11 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         stopped = true;
     }
 
-    protected void wait_for_epmd() throws BackendException {
+    private void wait_for_epmd() throws BackendException {
+        wait_for_epmd("localhost");
+    }
+
+    private void wait_for_epmd(final String host) throws BackendException {
         // If anyone has a better solution for waiting for epmd to be up, please
         // let me know
         int tries = 50;
@@ -581,7 +379,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         do {
             Socket s;
             try {
-                s = new Socket("localhost", EPMD_PORT);
+                s = new Socket(host, EPMD_PORT);
                 s.close();
                 ok = true;
             } catch (final IOException e) {
@@ -615,39 +413,20 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
             } while (!(r instanceof OtpErlangPid) && i > 0);
             if (!(r instanceof OtpErlangPid)) {
                 ErlLogger.error("code server did not start in time for %s",
-                        getInfo().getName());
+                        getRuntimeInfo().getName());
                 return false;
             }
             ErlLogger.debug("code server started");
             return true;
         } catch (final Exception e) {
-            ErlLogger.error("error starting code server for %s: %s", getInfo()
-                    .getName(), e.getMessage());
+            ErlLogger.error("error starting code server for %s: %s",
+                    getRuntimeInfo().getName(), e.getMessage());
             return false;
         }
     }
 
     public EventDaemon getEventDaemon() {
-        if (eventDaemon == null) {
-            initEventDaemon();
-        }
         return eventDaemon;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void input(final String string) throws IOException {
-        if (!isStopped()) {
-            if (proxy != null) {
-                proxy.write(string);
-            } else {
-                ErlLogger
-                        .warn("Could not load module on backend %s, stream proxy is null",
-                                getInfo());
-            }
-        }
     }
 
     public OtpMbox createMbox() {
@@ -658,49 +437,57 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         return getNode().createMbox(name);
     }
 
-    @Override
-    public void remoteStatus(final String node, final boolean up,
-            final Object info) {
-        if (node.equals(getFullNodeName())) {
-            // final String dir = up ? "up" : "down";
-            // ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
-            setAvailable(up);
+    private class BackendShellManager implements IDisposable {
+
+        private final HashMap<String, BackendShell> fShells;
+
+        public BackendShellManager() {
+            fShells = new HashMap<String, BackendShell>();
+        }
+
+        public BackendShell getShell(final String id) {
+            final BackendShell shell = fShells.get(id);
+            return shell;
+        }
+
+        public synchronized BackendShell openShell(final String id) {
+            BackendShell shell = getShell(id);
+            if (shell == null) {
+                shell = new BackendShell(Backend.this, id,
+                        Backend.this.getEventPid());
+                fShells.put(id, shell);
+            }
+            return shell;
+        }
+
+        public synchronized void closeShell(final String id) {
+            final BackendShell shell = getShell(id);
+            if (shell != null) {
+                fShells.remove(id);
+                shell.close();
+            }
+        }
+
+        public void dispose() {
+            final Collection<BackendShell> c = fShells.values();
+            for (final BackendShell backendShell : c) {
+                backendShell.close();
+            }
+            fShells.clear();
         }
     }
 
-    @Override
-    public void connAttempt(final String node, final boolean incoming,
-            final Object info) {
-        final String direction = incoming ? "in" : "out";
-        ErlLogger.info(String.format("Connection attempt: %s %s: %s", node,
-                direction, info));
-    }
-
-    public BackendShell getShell(final String id) {
-        final BackendShell shell = shellManager.openShell(id);
-        if (proxy != null) {
-            final IStreamMonitor errorStreamMonitor = proxy
-                    .getErrorStreamMonitor();
-            errorStreamMonitor.addListener(new IStreamListener() {
-                public void streamAppended(final String text,
-                        final IStreamMonitor aMonitor) {
-                    shell.add(text, IoRequestKind.STDERR);
-                }
-            });
-            final IStreamMonitor outputStreamMonitor = proxy
-                    .getOutputStreamMonitor();
-            outputStreamMonitor.addListener(new IStreamListener() {
-                public void streamAppended(final String text,
-                        final IStreamMonitor aMonitor) {
-                    shell.add(text, IoRequestKind.STDOUT);
-                }
-            });
+    private static void setDefaultTimeout() {
+        final String t = System.getProperty("erlide.rpc.timeout", "9000");
+        if ("infinity".equals(t)) {
+            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
+        } else {
+            try {
+                DEFAULT_TIMEOUT = Integer.parseInt(t);
+            } catch (final Exception e) {
+                DEFAULT_TIMEOUT = 9000;
+            }
         }
-        return shell;
-    }
-
-    public void setLogCalls(final boolean logCalls) {
-        this.logCalls = logCalls;
     }
 
     public void removePath(final String path) {
@@ -711,7 +498,21 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         codeManager.addPath(usePathZ, path);
     }
 
-    public void register(final CodeBundleImpl bundle) {
+    public synchronized void initErlang(final boolean monitor,
+            final boolean watch) {
+        final boolean inited = init(getEventPid(), monitor, watch);
+
+        // data.monitor = monitor;
+        // data.managed = watch;
+
+        eventDaemon = new EventDaemon(this);
+        eventDaemon.start();
+        eventDaemon.addHandler(new LogEventHandler());
+
+        ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
+    }
+
+    public void register(final CodeBundle bundle) {
         codeManager.register(bundle);
     }
 
@@ -719,10 +520,14 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         codeManager.unregister(b);
     }
 
-    public void streamAppended(final String text, final IStreamMonitor aMonitor) {
-        if (aMonitor == proxy.getOutputStreamMonitor()) {
+    public void setTrapExit(final boolean contains) {
+    }
+
+    public void streamAppended(final String text, final IStreamMonitor monitor) {
+        final IStreamsProxy proxy = getStreamsProxy();
+        if (monitor == proxy.getOutputStreamMonitor()) {
             // System.out.println(getName() + " OUT " + text);
-        } else if (aMonitor == proxy.getErrorStreamMonitor()) {
+        } else if (monitor == proxy.getErrorStreamMonitor()) {
             // System.out.println(getName() + " ERR " + text);
         } else {
             // System.out.println("???" + text);
@@ -733,33 +538,9 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         return launch;
     }
 
-    public void setLaunch(final ILaunch launch2) {
-        launch = launch2;
-    }
-
-    public boolean isDistributed() {
-        return !getInfo().getNodeName().equals("");
-    }
-
-    public void launchesTerminated(final ILaunch[] launches) {
-        for (final ILaunch aLaunch : launches) {
-            if (aLaunch == launch) {
-                stop();
-            }
-        }
-    }
-
-    public void launchesAdded(final ILaunch[] launches) {
-    }
-
-    public void launchesChanged(final ILaunch[] launches) {
-    }
-
-    public void launchesRemoved(final ILaunch[] launches) {
-    }
-
-    public void setStreamsProxy(final IStreamsProxy streamsProxy) {
-        proxy = streamsProxy;
+    public void setLaunch(final ILaunch launch) {
+        this.launch = launch;
+        final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
                     .getErrorStreamMonitor();
@@ -770,11 +551,51 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         }
     }
 
+    public BackendShell getShell(final String id) {
+        final BackendShell shell = shellManager.openShell(id);
+        final IStreamsProxy proxy = getStreamsProxy();
+        if (proxy != null) {
+            final IStreamMonitor errorStreamMonitor = proxy
+                    .getErrorStreamMonitor();
+            errorStreamMonitor.addListener(new IStreamListener() {
+                public void streamAppended(final String text,
+                        final IStreamMonitor monitor) {
+                    shell.add(text, IoRequestKind.STDERR);
+                }
+            });
+            final IStreamMonitor outputStreamMonitor = proxy
+                    .getOutputStreamMonitor();
+            outputStreamMonitor.addListener(new IStreamListener() {
+                public void streamAppended(final String text,
+                        final IStreamMonitor monitor) {
+                    shell.add(text, IoRequestKind.STDOUT);
+                }
+            });
+        }
+        return shell;
+    }
+
+    public boolean isDistributed() {
+        return !getRuntimeInfo().getNodeName().equals("");
+    }
+
+    public void input(final String s) throws IOException {
+        if (!isStopped()) {
+            final IStreamsProxy proxy = getStreamsProxy();
+            if (proxy != null) {
+                proxy.write(s);
+            } else {
+                ErlLogger
+                        .warn("Could not load module on backend %s, stream proxy is null",
+                                getRuntimeInfo());
+            }
+        }
+    }
+
     public void addProjectPath(final IProject project) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
+        final IErlProject eproject = ErlangCore.getModel().findProject(project);
         final String outDir = project.getLocation()
-                .append(erlProject.getOutputLocation()).toOSString();
+                .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             if (isDistributed()) {
@@ -783,12 +604,10 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
                 if (accessible) {
                     addPath(false/* prefs.getUsePathZ() */, outDir);
                 } else {
-                    loadBeamsFromDir(project, outDir);
+                    loadBeamsFromDir(outDir);
                 }
             } else {
                 final File f = new File(outDir);
-                final BackendManager backendManager = ErlangCore
-                        .getBackendManager();
                 for (final File file : f.listFiles()) {
                     String name = file.getName();
                     if (!name.endsWith(".beam")) {
@@ -797,7 +616,6 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
                     name = name.substring(0, name.length() - 5);
                     try {
                         CoreUtil.loadModuleViaInput(this, project, name);
-                        backendManager.moduleLoaded(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();
                     } catch (final IOException e) {
@@ -809,44 +627,58 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
     }
 
     public void removeProjectPath(final IProject project) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
+        final IErlProject eproject = ErlangCore.getModel().findProject(project);
         final String outDir = project.getLocation()
-                .append(erlProject.getOutputLocation()).toOSString();
+                .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
-            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
+            ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             if (isDistributed()) {
-                removePath(outDir);
+                final boolean accessible = ErlideUtil
+                        .isAccessible(this, outDir);
+                if (accessible) {
+                    removePath(outDir);
+                } else {
+                    // FIXME unloadBeamsFromDir(outDir);
+                }
             } else {
-                ErlLogger.warn("didn't remove project path for %s from %s",
-                        project.getName(), getName());
+                final File f = new File(outDir);
+                for (final File file : f.listFiles()) {
+                    String name = file.getName();
+                    if (!name.endsWith(".beam")) {
+                        continue;
+                    }
+                    name = name.substring(0, name.length() - 5);
+                    // try {
+                    // // FIXME CoreUtil.unloadModuleViaInput(this, project,
+                    // // name);
+                    // } catch (final ErlModelException e) {
+                    // e.printStackTrace();
+                    // } catch (final IOException e) {
+                    // e.printStackTrace();
+                    // }
+                }
             }
         }
     }
 
-    private void loadBeamsFromDir(final IProject project, final String outDir) {
+    private void loadBeamsFromDir(final String outDir) {
         final File dir = new File(outDir);
         if (dir.isDirectory()) {
-            final BackendManager backendManager = ErlangCore
-                    .getBackendManager();
             for (final File f : dir.listFiles()) {
-                final Path beamPath = new Path(f.getPath());
-                final String beamModuleName = BackendUtils
-                        .getBeamModuleName(beamPath);
-                if (beamModuleName != null) {
+                final Path path = new Path(f.getPath());
+                if (path.getFileExtension() != null
+                        && "beam".compareTo(path.getFileExtension()) == 0) {
+                    final String m = path.removeFileExtension().lastSegment();
                     try {
                         boolean ok = false;
-                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(
-                                beamModuleName, beamPath);
+                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
+                                path);
                         if (bin != null) {
-                            ok = ErlBackend.loadBeam(this, beamModuleName, bin);
+                            ok = ErlBackend.loadBeam(this, m, bin);
                         }
                         if (!ok) {
-                            ErlLogger
-                                    .error("Could not load %s", beamModuleName);
+                            ErlLogger.error("Could not load %s", m);
                         }
-                        backendManager.moduleLoaded(this, project,
-                                beamModuleName);
                     } catch (final Exception ex) {
                         ErlLogger.warn(ex);
                     }
@@ -859,19 +691,242 @@ public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
         return managed;
     }
 
-    public void setManaged(final boolean b) {
-        managed = b;
-    }
-
     public boolean doLoadOnAllNodes() {
-        return getInfo().loadOnAllNodes();
+        return getRuntimeInfo().loadOnAllNodes();
     }
 
-    public boolean isCompatibleWithProject(final IProject project) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
-        final RuntimeVersion projectVersion = erlProject.getRuntimeVersion();
-        return getInfo().getVersion().isCompatible(projectVersion);
+    public IStreamsProxy getStreamsProxy() {
+        final ErtsProcess p = getErtsProcess();
+        if (p == null) {
+            return null;
+        }
+        return p.getStreamsProxy();
     }
 
+    private void postLaunch() throws DebugException {
+        final Collection<IProject> projects = Lists.newArrayList(data
+                .getProjects());
+        registerProjectsWithExecutionBackend(projects);
+        if (!isDistributed()) {
+            return;
+        }
+        if (data.isDebug()) {
+            final ILaunch launch = getLaunch();
+
+            // add debug target
+            final ErlangDebugTarget target = new ErlangDebugTarget(launch,
+                    this, projects, data.getDebugFlags());
+            // target.getWaiter().doWait();
+            launch.addDebugTarget(target);
+            // interpret everything we can
+            final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+            if (distributed) {
+                distributeDebuggerCode();
+                addNodesAsDebugTargets(launch, target);
+            }
+            interpretModules(data, distributed);
+            registerStartupFunctionStarter(data);
+            target.sendStarted();
+        } else {
+            final InitialCall init_call = data.getInitialCall();
+            if (init_call != null) {
+                runInitial(init_call.getModule(), init_call.getName(),
+                        init_call.getParameters());
+            }
+        }
+    }
+
+    private ErtsProcess getErtsProcess() {
+        final IProcess[] ps = launch.getProcesses();
+        if (ps == null || ps.length == 0) {
+            return null;
+        }
+        return (ErtsProcess) ps[0];
+    }
+
+    private void registerProjectsWithExecutionBackend(
+            final Collection<IProject> projects) {
+        for (final IProject project : projects) {
+            ErlangCore.getBackendManager().addExecutionBackend(project, this);
+        }
+    }
+
+    private void registerStartupFunctionStarter(final BackendData data) {
+        DebugPlugin.getDefault().addDebugEventListener(
+                new IDebugEventSetListener() {
+                    public void handleDebugEvents(final DebugEvent[] events) {
+                        final InitialCall init_call = data.getInitialCall();
+                        if (init_call != null) {
+                            runInitial(init_call.getModule(),
+                                    init_call.getName(),
+                                    init_call.getParameters());
+                        }
+                        DebugPlugin.getDefault().removeDebugEventListener(this);
+                    }
+                });
+    }
+
+    void runInitial(final String module, final String function,
+            final String args) {
+        try {
+            if (module.length() > 0 && function.length() > 0) {
+                ErlLogger.debug("calling startup function %s:%s", module,
+                        function);
+                if (args.length() > 0) {
+                    cast(module, function, "s", args);
+                } else {
+                    cast(module, function, "");
+                }
+            }
+        } catch (final Exception e) {
+            ErlLogger.debug("Could not run initial call %s:%s(\"%s\")", module,
+                    function, args);
+            ErlLogger.warn(e);
+        }
+    }
+
+    private void interpretModules(final BackendData myData,
+            final boolean distributed) {
+        for (final String pm : data.getInterpretedModules()) {
+            final String[] pms = pm.split(":");
+            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(pms[0]);
+            getDebugHelper()
+                    .interpret(this, project, pms[1], distributed, true);
+        }
+    }
+
+    private void addNodesAsDebugTargets(final ILaunch launch,
+            final ErlangDebugTarget target) {
+        final OtpErlangList nodes = ErlideDebug.nodes(this);
+        if (nodes != null) {
+            for (int i = 1, n = nodes.arity(); i < n; ++i) {
+                final OtpErlangAtom o = (OtpErlangAtom) nodes.elementAt(i);
+                final OtpErlangAtom a = o;
+                final ErlangDebugNode edn = new ErlangDebugNode(target,
+                        a.atomValue());
+                launch.addDebugTarget(edn);
+            }
+        }
+    }
+
+    private void distributeDebuggerCode() {
+        final String[] debuggerModules = { "erlide_dbg_debugged",
+                "erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
+                "erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int" };
+        final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
+                debuggerModules.length);
+        for (final String module : debuggerModules) {
+            final OtpErlangBinary b = getBeam(module);
+            if (b != null) {
+                final OtpErlangString filename = new OtpErlangString(module
+                        + ".erl");
+                final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(
+                        module), filename, b);
+                modules.add(t);
+            }
+        }
+        ErlideDebug.distributeDebuggerCode(this, modules);
+    }
+
+    /**
+     * Get a named beam-file as a binary from the core plug-in bundle
+     * 
+     * @param module
+     *            module name, without extension
+     * @param backend
+     *            the execution backend
+     * @return
+     */
+    private OtpErlangBinary getBeam(final String module) {
+        final Bundle b = Platform.getBundle("org.erlide.kernel.debugger");
+        final String beamname = module + ".beam";
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        final IConfigurationElement[] els = reg.getConfigurationElementsFor(
+                ErlangPlugin.PLUGIN_ID, "codepath");
+        // TODO: this code assumes that the debugged target and the
+        // erlide-plugin uses the same Erlang version, how can we escape this?
+        final String ver = getCurrentVersion();
+        for (final IConfigurationElement el : els) {
+            final IContributor c = el.getContributor();
+            if (c.getName().equals(b.getSymbolicName())) {
+                final String dir_path = el.getAttribute("path");
+                Enumeration<?> e = b.getEntryPaths(dir_path + "/" + ver);
+                if (e == null || !e.hasMoreElements()) {
+                    e = b.getEntryPaths(dir_path);
+                }
+                if (e == null) {
+                    ErlLogger.debug("* !!! error loading plugin "
+                            + b.getSymbolicName());
+                    return null;
+                }
+                while (e.hasMoreElements()) {
+                    final String s = (String) e.nextElement();
+                    final Path path = new Path(s);
+                    if (path.lastSegment().equals(beamname)) {
+                        if (path.getFileExtension() != null
+                                && "beam".compareTo(path.getFileExtension()) == 0) {
+                            final String m = path.removeFileExtension()
+                                    .lastSegment();
+                            try {
+                                return BeamUtil.getBeamBinary(m, b.getEntry(s));
+                            } catch (final Exception ex) {
+                                ErlLogger.warn(ex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private ErlangDebugHelper getDebugHelper() {
+        return new ErlangDebugHelper();
+    }
+
+    public boolean hasConsole() {
+        return getData().hasConsole();
+    }
+
+    public BackendData getData() {
+        return data;
+    }
+
+    public void initialize() {
+        shellManager = new BackendShellManager();
+        // TODO managed = options.contains(BackendOptions.MANAGED);
+        if (isDistributed()) {
+            connect();
+            final BackendManager bm = ErlangCore.getBackendManager();
+            for (final CodeBundle bb : bm.getCodeBundles().values()) {
+                register(bb);
+            }
+            initErlang(data.isMonitored(), data.isManaged());
+            // setTrapExit(data.useTrapExit());
+
+            try {
+                postLaunch();
+            } catch (final DebugException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void launchRuntime(final BackendData data) {
+        if (launch != null) {
+            return;
+        }
+        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
+        try {
+            launch = launchConfig.launch(ILaunchManager.RUN_MODE,
+                    new NullProgressMonitor(), false, true);
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
+    }
+
+    public String getJavaNodeName() {
+        return runtime.getNode().node();
+    }
 }

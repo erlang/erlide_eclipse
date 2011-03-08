@@ -59,10 +59,9 @@ public class ErlideBuilder {
         try {
             final BackendManager backendManager = ErlangCore
                     .getBackendManager();
-            for (final Backend b : backendManager
-                    .getExecutionBackends(project)) {
-                ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
-                        .toString());
+            for (final Backend b : backendManager.getExecutionBackends(project)) {
+                ErlLogger.debug(":: loading %s in %s", module, b
+                        .getRuntimeInfo().toString());
                 if (b.isDistributed()) {
                     b.call("erlide_builder", "load", "ao", module,
                             b.doLoadOnAllNodes());
