@@ -9,16 +9,16 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
+import org.erlide.core.backend.internal.BackendWatcherRunnable;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
@@ -26,11 +26,16 @@ public class ErtsProcess extends RuntimeProcess {
     public static final String CONFIGURATION_TYPE = "org.erlide.core.services.launching.erlangProcess";
     public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.services.launching.internal";
 
+    private BackendData launchData;
+
     public ErtsProcess(final ILaunch launch, final Process process,
-            final String name,
-            @SuppressWarnings("rawtypes") final Map attributes) {
-        super(launch, process, name, attributes);
-        // ErlLogger.debug("# create ErtsNode: " + name + " " + attributes);
+            final String name) {
+        super(launch, process, name, null);
+        ErlLogger.debug("# create ErtsProcess: " + name);
+
+        final RuntimeInfo info = getLaunchData().getRuntimeInfo();
+        final File workingDirectory = new File(info.getWorkingDir());
+        startWatcher(info, workingDirectory, process);
     }
 
     /**
@@ -69,19 +74,6 @@ public class ErtsProcess extends RuntimeProcess {
         super.finalize();
     }
 
-    @SuppressWarnings("unused")
-    private String[] mkEnv(final Map<String, String> map) {
-        final Set<Map.Entry<String, String>> entries = map.entrySet();
-        final String[] result = new String[entries.size()];
-        final Iterator<Map.Entry<String, String>> i = entries.iterator();
-        int ii = 0;
-        while (i.hasNext()) {
-            final Map.Entry<String, String> e = i.next();
-            result[ii++] = e.getKey() + "=" + e.getValue();
-        }
-        return result;
-    }
-
     public void addStdListener(final IStreamListener dspHandler) {
         final IStreamsProxy streamsProxy = getStreamsProxy();
         if (streamsProxy != null) {
@@ -94,19 +86,6 @@ public class ErtsProcess extends RuntimeProcess {
         if (streamsProxy != null) {
             streamsProxy.getErrorStreamMonitor().addListener(errHandler);
         }
-    }
-
-    public void sendToShell(final String string) {
-        final IStreamsProxy streamsProxy = getStreamsProxy();
-        if (streamsProxy != null) {
-            try {
-                streamsProxy.write(string);
-                ErlLogger.debug("#>>#" + string);
-            } catch (final IOException e) {
-                ErlLogger.warn(e);
-            }
-        }
-
     }
 
     @Override
@@ -124,6 +103,23 @@ public class ErtsProcess extends RuntimeProcess {
     public void terminate() throws DebugException {
         ErlLogger.debug("ErtsProcess will be terminated: %s", getLabel());
         super.terminate();
+    }
+
+    private void startWatcher(final RuntimeInfo info,
+            final File workingDirectory, final Process process) {
+        final Runnable watcher = new BackendWatcherRunnable(info,
+                workingDirectory, process);
+        final Thread thread = new Thread(null, watcher, "BackendImpl watcher");
+        thread.setDaemon(true);
+        thread.setPriority(Thread.MIN_PRIORITY);
+        thread.start();
+    }
+
+    public BackendData getLaunchData() {
+        if (launchData == null) {
+            launchData = new BackendData(getLaunch());
+        }
+        return launchData;
     }
 
 }
