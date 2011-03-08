@@ -433,6 +433,8 @@ public class ModelUtilsTests {
         // a project with an include dir outside the model, the include file
         // contains a record def
         try {
+            // ErlModelCache.getDefault().setNoModelCache(true);
+            // ErlModelCache.getDefault().clearModelCache();
             final String projectName = "testprojectx";
             project = ErlideTestUtils.createProject(
                     ErlideTestUtils.getTmpPath(projectName), projectName);
@@ -463,6 +465,7 @@ public class ModelUtilsTests {
             if (externalInclude != null && externalInclude.exists()) {
                 externalInclude.delete();
             }
+            // ErlModelCache.getDefault().setNoModelCache(false);
         }
     }
 
