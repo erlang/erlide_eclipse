@@ -871,7 +871,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     public void setIncludeDirs(final Collection<IPath> includeDirs)
             throws BackingStoreException {
-        getModelCache().putSourceDirs(this, null);
+        getModelCache().putIncludeDirs(this, null);
         final IOldErlangProjectProperties properties = getProperties();
         properties.setIncludeDirs(includeDirs);
         properties.store();
