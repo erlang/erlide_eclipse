@@ -16,7 +16,7 @@ import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ModelTests {
+public class ModuleLocatorTests {
 
     private IErlProject p1;
     private IErlProject p2;
