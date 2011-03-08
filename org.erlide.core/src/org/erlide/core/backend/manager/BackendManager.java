@@ -48,7 +48,7 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.ErlideBackendVisitor;
 import org.erlide.core.backend.ErtsProcess;
-import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.epmd.EpmdWatchJob;
 import org.erlide.core.backend.internal.BackendUtil;
@@ -82,7 +82,7 @@ public final class BackendManager extends OtpNodeStatus implements
     private final Object ideBackendLock = new Object();
     private final Map<IProject, Set<ErlideBackend>> executionBackends;
     private final Map<String, ErlideBackend> buildBackends;
-    final List<IBackendListener> listeners;
+    final List<BackendListener> listeners;
     private final Map<Bundle, CodeBundleImpl> codeBundles;
 
     private final EpmdWatcher epmdWatcher;
@@ -331,11 +331,11 @@ public final class BackendManager extends OtpNodeStatus implements
         }
     }
 
-    public void addBackendListener(final IBackendListener listener) {
+    public void addBackendListener(final BackendListener listener) {
         listeners.add(listener);
     }
 
-    public void removeBackendListener(final IBackendListener listener) {
+    public void removeBackendListener(final BackendListener listener) {
         listeners.remove(listener);
     }
 
@@ -475,7 +475,7 @@ public final class BackendManager extends OtpNodeStatus implements
 
         final Object[] copiedListeners = listeners.toArray();
         for (final Object element : copiedListeners) {
-            final IBackendListener listener = (IBackendListener) element;
+            final BackendListener listener = (BackendListener) element;
             switch (type) {
             case ADDED:
                 listener.runtimeAdded(b);
@@ -546,5 +546,15 @@ public final class BackendManager extends OtpNodeStatus implements
             }
         }
         return null;
+    }
+
+    public void terminateBackendsForLaunch(final ILaunch launch) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void removeBackendsForLaunch(final ILaunch launch) {
+        // TODO Auto-generated method stub
+
     }
 }

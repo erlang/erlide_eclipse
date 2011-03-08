@@ -12,7 +12,7 @@ package org.erlide.core.backend;
 
 import org.eclipse.core.resources.IProject;
 
-public interface IBackendListener {
+public interface BackendListener {
 
     public void runtimeAdded(Backend backend);
 

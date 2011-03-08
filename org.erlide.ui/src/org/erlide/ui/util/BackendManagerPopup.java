@@ -16,13 +16,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
-public class BackendManagerPopup implements IBackendListener {
+public class BackendManagerPopup implements BackendListener {
 
-    private static final IBackendListener fInstance = new BackendManagerPopup();
+    private static final BackendListener fInstance = new BackendManagerPopup();
 
     private BackendManagerPopup() {
     }
