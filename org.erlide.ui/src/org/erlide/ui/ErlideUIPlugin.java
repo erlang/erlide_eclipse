@@ -46,8 +46,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangStatus;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.ErlBackend;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
@@ -460,7 +460,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 @Override
                 protected IStatus run(final IProgressMonitor monitor) {
                     try {
-                        final ErlideBackend ideBackend = ErlangCore
+                        final Backend ideBackend = ErlangCore
                                 .getBackendManager().getIdeBackend();
                         final String info = ErlBackend
                                 .getSystemInfo(ideBackend);

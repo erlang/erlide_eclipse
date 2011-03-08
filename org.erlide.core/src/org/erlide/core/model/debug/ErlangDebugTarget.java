@@ -33,7 +33,6 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.jinterface.ErlLogger;
@@ -122,7 +121,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     // private final WaitingForDebuggerListener waiter;
 
-    public ErlangDebugTarget(final ILaunch launch, final ErlideBackend b,
+    public ErlangDebugTarget(final ILaunch launch, final Backend b,
             final Collection<IProject> projects, final int debugFlags)
             throws DebugException {
         super(null);

@@ -21,7 +21,7 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.console.BackendShell;
 
@@ -31,7 +31,7 @@ public class ErlangConsole extends TextConsole {
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
 
-    public ErlangConsole(final ErlideBackend backend) {
+    public ErlangConsole(final Backend backend) {
         super(backend.getName(), null, null, true);
         shell = backend.getShell("main");
         consoleListeners = new ListenerList(ListenerList.IDENTITY);

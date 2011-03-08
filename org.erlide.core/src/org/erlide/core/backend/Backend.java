@@ -10,23 +10,47 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchesListener2;
+import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
+import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.internal.CodeBundleImpl;
+import org.erlide.core.backend.internal.CodeManager;
 import org.erlide.core.backend.internal.RpcResultImpl;
+import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.backend.rpc.RpcHelper;
 import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
+import org.erlide.core.common.BeamUtil;
+import org.erlide.core.common.IDisposable;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.util.CoreUtil;
+import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
+import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -38,7 +62,8 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class Backend extends OtpNodeStatus implements RpcCallSite {
+public class Backend extends OtpNodeStatus implements RpcCallSite, IDisposable,
+        IStreamListener, ILaunchesListener2 {
 
     public static final String[] SUPPORTED_VERSIONS = new String[] { "",
             "R12B-1", "R12B-2", "R12B-3", "R12B-4", "R12B-5", "R13B", "R14A" };
@@ -75,6 +100,10 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
     private boolean watch = true;
     private BackendShellManager shellManager;
     private boolean logCalls = false;
+    private final CodeManager codeManager;
+    private IStreamsProxy proxy;
+    private ILaunch launch;
+    private boolean managed = false;
 
     protected Backend(final RuntimeInfo info, final String peer)
             throws BackendException {
@@ -84,6 +113,11 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         }
         fInfo = info;
         fPeer = peer;
+        codeManager = new CodeManager(this);
+    }
+
+    public Backend(final RuntimeInfo info) throws BackendException {
+        this(info, BackendUtil.buildLocalNodeName(info.getNodeName(), true));
     }
 
     /**
@@ -252,6 +286,13 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
     }
 
     public void dispose() {
+        try {
+            if (launch != null) {
+                launch.terminate();
+            }
+        } catch (final DebugException e) {
+            e.printStackTrace();
+        }
         dispose(false);
     }
 
@@ -355,6 +396,7 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         monitor = doMonitor;
         watch = aWatch;
         initEventDaemon();
+        ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
     }
 
     private void initEventDaemon() {
@@ -503,6 +545,9 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         } catch (final IOException e) {
             ErlLogger.error(e);
         }
+        codeManager.reRegisterBundles();
+        // initErlang();
+        // fixme eventdaemon
     }
 
     public synchronized void setAvailable(final boolean up) {
@@ -593,12 +638,16 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
         return available;
     }
 
-    public boolean isDistributed() {
-        return false;
-    }
-
     public void input(final String string) throws IOException {
-        System.out.println("INPUT???");
+        if (!isStopped()) {
+            if (proxy != null) {
+                proxy.write(string);
+            } else {
+                ErlLogger
+                        .warn("Could not load module on backend %s, stream proxy is null",
+                                getInfo());
+            }
+        }
     }
 
     public OtpMbox createMbox() {
@@ -628,11 +677,201 @@ public class Backend extends OtpNodeStatus implements RpcCallSite {
     }
 
     public BackendShell getShell(final String id) {
-        return shellManager.openShell(id);
+        final BackendShell shell = shellManager.openShell(id);
+        if (proxy != null) {
+            final IStreamMonitor errorStreamMonitor = proxy
+                    .getErrorStreamMonitor();
+            errorStreamMonitor.addListener(new IStreamListener() {
+                public void streamAppended(final String text,
+                        final IStreamMonitor aMonitor) {
+                    shell.add(text, IoRequestKind.STDERR);
+                }
+            });
+            final IStreamMonitor outputStreamMonitor = proxy
+                    .getOutputStreamMonitor();
+            outputStreamMonitor.addListener(new IStreamListener() {
+                public void streamAppended(final String text,
+                        final IStreamMonitor aMonitor) {
+                    shell.add(text, IoRequestKind.STDOUT);
+                }
+            });
+        }
+        return shell;
     }
 
     public void setLogCalls(final boolean logCalls) {
         this.logCalls = logCalls;
+    }
+
+    public void removePath(final String path) {
+        codeManager.removePath(path);
+    }
+
+    public void addPath(final boolean usePathZ, final String path) {
+        codeManager.addPath(usePathZ, path);
+    }
+
+    public void register(final CodeBundleImpl bundle) {
+        codeManager.register(bundle);
+    }
+
+    public void unregister(final Bundle b) {
+        codeManager.unregister(b);
+    }
+
+    public void streamAppended(final String text, final IStreamMonitor aMonitor) {
+        if (aMonitor == proxy.getOutputStreamMonitor()) {
+            // System.out.println(getName() + " OUT " + text);
+        } else if (aMonitor == proxy.getErrorStreamMonitor()) {
+            // System.out.println(getName() + " ERR " + text);
+        } else {
+            // System.out.println("???" + text);
+        }
+    }
+
+    public ILaunch getLaunch() {
+        return launch;
+    }
+
+    public void setLaunch(final ILaunch launch2) {
+        launch = launch2;
+    }
+
+    public boolean isDistributed() {
+        return !getInfo().getNodeName().equals("");
+    }
+
+    public void launchesTerminated(final ILaunch[] launches) {
+        for (final ILaunch aLaunch : launches) {
+            if (aLaunch == launch) {
+                stop();
+            }
+        }
+    }
+
+    public void launchesAdded(final ILaunch[] launches) {
+    }
+
+    public void launchesChanged(final ILaunch[] launches) {
+    }
+
+    public void launchesRemoved(final ILaunch[] launches) {
+    }
+
+    public void setStreamsProxy(final IStreamsProxy streamsProxy) {
+        proxy = streamsProxy;
+        if (proxy != null) {
+            final IStreamMonitor errorStreamMonitor = proxy
+                    .getErrorStreamMonitor();
+            errorStreamMonitor.addListener(this);
+            final IStreamMonitor outputStreamMonitor = proxy
+                    .getOutputStreamMonitor();
+            outputStreamMonitor.addListener(this);
+        }
+    }
+
+    public void addProjectPath(final IProject project) {
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final String outDir = project.getLocation()
+                .append(erlProject.getOutputLocation()).toOSString();
+        if (outDir.length() > 0) {
+            ErlLogger.debug("backend %s: add path %s", getName(), outDir);
+            if (isDistributed()) {
+                final boolean accessible = ErlideUtil
+                        .isAccessible(this, outDir);
+                if (accessible) {
+                    addPath(false/* prefs.getUsePathZ() */, outDir);
+                } else {
+                    loadBeamsFromDir(project, outDir);
+                }
+            } else {
+                final File f = new File(outDir);
+                final BackendManager backendManager = ErlangCore
+                        .getBackendManager();
+                for (final File file : f.listFiles()) {
+                    String name = file.getName();
+                    if (!name.endsWith(".beam")) {
+                        continue;
+                    }
+                    name = name.substring(0, name.length() - 5);
+                    try {
+                        CoreUtil.loadModuleViaInput(this, project, name);
+                        backendManager.moduleLoaded(this, project, name);
+                    } catch (final ErlModelException e) {
+                        e.printStackTrace();
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public void removeProjectPath(final IProject project) {
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final String outDir = project.getLocation()
+                .append(erlProject.getOutputLocation()).toOSString();
+        if (outDir.length() > 0) {
+            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
+            if (isDistributed()) {
+                removePath(outDir);
+            } else {
+                ErlLogger.warn("didn't remove project path for %s from %s",
+                        project.getName(), getName());
+            }
+        }
+    }
+
+    private void loadBeamsFromDir(final IProject project, final String outDir) {
+        final File dir = new File(outDir);
+        if (dir.isDirectory()) {
+            final BackendManager backendManager = ErlangCore
+                    .getBackendManager();
+            for (final File f : dir.listFiles()) {
+                final Path beamPath = new Path(f.getPath());
+                final String beamModuleName = BackendUtils
+                        .getBeamModuleName(beamPath);
+                if (beamModuleName != null) {
+                    try {
+                        boolean ok = false;
+                        final OtpErlangBinary bin = BeamUtil.getBeamBinary(
+                                beamModuleName, beamPath);
+                        if (bin != null) {
+                            ok = ErlBackend.loadBeam(this, beamModuleName, bin);
+                        }
+                        if (!ok) {
+                            ErlLogger
+                                    .error("Could not load %s", beamModuleName);
+                        }
+                        backendManager.moduleLoaded(this, project,
+                                beamModuleName);
+                    } catch (final Exception ex) {
+                        ErlLogger.warn(ex);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean isManaged() {
+        return managed;
+    }
+
+    public void setManaged(final boolean b) {
+        managed = b;
+    }
+
+    public boolean doLoadOnAllNodes() {
+        return getInfo().loadOnAllNodes();
+    }
+
+    public boolean isCompatibleWithProject(final IProject project) {
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final RuntimeVersion projectVersion = erlProject.getRuntimeVersion();
+        return getInfo().getVersion().isCompatible(projectVersion);
     }
 
 }

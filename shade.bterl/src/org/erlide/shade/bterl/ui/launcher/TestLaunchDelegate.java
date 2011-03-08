@@ -29,7 +29,6 @@ import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
@@ -124,7 +123,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 : ILaunchManager.RUN_MODE;
         super.doLaunch(cfg, amode, launch, true, null);
 
-        final ErlideBackend backend = ErlangCore.getBackendManager()
+        final Backend backend = ErlangCore.getBackendManager()
                 .getBackendForLaunch(launch);
         if (backend == null) {
             ErlLogger.warn("Could not start backend for launch %s", launch

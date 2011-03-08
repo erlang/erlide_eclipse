@@ -53,7 +53,6 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchData;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -112,7 +111,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         final Map<String, String> myenv = setupEnvironment(env, data);
         setCaptureOutput(launch);
 
-        ErlideBackend backend = null;
+        Backend backend = null;
         try {
             backend = ErlangCore.getBackendManager().createBackend(rt, options,
                     launch, myenv);
@@ -221,7 +220,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     protected void postLaunch(final String mode, final ErlLaunchData data,
             final Set<IProject> projects, final RuntimeInfo rt,
-            final EnumSet<BackendOptions> options, final ErlideBackend backend)
+            final EnumSet<BackendOptions> options, final Backend backend)
             throws DebugException {
 
         registerProjectsWithExecutionBackend(backend, projects);
@@ -250,7 +249,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     private void interpretModules(final ErlLaunchData data,
-            final ErlideBackend backend, final boolean distributed) {
+            final Backend backend, final boolean distributed) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         for (final String pm : data.interpretedModules) {
             final String[] pms = pm.split(":");
@@ -279,7 +278,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     private void registerStartupFunctionStarter(final ErlLaunchData data,
-            final ErlideBackend backend) {
+            final Backend backend) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
                     public void handleDebugEvents(final DebugEvent[] events) {
@@ -291,7 +290,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     private static void registerProjectsWithExecutionBackend(
-            final ErlideBackend backend, final Collection<IProject> projects) {
+            final Backend backend, final Collection<IProject> projects) {
         for (final IProject project : projects) {
             ErlangCore.getBackendManager()
                     .addExecutionBackend(project, backend);

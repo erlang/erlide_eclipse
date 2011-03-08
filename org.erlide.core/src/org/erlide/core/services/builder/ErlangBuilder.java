@@ -31,8 +31,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.internal.BuildNotifier;
@@ -143,7 +143,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
                         Integer.valueOf(n), resourcesToBuild.toString());
             }
             if (n > 0) {
-                final ErlideBackend backend = ErlangCore.getBackendManager()
+                final Backend backend = ErlangCore.getBackendManager()
                         .getBuildBackend(project);
                 if (backend == null) {
                     final String message = "No backend with the required "

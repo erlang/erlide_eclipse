@@ -9,7 +9,6 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.IDisposable;
@@ -34,11 +33,9 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
         }
         final Object str = b.getInfo();
         ErlLogger.debug("console ADDED " + b + " " + str);
-        if (b instanceof ErlideBackend) {
-            final ErlangConsole console = new ErlangConsole((ErlideBackend) b);
-            conMan.addConsoles(new IConsole[] { console });
-            consoles.put(b, console);
-        }
+        final ErlangConsole console = new ErlangConsole(b);
+        conMan.addConsoles(new IConsole[] { console });
+        consoles.put(b, console);
     }
 
     public void runtimeRemoved(final Backend b) {

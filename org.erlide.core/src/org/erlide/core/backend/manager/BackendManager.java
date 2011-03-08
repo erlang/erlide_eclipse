@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,13 +40,12 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.ErlideBackendVisitor;
 import org.erlide.core.backend.ErtsProcess;
-import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.epmd.EpmdWatchJob;
 import org.erlide.core.backend.internal.BackendUtil;
@@ -78,15 +75,15 @@ public final class BackendManager extends OtpNodeStatus implements
         ADDED, REMOVED, MODULE_LOADED
     }
 
-    private volatile ErlideBackend ideBackend;
+    private volatile Backend ideBackend;
     private final Object ideBackendLock = new Object();
-    private final Map<IProject, Set<ErlideBackend>> executionBackends;
-    private final Map<String, ErlideBackend> buildBackends;
+    private final Map<IProject, Set<Backend>> executionBackends;
+    private final Map<String, Backend> buildBackends;
     final List<BackendListener> listeners;
     private final Map<Bundle, CodeBundleImpl> codeBundles;
 
     private final EpmdWatcher epmdWatcher;
-    private final Set<ErlideBackend> allBackends;
+    private final Set<Backend> allBackends;
 
     @SuppressWarnings("synthetic-access")
     private static final class LazyBackendManagerHolder {
@@ -99,8 +96,8 @@ public final class BackendManager extends OtpNodeStatus implements
 
     private BackendManager() {
         ideBackend = null;
-        executionBackends = new HashMap<IProject, Set<ErlideBackend>>();
-        buildBackends = new HashMap<String, ErlideBackend>();
+        executionBackends = Maps.newHashMap();
+        buildBackends = Maps.newHashMap();
         allBackends = Sets.newHashSet();
         listeners = Lists.newArrayList();
         codeBundles = Maps.newHashMap();
@@ -114,24 +111,24 @@ public final class BackendManager extends OtpNodeStatus implements
         cleanupInternalLCs();
     }
 
-    public ErlideBackend createBackend(final RuntimeInfo info,
+    public Backend createBackend(final RuntimeInfo info,
             final Set<BackendOptions> options, final ILaunch launch,
             final Map<String, String> env) throws BackendException {
         final String nodeName = info.getNodeName();
         final boolean exists = EpmdWatcher.findRunningNode(nodeName);
-        ErlideBackend b = null;
+        Backend b = null;
 
         final boolean isRemoteNode = nodeName.contains("@");
         boolean watch = true;
         if (exists || isRemoteNode) {
             ErlLogger.debug("create standalone " + options + " backend '"
                     + info + "' " + Thread.currentThread());
-            b = new ErlideBackend(info);
+            b = new Backend(info);
             watch = false;
         } else if (options.contains(BackendOptions.AUTOSTART)) {
             ErlLogger.debug("create managed " + options + " backend '" + info
                     + "' " + Thread.currentThread());
-            b = new ErlideBackend(info);
+            b = new Backend(info);
 
             final ManagedLauncher launcher = new ManagedLauncher(launch, info,
                     env);
@@ -157,14 +154,14 @@ public final class BackendManager extends OtpNodeStatus implements
         return b;
     }
 
-    private void addBackend(final ErlideBackend b) {
+    private void addBackend(final Backend b) {
         synchronized (allBackends) {
             allBackends.add(b);
         }
     }
 
     private void initializeBackend(final Set<BackendOptions> options,
-            final ErlideBackend b, final boolean watchNode) throws IOException {
+            final Backend b, final boolean watchNode) throws IOException {
         b.initializeRuntime();
         if (b.isDistributed()) {
             b.connect();
@@ -180,7 +177,7 @@ public final class BackendManager extends OtpNodeStatus implements
         notifyBackendChange(b, BackendEvent.ADDED, null, null);
     }
 
-    private ErlideBackend createInternalBackend(final RuntimeInfo info,
+    private Backend createInternalBackend(final RuntimeInfo info,
             final Set<BackendOptions> options, final Map<String, String> env)
             throws BackendException {
         final ILaunchConfiguration launchConfig = getLaunchConfiguration(info,
@@ -193,11 +190,11 @@ public final class BackendManager extends OtpNodeStatus implements
             e.printStackTrace();
             return null;
         }
-        final ErlideBackend b = createBackend(info, options, launch, env);
+        final Backend b = createBackend(info, options, launch, env);
         return b;
     }
 
-    public ErlideBackend getBuildBackend(final IProject project)
+    public Backend getBuildBackend(final IProject project)
             throws BackendException {
         final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 project);
@@ -216,7 +213,7 @@ public final class BackendManager extends OtpNodeStatus implements
             return ideBackend;
         }
         final String version = info.getVersion().asMajor().toString();
-        ErlideBackend b = buildBackends.get(version);
+        Backend b = buildBackends.get(version);
         if (b == null) {
             info.setNodeName(version);
             info.setNodeNameSuffix("_"
@@ -274,16 +271,15 @@ public final class BackendManager extends OtpNodeStatus implements
         return "internal_" + info.getNodeName();
     }
 
-    public synchronized Set<ErlideBackend> getExecutionBackends(
-            final IProject project) {
-        final Set<ErlideBackend> bs = executionBackends.get(project);
+    public synchronized Set<Backend> getExecutionBackends(final IProject project) {
+        final Set<Backend> bs = executionBackends.get(project);
         if (bs == null) {
             return Collections.emptySet();
         }
         return Collections.unmodifiableSet(bs);
     }
 
-    public ErlideBackend getIdeBackend() {
+    public Backend getIdeBackend() {
         // System.out.println("GET ide" + Thread.currentThread());
         if (ideBackend == null) {
             synchronized (ideBackendLock) {
@@ -339,7 +335,7 @@ public final class BackendManager extends OtpNodeStatus implements
         listeners.remove(listener);
     }
 
-    public Collection<ErlideBackend> getAllBackends() {
+    public Collection<Backend> getAllBackends() {
         synchronized (allBackends) {
             return Collections.unmodifiableCollection(allBackends);
         }
@@ -380,7 +376,7 @@ public final class BackendManager extends OtpNodeStatus implements
         final CodeBundleImpl pp = new CodeBundleImpl(b, paths, init);
         codeBundles.put(b, pp);
         forEachBackend(new ErlideBackendVisitor() {
-            public void visit(final ErlideBackend bb) {
+            public void visit(final Backend bb) {
                 bb.register(pp);
             }
         });
@@ -391,7 +387,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public void forEachBackend(final ErlideBackendVisitor visitor) {
-        for (final ErlideBackend b : getAllBackends()) {
+        for (final Backend b : getAllBackends()) {
             visitor.visit(b);
         }
     }
@@ -412,10 +408,10 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public synchronized void addExecutionBackend(final IProject project,
-            final ErlideBackend b) {
-        Set<ErlideBackend> list = executionBackends.get(project);
+            final Backend b) {
+        Set<Backend> list = executionBackends.get(project);
         if (list == null) {
-            list = new HashSet<ErlideBackend>();
+            list = Sets.newHashSet();
             executionBackends.put(project, list);
         }
         list.add(b);
@@ -424,9 +420,9 @@ public final class BackendManager extends OtpNodeStatus implements
 
     public synchronized void removeExecutionBackend(final IProject project,
             final RpcCallSite b) {
-        Set<ErlideBackend> list = executionBackends.get(project);
+        Set<Backend> list = executionBackends.get(project);
         if (list == null) {
-            list = new HashSet<ErlideBackend>();
+            list = Sets.newHashSet();
             executionBackends.put(project, list);
         }
         list.remove(b);
@@ -439,7 +435,7 @@ public final class BackendManager extends OtpNodeStatus implements
     private void remoteNodeStatus(final String node, final boolean up,
             final Object info) {
         if (!up) {
-            for (final Entry<IProject, Set<ErlideBackend>> e : executionBackends
+            for (final Entry<IProject, Set<Backend>> e : executionBackends
                     .entrySet()) {
                 for (final Backend be : e.getValue()) {
                     final String bnode = be.getInfo().getNodeName();
@@ -453,7 +449,7 @@ public final class BackendManager extends OtpNodeStatus implements
         }
     }
 
-    public void dispose(final ErlideBackend backend) {
+    public void dispose(final Backend backend) {
         if (backend != null && backend != ideBackend) {
             backend.dispose();
         }
@@ -504,7 +500,7 @@ public final class BackendManager extends OtpNodeStatus implements
     }
 
     public Backend getByName(final String nodeName) {
-        final Collection<ErlideBackend> list = getAllBackends();
+        final Collection<Backend> list = getAllBackends();
         for (final Backend b : list) {
             if (b.getName().equals(nodeName)) {
                 return b;
@@ -539,8 +535,8 @@ public final class BackendManager extends OtpNodeStatus implements
         notifyBackendChange(b, BackendEvent.MODULE_LOADED, project, moduleName);
     }
 
-    public ErlideBackend getBackendForLaunch(final ILaunch launch) {
-        for (final ErlideBackend backend : allBackends) {
+    public Backend getBackendForLaunch(final ILaunch launch) {
+        for (final Backend backend : allBackends) {
             if (backend.getLaunch() == launch) {
                 return backend;
             }

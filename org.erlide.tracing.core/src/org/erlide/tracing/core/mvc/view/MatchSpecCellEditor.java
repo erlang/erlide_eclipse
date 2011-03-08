@@ -7,7 +7,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Constants;
@@ -70,7 +70,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                 return null;
             }
             try {
-                final ErlideBackend backend = BackendManager.getDefault()
+                final Backend backend = BackendManager.getDefault()
                         .getIdeBackend();
                 final OtpErlangTuple tuple = (OtpErlangTuple) backend.call(
                         Constants.ERLANG_HELPER_MODULE, Constants.FUN_STR2MS,

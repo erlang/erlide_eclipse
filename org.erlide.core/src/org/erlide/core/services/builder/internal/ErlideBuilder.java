@@ -6,8 +6,8 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.rpc.RpcFuture;
@@ -59,7 +59,7 @@ public class ErlideBuilder {
         try {
             final BackendManager backendManager = ErlangCore
                     .getBackendManager();
-            for (final ErlideBackend b : backendManager
+            for (final Backend b : backendManager
                     .getExecutionBackends(project)) {
                 ErlLogger.debug(":: loading %s in %s", module, b.getInfo()
                         .toString());

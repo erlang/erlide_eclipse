@@ -41,9 +41,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlBackend;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.NoBackendException;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
@@ -440,7 +440,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
         try {
             ErlBackend.parseTerm(b, string + " .");
         } catch (final NoBackendException e) {

@@ -110,8 +110,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -2202,7 +2202,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
-            final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+            final Backend ideBackend = ErlangCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
 

@@ -15,8 +15,8 @@ import java.util.List;
 
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.ErlBackend;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
@@ -60,7 +60,7 @@ public final class ErlParser {
     public static boolean parse(final IErlModule module,
             final String scannerName, final boolean initialParse,
             final String path, final boolean useCaches) {
-        final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
         if (b == null || module == null) {
             return false;
         }
