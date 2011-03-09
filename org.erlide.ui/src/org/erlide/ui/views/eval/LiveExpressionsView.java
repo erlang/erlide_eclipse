@@ -61,7 +61,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendEvalResult;
-import org.erlide.core.backend.ErlBackend;
+import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
@@ -107,7 +107,7 @@ public class LiveExpressionsView extends ViewPart implements
         private String evaluate() {
             final RpcCallSite b = ErlangCore.getBackendManager()
                     .getIdeBackend();
-            final BackendEvalResult r = ErlBackend.eval(b, fExpr + ".", null);
+            final BackendEvalResult r = BackendHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
             }
@@ -298,7 +298,7 @@ public class LiveExpressionsView extends ViewPart implements
                         String str = item.getText(1);
                         if (str.length() > 0) {
                             // ErlLogger.debug(str);
-                            final BackendEvalResult r = ErlBackend.eval(
+                            final BackendEvalResult r = BackendHelper.eval(
                                     ErlangCore.getBackendManager()
                                             .getIdeBackend(),
                                     "lists:flatten(io_lib:format(\"~p\", ["

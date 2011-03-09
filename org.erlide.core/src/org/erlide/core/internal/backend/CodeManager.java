@@ -23,7 +23,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.CodeBundle;
-import org.erlide.core.backend.ErlBackend;
+import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.common.BeamUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
@@ -97,7 +97,7 @@ public class CodeManager {
         if (bin == null) {
             return false;
         }
-        return ErlBackend.loadBeam(backend, moduleName, bin);
+        return BackendHelper.loadBeam(backend, moduleName, bin);
     }
 
     private void loadPluginCode(final CodeBundle p) {

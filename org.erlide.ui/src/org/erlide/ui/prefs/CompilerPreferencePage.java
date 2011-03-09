@@ -43,7 +43,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlBackend;
+import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.NoBackendException;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
@@ -442,13 +442,13 @@ public class CompilerPreferencePage extends PropertyPage implements
     OptionStatus optionsAreOk(final String string) {
         final Backend b = ErlangCore.getBackendManager().getIdeBackend();
         try {
-            ErlBackend.parseTerm(b, string + " .");
+            BackendHelper.parseTerm(b, string + " .");
         } catch (final NoBackendException e) {
             return OptionStatus.NO_RUNTIME;
         } catch (final BackendException e) {
             try {
                 final String string2 = "[" + string + "].";
-                ErlBackend.parseTerm(b, string2);
+                BackendHelper.parseTerm(b, string2);
             } catch (final BackendException e1) {
                 return OptionStatus.ERROR;
             }

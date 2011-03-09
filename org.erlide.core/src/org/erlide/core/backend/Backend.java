@@ -674,7 +674,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
                         final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
                                 path);
                         if (bin != null) {
-                            ok = ErlBackend.loadBeam(this, m, bin);
+                            ok = BackendHelper.loadBeam(this, m, bin);
                         }
                         if (!ok) {
                             ErlLogger.error("Could not load %s", m);

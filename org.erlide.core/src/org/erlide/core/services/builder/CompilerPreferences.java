@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlBackend;
+import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.internal.PreferencesHelper;
 import org.osgi.service.prefs.BackingStoreException;
@@ -206,7 +206,7 @@ public class CompilerPreferences {
         final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         if (!allOptions.equals("")) {
             try {
-                final OtpErlangList term = (OtpErlangList) ErlBackend
+                final OtpErlangList term = (OtpErlangList) BackendHelper
                         .parseTerm(b, "[" + allOptions + "].");
                 result.addAll(Arrays.asList(term.elements()));
             } catch (final BackendException e1) {
