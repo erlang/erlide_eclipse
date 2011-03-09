@@ -23,7 +23,7 @@ import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
-import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
@@ -636,7 +636,7 @@ public class TraceBackend {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             workingCopy = type.newInstance(null,

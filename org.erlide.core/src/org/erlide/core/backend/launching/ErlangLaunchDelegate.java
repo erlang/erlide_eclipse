@@ -39,15 +39,13 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
-import org.erlide.core.model.debug.ErlangDebugTarget;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.backend.launching.internal";
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.backend.launching.erlangProcess";
-    private ErlangDebugTarget target;
+    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.internal";
+    public static final String CONFIGURATION_TYPE = "org.erlide.core.erlangProcess";
 
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
@@ -191,10 +189,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             ErlLogger.warn(e);
             return false;
         }
-    }
-
-    public ErlangDebugTarget getDebugTarget() {
-        return target;
     }
 
     protected ErlangDebugHelper getDebugHelper() {

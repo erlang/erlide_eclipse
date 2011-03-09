@@ -90,7 +90,7 @@
       <breakpoint
             class="org.erlide.core.model.debug.ErlangLineBreakpoint"
             id="erlang.lineBreakpoint"
-            markerType="org.erlide.core.erlang.lineBreakpoint.marker"
+            markerType="org.erlide.core.model.erlang.lineBreakpoint.marker"
             name="%erlangLineBreakpoint.name"/>
    </extension>
   <extension
@@ -116,7 +116,7 @@
       <launchConfigurationType
             delegate="org.erlide.core.backend.launching.ErlangLaunchDelegate"
             delegateName="Erlang application"
-            id="org.erlide.core.services.launching.erlangProcess"
+            id="org.erlide.core.erlangProcess"
             modes="run, debug"
             name="Erlang application"
             public="true"
@@ -125,7 +125,7 @@
       </launchConfigurationType>
       <launchConfigurationType
             delegate="org.erlide.core.backend.launching.ErlangLaunchDelegate"
-            id="org.erlide.core.services.launching.internal"
+            id="org.erlide.core.internal"
             modes="run"
             name="internal Erlang node"
             public="false"

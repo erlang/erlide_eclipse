@@ -193,7 +193,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     getDebugHelper()
                             .interpret(backend, project, pm, true, true);
                 }
-                getDebugTarget().installDeferredBreakpoints();
+                backend.getDebugTarget().installDeferredBreakpoints();
 
                 final OtpErlangPid pid = (OtpErlangPid) event.data;
                 backend.send(pid, new OtpErlangAtom("ok"));

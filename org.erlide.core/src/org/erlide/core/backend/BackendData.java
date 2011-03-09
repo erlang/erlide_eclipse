@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.internal.backend.InitialCall;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -135,7 +135,7 @@ public class BackendData extends GenericBackendData {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final RuntimeInfo info = getRuntimeInfo();

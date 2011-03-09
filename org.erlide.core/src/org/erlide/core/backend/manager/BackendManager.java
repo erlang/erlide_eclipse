@@ -41,13 +41,13 @@ import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlideBackendVisitor;
-import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.internal.backend.BackendUtil;
 import org.erlide.core.internal.backend.CodeBundleImpl;
-import org.erlide.core.internal.backend.EpmdWatchJob;
 import org.erlide.core.internal.backend.CodeBundleImpl.CodeContext;
+import org.erlide.core.internal.backend.EpmdWatchJob;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
@@ -152,7 +152,7 @@ public final class BackendManager extends OtpNodeStatus implements
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final String name = getLaunchName(info, options);

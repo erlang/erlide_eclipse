@@ -24,9 +24,6 @@ import org.erlide.jinterface.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
 
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.backend.launching.erlangProcess";
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.backend.launching.internal";
-
     private BackendData launchData;
 
     public ErtsProcess(final ILaunch launch, final Process process,

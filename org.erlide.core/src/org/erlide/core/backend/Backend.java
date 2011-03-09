@@ -107,6 +107,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     private final boolean managed = false;
     private final BackendData data;
     private boolean disposable;
+    private ErlangDebugTarget debugTarget;
 
     public Backend(final BackendData data) throws BackendException {
         info = data.getRuntimeInfo();
@@ -712,20 +713,20 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
             return;
         }
         if (data.isDebug()) {
-            // add debug target
-            final ErlangDebugTarget target = new ErlangDebugTarget(launch,
-                    this, projects, data.getDebugFlags());
-            // target.getWaiter().doWait();
-            launch.addDebugTarget(target);
+            // add debug debugTarget
+            debugTarget = new ErlangDebugTarget(launch, this, projects,
+                    data.getDebugFlags());
+            // debugTarget.getWaiter().doWait();
+            launch.addDebugTarget(debugTarget);
             // interpret everything we can
             final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
             if (distributed) {
                 distributeDebuggerCode();
-                addNodesAsDebugTargets(launch, target);
+                addNodesAsDebugTargets(launch, debugTarget);
             }
             interpretModules(data, distributed);
             registerStartupFunctionStarter(data);
-            target.sendStarted();
+            debugTarget.sendStarted();
         } else {
             final InitialCall init_call = data.getInitialCall();
             if (init_call != null) {
@@ -843,7 +844,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
                 ErlangPlugin.PLUGIN_ID, "codepath");
-        // TODO: this code assumes that the debugged target and the
+        // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
         final String ver = getCurrentVersion();
         for (final IConfigurationElement el : els) {
@@ -916,7 +917,8 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         if (launch != null) {
             return;
         }
-        final ILaunchConfiguration launchConfig = myData.asLaunchConfiguration();
+        final ILaunchConfiguration launchConfig = myData
+                .asLaunchConfiguration();
         try {
             launch = launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, true);
@@ -927,5 +929,9 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
 
     public String getJavaNodeName() {
         return runtime.getNode().node();
+    }
+
+    public ErlangDebugTarget getDebugTarget() {
+        return debugTarget;
     }
 }
