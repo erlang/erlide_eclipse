@@ -36,8 +36,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlLaunchData;
 import org.erlide.core.backend.ErtsProcess;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -179,7 +179,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
         wc.setAttribute(ErlLaunchAttributes.PROJECTS, CommonUtils.packList(
-                projectNames, ErlLaunchData.PROJECT_NAME_SEPARATOR));
+                projectNames, BackendData.PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.iterator()
                 .next().getRuntimeInfo().getName());
         wc.setAttribute(ErlLaunchAttributes.NODE_NAME, name);

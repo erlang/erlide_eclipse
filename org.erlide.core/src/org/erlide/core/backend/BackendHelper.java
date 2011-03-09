@@ -65,8 +65,6 @@ public class BackendHelper {
             final String r = b.call("erlide_backend", "format", "slx", fmt,
                     args).toString();
             return r.substring(1, r.length() - 1);
-        } catch (final NoBackendException e) {
-            return "error";
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -189,8 +187,6 @@ public class BackendHelper {
                 ErlLogger.warn("sticky:: %s", moduleName);
                 r = null;
             }
-        } catch (final NoBackendException e) {
-            ErlLogger.debug(e);
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }

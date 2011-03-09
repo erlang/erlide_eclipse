@@ -44,7 +44,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendHelper;
-import org.erlide.core.backend.NoBackendException;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
@@ -441,10 +440,11 @@ public class CompilerPreferencePage extends PropertyPage implements
 
     OptionStatus optionsAreOk(final String string) {
         final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        if (b == null) {
+            return OptionStatus.NO_RUNTIME;
+        }
         try {
             BackendHelper.parseTerm(b, string + " .");
-        } catch (final NoBackendException e) {
-            return OptionStatus.NO_RUNTIME;
         } catch (final BackendException e) {
             try {
                 final String string2 = "[" + string + "].";

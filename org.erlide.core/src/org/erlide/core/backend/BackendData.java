@@ -38,6 +38,8 @@ import com.google.common.collect.Lists;
 
 public class BackendData extends GenericBackendData {
 
+    public static final String PROJECT_NAME_SEPARATOR = ";";
+
     public BackendData(final ILaunchConfiguration config, final String mode) {
         super(config, mode);
     }

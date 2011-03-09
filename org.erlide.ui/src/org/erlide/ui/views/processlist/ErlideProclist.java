@@ -1,6 +1,5 @@
 package org.erlide.ui.views.processlist;
 
-import org.erlide.core.backend.NoBackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
@@ -31,8 +30,6 @@ public class ErlideProclist {
             final OtpErlangObject result = b.call(MODULE_NAME, "process_list",
                     "");
             return (OtpErlangList) result;
-        } catch (final NoBackendException e) {
-            ErlLogger.debug(e);
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
@@ -46,8 +43,6 @@ public class ErlideProclist {
         }
         try {
             return b.call(MODULE_NAME, "get_process_info", "p", pid);
-        } catch (final NoBackendException e) {
-            ErlLogger.debug(e);
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
