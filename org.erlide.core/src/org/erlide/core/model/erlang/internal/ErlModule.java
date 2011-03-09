@@ -691,9 +691,9 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     private boolean checkPath(final Collection<IPath> dirs) {
-        final String path = getFilePath();
-        if (path != null) {
-            final IPath p = new Path(path).removeLastSegments(1);
+        final String thePath = getFilePath();
+        if (thePath != null) {
+            final IPath p = new Path(thePath).removeLastSegments(1);
             for (final IPath dir : dirs) {
                 if (dir.equals(p)) {
                     return true;

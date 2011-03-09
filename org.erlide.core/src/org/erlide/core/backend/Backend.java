@@ -294,11 +294,11 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public OtpErlangPid getEventPid() {
-        final OtpMbox eventBox = getEventBox();
-        if (eventBox == null) {
+        final OtpMbox theEventBox = getEventBox();
+        if (theEventBox == null) {
             return null;
         }
-        return eventBox.self();
+        return theEventBox.self();
     }
 
     public RuntimeInfo getRuntimeInfo() {
@@ -711,8 +711,6 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
             return;
         }
         if (data.isDebug()) {
-            final ILaunch launch = getLaunch();
-
             // add debug target
             final ErlangDebugTarget target = new ErlangDebugTarget(launch,
                     this, projects, data.getDebugFlags());
@@ -751,11 +749,11 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         }
     }
 
-    private void registerStartupFunctionStarter(final BackendData data) {
+    private void registerStartupFunctionStarter(final BackendData myData) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
                     public void handleDebugEvents(final DebugEvent[] events) {
-                        final InitialCall init_call = data.getInitialCall();
+                        final InitialCall init_call = myData.getInitialCall();
                         if (init_call != null) {
                             runInitial(init_call.getModule(),
                                     init_call.getName(),
@@ -796,7 +794,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         }
     }
 
-    private void addNodesAsDebugTargets(final ILaunch launch,
+    private void addNodesAsDebugTargets(final ILaunch aLaunch,
             final ErlangDebugTarget target) {
         final OtpErlangList nodes = ErlideDebug.nodes(this);
         if (nodes != null) {
@@ -805,7 +803,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
                 final OtpErlangAtom a = o;
                 final ErlangDebugNode edn = new ErlangDebugNode(target,
                         a.atomValue());
-                launch.addDebugTarget(edn);
+                aLaunch.addDebugTarget(edn);
             }
         }
     }
@@ -913,11 +911,11 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         }
     }
 
-    public void launchRuntime(final BackendData data) {
+    public void launchRuntime(final BackendData myData) {
         if (launch != null) {
             return;
         }
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
+        final ILaunchConfiguration launchConfig = myData.asLaunchConfiguration();
         try {
             launch = launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, true);

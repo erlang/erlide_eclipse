@@ -1,11 +1,12 @@
 package org.erlide.core.model.erlang.internal;
 
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.IParent;
+
+import com.google.common.base.Objects;
 
 public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
@@ -38,8 +39,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
     @Override
     public int hashCode() {
-        return Util.combineHashCodes(super.hashCode(), getDefinedName()
-                .hashCode());
+        return Objects.hashCode(super.hashCode(), getDefinedName());
     }
 
     @Override

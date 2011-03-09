@@ -5,6 +5,8 @@ package org.erlide.core.common;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+
 /**
  * Defines a tuple of some object, adding equals and hashCode operations
  * 
@@ -41,12 +43,7 @@ public class Tuple3<X, Y, Z> implements Serializable {
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (o1 == null ? 0 : o1.hashCode());
-        result = prime * result + (o2 == null ? 0 : o2.hashCode());
-        result = prime * result + (o3 == null ? 0 : o3.hashCode());
-        return result;
+        return Objects.hashCode(o1, o2, o3);
     }
 
     /**

@@ -19,8 +19,7 @@ public abstract class MessageReporter {
         @Override
         public String toString() {
             return this.name().toLowerCase();
-        };
-
+        }
     }
 
     abstract public void displayMessage(MessageType type, String message,

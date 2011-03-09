@@ -172,7 +172,7 @@ public interface IErlProject extends IErlFolder {
 
     enum Scope {
         PROJECT_ONLY, REFERENCED_PROJECTS, ALL_PROJECTS
-    };
+    }
 
     IErlModule findModule(String moduleName, String modulePath, Scope scope)
             throws ErlModelException;

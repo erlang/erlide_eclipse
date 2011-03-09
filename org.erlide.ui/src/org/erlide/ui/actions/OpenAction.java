@@ -245,15 +245,12 @@ public class OpenAction extends SelectionDispatchAction {
         // not local imports
         OtpErlangObject res2 = null;
         String moduleName = null;
-        if (module != null) {
-            final IErlImport ei = module.findImport(res.getFunction());
-            if (ei != null) {
-                final IErlModel model = ErlangCore.getModel();
-                moduleName = ei.getImportModule();
-                res2 = ErlideOpen.getSourceFromModule(backend,
-                        model.getPathVars(), moduleName,
-                        erlProject.getExternalModulesString());
-            }
+        final IErlImport ei = module.findImport(res.getFunction());
+        if (ei != null) {
+            final IErlModel model = ErlangCore.getModel();
+            moduleName = ei.getImportModule();
+            res2 = ErlideOpen.getSourceFromModule(backend, model.getPathVars(),
+                    moduleName, erlProject.getExternalModulesString());
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {
             final OtpErlangString otpErlangString = (OtpErlangString) res2;

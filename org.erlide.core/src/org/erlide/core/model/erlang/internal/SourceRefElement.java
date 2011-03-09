@@ -22,6 +22,8 @@ import org.erlide.core.model.erlang.ISourceManipulation;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 
+import com.google.common.base.Objects;
+
 /**
  * Abstract class for Erlang elements which implement ISourceReference.
  */
@@ -257,4 +259,9 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
                 && fSourceRangeLength == r.fSourceRangeLength;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(super.hashCode(), fSourceRangeOffset,
+                fSourceRangeLength);
+    }
 }

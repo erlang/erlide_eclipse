@@ -440,7 +440,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 try {
                     module = model.findModule(i);
                 } catch (final ErlModelException e) {
-                    module = null;
                 }
             }
             if (module != null) {

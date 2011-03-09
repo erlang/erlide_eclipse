@@ -190,33 +190,6 @@ public final class Util {
     }
 
     /**
-     * Checks the type signature in String sig, starting at start and ending
-     * before end (end is not included). Returns the index of the character
-     * immediately after the signature if valid, or -1 if not valid.
-     */
-    /* NOT USED */
-    /*
-     * private static int checkTypeSignature(String sig, int start, int end,
-     * boolean allowVoid) { if (start >= end) { return -1; } int i = start; char
-     * c = sig.charAt(i++); int nestingDepth = 0; while (c == '[') {
-     * ++nestingDepth; if (i >= end) { return -1; } c = sig.charAt(i++); }
-     * switch (c) { case 'B': case 'C': case 'D': case 'F': case 'I': case 'J':
-     * case 'S': case 'Z': break; case 'V': if (!allowVoid) { return -1; } //
-     * array of void is not allowed if (nestingDepth != 0) { return -1; } break;
-     * case 'L': final int semicolon = sig.indexOf(';', i); // Must have at
-     * least one character between L and ; if (semicolon <= i || semicolon >=
-     * end) { return -1; } i = semicolon + 1; break; default: return -1; }
-     * return i; }
-     */
-
-    /**
-     * Combines two hash codes to make a new one.
-     */
-    public static int combineHashCodes(final int hashCode1, final int hashCode2) {
-        return hashCode1 * 17 + hashCode2;
-    }
-
-    /**
      * Compares two byte arrays. Returns <0 if a byte in a is less than the
      * corresponding byte in b, or if a is shorter, or if a is null. Returns >0
      * if a byte in a is greater than the corresponding byte in b, or if a is

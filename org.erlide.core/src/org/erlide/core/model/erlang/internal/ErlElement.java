@@ -39,6 +39,7 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.jinterface.ErlLogger;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 /**
@@ -193,7 +194,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     public IErlElement getAncestorOfKind(final Kind kind) {
         IErlElement element = this;
-        while (element != null) {
+        while (true) {
             if (element.getKind() == kind) {
                 return element;
             }
@@ -363,7 +364,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         if (fParent == null) {
             return super.hashCode();
         }
-        return Util.combineHashCodes(fName.hashCode(), fParent.hashCode());
+        return Objects.hashCode(fName, fParent);
     }
 
     /**
