@@ -50,7 +50,11 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
+        doLaunch(config, mode, launch);
+    }
 
+    public void doLaunch(final ILaunchConfiguration config, final String mode,
+            final ILaunch launch) {
         BackendData data = new BackendData(config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
@@ -77,7 +81,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
 
         if (!isErlangInternalLaunch(launch)) {
-            ErlangCore.getBackendManager().createExecutionBackend(launch);
+            ErlangCore.getBackendManager().createExecutionBackend(data);
         }
     }
 
@@ -87,6 +91,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     protected BackendData configureBackend(final BackendData data,
             final ILaunchConfiguration config, final String mode,
             final ILaunch launch) {
+        data.setLaunch(launch);
         return data;
     }
 
@@ -218,6 +223,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
         return result;
     }
+
 }
 
 // public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {

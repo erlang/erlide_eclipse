@@ -11,6 +11,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
 import org.erlide.jinterface.ErlLogger;
 
@@ -31,8 +32,8 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
         if (b == null || !b.getRuntimeInfo().hasConsole()) {
             return;
         }
-        final Object str = b.getRuntimeInfo();
-        ErlLogger.debug("console ADDED " + b + " " + str);
+        final RuntimeInfo info = b.getRuntimeInfo();
+        ErlLogger.debug("console ADDED " + b + " " + info);
         final ErlangConsole console = new ErlangConsole(b);
         conMan.addConsoles(new IConsole[] { console });
         consoles.put(b, console);

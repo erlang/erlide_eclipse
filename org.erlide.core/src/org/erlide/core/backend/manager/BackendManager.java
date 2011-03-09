@@ -438,8 +438,7 @@ public final class BackendManager extends OtpNodeStatus implements
 
     }
 
-    public void createExecutionBackend(final ILaunch launch) {
-        final BackendData data = new BackendData(launch);
+    public void createExecutionBackend(final BackendData data) {
         ErlLogger.debug("create execution backend " + data.getNodeName());
         final Backend b = factory.createBackend(data);
         addBackend(b);

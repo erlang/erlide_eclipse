@@ -540,7 +540,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public boolean isDistributed() {
-        return !getRuntimeInfo().getNodeName().equals("");
+        return !getData().getNodeName().equals("");
     }
 
     public void input(final String s) throws IOException {
