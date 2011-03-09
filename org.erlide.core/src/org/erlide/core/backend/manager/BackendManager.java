@@ -139,9 +139,9 @@ public final class BackendManager extends OtpNodeStatus implements
         if (b == null) {
             b = factory.createBuildBackend(info);
             buildBackends.put(version, b);
+            notifyBackendChange(b, BackendEvent.ADDED, null, null);
         }
         b.addProjectPath(project);
-        notifyBackendChange(b, BackendEvent.ADDED, null, null);
 
         ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;

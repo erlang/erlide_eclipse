@@ -16,7 +16,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -43,6 +42,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
@@ -55,6 +55,7 @@ import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;
+import org.erlide.core.internal.backend.BackendUtil;
 import org.erlide.core.internal.backend.CodeManager;
 import org.erlide.core.internal.backend.ErlRuntime;
 import org.erlide.core.internal.backend.InitialCall;
@@ -115,7 +116,8 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
             throw new BackendException(
                     "Can't create backend without runtime information");
         }
-        runtime = new ErlRuntime(info.getNodeName(), info.getCookie());
+        runtime = new ErlRuntime(info.getNodeName() + "@"
+                + BackendUtil.getHost(), info.getCookie());
         this.data = data;
         codeManager = new CodeManager(this);
         disposable = false;
@@ -437,46 +439,6 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
 
     public OtpMbox createMbox(final String name) {
         return getNode().createMbox(name);
-    }
-
-    private class BackendShellManager implements IDisposable {
-
-        private final HashMap<String, BackendShell> fShells;
-
-        public BackendShellManager() {
-            fShells = new HashMap<String, BackendShell>();
-        }
-
-        public BackendShell getShell(final String id) {
-            final BackendShell shell = fShells.get(id);
-            return shell;
-        }
-
-        public synchronized BackendShell openShell(final String id) {
-            BackendShell shell = getShell(id);
-            if (shell == null) {
-                shell = new BackendShell(Backend.this, id,
-                        Backend.this.getEventPid());
-                fShells.put(id, shell);
-            }
-            return shell;
-        }
-
-        public synchronized void closeShell(final String id) {
-            final BackendShell shell = getShell(id);
-            if (shell != null) {
-                fShells.remove(id);
-                shell.close();
-            }
-        }
-
-        public void dispose() {
-            final Collection<BackendShell> c = fShells.values();
-            for (final BackendShell backendShell : c) {
-                backendShell.close();
-            }
-            fShells.clear();
-        }
     }
 
     private static void setDefaultTimeout() {
@@ -894,7 +856,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public void initialize() {
-        shellManager = new BackendShellManager();
+        shellManager = new BackendShellManager(this);
         // TODO managed = options.contains(BackendOptions.MANAGED);
         if (isDistributed()) {
             connect();

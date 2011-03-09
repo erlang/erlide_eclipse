@@ -29,7 +29,6 @@ public class ConsoleEventHandler extends EventHandler {
         if (!event.matchTopicAndNode("io_server", nodeName)) {
             return;
         }
-        // ErlLogger.debug("************>>> " + event);
         shell.add(event.data);
     }
 }
