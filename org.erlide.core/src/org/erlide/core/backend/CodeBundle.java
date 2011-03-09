@@ -12,8 +12,8 @@ package org.erlide.core.backend;
 
 import java.util.Collection;
 
-import org.erlide.core.backend.internal.CodeBundleImpl.CodeContext;
 import org.erlide.core.common.Tuple;
+import org.erlide.core.internal.backend.CodeBundleImpl.CodeContext;
 import org.osgi.framework.Bundle;
 
 public interface CodeBundle {

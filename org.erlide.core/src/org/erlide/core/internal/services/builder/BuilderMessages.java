@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.services.builder.internal;
+package org.erlide.core.internal.services.builder;
 
 import org.eclipse.osgi.util.NLS;
 

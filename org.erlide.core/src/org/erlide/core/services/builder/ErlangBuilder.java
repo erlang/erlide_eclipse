@@ -34,9 +34,9 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.internal.services.builder.BuildNotifier;
+import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.services.builder.internal.BuildNotifier;
-import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;

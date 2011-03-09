@@ -14,10 +14,10 @@ import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.internal.BackendUtil;
-import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
+import org.erlide.core.internal.backend.BackendUtil;
+import org.erlide.core.internal.backend.BackendUtils;
 import org.erlide.jinterface.ErlLogger;
 
 public class BackendFactory {

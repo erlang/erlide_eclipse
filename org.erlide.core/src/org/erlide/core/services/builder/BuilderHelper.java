@@ -39,14 +39,14 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.internal.services.builder.BuilderVisitor;
+import org.erlide.core.internal.services.builder.ErlideBuilder;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.model.erlang.util.PluginUtils;
-import org.erlide.core.services.builder.internal.BuilderVisitor;
-import org.erlide.core.services.builder.internal.ErlideBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

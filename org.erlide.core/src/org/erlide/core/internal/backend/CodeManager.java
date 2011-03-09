@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.internal;
+package org.erlide.core.internal.backend;
 
 import java.net.URL;
 import java.util.ArrayList;

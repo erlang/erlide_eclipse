@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.internal;
+package org.erlide.core.internal.backend;
 
 import org.erlide.core.backend.rpc.RpcResult;
 
