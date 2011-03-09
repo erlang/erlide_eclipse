@@ -29,7 +29,7 @@ public class BackendShell {
     private final Backend backend;
     private OtpErlangPid server;
     private final String fId;
-    private ConsoleEventHandler handler;
+    private final ConsoleEventHandler handler;
 
     public BackendShell(final Backend backend, final String id,
             final OtpErlangPid server) {
@@ -38,6 +38,9 @@ public class BackendShell {
         this.server = server;
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
+
+        handler = new ConsoleEventHandler(this, backend.getFullNodeName());
+        backend.getEventDaemon().addHandler(handler);
     }
 
     public void close() {

@@ -46,9 +46,6 @@ public class BackendShellManager implements IDisposable {
                 }
             }
             shell = new BackendShell(backend, id, server);
-            final ConsoleEventHandler handler = new ConsoleEventHandler(shell,
-                    backend.getFullNodeName());
-            backend.getEventDaemon().addHandler(handler);
             fShells.put(id, shell);
         }
         return shell;
