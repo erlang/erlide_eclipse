@@ -41,7 +41,7 @@ import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlideBackendVisitor;
-import org.erlide.core.backend.ErtsProcess;
+import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.internal.backend.BackendUtil;

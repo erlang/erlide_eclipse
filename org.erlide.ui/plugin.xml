@@ -406,7 +406,7 @@
  <extension
        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
     <launchConfigurationTypeImage
-          configTypeID="org.erlide.core.services.launching.erlangProcess"
+          configTypeID="org.erlide.core.backend.launching.erlangProcess"
           icon="icons/erl/erlang-notext016.gif"
           id="org.erlide.ui.launch.launchConfigurationTypeImage.erlangNode"/>
  </extension>
@@ -1607,7 +1607,7 @@
     <launchConfigurationTabGroup
           class="org.erlide.ui.launch.ErlangNodeTabGroup"
           id="org.erlide.ui.launch.launchConfigurationTabGroup.erlangNode"
-          type="org.erlide.core.services.launching.erlangProcess"/>
+          type="org.erlide.core.backend.launching.erlangProcess"/>
  </extension>
  <extension
        point="org.eclipse.debug.ui.launchShortcuts">
@@ -1632,7 +1632,7 @@
             </enablement>
          </contextualLaunch>
         <configurationType
-              id="org.erlide.core.services.launching.erlangProcess">
+              id="org.erlide.core.backend.launching.erlangProcess">
         </configurationType>
         <perspective
               id="org.erlide.ui.perspectives.ErlangPerspective">

@@ -1,4 +1,4 @@
-package org.erlide.core.services.launching;
+package org.erlide.core.backend.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;

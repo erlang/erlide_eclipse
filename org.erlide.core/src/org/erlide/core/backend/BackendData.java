@@ -29,6 +29,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.internal.backend.InitialCall;
 import org.erlide.core.model.erlang.ModuleKind;

@@ -46,6 +46,7 @@ import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
+import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;

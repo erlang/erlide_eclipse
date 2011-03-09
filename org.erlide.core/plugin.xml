@@ -75,13 +75,13 @@
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.erlide.core.services.launching.ErlangSourcePathComputerDelegate"
+            class="org.erlide.core.backend.launching.ErlangSourcePathComputerDelegate"
             id="org.erlide.core.sourcepathcomputer"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="org.erlide.core.services.launching.ErlangSourceLookupDirector"
+            class="org.erlide.core.backend.launching.ErlangSourceLookupDirector"
             id="org.erlide.core.erlangLocatorDirector"
             name="erlide-launching.erlangSourceLocator"/>
    </extension>
@@ -114,7 +114,7 @@
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.core.services.launching.ErlangLaunchDelegate"
+            delegate="org.erlide.core.backend.launching.ErlangLaunchDelegate"
             delegateName="Erlang application"
             id="org.erlide.core.services.launching.erlangProcess"
             modes="run, debug"
@@ -124,7 +124,7 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
       <launchConfigurationType
-            delegate="org.erlide.core.services.launching.ErlangLaunchDelegate"
+            delegate="org.erlide.core.backend.launching.ErlangLaunchDelegate"
             id="org.erlide.core.services.launching.internal"
             modes="run"
             name="internal Erlang node"

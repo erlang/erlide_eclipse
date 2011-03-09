@@ -9,7 +9,7 @@
  * Vlad Dumitrescu
  * Jakob Cederlund
  *******************************************************************************/
-package org.erlide.core.services.launching;
+package org.erlide.core.backend.launching;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErtsProcess;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
@@ -46,8 +45,8 @@ import org.erlide.jinterface.ErlLogger;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.services.launching.internal";
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.services.launching.erlangProcess";
+    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.backend.launching.internal";
+    public static final String CONFIGURATION_TYPE = "org.erlide.core.backend.launching.erlangProcess";
     private ErlangDebugTarget target;
 
     public void launch(final ILaunchConfiguration config, final String mode,

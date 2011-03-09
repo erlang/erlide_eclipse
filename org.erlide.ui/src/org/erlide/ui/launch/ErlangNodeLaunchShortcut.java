@@ -38,7 +38,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErtsProcess;
+import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;

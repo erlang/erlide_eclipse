@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.backend.launching;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,14 +17,15 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
+import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.internal.backend.BackendWatcherRunnable;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
 
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.services.launching.erlangProcess";
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.services.launching.internal";
+    public static final String CONFIGURATION_TYPE = "org.erlide.core.backend.launching.erlangProcess";
+    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.backend.launching.internal";
 
     private BackendData launchData;
 

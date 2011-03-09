@@ -11,6 +11,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.jinterface.ErlLogger;
 
 public class GenericBackendData {

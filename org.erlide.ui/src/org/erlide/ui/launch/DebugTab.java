@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
@@ -56,7 +57,6 @@ import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntry;
 import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntryList;
 import org.erlide.core.model.erlang.internal.ErlOtpExternalReferenceEntryList;
-import org.erlide.core.services.launching.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
 

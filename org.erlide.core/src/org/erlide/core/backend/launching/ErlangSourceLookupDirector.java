@@ -1,4 +1,4 @@
-package org.erlide.core.services.launching;
+package org.erlide.core.backend.launching;
 
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
