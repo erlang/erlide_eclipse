@@ -80,8 +80,8 @@ start_bterl(Str) ->
     ok.
 
 init_debugger() ->
-    %% FIXME: DON'T HARDCODE THIS!
-            ?Info("initializing Debugger..."),
+    ?Info("initializing Debugger..."),
+    %% FIXME: DON'T HARDCODE THIS! wait until builder is done...
     timer:sleep(1000),
     erlide_jrpc:event(bterl_debugger, self()),
     receive
