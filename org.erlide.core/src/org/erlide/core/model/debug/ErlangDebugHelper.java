@@ -20,10 +20,6 @@ public class ErlangDebugHelper {
         try {
             final IFile beam = findModuleBeam(project, moduleName);
             if (beam != null) {
-                try {
-                    beam.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-                } catch (final CoreException e) {
-                }
                 if (beam.exists()) {
                     final String de = interpret ? "" : "de";
                     ErlLogger.debug(de + "interpret " + beam.getLocation());

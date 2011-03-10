@@ -13,25 +13,23 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.internal.backend.BackendWatcherRunnable;
+import org.erlide.core.internal.backend.ErtsWatcherRunnable;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
 
     private BackendData launchData;
 
-    public ErtsProcess(final ILaunch launch, final Process process,
-            final String name) {
-        super(launch, process, name, null);
-        ErlLogger.debug("# create ErtsProcess: " + name);
+    public ErtsProcess(final Process process, final BackendData data) {
+        super(data.getLaunch(), process, data.getNodeName(), null);
+        ErlLogger.debug("# create ErtsProcess: " + data.getNodeName());
 
-        final RuntimeInfo info = getLaunchData().getRuntimeInfo();
+        final RuntimeInfo info = data.getRuntimeInfo();
         final File workingDirectory = new File(info.getWorkingDir());
         startWatcher(info, workingDirectory, process);
     }
@@ -105,19 +103,12 @@ public class ErtsProcess extends RuntimeProcess {
 
     private void startWatcher(final RuntimeInfo info,
             final File workingDirectory, final Process process) {
-        final Runnable watcher = new BackendWatcherRunnable(info,
+        final Runnable watcher = new ErtsWatcherRunnable(info,
                 workingDirectory, process);
-        final Thread thread = new Thread(null, watcher, "BackendImpl watcher");
+        final Thread thread = new Thread(null, watcher, "ErtsProcess watcher");
         thread.setDaemon(true);
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
-    }
-
-    public BackendData getLaunchData() {
-        if (launchData == null) {
-            launchData = new BackendData(getLaunch());
-        }
-        return launchData;
     }
 
 }

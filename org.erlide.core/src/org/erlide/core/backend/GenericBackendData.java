@@ -49,8 +49,7 @@ public class GenericBackendData {
     @SuppressWarnings("rawtypes")
     public void debugPrint() {
         final String mode = debug ? "debug" : "run";
-        ErlLogger
-                .info("BackendImpl data:" + mode + " mode,  with attributes::");
+        ErlLogger.info("Backend data:" + mode + " mode,  with attributes::");
         Map attrs;
         try {
             attrs = config.getAttributes();
