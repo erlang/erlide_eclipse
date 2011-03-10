@@ -44,8 +44,8 @@ import org.erlide.jinterface.ErlLogger;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.internal";
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.erlangProcess";
+    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
+    public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)

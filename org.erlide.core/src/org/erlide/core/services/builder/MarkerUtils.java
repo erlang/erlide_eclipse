@@ -25,6 +25,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
+import org.erlide.core.model.debug.ErlangLineBreakpoint;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -419,7 +420,7 @@ public final class MarkerUtils {
             final IResource resource, final int lineNumber,
             final String modelIdentifier) throws CoreException {
         final IMarker marker = resource
-                .createMarker("org.erlide.core.model.erlang.lineBreakpoint.marker");
+                .createMarker(ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE);
         marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
         marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
         marker.setAttribute(IBreakpoint.ID, modelIdentifier);

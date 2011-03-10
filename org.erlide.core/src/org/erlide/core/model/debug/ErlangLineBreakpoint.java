@@ -32,7 +32,7 @@ import org.erlide.jinterface.ErlLogger;
 public class ErlangLineBreakpoint extends Breakpoint implements
         IErlangBreakpoint, ILineBreakpoint {
 
-    public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.model.erlang.lineBreakpoint.marker";
+    public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.erlang.lineBreakpoint.marker";
 
     private ErlangDebugTarget target;
     private String clauseHead;
