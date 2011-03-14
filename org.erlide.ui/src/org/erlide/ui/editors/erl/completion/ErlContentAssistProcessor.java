@@ -172,7 +172,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             String moduleOrRecord = null;
             final IErlProject erlProject = module.getProject();
             final IProject project = erlProject != null ? erlProject
-                    .getProject() : null;
+                    .getWorkspaceProject() : null;
             final IErlElement element = getElementAt(offset);
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {

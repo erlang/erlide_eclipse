@@ -277,7 +277,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             final boolean checked) {
         final String module = dti.getItem().getName();
         final String moduleWoExtension = CommonUtils.withoutExtension(module);
-        final IProject project = dti.getItem().getErlProject().getProject();
+        final IProject project = dti.getItem().getProject()
+                .getWorkspaceProject();
         final boolean interpret = checked;
         final RpcCallSite backend = erlangDebugTarget.getBackend();
 

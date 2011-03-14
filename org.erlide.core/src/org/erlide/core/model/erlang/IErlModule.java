@@ -65,8 +65,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
      */
     ModuleKind getModuleKind();
 
-    IErlProject getProject();
-
     Collection<IErlComment> getComments();
 
     long getTimestamp();

@@ -41,10 +41,10 @@ public class ErlModulePropertyPage extends PropertyPage implements
         final IErlModule module = ErlangCore.getModel().findModule(file);
         String value = "There is no module information about this file.";
         if (module != null) {
-            final IErlProject project = module.getErlProject();
+            final IErlProject project = module.getProject();
             final IPath beamPath = project.getOutputLocation()
                     .append(module.getModuleName()).addFileExtension("beam");
-            final IFile beam = project.getProject().getFile(beamPath);
+            final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
             // TODO should it be the build backend?
             final RpcCallSite backend = ErlangCore.getBackendManager()

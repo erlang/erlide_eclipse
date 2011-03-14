@@ -272,7 +272,7 @@ public class ErlTextHover implements ITextHover,
         final Backend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject
-                    .getProject();
+                    .getWorkspaceProject();
             final RpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 

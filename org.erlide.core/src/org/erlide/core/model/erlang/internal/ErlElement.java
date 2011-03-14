@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang.internal;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -218,17 +217,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement
      */
     public ErlModel getModel() {
-        final IErlElement ancestor = getAncestorOfKind(Kind.MODEL);
-        if (ancestor instanceof ErlModel) {
-            return (ErlModel) ancestor;
-        }
-        return null;
+        return (ErlModel) ErlangCore.getModel();
     }
 
     /**
      * @see IErlElement
      */
-    public IErlProject getErlProject() {
+    public IErlProject getProject() {
         final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
         if (ancestor instanceof IErlProject) {
             return (IErlProject) ancestor;
@@ -272,7 +267,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected IErlElement getSourceElementAt(final int position)
             throws ErlModelException {
         if (this instanceof ISourceReference) {
-            for (final IErlElement i : fChildren) {
+            for (final IErlElement i : internalGetChildren()) {
                 if (i instanceof SourceRefElement) {
                     final SourceRefElement child = (SourceRefElement) i;
                     final ISourceRange range = child.getSourceRange();
@@ -339,13 +334,13 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         // also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
         final Object elementInfo = ErlangCore.getModelManager().getInfo(this);
         if (elementInfo instanceof ErlElement) {
-            return !fChildren.isEmpty();
+            return !internalGetChildren().isEmpty();
         }
         return true;
     }
 
     public boolean hasChildrenOfKind(final Kind kind) {
-        for (final IErlElement child : fChildren) {
+        for (final IErlElement child : internalGetChildren()) {
             if (child.getKind() == kind) {
                 return true;
             }
@@ -458,19 +453,17 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         if (info == null || !(info instanceof ErlElement)) {
             return;
         }
-        if (fChildren.size() > 0) {
+        if (internalGetChildren().size() > 0) {
             buffer.append("{");
-        }
-        int i = 0;
-        for (final IErlElement element : fChildren) {
-            ((ErlElement) element).toString(tab + 1, buffer);
-            buffer.append(","); //$NON-NLS-1$
-            if (++i > 3) {
-                buffer.append("...");
-                break;
+            int i = 0;
+            for (final IErlElement element : internalGetChildren()) {
+                ((ErlElement) element).toString(tab + 1, buffer);
+                buffer.append(","); //$NON-NLS-1$
+                if (++i > 3) {
+                    buffer.append("...");
+                    break;
+                }
             }
-        }
-        if (fChildren.size() > 0) {
             buffer.deleteCharAt(buffer.length() - 1);
             buffer.append("}");
         }
@@ -508,11 +501,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         }
     }
 
-    /**
-     * Collection of handles of immediate children of this object. This is an
-     * empty array if this element has no children.
-     */
-    private final List<IErlElement> fChildren = new ArrayList<IErlElement>();
+    // /**
+    // * Collection of handles of immediate children of this object. This is an
+    // * empty array if this element has no children.
+    // */
+    // private final List<IErlElement> fChildren = new ArrayList<IErlElement>();
 
     /**
      * Is the structure of this element known
@@ -534,15 +527,16 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public List<IErlElement> getChildren() throws ErlModelException {
-        return Collections.unmodifiableList(Lists.newArrayList(fChildren));
+        return Collections.unmodifiableList(Lists
+                .newArrayList(internalGetChildren()));
     }
 
     protected List<IErlElement> internalGetChildren() {
-        return fChildren;
+        return getModel().getChildrenOf(this);
     }
 
     public int getChildCount() {
-        return fChildren.size();
+        return internalGetChildren().size();
     }
 
     /**
@@ -555,7 +549,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     public List<IErlElement> getChildrenOfKind(final Kind kind)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
-        for (final IErlElement element : fChildren) {
+        for (final IErlElement element : internalGetChildren()) {
             if (element.getKind() == kind) {
                 result.add(element);
             }
@@ -575,7 +569,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Returns <code>true</code> if this child is in my children collection
      */
     protected boolean includesChild(final IErlElement child) {
-        return fChildren.contains(child);
+        return internalGetChildren().contains(child);
     }
 
     /**
@@ -587,23 +581,22 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     public void removeChild(final IErlElement child) {
         clearCaches();
-        fChildren.remove(child);
+        getModel().removeChildOf(this, child);
     }
 
     public void removeChildren() {
         clearCaches();
-        fChildren.clear();
+        getModel().setChildrenOf(this, null);
     }
 
     public void addChild(final IErlElement child) {
         clearCaches();
-        fChildren.add(child);
+        getModel().addChildOf(this, child);
     }
 
-    public void setChildren(final Collection<? extends IErlElement> c) {
+    public void setChildren(final Collection<? extends IErlElement> children) {
         clearCaches();
-        fChildren.clear();
-        fChildren.addAll(c);
+        getModel().setChildrenOf(this, children);
     }
 
     public void setChildren(final IErlElement[] children) {
@@ -664,7 +657,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Return my corresponding resource. Overridden in IErlModule, IErlFolder
      * and IErlProject
      */
-    public IResource getCorrespondingResource() throws ErlModelException {
+    public IResource getCorrespondingResource() {
         return null;
     }
 

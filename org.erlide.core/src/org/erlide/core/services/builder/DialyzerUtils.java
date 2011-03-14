@@ -56,7 +56,7 @@ public class DialyzerUtils {
             throws InvocationTargetException {
         final Set<IErlProject> keySet = modules.keySet();
         for (final IErlProject p : keySet) {
-            final IProject project = p.getProject();
+            final IProject project = p.getWorkspaceProject();
             try {
                 final DialyzerPreferences prefs = DialyzerPreferences
                         .get(project);
@@ -152,7 +152,7 @@ public class DialyzerUtils {
             f.open(null);
             final Collection<IErlModule> folderModules = f.getModules();
             if (!folderModules.isEmpty()) {
-                final IErlProject p = f.getErlProject();
+                final IErlProject p = f.getProject();
                 Set<IErlModule> ms = modules.get(p);
                 if (ms == null) {
                     ms = new HashSet<IErlModule>();
@@ -162,7 +162,7 @@ public class DialyzerUtils {
             }
         } else if (e instanceof IErlModule) {
             final IErlModule m = (IErlModule) e;
-            final IErlProject p = m.getErlProject();
+            final IErlProject p = m.getProject();
             Set<IErlModule> ms = modules.get(p);
             if (ms == null) {
                 ms = new HashSet<IErlModule>();

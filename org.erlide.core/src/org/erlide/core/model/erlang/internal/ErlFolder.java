@@ -149,15 +149,15 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     public boolean isOnSourcePath() {
-        final IErlProject erlProject = getErlProject();
-        return ErlFolder.isOnPaths(folder, erlProject.getProject(),
-                erlProject.getSourceDirs());
+        final IErlProject project = getProject();
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getSourceDirs());
     }
 
     public boolean isOnIncludePath() {
-        final IErlProject erlProject = getErlProject();
-        return ErlFolder.isOnPaths(folder, erlProject.getProject(),
-                erlProject.getIncludeDirs());
+        final IErlProject project = getProject();
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getIncludeDirs());
     }
 
     public boolean isSourcePathParent() {
@@ -178,7 +178,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     public static boolean isOnPaths(final IContainer con,
-            final IProject project, final Collection<IPath> paths) {
+            final IContainer project, final Collection<IPath> paths) {
         final IPath path = con.getFullPath();
         for (final IPath i : paths) {
             if (i.toString().equals(".")) {
@@ -195,7 +195,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeForProject(getErlProject());
+            ErlModel.getErlModelCache().removeForProject(getProject());
         }
         super.setChildren(c);
     }
@@ -203,29 +203,29 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeForProject(getErlProject());
+            ErlModel.getErlModelCache().removeForProject(getProject());
         }
         super.clearCaches();
     }
 
-    public IErlModule findModule(final String includeName,
-            final String includePath) throws ErlModelException {
+    public IErlModule findModule(final String moduleName,
+            final String modulePath) throws ErlModelException {
         final Collection<IErlModule> modules = getModules();
-        if (includePath != null) {
+        if (modulePath != null) {
             for (final IErlModule module : modules) {
                 final String path = module.getFilePath();
-                if (path != null && path.equals(includePath)) {
+                if (path != null && path.equals(modulePath)) {
                     return module;
                 }
             }
         }
         boolean hasExtension;
-        if (includeName != null) {
-            hasExtension = CommonUtils.hasExtension(includeName);
+        if (moduleName != null) {
+            hasExtension = CommonUtils.hasExtension(moduleName);
             for (final IErlModule module : modules) {
                 final String name = hasExtension ? module.getName() : module
                         .getModuleName();
-                if (name.equals(includeName)) {
+                if (name.equals(moduleName)) {
                     return module;
                 }
             }

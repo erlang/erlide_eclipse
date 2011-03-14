@@ -7,7 +7,7 @@
 <stringAttribute key="bootstrap" value=""/>
 <stringAttribute key="checked" value="[NONE]"/>
 <booleanAttribute key="clearConfig" value="false"/>
-<booleanAttribute key="clearws" value="false"/>
+<booleanAttribute key="clearws" value="true"/>
 <booleanAttribute key="clearwslog" value="false"/>
 <booleanAttribute key="com.mountainminds.eclemma.core.INPLACE_INSTRUMENTATION" value="true"/>
 <listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
@@ -26,7 +26,7 @@
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Erlide_tests"/>
 <booleanAttribute key="default" value="true"/>
 <booleanAttribute key="includeOptional" value="true"/>
-<stringAttribute key="location" value="${workspace_loc}/../runtime-tests"/>
+<stringAttribute key="location" value="${workspace_loc}/junit-workspace"/>
 <mapAttribute key="org.eclipse.debug.core.preferred_launchers">
 <mapEntry key="[debug]" value="org.eclipse.pde.ui.RuntimeWorkbench"/>
 <mapEntry key="[run]" value="org.eclipse.pde.ui.RuntimeWorkbench"/>

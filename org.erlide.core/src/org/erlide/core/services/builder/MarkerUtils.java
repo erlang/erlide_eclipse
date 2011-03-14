@@ -376,7 +376,7 @@ public final class MarkerUtils {
         if (result == null) {
             return;
         }
-        final IProject p = project.getProject();
+        final IProject p = project.getWorkspaceProject();
         for (final OtpErlangObject i : result) {
             final OtpErlangTuple t = (OtpErlangTuple) i;
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);

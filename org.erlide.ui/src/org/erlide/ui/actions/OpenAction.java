@@ -141,13 +141,13 @@ public class OpenAction extends SelectionDispatchAction {
         final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
         final int offset = selection.getOffset();
         try {
-            final IErlProject erlProject = module.getErlProject();
+            final IErlProject project = module.getProject();
             final IErlModel model = ErlangCore.getModel();
             final OpenResult res = ErlideOpen.open(b, module, offset,
                     ModelUtils.getImportsAsList(module),
-                    erlProject.getExternalModulesString(), model.getPathVars());
+                    project.getExternalModulesString(), model.getPathVars());
             ErlLogger.debug("open " + res);
-            openOpenResult(editor, module, b, offset, erlProject, res);
+            openOpenResult(editor, module, b, offset, project, res);
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }

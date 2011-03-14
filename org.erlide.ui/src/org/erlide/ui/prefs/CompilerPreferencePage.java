@@ -367,7 +367,7 @@ public class CompilerPreferencePage extends PropertyPage implements
             final IErlModel model = ErlangCore.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
-                    final IProject p = ep.getProject();
+                    final IProject p = ep.getWorkspaceProject();
                     if (hasProjectSpecificOptions(p)) {
                         projectsWithSpecifics.add(p);
                     }

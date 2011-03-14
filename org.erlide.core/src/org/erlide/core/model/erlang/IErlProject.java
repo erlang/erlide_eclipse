@@ -53,15 +53,6 @@ import org.osgi.service.prefs.BackingStoreException;
 public interface IErlProject extends IErlFolder {
 
     /**
-     * Returns the <code>IProject</code> on which this <code>IErlProject</code>
-     * was created. This is handle-only method.
-     * 
-     * @return the <code>IProject</code> on which this <code>IErlProject</code>
-     *         was created
-     */
-    IProject getProject();
-
-    /**
      * Sets the default output location of this project to the location
      * described by the given workspace-relative absolute path.
      * 
@@ -108,8 +99,6 @@ public interface IErlProject extends IErlFolder {
     Collection<IErlModule> getIncludes() throws ErlModelException;
 
     Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
-
-    // IOldErlangProjectProperties getProperties();
 
     Collection<IErlModule> getExternalModules() throws ErlModelException;
 
@@ -179,5 +168,7 @@ public interface IErlProject extends IErlFolder {
 
     IErlModule findInclude(String includeName, String includePath, Scope scope)
             throws ErlModelException;
+
+    IProject getWorkspaceProject();
 
 }
