@@ -8,8 +8,7 @@ Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core;bundle-version="3.5.1",
  org.erlide.jinterface;bundle-version="0.9.0",
- org.erlide.core;bundle-version="0.9.0",
- org.erlide.backend;bundle-version="0.9.5"
+ org.erlide.core;bundle-version="0.10.2"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.log4j,

@@ -7,7 +7,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverEvent;
@@ -15,7 +16,6 @@ import org.erlide.cover.core.CoverException;
 import org.erlide.cover.core.CoverStatus;
 import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.jinterface.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

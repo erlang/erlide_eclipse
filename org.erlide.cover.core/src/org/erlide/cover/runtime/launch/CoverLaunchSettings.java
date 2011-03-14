@@ -3,8 +3,8 @@ package org.erlide.cover.runtime.launch;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.core.CoverException;
 import org.erlide.cover.core.api.Configuration;
 import org.erlide.cover.core.api.IConfiguration;

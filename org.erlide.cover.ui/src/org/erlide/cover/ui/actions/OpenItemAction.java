@@ -17,10 +17,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
@@ -80,13 +81,19 @@ public class OpenItemAction extends Action {
             
             ErlangEditor editor = (ErlangEditor)p;
             
-            IErlModule module = ErlangCore.getModel().findModule(moduleName);
-            
-            IErlFunction f = module.findFunction(
-            		new ErlangFunction(fs.getLabel(), fs.getArity()));
-            
-            editor.setSelection(f);
-           
+            IErlModule module;
+            try {
+                module = ErlangCore.getModel().findModule(moduleName);
+                
+                IErlFunction f = module.findFunction(
+                        new ErlangFunction(fs.getLabel(), fs.getArity()));
+                
+                editor.setSelection(f);
+                
+            } catch (ErlModelException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             
         } else {
             // TODO: should be disabled
@@ -97,7 +104,14 @@ public class OpenItemAction extends Action {
 
         // search
     	
-    	IErlModule module = ErlangCore.getModel().findModule(name);
+    	IErlModule module;
+        try {
+            module = ErlangCore.getModel().findModule(name);
+        } catch (ErlModelException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            return null;
+        }
     	
     	log.debug(module.getFilePath());
     	

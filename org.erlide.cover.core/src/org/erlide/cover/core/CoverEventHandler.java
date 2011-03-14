@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
 import org.erlide.cover.core.api.CoveragePerformer;
 import org.erlide.cover.core.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
@@ -15,8 +17,6 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
-import org.erlide.jinterface.backend.events.ErlangEvent;
-import org.erlide.jinterface.backend.events.EventHandler;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.erlide.core.backend.BackendException;
 import org.erlide.cover.constants.TestConstants;
 import org.erlide.cover.core.api.CoveragePerformer;
 import org.erlide.cover.core.api.IConfiguration;
-import org.erlide.jinterface.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

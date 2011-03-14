@@ -14,10 +14,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.cover.core.api.CoveragePerformer;
-import org.erlide.cover.core.api.IConfiguration;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ICoverageStats;
 import org.erlide.cover.views.model.ObjectType;
@@ -52,13 +50,14 @@ public class StatsViewLabelProvider extends LabelProvider implements
                         .createImage();
                 break;
             case MODULE:
-                Set<IErlModule> mods = ErlangCore.getModuleMap()
+             /*   Set<IErlModule> mods = ErlangCore.getModuleMap()
                         .getModulesByName(statsEl.getLabel());
                 IErlModule m = mods.iterator().next();
                 if (m == null)
                     return null;
                 img = ErlangElementImageProvider.getErlImageDescriptor(m,
-                        ErlangElementImageProvider.SMALL_ICONS).createImage();
+                        ErlangElementImageProvider.SMALL_ICONS).createImage();*/
+                //TODO
                 break;
             case FOLDER:
                 img = PlatformUI.getWorkbench().getSharedImages()

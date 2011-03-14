@@ -1,9 +1,7 @@
 package org.erlide.cover.core;
 
 import java.net.URL;
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,20 +15,17 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.cover.core.api.CoverAPI;
-import org.erlide.cover.core.api.IConfiguration;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendOptions;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
-import org.erlide.cover.runtime.launch.LaunchType;
-import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.backend.ErtsProcess;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendManager.BackendOptions;
+
 
 
 /**
@@ -111,7 +106,7 @@ public class CoverBackend {
 
         try {
             backend = createBackend();
-            backend.restart();
+            //backend.restart();
             backend.getEventDaemon().addHandler(handler);
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
@@ -203,7 +198,7 @@ public class CoverBackend {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(ErtsProcess.ATTR_CMDLINE);
         ILaunchConfigurationWorkingCopy workingCopy;
 
         nodeName = info.getNodeName();

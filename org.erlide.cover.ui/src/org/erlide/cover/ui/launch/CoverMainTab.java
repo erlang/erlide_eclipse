@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -25,17 +26,16 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.cover.runtime.launch.FrameworkType;
 import org.erlide.cover.runtime.launch.ICoverAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**
@@ -136,7 +136,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
             if (projectName != null && projectName.length() > 0) {
                 final IErlProject p = ErlangCore.getModel().getErlangProject(
-                        projectName);
+                        ResourcesPlugin.getWorkspace().getRoot()
+                                .getProject(projectName));
                 if (p != null) {
                     moduleDialog.setElements(createModuleArray(p));
                 }
@@ -291,7 +292,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 final String projectName = projectMBr.getText();
                 if (projectName != null && projectName.length() > 0) {
                     final IErlProject p = ErlangCore.getModel()
-                            .getErlangProject(projectName);
+                            .getErlangProject(
+                                    ResourcesPlugin.getWorkspace().getRoot()
+                                            .getProject(projectName));
                     if (p != null) {
                         moduleDialog.setElements(createModuleArray(p));
                     }

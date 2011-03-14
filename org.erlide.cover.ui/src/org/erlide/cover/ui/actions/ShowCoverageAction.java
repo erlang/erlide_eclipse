@@ -2,10 +2,6 @@ package org.erlide.cover.ui.actions;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlangFunction;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeObject;

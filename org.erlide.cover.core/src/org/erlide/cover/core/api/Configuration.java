@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlModuleMap;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.preferences.OldErlangProjectProperties;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
 import org.erlide.cover.core.CoverException;
 
 /**
@@ -31,12 +31,13 @@ public class Configuration implements IConfiguration {
     private Logger log; // logger
 
     public Configuration() {
-        modules = new HashMap<String,IErlModule>();
+        modules = new HashMap<String, IErlModule>();
         log = Logger.getLogger(getClass());
     }
 
     public void setProject(String name) {
-        project = ErlangCore.getModel().getErlangProject(name);
+        project = ErlangCore.getModel().getErlangProject(
+                ResourcesPlugin.getWorkspace().getRoot().getProject(name));
         props = new OldErlangProjectProperties(project.getProject());
     }
 
@@ -44,13 +45,14 @@ public class Configuration implements IConfiguration {
 
         if (project == null)
             throw new CoverException("no project set");
-        IErlModule module = null; //project.getModule(name);
-        IErlModuleMap m = ErlangCore.getModuleMap();
+        IErlModule module = null; // project.getModule(name);
+       /* IErlModuleMap m = ErlangCore.getModuleMap();
         Set<IErlModule> mods = ErlangCore.getModuleMap().getModulesByName(name);
-            module = mods.iterator().next();
+        module = mods.iterator().next();
         if (module != null)
-            modules.put(name, module);
-        
+            modules.put(name, module);*/
+        //TODO !!!!!!!
+
         // else: no such module??
     }
 
