@@ -66,58 +66,6 @@ public class ErlFolder extends Openable implements IErlFolder {
         }
     }
 
-    /**
-     * Find named module, search recursively. Should we use a visitor instead?
-     * 
-     * @param parent
-     * @param name
-     * @return
-     */
-    // public static IErlModule getModule(final IParent parent, final String
-    // name,
-    // final boolean caseinsensitive) {
-    // try {
-    // if (parent instanceof IOpenable) {
-    // final IOpenable o = (IOpenable) parent;
-    // o.open(null);
-    // }
-    // final boolean hasExtension = ErlideUtil.hasExtension(name);
-    // for (final IErlElement e : parent.getChildren()) {
-    // if (e instanceof IErlModule) {
-    // final IErlModule m = (IErlModule) e;
-    // final String moduleName = hasExtension ? m.getName() : m
-    // .getModuleName();
-    // if (caseinsensitive) {
-    // if (moduleName.equalsIgnoreCase(name)) {
-    // return m;
-    // }
-    // } else {
-    // if (moduleName.equals(name)) {
-    // return m;
-    // }
-    // }
-    // } else if (e instanceof IParent) {
-    // final IParent p = (IParent) e;
-    // final IErlModule m = getModule(p, name, caseinsensitive);
-    // if (m != null) {
-    // return m;
-    // }
-    // }
-    // }
-    // } catch (final ErlModelException e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
-    //
-    // public IErlModule getModule(final String name) throws ErlModelException {
-    // return getModule(this, name, false);
-    // }
-    //
-    // public IErlModule getModuleExt(final String name) {
-    // return getModule(this, name, true);
-    // }
-
     /*
      * (non-Javadoc)
      * 

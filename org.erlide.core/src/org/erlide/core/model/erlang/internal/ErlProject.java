@@ -46,7 +46,6 @@ import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlElementVisitor;
@@ -435,19 +434,6 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     /**
-     * @throws CoreException
-     * @see IErlProject#getRequiredProjectNames()
-     */
-    public Collection<String> getRequiredProjectNames() throws CoreException {
-        final List<String> result = Lists.newArrayList();
-        final IProject[] prjs = fProject.getReferencedProjects();
-        for (final IProject p : prjs) {
-            result.add(p.getName());
-        }
-        return result;
-    }
-
-    /**
      * @see IErlElement
      */
     @Override
@@ -537,21 +523,6 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     /**
-     * @see IErlProject
-     */
-    public void setOutputLocation(final IPath path,
-            final IProgressMonitor monitor) throws ErlModelException {
-        if (path == null) {
-            throw new IllegalArgumentException(Util.bind("path.nullPath")); //$NON-NLS-1$
-        }
-        if (path.equals(getOutputLocation())) {
-            return;
-        }
-        // this.setRawClasspath(SetClasspathOperation.ReuseClasspath, path,
-        // monitor);
-    }
-
-    /**
      * Sets the underlying kernel project of this Erlang project, and fills in
      * its parent and name. Called by IProject.getNature().
      * 
@@ -579,7 +550,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         } else {
             result.addAll(getModulesOrIncludes(fProject, getModel(),
-                    getSourceDirs()));
+                    getSourceDirs(), true));
         }
         ErlModel.getErlModelCache().putModulesForProject(this, result);
         return result;
@@ -587,7 +558,8 @@ public class ErlProject extends Openable implements IErlProject {
 
     private static List<IErlModule> getModulesOrIncludes(
             final IProject project, final IErlModel model,
-            final Collection<IPath> dirs) throws ErlModelException {
+            final Collection<IPath> dirs, final boolean getModules)
+            throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
         for (final IPath dir : dirs) {
             final IFolder folder = project.getFolder(dir);
@@ -599,7 +571,11 @@ public class ErlProject extends Openable implements IErlProject {
                         .getChildrenOfKind(Kind.MODULE)) {
                     if (e instanceof IErlModule) {
                         final IErlModule m = (IErlModule) e;
-                        result.add(m);
+                        final boolean isModule = ModuleKind.nameToModuleKind(m
+                                .getName()) != ModuleKind.HRL;
+                        if (isModule == getModules) {
+                            result.add(m);
+                        }
                     }
                 }
             }
@@ -634,7 +610,7 @@ public class ErlProject extends Openable implements IErlProject {
                     result.addAll(cached);
                 } else {
                     final List<IErlModule> modules = getModulesOrIncludes(
-                            fProject, model, getSourceDirs());
+                            fProject, model, getSourceDirs(), true);
                     result.addAll(modules);
                 }
                 final Collection<IErlModule> includes = getIncludes();
@@ -652,7 +628,7 @@ public class ErlProject extends Openable implements IErlProject {
             return cached;
         }
         final List<IErlModule> includes = getModulesOrIncludes(fProject,
-                getModel(), getIncludeDirs());
+                getModel(), getIncludeDirs(), false);
         erlModelCache.putIncludesForProject(this, includes);
         return includes;
     }
