@@ -409,21 +409,25 @@ public final class ErlParser {
                     final List<ErlRecordField> children = Lists
                             .newArrayListWithCapacity(fields.arity());
                     for (final OtpErlangObject o : fields.elements()) {
-                        final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
-                        final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
-                                .elementAt(0);
-                        final String fieldName = fieldNameAtom.atomValue();
-                        final ErlRecordField field = new ErlRecordField(r,
-                                fieldName);
-                        final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
-                                .elementAt(1);
-                        if (fieldTuple.arity() > 2) {
-                            final OtpErlangObject fieldExtra = fieldTuple
-                                    .elementAt(2);
-                            field.setExtra(Util.stringValue(fieldExtra));
+                        if (o instanceof OtpErlangTuple) {
+                            final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
+                            final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
+                                    .elementAt(0);
+                            final String fieldName = fieldNameAtom.atomValue();
+                            final ErlRecordField field = new ErlRecordField(r,
+                                    fieldName);
+                            final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
+                                    .elementAt(1);
+                            if (fieldTuple.arity() > 2) {
+                                final OtpErlangObject fieldExtra = fieldTuple
+                                        .elementAt(2);
+                                field.setExtra(Util.stringValue(fieldExtra));
+                            }
+                            setPos(field, posTuple, false);
+                            children.add(field);
+                        } else {
+                            ErlLogger.error("bad record def: %s", o);
                         }
-                        setPos(field, posTuple, false);
-                        children.add(field);
                     }
                     r.setChildren(children);
                 } else {
