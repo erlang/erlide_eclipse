@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.common.Util;
@@ -268,7 +269,7 @@ public class ErlTextHover implements ITextHover,
                 .toString();
         final IErlProject erlProject = module.getProject();
 
-        final BackendManager backendManager = ErlangCore.getBackendManager();
+        final BackendManager backendManager = BackendCore.getBackendManager();
         final Backend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject

@@ -19,9 +19,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.common.BeamUtil;
@@ -143,7 +143,7 @@ public class CodeManager {
                                 ErlLogger.error("Could not load %s",
                                         beamModuleName);
                             }
-                            ErlangCore.getBackendManager().moduleLoaded(
+                            BackendCore.getBackendManager().moduleLoaded(
                                     backend, null, beamModuleName);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);

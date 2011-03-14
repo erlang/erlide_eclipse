@@ -12,7 +12,7 @@ package org.erlide.testing.erlang;
 
 import static org.junit.Assert.fail;
 
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.RpcCallSite;
 import org.junit.After;
 import org.junit.Before;
@@ -27,7 +27,7 @@ public abstract class AbstractErlangTest {
 
     @Before
     public void setUp() throws Exception {
-        fBackend = ErlangCore.getBackendManager().getIdeBackend();
+        fBackend = BackendCore.getBackendManager().getIdeBackend();
     }
 
     @After

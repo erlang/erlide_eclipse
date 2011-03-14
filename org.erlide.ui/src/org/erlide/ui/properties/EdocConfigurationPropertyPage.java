@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -75,7 +75,7 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
     @Override
     protected Control createContents(final Composite parent) {
         fInitialLocation = null;
-        final String s = ErlideDoc.getOtpDocLocation(ErlangCore
+        final String s = ErlideDoc.getOtpDocLocation(BackendCore
                 .getBackendManager().getIdeBackend());
         try {
             fInitialLocation = new URL("file", null, s);

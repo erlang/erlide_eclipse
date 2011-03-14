@@ -14,8 +14,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
@@ -28,7 +28,7 @@ public class BackendManagerPopup implements BackendListener {
     }
 
     public static void init() {
-        ErlangCore.getBackendManager().addBackendListener(fInstance);
+        BackendCore.getBackendManager().addBackendListener(fInstance);
     }
 
     public void runtimeAdded(final Backend b) {

@@ -87,7 +87,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         loadPrefs(root);
     }
 
-    private synchronized void loadDefaultPrefs() {
+    private void loadDefaultPrefs() {
         final IPreferencesService ps = Platform.getPreferencesService();
         final String DEFAULT_ID = "org.erlide";
 
@@ -116,7 +116,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         defaultRuntimeName = defName;
     }
 
-    private synchronized void loadPrefs(final IEclipsePreferences root) {
+    private void loadPrefs(final IEclipsePreferences root) {
         final String defrt = root.get("default", null);
         if (defrt != null) {
             defaultRuntimeName = defrt;
@@ -150,7 +150,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                 .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
     }
 
-    public void setRuntimes(final Collection<RuntimeInfo> elements) {
+    public synchronized void setRuntimes(final Collection<RuntimeInfo> elements) {
         fRuntimes.clear();
         for (final RuntimeInfo rt : elements) {
             fRuntimes.put(rt.getName(), rt);
@@ -158,14 +158,14 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         notifyListeners();
     }
 
-    public void addRuntime(final RuntimeInfo rt) {
+    public synchronized void addRuntime(final RuntimeInfo rt) {
         if (!fRuntimes.containsKey(rt.getName())) {
             fRuntimes.put(rt.getName(), rt);
         }
         notifyListeners();
     }
 
-    public Collection<String> getRuntimeNames() {
+    public synchronized Collection<String> getRuntimeNames() {
         return fRuntimes.keySet();
     }
 

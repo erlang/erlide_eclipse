@@ -23,6 +23,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
@@ -59,7 +60,7 @@ public class GlobalParameters {
         if (isQCchecked) {
             return hasQuickCheck;
         } else {
-            final RpcResult res = ErlangCore.getBackendManager()
+            final RpcResult res = BackendCore.getBackendManager()
                     .getIdeBackend()
                     .call_noexception("code", "which", "a", "eqc");
             if (!res.isOk()) {

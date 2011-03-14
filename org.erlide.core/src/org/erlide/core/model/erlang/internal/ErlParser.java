@@ -13,9 +13,9 @@ package org.erlide.core.model.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -60,7 +60,7 @@ public final class ErlParser {
     public static boolean parse(final IErlModule module,
             final String scannerName, final boolean initialParse,
             final String path, final boolean useCaches) {
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null || module == null) {
             return false;
         }
@@ -174,7 +174,7 @@ public final class ErlParser {
         if ("error".equals(typeS)) {
             final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
-            final String msg = BackendHelper.format_error(ErlangCore
+            final String msg = BackendHelper.format_error(BackendCore
                     .getBackendManager().getIdeBackend(), er);
 
             final ErlMessage e = new ErlMessage(module,
@@ -537,7 +537,7 @@ public final class ErlParser {
             return new OtpErlangList(res);
         }
         try {
-            return BackendHelper.concreteSyntax(ErlangCore.getBackendManager()
+            return BackendHelper.concreteSyntax(BackendCore.getBackendManager()
                     .getIdeBackend(), val);
         } catch (final Exception e) {
             return val;

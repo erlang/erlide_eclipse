@@ -9,8 +9,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.erlang.internal.PreferencesHelper;
@@ -90,7 +90,7 @@ public class DialyzerPreferences {
         if (pltFilesString.length() > 0) {
             ErlLogger.debug("%s: '%s'", key, pltFilesString);
         }
-        return ErlideDialyze.getPltFiles(ErlangCore.getBackendManager()
+        return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
                 .getIdeBackend(), pltFilesString);
     }
 

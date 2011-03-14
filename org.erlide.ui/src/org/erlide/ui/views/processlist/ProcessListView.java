@@ -43,8 +43,8 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlideBackendVisitor;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
@@ -191,7 +191,7 @@ public class ProcessListView extends ViewPart {
                 new org.eclipse.swt.graphics.Point(319, 18));
         backends.setContentProvider(new BackendContentProvider());
         backends.setLabelProvider(new BackendLabelProvider());
-        backends.setInput(ErlangCore.getBackendManager());
+        backends.setInput(BackendCore.getBackendManager());
         viewer = new TableViewer(container, SWT.SINGLE | SWT.V_SCROLL
                 | SWT.FULL_SELECTION);
         final Table table = viewer.getTable();
@@ -225,12 +225,12 @@ public class ProcessListView extends ViewPart {
         t.setHeaderVisible(true);
 
         // TODO this is wrong - all backends should be inited
-        final Backend ideBackend = ErlangCore.getBackendManager()
+        final Backend ideBackend = BackendCore.getBackendManager()
                 .getIdeBackend();
         if (ideBackend != null) {
             ErlideProclist.processListInit(ideBackend);
         }
-        ErlangCore.getBackendManager().forEachBackend(
+        BackendCore.getBackendManager().forEachBackend(
                 new ErlideBackendVisitor() {
                     public void visit(final Backend b) {
                         ErlideProclist.processListInit(b);
@@ -352,7 +352,7 @@ public class ProcessListView extends ViewPart {
             final Backend b = (Backend) sel.getFirstElement();
             return b;
         }
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend b = BackendCore.getBackendManager().getIdeBackend();
         if (b != null) {
             backends.setSelection(new StructuredSelection(b));
             return b;

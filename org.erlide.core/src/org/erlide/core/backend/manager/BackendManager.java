@@ -55,13 +55,11 @@ import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public final class BackendManager extends OtpNodeStatus implements
-        IEpmdListener {
+public final class BackendManager implements IEpmdListener {
 
     public enum BackendEvent {
         ADDED, REMOVED, MODULE_LOADED
@@ -270,14 +268,13 @@ public final class BackendManager extends OtpNodeStatus implements
         for (final String b : started) {
             final String name = b + "@" + host;
             // ErlLogger.debug("(epmd) started: '%s'", name);
-            remoteStatus(name, true, null);
+            remoteNodeStatus(name, true, null);
         }
         for (final String b : stopped) {
             final String name = b + "@" + host;
             // ErlLogger.debug("(epmd) stopped: '%s'", name);
-            remoteStatus(name, false, null);
+            remoteNodeStatus(name, false, null);
         }
-
     }
 
     public synchronized void addExecutionBackend(final IProject project,
@@ -329,14 +326,6 @@ public final class BackendManager extends OtpNodeStatus implements
         }
     }
 
-    @Override
-    public void remoteStatus(final String node, final boolean up,
-            final Object info) {
-        // final String dir = up ? "up" : "down";
-        // ErlLogger.debug(String.format("@@: %s %s %s", node, dir, info));
-        remoteNodeStatus(node, up, info);
-    }
-
     void notifyBackendChange(final Backend b, final BackendEvent type,
             final IProject project, final String moduleName) {
         if (listeners == null) {
@@ -369,7 +358,7 @@ public final class BackendManager extends OtpNodeStatus implements
             if (!extension.isValid()) {
                 continue;
             }
-            ErlangCore.getBackendManager().addCodeBundle(extension);
+            BackendCore.getBackendManager().addCodeBundle(extension);
         }
     }
 

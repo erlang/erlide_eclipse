@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PlatformChangeListener;
@@ -125,7 +126,7 @@ public class ErlangPlugin extends Plugin {
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
         runtimeInfoInitializer.initializeRuntimesList();
 
-        ErlangCore.getBackendManager().loadCodepathExtensions();
+        BackendCore.getBackendManager().loadCodepathExtensions();
 
         ResourcesPlugin.getWorkspace().addSaveParticipant(this,
                 new ISaveParticipant() {
