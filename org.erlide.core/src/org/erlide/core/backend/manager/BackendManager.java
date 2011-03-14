@@ -34,6 +34,7 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendListener;
@@ -79,16 +80,7 @@ public final class BackendManager extends OtpNodeStatus implements
     private final BackendManagerLaunchListener launchListener;
     private final BackendFactory factory;
 
-    @SuppressWarnings("synthetic-access")
-    private static final class LazyBackendManagerHolder {
-        public static final BackendManager instance = new BackendManager();
-    }
-
-    public static final BackendManager getDefault() {
-        return LazyBackendManagerHolder.instance;
-    }
-
-    private BackendManager() {
+    public BackendManager() {
         ideBackend = null;
         executionBackends = Maps.newHashMap();
         buildBackends = Maps.newHashMap();
@@ -104,7 +96,7 @@ public final class BackendManager extends OtpNodeStatus implements
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
-        factory = new BackendFactory();
+        factory = BackendCore.getBackendFactory();
 
         // TODO remove this when all users have cleaned up
         cleanupInternalLCs();

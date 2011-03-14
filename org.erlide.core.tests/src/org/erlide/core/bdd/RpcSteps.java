@@ -2,9 +2,9 @@ package org.erlide.core.bdd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 import org.jbehave.core.annotations.Given;
@@ -22,7 +22,7 @@ public class RpcSteps {
     @Given("a backend")
     public void aBackend() {
         System.out.println("GIVEN");
-        backend = BackendManager.getDefault().getIdeBackend();
+        backend = ErlangCore.getBackendManager().getIdeBackend();
     }
 
     @When("a rpc is done with args $m:$f($a)")

@@ -38,6 +38,8 @@ import org.erlide.core.model.erlang.internal.ErlModelManager;
  */
 public final class ErlangCore {
 
+    private static BackendManager backendManager;
+
     public static final IErlModelManager getModelManager() {
         return ErlModelManager.getDefault();
     }
@@ -47,7 +49,10 @@ public final class ErlangCore {
     }
 
     public static final BackendManager getBackendManager() {
-        return BackendManager.getDefault();
+        if (backendManager == null) {
+            backendManager = new BackendManager();
+        }
+        return backendManager;
     }
 
     // public static IOldErlangProjectProperties getProjectProperties(

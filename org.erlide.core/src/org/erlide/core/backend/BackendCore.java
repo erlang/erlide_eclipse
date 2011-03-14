@@ -10,14 +10,14 @@ public class BackendCore {
 
     public static final RuntimeInfoManager getRuntimeInfoManager() {
         if (runtimeInfoManager == null) {
-            runtimeInfoManager = RuntimeInfoManager.getDefault();
+            runtimeInfoManager = new RuntimeInfoManager();
         }
         return runtimeInfoManager;
     }
 
     public static final BackendFactory getBackendFactory() {
         if (backendFactory == null) {
-            backendFactory = new BackendFactory();
+            backendFactory = new BackendFactory(getRuntimeInfoManager());
         }
         return backendFactory;
     }
