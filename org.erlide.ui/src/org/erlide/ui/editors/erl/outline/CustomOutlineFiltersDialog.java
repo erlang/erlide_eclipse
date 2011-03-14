@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.common.CommonUtils;
 import org.erlide.ui.util.SWTUtil;
 
 import com.google.common.collect.Lists;
@@ -164,7 +164,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     private String convertToString(final List<String> patterns,
             final String separator) {
-        return ErlideUtil.packList(patterns, separator);
+        return CommonUtils.packList(patterns, separator);
     }
 
     @SuppressWarnings("unchecked")
@@ -335,7 +335,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     private List<String> convertFromString(final String text,
             final String separator) {
-        return ErlideUtil.unpackList(text, separator);
+        return CommonUtils.unpackList(text, separator);
     }
 
     /**

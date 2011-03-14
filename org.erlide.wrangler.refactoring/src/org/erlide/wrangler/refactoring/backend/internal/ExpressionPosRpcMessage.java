@@ -28,7 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * RpcResult parser which parses object which got from Fold expression
+ * RpcResultImpl parser which parses object which got from Fold expression
  * refactorings
  * 
  * @author Gyorgy Orosz

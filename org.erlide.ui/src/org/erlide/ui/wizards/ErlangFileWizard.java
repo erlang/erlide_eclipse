@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.util.ErlideUtil;
+import org.erlide.core.common.CommonUtils;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -130,7 +130,7 @@ public class ErlangFileWizard extends Wizard implements INewWizard {
         }
         final IContainer container = (IContainer) resource;
         IPath path = new Path(fileName);
-        if (!ErlideUtil.isErlangFileContentFileName(fileName)) {
+        if (!CommonUtils.isErlangFileContentFileName(fileName)) {
             path = path.addFileExtension("erl");
         }
         final IFile file = container.getFile(path);

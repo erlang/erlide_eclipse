@@ -20,18 +20,17 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlMember;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.services.text.ErlideIndent;
+import org.erlide.core.services.text.IndentResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
-
-import erlang.ErlideIndent;
-import erlang.IndentResult;
 
 /**
  * The erlang auto indent strategy
@@ -82,7 +81,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+            final RpcCallSite b = ErlangCore.getBackendManager()
+                    .getIdeBackend();
             final int tabw = getTabWidthFromPreferences();
 
             final Map<String, String> prefs = new TreeMap<String, String>();

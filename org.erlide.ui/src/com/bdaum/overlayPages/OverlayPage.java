@@ -37,7 +37,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * @author Berthold Daum

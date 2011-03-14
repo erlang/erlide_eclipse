@@ -2,6 +2,7 @@ package org.erlide.core.preferences;
 
 import junit.framework.Assert;
 
+import org.erlide.core.common.Base64;
 import org.junit.Test;
 
 public class Base64Test {

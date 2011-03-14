@@ -594,7 +594,12 @@ stop(Opts) when is_list(Opts) ->
             undefined -> ok;
             Pid when is_pid(Pid) -> 
                 ?MODULE ! {stop,Fetch,self()},
-                receive {?MODULE,R} -> R end
+                receive 
+                    {?MODULE,R} -> 
+                        R 
+                after 5000 -> 
+                        erlide_log:log("no answer from ttbe:stop") 
+                end
         end,
     stop_return(Result,Opts);
 stop(Opts) ->
@@ -1249,7 +1254,7 @@ get_term(B) ->
     end.
 
 display_warning(Item,Warning) ->
-    io:format("Warning: {~w,~w}~n",[Warning,Item]).
+    erlide_log:logp("Warning: {~w, ~w}~n",[Warning,Item]).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

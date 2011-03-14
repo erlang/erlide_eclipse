@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
-   <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
-   <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
-   <extension-point id="messageReporter" name="messageReporter" schema="schema/messageReporter.exsd"/>
-</plugin>

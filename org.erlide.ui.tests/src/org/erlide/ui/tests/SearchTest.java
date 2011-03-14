@@ -6,9 +6,13 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.internal.search.ErlSearchQuery;
 import org.erlide.ui.internal.search.ErlangSearchElement;
@@ -18,11 +22,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlangSearchPattern.SearchFor;
 
 public class SearchTest {
 
@@ -48,7 +47,7 @@ public class SearchTest {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModules();
+        ErlideTestUtils.initModulesAndIncludes();
     }
 
     @After

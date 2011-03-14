@@ -80,10 +80,6 @@
             		</or>
            		 </iterate>
               </with>
-              <systemTest
-                    property="shade.bterl.false"
-                    value="true">
-              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
@@ -108,10 +104,6 @@
             		</or>
            		 </iterate>
               </with>
-              <systemTest
-                    property="shade.bterl.false"
-                    value="true">
-              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
@@ -136,10 +128,6 @@
             		</or>
            		 </iterate>
               </with>
-              <systemTest
-                    property="shade.bterl.false"
-                    value="true">
-              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
@@ -185,7 +173,7 @@
    </requires-nature>
 </extension>
 <extension
-      point="org.erlide.backend.sourcePathProvider">
+      point="org.erlide.core.sourcePathProvider">
    <sourcePathProvider
          class="org.erlide.test_support.TestSourcePathProvider">
    </sourcePathProvider>
@@ -193,21 +181,21 @@
 <extension
       point="org.eclipse.core.runtime.adapters">
    <factory
-         adaptableType="org.erlide.core.erlang.IErlFunction"
+         adaptableType="org.erlide.core.model.erlang.IErlFunction"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.core.erlang.IErlFunctionClause"
+         adaptableType="org.erlide.core.model.erlang.IErlFunctionClause"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.core.erlang.IErlModule"
+         adaptableType="org.erlide.core.model.erlang.IErlModule"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
@@ -221,11 +209,4 @@
             default="false">
       </support>
    </extension-->
-   <extension
-         point="org.erlide.backend.codepath">
-      <beam_dir
-            context="any"
-            path="ebin">
-      </beam_dir>
-   </extension>
 </plugin>

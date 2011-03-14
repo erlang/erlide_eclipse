@@ -41,7 +41,7 @@ scanner_light_scan_string_test_() ->
                           ?TOK_WS, 0:24, 6:24, 1:24,
                           ?TOK_ATOM, 0:24, 7:24, 1:24,
                           ?TOK_DOT, 0:24, 8:24, 1:24>>},
-                       erlide_scanner:light_scan_string(<<"a() -> b.">>))].
+                       erlide_scanner:light_scan_string(<<"a() -> b.">>, latin1))].
 
 scanner_test_() ->
 	[?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a},

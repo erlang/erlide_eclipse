@@ -2,53 +2,38 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.10.1.qualifier
+Bundle-Version: 0.10.2.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: erlang,
- org.erlide.core,
- org.erlide.core.builder,
- org.erlide.core.builder.internal;x-friends:="org.erlide.test_support",
- org.erlide.core.erlang,
- org.erlide.core.erlang.internal;x-friends:="org.erlide.tracing.core",
- org.erlide.core.erlang.util,
- org.erlide.core.internal;x-internal:=true,
- org.erlide.core.platform,
- org.erlide.core.preferences,
- org.erlide.core.search;x-friends:="org.erlide.ui";
-  uses:="org.eclipse.debug.core.sourcelookup,
-   org.erlide.jinterface,
-   org.osgi.framework,
-   org.eclipse.core.resources,
-   org.eclipse.core.runtime,
-   org.eclipse.debug.core",
- org.erlide.core.text,
- org.erlide.core.util,
- org.erlide.runtime.backend,
- org.erlide.runtime.backend.internal;x-internal:=true,
- org.erlide.runtime.debug;
-  x-friends:="org.erlide.ui,
-   org.erlide.test_support,
-   org.erlide.cover.core";
-  uses:="com.ericsson.otp.erlang,
-   org.eclipse.debug.core.model,
-   org.erlide.runtime.backend,
-   org.eclipse.core.resources,
-   org.eclipse.debug.core",
- org.erlide.runtime.launch;
-  x-friends:="org.erlide.tracing.core,
-   org.erlide.ui,
-   org.erlide.selfhost,
-   org.erlide.test_support,
-   org.erlide.cover.core"
+Export-Package: org.erlide.core,
+ org.erlide.core.backend,
+ org.erlide.core.backend.console,
+ org.erlide.core.backend.events,
+ org.erlide.core.backend.launching,
+ org.erlide.core.backend.manager,
+ org.erlide.core.backend.rpc,
+ org.erlide.core.backend.runtimeinfo,
+ org.erlide.core.cleanup,
+ org.erlide.core.common,
+ org.erlide.core.internal.backend;x-internal:=true,
+ org.erlide.core.internal.services.builder;x-friends:="shade.bterl",
+ org.erlide.core.model.debug,
+ org.erlide.core.model.erlang,
+ org.erlide.core.model.erlang.internal;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
+ org.erlide.core.model.erlang.util,
+ org.erlide.core.services.builder,
+ org.erlide.core.services.codeassist,
+ org.erlide.core.services.search,
+ org.erlide.core.services.text
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.erlide.jinterface,
- org.erlide.libs,
- org.erlide.backend
+ org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .
+Eclipse-ExtensibleAPI: true
+

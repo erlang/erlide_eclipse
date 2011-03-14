@@ -9,12 +9,11 @@ import java.util.Set;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.util.ErlLogger;
-
-import erlang.ErlideScanner;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.services.text.ErlangToolkit;
+import org.erlide.core.services.text.ErlideScanner;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * @author jakob

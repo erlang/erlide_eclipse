@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Activator;
 import org.erlide.tracing.core.Images;
 import org.erlide.tracing.core.TraceType;

@@ -20,14 +20,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpEpmd;
 
 /**
- * Periodically, query epmd to see if there are any new nodes that have been
- * registered.
- * 
+ * Query epmd to see if there are any new nodes that have been registered and
+ * notify listeners.
  */
 public final class EpmdWatcher {
 
@@ -194,7 +193,7 @@ public final class EpmdWatcher {
         }
     }
 
-    public static boolean findRunningNode(final String nodeName) {
+    public boolean hasLocalNode(final String nodeName) {
         try {
             final String[] names = OtpEpmd.lookupNames();
             final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));

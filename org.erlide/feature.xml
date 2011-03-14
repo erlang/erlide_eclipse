@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.10.1.qualifier"
+      version="0.10.2.qualifier"
       provider-name="erlide.org"
       image="erlang120.gif">
    <install-handler/>
@@ -36,10 +36,9 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          version="0.0.0"/>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.ide"/>
@@ -48,13 +47,25 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
       <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.erlide.jinterface"/>
+      <import plugin="org.erlide.core"/>
+      <import plugin="org.erlide.libs" version="1.1.4" match="greaterOrEqual"/>
+      <import plugin="org.erlide.kernel.builder"/>
+      <import plugin="org.erlide.kernel.common"/>
+      <import plugin="org.erlide.kernel.debugger"/>
+      <import plugin="org.erlide.kernel.ide"/>
+      <import plugin="org.erlide.core" version="0.9.5" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.erlide.test_support" version="0.4.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

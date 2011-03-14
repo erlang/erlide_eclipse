@@ -21,9 +21,9 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.console.BackendShell;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.backend.console.BackendShell;
 
 public class ErlangConsole extends TextConsole {
     private final BackendShell shell;
@@ -31,7 +31,7 @@ public class ErlangConsole extends TextConsole {
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
 
-    public ErlangConsole(final ErlideBackend backend) {
+    public ErlangConsole(final Backend backend) {
         super(backend.getName(), null, null, true);
         shell = backend.getShell("main");
         consoleListeners = new ListenerList(ListenerList.IDENTITY);
@@ -46,7 +46,7 @@ public class ErlangConsole extends TextConsole {
         return new ErlangConsolePage(view, this);
     }
 
-    public Backend getBackend() {
+    public RpcCallSite getBackend() {
         return shell.getBackend();
     }
 
@@ -61,8 +61,8 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + shell.getBackend().getInfo().toString() + " "
-                + shell.hashCode();
+        return "Erlang: " + shell.getBackend().getRuntimeInfo().toString()
+                + " " + shell.hashCode();
     }
 
     @Override

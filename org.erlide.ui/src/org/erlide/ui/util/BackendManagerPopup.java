@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.IBackendListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.jinterface.ErlLogger;
 
-public class BackendManagerPopup implements IBackendListener {
+public class BackendManagerPopup implements BackendListener {
 
-    private static final IBackendListener fInstance = new BackendManagerPopup();
+    private static final BackendListener fInstance = new BackendManagerPopup();
 
     private BackendManagerPopup() {
     }
@@ -30,7 +32,9 @@ public class BackendManagerPopup implements IBackendListener {
     }
 
     public void runtimeAdded(final Backend b) {
-        ErlLogger.debug("$$ added backend " + b.getInfo().getName());
+        ErlLogger.debug("$$ added backend " + b);
+        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
+        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
@@ -43,7 +47,7 @@ public class BackendManagerPopup implements IBackendListener {
     }
 
     public void runtimeRemoved(final Backend b) {
-        ErlLogger.debug("$$ removed backend " + b.getInfo().getName());
+        ErlLogger.debug("$$ removed backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
@@ -55,7 +59,7 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final RpcCallSite backend, final IProject project,
             final String moduleName) {
     }
 }

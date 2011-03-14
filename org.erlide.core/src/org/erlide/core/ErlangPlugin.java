@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -20,18 +18,22 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.platform.PlatformChangeListener;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.debug.ErlangDebugOptionsManager;
+import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.PlatformChangeListener;
+import org.erlide.core.model.debug.ErlangDebugOptionsManager;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.service.prefs.BackingStoreException;
@@ -51,20 +53,12 @@ public class ErlangPlugin extends Plugin {
     public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
 
     private static ErlangPlugin plugin;
-    private ResourceBundle resourceBundle;
     private PlatformChangeListener platformListener;
     private ErlLogger logger;
 
     public ErlangPlugin() {
         super();
         plugin = this;
-        try {
-            resourceBundle = ResourceBundle
-                    .getBundle("org.erlide.core.ErlangPluginResources");
-        } catch (final MissingResourceException x) {
-            x.printStackTrace();
-            resourceBundle = null;
-        }
     }
 
     /**
@@ -79,33 +73,6 @@ public class ErlangPlugin extends Plugin {
         return plugin;
     }
 
-    /**
-     * Returns the string from the plugin's resource bundle, or 'key' if not
-     * found.
-     * 
-     * @param key
-     *            The resource
-     * @return The identified string
-     */
-    public static String getResourceString(final String key) {
-        final ResourceBundle bundle = ErlangPlugin.getDefault()
-                .getResourceBundle();
-        try {
-            return bundle != null ? bundle.getString(key) : key;
-        } catch (final MissingResourceException e) {
-            return key;
-        }
-    }
-
-    /**
-     * Returns the plugin's resource bundle,
-     * 
-     * @return The requested bundle
-     */
-    public ResourceBundle getResourceBundle() {
-        return resourceBundle;
-    }
-
     /*
      * (non-Edoc) Shutdown the ErlangCore plug-in. <p> De-registers the
      * ErlModelManager as a resource changed listener and save participant. <p>
@@ -117,6 +84,7 @@ public class ErlangPlugin extends Plugin {
         try {
             ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
             ErlangCore.getModelManager().shutdown();
+            ErlangDebugOptionsManager.getDefault().shutdown();
             platformListener.dispose();
         } finally {
             logger.dispose();
@@ -146,17 +114,16 @@ public class ErlangPlugin extends Plugin {
         platformListener = new PlatformChangeListener();
 
         String dev = "";
-        if (ErlideUtil.isDeveloper()) {
+        if (CommonUtils.isDeveloper()) {
             dev = " erlide developer version ***";
         }
-        if (ErlideUtil.isTest()) {
+        if (CommonUtils.isTest()) {
             dev += " test ***";
         }
         final String version = getFeatureVersion();
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
-        ErlangCore.initializeRuntimesList();
-
+        RuntimeInfoManager.initializeRuntimesList();
         BackendManager.getDefault().loadCodepathExtensions();
 
         ResourcesPlugin.getWorkspace().addSaveParticipant(this,
@@ -180,7 +147,7 @@ public class ErlangPlugin extends Plugin {
                         }
                     }
                 });
-        ErlangDebugOptionsManager.getDefault().startup();
+        ErlangDebugOptionsManager.getDefault().start();
         ErlLogger.debug("Started CORE");
     }
 
@@ -271,6 +238,26 @@ public class ErlangPlugin extends Plugin {
         log(new Status(IStatus.ERROR, PLUGIN_ID,
                 ErlangStatus.INTERNAL_ERROR.getValue(),
                 "Erlide internal error", e));
+    }
+
+    public static IExtensionPoint getCodepathExtension() {
+        final IExtensionRegistry reg = Platform.getExtensionRegistry();
+        return reg.getExtensionPoint(PLUGIN_ID, "codepath");
+    }
+
+    public static IConfigurationElement[] getCodepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "codepath");
+    }
+
+    public static IConfigurationElement[] getSourcepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "sourcePathProvider");
+    }
+
+    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(PLUGIN_ID, "messageReporter");
     }
 
     public static void log(final String msg, final Throwable thr) {

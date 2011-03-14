@@ -3,6 +3,7 @@ package org.erlide.debug.ui.model;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -13,27 +14,27 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.ErlDebugConstants;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.backend.IBackendListener;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.ErlangDebugHelper;
-import org.erlide.runtime.debug.ErlangDebugTarget;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlideDebug;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-import erlang.ErlideDebug;
-
-public class ErlangDebuggerBackendListener implements IBackendListener {
+public class ErlangDebuggerBackendListener implements BackendListener {
     public void runtimeRemoved(final Backend backend) {
     }
 
     public void runtimeAdded(final Backend backend) {
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
+    public void moduleLoaded(final RpcCallSite backend, final IProject project,
             final String moduleName) {
         try {
             final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend);
@@ -50,7 +51,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                             ErlLaunchAttributes.DEBUG_FLAGS,
                             ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
                     final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
-                    new ErlangDebugHelper().interpret(backend, projectName,
+                    new ErlangDebugHelper().interpret(backend, project,
                             moduleName, distributed, true);
                 }
             }
@@ -59,7 +60,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         }
     }
 
-    private ErlangDebugTarget debugTargetOfBackend(final Backend backend) {
+    private ErlangDebugTarget debugTargetOfBackend(final RpcCallSite backend) {
         final IDebugTarget[] debugTargets = DebugPlugin.getDefault()
                 .getLaunchManager().getDebugTargets();
         for (final IDebugTarget debugTarget : debugTargets) {
@@ -122,8 +123,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private boolean isModuleRunningInInterpreter(
-            final ErlangDebugTarget erlangDebugTarget, final Backend backend,
-            final String moduleName) {
+            final ErlangDebugTarget erlangDebugTarget,
+            final RpcCallSite backend, final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug
                     .getAllModulesOnStack(backend, metaPid);

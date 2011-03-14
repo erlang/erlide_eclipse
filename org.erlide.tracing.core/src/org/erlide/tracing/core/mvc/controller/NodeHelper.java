@@ -6,9 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.tracing.core.TraceBackend;
 
 /**
@@ -65,7 +64,7 @@ public class NodeHelper {
         if ((backend = TraceBackend.getInstance().getBackend(false)) != null) {
             ignored.add(backend);
         }
-        for (final ErlideBackend erlideBackend : BackendManager.getDefault()
+        for (final Backend erlideBackend : BackendManager.getDefault()
                 .getAllBackends()) {
             if (!ignored.contains(erlideBackend)) {
                 backends.add(erlideBackend);

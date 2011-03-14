@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bterl
 Bundle-SymbolicName: shade.bterl;singleton:=true
-Bundle-Version: 0.4.1.qualifier
+Bundle-Version: 0.4.2.qualifier
 Bundle-Activator: org.erlide.shade.bterl.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,
@@ -20,7 +20,6 @@ Require-Bundle: org.eclipse.ui,
  org.erlide.kernel.ide,
  org.erlide.libs,
  org.erlide.jinterface,
- org.erlide.backend;bundle-version="0.9.5",
  org.erlide.core;bundle-version="0.9.5",
  org.erlide.ui,
  org.eclipse.ui.browser,
@@ -30,4 +29,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.shade.bterl,
+ org.erlide.shade.bterl.builder,
+ org.erlide.shade.bterl.ui,
  org.erlide.shade.bterl.ui.launcher
+Import-Package: org.erlide.shade.bterl

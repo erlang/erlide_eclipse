@@ -2,8 +2,8 @@ package org.erlide.core;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,18 +15,22 @@ public class ModelTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        ErlideTestUtils.initProjects();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        ErlideTestUtils.deleteProjects();
     }
 
     @Before
     public void setUp() throws Exception {
+        ErlideTestUtils.initModulesAndIncludes();
     }
 
     @After
     public void tearDown() throws Exception {
+        ErlideTestUtils.deleteModules();
     }
 
     @Test

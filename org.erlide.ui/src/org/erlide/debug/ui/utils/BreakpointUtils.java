@@ -1,11 +1,11 @@
 package org.erlide.debug.ui.utils;
 
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.jinterface.ErlLogger;
 
 public class BreakpointUtils {
 

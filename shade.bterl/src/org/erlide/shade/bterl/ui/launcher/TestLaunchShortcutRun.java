@@ -6,8 +6,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.ui.IEditorPart;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModule;
 
 public class TestLaunchShortcutRun extends TestLaunchShortcut {
 

@@ -11,7 +11,7 @@ import org.eclipse.ui.internal.browser.Messages;
 import org.eclipse.ui.internal.browser.Trace;
 import org.eclipse.ui.internal.browser.WebBrowserEditorInput;
 import org.eclipse.ui.internal.browser.WebBrowserUIPlugin;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 @SuppressWarnings("restriction")
 public class BterlBrowserEditorInstance extends InternalBrowserEditorInstance {

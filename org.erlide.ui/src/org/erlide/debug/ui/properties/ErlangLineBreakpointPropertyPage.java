@@ -11,10 +11,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.model.debug.IErlangBreakpoint;
+import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.debug.ui.utils.BreakpointUtils;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.IErlangBreakpoint;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 public class ErlangLineBreakpointPropertyPage extends

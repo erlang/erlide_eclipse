@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="projectz" componentType="buckminster" version="1.0.0">
+    <cs:dependencies>
+        <cs:dependency name="p1" componentType="buckminster"/>
+        <cs:dependency name="p2" componentType="buckminster"/>
+    </cs:dependencies>
+    <cs:groups>
+        <cs:public name="deps">
+            <cs:attribute component="p1"/>
+            <cs:attribute component="p2"/>
+        </cs:public>
+    </cs:groups>
+</cs:cspec>

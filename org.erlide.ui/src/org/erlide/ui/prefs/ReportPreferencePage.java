@@ -35,12 +35,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.util.LogUtil;
-import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.util.ProblemData;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.common.LogUtil;
+import org.erlide.jinterface.ErlLogger;
 
 import com.swtdesigner.SWTResourceManager;
 
@@ -190,9 +189,9 @@ public class ReportPreferencePage extends PreferencePage implements
     }
 
     private static void fetchErlangSystemInfo() {
-        final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+        final Backend ideBackend = ErlangCore.getBackendManager()
                 .getIdeBackend();
-        final String info = ErlBackend.getSystemInfo(ideBackend);
+        final String info = BackendHelper.getSystemInfo(ideBackend);
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);
     }
 

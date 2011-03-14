@@ -32,6 +32,9 @@ LAUNCHER=`find -L ${BUCKMINSTER}/plugins/ -name "org.eclipse.equinox.launcher_*.
 
 # configure junit-workspace with erlang runtimes
 ${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel info importpreferences -F ${WORKSPACE}/${SITE_PRJ}/_erl.epf -S instance
+# import test projects in junit-workspace 
+cp -R ${WORKSPACE}/org.erlide.ui.tests/projects/* ${WORKSPACE}/junit-workspace
+${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE}/junit-workspace --loglevel info import ${WORKSPACE}/${SITE_PRJ}/junit.cquery
  
 ${JAVA_HOME}/bin/java -jar ${LAUNCHER} -application org.eclipse.buckminster.cmdline.headless -data ${WORKSPACE} --loglevel info -S ${SITE_PRJ_PATH}/_bucky_test
 

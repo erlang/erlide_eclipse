@@ -10,23 +10,22 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.runtime.RuntimeInfo;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlLaunchAttributes;
-import org.erlide.jinterface.backend.ErtsProcess;
-import org.erlide.jinterface.backend.events.ErlangEvent;
-import org.erlide.jinterface.backend.events.EventHandler;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.BackendManager.BackendOptions;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendData;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendOptions;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.mvc.model.TraceCollections;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 import org.erlide.tracing.core.mvc.model.TracedNode;
@@ -618,12 +617,14 @@ public class TraceBackend {
                 info.setStartShell(false);
                 final EnumSet<BackendOptions> options = EnumSet.of(
                         BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
-
                 final ILaunchConfiguration launchConfig = getLaunchConfiguration(
                         info, options);
-                launchConfig.launch(ILaunchManager.RUN_MODE,
-                        new NullProgressMonitor(), false, false);
-                return BackendManager.getDefault().getByName(nodeName);
+
+                final Backend b = BackendCore.getBackendFactory()
+                        .createBackend(
+                                new BackendData(launchConfig,
+                                        ILaunchManager.RUN_MODE));
+                return b;
             } catch (final Exception e) {
                 ErlLogger.error(e);
             }
@@ -636,7 +637,7 @@ public class TraceBackend {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             workingCopy = type.newInstance(null,

@@ -4,6 +4,7 @@ import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,39 +34,40 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.backend.util.StringUtils;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlElementVisitor;
-import org.erlide.core.erlang.IErlExternal;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.search.FunctionPattern;
-import org.erlide.core.search.IncludePattern;
-import org.erlide.core.search.MacroPattern;
-import org.erlide.core.search.ModuleLineFunctionArityRef;
-import org.erlide.core.search.RecordFieldPattern;
-import org.erlide.core.search.RecordPattern;
-import org.erlide.core.search.TypeRefPattern;
-import org.erlide.core.search.VariablePattern;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.common.StringUtils;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.AcceptFlags;
+import org.erlide.core.model.erlang.IErlElement.Kind;
+import org.erlide.core.model.erlang.IErlElementVisitor;
+import org.erlide.core.model.erlang.IErlExternal;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.ModuleKind;
+import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
+import org.erlide.core.services.search.FunctionPattern;
+import org.erlide.core.services.search.IncludePattern;
+import org.erlide.core.services.search.MacroPattern;
+import org.erlide.core.services.search.ModuleLineFunctionArityRef;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.core.services.search.RecordFieldPattern;
+import org.erlide.core.services.search.RecordPattern;
+import org.erlide.core.services.search.TypeRefPattern;
+import org.erlide.core.services.search.VariablePattern;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Sets;
-
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlangSearchPattern.SearchFor;
-import erlang.OpenResult;
 
 public class SearchUtil {
 
@@ -103,9 +105,9 @@ public class SearchUtil {
         if (project == null) {
             return;
         }
-        final IOldErlangProjectProperties prefs = ErlangCore
-                .getProjectProperties(project);
-        final Collection<IPath> sourcePaths = prefs.getSourceDirs();
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+                project);
+        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath path : sourcePaths) {
             final IFolder folder = project.getFolder(path);
             addFolderToScope(folder, result);
@@ -130,7 +132,7 @@ public class SearchUtil {
 
     private static void addFileToScope(final IFile file,
             final ErlSearchScope result) {
-        if (ErlideUtil.hasModuleExtension(file.getName())) {
+        if (ModuleKind.hasModuleExtension(file.getName())) {
             final IErlModule module = ErlangCore.getModel().findModule(file);
             result.addModule(module);
         }
@@ -142,7 +144,8 @@ public class SearchUtil {
             final Collection<IErlProject> erlangProjects = ErlangCore
                     .getModel().getErlangProjects();
             for (final IErlProject i : erlangProjects) {
-                final Collection<IErlModule> modules = i.getModulesAndHeaders();
+                final Collection<IErlModule> modules = i
+                        .getModulesAndIncludes();
                 for (final IErlModule j : modules) {
                     result.addModule(j);
                 }
@@ -195,7 +198,7 @@ public class SearchUtil {
                     }
                     return true;
                 }
-            }, 0, Kind.MODULE);
+            }, EnumSet.noneOf(AcceptFlags.class), Kind.MODULE);
         }
     }
 
@@ -217,11 +220,12 @@ public class SearchUtil {
         try {
             final IWorkspaceRoot root = ResourcesPlugin.getWorkspace()
                     .getRoot();
+            final IErlModel model = ErlangCore.getModel();
             for (final String i : projectNames) {
                 final IProject project = root.getProject(i);
                 if (ErlideUtil.hasErlangNature(project)) {
-                    final IErlProject erlProject = ErlangCore.getModel()
-                            .getErlangProject(i);
+                    final IErlProject erlProject = model
+                            .getErlangProject(project);
                     addExternalModules(erlProject, result, externalModulePaths);
                 }
             }

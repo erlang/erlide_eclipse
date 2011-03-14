@@ -32,22 +32,22 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.ErlElementDelta;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlComment;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlElementDelta;
-import org.erlide.core.erlang.IErlMember;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.ISourceRange;
-import org.erlide.core.erlang.ISourceReference;
-import org.erlide.core.erlang.util.ElementChangedEvent;
-import org.erlide.core.erlang.util.IElementChangedListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlComment;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
+import org.erlide.core.model.erlang.IErlElementDelta;
+import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.ISourceReference;
+import org.erlide.core.model.erlang.internal.ErlElementDelta;
+import org.erlide.core.model.erlang.util.ElementChangedEvent;
+import org.erlide.core.model.erlang.util.IElementChangedListener;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
@@ -1106,8 +1106,8 @@ public class DefaultErlangFoldingStructureProvider implements
      * (non-Javadoc)
      * 
      * @see
-     * org.erlide.core.erlang.IErlModelChangeListener#elementChanged(org.erlide
-     * .core.erlang.IErlElement)
+     * org.erlide.core.model.erlang.IErlModelChangeListener#elementChanged(org
+     * .erlide .core.erlang.IErlElement)
      */
     public void elementChanged(final IErlElement element) {
         // TODO fixa elementchangelistener n?n g?ng

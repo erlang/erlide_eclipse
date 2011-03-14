@@ -19,16 +19,17 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.ISourceRange;
-import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.backend.BackendException;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
+import org.erlide.core.model.erlang.IErlTypespec;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.editors.util.ErlangExternalEditorInput;
@@ -36,27 +37,21 @@ import org.erlide.ui.editors.util.ErlangExternalEditorInput;
 public class ErlModelUtils {
 
     /**
-     * Open an editor on the given module and select the given erlang function
-     * 
      * @param moduleName
-     *            module name (without .erl)
-     * @param fun
-     *            function name
-     * @param arity
-     *            function arity
-     * @param path
-     *            path to module (including .erl)
-     * @param checkAllProjects
-     *            if true, check all projects in workspace, otherwise only
-     *            consider projects referred from project
+     * @param function
+     * @param modulePath
+     * @param module
+     * @param project
+     * @param scope
+     * @return
      * @throws CoreException
      */
     public static boolean openExternalFunction(final String moduleName,
-            final ErlangFunction function, final String path,
+            final ErlangFunction function, final String modulePath,
             final IErlModule module, final IErlProject project,
-            final boolean checkAllProjects) throws CoreException {
-        final IErlModule module2 = ModelUtils.findExternalModule(moduleName,
-                path, project, checkAllProjects);
+            final Scope scope) throws CoreException {
+        final IErlModule module2 = ModelUtils.findModule(project, moduleName,
+                modulePath, scope);
         if (module2 != null) {
             final IEditorPart editor = EditorUtility.openInEditor(module2);
             return openFunctionInEditor(function, editor);
@@ -109,8 +104,7 @@ public class ErlModelUtils {
             return false;
         }
         module.open(null);
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName,
-                ErlangCore.getModel().getExternalIncludes(module.getProject()));
+        final IErlTypespec typespec = ModelUtils.findTypespec(module, typeName);
         if (typespec == null) {
             return false;
         }
@@ -123,7 +117,7 @@ public class ErlModelUtils {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
-            IErlModule module = ModelUtils.getModule(file);
+            IErlModule module = ErlangCore.getModel().findModule(file);
             if (module != null) {
                 return module;
             }
@@ -151,8 +145,8 @@ public class ErlModelUtils {
             path = ue.getURI().getPath();
         }
         if (path != null) {
-            final IErlModule module = ModelUtils
-                    .findExternalModuleFromPath(path);
+            final IErlModule module = ModelUtils.findModule(null, null, path,
+                    Scope.ALL_PROJECTS);
             if (module != null) {
                 return module;
             }
@@ -164,7 +158,7 @@ public class ErlModelUtils {
             final int arity) throws CoreException {
         ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
                 arity), null, ErlangCore.getModel().findModule(module), null,
-                true);
+                Scope.ALL_PROJECTS);
     }
 
     public static void openMF(final String module, final String function)
@@ -173,8 +167,8 @@ public class ErlModelUtils {
     }
 
     public static void openModule(final String moduleName) throws CoreException {
-        final IErlModule module = ModelUtils.findExternalModule(moduleName,
-                null, null, true);
+        final IErlModule module = ModelUtils.findModule(null, moduleName, null,
+                Scope.ALL_PROJECTS);
         if (module != null) {
             EditorUtility.openInEditor(module);
         }

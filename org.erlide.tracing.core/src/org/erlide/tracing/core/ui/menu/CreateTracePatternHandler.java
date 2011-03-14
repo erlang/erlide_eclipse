@@ -6,7 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.internal.ErlFunction;
+import org.erlide.core.model.erlang.internal.ErlFunction;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 

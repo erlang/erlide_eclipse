@@ -508,14 +508,19 @@ i_macro_rest(R0, I) ->
 	K when K=:=':'; K=:=','; K=:=';'; K=:=')'; K=:='}'; K=:=']'; K=:='>>'; K=:='of';
 	       K=:='end'; K=:='->' ->
 	    R0;
-	K ->
-	    case is_binary_op(K) of
-		false ->
-		    R2 = i_comments(R0, I),
-		    i_one(R2, I);
-		true ->
-		    R0
-	    end
+        K ->
+            case erlide_scan:reserved_word(K) of
+                true ->
+                    R0;
+                _ ->
+                    case is_binary_op(K) of
+                        false ->
+                            R2 = i_comments(R0, I),
+                            i_one(R2, I);
+                        true ->
+                            R0
+                    end
+            end
     end.
 
 i_if(R0, I0) ->

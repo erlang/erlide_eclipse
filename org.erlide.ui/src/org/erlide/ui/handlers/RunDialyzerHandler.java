@@ -28,15 +28,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.DialyzerPreferences;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.osgi.service.prefs.BackingStoreException;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.builder.DialyzerUtils;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -44,7 +42,6 @@ import com.google.common.collect.Sets;
 public class RunDialyzerHandler extends AbstractHandler implements IHandler {
 
     final Map<IErlProject, Set<IErlModule>> modules = Maps.newHashMap();
-    private final DialyzerPreferences prefs = new DialyzerPreferences();
 
     public static class DialyzerMessageDialog extends MessageDialog {
 
@@ -94,10 +91,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
             final Set<IErlProject> keySet = modules.keySet();
             monitor.beginTask("Dialyzing", keySet.size());
             try {
-                prefs.load();
-                DialyzerUtils.doDialyze(monitor, modules, prefs);
-            } catch (final BackingStoreException e) {
-                return newErrorStatus(e);
+                DialyzerUtils.doDialyze(monitor, modules);
             } catch (final InvocationTargetException e) {
                 return newErrorStatus(e.getCause());
             }

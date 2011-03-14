@@ -69,17 +69,16 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.erlang.util.ResourceUtil;
-import org.erlide.jinterface.backend.util.PreferencesUtils;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.PreferencesUtils;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.util.PluginUtils;
+import org.erlide.core.model.erlang.util.ResourceUtil;
+import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-
-import erlang.ErlideOpen;
 
 /**
  * Shows a list of resources to the user with a text entry field for a string
@@ -596,42 +595,38 @@ public class FilteredModulesSelectionDialog extends
 
                 // navigate even "external" lists
                 final IErlModel model = ErlangCore.getModel();
-                if (project != null) {
-                    final String extMods = model.getExternalModules(model
-                            .findProject(project));
-                    final List<String> files = new ArrayList<String>();
-                    files.addAll(PreferencesUtils.unpackList(extMods));
-                    final String extIncs = model.getExternalIncludes(model
-                            .findProject(project));
-                    files.addAll(PreferencesUtils.unpackList(extIncs));
+                final IErlProject erlProject = model.findProject(project);
+                final String extMods = erlProject.getExternalModulesString();
+                final List<String> files = new ArrayList<String>();
+                files.addAll(PreferencesUtils.unpackList(extMods));
+                final String extIncs = erlProject.getExternalIncludesString();
+                files.addAll(PreferencesUtils.unpackList(extIncs));
 
-                    final IPathVariableManager pvm = ResourcesPlugin
-                            .getWorkspace().getPathVariableManager();
-                    for (final String str : files) {
-                        IResource fres;
-                        try {
-                            fres = ResourceUtil.recursiveFindNamedResource(
-                                    project, str, null);
-                        } catch (final CoreException e) {
-                            fres = null;
-                        }
-                        if (fres != null) {
-                            final List<String> lines = PreferencesUtils
-                                    .readFile(fres.getLocation().toString());
-                            for (final String pref : lines) {
+                final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+                        .getPathVariableManager();
+                for (final String str : files) {
+                    IResource fres;
+                    try {
+                        fres = ResourceUtil.recursiveFindNamedResource(project,
+                                str, null);
+                    } catch (final CoreException e) {
+                        fres = null;
+                    }
+                    if (fres != null) {
+                        final List<String> lines = PreferencesUtils
+                                .readFile(fres.getLocation().toString());
+                        for (final String pref : lines) {
 
-                                String path;
-                                final IPath p = new Path(pref);
-                                final IPath v = PluginUtils.resolvePVMPath(pvm,
-                                        p);
-                                if (v.isAbsolute()) {
-                                    path = v.toString();
-                                } else {
-                                    path = project.getLocation().append(v)
-                                            .toString();
-                                }
-                                proxyContentProvider.add(path, resourceFilter);
+                            String path;
+                            final IPath p = new Path(pref);
+                            final IPath v = PluginUtils.resolvePVMPath(pvm, p);
+                            if (v.isAbsolute()) {
+                                path = v.toString();
+                            } else {
+                                path = project.getLocation().append(v)
+                                        .toString();
                             }
+                            proxyContentProvider.add(path, resourceFilter);
                         }
                     }
                 }
@@ -641,7 +636,7 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
-            if (ErlideUtil.isErlangFileContentFileName(resource.getName())
+            if (CommonUtils.isErlangFileContentFileName(resource.getName())
                     && !resource.isLinked()
                     && !resource.getResourceAttributes().isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
@@ -662,12 +657,12 @@ public class FilteredModulesSelectionDialog extends
         }
 
         private void addPaths(final IProject project) {
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(project);
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(project);
             validPaths.addAll(PluginUtils.getFullPaths(project,
-                    prefs.getIncludeDirs()));
+                    erlProject.getIncludeDirs()));
             validPaths.addAll(PluginUtils.getFullPaths(project,
-                    prefs.getSourceDirs()));
+                    erlProject.getSourceDirs()));
         }
     }
 

@@ -42,16 +42,14 @@ import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlProjectImport;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.util.PluginUtils;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
-
-import erlang.ErlideImport;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
     // {
@@ -291,8 +289,8 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
             // buildPaths(monitor, root, project);
             // buildPaths(monitor, root, project);
 
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(project);
+            final IErlProject erlProject = ErlangCore.getModel()
+                    .getErlangProject(project);
 
             // String[] directories = findErlDirectories();
             // prefs.setSourceDirs(directories);
@@ -300,16 +298,18 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
             // directories = findHrlDirectories();
             // prefs.setIncludeDirs(directories);
             // prefs.copyFrom(bprefs);
-            prefs.setIncludeDirs(includeDirs);
-            prefs.setSourceDirs(sourceDirs);
-            prefs.store();
+            erlProject.setIncludeDirs(includeDirs);
+            erlProject.setSourceDirs(sourceDirs);
 
             // TODO add code path to backend
             // final String out = project.getLocation().append(
             // prefs.getOutputDir()).toString();
-        } catch (final CoreException x) {
-            x.printStackTrace();
-            reportError(x);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            reportError(e);
+        } catch (final BackingStoreException e) {
+            e.printStackTrace();
+            reportError(e);
         } finally {
             monitor.done();
         }

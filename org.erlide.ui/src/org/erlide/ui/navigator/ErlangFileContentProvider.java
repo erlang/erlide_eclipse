@@ -19,17 +19,16 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModelChangeListener;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModelChangeListener;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IOpenable;
+import org.erlide.core.model.erlang.IParent;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
         IResourceChangeListener, IResourceDeltaVisitor,
@@ -59,7 +58,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IFile) {
-                parentElement = ModelUtils.getModule((IFile) parentElement);
+                parentElement = ErlangCore.getModel().findModule(
+                        (IFile) parentElement);
             }
             if (parentElement instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) parentElement;
