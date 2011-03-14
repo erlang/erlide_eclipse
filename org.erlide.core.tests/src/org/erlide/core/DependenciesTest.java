@@ -46,6 +46,7 @@ public class DependenciesTest {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     public void testAllPackages() {
         final boolean containsCycles = jdep.containsCycles();
         System.out.println("Cycles: " + containsCycles);

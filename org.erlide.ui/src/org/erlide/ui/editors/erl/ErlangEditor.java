@@ -275,7 +275,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         try {
             // initialize the 'save' listeners of editor
             if (editListeners == null) {
-                editListeners = ExtensionHelper
+                editListeners = (List<IErlangEditorListener>) ExtensionHelper
                         .getParticipants(ExtensionHelper.EDITOR_LISTENER);
             }
         } catch (final Throwable e) {
