@@ -165,7 +165,6 @@ public class ErlangPlugin extends Plugin {
             }
         } catch (final Throwable e) {
             // ignore
-            e.printStackTrace();
         }
         final Version coreVersion = getBundle().getVersion();
         version = version == null ? "?" : version;
