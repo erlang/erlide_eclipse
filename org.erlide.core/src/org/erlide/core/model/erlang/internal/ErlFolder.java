@@ -178,9 +178,9 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     public static boolean isOnPaths(final IContainer con,
-            final IProject project, final Collection<IPath> sourcePaths) {
+            final IProject project, final Collection<IPath> paths) {
         final IPath path = con.getFullPath();
-        for (final IPath i : sourcePaths) {
+        for (final IPath i : paths) {
             if (i.toString().equals(".")) {
                 if (project.getFullPath().equals(path)) {
                     return true;

@@ -59,7 +59,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOldErlangProjectProperties;
 import org.erlide.core.model.erlang.IOpenable;
-import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.internal.ErlModel.External;
 import org.erlide.core.model.erlang.util.CoreUtil;
@@ -1051,54 +1050,54 @@ public class ErlProject extends Openable implements IErlProject {
                 return module;
             }
         }
-        if (moduleName != null) {
-            final Set<IErlModule> modules = erlModelCache
-                    .getModulesByName(CommonUtils.withoutExtension(moduleName));
-            if (modules != null) {
-                for (final IErlModule module : modules) {
-                    if (project == null || project.moduleInProject(module)) {
-                        final IParent parent = module.getParent();
-                        if (parent instanceof IErlElement) {
-                            final IErlElement element = (IErlElement) parent;
-                            if (element.getKind() != Kind.EXTERNAL) {
-                                return module;
-                            }
-                        }
-                    }
-                }
-                if (scope == Scope.REFERENCED_PROJECTS) {
-                    final Collection<IErlProject> references = project
-                            .getProjectReferences();
-                    for (final IErlModule module : modules) {
-                        final IParent parent = module.getParent();
-                        if (parent instanceof IErlElement) {
-                            final IErlElement element = (IErlElement) parent;
-                            if (element.getKind() != Kind.EXTERNAL) {
-                                if (references.contains(module.getProject())) {
-                                    return module;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (scope == Scope.ALL_PROJECTS) {
-                    for (final IErlModule module : modules) {
-                        final IParent parent = module.getParent();
-                        if (parent instanceof IErlElement) {
-                            final IErlElement element = (IErlElement) parent;
-                            if (element.getKind() != Kind.EXTERNAL) {
-                                return module;
-                            }
-                        }
-                    }
-                }
-                for (final IErlModule module : modules) {
-                    if (project == null || project.moduleInProject(module)) {
-                        return module;
-                    }
-                }
-            }
-        }
+        // if (moduleName != null) {
+        // final Set<IErlModule> modules = erlModelCache
+        // .getModulesByName(CommonUtils.withoutExtension(moduleName));
+        // if (modules != null) {
+        // for (final IErlModule module : modules) {
+        // if (project == null || project.moduleInProject(module)) {
+        // final IParent parent = module.getParent();
+        // if (parent instanceof IErlElement) {
+        // final IErlElement element = (IErlElement) parent;
+        // if (element.getKind() != Kind.EXTERNAL) {
+        // return module;
+        // }
+        // }
+        // }
+        // }
+        // if (scope == Scope.REFERENCED_PROJECTS) {
+        // final Collection<IErlProject> references = project
+        // .getProjectReferences();
+        // for (final IErlModule module : modules) {
+        // final IParent parent = module.getParent();
+        // if (parent instanceof IErlElement) {
+        // final IErlElement element = (IErlElement) parent;
+        // if (element.getKind() != Kind.EXTERNAL) {
+        // if (references.contains(module.getProject())) {
+        // return module;
+        // }
+        // }
+        // }
+        // }
+        // }
+        // if (scope == Scope.ALL_PROJECTS) {
+        // for (final IErlModule module : modules) {
+        // final IParent parent = module.getParent();
+        // if (parent instanceof IErlElement) {
+        // final IErlElement element = (IErlElement) parent;
+        // if (element.getKind() != Kind.EXTERNAL) {
+        // return module;
+        // }
+        // }
+        // }
+        // }
+        // for (final IErlModule module : modules) {
+        // if (project == null || project.moduleInProject(module)) {
+        // return module;
+        // }
+        // }
+        // }
+        // }
         return null;
     }
 

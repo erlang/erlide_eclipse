@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Assert;
@@ -521,11 +520,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement#isStructureKnown()
      */
     protected boolean structureKnown = false;
-
-    /**
-     * Shared empty collection used for efficiency.
-     */
-    static final IProject[] NO_NON_ERLANG_RESOURCES = new IProject[] {};
 
     public void clearCaches() {
     }
