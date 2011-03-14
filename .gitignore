@@ -18,3 +18,5 @@ refac_proj
 junit-*
 Simple*
 temp
+*tracing*
+ttb_last_config
