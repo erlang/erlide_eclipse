@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.rpc.RpcEventHandler;
 import org.erlide.core.backend.rpc.RpcEventProcessor;
@@ -126,7 +127,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                     args, project);
             final int n = resourcesToBuild.size();
             if (n > 0) {
-                final Backend backend = ErlangCore.getBackendManager()
+                final Backend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 if (backend == null) {
                     final String message = "No backend with the required "

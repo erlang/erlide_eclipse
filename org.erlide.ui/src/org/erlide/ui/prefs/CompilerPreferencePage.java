@@ -42,6 +42,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -435,11 +436,12 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     enum OptionStatus {
-        OK, ERROR, NO_RUNTIME
+        OK, @SuppressWarnings("hiding")
+        ERROR, NO_RUNTIME
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null) {
             return OptionStatus.NO_RUNTIME;
         }

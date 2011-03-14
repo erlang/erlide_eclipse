@@ -13,8 +13,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -64,7 +64,7 @@ public class DialyzerUtils {
                 final boolean fromSource = prefs.getFromSource();
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
                 MarkerUtils.removeDialyzerMarkers(project);
-                final Backend backend = ErlangCore.getBackendManager()
+                final Backend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();

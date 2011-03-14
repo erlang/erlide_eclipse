@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.manager.BackendManager;
@@ -235,7 +236,7 @@ public final class CoreUtil {
     }
 
     public static Backend getBuildOrIdeBackend(final IProject project) {
-        final BackendManager backendManager = ErlangCore.getBackendManager();
+        final BackendManager backendManager = BackendCore.getBackendManager();
         if (project != null) {
             try {
                 return backendManager.getBuildBackend(project);

@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.FunctionRef;
@@ -94,7 +94,7 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final RpcCallSite b = ErlangCore.getBackendManager()
+            final RpcCallSite b = BackendCore.getBackendManager()
                     .getIdeBackend();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
@@ -129,7 +129,7 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         ErlangXref.start(b);
     }
 
@@ -153,7 +153,7 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final RpcCallSite b = ErlangCore
+                            final RpcCallSite b = BackendCore
                                     .getBackendManager().getIdeBackend();
                             ErlangXref.update(b);
                             treeViewer.refresh();
@@ -191,7 +191,7 @@ public class CallHierarchyView extends ViewPart {
 
     @Override
     public void dispose() {
-        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         ErlangXref.stop(b);
         super.dispose();
     }

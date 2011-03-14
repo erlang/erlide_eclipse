@@ -24,7 +24,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
@@ -124,7 +123,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         super.doLaunch(cfg, amode, launch);
 
-        final Backend backend = ErlangCore.getBackendManager()
+        final Backend backend = BackendCore.getBackendManager()
                 .getBackendForLaunch(launch);
         if (backend == null) {
             ErlLogger.warn("Could not start backend for launch %s", launch

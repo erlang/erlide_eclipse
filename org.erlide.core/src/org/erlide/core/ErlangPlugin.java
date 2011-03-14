@@ -28,8 +28,8 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PlatformChangeListener;
 import org.erlide.core.model.debug.ErlangDebugOptionsManager;
@@ -123,8 +123,10 @@ public class ErlangPlugin extends Plugin {
         final String version = getFeatureVersion();
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
-        RuntimeInfoManager.initializeRuntimesList();
-        BackendManager.getDefault().loadCodepathExtensions();
+        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
+        runtimeInfoInitializer.initializeRuntimesList();
+
+        BackendCore.getBackendManager().loadCodepathExtensions();
 
         ResourcesPlugin.getWorkspace().addSaveParticipant(this,
                 new ISaveParticipant() {
@@ -163,7 +165,6 @@ public class ErlangPlugin extends Plugin {
             }
         } catch (final Throwable e) {
             // ignore
-            e.printStackTrace();
         }
         final Version coreVersion = getBundle().getVersion();
         version = version == null ? "?" : version;
