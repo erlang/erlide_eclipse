@@ -142,8 +142,6 @@ public final class BackendManager extends OtpNodeStatus implements
             notifyBackendChange(b, BackendEvent.ADDED, null, null);
         }
         b.addProjectPath(project);
-
-        ErlLogger.info("BUILD project %s on %s", project.getName(), info);
         return b;
     }
 

@@ -24,7 +24,7 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.LogUtil;
 import org.erlide.jinterface.ErlLogger;
 
-final public class BackendWatcherRunnable implements Runnable {
+final public class ErtsWatcherRunnable implements Runnable {
     private final RuntimeInfo info;
     private final File workingDirectory;
     private final Process process;
@@ -35,7 +35,7 @@ final public class BackendWatcherRunnable implements Runnable {
         }
     };
 
-    public BackendWatcherRunnable(final RuntimeInfo info,
+    public ErtsWatcherRunnable(final RuntimeInfo info,
             final File workingDirectory, final Process process) {
         this.info = info;
         this.workingDirectory = workingDirectory;
@@ -46,7 +46,7 @@ final public class BackendWatcherRunnable implements Runnable {
     public void run() {
         try {
             final int v = process.waitFor();
-            final String msg = "BackendImpl '%s' terminated with exit code %d.";
+            final String msg = "Backend '%s' terminated with exit code %d.";
             ErlLogger.error(msg, info.getNodeName(), v);
 
             // 129 = SIGHUP (probably logout, ignore)

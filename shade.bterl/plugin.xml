@@ -209,11 +209,4 @@
             default="false">
       </support>
    </extension-->
-   <extension
-         point="org.erlide.core.codepath">
-      <beam_dir
-            context="any"
-            path="ebin">
-      </beam_dir>
-   </extension>
 </plugin>

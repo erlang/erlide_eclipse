@@ -44,8 +44,8 @@ import org.erlide.jinterface.ErlLogger;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
-    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.internal";
-    public static final String CONFIGURATION_TYPE = "org.erlide.core.erlangProcess";
+    public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
+    public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
@@ -75,7 +75,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
         if (data.isManaged()) {
             setCaptureOutput(launch);
-            startErtsProcess(launch, data, info);
+            startErtsProcess(data);
         } else {
             ErlLogger.info("Node %s exists already.", data.getNodeName());
         }
@@ -95,15 +95,13 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return data;
     }
 
-    private void startErtsProcess(final ILaunch launch, final BackendData data,
-            final RuntimeInfo info) {
+    private void startErtsProcess(final BackendData data) {
         final Process process = startRuntimeProcess(data);
         if (process == null) {
             ErlLogger.debug("Error starting process");
             return;
         }
-        final ErtsProcess erts = new ErtsProcess(launch, process,
-                info.getNodeName());
+        final ErtsProcess erts = new ErtsProcess(process, data);
 
         ErlLogger.debug("Started erts: %s >> %s", erts.getLabel(),
                 data.getNodeName());

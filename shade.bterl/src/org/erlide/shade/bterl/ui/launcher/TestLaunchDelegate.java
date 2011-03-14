@@ -189,8 +189,9 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                         return filename.endsWith(".erl");
                     }
                 });
+
                 for (final String pm : modules) {
-                    System.out.println("reinterpret:: " + pm);
+                    ErlLogger.debug("reinterpret:: " + pm);
                     getDebugHelper()
                             .interpret(backend, project, pm, true, true);
                 }
