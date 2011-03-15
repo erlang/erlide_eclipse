@@ -135,9 +135,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
      *            the command
      */
 
-    // FIXME flytta en del av denna logik till erlang!! (t.ex. s� vill man
-    // inte
-    // vara "elektrisk" i kommentarer)
+    // FIXME flytta en del av denna logik till erlang!! (t.ex. vill man
+    // inte vara "elektrisk" i kommentarer)
     public void customizeDocumentCommand(final IDocument d,
             final DocumentCommand c) {
         if (c.length == 0 && c.text != null) {

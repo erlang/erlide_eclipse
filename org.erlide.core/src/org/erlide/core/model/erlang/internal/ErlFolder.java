@@ -42,7 +42,7 @@ public class ErlFolder extends Openable implements IErlFolder {
         final IErlModelManager manager = ErlangCore.getModelManager();
         final IContainer c = (IContainer) getResource();
         try {
-            // FIXME this is general stuff, should we put it in, say, model or
+            // FIXME this is general stuff, should we put it in model or
             // model manager?
             final IResource[] members = c.members();
             for (final IResource resource : members) {
