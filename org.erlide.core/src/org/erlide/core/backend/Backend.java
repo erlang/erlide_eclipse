@@ -309,16 +309,14 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public String getName() {
-        if (info == null) {
+        if (runtime == null) {
             return "<not_connected>";
         }
-        return info.getNodeName();
+        return runtime.getNodeName();
     }
 
     public String getFullNodeName() {
-        synchronized (runtime) {
-            return runtime.getNodeName();
-        }
+        return runtime.getNodeName();
     }
 
     private synchronized OtpNode getNode() {

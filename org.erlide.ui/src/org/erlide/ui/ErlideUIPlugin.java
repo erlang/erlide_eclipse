@@ -141,8 +141,11 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         erlConMan = new ErlConsoleManager();
         if (CommonUtils.isDeveloper()) {
-            erlConMan.runtimeAdded(BackendCore.getBackendManager()
-                    .getIdeBackend());
+            final Backend ideBackend = BackendCore.getBackendManager()
+                    .getIdeBackend();
+            if (!ideBackend.hasConsole()) {
+                erlConMan.runtimeAdded(ideBackend);
+            }
         }
 
         startPeriodicDump();

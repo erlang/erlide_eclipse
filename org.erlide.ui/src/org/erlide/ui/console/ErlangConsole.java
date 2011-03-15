@@ -33,6 +33,7 @@ public class ErlangConsole extends TextConsole {
 
     public ErlangConsole(final Backend backend) {
         super(backend.getName(), null, null, true);
+
         shell = backend.getShell("main");
         consoleListeners = new ListenerList(ListenerList.IDENTITY);
 
@@ -61,8 +62,8 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + shell.getBackend().getRuntimeInfo().toString()
-                + " " + shell.hashCode();
+        return "Erlang: " + shell.getBackend().getName() + " "
+                + shell.hashCode();
     }
 
     @Override
