@@ -23,19 +23,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
 
-/**
- * <p>
- * The single instance of this class can be accessed from any plug-in declaring
- * the Erlang model plug-in as a prerequisite via
- * <code>ErlangCore.getErlangCore()</code>. The Erlang model plug-in will be
- * activated automatically if not already active.
- * </p>
- */
 public final class ErlangCore {
 
     public static final IErlModelManager getModelManager() {
@@ -45,16 +36,6 @@ public final class ErlangCore {
     public static final IErlModel getModel() {
         return getModelManager().getErlangModel();
     }
-
-    public static final BackendManager getBackendManager() {
-        return BackendManager.getDefault();
-    }
-
-    // public static IOldErlangProjectProperties getProjectProperties(
-    // final IProject project) {
-    // return getModelManager().getErlangModel().getErlangProject(project)
-    // .getProperties();
-    // }
 
     /**
      * Returns a table of all known configurable options with their default

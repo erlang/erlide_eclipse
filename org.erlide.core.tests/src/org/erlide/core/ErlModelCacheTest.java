@@ -2,26 +2,19 @@ package org.erlide.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
-import org.erlide.core.model.erlang.internal.ErlModelCache;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 
 public class ErlModelCacheTest {
 
@@ -67,19 +60,19 @@ public class ErlModelCacheTest {
 			module.open(null);
 			final IErlModule module2 = project.findModule(moduleName, null,
 					Scope.PROJECT_ONLY);
-			final ErlModelCache cache = ErlModelCache.getDefault();
-			final Set<IErlModule> modulesByName2 = cache
-					.getModulesByName(CommonUtils.withoutExtension(moduleName));
+			// final ErlModelCache cache = ErlModelCache.getDefault();
+			// final Set<IErlModule> modulesByName2 = cache
+			// .getModulesByName(CommonUtils.withoutExtension(moduleName));
 			// when
 			// deleting the project
 			ErlideTestUtils.deleteProject(project);
 			// then
 			// the model cache shouldn't know about the module anymore
 			assertEquals(module2, module);
-			final Set<IErlModule> modulesByName = cache
-					.getModulesByName(CommonUtils.withoutExtension(moduleName));
-			assertTrue(!modulesByName2.isEmpty());
-			assertTrue(modulesByName.isEmpty());
+			// final Set<IErlModule> modulesByName = cache
+			// .getModulesByName(CommonUtils.withoutExtension(moduleName));
+			// assertTrue(!modulesByName2.isEmpty());
+			// assertTrue(modulesByName.isEmpty());
 		} finally {
 			if (project != null && project.exists()) {
 				ErlideTestUtils.deleteProject(project);
@@ -113,10 +106,10 @@ public class ErlModelCacheTest {
 			project.open(null);
 			final IErlModule findModule = project.findModule(externalName,
 					null, Scope.PROJECT_ONLY);
-			final ErlModelCache cache = ErlModelCache.getDefault();
-			final Set<IErlModule> modulesByName = cache
-					.getModulesByName(CommonUtils
-							.withoutExtension(externalName));
+			// final ErlModelCache cache = ErlModelCache.getDefault();
+			// final Set<IErlModule> modulesByName = cache
+			// .getModulesByName(CommonUtils
+			// .withoutExtension(externalName));
 			// when
 			// creating a new project with a module with the same name and
 			// searching
@@ -128,18 +121,18 @@ public class ErlModelCacheTest {
 					externalName, "-module(xyz).\n");
 			final IErlModule findModule2 = project.findModule(externalName,
 					null, Scope.ALL_PROJECTS);
-			final Set<IErlModule> modulesByName2 = cache
-					.getModulesByName(CommonUtils
-							.withoutExtension(externalName));
+			// final Set<IErlModule> modulesByName2 = cache
+			// .getModulesByName(CommonUtils
+			// .withoutExtension(externalName));
 			// then
 			// the new module should be found
 			assertNotNull(findModule);
 			assertEquals(module, findModule2);
-			assertTrue(modulesByName2.contains(module));
-			final SetView<IErlModule> difference = Sets.difference(
-					modulesByName2, modulesByName);
-			assertEquals(1, difference.size());
-			assertEquals(module, difference.toArray()[0]);
+			// assertTrue(modulesByName2.contains(module));
+			// final SetView<IErlModule> difference = Sets.difference(
+			// modulesByName2, modulesByName);
+			// assertEquals(1, difference.size());
+			// assertEquals(module, difference.toArray()[0]);
 		} finally {
 			if (project != null && project.exists()) {
 				ErlideTestUtils.deleteProject(project);

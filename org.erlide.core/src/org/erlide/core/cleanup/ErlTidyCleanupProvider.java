@@ -11,8 +11,8 @@
 package org.erlide.core.cleanup;
 
 import org.eclipse.core.resources.IResource;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.rpc.RpcFuture;
 
 /**
@@ -55,7 +55,7 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
 
     public void cleanUp() throws Exception {
         // lookup a backend to run erl_tidy with
-        final Backend Backend = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend Backend = BackendCore.getBackendManager().getIdeBackend();
 
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation()

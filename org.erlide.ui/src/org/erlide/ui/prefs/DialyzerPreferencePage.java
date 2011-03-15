@@ -57,6 +57,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -400,7 +401,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             final IErlModel model = ErlangCore.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
-                    final IProject p = ep.getProject();
+                    final IProject p = ep.getWorkspaceProject();
                     if (hasProjectSpecificOptions(p)) {
                         projectsWithSpecifics.add(p);
                     }
@@ -617,7 +618,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            final BackendManager backendManager = ErlangCore
+            final BackendManager backendManager = BackendCore
                     .getBackendManager();
             try {
                 Backend backend;

@@ -30,6 +30,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -220,7 +221,7 @@ public abstract class FindAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final ISelection sel = getSelection();
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();

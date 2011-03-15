@@ -3,8 +3,8 @@ package org.erlide.core.services.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Assert;
 import org.erlide.core.common.Util;
@@ -27,7 +27,7 @@ public class ErlideScanner {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
         try {
-            ErlangCore
+            BackendCore
                     .getBackendManager()
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "initialScan", "assso", module, path,
@@ -39,7 +39,7 @@ public class ErlideScanner {
 
     public static void destroy(final String module) {
         try {
-            ErlangCore.getBackendManager().getIdeBackend()
+            BackendCore.getBackendManager().getIdeBackend()
                     .call(ERLIDE_SCANNER, "destroy", "a", module);
         } catch (final Exception e) {
             ErlLogger.debug(e);
@@ -50,7 +50,7 @@ public class ErlideScanner {
     public static ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
         try {
-            r1 = ErlangCore.getBackendManager().getIdeBackend()
+            r1 = BackendCore.getBackendManager().getIdeBackend()
                     .call(ERLIDE_SCANNER, "getTokenAt", "ai", module, offset);
             // ErlLogger.debug("getTokenAt -> " + r1);
         } catch (final Exception e) {
@@ -80,7 +80,7 @@ public class ErlideScanner {
             // removeLength, newTextLen);
             // ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
             // removeLength, newText);
-            final OtpErlangObject r = ErlangCore
+            final OtpErlangObject r = BackendCore
                     .getBackendManager()
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "replaceText", "aiis", module,
@@ -103,7 +103,7 @@ public class ErlideScanner {
             final int offset) throws BackendException {
         OtpErlangObject r1 = null;
         try {
-            r1 = ErlangCore
+            r1 = BackendCore
                     .getBackendManager()
                     .getIdeBackend()
                     .call("erlide_scanner", "light_scan_string", "ba", string,
@@ -161,7 +161,7 @@ public class ErlideScanner {
             return "";
         }
         try {
-            final OtpErlangObject o = ErlangCore.getBackendManager()
+            final OtpErlangObject o = BackendCore.getBackendManager()
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "check_all", "as", module, text);
             return o.toString();
@@ -179,7 +179,7 @@ public class ErlideScanner {
             final OtpErlangObject msg = ErlUtils.format(
                     "{change, ~a, ~i,  ~i, ~s}", scannerName, offset, length,
                     text);
-            ErlangCore.getBackendManager().getIdeBackend()
+            BackendCore.getBackendManager().getIdeBackend()
                     .send("erlide_scanner_listener", msg);
         } catch (final Exception e) {
             ErlLogger.warn(e);
@@ -191,7 +191,7 @@ public class ErlideScanner {
         try {
             final OtpErlangObject msg = ErlUtils.format("{new, ~a}",
                     scannerName);
-            ErlangCore.getBackendManager().getIdeBackend()
+            BackendCore.getBackendManager().getIdeBackend()
                     .send("erlide_scanner_listener", msg);
         } catch (final Exception e) {
             ErlLogger.warn(e);

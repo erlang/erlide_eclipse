@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModule;
@@ -59,7 +58,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
             final RpcCallSite backend = CoreUtil
-                    .getBuildOrIdeBackend(getErlProject().getProject());
+                    .getBuildOrIdeBackend(getProject().getWorkspaceProject());
             final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {

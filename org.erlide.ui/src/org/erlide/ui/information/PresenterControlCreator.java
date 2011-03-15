@@ -24,7 +24,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -197,7 +197,7 @@ public final class PresenterControlCreator extends
                     final OpenResult or = (OpenResult) element;
                     try {
                         OpenAction.openOpenResult(editor, editor.getModule(),
-                                ErlangCore.getBackendManager().getIdeBackend(),
+                                BackendCore.getBackendManager().getIdeBackend(),
                                 -1, null, or);
                     } catch (final Exception e) {
                         e.printStackTrace();

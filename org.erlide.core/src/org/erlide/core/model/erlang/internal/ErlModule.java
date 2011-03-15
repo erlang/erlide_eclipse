@@ -549,14 +549,6 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
-    public IErlProject getProject() {
-        final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
-        if (ancestor instanceof IErlProject) {
-            return (IErlProject) ancestor;
-        }
-        return null;
-    }
-
     public String getInitialText() {
         return initialText;
     }

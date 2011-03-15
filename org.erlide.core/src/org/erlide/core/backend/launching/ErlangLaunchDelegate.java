@@ -32,7 +32,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
@@ -63,7 +63,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             return;
         }
 
-        final boolean nodeExists = ErlangCore.getBackendManager()
+        final boolean nodeExists = BackendCore.getBackendManager()
                 .getEpmdWatcher().hasLocalNode(data.getNodeName());
         data.setManaged(!nodeExists);
 
@@ -81,7 +81,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
 
         if (!isErlangInternalLaunch(launch)) {
-            ErlangCore.getBackendManager().createExecutionBackend(data);
+            BackendCore.getBackendManager().createExecutionBackend(data);
         }
     }
 

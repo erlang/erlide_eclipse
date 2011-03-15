@@ -108,10 +108,10 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
      * @see IErlElement
      */
     @Override
-    public IResource getCorrespondingResource() throws ErlModelException {
-        if (!exists()) {
-            throw newNotPresentException();
-        }
+    public IResource getCorrespondingResource() {
+        // if (!exists()) {
+        // throw newNotPresentException();
+        // }
         return null;
     }
 

@@ -88,12 +88,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
             final IErlElement elt = (IErlElement) element;
             final IParent parent = elt.getParent();
             if (parent instanceof IErlModule || parent instanceof IErlProject) {
-                try {
-                    final IErlElement e = (IErlElement) parent;
-                    return e.getCorrespondingResource();
-                } catch (final ErlModelException e) {
-                    ErlLogger.warn(e);
-                }
+                final IErlElement e = (IErlElement) parent;
+                return e.getCorrespondingResource();
             }
         }
         return null;
@@ -195,7 +191,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (SaveablesProvider.class.equals(required)) {
             // TODO return something useful
             return null;

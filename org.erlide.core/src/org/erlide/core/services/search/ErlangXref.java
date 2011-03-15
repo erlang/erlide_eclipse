@@ -38,7 +38,7 @@ public final class ErlangXref {
     public static RpcFuture addProject(final RpcCallSite b,
             final IErlProject project) {
         try {
-            final IPath outputLocation = project.getProject()
+            final IPath outputLocation = project.getWorkspaceProject()
                     .getFolder(project.getOutputLocation()).getLocation();
             final String loc = outputLocation.toString();
             return b.async_call("erlide_xref", "add_project", "s", loc);

@@ -74,7 +74,7 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.console.BackendShell;
@@ -310,7 +310,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     boolean isInputComplete() {
         try {
             final String str = consoleInput.getText() + " ";
-            final OtpErlangObject o = BackendHelper.parseConsoleInput(ErlangCore
+            final OtpErlangObject o = BackendHelper.parseConsoleInput(BackendCore
                     .getBackendManager().getIdeBackend(), str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;

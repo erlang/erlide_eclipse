@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -56,6 +57,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Implementation of
@@ -650,6 +652,45 @@ public class ErlModel extends Openable implements IErlModel {
             final String includePath) throws ErlModelException {
         return ErlProject.findModule(null, includeName, includePath, false,
                 false, Scope.ALL_PROJECTS);
+    }
+
+    Map<IParent, List<IErlElement>> childMap = Maps.newHashMap();
+
+    List<IErlElement> NO_CHILDREN = Lists.newArrayList();
+
+    List<IErlElement> getChildrenOf(final IParent parent) {
+        final List<IErlElement> children = childMap.get(parent);
+        if (children == null) {
+            return NO_CHILDREN;
+        }
+        return children;
+    }
+
+    void setChildrenOf(final IParent parent,
+            final Collection<? extends IErlElement> children) {
+        if (children == null) {
+            childMap.remove(parent);
+        } else {
+            childMap.put(parent, Lists.newArrayList(children));
+        }
+    }
+
+    void removeChildOf(final IParent parent, final IErlElement child) {
+        final List<IErlElement> children = childMap.get(parent);
+        if (children != null) {
+            children.remove(child);
+            childMap.put(parent, children);
+        }
+    }
+
+    void addChildOf(final IParent parent, final IErlElement child) {
+        List<IErlElement> children = childMap.get(parent);
+        if (children == null) {
+            children = Lists.newArrayList(child);
+        } else if (!children.contains(child)) {
+            children.add(child);
+        }
+        childMap.put(parent, children);
     }
 
 }

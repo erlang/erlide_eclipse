@@ -93,7 +93,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
     /**
      * Returns the enclosing IErlProject if there is one
      */
-    IErlProject getErlProject();
+    IErlProject getProject();
 
     /**
      * Get module if this element is contained in one (or is one)
@@ -117,11 +117,8 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * element doesn't correspond directly to a resource.
      * 
      * @return the corresponding resource, or <code>null</code> if none
-     * @throws ErlModelException
-     *             if this element does not exist or if an exception occurs
-     *             while accessing its corresponding resource
      */
-    IResource getCorrespondingResource() throws ErlModelException;
+    IResource getCorrespondingResource();
 
     /**
      * Returns the name of this element. This is a handle-only method.

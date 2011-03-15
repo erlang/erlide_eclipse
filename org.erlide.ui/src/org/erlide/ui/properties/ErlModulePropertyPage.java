@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
@@ -41,13 +42,13 @@ public class ErlModulePropertyPage extends PropertyPage implements
         final IErlModule module = ErlangCore.getModel().findModule(file);
         String value = "There is no module information about this file.";
         if (module != null) {
-            final IErlProject project = module.getErlProject();
+            final IErlProject project = module.getProject();
             final IPath beamPath = project.getOutputLocation()
                     .append(module.getModuleName()).addFileExtension("beam");
-            final IFile beam = project.getProject().getFile(beamPath);
+            final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
             // TODO should it be the build backend?
-            final RpcCallSite backend = ErlangCore.getBackendManager()
+            final RpcCallSite backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             try {
                 final OtpErlangObject info = backend.call("erlide_backend",

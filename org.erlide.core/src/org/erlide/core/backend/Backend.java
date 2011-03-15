@@ -105,7 +105,6 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     private BackendShellManager shellManager;
     private final CodeManager codeManager;
     private ILaunch launch;
-    private final boolean managed = false;
     private final BackendData data;
     private boolean disposable;
     private ErlangDebugTarget debugTarget;
@@ -473,7 +472,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         eventDaemon.start();
         eventDaemon.addHandler(new LogEventHandler());
 
-        ErlangCore.getBackendManager().addBackendListener(getEventDaemon());
+        BackendCore.getBackendManager().addBackendListener(getEventDaemon());
     }
 
     public void register(final CodeBundle bundle) {
@@ -652,7 +651,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public boolean isManaged() {
-        return managed;
+        return data.isManaged();
     }
 
     public boolean doLoadOnAllNodes() {
@@ -709,7 +708,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     private void registerProjectsWithExecutionBackend(
             final Collection<IProject> projects) {
         for (final IProject project : projects) {
-            ErlangCore.getBackendManager().addExecutionBackend(project, this);
+            BackendCore.getBackendManager().addExecutionBackend(project, this);
         }
     }
 
@@ -860,7 +859,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         // TODO managed = options.contains(BackendOptions.MANAGED);
         if (isDistributed()) {
             connect();
-            final BackendManager bm = ErlangCore.getBackendManager();
+            final BackendManager bm = BackendCore.getBackendManager();
             for (final CodeBundle bb : bm.getCodeBundles().values()) {
                 register(bb);
             }
