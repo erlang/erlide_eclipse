@@ -105,7 +105,6 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     private BackendShellManager shellManager;
     private final CodeManager codeManager;
     private ILaunch launch;
-    private final boolean managed = false;
     private final BackendData data;
     private boolean disposable;
     private ErlangDebugTarget debugTarget;
@@ -652,7 +651,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public boolean isManaged() {
-        return managed;
+        return data.isManaged();
     }
 
     public boolean doLoadOnAllNodes() {
