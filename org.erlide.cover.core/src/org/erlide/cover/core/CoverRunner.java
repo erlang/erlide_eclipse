@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendException;
 import org.erlide.cover.constants.TestConstants;
 import org.erlide.cover.core.api.CoveragePerformer;
@@ -54,8 +55,8 @@ public class CoverRunner extends Thread {
 
             // TODO handle res
 
-            log.debug(config.getProject().getProject().getLocation());
-            IPath ppath = config.getProject().getProject().getLocation();
+            log.debug(config.getProject().getWorkspaceProject().getLocation());
+            IPath ppath = config.getProject().getWorkspaceProject().getLocation();
             log.debug(ppath.append(config.getOutputDir()));
 
             res = CoverBackend

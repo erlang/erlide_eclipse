@@ -27,7 +27,6 @@ public class Configuration implements IConfiguration {
     private IErlProject project;
     private Map<String, IErlModule> modules;
 
-    private OldErlangProjectProperties props;
     private Logger log; // logger
 
     public Configuration() {
@@ -38,22 +37,15 @@ public class Configuration implements IConfiguration {
     public void setProject(String name) {
         project = ErlangCore.getModel().getErlangProject(
                 ResourcesPlugin.getWorkspace().getRoot().getProject(name));
-        props = new OldErlangProjectProperties(project.getProject());
     }
 
     public void addModule(String name) throws ErlModelException, CoverException {
 
         if (project == null)
             throw new CoverException("no project set");
-        IErlModule module = null; // project.getModule(name);
-       /* IErlModuleMap m = ErlangCore.getModuleMap();
-        Set<IErlModule> mods = ErlangCore.getModuleMap().getModulesByName(name);
-        module = mods.iterator().next();
-        if (module != null)
-            modules.put(name, module);*/
-        //TODO !!!!!!!
-
-        // else: no such module??
+        IErlModule module = null;
+        module = project.getModule(name);
+        modules.put(name, module);
     }
 
     public void addModule(IErlModule module) {
@@ -69,15 +61,15 @@ public class Configuration implements IConfiguration {
     }
 
     public IPath getOutputDir() {
-        return props.getOutputDir();
+        return project.getOutputLocation();
     }
 
     public Collection<IPath> getSourceDirs() {
-        return props.getSourceDirs();
+        return project.getSourceDirs();
     }
 
     public Collection<IPath> getIncludeDirs() {
-        return props.getIncludeDirs();
+        return project.getIncludeDirs();
     }
 
     public IErlModule getModule(String name) {

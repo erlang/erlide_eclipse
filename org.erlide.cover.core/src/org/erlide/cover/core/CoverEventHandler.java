@@ -148,8 +148,8 @@ public class CoverEventHandler extends EventHandler {
 
         IConfiguration config = CoveragePerformer.getPerformer().getConfig();
 
-        String ppath = config.getProject().getProject().getLocation()
-                .toString();
+        String ppath = config.getProject().getProject().getWorkspaceProject()
+                .getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());
         log.debug(ppath);

@@ -8,7 +8,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -17,17 +16,14 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
-import org.erlide.core.backend.launching.ErtsProcess;
-import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
-
-
 
 /**
  * Core backend for Cover-plugin
@@ -38,26 +34,25 @@ import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 public class CoverBackend {
 
     public static final String NODE_NAME = "cover_internal";
-    
+
     public static CoverBackend instance;
 
     private Backend backend;
     private RuntimeInfo info;
     private ILaunchConfiguration launchConfig;
     private final CoverEventHandler handler;
-//    private CoverLaunchData coverData;
+    // private CoverLaunchData coverData;
     private CoverLaunchSettings settings;
     private String nodeName;
     private boolean coverRunning;
-    
-    private Logger log;      //logger
-    
+
+    private Logger log; // logger
+
     static {
         // logger configuration
-        URL logURL = Platform.getBundle(
-                "org.erlide.cover.core").
-                getEntry("/logs.conf");
-        
+        URL logURL = Platform.getBundle("org.erlide.cover.core").getEntry(
+                "/logs.conf");
+
         PropertyConfigurator.configure(logURL);
     }
 
@@ -75,22 +70,21 @@ public class CoverBackend {
     }
 
     public void initialize(/* final ErlLaunchData data, */
-            final CoverLaunchData coverData) {
+    final CoverLaunchData coverData) {
 
-       // this.coverData = coverData;
+        // this.coverData = coverData;
 
         settings = new CoverLaunchSettings(coverData.getType(), coverData);
 
         if (backend != null && !backend.isStopped()) {
-        	log.debug("is started");
+            log.debug("is started");
             return;
         } else if (backend != null) {
             backend.stop();
         }
 
-        RuntimeInfo rt0  = RuntimeInfo.copy(BackendCore
-                .getRuntimeInfoManager().getErlideRuntime(), false);
-        
+        RuntimeInfo rt0 = RuntimeInfo.copy(BackendCore.getRuntimeInfoManager()
+                .getErlideRuntime(), false);
 
         if (rt0 == null) {
             log.error(String.format("Could not find runtime %s", BackendCore
@@ -99,7 +93,7 @@ public class CoverBackend {
         }
 
         log.debug("create backend");
-        
+
         info = buildRuntimeInfo(rt0);
         final EnumSet<BackendOptions> options = EnumSet
                 .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
@@ -107,7 +101,7 @@ public class CoverBackend {
 
         try {
             backend = createBackend();
-            //backend.restart();
+            // backend.restart();
             backend.getEventDaemon().addHandler(handler);
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
@@ -172,10 +166,11 @@ public class CoverBackend {
             try {
                 info.setStartShell(true);
 
-                launchConfig.launch(ILaunchManager.RUN_MODE,
-                        new NullProgressMonitor(), false, false);
-
-                return BackendManager.getDefault().getByName(nodeName);
+                final Backend b = BackendCore.getBackendFactory()
+                        .createBackend(
+                                new BackendData(launchConfig,
+                                        ILaunchManager.RUN_MODE));
+                return b;
             } catch (final Exception e) {
                 log.error(e);
                 e.printStackTrace();

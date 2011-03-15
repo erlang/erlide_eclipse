@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.constants.CoverConstants;
@@ -102,7 +103,7 @@ public class CoveragePerformer implements CoverAPI {
         
         StatsTreeModel.getInstance().setRootLabel(config.getProject().getName());
         
-        IPath ppath = config.getProject().getProject().getLocation();
+        IPath ppath = config.getProject().getWorkspaceProject().getLocation();
         
         // set include files
         List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
