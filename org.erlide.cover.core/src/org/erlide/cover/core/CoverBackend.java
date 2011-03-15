@@ -20,6 +20,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -198,7 +199,7 @@ public class CoverBackend {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.ATTR_CMDLINE);
+                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
 
         nodeName = info.getNodeName();
