@@ -98,7 +98,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
 
     private final RuntimeInfo info;
     private final ErlRuntime runtime;
-    private String currentVersion;
+    private String erlangVersion;
     private OtpMbox eventBox;
     private boolean stopped = false;
     private EventDaemon eventDaemon;
@@ -282,14 +282,14 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         }
     }
 
-    public String getCurrentVersion() {
-        if (currentVersion == null) {
+    public String getErlangVersion() {
+        if (erlangVersion == null) {
             try {
-                currentVersion = getScriptId();
+                erlangVersion = getScriptId();
             } catch (final Exception e) {
             }
         }
-        return currentVersion;
+        return erlangVersion;
     }
 
     private OtpMbox getEventBox() {
@@ -778,7 +778,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
                 debuggerModules.length);
         for (final String module : debuggerModules) {
-            final OtpErlangBinary b = getBeam(module);
+            final OtpErlangBinary b = getDebuggerBeam(module);
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module
                         + ".erl");
@@ -799,43 +799,51 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
      *            the execution backend
      * @return
      */
-    private OtpErlangBinary getBeam(final String module) {
-        final Bundle b = Platform.getBundle("org.erlide.kernel.debugger");
+    private OtpErlangBinary getDebuggerBeam(final String module) {
         final String beamname = module + ".beam";
+        final Bundle bundle = Platform.getBundle("org.erlide.kernel.debugger");
+
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
                 ErlangPlugin.PLUGIN_ID, "codepath");
+
         // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
-        final String ver = getCurrentVersion();
+
+        final String ver = getErlangVersion();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
-            if (c.getName().equals(b.getSymbolicName())) {
+            if (c.getName().equals(bundle.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
-                Enumeration<?> e = b.getEntryPaths(dir_path + "/" + ver);
+                Enumeration<?> e = bundle.getEntryPaths(dir_path + "/" + ver);
                 if (e == null || !e.hasMoreElements()) {
-                    e = b.getEntryPaths(dir_path);
+                    e = bundle.getEntryPaths(dir_path);
                 }
                 if (e == null) {
                     ErlLogger.debug("* !!! error loading plugin "
-                            + b.getSymbolicName());
+                            + bundle.getSymbolicName());
                     return null;
                 }
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
                     final Path path = new Path(s);
-                    if (path.lastSegment().equals(beamname)) {
-                        if (path.getFileExtension() != null
-                                && "beam".compareTo(path.getFileExtension()) == 0) {
-                            final String m = path.removeFileExtension()
-                                    .lastSegment();
-                            try {
-                                return BeamUtil.getBeamBinary(m, b.getEntry(s));
-                            } catch (final Exception ex) {
-                                ErlLogger.warn(ex);
-                            }
-                        }
-                    }
+                    return getBeamFromBundlePath(bundle, beamname, s, path);
+                }
+            }
+        }
+        return null;
+    }
+
+    private OtpErlangBinary getBeamFromBundlePath(final Bundle bundle,
+            final String beamname, final String s, final Path path) {
+        if (path.lastSegment().equals(beamname)) {
+            if (path.getFileExtension() != null
+                    && "beam".compareTo(path.getFileExtension()) == 0) {
+                final String m = path.removeFileExtension().lastSegment();
+                try {
+                    return BeamUtil.getBeamBinary(m, bundle.getEntry(s));
+                } catch (final Exception ex) {
+                    ErlLogger.warn(ex);
                 }
             }
         }

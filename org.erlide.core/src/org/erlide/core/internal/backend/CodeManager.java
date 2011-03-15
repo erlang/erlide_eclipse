@@ -116,7 +116,7 @@ public class CodeManager {
             if ("beam_dir".equals(el.getName())
                     && c.getName().equals(b.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
-                final String ver = backend.getCurrentVersion();
+                final String ver = backend.getErlangVersion();
                 @SuppressWarnings("rawtypes")
                 Enumeration e = null;
                 if (dir_path != null) {
@@ -251,7 +251,7 @@ public class CodeManager {
         // see FindSupport.findInFragments
 
         final Bundle b = p.getBundle();
-        final String ver = backend.getCurrentVersion();
+        final String ver = backend.getErlangVersion();
         @SuppressWarnings("rawtypes")
         Enumeration e = b.getEntryPaths("/ebin/" + ver);
         if (e == null) {
