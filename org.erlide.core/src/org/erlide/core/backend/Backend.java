@@ -87,7 +87,8 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
-public class Backend implements RpcCallSite, IDisposable, IStreamListener {
+public abstract class Backend implements RpcCallSite, IDisposable,
+        IStreamListener {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
@@ -104,9 +105,8 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     private EventDaemon eventDaemon;
     private BackendShellManager shellManager;
     private final CodeManager codeManager;
-    private ILaunch launch;
+    protected ILaunch launch;
     private final BackendData data;
-    private boolean disposable;
     private ErlangDebugTarget debugTarget;
 
     public Backend(final BackendData data) throws BackendException {
@@ -119,13 +119,12 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
                 + BackendUtil.getHost(), info.getCookie());
         this.data = data;
         codeManager = new CodeManager(this);
-        disposable = false;
 
         launch = data.getLaunch();
-        if (launch != null) {
-            disposable = true;
-            setLaunch(launch);
-        }
+    }
+
+    public RpcCallSite getCallSite() {
+        return this;
     }
 
     public RpcResult call_noexception(final String m, final String f,
@@ -256,17 +255,6 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public void dispose() {
-        // TODO review!
-        if (disposable) {
-
-            try {
-                if (launch != null) {
-                    launch.terminate();
-                }
-            } catch (final DebugException e) {
-                e.printStackTrace();
-            }
-        }
         // runtime.stop();
 
         ErlLogger.debug("disposing backend " + getName());
@@ -664,7 +652,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         return p.getStreamsProxy();
     }
 
-    private void postLaunch() throws DebugException {
+    protected void postLaunch() throws DebugException {
         final Collection<IProject> projects = Lists.newArrayList(data
                 .getProjects());
         registerProjectsWithExecutionBackend(projects);
