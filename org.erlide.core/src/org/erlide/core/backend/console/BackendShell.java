@@ -63,10 +63,6 @@ public class BackendShell {
         }
     }
 
-    public Backend getBackend() {
-        return backend;
-    }
-
     public String getId() {
         return fId;
     }
@@ -103,7 +99,7 @@ public class BackendShell {
     }
 
     public void add(final String text, final IoRequestKind kind) {
-        if (getBackend().isDistributed()
+        if (backend.isDistributed()
                 && IoRequest.RE_PROMPT.matcher(text).matches()) {
             return;
         }

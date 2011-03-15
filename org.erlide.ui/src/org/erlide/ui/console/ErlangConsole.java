@@ -30,9 +30,11 @@ public class ErlangConsole extends TextConsole {
     protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
+    private final Backend backend;
 
     public ErlangConsole(final Backend backend) {
         super(backend.getName(), null, null, true);
+        this.backend = backend;
 
         shell = backend.getShell("main");
         consoleListeners = new ListenerList(ListenerList.IDENTITY);
@@ -48,7 +50,7 @@ public class ErlangConsole extends TextConsole {
     }
 
     public RpcCallSite getBackend() {
-        return shell.getBackend();
+        return backend;
     }
 
     public BackendShell getShell() {
@@ -62,8 +64,7 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + shell.getBackend().getName() + " "
-                + shell.hashCode();
+        return "Erlang: " + backend.getName();
     }
 
     @Override
