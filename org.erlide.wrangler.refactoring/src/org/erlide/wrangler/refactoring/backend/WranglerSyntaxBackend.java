@@ -97,7 +97,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
     }
 
     /**
-     * Reutrns syntax information about a selection
+     * Returns syntax information about a selection
      * 
      * @param f
      *            selected file

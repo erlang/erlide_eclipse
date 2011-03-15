@@ -25,7 +25,6 @@ public class ExtensionHelper {
 
     private static Map<String, IExtension[]> extensionsCache = new HashMap<String, IExtension[]>();
 
-    // TODO list the extension points
     public static final String EDITOR_LISTENER = "org.erlide.editor_listener";
 
     public static IExtension[] getExtensions(final String type) {

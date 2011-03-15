@@ -138,7 +138,6 @@ public class BackendShell {
 
     private void deleteOldItems() {
         // TODO use a configuration for this
-        // TODO maybe we should count text lines?
         synchronized (requests) {
             if (requests.size() > MAX_REQUESTS) {
                 requests.subList(0, DELTA_REQUESTS).clear();

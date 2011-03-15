@@ -197,7 +197,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     }
 
     public boolean supportsCondition() {
-        return !true; // FIXME
+        return false;
     }
 
     public void setHitCount(final int hitCount) {

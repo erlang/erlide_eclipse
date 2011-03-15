@@ -267,7 +267,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
                 e.printStackTrace();
             }
         }
-        // FIXME need to stop process too, via ErtsProcess
+        // runtime.stop();
 
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {

@@ -24,11 +24,10 @@ import com.google.common.collect.Sets;
 
 public class ErlModelCache implements IDisposable {
 
-    private static final int CACHE_SIZE = 100; // TODO make a more educated
-                                               // guess here...
-                                               // private static final int
-                                               // NAME_CACHE_SIZE = 300; // TODO
-                                               // ditto
+    private static final int CACHE_SIZE = 100;
+    // TODO make a more educated guess here...
+    // private static final int NAME_CACHE_SIZE = 300;
+    // TODO ditto
     private static ErlModelCache fgInstance = null;
 
     private final LRUCache<IErlModule, List<IErlModule>> moduleIncludeCache;
