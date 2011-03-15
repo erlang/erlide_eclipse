@@ -1,4 +1,4 @@
-package org.erlide.core.builder;
+package org.erlide.core.services.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

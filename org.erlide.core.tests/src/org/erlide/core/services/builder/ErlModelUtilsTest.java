@@ -1,4 +1,4 @@
-package org.erlide.ui.tests;
+package org.erlide.core.services.builder;
 
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
