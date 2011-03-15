@@ -36,7 +36,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.ErlangCore;
@@ -46,7 +45,6 @@ import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
@@ -645,11 +643,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public IStreamsProxy getStreamsProxy() {
-        final ErtsProcess p = getErtsProcess();
-        if (p == null) {
-            return null;
-        }
-        return p.getStreamsProxy();
+        return null;
     }
 
     protected void postLaunch() throws DebugException {
@@ -681,14 +675,6 @@ public abstract class Backend implements RpcCallSite, IDisposable,
                         init_call.getParameters());
             }
         }
-    }
-
-    private ErtsProcess getErtsProcess() {
-        final IProcess[] ps = launch.getProcesses();
-        if (ps == null || ps.length == 0) {
-            return null;
-        }
-        return (ErtsProcess) ps[0];
     }
 
     private void registerProjectsWithExecutionBackend(
