@@ -13,7 +13,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.cover.ui.Activator;
+import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.ui.Images;
+import org.erlide.cover.views.model.ICoverageObject;
+import org.erlide.cover.views.model.StatsTreeModel;
 
 /**
  * Dialog for HTML browser
@@ -31,6 +34,7 @@ public class BrowserDialog extends Dialog {
     private Button next;
     private Button prev;
     private Browser browser;
+    private ICoverageObject object;
 
     private String url;
 
@@ -56,8 +60,13 @@ public class BrowserDialog extends Dialog {
         browser.setText(html);
     }
 
-    public void setFilePath(final String path) {
-        url = "file://" + path;
+    /**
+     * Sets object connected with current path
+     * @param path
+     */
+    public void setObject(final ICoverageObject obj) {
+        object = obj;
+        url = "file://" + obj.getHtmlPath();
     }
 
     private void createContent() {
@@ -103,31 +112,31 @@ public class BrowserDialog extends Dialog {
         prev = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData prevLData = new GridData();
         prev.setLayoutData(prevLData);
-       // prev.setText("prev");
+        // prev.setText("prev");
         prev.addSelectionListener(prevListener);
         prev.setImage(Activator.getImageDescriptor(Images.PREV).createImage());
 
         next = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData nextLData = new GridData();
         next.setLayoutData(nextLData);
-       // next.setText("next");
+        // next.setText("next");
         next.addSelectionListener(nextListener);
         next.setImage(Activator.getImageDescriptor(Images.NEXT).createImage());
 
         home = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData homeLData = new GridData();
         home.setLayoutData(homeLData);
-       // home.setText("down");
+        // home.setText("down");
         home.addSelectionListener(homeListener);
         home.setImage(Activator.getImageDescriptor(Images.HOME).createImage());
-        
+
         up = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData upLData = new GridData();
         up.setLayoutData(upLData);
-       // up.setText("up");
+        // up.setText("up");
         up.addSelectionListener(upListener);
         up.setImage(Activator.getImageDescriptor(Images.UP).createImage());
-        
+
         dialogShell.setLocation(getParent().toDisplay(100, 100));
 
     }
@@ -135,57 +144,75 @@ public class BrowserDialog extends Dialog {
     private SelectionListener prevListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
-            
+            if (object.getParent() != null) {
+                ICoverageObject sib = object.getParent().getPrevSiblingTo(
+                        object.getLabel());
+                if(sib == null) {
+                    CoverageHelper.reportInfo("No previous pages");
+                    return;
+                }
+                setObject(sib);
+                browser.setUrl(url);
+                titleLabel.setText(url);
+            }
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
             // TODO Auto-generated method stub
-            
         }
-        
+
     };
-    
+
     private SelectionListener nextListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
-            
+            if (object.getParent() != null) {
+                ICoverageObject sib = object.getParent().getNextSiblingTo(
+                        object.getLabel());
+                if(sib == null){
+                    CoverageHelper.reportInfo("No further pages");
+                    return;
+                }
+                setObject(sib);
+                browser.setUrl(url);
+                titleLabel.setText(url);
+            }
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
             // TODO Auto-generated method stub
-            
         }
-        
+
     };
-    
+
     private SelectionListener upListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
-            
+            if (object.getParent() != null) {
+                setObject(object.getParent());
+                browser.setUrl(url);
+                titleLabel.setText(url);
+            }
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
             // TODO Auto-generated method stub
-            
         }
-        
+
     };
-    
+
     private SelectionListener homeListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
-            
+            setObject(StatsTreeModel.getInstance().getRoot());
+            browser.setUrl(url);
+            titleLabel.setText(url);
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
             // TODO Auto-generated method stub
-            
         }
-        
+
     };
-    
+
 }

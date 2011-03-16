@@ -80,6 +80,10 @@ public class StatsTreeModel implements Serializable {
     public String getTimestamp() {
         return timestamp;
     }
+    
+    public ICoverageObject treeSearch(String name) {
+        return root.treeSearch(name);
+    }
 
     private void initialize() {
         root = new StatsTreeObject("total", 0, 0, ObjectType.PROJECT);

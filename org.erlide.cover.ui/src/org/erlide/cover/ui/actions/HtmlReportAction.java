@@ -66,9 +66,9 @@ public class HtmlReportAction extends Action {
 
         if (selObj instanceof FunctionStats) {
             final ModuleStats module = (ModuleStats) selObj.getParent();
-            browser.setFilePath(module.getHtmlPath());
+            browser.setObject(module);
         } else {
-            browser.setFilePath(selObj.getHtmlPath());
+            browser.setObject(selObj);
         }
 
         browser.open();

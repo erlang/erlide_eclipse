@@ -4,7 +4,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IViewSite;
-import org.erlide.cover.views.model.IStatsTreeObject;
+import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.StatsTreeModel;
 
 /**
@@ -37,30 +37,30 @@ public class StatsViewContentProvider implements IStructuredContentProvider,
 
     public Object[] getElements(final Object parent) {
         if (parent.equals(viewSite) && model != null || parent.equals(model)) {
-            return new IStatsTreeObject[] { model.getRoot() };
+            return new ICoverageObject[] { model.getRoot() };
         }
 
         return getChildren(parent);
     }
 
     public Object getParent(final Object child) {
-        if (child instanceof IStatsTreeObject) {
-            return ((IStatsTreeObject) child).getParent();
+        if (child instanceof ICoverageObject) {
+            return ((ICoverageObject) child).getParent();
         }
         return null;
     }
 
     public Object[] getChildren(final Object parent) {
-        if (parent instanceof IStatsTreeObject
-                && ((IStatsTreeObject) parent).hasChildren()) {
-            return ((IStatsTreeObject) parent).getChildren();
+        if (parent instanceof ICoverageObject
+                && ((ICoverageObject) parent).hasChildren()) {
+            return ((ICoverageObject) parent).getChildren();
         }
         return new Object[0];
     }
 
     public boolean hasChildren(final Object parent) {
-        if (parent instanceof IStatsTreeObject) {
-            return ((IStatsTreeObject) parent).hasChildren();
+        if (parent instanceof ICoverageObject) {
+            return ((ICoverageObject) parent).hasChildren();
         }
         return false;
     }

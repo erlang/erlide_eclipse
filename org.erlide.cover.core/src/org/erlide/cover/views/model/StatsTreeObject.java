@@ -1,6 +1,9 @@
 package org.erlide.cover.views.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -58,7 +61,7 @@ public class StatsTreeObject implements ICoverageObject {
         bf.append(label).append(" ").append(all).append(" ").append(covered)
                 .append(" ").append(getPercentage()).append('\n');
 
-        for (final IStatsTreeObject child : children.values()) {
+        for (final ICoverageObject child : children.values()) {
             bf.append('\t').append(child.toString()).append('\n');
         }
 
@@ -69,16 +72,16 @@ public class StatsTreeObject implements ICoverageObject {
         return null;
     }
 
-    public void setParent(final IStatsTreeObject parent) {
+    public void setParent(final ICoverageObject parent) {
         if (parent instanceof ICoverageObject)
             this.parent = (ICoverageObject) parent;
     }
 
-    public IStatsTreeObject getParent() {
+    public ICoverageObject getParent() {
         return parent;
     }
 
-    public void addChild(final String name, final IStatsTreeObject child) {
+    public void addChild(final String name, final ICoverageObject child) {
         if (child instanceof ICoverageObject) {
             children.put(name, (ICoverageObject) child);
             child.setParent(this);
@@ -89,8 +92,8 @@ public class StatsTreeObject implements ICoverageObject {
         children.remove(name);
     }
 
-    public IStatsTreeObject[] getChildren() {
-        return children.values().toArray(new IStatsTreeObject[0]);
+    public ICoverageObject[] getChildren() {
+        return children.values().toArray(new ICoverageObject[0]);
     }
 
     public boolean hasChildren() {
@@ -143,6 +146,42 @@ public class StatsTreeObject implements ICoverageObject {
 
     public ICoverageObject findChild(final String name) {
         return children.get(name);
+    }
+
+    /**
+     * Returns sibbling name to the name given
+     */
+    public ICoverageObject getPrevSiblingTo(String name) {
+        List<String> l = new LinkedList<String>(children.keySet());
+        ListIterator<String> it = l.listIterator(l.indexOf(name));
+
+        if (it.hasPrevious())
+            return children.get(it.previous());
+        else
+            return null;
+    }
+
+    public ICoverageObject getNextSiblingTo(String name) {
+        List<String> l = new LinkedList<String>(children.keySet());
+        ListIterator<String> it = l.listIterator(l.indexOf(name));
+        
+        it.next();
+        if (it.hasNext())
+            return children.get(it.next());
+        else
+            return null;
+    }
+
+    public ICoverageObject treeSearch(String name) {
+        if (this.label.equals(name))
+            return this;
+        ICoverageObject res = null;
+        for (ICoverageObject child : children.values()) {
+            res = child.treeSearch(name);
+            if (res != null)
+                break;
+        }
+        return res;
     }
 
 }

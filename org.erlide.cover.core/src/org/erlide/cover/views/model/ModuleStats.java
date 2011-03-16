@@ -29,7 +29,7 @@ public class ModuleStats extends StatsTreeObject {
     }
     
     @Override
-    public void addChild(final String name, final IStatsTreeObject child) {
+    public void addChild(final String name, final ICoverageObject child) {
     	
     	super.addChild(name, child);
     }

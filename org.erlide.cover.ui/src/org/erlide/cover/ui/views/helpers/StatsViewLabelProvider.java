@@ -1,7 +1,5 @@
 package org.erlide.cover.ui.views.helpers;
 
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -14,12 +12,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.ErlangCore;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.views.model.ICoverageObject;
-import org.erlide.cover.views.model.ICoverageStats;
 import org.erlide.cover.views.model.ObjectType;
-import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**
  * Label provider for statistics view
@@ -82,7 +76,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
     }
 
     public String getColumnText(final Object element, final int columnIndex) {
-        final ICoverageStats statsEl = (ICoverageStats) element;
+        final ICoverageObject statsEl = (ICoverageObject) element;
         String text = "";
 
         switch (columnIndex) {

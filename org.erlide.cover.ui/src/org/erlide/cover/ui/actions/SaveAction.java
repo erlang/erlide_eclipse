@@ -8,14 +8,12 @@ import java.io.ObjectOutputStream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.cover.ui.Activator;
+import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.views.model.StatsTreeModel;
 
 /**
@@ -48,7 +46,7 @@ public class SaveAction extends Action {
         final File dir = location.toFile();
 
         if (!dir.exists() && !dir.mkdir()) {
-            reportError("Can not save results!");
+            CoverageHelper.reportError("Can not save results!");
             return;
         }
         
@@ -99,20 +97,13 @@ public class SaveAction extends Action {
         } catch (FileNotFoundException e) {
             log.error("Error while openning stream");
             e.printStackTrace();
-            reportError("Cannot save results");
+            CoverageHelper.reportError("Cannot save results");
         } catch (IOException e) {
             log.error("Error while writing to a file");
             e.printStackTrace();
-            reportError("Cannot save results");
+            CoverageHelper.reportError("Cannot save results");
         }
 
     }
 
-    private void reportError(String info) {
-        final IStatus executionStatus = new Status(IStatus.ERROR,
-                Activator.PLUGIN_ID, info, null);
-        StatusManager.getManager().handle(executionStatus,
-                StatusManager.SHOW);
-    }
-    
 }

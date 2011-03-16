@@ -64,7 +64,7 @@ public class FunctionStats extends StatsTreeObject {
     		return lineEnd;
     	
     	List<Integer> numList = new LinkedList<Integer>();
-    	for(IStatsTreeObject obj : getParent().getChildren()) {
+    	for(ICoverageObject obj : getParent().getChildren()) {
     		FunctionStats fs = (FunctionStats) obj;
     		numList.add(fs.getLineStart());
     	}

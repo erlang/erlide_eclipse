@@ -9,24 +9,18 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.cover.ui.Activator;
+import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.ui.Images;
 import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.views.model.ICoverageObject;
-import org.erlide.cover.views.model.IStatsTreeObject;
 import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
@@ -59,7 +53,7 @@ public class RestoreAction extends Action {
         final File dir = location.toFile();
         
         if (!dir.exists() && !dir.mkdir()) {
-            reportError("Can not save results!");
+            CoverageHelper.reportError("Can not save results!");
             return;
         }
 
@@ -96,32 +90,24 @@ public class RestoreAction extends Action {
         } catch (FileNotFoundException e) {
             log.error("No such file");
             e.printStackTrace();
-            reportError("Error while reading file");
+            CoverageHelper.reportError("Error while reading file");
         } catch (Exception e) {
             log.error("Error while reading file");
             e.printStackTrace();
-            reportError("Error while reading file");
+            CoverageHelper.reportError("Error while reading file");
         } 
         
     }
 
     // creates module set used to prepare annotations map
-    private void createModuleSet(ModuleSet mSet, IStatsTreeObject object) {
+    private void createModuleSet(ModuleSet mSet, ICoverageObject object) {
         if(object.getType().equals(ObjectType.MODULE))
             ModuleSet.add((ModuleStats)object);
-        IStatsTreeObject[] children = object.getChildren();
-        for(IStatsTreeObject child : children)
+        ICoverageObject[] children = object.getChildren();
+        for(ICoverageObject child : children)
             createModuleSet(mSet, child);
     }
 
-    // reports error to a user
-    private void reportError(String info) {
-        final IStatus executionStatus = new Status(IStatus.ERROR,
-                Activator.PLUGIN_ID, info, null);
-        StatusManager.getManager().handle(executionStatus,
-                StatusManager.SHOW);
-    }
-    
     // label provider for choosing files
     private ILabelProvider labelProvider = new LabelProvider() {
 
