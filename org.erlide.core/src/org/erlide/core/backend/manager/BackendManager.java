@@ -417,11 +417,12 @@ public final class BackendManager implements IEpmdListener {
 
     }
 
-    public void createExecutionBackend(final BackendData data) {
+    public Backend createExecutionBackend(final BackendData data) {
         ErlLogger.debug("create execution backend " + data.getNodeName());
         final Backend b = factory.createBackend(data);
         addBackend(b);
         notifyBackendChange(b, BackendEvent.ADDED, null, null);
+        return b;
     }
 
     public void dispose() {

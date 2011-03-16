@@ -32,6 +32,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlDebugConstants;
@@ -50,17 +51,26 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
-        doLaunch(config, mode, launch);
+        preLaunch(config, mode, launch);
+        final Backend b = doLaunch(config, mode, launch);
+        postLaunch(mode, b);
     }
 
-    public void doLaunch(final ILaunchConfiguration config, final String mode,
-            final ILaunch launch) {
+    protected void preLaunch(final ILaunchConfiguration config,
+            final String mode, final ILaunch launch) {
+    }
+
+    protected void postLaunch(final String mode, final Backend b) {
+    }
+
+    protected Backend doLaunch(final ILaunchConfiguration config,
+            final String mode, final ILaunch launch) {
         BackendData data = new BackendData(config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'",
                     data.getRuntimeName());
-            return;
+            return null;
         }
 
         final boolean nodeExists = BackendCore.getBackendManager()
@@ -81,8 +91,9 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
 
         if (!isErlangInternalLaunch(launch)) {
-            BackendCore.getBackendManager().createExecutionBackend(data);
+            return BackendCore.getBackendManager().createExecutionBackend(data);
         }
+        return null;
     }
 
     /*
