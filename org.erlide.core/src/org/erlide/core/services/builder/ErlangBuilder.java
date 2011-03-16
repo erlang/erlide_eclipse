@@ -51,6 +51,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
     private final BuilderHelper helper = new BuilderHelper();
     private final IProject myProject;
 
+    public ErlangBuilder() {
+        super();
+        myProject = null;
+    }
+
     public ErlangBuilder(final IProject prj) {
         myProject = prj;
     }

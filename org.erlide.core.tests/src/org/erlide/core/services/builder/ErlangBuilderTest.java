@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,6 +31,12 @@ public class ErlangBuilderTest {
         }
 
         builder = new ErlangBuilder(prj);
+    }
+
+    @After
+    public void restore() {
+        prj = null;
+        builder = null;
     }
 
     @Test
