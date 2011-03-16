@@ -55,6 +55,7 @@ public class ErlangPlugin extends Plugin {
     private static ErlangPlugin plugin;
     private PlatformChangeListener platformListener;
     private ErlLogger logger;
+    private CoreInjector injector;
 
     public ErlangPlugin() {
         super();
@@ -104,6 +105,8 @@ public class ErlangPlugin extends Plugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
+        injector = new CoreInjector(context);
+
         final String dir = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
         logger = ErlLogger.getInstance();
@@ -272,6 +275,10 @@ public class ErlangPlugin extends Plugin {
         if (getDefault().isDebugging()) {
             ErlLogger.debug(message);
         }
+    }
+
+    public CoreInjector getInjector() {
+        return injector;
     }
 
 }
