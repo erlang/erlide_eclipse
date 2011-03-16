@@ -7,8 +7,8 @@ Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
- guava-r07.jar,
- lambdaj-2.3.2-with-dependencies.jar
+ lambdaj-2.3.2-with-dependencies.jar,
+ guava-r08.jar
 Export-Package: ch.lambdaj,
  ch.lambdaj.collection,
  ch.lambdaj.function.aggregate,
