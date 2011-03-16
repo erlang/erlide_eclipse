@@ -273,7 +273,6 @@ public class OtpEpmd {
      * fatal. If we manage to successfully communicate with an r4 epmd, we
      * return either the socket, or null, depending on the result.
      */
-    @SuppressWarnings("null")
     private static Socket r4_publish(final OtpLocalNode node)
             throws IOException {
         Socket s = null;

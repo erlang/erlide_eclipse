@@ -27,7 +27,6 @@ import java.io.Serializable;
  * Erlang binary with a length not an integral number of bytes (8-bit). Anything
  * can be represented as a sequence of bytes can be made into an Erlang bitstr.
  */
-@SuppressWarnings("hiding")
 public class OtpErlangBitstr extends OtpErlangObject implements Serializable,
         Cloneable {
     // don't change this!
