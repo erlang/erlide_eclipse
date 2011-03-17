@@ -86,14 +86,12 @@ public interface IErlProject extends IErlFolder {
 
     RuntimeVersion getRuntimeVersion();
 
-    boolean hasSourceDir(IPath fullPath);
+    boolean hasSourceDir(IPath path);
 
-    void setAllProperties(IOldErlangProjectProperties bprefs)
+    void setAllProperties(IOldErlangProjectProperties properties)
             throws BackingStoreException;
 
-    void clearCaches();
-
-    Collection<IErlProject> getProjectReferences() throws ErlModelException;
+    Collection<IErlProject> getReferencedProjects() throws ErlModelException;
 
     IErlModule getModule(String name) throws ErlModelException;
 
