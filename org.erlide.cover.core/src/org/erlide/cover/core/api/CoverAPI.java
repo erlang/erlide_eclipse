@@ -30,7 +30,7 @@ public interface CoverAPI {
      * 
      * @param conf
      */
-    public void setCoverageConfiguration(IConfiguration conf)
+    public boolean setCoverageConfiguration(IConfiguration conf)
             throws CoverException;
 
     /**

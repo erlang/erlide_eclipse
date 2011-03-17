@@ -7,6 +7,9 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.cover.core.CoverBackend;
+import org.erlide.cover.core.CoverEvent;
+import org.erlide.cover.core.CoverException;
+import org.erlide.cover.core.CoverStatus;
 
 /**
  * Launch cover configuration
@@ -17,21 +20,27 @@ import org.erlide.cover.core.CoverBackend;
 public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
     @Override
-    public void doLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch) {
+    public void doLaunch(final ILaunchConfiguration config, final String mode,
+            final ILaunch launch) {
 
         CoverLaunchData coverData;
         try {
             coverData = new CoverLaunchData(config);
-            
+
             final CoverBackend coverBackend = CoverBackend.getInstance();
             coverBackend.initialize(coverData);
             coverBackend.startTesting();
-            
+
         } catch (CoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
+        } catch (CoverException e) {
+            if(CoverBackend.getInstance().getListeners().size() == 0)
+                throw new RuntimeException(e.getMessage());
+            CoverBackend
+                    .getInstance()
+                    .handleError(e.getMessage());
+        } 
 
     }
 

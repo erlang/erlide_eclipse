@@ -47,7 +47,7 @@ public class CoverLaunchData {
         return module;
     }
 
-    public String getFile() {
+    public String getProjectAll() {
         return file;
     }
 

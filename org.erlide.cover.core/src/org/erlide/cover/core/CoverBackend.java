@@ -70,11 +70,16 @@ public class CoverBackend {
     }
 
     public void initialize(/* final ErlLaunchData data, */
-    final CoverLaunchData coverData) {
+    final CoverLaunchData coverData) throws CoverException {
 
         // this.coverData = coverData;
 
-        settings = new CoverLaunchSettings(coverData.getType(), coverData);
+        try {
+            settings = new CoverLaunchSettings(coverData.getType(), coverData);
+        } catch (CoverException e1) {
+            settings = null;
+            throw e1;
+        }
 
         if (backend != null && !backend.isStopped()) {
             log.debug("is started");
@@ -108,7 +113,7 @@ public class CoverBackend {
         }
 
     }
-
+    
     public synchronized void startTesting() {
 
         if (!coverRunning) {

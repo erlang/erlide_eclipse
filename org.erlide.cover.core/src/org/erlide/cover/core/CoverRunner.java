@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendException;
 import org.erlide.cover.constants.TestConstants;
 import org.erlide.cover.core.api.CoveragePerformer;
@@ -56,7 +55,8 @@ public class CoverRunner extends Thread {
             // TODO handle res
 
             log.debug(config.getProject().getWorkspaceProject().getLocation());
-            IPath ppath = config.getProject().getWorkspaceProject().getLocation();
+            IPath ppath = config.getProject().getWorkspaceProject()
+                    .getLocation();
             log.debug(ppath.append(config.getOutputDir()));
 
             res = CoverBackend
@@ -67,8 +67,16 @@ public class CoverRunner extends Thread {
                             ppath.append(config.getOutputDir()).toString());
 
             // TODO handle res
-
-            perf.setCoverageConfiguration(config);
+            try {
+                boolean ifSet = perf.setCoverageConfiguration(config);
+                if (!ifSet) {
+                    CoverBackend.getInstance().coverageFinished();
+                    return;
+                }
+            } catch (RuntimeException e) {
+                CoverBackend.getInstance().coverageFinished();
+                throw e;
+            }
 
             switch (CoverBackend.getInstance().getSettings().getType()) {
             case MODULE:
@@ -118,14 +126,14 @@ public class CoverRunner extends Thread {
         } catch (CoverException e) {
             e.printStackTrace();
             CoverBackend.getInstance().handleError(
-                    "Exception while running cover" + e);
+                    "Exception while running cover: " + e);
         } catch (BackendException e) {
             e.printStackTrace();
             CoverBackend.getInstance().handleError(
-                    "Exception while running tests" + e);
+                    "Exception while running tests: " + e);
+        } finally {
+            CoverBackend.getInstance().coverageFinished();
         }
-
-        CoverBackend.getInstance().coverageFinished();
     }
 
 }

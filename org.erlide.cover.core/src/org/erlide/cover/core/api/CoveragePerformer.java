@@ -99,7 +99,7 @@ public class CoveragePerformer implements CoverAPI {
 
     }
 
-    public synchronized void setCoverageConfiguration(IConfiguration conf)
+    public synchronized boolean setCoverageConfiguration(IConfiguration conf)
             throws CoverException {
         config = conf;
 
@@ -134,6 +134,16 @@ public class CoveragePerformer implements CoverAPI {
         List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
         for (IErlModule module : config.getModules()) {
+            if (module == null) {
+                if (CoverBackend.getInstance().getListeners().size() == 0) {
+                    throw new RuntimeException(
+                            "No such module at given project. Check your configuration");
+                }
+                CoverBackend
+                        .getInstance()
+                        .handleError("No such module at given project. Check your configuration");
+                return false;
+            }
             log.debug(module.getFilePath());
             paths.add(new OtpErlangList(module.getFilePath()));
         }
@@ -150,7 +160,7 @@ public class CoveragePerformer implements CoverAPI {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }
-
+        return true;
     }
 
     public synchronized void analyse() throws CoverException {

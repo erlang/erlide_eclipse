@@ -29,31 +29,37 @@ public class CoverLaunchSettings {
      * @param t
      * @param data
      */
-    public CoverLaunchSettings(LaunchType t, CoverLaunchData data) {
+    public CoverLaunchSettings(LaunchType t, CoverLaunchData data)
+            throws CoverException {
         type = t;
         frameworkType = data.getFramework();
         config = new Configuration();
 
         log = Logger.getLogger(getClass());
+        if(data.getFramework() == null)
+            throw new CoverException("No test framework set");
 
         switch (t) {
         case MODULE:
 
             // new
             config.setProject(data.getProject());
+            if(data.getProject() == null || data.getProject().length() == 0)
+                throw new CoverException("No project name set");
+            if(data.getModule() == null || data.getModule().length() == 0)
+                throw new CoverException("No module name set");
             try {
                 config.addModule(data.getModule().replace(".erl", ""));
             } catch (ErlModelException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch (CoverException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+                throw new CoverException(e.getMessage()); 
+            } 
             break;
         case ALL:
             // new
-            config.setProject(data.getFile());
+            if(data.getProjectAll() == null || data.getProjectAll().length() == 0)
+                throw new CoverException("No project name set");
+            config.setProject(data.getProjectAll());
             try {
                 Collection<IErlModule> allModules = config.getProject()
                         .getModules();
@@ -64,8 +70,8 @@ public class CoverLaunchSettings {
                     }
                 }
             } catch (ErlModelException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
+                throw new CoverException(e.getMessage());
             }
             break;
         case APPLICATION:
@@ -73,7 +79,7 @@ public class CoverLaunchSettings {
         case CUSTOM:
             break;
         }
-        
+
     }
 
     public LaunchType getType() {
