@@ -137,7 +137,7 @@ public final class BuilderHelper {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
                 m.getScanner();
-                final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+                final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
                     if (samePath(ifile.getFilename(), resource.getName())) {
                         if (m.getModuleKind() == ModuleKind.ERL) {
@@ -154,18 +154,18 @@ public final class BuilderHelper {
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProject project, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IProject project,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         project.accept(new BuilderVisitor(result, monitor, this));
         return result;
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IResourceDelta delta, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IResourceDelta delta,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         if (delta != null) {
             delta.accept(new BuilderVisitor(result, monitor, this));
@@ -270,7 +270,7 @@ public final class BuilderHelper {
         final IErlModule m = eprj.getModule(source.getName());
         if (m != null) {
             m.getScanner();
-            final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+            final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile ifile : incs) {
                 final IResource rifile = findResourceByName(project,
                         ifile.getFilename());

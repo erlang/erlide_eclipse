@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang.internal;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -599,11 +598,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     public void setChildren(final Collection<? extends IErlElement> children) {
         clearCaches();
         fChildren.clear();
-        fChildren.addAll(children);
-    }
-
-    public void setChildren(final IErlElement[] children) {
-        setChildren(Arrays.asList(children));
+        if (children != null) {
+            fChildren.addAll(children);
+        }
     }
 
     /**

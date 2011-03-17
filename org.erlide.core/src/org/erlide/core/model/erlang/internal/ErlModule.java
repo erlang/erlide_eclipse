@@ -319,7 +319,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
-    public Collection<ErlangIncludeFile> getIncludedFiles()
+    public Collection<ErlangIncludeFile> getIncludeFiles()
             throws ErlModelException {
         if (!isStructureKnown()) {
             open(null);
@@ -453,7 +453,7 @@ public class ErlModule extends Openable implements IErlModule {
             if (!wasOpen) {
                 m.open(null);
             }
-            final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+            final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile inc : incs) {
                 if (inc.getFilename().equals(getName())) {
                     result.add(m);
@@ -567,7 +567,7 @@ public class ErlModule extends Openable implements IErlModule {
             return includedFilesForModule;
         }
         final List<IErlModule> result = Lists.newArrayList();
-        final Collection<ErlangIncludeFile> includedFiles = getIncludedFiles();
+        final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
         final IErlProject project = getProject();
         if (project == null) {
             return result;
