@@ -66,8 +66,8 @@ public class ErlideTestUtils {
 	public static IErlModule createInclude(final IErlProject project,
 			final String moduleName, final String moduleContents)
 			throws CoreException {
-		final IFolder folder = project.getWorkspaceProject()
-				.getFolder("include");
+		final IFolder folder = project.getWorkspaceProject().getFolder(
+				"include");
 		final IErlModule module = createFile(moduleName, moduleContents, folder);
 		modules.add(module);
 		return module;
@@ -166,6 +166,9 @@ public class ErlideTestUtils {
 			FileNotFoundException {
 		final String pathString = getTmpPath(fileName).toOSString();
 		final File f = new File(pathString);
+		if (f.exists()) {
+			f.delete();
+		}
 		f.createNewFile();
 		final FileOutputStream fileOutputStream = new FileOutputStream(
 				pathString);

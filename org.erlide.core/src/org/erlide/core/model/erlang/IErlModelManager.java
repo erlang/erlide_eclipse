@@ -141,8 +141,6 @@ public interface IErlModelManager extends ISaveParticipant {
 
     public void removeModule(final IErlModule module);
 
-    void putEdited(String path);
-
-    void removeEdited(String path);
+    void putEdited(String path, IErlModule module);
 
 }

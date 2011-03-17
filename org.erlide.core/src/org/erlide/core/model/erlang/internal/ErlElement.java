@@ -79,7 +79,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * This element's parent, or <code>null</code> if this element does not have
      * a parent.
      */
-    protected IParent fParent;
+    private final IParent fParent;
+
+    private final List<IErlElement> fChildren = Lists.newArrayList();
 
     /**
      * This element's name, or an empty <code>String</code> if this element does
@@ -532,7 +534,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     protected List<IErlElement> internalGetChildren() {
-        return getModel().getChildrenOf(this);
+        return fChildren;
     }
 
     public int getChildCount() {
@@ -581,22 +583,23 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     public void removeChild(final IErlElement child) {
         clearCaches();
-        getModel().removeChildOf(this, child);
+        fChildren.remove(child);
     }
 
     public void removeChildren() {
         clearCaches();
-        getModel().setChildrenOf(this, null);
+        fChildren.clear();
     }
 
     public void addChild(final IErlElement child) {
         clearCaches();
-        getModel().addChildOf(this, child);
+        fChildren.add(child);
     }
 
     public void setChildren(final Collection<? extends IErlElement> children) {
         clearCaches();
-        getModel().setChildrenOf(this, children);
+        fChildren.clear();
+        fChildren.addAll(children);
     }
 
     public void setChildren(final IErlElement[] children) {
@@ -609,7 +612,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement#isStructureKnown()
      */
     public void setStructureKnown(final boolean newStructureKnown) {
-        structureKnown = newStructureKnown;
+        if (structureKnown != newStructureKnown) {
+            structureKnown = newStructureKnown;
+        }
     }
 
     public void resourceChanged(final IResourceDelta delta) {
@@ -619,30 +624,22 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         setStructureKnown(false);
     }
 
-    public static IErlElement getChildNamed(final IParent parent,
+    private static IErlElement getChildNamed(final ErlElement parent,
             final String name) {
-        try {
-            for (final IErlElement child : parent.getChildren()) {
-                if (child.getName().equals(name)) {
-                    return child;
-                }
+        for (final IErlElement child : parent.internalGetChildren()) {
+            if (child.getName().equals(name)) {
+                return child;
             }
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
-    private static IErlElement getChildWithResource(final IParent parent,
+    private static IErlElement getChildWithResource(final ErlElement parent,
             final IResource rsrc) {
-        try {
-            for (final IErlElement child : parent.getChildren()) {
-                if (rsrc.equals(child.getResource())) {
-                    return child;
-                }
+        for (final IErlElement child : parent.internalGetChildren()) {
+            if (rsrc.equals(child.getResource())) {
+                return child;
             }
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -695,6 +692,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public void dispose() {
+        // XXX FIXME TODO
+        // if (!LOCAL_CHILDREN) {
+        // getModel().setChildrenOf(this, null);
+        // }
     }
 
     protected ErlModelCache getModelCache() {

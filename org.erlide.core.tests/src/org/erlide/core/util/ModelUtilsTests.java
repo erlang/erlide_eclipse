@@ -519,6 +519,9 @@ public class ModelUtilsTests {
 		// http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
 		File externalInclude = null;
 		IErlProject project = null;
+		final IPathVariableManager pathVariableManager = ResourcesPlugin
+				.getWorkspace().getPathVariableManager();
+		final String pathVariableName = "TEST";
 		// given
 		// a project with an include dir outside the model, the include file
 		// contains a record def
@@ -534,9 +537,6 @@ public class ModelUtilsTests {
 			final String includePath = externalInclude.getAbsolutePath();
 			IPath path = new Path(includePath).removeLastSegments(1);
 			final IPath[] paths = ErlideTestUtils.splitPathAfter(1, path);
-			final IPathVariableManager pathVariableManager = ResourcesPlugin
-					.getWorkspace().getPathVariableManager();
-			final String pathVariableName = "TEST";
 			pathVariableManager.setValue(pathVariableName, paths[0]);
 			path = new Path(pathVariableName).append(paths[1]);
 			project.setIncludeDirs(Lists.newArrayList(path));
@@ -559,6 +559,7 @@ public class ModelUtilsTests {
 			if (externalInclude != null && externalInclude.exists()) {
 				externalInclude.delete();
 			}
+			pathVariableManager.setValue(pathVariableName, null);
 		}
 	}
 
