@@ -47,7 +47,9 @@ public class CoveragePerformer implements CoverAPI {
 
         final StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
-        CoverBackend.getInstance().getAnnotationMaker().clearAllAnnotations();
+        if (CoverBackend.getInstance().getAnnotationMaker() != null)
+            CoverBackend.getInstance().getAnnotationMaker()
+                    .clearAllAnnotations();
 
         for (final ICoverObserver obs : CoverBackend.getInstance()
                 .getListeners()) {
@@ -100,11 +102,12 @@ public class CoveragePerformer implements CoverAPI {
     public synchronized void setCoverageConfiguration(IConfiguration conf)
             throws CoverException {
         config = conf;
-        
-        StatsTreeModel.getInstance().setRootLabel(config.getProject().getName());
-        
+
+        StatsTreeModel.getInstance()
+                .setRootLabel(config.getProject().getName());
+
         IPath ppath = config.getProject().getWorkspaceProject().getLocation();
-        
+
         // set include files
         List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
@@ -112,21 +115,21 @@ public class CoveragePerformer implements CoverAPI {
             log.debug(ppath.append(include));
             includes.add(new OtpErlangList(ppath.append(include).toString()));
         }
-        
+
         OtpErlangObject res;
         try {
             res = CoverBackend
-            .getInstance()
-            .getBackend()
-            .call(CoverConstants.COVER_ERL_BACKEND,
-                    CoverConstants.FUN_SET_INCLUDES, "x", includes);
+                    .getInstance()
+                    .getBackend()
+                    .call(CoverConstants.COVER_ERL_BACKEND,
+                            CoverConstants.FUN_SET_INCLUDES, "x", includes);
         } catch (BackendException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        
+
         // TODO: handle res
-        
+
         // preparation - cover compilation
         List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
@@ -165,11 +168,11 @@ public class CoveragePerformer implements CoverAPI {
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_ANALYSE, "x", modules);
-            
-            
-            if(res instanceof OtpErlangAtom && res.toString().equals("no_file"))
-                return;  // do sth more then??
-            
+
+            if (res instanceof OtpErlangAtom
+                    && res.toString().equals("no_file"))
+                return; // do sth more then??
+
             final StatsTreeModel model = StatsTreeModel.getInstance();
             model.setIndex(res.toString().substring(1,
                     res.toString().length() - 1));

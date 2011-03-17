@@ -2,6 +2,8 @@ package org.erlide.cover.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.cover.core.CoverBackend;
+import org.erlide.cover.ui.annotations.EditorTracker;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -32,6 +34,7 @@ public class Activator extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        CoverBackend.getInstance().addAnnotationMaker(EditorTracker.getInstance());
     }
 
     /*
