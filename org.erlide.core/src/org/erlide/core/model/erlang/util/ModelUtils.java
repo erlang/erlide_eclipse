@@ -139,7 +139,7 @@ public class ModelUtils {
         final List<String> result = Lists.newArrayList();
         final Set<String> names = Sets.newHashSet();
         addModuleNamesWithPrefix(prefix, result, names, project.getModules());
-        for (final IErlProject p : project.getProjectReferences()) {
+        for (final IErlProject p : project.getReferencedProjects()) {
             if (p != null) {
                 p.open(null);
                 addModuleNamesWithPrefix(prefix, result, names, p.getModules());

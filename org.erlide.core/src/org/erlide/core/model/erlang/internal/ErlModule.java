@@ -586,7 +586,7 @@ public class ErlModule extends Openable implements IErlModule {
             if (referencedIncludes == null) {
                 referencedIncludes = Lists.newArrayList();
                 final Collection<IErlProject> referencedProjects = project
-                        .getProjectReferences();
+                        .getReferencedProjects();
                 for (final IErlProject referencedProject : referencedProjects) {
                     referencedIncludes.addAll(referencedProject.getIncludes());
                 }

@@ -98,7 +98,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final Set<IErlProject> depProjects = Sets.newHashSet();
         for (final IErlProject project : projects) {
             try {
-                depProjects.addAll(project.getProjectReferences());
+                depProjects.addAll(project.getReferencedProjects());
             } catch (final ErlModelException e) {
             }
         }
