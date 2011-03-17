@@ -76,7 +76,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
             }
         }
         final IErlModelManager modelManager = ErlangCore.getModelManager();
-        removeChildren();
+        setChildren(null);
         final IErlProject project = (IErlProject) getAncestorOfKind(Kind.PROJECT);
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
             addExternalEntries(pm, externalModuleTree, modelManager, "modules",

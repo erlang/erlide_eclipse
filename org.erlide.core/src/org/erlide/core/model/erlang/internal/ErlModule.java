@@ -238,9 +238,9 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public void removeChildren() {
-        super.removeChildren();
+    public void setChildren(final Collection<? extends IErlElement> children) {
         comments.clear();
+        super.setChildren(children);
     }
 
     public synchronized long getTimestamp() {

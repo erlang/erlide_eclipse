@@ -585,11 +585,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         fChildren.remove(child);
     }
 
-    public void removeChildren() {
-        clearCaches();
-        fChildren.clear();
-    }
-
     public void addChild(final IErlElement child) {
         clearCaches();
         fChildren.add(child);

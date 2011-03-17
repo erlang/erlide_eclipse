@@ -91,7 +91,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     protected boolean buildStructure(final IProgressMonitor pm) {
-        removeChildren();
+        setChildren(null);
         // determine my children
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                 .getProjects();
