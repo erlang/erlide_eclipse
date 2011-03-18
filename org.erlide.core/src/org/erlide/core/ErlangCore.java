@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspace;
@@ -26,6 +28,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
+
+import com.google.common.collect.Maps;
 
 public final class ErlangCore {
 
@@ -213,10 +217,9 @@ public final class ErlangCore {
      *         <code>String</code>)
      * @see #setOptions(Hashtable)
      */
-    public static Hashtable<String, String> getDefaultOptions() {
+    public static Map<String, String> getDefaultOptions() {
 
-        final Hashtable<String, String> defaultOptions = new Hashtable<String, String>(
-                10);
+        final HashMap<String, String> defaultOptions = Maps.newHashMap();
 
         // see #initializeDefaultPluginPreferences() for changing default
         // settings
