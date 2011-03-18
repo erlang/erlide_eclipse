@@ -23,8 +23,8 @@ import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.erlide.core.common.StringUtils;
-import org.erlide.ui.util.ErlLineBreakReader;
 import org.erlide.ui.util.UIStringUtils;
+import org.erlide.ui.util.eclipse.text.LineBreakingReader;
 
 /**
  * Based on HTMLTextPresenter
@@ -205,7 +205,7 @@ public class ErlInformationPresenter implements
                     / (float) gc.getFontMetrics().getHeight());
 
             fCounter = 0;
-            final ErlLineBreakReader reader = new ErlLineBreakReader(
+            final LineBreakingReader reader = new LineBreakingReader(
                     createReader(hoverInfo, presentation), gc, maxWidth);
 
             boolean lastLineFormatted = false;
