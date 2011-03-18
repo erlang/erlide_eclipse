@@ -29,10 +29,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangCore;
@@ -52,6 +50,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
+
+    private static final String CONSOLE_VIEW_ID = "org.eclipse.ui.console.ConsoleView";
 
     public void launch(final ISelection selection, final String mode) {
         ErlLogger.debug("** Launch:: " + selection.toString());
@@ -141,18 +141,9 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private void bringConsoleViewToFront() throws PartInitException {
-        final IWorkbenchWindow[] windows = PlatformUI.getWorkbench()
-                .getWorkbenchWindows();
-        for (final IWorkbenchWindow window : windows) {
-            final IWorkbenchPage[] pages = window.getPages();
-            for (final IWorkbenchPage page : pages) {
-                final IViewPart view = page
-                        .findView("org.eclipse.ui.console.ConsoleView");
-                if (view != null) {
-                    page.showView("org.eclipse.ui.console.ConsoleView");
-                }
-            }
-        }
+        final IWorkbenchPage activePage = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage();
+        activePage.showView(CONSOLE_VIEW_ID);
     }
 
     private ILaunchConfiguration getLaunchConfiguration(
