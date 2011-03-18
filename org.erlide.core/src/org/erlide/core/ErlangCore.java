@@ -12,7 +12,6 @@ package org.erlide.core;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -215,7 +214,6 @@ public final class ErlangCore {
      * @return a mutable table containing the default settings of all known
      *         options (key type: <code>String</code>; value type:
      *         <code>String</code>)
-     * @see #setOptions(Hashtable)
      */
     public static Map<String, String> getDefaultOptions() {
 

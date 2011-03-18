@@ -122,10 +122,8 @@ public final class MarkerUtils {
                 try {
                     final IErlModel model = ErlangCore.getModel();
                     final IErlProject erlProject = model.findProject(project);
-                    ErlLogger
-                            .debug("inc::" + fileName + " "
-                                    + resource.getName() + " " + erlProject == null ? "null"
-                                    : erlProject.getName());
+                    ErlLogger.debug("inc::" + fileName + " "
+                            + resource.getName() + " " + erlProject.getName());
                     ErlLogger.debug("    " + entry.getValue());
 
                     final IErlModule includeFile = erlProject != null ? erlProject

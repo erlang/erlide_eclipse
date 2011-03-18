@@ -34,7 +34,7 @@ public class RuntimeInfo {
     private boolean managed; // will it be started/stopped by us?
     private RuntimeVersion version;
     private String suffix = "";
-    private boolean useLongName = true;
+    private boolean longName = true;
     private boolean startShell = false;
     private boolean console = true;
     private boolean loadAllNodes = false;
@@ -61,7 +61,7 @@ public class RuntimeInfo {
         rt.workingDir = o.workingDir;
         rt.nodeName = o.nodeName;
         rt.version = o.version;
-        rt.useLongName = o.useLongName;
+        rt.longName = o.longName;
         rt.startShell = o.startShell;
         rt.loadAllNodes = o.loadAllNodes;
         return rt;
@@ -168,12 +168,11 @@ public class RuntimeInfo {
 
         final boolean globalLongName = System.getProperty("erlide.longname",
                 "false").equals("true");
-        final String nameTag = useLongName || globalLongName ? "-name"
-                : "-sname";
+        final String nameTag = longName || globalLongName ? "-name" : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
-            nameOption = BackendUtil.buildLocalNodeName(getNodeName(),
-                    useLongName);
+            nameOption = BackendUtil
+                    .buildLocalNodeName(getNodeName(), longName);
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();
@@ -329,12 +328,12 @@ public class RuntimeInfo {
         return version;
     }
 
-    public void useLongName(final boolean longName) {
-        useLongName = longName;
+    public void useLongName(final boolean useLongName) {
+        this.longName = useLongName;
     }
 
     public boolean getLongName() {
-        return useLongName;
+        return longName;
 
     }
 
