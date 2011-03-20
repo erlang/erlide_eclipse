@@ -101,9 +101,9 @@ public class ErlModule extends Openable implements IErlModule {
             // is one
             getScanner();
         }
+        getScanner();
         parsed = ErlParser.parse(this, scannerName, initialParse, path,
                 useCaches);
-        getScanner();
         disposeScanner();
         return parsed;
     }

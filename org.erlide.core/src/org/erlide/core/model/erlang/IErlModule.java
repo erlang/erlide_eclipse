@@ -79,9 +79,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 
-    void getScanner();
-
-    void disposeScanner();
+    // void getScanner();
+    //
+    // void disposeScanner();
 
     void initialReconcile();
 

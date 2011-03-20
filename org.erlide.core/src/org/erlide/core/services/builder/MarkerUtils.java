@@ -490,7 +490,7 @@ public final class MarkerUtils {
         if (m == null) {
             return;
         }
-        m.getScanner();
+        // m.getScanner(); FIXME why did we need this?
         final Collection<IErlComment> cl = m.getComments();
         for (final IErlComment c : cl) {
             final String text = c.getName();
@@ -499,7 +499,7 @@ public final class MarkerUtils {
             mkMarker(resource, line, text, XXX, IMarker.PRIORITY_NORMAL);
             mkMarker(resource, line, text, FIXME, IMarker.PRIORITY_HIGH);
         }
-        m.disposeScanner();
+        // m.disposeScanner(); FIXME why did we need this?
     }
 
     private static void getNoScanMarkersFor(final IResource resource,

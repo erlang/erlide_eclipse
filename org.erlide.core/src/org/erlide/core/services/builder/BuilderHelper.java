@@ -136,7 +136,7 @@ public final class BuilderHelper {
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
-                m.getScanner();
+                // m.getScanner(); FIXME why did we need this?
                 final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
                     if (samePath(ifile.getFilename(), resource.getName())) {
@@ -148,7 +148,7 @@ public final class BuilderHelper {
                         break;
                     }
                 }
-                m.disposeScanner();
+                // m.disposeScanner(); FIXME why did we need this?
             }
         }
     }
@@ -269,7 +269,7 @@ public final class BuilderHelper {
             throws ErlModelException {
         final IErlModule m = eprj.getModule(source.getName());
         if (m != null) {
-            m.getScanner();
+            // m.getScanner(); FIXME why did we need this?
             final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile ifile : incs) {
                 final IResource rifile = findResourceByName(project,
@@ -281,7 +281,7 @@ public final class BuilderHelper {
                     break;
                 }
             }
-            m.disposeScanner();
+            // m.disposeScanner(); FIXME why did we need this?
         }
         return shouldCompile;
     }
