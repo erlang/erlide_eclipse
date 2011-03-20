@@ -69,8 +69,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     long getTimestamp();
 
-    void removeChildren();
-
     IErlImport findImport(ErlangFunction function);
 
     Collection<IErlImport> getImports();
@@ -79,11 +77,11 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind);
 
-    Collection<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
+    Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 
-    void getScanner();
-
-    void disposeScanner();
+    // void getScanner();
+    //
+    // void disposeScanner();
 
     void initialReconcile();
 

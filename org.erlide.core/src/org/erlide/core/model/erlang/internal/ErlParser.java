@@ -92,7 +92,7 @@ public final class ErlParser {
         } else {
             ErlLogger.error("rpc error when parsing %s: %s", path, res);
         }
-        module.removeChildren();
+        module.setChildren(null);
         // mm.setParseTree(forms);
         if (forms == null) {
             return true;
@@ -201,13 +201,13 @@ public final class ErlParser {
         } else if ("function".equals(typeS)) {
             final ErlFunction f = makeErlFunction(module, el);
             final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
-            final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
-                    .arity()];
+            final List<ErlFunctionClause> cls = Lists
+                    .newArrayListWithCapacity(clauses.arity());
             for (int i = 0; i < clauses.arity(); i++) {
                 final OtpErlangTuple clause = (OtpErlangTuple) clauses
                         .elementAt(i);
                 final ErlFunctionClause cl = makeErlFunctionClause(f, i, clause);
-                cls[i] = cl;
+                cls.add(cl);
             }
             f.setChildren(cls);
             return f;
