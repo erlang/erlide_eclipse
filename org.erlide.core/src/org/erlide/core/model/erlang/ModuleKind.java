@@ -28,10 +28,14 @@ public enum ModuleKind {
     }
 
     public static boolean hasModuleExtension(final String name) {
-        return ModuleKind.nameToModuleKind(name) != ModuleKind.BAD;
+        return nameToModuleKind(name) != BAD;
     }
 
     public static boolean hasErlExtension(final String name) {
-        return ModuleKind.nameToModuleKind(name) == ModuleKind.ERL;
+        return nameToModuleKind(name) == ERL;
+    }
+
+    public static boolean hasHrlExtension(final String name) {
+        return nameToModuleKind(name) == HRL;
     }
 }

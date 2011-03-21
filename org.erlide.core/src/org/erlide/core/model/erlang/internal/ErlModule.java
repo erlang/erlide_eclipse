@@ -102,8 +102,8 @@ public class ErlModule extends Openable implements IErlModule {
             getScanner();
         }
         getScanner();
-        parsed = ErlParser.parse(this, scannerName, initialParse, path,
-                useCaches);
+        parsed = ErlParser.parse(this, scannerName, initialParse,
+                getFilePath(), useCaches);
         disposeScanner();
         return parsed;
     }
@@ -134,14 +134,13 @@ public class ErlModule extends Openable implements IErlModule {
      */
     @Override
     public String getFilePath() {
-        if (path != null) {
-            return path;
+        if (fFile != null) {
+            final IPath location = fFile.getLocation();
+            if (location != null) {
+                return location.toString();
+            }
         }
-        final IPath location = fFile.getLocation();
-        if (location == null) {
-            return null;
-        }
-        return location.toString();
+        return path;
     }
 
     public IErlElement getElementAt(final int position)
@@ -444,48 +443,39 @@ public class ErlModule extends Openable implements IErlModule {
         ErlangCore.getModelManager().removeModule(this);
     }
 
-    public Set<IErlModule> getDirectDependents() throws ErlModelException {
+    public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = getProject();
-        for (final IErlModule m : project.getModules()) {
-            ErlLogger.debug(m.toString());
-            final boolean wasOpen = m.isOpen();
+        for (final IErlModule module : project.getModules()) {
+            final boolean wasOpen = module.isOpen();
             if (!wasOpen) {
-                m.open(null);
+                module.open(null);
             }
-            final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
+            final Collection<ErlangIncludeFile> incs = module.getIncludeFiles();
             for (final ErlangIncludeFile inc : incs) {
                 if (inc.getFilename().equals(getName())) {
-                    result.add(m);
+                    result.add(module);
                     break;
                 }
             }
             if (!wasOpen) {
-                m.close();
+                module.close();
             }
         }
         return result;
     }
 
-    public Set<IErlModule> getAllDependents() throws ErlModelException {
-        final Set<IErlModule> mod = getDirectDependents();
-        return getAllDependents(mod, new HashSet<IErlModule>());
-    }
-
-    private Set<IErlModule> getAllDependents(final Set<IErlModule> current,
-            final Set<IErlModule> result) throws ErlModelException {
-        final Set<IErlModule> next = new HashSet<IErlModule>();
-        for (final IErlModule mod : current) {
-            final Collection<IErlModule> dep = mod.getDirectDependents();
-            result.add(mod);
-            next.addAll(dep);
+    public Set<IErlModule> getAllDependentModules() throws CoreException {
+        final Set<IErlModule> result = new HashSet<IErlModule>();
+        final IErlProject project = getProject();
+        for (final IErlModule module : project.getModules()) {
+            final List<IErlModule> allIncludedFiles = module
+                    .findAllIncludedFiles();
+            if (allIncludedFiles.contains(this)) {
+                result.add(module);
+            }
         }
-        if (next.size() == 0) {
-            return result;
-
-        } else {
-            return getAllDependents(next, result);
-        }
+        return result;
     }
 
     public synchronized void resetAndCacheScannerAndParser(final String newText)
@@ -524,13 +514,14 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     private ErlScanner getNewScanner() {
-        if (path == null) {
+        final String filePath = getFilePath();
+        if (filePath == null) {
             return null;
         }
         if (initialText == null) {
             initialText = "";
         }
-        return new ErlScanner(scannerName, initialText, path, useCaches);
+        return new ErlScanner(scannerName, initialText, filePath, useCaches);
     }
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
@@ -547,10 +538,6 @@ public class ErlModule extends Openable implements IErlModule {
         } catch (final ErlModelException e) {
         }
         return result;
-    }
-
-    public String getInitialText() {
-        return initialText;
     }
 
     public List<IErlModule> findAllIncludedFiles() throws CoreException {
@@ -702,9 +689,20 @@ public class ErlModule extends Openable implements IErlModule {
         if (parent instanceof IErlFolder) {
             final IErlFolder folder = (IErlFolder) parent;
             folder.open(null);
-            return folder.findModule(includeName, includePath);
+            final IErlModule include = folder.findInclude(includeName,
+                    includePath);
+            if (include != null) {
+                return include;
+            }
         }
         return getProject().findInclude(includeName, includePath, scope);
+    }
+
+    public String getText() {
+        getScanner();
+        final String s = scanner.getText();
+        disposeScanner();
+        return s;
     }
 
 }

@@ -1195,7 +1195,19 @@ public class ErlProject extends Openable implements IErlProject {
      * @see org.erlide.core.model.erlang.IErlFolder#findModule(java.lang.String,
      * java.lang.String)
      */
-    public IErlModule findModule(final String includeName,
+    public IErlModule findModule(final String moduleName,
+            final String modulePath) throws ErlModelException {
+        return findModule(moduleName, modulePath, Scope.PROJECT_ONLY);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.erlide.core.model.erlang.IErlFolder#findInclude(java.lang.String,
+     * java.lang.String)
+     */
+    public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
         return findInclude(includeName, includePath, Scope.PROJECT_ONLY);
     }

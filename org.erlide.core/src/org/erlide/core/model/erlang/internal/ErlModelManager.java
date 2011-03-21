@@ -252,7 +252,7 @@ public final class ErlModelManager implements IErlModelManager {
         final String name = file.getName();
         if (CommonUtils.isErlangFileContentFileName(name)) {
             final IErlModule module = new ErlModule(parent, name, null, file,
-                    file.getLocation().toPortableString(), true);
+                    null, true);
             if (parent != null) {
                 parent.addChild(module);
             }

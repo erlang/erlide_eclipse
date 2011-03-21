@@ -95,12 +95,14 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
     /**
      * Returns a collection of modules that include this one.
      **/
-    Set<IErlModule> getDirectDependents() throws ErlModelException;
+    Set<IErlModule> getDirectDependentModules() throws ErlModelException;
 
     /**
      * Returns the transitive closure of modules that include this one.
+     * 
+     * @throws CoreException
      **/
-    Set<IErlModule> getAllDependents() throws ErlModelException;
+    Set<IErlModule> getAllDependentModules() throws CoreException;
 
     /**
      * Resets parser so that the next parse will be a full parse, possibly
@@ -125,8 +127,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
     ErlToken getScannerTokenAt(int offset);
 
     void setResource(IFile file);
-
-    String getInitialText();
 
     void addComment(IErlComment c);
 
