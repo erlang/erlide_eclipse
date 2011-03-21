@@ -56,7 +56,6 @@ import org.erlide.core.common.IDisposable;
 import org.erlide.core.internal.backend.BackendUtil;
 import org.erlide.core.internal.backend.CodeManager;
 import org.erlide.core.internal.backend.ErlRuntime;
-import org.erlide.core.internal.backend.InitialCall;
 import org.erlide.core.internal.backend.RpcResultImpl;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;

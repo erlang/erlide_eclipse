@@ -1,4 +1,4 @@
-package org.erlide.core.internal.backend;
+package org.erlide.core.backend;
 
 import org.erlide.jinterface.ErlLogger;
 
