@@ -171,6 +171,17 @@ public class ErlideScanner {
 
     }
 
+    public static String getText(final String scannerName) {
+        try {
+            final OtpErlangObject o = ErlangCore.getBackendManager()
+                    .getIdeBackend()
+                    .call(ERLIDE_SCANNER, "getText", "a", scannerName);
+            return Util.stringValue(o);
+        } catch (final BackendException e) {
+            return "";
+        }
+    }
+
     @SuppressWarnings("boxing")
     public static void notifyChange(final String scannerName, final int offset,
             final int length, final String text) {
