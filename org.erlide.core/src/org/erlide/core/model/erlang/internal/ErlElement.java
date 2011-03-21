@@ -320,8 +320,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     public ISchedulingRule getSchedulingRule() {
         final IResource resource = getResource();
         if (resource == null) {
-            return new NoResourceSchedulingRule(getResource()
-                    .getProjectRelativePath());
+            return new NoResourceSchedulingRule(new Path(getName()));
         }
         return resource;
     }
