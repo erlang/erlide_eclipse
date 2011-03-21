@@ -102,8 +102,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
      */
     IErlModule getModule();
 
-    String getModuleName();
-
     /**
      * Returns the resource that corresponds directly to this element, or
      * <code>null</code> if there is no resource that corresponds to this

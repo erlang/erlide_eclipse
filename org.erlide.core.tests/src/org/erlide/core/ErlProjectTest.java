@@ -193,8 +193,9 @@ public class ErlProjectTest {
 		final IErlElement function = ModelUtils.findFunction(res.getName(),
 				res.getFunction(), res.getPath(), project, Scope.PROJECT_ONLY,
 				moduleE);
-		final IErlElement module = project.findModule(function.getModuleName(),
-				res.getPath(), Scope.PROJECT_ONLY);
+		final IErlElement module = function instanceof IErlFunction ? project
+				.findModule(((IErlFunction) function).getModuleName(),
+						res.getPath(), Scope.PROJECT_ONLY) : null;
 		// then
 		// the function should be returned and the module, in External Files
 		assertNotNull(function);
