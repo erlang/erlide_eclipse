@@ -49,4 +49,8 @@ public class ErlScanner implements IDisposable {
         return ErlideScanner.getTokenAt(scannerName, offset);
     }
 
+    public String getText() {
+        return ErlideScanner.getText(scannerName);
+    }
+
 }

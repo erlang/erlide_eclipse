@@ -21,6 +21,7 @@ import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.ModuleKind;
 
 /**
  * Implementation of folder in erlang model
@@ -156,28 +157,43 @@ public class ErlFolder extends Openable implements IErlFolder {
         super.clearCaches();
     }
 
-    public IErlModule findModule(final String moduleName,
-            final String modulePath) throws ErlModelException {
+    private IErlModule findModuleOrInclude(final String name,
+            final String path, final boolean isInclude)
+            throws ErlModelException {
         final Collection<IErlModule> modules = getModules();
-        if (modulePath != null) {
+        if (path != null) {
             for (final IErlModule module : modules) {
-                final String path = module.getFilePath();
-                if (path != null && path.equals(modulePath)) {
+                final String filePath = module.getFilePath();
+                if (filePath != null && filePath.equals(path)) {
                     return module;
                 }
             }
         }
         boolean hasExtension;
-        if (moduleName != null) {
-            hasExtension = CommonUtils.hasExtension(moduleName);
+        if (name != null) {
+            hasExtension = CommonUtils.hasExtension(name);
             for (final IErlModule module : modules) {
-                final String name = hasExtension ? module.getName() : module
+                final String name2 = module.getName();
+                final String moduleName = hasExtension ? name2 : module
                         .getModuleName();
                 if (name.equals(moduleName)) {
-                    return module;
+                    if (hasExtension
+                            || isInclude == ModuleKind.hasHrlExtension(name2)) {
+                        return module;
+                    }
                 }
             }
         }
         return null;
+    }
+
+    public IErlModule findModule(final String moduleName,
+            final String modulePath) throws ErlModelException {
+        return findModuleOrInclude(moduleName, modulePath, false);
+    }
+
+    public IErlModule findInclude(final String includeName,
+            final String includePath) throws ErlModelException {
+        return findModuleOrInclude(includeName, includePath, true);
     }
 }

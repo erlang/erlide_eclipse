@@ -33,7 +33,7 @@ import com.google.common.collect.Lists;
 
 public class ErlideTestUtils {
 
-	private static List<IErlModule> modules;
+	private static List<IErlModule> modulesAndIncludes;
 	private static List<IErlProject> projects;
 
 	private static void buildPaths(final IWorkspaceRoot root,
@@ -51,7 +51,7 @@ public class ErlideTestUtils {
 	}
 
 	public static void initModulesAndIncludes() {
-		modules = Lists.newArrayList();
+		modulesAndIncludes = Lists.newArrayList();
 	}
 
 	public static IErlModule createModule(final IErlProject project,
@@ -59,7 +59,7 @@ public class ErlideTestUtils {
 			throws CoreException {
 		final IFolder folder = project.getWorkspaceProject().getFolder("src");
 		final IErlModule module = createFile(moduleName, moduleContents, folder);
-		modules.add(module);
+		modulesAndIncludes.add(module);
 		return module;
 	}
 
@@ -69,7 +69,7 @@ public class ErlideTestUtils {
 		final IFolder folder = project.getWorkspaceProject().getFolder(
 				"include");
 		final IErlModule module = createFile(moduleName, moduleContents, folder);
-		modules.add(module);
+		modulesAndIncludes.add(module);
 		return module;
 	}
 
@@ -106,7 +106,7 @@ public class ErlideTestUtils {
 			f.delete();
 		}
 		module.dispose();
-		modules.remove(module);
+		modulesAndIncludes.remove(module);
 	}
 
 	public static IErlProject createProject(final IPath path, final String name)
@@ -181,8 +181,8 @@ public class ErlideTestUtils {
 			throws CoreException {
 		final IProject project = erlProject.getWorkspaceProject();
 		project.delete(true, null);
-		if (modules != null) {
-			final List<IErlModule> list = Lists.newArrayList(modules);
+		if (modulesAndIncludes != null) {
+			final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
 			for (final IErlModule module : list) {
 				if (module.getProject() == erlProject) {
 					deleteModule(module);
@@ -205,7 +205,7 @@ public class ErlideTestUtils {
 	}
 
 	public static void deleteModules() throws CoreException {
-		final List<IErlModule> list = Lists.newArrayList(modules);
+		final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
 		for (final IErlModule module : list) {
 			deleteModule(module);
 		}
@@ -242,7 +242,7 @@ public class ErlideTestUtils {
 		final IErlModule module = ErlangCore.getModelManager()
 				.getModuleFromText(ErlangCore.getModel(), "test1", initialText,
 						"test1");
-		modules.add(module);
+		modulesAndIncludes.add(module);
 		return module;
 	}
 
