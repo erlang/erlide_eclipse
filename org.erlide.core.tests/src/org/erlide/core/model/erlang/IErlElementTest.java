@@ -6,13 +6,25 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.IErlElement.AcceptFlags;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlProject.Scope;
+import org.erlide.core.model.erlang.internal.ErlModelCache;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,7 +32,95 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 public class IErlElementTest {
+
+	// TODO replace ResourceDeltaStub with a mock object
+	private final class ResourceDeltaStub implements IResourceDelta {
+		public Object getAdapter(final Class adapter) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void accept(final IResourceDeltaVisitor visitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void accept(final IResourceDeltaVisitor visitor,
+				final boolean includePhantoms) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void accept(final IResourceDeltaVisitor visitor,
+				final int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		public IResourceDelta findMember(final IPath path) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResourceDelta[] getAffectedChildren() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResourceDelta[] getAffectedChildren(final int kindMask) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResourceDelta[] getAffectedChildren(final int kindMask,
+				final int memberFlags) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getFlags() {
+			return CONTENT;
+		}
+
+		public IPath getFullPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getKind() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public IMarkerDelta[] getMarkerDeltas() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IPath getMovedFromPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IPath getMovedToPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IPath getProjectRelativePath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResource getResource() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
 
 	private static IErlProject[] projects;
 
@@ -207,7 +307,7 @@ public class IErlElementTest {
 		assertNotNull(otpFile);
 		assertEquals(schedulingRule, element.getSchedulingRule());
 		assertNotNull(otpFile.getSchedulingRule());
-		assertNull(otpFile.getSchedulingRule());
+		assertNotNull(otpFile.getSchedulingRule());
 	}
 
 	// boolean isReadOnly();
@@ -246,9 +346,100 @@ public class IErlElementTest {
 	}
 
 	// void resourceChanged(IResourceDelta delta);
+	@Test
+	public void resourceChanged() throws Exception {
+		project.open(null);
+		final boolean structureKnown = project.isStructureKnown();
+		project.resourceChanged(new ResourceDeltaStub());
+		final boolean structureKnown2 = project.isStructureKnown();
+		assertTrue(structureKnown);
+		assertFalse(structureKnown2);
+	}
+
 	// void accept(IErlElementVisitor visitor, EnumSet<AcceptFlags> flags,
 	// IErlElement.Kind leafKind) throws ErlModelException;
+	@Test
+	public void accept() throws Exception {
+		project.open(null);
+		module.open(null);
+		final List<IErlElement> elements = Lists.newArrayList();
+		final IErlElementVisitor visitor = new IErlElementVisitor() {
+
+			public boolean visit(final IErlElement element)
+					throws ErlModelException {
+				elements.add(element);
+				if (element instanceof IErlExternal) {
+					return false; // avoid digging through otp
+				} else if (element.getName().equals("ebin")) {
+					return false; // avoid possible beam-files
+				}
+				return true;
+			}
+
+		};
+		final EnumSet<AcceptFlags> noneOf = EnumSet.noneOf(AcceptFlags.class);
+		project.accept(visitor, noneOf, Kind.MODULE);
+		final List<IErlElement> kindModuleElementsVisited = Lists
+				.newArrayList(elements);
+		elements.clear();
+		project.accept(visitor, noneOf, Kind.FUNCTION);
+		final List<IErlElement> kindFunctionElementsVisited = Lists
+				.newArrayList(elements);
+		elements.clear();
+		project.accept(visitor, EnumSet.of(AcceptFlags.CHILDREN_FIRST),
+				Kind.MODULE);
+		final List<IErlElement> childrenFirst = Lists.newArrayList(elements);
+		elements.clear();
+		project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY), Kind.MODULE);
+		final List<IErlElement> leafsOnly = Lists.newArrayList(elements);
+		elements.clear();
+		assertEquals(6, kindModuleElementsVisited.size());
+		assertEquals(project, kindModuleElementsVisited.get(0));
+		assertEquals("ebin", kindModuleElementsVisited.get(2).getName());
+		assertEquals("include", kindModuleElementsVisited.get(3).getName());
+		assertEquals("src", kindModuleElementsVisited.get(4).getName());
+		assertEquals(module, kindModuleElementsVisited.get(5));
+		assertEquals(9, kindFunctionElementsVisited.size());
+		final int projectIndex = childrenFirst.indexOf(project);
+		final int moduleIndex = childrenFirst.indexOf(module);
+		assertTrue(moduleIndex < projectIndex);
+		assertFalse(leafsOnly.contains(project));
+		assertTrue(leafsOnly.contains(module));
+	}
+
 	// String getLabelString();
+	// Should be removed
+
 	// String getFilePath();
+	@Test
+	public void getFilePath() throws Exception {
+		final String modulePath = module.getResource().getLocation().toString();
+		// final String projectPath = project.getResource().getLocation()
+		// .toString();
+		// final String srcFolderPath = projectPath + "/src";
+		final IErlElement parent = (IErlElement) module.getParent();
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		assertEquals(modulePath, module.getFilePath());
+		assertNull(project.getFilePath());
+		assertNull(parent.getFilePath());
+		assertNull(element.getFilePath());
+	}
+
 	// void clearCaches();
+	/**
+	 * @see org.erlide.core.model.erlang.IErlElement#clearCaches()
+	 */
+	// TODO check more than source dir cache
+	@Test
+	public void clearCaches() throws Exception {
+		project.getSourceDirs();
+		final ErlModelCache cache = ErlModelCache.getDefault();
+		final Collection<IPath> sourceDirs = cache.getSourceDirs(project);
+		project.clearCaches();
+		final Collection<IPath> sourceDirs2 = cache.getSourceDirs(project);
+		assertNotNull(sourceDirs);
+		assertNull(sourceDirs2);
+	}
+
 }
