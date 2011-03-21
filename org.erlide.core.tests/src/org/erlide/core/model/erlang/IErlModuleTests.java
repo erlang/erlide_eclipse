@@ -35,7 +35,6 @@ import com.google.common.collect.Lists;
 
 public class IErlModuleTests {
 
-	private static final String XX_ERLIDEX = "xx.erlidex";
 	private static IErlProject[] projects;
 
 	private IErlModule module;
