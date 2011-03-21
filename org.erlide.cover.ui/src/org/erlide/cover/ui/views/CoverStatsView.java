@@ -85,7 +85,6 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         backend = CoverBackend.getInstance();
         backend.addListener(this);
 
-        // TODO: find better place for this
         backend.addAnnotationMaker(EditorTracker.getInstance());
         backend.getAnnotationMaker().addAnnotations();
         log = Logger.getLogger(this.getClass());

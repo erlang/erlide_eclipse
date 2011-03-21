@@ -1,6 +1,8 @@
 package org.erlide.cover.views.model;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -182,6 +184,18 @@ public class StatsTreeObject implements ICoverageObject {
                 break;
         }
         return res;
+    }
+
+    public Collection<ICoverageObject> getModules() {
+        Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
+        if(this instanceof ModuleStats) {
+            col.add(this);
+        } else if (hasChildren()) {
+            for(ICoverageObject child : children.values())
+                col.addAll(child.getModules());
+        }
+            
+        return col;
     }
 
 }

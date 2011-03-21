@@ -1,12 +1,15 @@
 package org.erlide.cover.core;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.cover.core.api.CoveragePerformer;
 import org.erlide.cover.core.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
@@ -84,7 +87,8 @@ public class CoverEventHandler extends EventHandler {
                         String.format("Error at %s while %s: %s\n", place,
                                 type, info)));
             }
-        } else if (event.data.toString().equals(COVER_FIN) && annotationMarker != null) {
+        } else if (event.data.toString().equals(COVER_FIN)
+                && annotationMarker != null) {
             getAnnotationMaker().addAnnotations();
         }
 
@@ -123,6 +127,19 @@ public class CoverEventHandler extends EventHandler {
                 moduleStats.setHtmlPath(htmlPath);
                 moduleStats.setLiniesCount(allLines);
                 moduleStats.setCoverCount(coveredLines);
+
+                // calculate md5
+
+                try {
+                    File file = new File(ErlangCore.getModel()
+                            .findModule(moduleName).getFilePath());
+                    moduleStats.setMd5(MD5Checksum.getMD5(file));
+                } catch (Exception e) {
+                    //TODO
+                    e.printStackTrace();
+                }
+
+                //
 
                 prepLineResults((OtpErlangList) resTuple.elementAt(6),
                         moduleStats);

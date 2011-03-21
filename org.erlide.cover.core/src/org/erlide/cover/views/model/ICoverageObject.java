@@ -1,6 +1,7 @@
 package org.erlide.cover.views.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Interaface for objects in coverage statistics tree
@@ -145,5 +146,11 @@ public interface ICoverageObject extends Serializable {
      * @return
      */
     public ICoverageObject treeSearch(String name);
+    
+    /**
+     * Returns all modules from the tree if there are any
+     * @return
+     */
+    public Collection<ICoverageObject> getModules();
     
 }

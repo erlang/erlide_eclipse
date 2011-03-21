@@ -98,6 +98,9 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         while (it.hasNext()) {
             ModuleStats module = it.next();
+            if(!module.couldBeMarked)
+                continue;
+            
             List<LineResult> list = module.getLineResults();
             String modName = module.getLabel() + ".erl";
 
@@ -123,7 +126,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
 
-            if (module == null)
+            if (module == null || !module.couldBeMarked)
                 return;
 
             List<LineResult> list = module.getLineResults();
@@ -165,7 +168,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
 
-            if (module == null)
+            if (module == null || !module.couldBeMarked)
                 return;
 
             List<LineResult> list = module.getLineResults();
@@ -326,6 +329,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     public void clearAnnotations(final IWorkbenchPart part) {
 
+        if (part != null)
+            log.debug(part.getTitle());
         if (part instanceof ITextEditor) {
             final ITextEditor editor = (ITextEditor) part;
 

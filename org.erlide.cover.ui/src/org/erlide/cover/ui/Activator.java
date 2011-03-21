@@ -34,7 +34,7 @@ public class Activator extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        CoverBackend.getInstance().addAnnotationMaker(EditorTracker.getInstance());
+        //CoverBackend.getInstance().addAnnotationMaker(EditorTracker.getInstance());
     }
 
     /*
