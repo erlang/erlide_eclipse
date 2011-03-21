@@ -33,7 +33,7 @@ import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
 import org.erlide.ui.editors.erl.ErlangPairMatcher;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
-import org.erlide.ui.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
 
 final class ErlangConsoleSourceViewerConfiguration extends
         TextSourceViewerConfiguration {

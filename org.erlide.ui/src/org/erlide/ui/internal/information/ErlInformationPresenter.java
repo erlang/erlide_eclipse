@@ -7,7 +7,7 @@
  * License: Common Public License v1.0
  */
 
-package org.erlide.ui.information;
+package org.erlide.ui.internal.information;
 
 import java.io.IOException;
 import java.io.Reader;

@@ -41,8 +41,8 @@ import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
-import org.erlide.ui.information.ErlInformationPresenter;
-import org.erlide.ui.information.PresenterControlCreator;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 
@@ -201,7 +201,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         };
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
         final Map map = super.getHyperlinkDetectorTargets(sourceViewer);
