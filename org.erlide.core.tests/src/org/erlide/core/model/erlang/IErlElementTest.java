@@ -6,7 +6,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlElement.Kind;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -78,13 +84,9 @@ public class IErlElementTest {
 		assertTrue(ancestor instanceof IErlFunction);
 		assertEquals(Kind.FUNCTION, ancestor.getKind());
 		assertEquals(element, ancestor);
-		assertNotNull(ancestor2);
 		assertEquals(Kind.MODULE, ancestor2.getKind());
-		assertNotNull(ancestor3);
 		assertEquals(Kind.FOLDER, ancestor3.getKind());
-		assertNotNull(ancestor4);
 		assertEquals(Kind.PROJECT, ancestor4.getKind());
-		assertNotNull(ancestor5);
 		assertEquals(Kind.MODEL, ancestor5.getKind());
 		assertEquals(ancestor3, ancestor2.getAncestorOfKind(Kind.FOLDER));
 		assertEquals(ancestor4, ancestor2.getAncestorOfKind(Kind.PROJECT));
@@ -114,17 +116,135 @@ public class IErlElementTest {
 	// IResource getCorrespondingResource();
 	@Test
 	public void getCorrespondingResource() throws Exception {
-		; // TODO
+		project.open(null);
+		final IProject workspaceProject = project.getWorkspaceProject();
+		final IFolder srcFolder = workspaceProject.getFolder("src");
+		final IFile file = srcFolder.getFile("xx.erl");
+		final IErlModule otpFile = project.findModule("file.erl", null,
+				Scope.PROJECT_ONLY);
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		assertEquals(file, module.getCorrespondingResource());
+		assertNull(otpFile.getCorrespondingResource());
+		assertNull(element.getCorrespondingResource());
 	}
 
 	// String getName();
+	@Test
+	public void getName() throws Exception {
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		final IErlElement element2 = module.getElementAtLine(0);
+		assertEquals("xx.erl", module.getName());
+		assertEquals("testproject1", project.getName());
+		assertEquals("f", element.getName());
+		assertEquals("module", element2.getName());
+	}
+
 	// Kind getKind();
+	@Test
+	public void getKind() throws Exception {
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		final IErlElement element2 = module.getElementAtLine(0);
+		assertEquals(Kind.MODULE, module.getKind());
+		assertEquals(Kind.PROJECT, project.getKind());
+		assertEquals(Kind.FUNCTION, element.getKind());
+		assertEquals(Kind.ATTRIBUTE, element2.getKind());
+		assertEquals(Kind.MODEL, element2.getModel().getKind());
+	}
+
 	// IErlModel getModel();
+	@Test
+	public void getModel() throws Exception {
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		final IErlModel model = ErlangCore.getModel();
+		assertEquals(model, project.getModel());
+		assertEquals(model, module.getModel());
+		assertEquals(model, element.getModel());
+	}
+
 	// IParent getParent();
+	@Test
+	public void getParent() throws Exception {
+		project.open(null);
+		final IErlElement srcFolder = project.getChildNamed("src");
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		assertEquals(project, srcFolder.getParent());
+		assertEquals(srcFolder, module.getParent());
+		assertEquals(module, element.getParent());
+	}
+
 	// IResource getResource();
+	@Test
+	public void getResource() throws Exception {
+		project.open(null);
+		final IProject workspaceProject = project.getWorkspaceProject();
+		final IFolder srcFolder = workspaceProject.getFolder("src");
+		final IFile file = srcFolder.getFile("xx.erl");
+		final IErlModule otpFile = project.findModule("file.erl", null,
+				Scope.PROJECT_ONLY);
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		assertEquals(file, module.getResource());
+		assertNull(otpFile.getResource());
+		assertEquals(module.getResource(), element.getResource());
+	}
+
 	// ISchedulingRule getSchedulingRule();
+	@Test
+	public void getSchedulingRule() throws Exception {
+		project.open(null);
+		final IErlModule otpFile = project.findModule("file.erl", null,
+				Scope.PROJECT_ONLY);
+		module.open(null);
+		final IErlElement element = module.getElementAtLine(3);
+		// TODO more testing here
+		final ISchedulingRule schedulingRule = module.getSchedulingRule();
+		assertNotNull(schedulingRule);
+		assertNotNull(otpFile);
+		assertEquals(schedulingRule, element.getSchedulingRule());
+		assertNotNull(otpFile.getSchedulingRule());
+		assertNull(otpFile.getSchedulingRule());
+	}
+
 	// boolean isReadOnly();
+	// Empty method
+
 	// boolean isStructureKnown() throws ErlModelException;
+	@Test
+	public void isStructureKnown() throws Exception {
+		project.setSourceDirs(project.getSourceDirs());
+		// this sets structureKnown to false
+
+		final boolean structureKnown = project.isStructureKnown();
+		// FIXME shouldn't open below be enough?
+		project.open(null);
+		final boolean structureKnown2 = project.isStructureKnown();
+		final boolean structureKnown3 = module.isStructureKnown();
+		module.open(null);
+		final boolean structureKnown4 = module.isStructureKnown();
+		final IErlModule otpFile = project.findModule("file.erl", null,
+				Scope.PROJECT_ONLY);
+		final IErlExternal external = (IErlExternal) otpFile.getParent();
+		final boolean structureKnown5 = external.isStructureKnown();
+		final IErlModule module2 = ErlideTestUtils
+				.createModule(project, "yy.erl",
+						"-module(yy).\n% comment\n% same\nf(x) -> y.\n% last");
+		final boolean structureKnown6 = module2.isStructureKnown();
+		module2.open(null);
+		final boolean structureKnown7 = module2.isStructureKnown();
+		assertFalse(structureKnown);
+		assertTrue(structureKnown2);
+		assertFalse(structureKnown3);
+		assertTrue(structureKnown4);
+		assertTrue(structureKnown5);
+		assertFalse(structureKnown6);
+		assertTrue(structureKnown7);
+	}
+
 	// void resourceChanged(IResourceDelta delta);
 	// void accept(IErlElementVisitor visitor, EnumSet<AcceptFlags> flags,
 	// IErlElement.Kind leafKind) throws ErlModelException;
