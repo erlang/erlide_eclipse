@@ -51,20 +51,28 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {
-        preLaunch(config, mode, launch);
-        final Backend b = doLaunch(config, mode, launch);
-        postLaunch(mode, b);
+        final boolean doContinue = preLaunch(config, mode, launch, monitor);
+        if (!doContinue) {
+            return;
+        }
+        final Backend backend = doLaunch(config, mode, launch, monitor);
+        if (backend == null) {
+            ErlLogger.warn("Could not start backend for launch %s", launch
+                    .getLaunchConfiguration().getName());
+            return;
+        }
+        postLaunch(mode, backend, monitor);
     }
 
-    protected void preLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch) {
-    }
-
-    protected void postLaunch(final String mode, final Backend b) {
+    protected boolean preLaunch(final ILaunchConfiguration config,
+            final String mode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
+        return true;
     }
 
     protected Backend doLaunch(final ILaunchConfiguration config,
-            final String mode, final ILaunch launch) {
+            final String mode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
         BackendData data = new BackendData(config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
@@ -94,6 +102,10 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             return BackendCore.getBackendManager().createExecutionBackend(data);
         }
         return null;
+    }
+
+    protected void postLaunch(final String mode, final Backend b,
+            final IProgressMonitor monitor) throws CoreException {
     }
 
     /*
