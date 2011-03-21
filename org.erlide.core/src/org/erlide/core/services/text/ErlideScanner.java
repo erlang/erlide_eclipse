@@ -173,7 +173,7 @@ public class ErlideScanner {
 
     public static String getText(final String scannerName) {
         try {
-            final OtpErlangObject o = ErlangCore.getBackendManager()
+            final OtpErlangObject o = BackendCore.getBackendManager()
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "getText", "a", scannerName);
             return Util.stringValue(o);
