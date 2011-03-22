@@ -177,23 +177,17 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     }
 
     public String getCondition() throws CoreException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isConditionEnabled() throws CoreException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setCondition(final String condition) throws CoreException {
-        // TODO Auto-generated method stub
-
     }
 
     public void setConditionEnabled(final boolean enabled) throws CoreException {
-        // TODO Auto-generated method stub
-
     }
 
     public boolean supportsCondition() {

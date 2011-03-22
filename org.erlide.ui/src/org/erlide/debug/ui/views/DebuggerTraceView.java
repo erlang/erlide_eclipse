@@ -420,10 +420,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // PlatformUI.getWorkbench().getWorkingSetManager()
         // .addPropertyChangeListener(getWorkingSetListener());
         return viewer;
-
         // registerContextMenu();
         // initDragAndDrop();
-
     }
 
     // @Override
@@ -536,13 +534,9 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // }
     //
     // public void mouseDown(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // public void mouseUp(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // });

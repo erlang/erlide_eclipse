@@ -124,20 +124,5 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         }
         return false;
     }
-    //
-    // public Object[] getChildren(final TreePath parentPath) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // public boolean hasChildren(final TreePath path) {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // public TreePath[] getParents(final Object element) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
 
 }
