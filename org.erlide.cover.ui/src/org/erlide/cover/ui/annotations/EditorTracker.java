@@ -86,6 +86,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
         for (final IWorkbenchWindow w : windows) {
             for (final IWorkbenchPage page : w.getPages()) {
                 for (final IEditorReference editor : page.getEditorReferences()) {
+                    if(editor.isDirty())
+                        continue;
                     annotateEditor(editor.getEditor(false));
                 }
             }
@@ -122,7 +124,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
         IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
                 .getActivePage().getActiveEditor();
 
-        if (currentEditor.getTitle().equals(fileName)) {
+        if (currentEditor.getTitle().equals(fileName) && !currentEditor.isDirty()) {
 
             ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
 
@@ -164,7 +166,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
                 .getActivePage().getActiveEditor();
 
         if (currentEditor.getTitle().equals(fileName)
-                && currentEditor instanceof ITextEditor) {
+                && currentEditor instanceof ITextEditor && !currentEditor.isDirty()) {
 
             ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
 
