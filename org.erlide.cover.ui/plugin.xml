@@ -44,12 +44,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.erlide.cover.ui.perspectives.CoverPerspective"
-            icon="icons/releng_gears.gif"
-            id="org.erlide.cover.core.perspectives.CoverPerspective"
-            name="Cover">
-      </perspective>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">

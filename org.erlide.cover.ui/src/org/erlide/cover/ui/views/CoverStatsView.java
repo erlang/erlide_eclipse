@@ -9,7 +9,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.StatusLineContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -177,6 +179,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         manager.add(new Separator());
         manager.add(restore);
         manager.add(save);
+        
     }
 
     private void fillContextMenu(final IMenuManager manager) {
