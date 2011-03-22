@@ -41,6 +41,7 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelChangeListener;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
@@ -55,7 +56,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
-
 
 /**
  * Implementation of
@@ -91,7 +91,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     protected boolean buildStructure(final IProgressMonitor pm) {
-        removeChildren();
+        setChildren(null);
         // determine my children
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                 .getProjects();
@@ -196,8 +196,10 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlProject makeErlangProject(final IProject project) {
         final IErlProject ep = new ErlProject(project, this);
-        ErlLogger.debug("ep " + ep);
+        ErlLogger.debug("makeErlangProject " + ep);
         addChild(ep);
+        final ErlModelCache cache = getModelCache();
+        cache.newProjectCreated();
         return ep;
     }
 
@@ -478,14 +480,14 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) throws ErlModelException {
-        return ErlProject.findModule(null, name, null, false, false, false,
-                true);
+        return ErlProject.findModule(null, name, null, false, false,
+                Scope.ALL_PROJECTS);
     }
 
     public IErlModule findModuleIgnoreCase(final String name)
             throws ErlModelException {
-        return ErlProject
-                .findModule(null, name, null, true, false, false, true);
+        return ErlProject.findModule(null, name, null, true, false,
+                Scope.ALL_PROJECTS);
     }
 
     public IErlProject createOtpProject(final IProject project)
@@ -558,29 +560,6 @@ public class ErlModel extends Openable implements IErlModel {
                 for (final IErlElement child : parent.getChildren()) {
                     accept(child, visitor, flags, leafKind);
                 }
-                // if (parent instanceof IErlProject) {
-                // final IErlProject project = (IErlProject) parent;
-                // if ((flags & IErlElement.VISIT_REFERENCED) != 0) {
-                // final IProject p = project.getProject();
-                // try {
-                // for (final IProject referenced : p
-                // .getReferencedProjects()) {
-                // final IErlElement e = findElement(referenced);
-                // if (e instanceof IErlProject) {
-                // final IErlProject ep = (IErlProject) e;
-                // accept(ep, visitor, flags
-                // & ~IErlElement.VISIT_REFERENCED,
-                // leafKind);
-                // }
-                // }
-                // } catch (final CoreException e) {
-                // ErlLogger.warn(e);
-                // }
-                // }
-                // if ((flags & IErlElement.VISIT_EXTERNALS) != 0) {
-                // // FIXME how do we do that?
-                // }
-                // }
             }
             if (!flags.contains(AcceptFlags.LEAFS_ONLY)
                     && flags.contains(AcceptFlags.CHILDREN_FIRST)) {
@@ -641,13 +620,12 @@ public class ErlModel extends Openable implements IErlModel {
     public IErlModule findModule(final String moduleName,
             final String modulePath) throws ErlModelException {
         return ErlProject.findModule(null, moduleName, modulePath, false, true,
-                false, true);
+                Scope.ALL_PROJECTS);
     }
 
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
         return ErlProject.findModule(null, includeName, includePath, false,
-                false, false, true);
+                false, Scope.ALL_PROJECTS);
     }
-
 }

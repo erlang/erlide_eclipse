@@ -62,30 +62,6 @@ public class StringUtils {
     }
 
     /**
-     * Counts the number of %s in the string
-     * 
-     * @param str
-     *            the string to be analyzide
-     * @return the number of %s in the string
-     */
-    public static int countPercS(final String str) {
-        int j = 0;
-
-        final int len = str.length();
-        for (int i = 0; i < len; i++) {
-            final char c = str.charAt(i);
-            if (c == '%' && i + 1 < len) {
-                final char nextC = str.charAt(i + 1);
-                if (nextC == 's') {
-                    j++;
-                    i++;
-                }
-            }
-        }
-        return j;
-    }
-
-    /**
      * Removes whitespaces at the beggining of the string.
      */
     public static String rightTrim(final String input) {

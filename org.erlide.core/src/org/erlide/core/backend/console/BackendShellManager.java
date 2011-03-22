@@ -45,10 +45,7 @@ public class BackendShellManager implements IDisposable {
                     ErlLogger.warn(e);
                 }
             }
-            shell = new BackendShell(this.backend, id, server);
-            final ConsoleEventHandler handler = new ConsoleEventHandler(shell,
-                    backend.getFullNodeName());
-            backend.getEventDaemon().addHandler(handler);
+            shell = new BackendShell(backend, id, server);
             fShells.put(id, shell);
         }
         return shell;

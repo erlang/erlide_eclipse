@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.core.backend.internal.InitialCall;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
@@ -37,6 +37,8 @@ import org.erlide.jinterface.ErlLogger;
 import com.google.common.collect.Lists;
 
 public class BackendData extends GenericBackendData {
+
+    public static final String PROJECT_NAME_SEPARATOR = ";";
 
     public BackendData(final ILaunchConfiguration config, final String mode) {
         super(config, mode);
@@ -132,7 +134,7 @@ public class BackendData extends GenericBackendData {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final RuntimeInfo info = getRuntimeInfo();

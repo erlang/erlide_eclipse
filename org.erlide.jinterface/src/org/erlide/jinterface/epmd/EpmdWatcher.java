@@ -193,7 +193,7 @@ public final class EpmdWatcher {
         }
     }
 
-    public static boolean findRunningNode(final String nodeName) {
+    public boolean hasLocalNode(final String nodeName) {
         try {
             final String[] names = OtpEpmd.lookupNames();
             final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));

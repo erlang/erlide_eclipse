@@ -29,7 +29,7 @@ public class BackendShell {
     private final Backend backend;
     private OtpErlangPid server;
     private final String fId;
-    private ConsoleEventHandler handler;
+    private final ConsoleEventHandler handler;
 
     public BackendShell(final Backend backend, final String id,
             final OtpErlangPid server) {
@@ -38,6 +38,9 @@ public class BackendShell {
         this.server = server;
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
+
+        handler = new ConsoleEventHandler(this, backend.getFullNodeName());
+        backend.getEventDaemon().addHandler(handler);
     }
 
     public void close() {
@@ -58,10 +61,6 @@ public class BackendShell {
                 e.printStackTrace();
             }
         }
-    }
-
-    public Backend getBackend() {
-        return backend;
     }
 
     public String getId() {
@@ -100,7 +99,7 @@ public class BackendShell {
     }
 
     public void add(final String text, final IoRequestKind kind) {
-        if (getBackend().isDistributed()
+        if (backend.isDistributed()
                 && IoRequest.RE_PROMPT.matcher(text).matches()) {
             return;
         }
@@ -139,7 +138,6 @@ public class BackendShell {
 
     private void deleteOldItems() {
         // TODO use a configuration for this
-        // TODO maybe we should count text lines?
         synchronized (requests) {
             if (requests.size() > MAX_REQUESTS) {
                 requests.subList(0, DELTA_REQUESTS).clear();

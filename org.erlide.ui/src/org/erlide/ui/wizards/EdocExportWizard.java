@@ -34,7 +34,6 @@ import org.erlide.jinterface.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-
 public class EdocExportWizard extends Wizard implements IExportWizard {
 
     private EdocExportWizardPage page;

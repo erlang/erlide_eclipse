@@ -39,14 +39,14 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcException;
 import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.internal.services.builder.BuilderVisitor;
+import org.erlide.core.internal.services.builder.ErlideBuilder;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.model.erlang.util.PluginUtils;
-import org.erlide.core.services.builder.internal.BuilderVisitor;
-import org.erlide.core.services.builder.internal.ErlideBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -136,8 +136,7 @@ public final class BuilderHelper {
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
-                m.getScanner();
-                final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+                final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
                     if (samePath(ifile.getFilename(), resource.getName())) {
                         if (m.getModuleKind() == ModuleKind.ERL) {
@@ -148,7 +147,6 @@ public final class BuilderHelper {
                         break;
                     }
                 }
-                m.disposeScanner();
             }
         }
     }
@@ -269,8 +267,7 @@ public final class BuilderHelper {
             throws ErlModelException {
         final IErlModule m = eprj.getModule(source.getName());
         if (m != null) {
-            m.getScanner();
-            final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+            final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile ifile : incs) {
                 final IResource rifile = findResourceByName(project,
                         ifile.getFilename());
@@ -281,7 +278,6 @@ public final class BuilderHelper {
                     break;
                 }
             }
-            m.disposeScanner();
         }
         return shouldCompile;
     }

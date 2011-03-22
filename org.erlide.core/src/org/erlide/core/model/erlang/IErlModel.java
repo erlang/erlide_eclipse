@@ -21,7 +21,6 @@ import org.erlide.core.ErlangCore;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
-
 /**
  * Represent the root Erlang element corresponding to the workspace. Since there
  * is only one such root element, it is commonly referred to as <em>the</em>

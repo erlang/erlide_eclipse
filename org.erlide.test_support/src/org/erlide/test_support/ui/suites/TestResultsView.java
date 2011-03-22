@@ -132,11 +132,18 @@ public class TestResultsView extends ViewPart {
         TestCaseData test;
         if ("init".equals(tag)) {
             // value = {Dir, Suite, Case}
-            label.setText("Started: " + formatTitle(value));
+            label.setText("Started: " + formatTitle(value)
+                    + ". Compiling files, please wait...");
+            treeViewer.getTree().setCursor(
+                    treeViewer.getTree().getShell().getDisplay()
+                            .getSystemCursor(SWT.CURSOR_WAIT));
         } else if ("start_failed".equals(tag)) {
             // value = ?
         } else if ("log_started".equals(tag)) {
             // value = Dir
+            treeViewer.getTree().setCursor(
+                    treeViewer.getTree().getShell().getDisplay()
+                            .getSystemCursor(SWT.CURSOR_ARROW));
         } else if ("start".equals(tag)) {
             // value = {Module, Function}
             final Bindings bindings = ErlUtils.match("{M:a,F:a}", value);

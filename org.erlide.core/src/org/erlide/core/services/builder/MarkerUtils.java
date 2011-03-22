@@ -25,12 +25,14 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
+import org.erlide.core.model.debug.ErlangLineBreakpoint;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -42,7 +44,6 @@ import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 
 public final class MarkerUtils {
 
@@ -126,8 +127,8 @@ public final class MarkerUtils {
                     ErlLogger.debug("    " + entry.getValue());
 
                     final IErlModule includeFile = erlProject != null ? erlProject
-                            .findInclude(fileName, fileName, true, false)
-                            : null;
+                            .findInclude(fileName, fileName,
+                                    Scope.REFERENCED_PROJECTS) : null;
                     if (includeFile == null) {
                         res = resource;
                     } else {
@@ -374,7 +375,7 @@ public final class MarkerUtils {
         if (result == null) {
             return;
         }
-        final IProject p = project.getProject();
+        final IProject p = project.getWorkspaceProject();
         for (final OtpErlangObject i : result) {
             final OtpErlangTuple t = (OtpErlangTuple) i;
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
@@ -417,7 +418,7 @@ public final class MarkerUtils {
             final IResource resource, final int lineNumber,
             final String modelIdentifier) throws CoreException {
         final IMarker marker = resource
-                .createMarker("org.erlide.core.model.erlang.lineBreakpoint.marker");
+                .createMarker(ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE);
         marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
         marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
         marker.setAttribute(IBreakpoint.ID, modelIdentifier);
@@ -487,7 +488,7 @@ public final class MarkerUtils {
         if (m == null) {
             return;
         }
-        m.getScanner();
+        // m.getScanner(); FIXME why did we need this?
         final Collection<IErlComment> cl = m.getComments();
         for (final IErlComment c : cl) {
             final String text = c.getName();
@@ -496,7 +497,7 @@ public final class MarkerUtils {
             mkMarker(resource, line, text, XXX, IMarker.PRIORITY_NORMAL);
             mkMarker(resource, line, text, FIXME, IMarker.PRIORITY_HIGH);
         }
-        m.disposeScanner();
+        // m.disposeScanner(); FIXME why did we need this?
     }
 
     private static void getNoScanMarkersFor(final IResource resource,

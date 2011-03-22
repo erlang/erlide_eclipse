@@ -11,6 +11,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 
 public class GenericBackendData {
@@ -29,7 +30,7 @@ public class GenericBackendData {
                 final ILaunchManager manager = DebugPlugin.getDefault()
                         .getLaunchManager();
                 final ILaunchConfigurationType ltype = manager
-                        .getLaunchConfigurationType(ErtsProcess.CONFIGURATION_TYPE_INTERNAL);
+                        .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
                 config = ltype.newInstance(null, manager
                         .generateUniqueLaunchConfigurationNameFrom("erlide"));
             }
@@ -48,8 +49,7 @@ public class GenericBackendData {
     @SuppressWarnings("rawtypes")
     public void debugPrint() {
         final String mode = debug ? "debug" : "run";
-        ErlLogger
-                .info("BackendImpl data:" + mode + " mode,  with attributes::");
+        ErlLogger.info("Backend data:" + mode + " mode,  with attributes::");
         Map attrs;
         try {
             attrs = config.getAttributes();

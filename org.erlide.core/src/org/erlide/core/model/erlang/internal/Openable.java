@@ -124,6 +124,10 @@ public abstract class Openable extends ErlElement implements IOpenable {
     public boolean exists() {
         final IErlModelManager manager = ErlangCore.getModelManager();
         if (manager.getInfo(this) != null) {
+            final IResource resource = getResource();
+            if (resource != null) {
+                return resource.exists();
+            }
             return true;
         }
         if (!parentExists()) {

@@ -12,7 +12,6 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 
-
 public class ErlangDebugHelper {
 
     public void interpret(final RpcCallSite backend, final IProject project,
@@ -20,14 +19,20 @@ public class ErlangDebugHelper {
             final boolean interpret) {
         try {
             final IFile beam = findModuleBeam(project, moduleName);
-            if (beam != null && beam.exists()) {
-                final String de = interpret ? "" : "de";
-                ErlLogger.debug(de + "interpret " + beam.getLocation());
-                boolean b = ErlideDebug.interpret(backend, beam.getLocation()
-                        .toString(), distributed, interpret);
-                b = !b;
+            if (beam != null) {
+                if (beam.exists()) {
+                    final String de = interpret ? "" : "de";
+                    ErlLogger.debug(de + "interpret " + beam.getLocation());
+                    boolean b = ErlideDebug.interpret(backend, beam
+                            .getLocation().toString(), distributed, interpret);
+                    b = !b;
+                } else {
+                    ErlLogger.debug("IGNORED MISSING interpret "
+                            + (project == null ? "null" : project.getName())
+                            + ":" + moduleName);
+                }
             } else {
-                ErlLogger.debug("IGNORED MISSING interpret "
+                ErlLogger.debug("IGNORED NULL interpret "
                         + (project == null ? "null" : project.getName()) + ":"
                         + moduleName);
             }

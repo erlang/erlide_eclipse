@@ -12,8 +12,8 @@ package org.erlide.wrangler.refactoring;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
@@ -55,32 +55,20 @@ public class Activator extends AbstractUIPlugin {
      *             detailed exception about the loading process errors
      */
 
-    private void initWrangler() throws CoreException { /*
-                                                        * try { Path pluginPath
-                                                        * = getPluginPath();
-                                                        * IPath wranglerRootPath
-                                                        * = pluginPath
-                                                        * .append("wrangler");
-                                                        * String
-                                                        * wranglerEbinPath =
-                                                        * wranglerRootPath
-                                                        * .append("ebin")
-                                                        * .toOSString(); String
-                                                        * wranglerAppPath =
-                                                        * wranglerRootPath
-                                                        * .append("app")
-                                                        * .toOSString();
-                                                        * 
-                                                        * String wranglerSrcPath
-                                                        * = wranglerRootPath
-                                                        * .append("erl")
-                                                        * .toOSString();
-                                                        * 
-                                                        * ErlLogger.debug(
-                                                        * "Wrangler beam files found at: "
-                                                        * + wranglerEbinPath);
-                                                        */
-        final ErlideBackend mb = ErlangCore.getBackendManager().getIdeBackend();
+    private void initWrangler() throws CoreException {
+        /*
+         * try { Path pluginPath = getPluginPath(); IPath wranglerRootPath =
+         * pluginPath .append("wrangler"); String wranglerEbinPath =
+         * wranglerRootPath .append("ebin") .toOSString(); String
+         * wranglerAppPath = wranglerRootPath .append("app") .toOSString();
+         * 
+         * String wranglerSrcPath = wranglerRootPath .append("erl")
+         * .toOSString();
+         * 
+         * ErlLogger.debug( "Wrangler beam files found at: " +
+         * wranglerEbinPath);
+         */
+        final Backend mb = BackendCore.getBackendManager().getIdeBackend();
 
         ErlLogger.debug("Managed backend found:" + mb.getJavaNodeName());
 

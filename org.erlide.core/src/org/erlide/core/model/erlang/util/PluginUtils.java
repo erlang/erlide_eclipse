@@ -24,7 +24,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.search.ErlideOpen;
 
-
 /**
  * Simple utility functions
  * 
@@ -47,11 +46,12 @@ public class PluginUtils {
     public static Set<IPath> getFullPaths(final IProject project,
             final Collection<IPath> sourcePaths) {
         final HashSet<IPath> result = new HashSet<IPath>();
-        for (final IPath i : sourcePaths) {
-            if (i.equals(".")) {
+        for (final IPath path : sourcePaths) {
+            String path_string = path.toString();
+            if (path_string.equals(".")) {
                 result.add(project.getFullPath());
             } else {
-                result.add(project.getFolder(i).getFullPath());
+                result.add(project.getFolder(path).getFullPath());
             }
         }
         return result;

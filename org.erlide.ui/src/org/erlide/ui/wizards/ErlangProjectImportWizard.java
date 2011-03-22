@@ -44,13 +44,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.osgi.service.prefs.BackingStoreException;
-
 
 public class ErlangProjectImportWizard extends Wizard implements INewWizard { // IImportWizard
     // {
@@ -91,7 +91,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
         }
         final String projectPath = mainPage.getProjectPath().toString();
         final ErlProjectImport epi = ErlideImport
-                .importProject(ErlangCore.getBackendManager().getIdeBackend(),
+                .importProject(BackendCore.getBackendManager().getIdeBackend(),
                         projectPath, filesAndDirs);
         importIncludeAndSourceDirsPage.setup(projectPath, epi.getDirectories(),
                 epi.getIncludeDirs(), epi.getSourceDirs());

@@ -21,7 +21,6 @@ import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-
 public class ErlangSearchResult extends AbstractTextSearchResult implements
         IEditorMatchAdapter, IFileMatchAdapter {
 

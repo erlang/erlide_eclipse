@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErtsProcess;
 import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.backend.launching.ErtsProcess;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugElement;
 import org.erlide.core.model.debug.ErlangDebugHelper;
@@ -277,7 +277,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             final boolean checked) {
         final String module = dti.getItem().getName();
         final String moduleWoExtension = CommonUtils.withoutExtension(module);
-        final IProject project = dti.getItem().getErlProject().getProject();
+        final IProject project = dti.getItem().getProject()
+                .getWorkspaceProject();
         final boolean interpret = checked;
         final RpcCallSite backend = erlangDebugTarget.getBackend();
 

@@ -158,7 +158,7 @@ public class ErlLogger {
     public static class ErlSimpleFormatter extends Formatter {
 
         Date dat = new Date();
-        private static final String FORMAT = "{0,time,HH:mm:ss,SSS}";
+        private static final String FORMAT_STRING = "{0,time,HH:mm:ss,SSS}";
         private MessageFormat formatter;
 
         private final Object[] args = new Object[1];
@@ -174,7 +174,7 @@ public class ErlLogger {
             args[0] = dat;
             final StringBuffer text = new StringBuffer();
             if (formatter == null) {
-                formatter = new MessageFormat(FORMAT);
+                formatter = new MessageFormat(FORMAT_STRING);
             }
             formatter.format(args, text, null);
             sb.append(text);

@@ -80,7 +80,6 @@ import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
-
 /**
  * Shows a list of resources to the user with a text entry field for a string
  * pattern used to filter the list of resources.
@@ -596,43 +595,38 @@ public class FilteredModulesSelectionDialog extends
 
                 // navigate even "external" lists
                 final IErlModel model = ErlangCore.getModel();
-                if (project != null) {
-                    final IErlProject erlProject = model.findProject(project);
-                    final String extMods = erlProject
-                            .getExternalModulesString();
-                    final List<String> files = new ArrayList<String>();
-                    files.addAll(PreferencesUtils.unpackList(extMods));
-                    final String extIncs = erlProject
-                            .getExternalIncludesString();
-                    files.addAll(PreferencesUtils.unpackList(extIncs));
+                final IErlProject erlProject = model.findProject(project);
+                final String extMods = erlProject.getExternalModulesString();
+                final List<String> files = new ArrayList<String>();
+                files.addAll(PreferencesUtils.unpackList(extMods));
+                final String extIncs = erlProject.getExternalIncludesString();
+                files.addAll(PreferencesUtils.unpackList(extIncs));
 
-                    final IPathVariableManager pvm = ResourcesPlugin
-                            .getWorkspace().getPathVariableManager();
-                    for (final String str : files) {
-                        IResource fres;
-                        try {
-                            fres = ResourceUtil.recursiveFindNamedResource(
-                                    project, str, null);
-                        } catch (final CoreException e) {
-                            fres = null;
-                        }
-                        if (fres != null) {
-                            final List<String> lines = PreferencesUtils
-                                    .readFile(fres.getLocation().toString());
-                            for (final String pref : lines) {
+                final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+                        .getPathVariableManager();
+                for (final String str : files) {
+                    IResource fres;
+                    try {
+                        fres = ResourceUtil.recursiveFindNamedResource(project,
+                                str, null);
+                    } catch (final CoreException e) {
+                        fres = null;
+                    }
+                    if (fres != null) {
+                        final List<String> lines = PreferencesUtils
+                                .readFile(fres.getLocation().toString());
+                        for (final String pref : lines) {
 
-                                String path;
-                                final IPath p = new Path(pref);
-                                final IPath v = PluginUtils.resolvePVMPath(pvm,
-                                        p);
-                                if (v.isAbsolute()) {
-                                    path = v.toString();
-                                } else {
-                                    path = project.getLocation().append(v)
-                                            .toString();
-                                }
-                                proxyContentProvider.add(path, resourceFilter);
+                            String path;
+                            final IPath p = new Path(pref);
+                            final IPath v = PluginUtils.resolvePVMPath(pvm, p);
+                            if (v.isAbsolute()) {
+                                path = v.toString();
+                            } else {
+                                path = project.getLocation().append(v)
+                                        .toString();
                             }
+                            proxyContentProvider.add(path, resourceFilter);
                         }
                     }
                 }

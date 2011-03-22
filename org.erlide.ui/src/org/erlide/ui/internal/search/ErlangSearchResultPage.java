@@ -354,8 +354,9 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
                 final int fileCount = getInput().getElements().length;
                 if (itemCount < fileCount) {
                     final String format = "{0} (showing {1} of {2} files)";
-                    return MessageFormat.format(format, label, new Integer(
-                            itemCount), Integer.valueOf(fileCount));
+                    return MessageFormat.format(format, label,
+                            Integer.valueOf(itemCount),
+                            Integer.valueOf(fileCount));
                 }
             }
         }

@@ -24,7 +24,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 public class ErlangVariable extends ErlangDebugElement implements IVariable {
     private final String name;
     private final boolean subVariable;

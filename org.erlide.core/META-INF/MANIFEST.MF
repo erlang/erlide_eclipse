@@ -2,49 +2,29 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.10.2.qualifier
+Bundle-Version: 0.11.0.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.erlide.core,
  org.erlide.core.backend,
  org.erlide.core.backend.console,
- org.erlide.core.backend.epmd,
  org.erlide.core.backend.events,
- org.erlide.core.backend.internal;x-internal:=true,
+ org.erlide.core.backend.launching,
  org.erlide.core.backend.manager,
  org.erlide.core.backend.rpc,
- org.erlide.core.backend.runtime,
  org.erlide.core.backend.runtimeinfo,
+ org.erlide.core.cleanup,
  org.erlide.core.common,
- org.erlide.core.model.debug;
-  x-friends:="org.erlide.ui,
-   org.erlide.test_support,
-   shade.bterl";
-  uses:="com.ericsson.otp.erlang,
-   org.eclipse.debug.core.model,
-   org.erlide.runtime.backend,
-   org.eclipse.core.resources,
-   org.eclipse.debug.core",
+ org.erlide.core.internal.backend;x-internal:=true,
+ org.erlide.core.internal.services.builder;x-friends:="shade.bterl",
+ org.erlide.core.model.debug,
  org.erlide.core.model.erlang,
- org.erlide.core.model.erlang.internal;x-friends:="org.erlide.tracing.core,org.erlide.ui",
+ org.erlide.core.model.erlang.internal;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
  org.erlide.core.model.erlang.util,
  org.erlide.core.services.builder,
- org.erlide.core.services.builder.internal;x-friends:="org.erlide.test_support,shade.bterl",
  org.erlide.core.services.codeassist,
- org.erlide.core.services.launching;
-  x-friends:="org.erlide.tracing.core,
-   org.erlide.ui,
-   org.erlide.selfhost,
-   org.erlide.test_support,
-   shade.bterl",
- org.erlide.core.services.search;x-friends:="org.erlide.ui";
-  uses:="org.eclipse.debug.core.sourcelookup,
-   org.erlide.jinterface,
-   org.osgi.framework,
-   org.eclipse.core.resources,
-   org.eclipse.core.runtime,
-   org.eclipse.debug.core",
+ org.erlide.core.services.search,
  org.erlide.core.services.text
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,

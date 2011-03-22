@@ -13,6 +13,7 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.services.search.ErlideOpen;
@@ -21,7 +22,6 @@ import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
-
 
 public class ErlExternalReferenceEntryList extends Openable implements
         IErlExternal {
@@ -51,14 +51,14 @@ public class ErlExternalReferenceEntryList extends Openable implements
         // TODO some code duplication within this function
         ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
                 externalName);
-        final ErlModelCache moduleMap = ErlModel.getErlModelCache();
-        List<ExternalTreeEntry> externalModuleTree = moduleMap
+        final ErlModelCache cache = ErlModel.getErlModelCache();
+        List<ExternalTreeEntry> externalModuleTree = cache
                 .getExternalTree(externalModules);
-        List<ExternalTreeEntry> externalIncludeTree = moduleMap
+        List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
             final RpcCallSite backend = CoreUtil
-                    .getBuildOrIdeBackend(getErlProject().getProject());
+                    .getBuildOrIdeBackend(getProject().getWorkspaceProject());
             final OtpErlangList pathVars = ErlangCore.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
@@ -76,19 +76,20 @@ public class ErlExternalReferenceEntryList extends Openable implements
             }
         }
         final IErlModelManager modelManager = ErlangCore.getModelManager();
-        removeChildren();
+        setChildren(null);
+        final IErlProject project = (IErlProject) getAncestorOfKind(Kind.PROJECT);
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
             addExternalEntries(pm, externalModuleTree, modelManager, "modules",
                     externalModules, null, false);
-            moduleMap.putExternalTree(externalModules, externalModuleTree);
+            cache.putExternalTree(externalModules, project, externalModuleTree);
         }
         if (externalIncludeTree != null && !externalIncludeTree.isEmpty()
                 || !projectIncludes.isEmpty()) {
             addExternalEntries(pm, externalIncludeTree, modelManager,
                     "includes", externalIncludes, projectIncludes, true);
             if (externalIncludeTree != null) {
-                moduleMap
-                        .putExternalTree(externalIncludes, externalIncludeTree);
+                cache.putExternalTree(externalIncludes, project,
+                        externalIncludeTree);
             }
         }
         return true;

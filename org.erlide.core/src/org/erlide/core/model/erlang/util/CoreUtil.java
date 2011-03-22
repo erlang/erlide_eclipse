@@ -25,9 +25,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.CharOperation;
@@ -212,7 +212,7 @@ public final class CoreUtil {
     private CoreUtil() {
     }
 
-    public static void loadModuleViaInput(final ErlideBackend b,
+    public static void loadModuleViaInput(final Backend b,
             final IProject project, final String module)
             throws ErlModelException, IOException {
         final IErlProject p = ErlangCore.getModel().findProject(project);
@@ -236,7 +236,7 @@ public final class CoreUtil {
     }
 
     public static Backend getBuildOrIdeBackend(final IProject project) {
-        final BackendManager backendManager = ErlangCore.getBackendManager();
+        final BackendManager backendManager = BackendCore.getBackendManager();
         if (project != null) {
             try {
                 return backendManager.getBuildBackend(project);

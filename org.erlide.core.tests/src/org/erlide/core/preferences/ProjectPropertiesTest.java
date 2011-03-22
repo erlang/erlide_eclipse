@@ -18,69 +18,72 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 
 public class ProjectPropertiesTest {
-    private static IErlProject erlProject;
+	private static IErlProject erlProject;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        ErlideTestUtils.initProjects();
-        // We set up projects here, it's quite costly
-        final String name1 = "testproject1";
-        erlProject = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
-    }
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		ErlideTestUtils.initProjects();
+		// We set up projects here, it's quite costly
+		final String name1 = "testproject1";
+		erlProject = ErlideTestUtils.createProject(
+				ErlideTestUtils.getTmpPath(name1), name1);
+	}
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        ErlideTestUtils.deleteProjects();
-    }
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		ErlideTestUtils.deleteProjects();
+	}
 
-    @Test
-    public void outputPathShouldFollowPropertyChange() {
-        String expected = "hello/world";
+	@Test
+	public void outputPathShouldFollowPropertyChange() {
+		final String expected = "hello/world";
 
-        IProject project = erlProject.getProject();
-        final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
+		final IProject project = erlProject.getWorkspaceProject();
+		final IEclipsePreferences node = new ProjectScope(project)
+				.getNode(ErlangPlugin.PLUGIN_ID);
+		node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
-        OldErlangProjectProperties pp = new OldErlangProjectProperties(project);
-        String actual = pp.getOutputDir().toPortableString();
+		final OldErlangProjectProperties pp = new OldErlangProjectProperties(
+				project);
+		final String actual = pp.getOutputDir().toPortableString();
 
-        assertEquals(expected, actual);
-    }
+		assertEquals(expected, actual);
+	}
 
-    @Test
-    public void includePathsShouldFollowPropertyChange() {
-        String expected = "hello/world;a/b";
+	@Test
+	public void includePathsShouldFollowPropertyChange() {
+		final String expected = "hello/world;a/b";
 
-        IProject project = erlProject.getProject();
-        final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
+		final IProject project = erlProject.getWorkspaceProject();
+		final IEclipsePreferences node = new ProjectScope(project)
+				.getNode(ErlangPlugin.PLUGIN_ID);
+		node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
-        OldErlangProjectProperties pp = new OldErlangProjectProperties(project);
-        String actual = pp.getIncludeDirs().toString();
+		final OldErlangProjectProperties pp = new OldErlangProjectProperties(
+				project);
+		final String actual = pp.getIncludeDirs().toString();
 
-        assertEquals(convertListString(expected), actual);
-    }
+		assertEquals(convertListString(expected), actual);
+	}
 
-    private String convertListString(String expected) {
-        return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected))
-                + "]";
-    }
+	private String convertListString(final String expected) {
+		return "[" + Joiner.on(", ").join(Splitter.on(";").split(expected))
+				+ "]";
+	}
 
-    @Test
-    public void sourcePathsShouldFollowPropertyChange() {
-        String expected = "hello/world;a/b";
+	@Test
+	public void sourcePathsShouldFollowPropertyChange() {
+		final String expected = "hello/world;a/b";
 
-        IProject project = erlProject.getProject();
-        final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
+		final IProject project = erlProject.getWorkspaceProject();
+		final IEclipsePreferences node = new ProjectScope(project)
+				.getNode(ErlangPlugin.PLUGIN_ID);
+		node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
-        OldErlangProjectProperties pp = new OldErlangProjectProperties(project);
-        String actual = pp.getSourceDirs().toString();
+		final OldErlangProjectProperties pp = new OldErlangProjectProperties(
+				project);
+		final String actual = pp.getSourceDirs().toString();
 
-        assertEquals(convertListString(expected), actual);
-    }
+		assertEquals(convertListString(expected), actual);
+	}
 }

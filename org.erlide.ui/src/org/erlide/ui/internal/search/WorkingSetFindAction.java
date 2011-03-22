@@ -17,7 +17,6 @@ import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
-
 /**
  * Wraps a <code>JavaElementSearchActions</code> to find its results in the
  * specified working set.

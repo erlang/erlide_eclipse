@@ -252,7 +252,7 @@ public final class ErlModelManager implements IErlModelManager {
         final String name = file.getName();
         if (CommonUtils.isErlangFileContentFileName(name)) {
             final IErlModule module = new ErlModule(parent, name, null, file,
-                    file.getLocation().toPortableString(), true);
+                    null, true);
             if (parent != null) {
                 parent.addChild(module);
             }
@@ -976,12 +976,8 @@ public final class ErlModelManager implements IErlModelManager {
         return getModuleFromFile(parent, name, initialText, "", key);
     }
 
-    public void putEdited(final String path) {
-        ErlModel.getErlModelCache().putEdited(path);
-    }
-
-    public void removeEdited(final String path) {
-        ErlModel.getErlModelCache().removeEdited(path);
+    public void putEdited(final String path, final IErlModule module) {
+        ErlModel.getErlModelCache().putEdited(path, module);
     }
 
 }

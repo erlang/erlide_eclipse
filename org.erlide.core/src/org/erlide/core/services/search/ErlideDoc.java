@@ -36,9 +36,9 @@ public class ErlideDoc {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject getOtpDoc(final RpcCallSite ide, final RpcCallSite b,
-            final int offset, final String stateDir, final String module,
-            final Collection<OtpErlangObject> imports,
+    public static OtpErlangObject getOtpDoc(final RpcCallSite ide,
+            final RpcCallSite b, final int offset, final String stateDir,
+            final String module, final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
         ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);

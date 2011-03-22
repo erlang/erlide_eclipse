@@ -11,7 +11,7 @@
 package org.erlide.core.backend.rpc;
 
 import org.erlide.core.backend.RpcCallback;
-import org.erlide.core.backend.internal.RpcFutureImpl;
+import org.erlide.core.internal.backend.RpcFutureImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.TypeConverter;
 

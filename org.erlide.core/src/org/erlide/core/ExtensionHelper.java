@@ -25,7 +25,6 @@ public class ExtensionHelper {
 
     private static Map<String, IExtension[]> extensionsCache = new HashMap<String, IExtension[]>();
 
-    // TODO list the extension points
     public static final String EDITOR_LISTENER = "org.erlide.editor_listener";
 
     public static IExtension[] getExtensions(final String type) {
@@ -52,7 +51,7 @@ public class ExtensionHelper {
     @SuppressWarnings("unchecked")
     public static Object getParticipant(final String type) {
         // only one participant may be used for this
-        final List<Object> participants = getParticipants(type);
+        final List<Object> participants = (List<Object>) getParticipants(type);
         if (participants.size() == 1) {
             return participants.get(0);
         }
@@ -75,13 +74,12 @@ public class ExtensionHelper {
      *            the extension we want to get
      * @return a list of classes created from those extensions
      */
-    @SuppressWarnings({ "unchecked" })
-    public static List getParticipants(final String type) {
+    public static List<?> getParticipants(final String type) {
         if (testingParticipants != null) {
             return testingParticipants.get(type);
         }
 
-        final List list = Lists.newArrayList();
+        final List<Object> list = Lists.newArrayList();
         final IExtension[] extensions = getExtensions(type);
         // For each extension ...
         for (int i = 0; i < extensions.length; i++) {

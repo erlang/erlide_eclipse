@@ -53,7 +53,6 @@ public final class ErlideUtil {
         } catch (final OtpErlangRangeException e) {
             ErlLogger.error(e);
         } catch (final BackendException e) {
-            ErlLogger.error(e);
         } finally {
             if (f != null) {
                 f.delete();
@@ -67,7 +66,7 @@ public final class ErlideUtil {
     public static boolean isNoModelCache() {
         if (fgCacheNoModelCache == null) {
             final String test = System.getProperty("erlide.noModelCache");
-            fgCacheNoModelCache = new Boolean("true".equals(test));
+            fgCacheNoModelCache = Boolean.valueOf("true".equals(test));
         }
         return fgCacheNoModelCache.booleanValue();
     }

@@ -74,9 +74,9 @@ public class ErlideIndent {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject call(final RpcCallSite b, final String module,
-            final String fun, final int offset, final int length,
-            final String text) {
+    public static OtpErlangObject call(final RpcCallSite b,
+            final String module, final String fun, final int offset,
+            final int length, final String text) {
         try {
             final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset,
                     length);

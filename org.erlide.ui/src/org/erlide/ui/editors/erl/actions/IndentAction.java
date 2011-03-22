@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
@@ -16,7 +16,6 @@ import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -56,7 +55,7 @@ public class IndentAction extends ErlangTextEditorAction {
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
-        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
             final OtpErlangObject r1 = ErlideIndent.templateIndentLines(b,

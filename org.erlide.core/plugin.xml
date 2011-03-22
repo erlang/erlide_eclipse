@@ -10,7 +10,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.erlide.core.services.builder.internal.ErlangNature">
+               class="org.erlide.core.internal.services.builder.ErlangNature">
          </run>
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>
@@ -75,13 +75,13 @@
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.erlide.core.services.launching.ErlangSourcePathComputerDelegate"
+            class="org.erlide.core.backend.launching.ErlangSourcePathComputerDelegate"
             id="org.erlide.core.sourcepathcomputer"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="org.erlide.core.services.launching.ErlangSourceLookupDirector"
+            class="org.erlide.core.backend.launching.ErlangSourceLookupDirector"
             id="org.erlide.core.erlangLocatorDirector"
             name="erlide-launching.erlangSourceLocator"/>
    </extension>
@@ -100,23 +100,12 @@
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
    </extension>
-   <extension
-         id="model.erlang.lineBreakpoint.marker"
-         name="Erlang Line Breakpoint Marker"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.debug.core.lineBreakpointMarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
-   </extension>
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.core.services.launching.ErlangLaunchDelegate"
+            delegate="org.erlide.core.backend.launching.ErlangLaunchDelegate"
             delegateName="Erlang application"
-            id="org.erlide.core.services.launching.erlangProcess"
+            id="org.erlide.core.launch.erlangProcess"
             modes="run, debug"
             name="Erlang application"
             public="true"
@@ -124,8 +113,8 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
       <launchConfigurationType
-            delegate="org.erlide.core.services.launching.ErlangLaunchDelegate"
-            id="org.erlide.core.services.launching.internal"
+            delegate="org.erlide.core.backend.launching.ErlangLaunchDelegate"
+            id="org.erlide.core.launch.internal"
             modes="run"
             name="internal Erlang node"
             public="false"

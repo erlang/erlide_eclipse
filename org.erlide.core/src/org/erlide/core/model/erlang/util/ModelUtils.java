@@ -22,12 +22,14 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.internal.SourceRange;
 import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -137,7 +139,7 @@ public class ModelUtils {
         final List<String> result = Lists.newArrayList();
         final Set<String> names = Sets.newHashSet();
         addModuleNamesWithPrefix(prefix, result, names, project.getModules());
-        for (final IErlProject p : project.getProjectReferences()) {
+        for (final IErlProject p : project.getReferencedProjects()) {
             if (p != null) {
                 p.open(null);
                 addModuleNamesWithPrefix(prefix, result, names, p.getModules());
@@ -173,12 +175,12 @@ public class ModelUtils {
 
     public static IErlElement findFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
-            final IErlProject project, final boolean checkAllProjects,
+            final IErlProject project, final Scope scope,
             final IErlModule module) throws CoreException {
         if (moduleName != null) {
             moduleName = resolveMacroValue(moduleName, module);
             final IErlModule module2 = findModule(project, moduleName,
-                    modulePath, checkAllProjects);
+                    modulePath, scope);
             if (module2 != null) {
                 module2.open(null);
                 final IErlFunction function = module2
@@ -193,14 +195,13 @@ public class ModelUtils {
     }
 
     public static IErlModule findModule(final IErlProject project,
-            final String moduleName, final String modulePath,
-            final boolean checkAllProjects) throws ErlModelException {
+            final String moduleName, final String modulePath, final Scope scope)
+            throws ErlModelException {
         if (project != null) {
-            return project.findModule(moduleName, modulePath, true,
-                    checkAllProjects);
+            return project.findModule(moduleName, modulePath, scope);
         }
         final IErlModel model = ErlangCore.getModel();
-        if (checkAllProjects) {
+        if (scope == Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
         }
         return null;
@@ -208,11 +209,10 @@ public class ModelUtils {
 
     public static IErlElement findTypeDef(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
-            final IErlProject project, final boolean checkAllProjects)
-            throws CoreException {
+            final IErlProject project, final Scope scope) throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
         final IErlModule module2 = findModule(project, moduleName, modulePath,
-                checkAllProjects);
+                scope);
         if (module2 != null) {
             module2.open(null);
             return module2.findTypespec(typeName);
@@ -354,6 +354,25 @@ public class ModelUtils {
             parent = external.getParent();
         }
         return false;
+    }
+
+    public static IErlElement findInclude(final IErlModule module,
+            final IErlProject project, final OpenResult res,
+            final IErlModel model) throws CoreException, BackendException {
+        if (module != null) {
+            final IErlModule include = module.findInclude(res.getName(),
+                    res.getPath(), Scope.REFERENCED_PROJECTS);
+            if (include != null) {
+                return include;
+            }
+        } else if (project != null) {
+            final IErlModule include = project.findInclude(res.getName(),
+                    res.getPath(), Scope.REFERENCED_PROJECTS);
+            if (include != null) {
+                return include;
+            }
+        }
+        return null;
     }
 
 }

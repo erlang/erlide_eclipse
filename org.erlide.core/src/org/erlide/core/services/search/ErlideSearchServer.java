@@ -18,7 +18,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-
 public class ErlideSearchServer {
 
     private static final int SEARCH_LONG_TIMEOUT = 50000;
@@ -50,9 +49,10 @@ public class ErlideSearchServer {
                         new OtpErlangString(path) });
     }
 
-    public static List<ModuleLineFunctionArityRef> findRefs(final RpcCallSite b,
-            final ErlangSearchPattern ref, final ErlSearchScope scope,
-            final ErlSearchScope externalScope, final String stateDir) {
+    public static List<ModuleLineFunctionArityRef> findRefs(
+            final RpcCallSite b, final ErlangSearchPattern ref,
+            final ErlSearchScope scope, final ErlSearchScope externalScope,
+            final String stateDir) {
         final List<ModuleLineFunctionArityRef> result = Lists.newArrayList();
         try {
             // ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
@@ -70,9 +70,9 @@ public class ErlideSearchServer {
         return result;
     }
 
-    public static List<ModuleLineFunctionArityRef> findRefs(final RpcCallSite b,
-            final ErlangSearchPattern ref, final IErlModule module,
-            final String stateDir) {
+    public static List<ModuleLineFunctionArityRef> findRefs(
+            final RpcCallSite b, final ErlangSearchPattern ref,
+            final IErlModule module, final String stateDir) {
         final ErlSearchScope scope = new ErlSearchScope();
         final ErlSearchScope externalScope = new ErlSearchScope();
         final IResource r = module.getResource();

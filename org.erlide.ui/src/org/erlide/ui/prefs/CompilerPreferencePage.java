@@ -41,10 +41,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlBackend;
-import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.backend.NoBackendException;
+import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
@@ -368,7 +368,7 @@ public class CompilerPreferencePage extends PropertyPage implements
             final IErlModel model = ErlangCore.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
-                    final IProject p = ep.getProject();
+                    final IProject p = ep.getWorkspaceProject();
                     if (hasProjectSpecificOptions(p)) {
                         projectsWithSpecifics.add(p);
                     }
@@ -436,19 +436,21 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     enum OptionStatus {
-        OK, ERROR, NO_RUNTIME
+        OK, @SuppressWarnings("hiding")
+        ERROR, NO_RUNTIME
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
-        try {
-            ErlBackend.parseTerm(b, string + " .");
-        } catch (final NoBackendException e) {
+        final Backend b = BackendCore.getBackendManager().getIdeBackend();
+        if (b == null) {
             return OptionStatus.NO_RUNTIME;
+        }
+        try {
+            BackendHelper.parseTerm(b, string + " .");
         } catch (final BackendException e) {
             try {
                 final String string2 = "[" + string + "].";
-                ErlBackend.parseTerm(b, string2);
+                BackendHelper.parseTerm(b, string2);
             } catch (final BackendException e1) {
                 return OptionStatus.ERROR;
             }

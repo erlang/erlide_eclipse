@@ -13,10 +13,10 @@ package org.erlide.core.model.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.ErlBackend;
-import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
@@ -40,7 +40,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-
 /**
  * @author jakob
  * 
@@ -61,7 +60,7 @@ public final class ErlParser {
     public static boolean parse(final IErlModule module,
             final String scannerName, final boolean initialParse,
             final String path, final boolean useCaches) {
-        final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
+        final Backend b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null || module == null) {
             return false;
         }
@@ -93,7 +92,7 @@ public final class ErlParser {
         } else {
             ErlLogger.error("rpc error when parsing %s: %s", path, res);
         }
-        module.removeChildren();
+        module.setChildren(null);
         // mm.setParseTree(forms);
         if (forms == null) {
             return true;
@@ -175,7 +174,7 @@ public final class ErlParser {
         if ("error".equals(typeS)) {
             final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
 
-            final String msg = ErlBackend.format_error(ErlangCore
+            final String msg = BackendHelper.format_error(BackendCore
                     .getBackendManager().getIdeBackend(), er);
 
             final ErlMessage e = new ErlMessage(module,
@@ -202,13 +201,13 @@ public final class ErlParser {
         } else if ("function".equals(typeS)) {
             final ErlFunction f = makeErlFunction(module, el);
             final OtpErlangList clauses = (OtpErlangList) el.elementAt(6);
-            final ErlFunctionClause[] cls = new ErlFunctionClause[clauses
-                    .arity()];
+            final List<ErlFunctionClause> cls = Lists
+                    .newArrayListWithCapacity(clauses.arity());
             for (int i = 0; i < clauses.arity(); i++) {
                 final OtpErlangTuple clause = (OtpErlangTuple) clauses
                         .elementAt(i);
                 final ErlFunctionClause cl = makeErlFunctionClause(f, i, clause);
-                cls[i] = cl;
+                cls.add(cl);
             }
             f.setChildren(cls);
             return f;
@@ -410,21 +409,25 @@ public final class ErlParser {
                     final List<ErlRecordField> children = Lists
                             .newArrayListWithCapacity(fields.arity());
                     for (final OtpErlangObject o : fields.elements()) {
-                        final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
-                        final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
-                                .elementAt(0);
-                        final String fieldName = fieldNameAtom.atomValue();
-                        final ErlRecordField field = new ErlRecordField(r,
-                                fieldName);
-                        final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
-                                .elementAt(1);
-                        if (fieldTuple.arity() > 2) {
-                            final OtpErlangObject fieldExtra = fieldTuple
-                                    .elementAt(2);
-                            field.setExtra(Util.stringValue(fieldExtra));
+                        if (o instanceof OtpErlangTuple) {
+                            final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
+                            final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
+                                    .elementAt(0);
+                            final String fieldName = fieldNameAtom.atomValue();
+                            final ErlRecordField field = new ErlRecordField(r,
+                                    fieldName);
+                            final OtpErlangTuple posTuple = (OtpErlangTuple) fieldTuple
+                                    .elementAt(1);
+                            if (fieldTuple.arity() > 2) {
+                                final OtpErlangObject fieldExtra = fieldTuple
+                                        .elementAt(2);
+                                field.setExtra(Util.stringValue(fieldExtra));
+                            }
+                            setPos(field, posTuple, false);
+                            children.add(field);
+                        } else {
+                            ErlLogger.error("bad record def: %s", o);
                         }
-                        setPos(field, posTuple, false);
-                        children.add(field);
                     }
                     r.setChildren(children);
                 } else {
@@ -538,7 +541,7 @@ public final class ErlParser {
             return new OtpErlangList(res);
         }
         try {
-            return ErlBackend.concreteSyntax(ErlangCore.getBackendManager()
+            return BackendHelper.concreteSyntax(BackendCore.getBackendManager()
                     .getIdeBackend(), val);
         } catch (final Exception e) {
             return val;

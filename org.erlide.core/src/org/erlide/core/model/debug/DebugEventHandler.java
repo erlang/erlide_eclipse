@@ -9,7 +9,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-
 class DebugEventHandler {
 
     private final ErlangDebugTarget debugTarget;

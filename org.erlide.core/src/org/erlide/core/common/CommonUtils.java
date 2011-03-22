@@ -128,8 +128,8 @@ public class CommonUtils {
                 result.length() - sep.length()) : "";
     }
 
-    public static IPath[] unpackArray(final String str, final String sep) {
-        return CommonUtils.unpackList(str, sep).toArray(new IPath[0]);
+    public static String[] unpackArray(final String str, final String sep) {
+        return CommonUtils.unpackList(str, sep).toArray(new String[0]);
     }
 
     public static List<String> unpackList(final String string, final String sep) {

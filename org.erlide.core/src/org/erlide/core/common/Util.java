@@ -190,33 +190,6 @@ public final class Util {
     }
 
     /**
-     * Checks the type signature in String sig, starting at start and ending
-     * before end (end is not included). Returns the index of the character
-     * immediately after the signature if valid, or -1 if not valid.
-     */
-    /* NOT USED */
-    /*
-     * private static int checkTypeSignature(String sig, int start, int end,
-     * boolean allowVoid) { if (start >= end) { return -1; } int i = start; char
-     * c = sig.charAt(i++); int nestingDepth = 0; while (c == '[') {
-     * ++nestingDepth; if (i >= end) { return -1; } c = sig.charAt(i++); }
-     * switch (c) { case 'B': case 'C': case 'D': case 'F': case 'I': case 'J':
-     * case 'S': case 'Z': break; case 'V': if (!allowVoid) { return -1; } //
-     * array of void is not allowed if (nestingDepth != 0) { return -1; } break;
-     * case 'L': final int semicolon = sig.indexOf(';', i); // Must have at
-     * least one character between L and ; if (semicolon <= i || semicolon >=
-     * end) { return -1; } i = semicolon + 1; break; default: return -1; }
-     * return i; }
-     */
-
-    /**
-     * Combines two hash codes to make a new one.
-     */
-    public static int combineHashCodes(final int hashCode1, final int hashCode2) {
-        return hashCode1 * 17 + hashCode2;
-    }
-
-    /**
      * Compares two byte arrays. Returns <0 if a byte in a is less than the
      * corresponding byte in b, or if a is shorter, or if a is null. Returns >0
      * if a byte in a is greater than the corresponding byte in b, or if a is
@@ -455,37 +428,6 @@ public final class Util {
      */
     public static boolean equalArraysOrNullSortFirst(Comparable[] a,
             Comparable[] b) {
-        if (a == b) {
-            return true;
-        }
-        if (a == null || b == null) {
-            return false;
-        }
-        final int len = a.length;
-        if (len != b.length) {
-            return false;
-        }
-        if (len >= 2) { // only need to sort if more than two items
-            a = sortCopy(a);
-            b = sortCopy(b);
-        }
-        for (int i = 0; i < len; ++i) {
-            if (!a[i].equals(b[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Compares two String arrays using equals() on the elements. The arrays are
-     * first sorted. Either or both arrays may be null. Returns true if both are
-     * null. Returns false if only one is null. If both are arrays, returns true
-     * iff they have the same length and iff, after sorting both arrays, all
-     * elements compare true with equals. The original arrays are left
-     * untouched.
-     */
-    public static boolean equalArraysOrNullSortFirst(String[] a, String[] b) {
         if (a == b) {
             return true;
         }

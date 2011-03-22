@@ -31,8 +31,8 @@ public interface IErlModelMarker {
 
     /**
      * Erlang model transient problem marker type (value
-     * <code>"org.erlide.core.model.erlang.transient_problem"</code>). This can be
-     * used to recognize those markers in the workspace that flag transient
+     * <code>"org.erlide.core.model.erlang.transient_problem"</code>). This can
+     * be used to recognize those markers in the workspace that flag transient
      * problems detected by the Erlang tooling (such as a problem detected by
      * the outliner, or a problem detected during a code completion)
      */
@@ -74,8 +74,8 @@ public interface IErlModelMarker {
 
     /**
      * Build path problem marker type (value
-     * <code>"org.erlide.core.model.erlang.buildpath_problem"</code>). This can be
-     * used to recognize those markers in the workspace that flag problems
+     * <code>"org.erlide.core.model.erlang.buildpath_problem"</code>). This can
+     * be used to recognize those markers in the workspace that flag problems
      * detected by the Erlang tooling during classpath setting.
      */
     String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
@@ -83,8 +83,8 @@ public interface IErlModelMarker {
 
     /**
      * Path entry problem marker type (value
-     * <code>"org.erlide.core.model.erlang.pathentry_problem"</code>). This can be
-     * used to recognize those markers in the workspace that flag problems
+     * <code>"org.erlide.core.model.erlang.pathentry_problem"</code>). This can
+     * be used to recognize those markers in the workspace that flag problems
      * detected by the Erlang tooling during classpath setting.
      */
     String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID

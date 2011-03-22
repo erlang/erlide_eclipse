@@ -21,6 +21,7 @@ import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.ModuleKind;
 
 /**
  * Implementation of folder in erlang model
@@ -42,7 +43,7 @@ public class ErlFolder extends Openable implements IErlFolder {
         final IErlModelManager manager = ErlangCore.getModelManager();
         final IContainer c = (IContainer) getResource();
         try {
-            // FIXME this is general stuff, should we put it in, say, model or
+            // FIXME this is general stuff, should we put it in model or
             // model manager?
             final IResource[] members = c.members();
             for (final IResource resource : members) {
@@ -65,58 +66,6 @@ public class ErlFolder extends Openable implements IErlFolder {
             }
         }
     }
-
-    /**
-     * Find named module, search recursively. Should we use a visitor instead?
-     * 
-     * @param parent
-     * @param name
-     * @return
-     */
-    // public static IErlModule getModule(final IParent parent, final String
-    // name,
-    // final boolean caseinsensitive) {
-    // try {
-    // if (parent instanceof IOpenable) {
-    // final IOpenable o = (IOpenable) parent;
-    // o.open(null);
-    // }
-    // final boolean hasExtension = ErlideUtil.hasExtension(name);
-    // for (final IErlElement e : parent.getChildren()) {
-    // if (e instanceof IErlModule) {
-    // final IErlModule m = (IErlModule) e;
-    // final String moduleName = hasExtension ? m.getName() : m
-    // .getModuleName();
-    // if (caseinsensitive) {
-    // if (moduleName.equalsIgnoreCase(name)) {
-    // return m;
-    // }
-    // } else {
-    // if (moduleName.equals(name)) {
-    // return m;
-    // }
-    // }
-    // } else if (e instanceof IParent) {
-    // final IParent p = (IParent) e;
-    // final IErlModule m = getModule(p, name, caseinsensitive);
-    // if (m != null) {
-    // return m;
-    // }
-    // }
-    // }
-    // } catch (final ErlModelException e) {
-    // e.printStackTrace();
-    // }
-    // return null;
-    // }
-    //
-    // public IErlModule getModule(final String name) throws ErlModelException {
-    // return getModule(this, name, false);
-    // }
-    //
-    // public IErlModule getModuleExt(final String name) {
-    // return getModule(this, name, true);
-    // }
 
     /*
      * (non-Javadoc)
@@ -149,15 +98,15 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     public boolean isOnSourcePath() {
-        final IErlProject erlProject = getErlProject();
-        return ErlFolder.isOnPaths(folder, erlProject.getProject(),
-                erlProject.getSourceDirs());
+        final IErlProject project = getProject();
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getSourceDirs());
     }
 
     public boolean isOnIncludePath() {
-        final IErlProject erlProject = getErlProject();
-        return ErlFolder.isOnPaths(folder, erlProject.getProject(),
-                erlProject.getIncludeDirs());
+        final IErlProject project = getProject();
+        return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
+                project.getIncludeDirs());
     }
 
     public boolean isSourcePathParent() {
@@ -178,9 +127,9 @@ public class ErlFolder extends Openable implements IErlFolder {
     }
 
     public static boolean isOnPaths(final IContainer con,
-            final IProject project, final Collection<IPath> sourcePaths) {
+            final IContainer project, final Collection<IPath> paths) {
         final IPath path = con.getFullPath();
-        for (final IPath i : sourcePaths) {
+        for (final IPath i : paths) {
             if (i.toString().equals(".")) {
                 if (project.getFullPath().equals(path)) {
                     return true;
@@ -195,7 +144,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeForProject(getErlProject());
+            ErlModel.getErlModelCache().removeProject(getProject());
         }
         super.setChildren(c);
     }
@@ -203,33 +152,48 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeForProject(getErlProject());
+            ErlModel.getErlModelCache().removeProject(getProject());
         }
         super.clearCaches();
     }
 
-    public IErlModule findModule(final String includeName,
-            final String includePath) throws ErlModelException {
+    private IErlModule findModuleOrInclude(final String name,
+            final String path, final boolean isInclude)
+            throws ErlModelException {
         final Collection<IErlModule> modules = getModules();
-        if (includePath != null) {
+        if (path != null) {
             for (final IErlModule module : modules) {
-                final String path = module.getFilePath();
-                if (path != null && path.equals(includePath)) {
+                final String filePath = module.getFilePath();
+                if (filePath != null && filePath.equals(path)) {
                     return module;
                 }
             }
         }
         boolean hasExtension;
-        if (includeName != null) {
-            hasExtension = CommonUtils.hasExtension(includeName);
+        if (name != null) {
+            hasExtension = CommonUtils.hasExtension(name);
             for (final IErlModule module : modules) {
-                final String name = hasExtension ? module.getName() : module
+                final String name2 = module.getName();
+                final String moduleName = hasExtension ? name2 : module
                         .getModuleName();
-                if (name.equals(includeName)) {
-                    return module;
+                if (name.equals(moduleName)) {
+                    if (hasExtension
+                            || isInclude == ModuleKind.hasHrlExtension(name2)) {
+                        return module;
+                    }
                 }
             }
         }
         return null;
+    }
+
+    public IErlModule findModule(final String moduleName,
+            final String modulePath) throws ErlModelException {
+        return findModuleOrInclude(moduleName, modulePath, false);
+    }
+
+    public IErlModule findInclude(final String includeName,
+            final String includePath) throws ErlModelException {
+        return findModuleOrInclude(includeName, includePath, true);
     }
 }

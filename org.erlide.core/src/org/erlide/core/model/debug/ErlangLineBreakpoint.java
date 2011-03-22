@@ -29,11 +29,10 @@ import org.erlide.core.model.erlang.internal.ErlModelManager;
 import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.jinterface.ErlLogger;
 
-
 public class ErlangLineBreakpoint extends Breakpoint implements
         IErlangBreakpoint, ILineBreakpoint {
 
-    public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.model.erlang.lineBreakpoint.marker";
+    public static final String ERLANG_LINE_BREAKPOINT_MARKER_TYPE = "org.erlide.core.erlang.lineBreakpoint.marker";
 
     private ErlangDebugTarget target;
     private String clauseHead;
@@ -178,27 +177,21 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     }
 
     public String getCondition() throws CoreException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isConditionEnabled() throws CoreException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setCondition(final String condition) throws CoreException {
-        // TODO Auto-generated method stub
-
     }
 
     public void setConditionEnabled(final boolean enabled) throws CoreException {
-        // TODO Auto-generated method stub
-
     }
 
     public boolean supportsCondition() {
-        return !true; // FIXME
+        return false;
     }
 
     public void setHitCount(final int hitCount) {

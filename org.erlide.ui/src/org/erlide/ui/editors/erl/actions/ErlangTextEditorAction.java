@@ -15,9 +15,9 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangStatus;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
@@ -32,7 +32,6 @@ import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-
 
 public class ErlangTextEditorAction extends TextEditorAction {
     final protected String fErlModule;
@@ -222,7 +221,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws BackendException {
-        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final OtpErlangObject r1 = ErlideIndent.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

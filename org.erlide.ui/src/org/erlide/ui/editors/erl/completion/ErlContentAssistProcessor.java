@@ -52,6 +52,7 @@ import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.ISourceRange;
@@ -171,7 +172,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             String moduleOrRecord = null;
             final IErlProject erlProject = module.getProject();
             final IProject project = erlProject != null ? erlProject
-                    .getProject() : null;
+                    .getWorkspaceProject() : null;
             final IErlElement element = getElementAt(offset);
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
@@ -473,8 +474,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 .getProject();
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule theModule = ModelUtils.findModule(erlProject, moduleName,
-                null, checkAllProjects);
+        final IErlModule theModule = ModelUtils.findModule(erlProject,
+                moduleName, null, checkAllProjects ? Scope.ALL_PROJECTS
+                        : Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
             if (ModelUtils.isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()

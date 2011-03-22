@@ -4,19 +4,16 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.IErlElement.Kind;
-import org.erlide.core.model.erlang.util.ModelUtils;
-import org.erlide.jinterface.ErlLogger;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider
@@ -81,22 +78,19 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
             if (parent == ErlangCore.getModel() && filePath != null) {
-                try {
-                    // FIXME shouldn't this call be assigned to something!?
-                    ModelUtils.findModule(null, null, filePath, true);
-                } catch (final CoreException e) {
-                }
+                // try {
+                // FIXME shouldn't this call be assigned to something!?
+                // ModelUtils.findModule(null, null, filePath,
+                // Scope.ALL_PROJECTS);
+                // } catch (final CoreException e) {
+                // }
                 parent = elt.getParent();
             }
             if (parent instanceof IErlModule) {
                 final IErlModule mod = (IErlModule) parent;
-                try {
-                    final IResource resource = mod.getCorrespondingResource();
-                    if (resource != null) {
-                        return resource;
-                    }
-                } catch (final ErlModelException e) {
-                    ErlLogger.warn(e);
+                final IResource resource = mod.getCorrespondingResource();
+                if (resource != null) {
+                    return resource;
                 }
             } else {
                 return parent;
@@ -130,20 +124,5 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         }
         return false;
     }
-    //
-    // public Object[] getChildren(final TreePath parentPath) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // public boolean hasChildren(final TreePath path) {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // public TreePath[] getParents(final Object element) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
 
 }

@@ -35,7 +35,8 @@ public class ProcessHelper {
      */
     public static TracedProcess[] getProcsOnTracedNodes() {
         try {
-            final RpcCallSite backend = TraceBackend.getInstance().getBackend(true);
+            final RpcCallSite backend = TraceBackend.getInstance().getBackend(
+                    true);
             final List<OtpErlangAtom> nodeAtoms = new ArrayList<OtpErlangAtom>();
 
             for (final Object o : TraceBackend.getInstance()

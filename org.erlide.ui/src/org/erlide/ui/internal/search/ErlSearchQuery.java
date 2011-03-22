@@ -10,9 +10,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.ErlideBackend;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
@@ -21,7 +21,6 @@ import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 
 public class ErlSearchQuery implements ISearchQuery {
     private final ErlangSearchPattern pattern;
@@ -92,7 +91,7 @@ public class ErlSearchQuery implements ISearchQuery {
 
     public IStatus run(final IProgressMonitor monitor)
             throws OperationCanceledException {
-        final ErlideBackend backend = ErlangCore.getBackendManager()
+        final Backend backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         fResult = ErlideSearchServer.findRefs(backend, pattern, scope,
                 externalScope, getStateDir());

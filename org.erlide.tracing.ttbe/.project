@@ -3,6 +3,8 @@
 	<name>org.erlide.tracing.ttbe</name>
 	<comment></comment>
 	<projects>
+		<project>org.erlide.kernel.common</project>
+		<project>org.erlide.kernel.ide</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

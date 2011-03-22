@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
-public class EventDaemon implements IBackendListener {
+public class EventDaemon implements BackendListener {
 
     private Backend runtime;
     volatile boolean stopped = false;

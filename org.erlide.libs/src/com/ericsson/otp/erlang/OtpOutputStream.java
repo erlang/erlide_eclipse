@@ -35,7 +35,6 @@ import java.text.DecimalFormat;
  * must provide it yourself.
  * 
  */
-@SuppressWarnings("hiding")
 public class OtpOutputStream extends ByteArrayOutputStream {
     /** The default initial size of the stream. * */
     public static final int defaultInitialSize = 2048;
@@ -44,11 +43,8 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     public static final int defaultIncrement = 2048;
 
     // static formats, used to encode floats and doubles
-    @SuppressWarnings("unused")
     private static final DecimalFormat eform = new DecimalFormat("e+00;e-00");
-    @SuppressWarnings("unused")
     private static final BigDecimal ten = new BigDecimal(10.0);
-    @SuppressWarnings("unused")
     private static final BigDecimal one = new BigDecimal(1.0);
 
     /**
@@ -464,7 +460,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
                 int n;
                 long mask;
                 for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = mask << 8 | 0xffL) {
-                    // count nonzero bytes
+                    ; // count nonzero bytes
                 }
                 write1(OtpExternal.smallBigTag);
                 write1(n); // length
@@ -723,7 +719,6 @@ public class OtpOutputStream extends ByteArrayOutputStream {
                     write_nil(); // it should never ever get here...
                 }
             } else { // unicode or longer, must code as list
-                @SuppressWarnings("unused")
                 final char[] charbuf = s.toCharArray();
                 final int[] codePoints = OtpErlangString.stringToCodePoints(s);
                 write_list_head(codePoints.length);

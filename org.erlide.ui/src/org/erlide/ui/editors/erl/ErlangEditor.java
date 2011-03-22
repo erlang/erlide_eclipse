@@ -110,8 +110,9 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlideBackend;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -134,6 +135,7 @@ import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.actions.CallHierarchyAction;
+import org.erlide.ui.editors.erl.actions.CleanUpAction;
 import org.erlide.ui.editors.erl.actions.ClearCacheAction;
 import org.erlide.ui.editors.erl.actions.CompileAction;
 import org.erlide.ui.editors.erl.actions.IndentAction;
@@ -194,7 +196,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     private final ErlangEditorErrorTickUpdater fErlangEditorErrorTickUpdater;
     ToggleFoldingRunner fFoldingRunner;
     private CompileAction compileAction;
-    // private ScannerListener scannerListener;
+    private CleanUpAction cleanUpAction;
     private ClearCacheAction clearCacheAction;
     private CallHierarchyAction callhierarchy;
     private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
@@ -273,7 +275,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         try {
             // initialize the 'save' listeners of editor
             if (editListeners == null) {
-                editListeners = ExtensionHelper
+                editListeners = (List<IErlangEditorListener>) ExtensionHelper
                         .getParticipants(ExtensionHelper.EDITOR_LISTENER);
             }
         } catch (final Throwable e) {
@@ -512,6 +514,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
         setAction("Compile file", compileAction);
 
+        cleanUpAction = new CleanUpAction(getModule().getResource());
+        cleanUpAction
+                .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
+        setAction("Clean Up...", cleanUpAction);
+
         if (CommonUtils.isTest()) {
             testAction = new TestAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
@@ -594,6 +601,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
                 toggleCommentAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, indentAction);
+        // TODO disabled until erl_tidy doean't destroy formatting
+        // menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, cleanUpAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, openAction);
         menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, sendToConsole);
         final ActionContext context = new ActionContext(getSelectionProvider()
@@ -2169,7 +2178,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     class OccurrencesFinderJob extends Job {
 
         private final IDocument fDocument;
-        private final ITextSelection fSelection;
+        private final ITextSelection selection;
         private final ISelectionValidator fPostSelectionValidator;
         private boolean fCanceled = false;
         private List<ErlangRef> fRefs;
@@ -2181,7 +2190,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 final boolean hasChanged) {
             super("OccurrencesFinderJob");
             fDocument = document;
-            fSelection = selection;
+            this.selection = selection;
 
             if (getSelectionProvider() instanceof ISelectionValidator) {
                 fPostSelectionValidator = (ISelectionValidator) getSelectionProvider();
@@ -2194,7 +2203,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
-            final ErlideBackend ideBackend = ErlangCore.getBackendManager()
+            final Backend ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
 
@@ -2240,7 +2249,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             return fCanceled
                     || progressMonitor.isCanceled()
                     || fPostSelectionValidator != null
-                    && !(fPostSelectionValidator.isValid(fSelection) || fForcedMarkOccurrencesSelection == fSelection)
+                    && !(fPostSelectionValidator.isValid(selection) || fForcedMarkOccurrencesSelection == selection)
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 
@@ -2249,7 +2258,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          */
         @Override
         public IStatus run(final IProgressMonitor progressMonitor) {
-            findRefs(module, fSelection, fHasChanged);
+            findRefs(module, selection, fHasChanged);
             if (fRefs == null) {
                 return Status.CANCEL_STATUS;
             }
@@ -2526,9 +2535,4 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
         return stateDirCached;
     }
-
-    public String getPath() {
-        return getModule().getFilePath();
-    }
-
 }

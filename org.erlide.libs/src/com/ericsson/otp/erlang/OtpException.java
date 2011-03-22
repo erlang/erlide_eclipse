@@ -21,7 +21,6 @@ package com.ericsson.otp.erlang;
 /**
  * Base class for the other OTP exception classes.
  */
-@SuppressWarnings("serial")
 public abstract class OtpException extends Exception {
     /**
      * Provides no message.

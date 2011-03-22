@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.services.text.ErlToken;
@@ -64,13 +65,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
      */
     ModuleKind getModuleKind();
 
-    IErlProject getProject();
-
     Collection<IErlComment> getComments();
 
     long getTimestamp();
-
-    void removeChildren();
 
     IErlImport findImport(ErlangFunction function);
 
@@ -80,11 +77,11 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind);
 
-    Collection<ErlangIncludeFile> getIncludedFiles() throws ErlModelException;
+    Collection<ErlangIncludeFile> getIncludeFiles() throws ErlModelException;
 
-    void getScanner();
-
-    void disposeScanner();
+    // void getScanner();
+    //
+    // void disposeScanner();
 
     void initialReconcile();
 
@@ -98,12 +95,14 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
     /**
      * Returns a collection of modules that include this one.
      **/
-    Set<IErlModule> getDirectDependents() throws ErlModelException;
+    Set<IErlModule> getDirectDependentModules() throws ErlModelException;
 
     /**
      * Returns the transitive closure of modules that include this one.
+     * 
+     * @throws CoreException
      **/
-    Set<IErlModule> getAllDependents() throws ErlModelException;
+    Set<IErlModule> getAllDependentModules() throws CoreException;
 
     /**
      * Resets parser so that the next parse will be a full parse, possibly
@@ -129,8 +128,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     void setResource(IFile file);
 
-    String getInitialText();
-
     void addComment(IErlComment c);
 
     List<IErlModule> findAllIncludedFiles() throws CoreException;
@@ -139,8 +136,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable {
 
     boolean isOnIncludePath();
 
-    IErlModule findInclude(String includeName, String includePath,
-            boolean checkReferences, boolean checkAllProjects)
+    IErlModule findInclude(String includeName, String includePath, Scope scope)
             throws ErlModelException;
 
 }

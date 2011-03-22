@@ -25,7 +25,7 @@ public class BackendLabelProvider extends LabelProvider {
     @Override
     public String getText(final Object element) {
         final Backend b = (Backend) element;
-        final RuntimeInfo info = b.getInfo();
+        final RuntimeInfo info = b.getRuntimeInfo();
         final String s = info.getName();
         // if (s == null) {
         // return "<default>";

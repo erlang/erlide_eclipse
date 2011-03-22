@@ -12,7 +12,6 @@ package org.erlide.core.services.text;
 
 import org.erlide.core.common.IDisposable;
 
-
 /**
  * Erlang syntax scanner
  */
@@ -48,6 +47,10 @@ public class ErlScanner implements IDisposable {
 
     public ErlToken getTokenAt(final int offset) {
         return ErlideScanner.getTokenAt(scannerName, offset);
+    }
+
+    public String getText() {
+        return ErlideScanner.getText(scannerName);
     }
 
 }

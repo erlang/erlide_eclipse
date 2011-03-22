@@ -14,11 +14,8 @@ package org.erlide.core.model.erlang;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
@@ -53,64 +50,11 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public interface IErlProject extends IErlFolder {
 
-    /**
-     * Returns the <code>IProject</code> on which this <code>IErlProject</code>
-     * was created. This is handle-only method.
-     * 
-     * @return the <code>IProject</code> on which this <code>IErlProject</code>
-     *         was created
-     */
-    IProject getProject();
-
-    /**
-     * Sets the default output location of this project to the location
-     * described by the given workspace-relative absolute path.
-     * 
-     * @param path
-     *            the workspace-relative absolute path of the default output
-     *            folder
-     * @param monitor
-     *            the progress monitor
-     * 
-     * @throws ErlModelException
-     *             if the classpath could not be set. Reasons include:
-     *             <ul>
-     *             <li>This Erlang element does not exist
-     *             (ELEMENT_DOES_NOT_EXIST)</li>
-     *             <li>The path refers to a location not contained in this
-     *             project ( <code>PATH_OUTSIDE_PROJECT</code>)
-     *             <li>The path is not an absolute path (
-     *             <code>RELATIVE_PATH</code>)
-     *             <li>The path is nested inside a package fragment root of this
-     *             project ( <code>INVALID_PATH</code>)
-     *             <li>The output location is being modified during resource
-     *             change event notification (CORE_EXCEPTION)
-     *             </ul>
-     * @see #getOutputLocation()
-     * @see IClasspathEntry#getOutputLocation()
-     */
-    void setOutputLocation(IPath path, IProgressMonitor monitor)
-            throws ErlModelException;
-
-    /**
-     * Returns the names of the projects that are directly required by this
-     * project. A project is required if it is in its classpath.
-     * <p>
-     * The project names are returned in the order they appear on the classpath.
-     * 
-     * @return the names of the projects that are directly required by this
-     *         project in classpath order
-     * @throws CoreException
-     */
-    Collection<String> getRequiredProjectNames() throws CoreException;
-
     Collection<IErlModule> getModules() throws ErlModelException;
 
     Collection<IErlModule> getIncludes() throws ErlModelException;
 
     Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
-
-    // IOldErlangProjectProperties getProperties();
 
     Collection<IErlModule> getExternalModules() throws ErlModelException;
 
@@ -136,47 +80,31 @@ public interface IErlProject extends IErlFolder {
 
     Collection<IPath> getIncludeDirs();
 
-    /**
-     * Returns the default output location for this project as a workspace-
-     * relative absolute path.
-     * <p>
-     * The default output location is where class files are ordinarily generated
-     * (and resource files, copied). Each source classpath entry can also
-     * specify an output location for the generated class files (and copied
-     * resource files) corresponding to compilation units under that source
-     * folder. This makes it possible to arrange generated class files for
-     * different source folders in different output folders, and not necessarily
-     * the default output folder. This means that the generated class files for
-     * the project may end up scattered across several folders, rather than all
-     * in the default output folder (which is more standard).
-     * </p>
-     * 
-     * @return the workspace-relative absolute path of the default output folder
-     * @see #setOutputLocation(org.eclipse.core.runtime.IPath, IProgressMonitor)
-     */
     IPath getOutputLocation();
 
     RuntimeInfo getRuntimeInfo();
 
     RuntimeVersion getRuntimeVersion();
 
-    boolean hasSourceDir(IPath fullPath);
+    boolean hasSourceDir(IPath path);
 
-    void setAllProperties(IOldErlangProjectProperties bprefs)
+    void setAllProperties(IOldErlangProjectProperties properties)
             throws BackingStoreException;
 
-    void clearCaches();
-
-    Collection<IErlProject> getProjectReferences() throws ErlModelException;
+    Collection<IErlProject> getReferencedProjects() throws ErlModelException;
 
     IErlModule getModule(String name) throws ErlModelException;
 
-    IErlModule findModule(String moduleName, String modulePath,
-            boolean checkReferences, boolean checkAllProjects)
+    enum Scope {
+        PROJECT_ONLY, REFERENCED_PROJECTS, ALL_PROJECTS
+    }
+
+    IErlModule findModule(String moduleName, String modulePath, Scope scope)
             throws ErlModelException;
 
-    IErlModule findInclude(String includeName, String includePath,
-            boolean checkReferences, boolean checkAllProjects)
+    IErlModule findInclude(String includeName, String includePath, Scope scope)
             throws ErlModelException;
+
+    IProject getWorkspaceProject();
 
 }

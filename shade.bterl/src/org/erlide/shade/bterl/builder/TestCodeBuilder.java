@@ -26,13 +26,14 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
@@ -138,7 +139,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Map<RpcFuture, IResource> results = Maps.newHashMap();
             RpcCallSite backend;
             try {
-                backend = ErlangCore.getBackendManager().getBuildBackend(
+                backend = BackendCore.getBackendManager().getBuildBackend(
                         project);
             } catch (final BackendException e) {
                 backend = null;

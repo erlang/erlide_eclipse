@@ -244,9 +244,6 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         if (b.size() > 0) {
             final byte[] bytes = b.binaryValue();
             CharBuffer cb = null;
-            // FIXME: why are the character decoders so forgiving? I'd like
-            // to test for UTF-16 too, but the decoders never throws on
-            // anything...
             if (looksLikeAscii(bytes)) {
                 final String[] css = { "UTF-8", "ISO-8859-1" };
                 final String[] tryCharsets = css;

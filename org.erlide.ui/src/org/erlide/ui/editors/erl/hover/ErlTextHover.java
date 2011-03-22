@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.common.Util;
@@ -57,16 +58,15 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.information.ErlInformationPresenter;
-import org.erlide.ui.information.PresenterControlCreator;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-
 
 public class ErlTextHover implements ITextHover,
         IInformationProviderExtension2, ITextHoverExtension,
@@ -269,11 +269,11 @@ public class ErlTextHover implements ITextHover,
                 .toString();
         final IErlProject erlProject = module.getProject();
 
-        final BackendManager backendManager = ErlangCore.getBackendManager();
+        final BackendManager backendManager = BackendCore.getBackendManager();
         final Backend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject
-                    .getProject();
+                    .getWorkspaceProject();
             final RpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
