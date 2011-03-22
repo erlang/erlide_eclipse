@@ -187,8 +187,8 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public Collection<ICoverageObject> getModules() {
-        Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
-        if(this instanceof ModuleStats) {
+        Collection<ICoverageObject> col = new HashSet<ICoverageObject>(); 
+        if(this.type.equals(ObjectType.MODULE)) {
             col.add(this);
         } else if (hasChildren()) {
             for(ICoverageObject child : children.values())

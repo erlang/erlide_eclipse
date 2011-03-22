@@ -1,13 +1,16 @@
 package org.erlide.cover.ui.actions;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.erlide.core.ErlangCore;
 import org.erlide.cover.core.MD5Checksum;
 import org.erlide.cover.views.model.FunctionStats;
+import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ModuleStats;
+import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
 
 /**
@@ -31,8 +34,10 @@ public class ShowCoverageAction extends CoverageAction {
         if (selection instanceof ModuleStats) {
             ModuleStats module = (ModuleStats) selection;
             String name = module.getLabel() + ".erl";
-            if (ifMarkAnnotations(module))
+            if (ifMarkAnnotations(module)) {
+                module.couldBeMarked = true;
                 marker.addAnnotationsToFile(name);
+            }
         } else if (selection instanceof FunctionStats) {
             FunctionStats fs = (FunctionStats) selection;
             ModuleStats module = (ModuleStats) fs.getParent();
@@ -41,21 +46,37 @@ public class ShowCoverageAction extends CoverageAction {
             if (ifMarkAnnotations(module)) {
                 log.debug(fs.getLineStart());
                 log.debug(fs.getLineEnd());
-
+                module.couldBeMarked = true;
                 marker.addAnnotationsFragment(name, fs.getLineStart(),
                         fs.getLineEnd());
             }
 
-        } else {
+        } else if( selection.equals(StatsTreeModel.getInstance().getRoot())){
             //TODO: check annotation tree, only if root mark all annotations
+            Collection<ICoverageObject> col = selection.getModules();
+            for(ICoverageObject module : col) {
+                if(ifMarkAnnotations((ModuleStats)module)) {
+                    ((ModuleStats)module).couldBeMarked = true;
+                } else {
+                    ((ModuleStats)module).couldBeMarked = false;
+                }
+            }
             marker.addAnnotations();
+        } else {
+            Collection<ICoverageObject> col = selection.getModules();
+            for(ICoverageObject module : col) {
+                if(ifMarkAnnotations((ModuleStats) module)) {
+                    String name = module.getLabel() + ".erl";
+                    ((ModuleStats)module).couldBeMarked = true;
+                    marker.addAnnotationsToFile(name);
+                }
+            }
         }
 
     }
 
+    // calculate md5
     private boolean ifMarkAnnotations(ModuleStats module) {
-        // calculate md5
-
         try {
             File file = new File(ErlangCore.getModel()
                     .findModule(module.getLabel()).getFilePath());
@@ -67,7 +88,6 @@ public class ShowCoverageAction extends CoverageAction {
             e.printStackTrace();
         }
         return false;
-        //
     }
 
 }

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -16,6 +17,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.erlide.core.ErlangCore;
+import org.erlide.cover.core.MD5Checksum;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.ui.Images;
@@ -85,6 +88,14 @@ public class RestoreAction extends Action {
             ModuleSet mSet = new ModuleSet();
             createModuleSet(mSet, root);
             
+            Collection<ICoverageObject> col = root.getModules();
+            for(ICoverageObject module : col) {
+                if(ifMarkAnnotations((ModuleStats)module)) {
+                    ((ModuleStats)module).couldBeMarked = true;
+                } else {
+                    ((ModuleStats)module).couldBeMarked = false;
+                }
+            }
             EditorTracker.getInstance().addAnnotations();
             
         } catch (FileNotFoundException e) {
@@ -106,6 +117,21 @@ public class RestoreAction extends Action {
         ICoverageObject[] children = object.getChildren();
         for(ICoverageObject child : children)
             createModuleSet(mSet, child);
+    }
+    
+    // calculate md5
+    private boolean ifMarkAnnotations(ModuleStats module) {
+        try {
+            File file = new File(ErlangCore.getModel()
+                    .findModule(module.getLabel()).getFilePath());
+
+            if (module.getMd5().equals(MD5Checksum.getMD5(file)))
+                return true;
+        } catch (Exception e) {
+            // TODO
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // label provider for choosing files
