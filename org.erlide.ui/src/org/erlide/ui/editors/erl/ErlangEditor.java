@@ -460,7 +460,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
         // ovg= new OpenViewActionGroup(this),
-        esg = new ErlangSearchActionGroup(this) });
+                esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
         // openAction = new OpenAction(getSite(), getExternalModules(),
@@ -613,8 +613,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();
@@ -2179,7 +2178,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     class OccurrencesFinderJob extends Job {
 
         private final IDocument fDocument;
-        private final ITextSelection fSelection;
+        private final ITextSelection selection;
         private final ISelectionValidator fPostSelectionValidator;
         private boolean fCanceled = false;
         private List<ErlangRef> fRefs;
@@ -2191,7 +2190,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 final boolean hasChanged) {
             super("OccurrencesFinderJob");
             fDocument = document;
-            fSelection = selection;
+            this.selection = selection;
 
             if (getSelectionProvider() instanceof ISelectionValidator) {
                 fPostSelectionValidator = (ISelectionValidator) getSelectionProvider();
@@ -2250,7 +2249,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             return fCanceled
                     || progressMonitor.isCanceled()
                     || fPostSelectionValidator != null
-                    && !(fPostSelectionValidator.isValid(fSelection) || fForcedMarkOccurrencesSelection == fSelection)
+                    && !(fPostSelectionValidator.isValid(selection) || fForcedMarkOccurrencesSelection == selection)
                     || LinkedModeModel.hasInstalledModel(fDocument);
         }
 
@@ -2259,7 +2258,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          */
         @Override
         public IStatus run(final IProgressMonitor progressMonitor) {
-            findRefs(module, fSelection, fHasChanged);
+            findRefs(module, selection, fHasChanged);
             if (fRefs == null) {
                 return Status.CANCEL_STATUS;
             }

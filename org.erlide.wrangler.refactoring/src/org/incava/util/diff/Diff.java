@@ -103,7 +103,7 @@ public class Diff {
     /**
      * Runs diff and returns the results.
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List diff() {
         traverseSequences();
 
