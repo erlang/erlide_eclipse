@@ -12,12 +12,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.ErlangCore;
@@ -35,92 +30,6 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 
 public class IErlElementTest {
-
-	// TODO replace ResourceDeltaStub with a mock object
-	private final class ResourceDeltaStub implements IResourceDelta {
-		public Object getAdapter(final Class adapter) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public void accept(final IResourceDeltaVisitor visitor)
-				throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void accept(final IResourceDeltaVisitor visitor,
-				final boolean includePhantoms) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void accept(final IResourceDeltaVisitor visitor,
-				final int memberFlags) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		public IResourceDelta findMember(final IPath path) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IResourceDelta[] getAffectedChildren() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IResourceDelta[] getAffectedChildren(final int kindMask) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IResourceDelta[] getAffectedChildren(final int kindMask,
-				final int memberFlags) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public int getFlags() {
-			return CONTENT;
-		}
-
-		public IPath getFullPath() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public int getKind() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		public IMarkerDelta[] getMarkerDeltas() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IPath getMovedFromPath() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IPath getMovedToPath() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IPath getProjectRelativePath() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public IResource getResource() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
 
 	private static IErlProject[] projects;
 
@@ -157,6 +66,7 @@ public class IErlElementTest {
 	@After
 	public void tearDown() throws Exception {
 		ErlideTestUtils.deleteModules();
+		ErlideTestUtils.refreshProjects();
 	}
 
 	// boolean exists();
@@ -350,7 +260,7 @@ public class IErlElementTest {
 	public void resourceChanged() throws Exception {
 		project.open(null);
 		final boolean structureKnown = project.isStructureKnown();
-		project.resourceChanged(new ResourceDeltaStub());
+		project.resourceChanged(new ErlideTestUtils.ResourceDeltaStub());
 		final boolean structureKnown2 = project.isStructureKnown();
 		assertTrue(structureKnown);
 		assertFalse(structureKnown2);
@@ -361,18 +271,19 @@ public class IErlElementTest {
 	@Test
 	public void accept() throws Exception {
 		project.open(null);
+		// ErlLogger.debug(project.getChildren().toString());
 		module.open(null);
 		final List<IErlElement> elements = Lists.newArrayList();
 		final IErlElementVisitor visitor = new IErlElementVisitor() {
 
 			public boolean visit(final IErlElement element)
 					throws ErlModelException {
-				elements.add(element);
 				if (element instanceof IErlExternal) {
 					return false; // avoid digging through otp
 				} else if (element.getName().equals("ebin")) {
 					return false; // avoid possible beam-files
 				}
+				elements.add(element);
 				return true;
 			}
 
@@ -393,13 +304,13 @@ public class IErlElementTest {
 		project.accept(visitor, EnumSet.of(AcceptFlags.LEAFS_ONLY), Kind.MODULE);
 		final List<IErlElement> leafsOnly = Lists.newArrayList(elements);
 		elements.clear();
-		assertEquals(6, kindModuleElementsVisited.size());
+		assertEquals(4, kindModuleElementsVisited.size());
 		assertEquals(project, kindModuleElementsVisited.get(0));
-		assertEquals("ebin", kindModuleElementsVisited.get(2).getName());
-		assertEquals("include", kindModuleElementsVisited.get(3).getName());
-		assertEquals("src", kindModuleElementsVisited.get(4).getName());
-		assertEquals(module, kindModuleElementsVisited.get(5));
-		assertEquals(9, kindFunctionElementsVisited.size());
+		// ErlLogger.debug(kindModuleElementsVisited.toString());
+		assertEquals("include", kindModuleElementsVisited.get(1).getName());
+		assertEquals("src", kindModuleElementsVisited.get(2).getName());
+		assertEquals(module, kindModuleElementsVisited.get(3));
+		assertEquals(7, kindFunctionElementsVisited.size());
 		final int projectIndex = childrenFirst.indexOf(project);
 		final int moduleIndex = childrenFirst.indexOf(module);
 		assertTrue(moduleIndex < projectIndex);

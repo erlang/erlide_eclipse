@@ -12,7 +12,11 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -33,6 +37,92 @@ import com.google.common.collect.Lists;
 
 public class ErlideTestUtils {
 
+	// TODO replace ResourceDeltaStub with a mock object
+	public static class ResourceDeltaStub implements IResourceDelta {
+		public Object getAdapter(final Class adapter) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void accept(final IResourceDeltaVisitor visitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void accept(final IResourceDeltaVisitor visitor,
+				final boolean includePhantoms) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void accept(final IResourceDeltaVisitor visitor,
+				final int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		public IResourceDelta findMember(final IPath path) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResourceDelta[] getAffectedChildren() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResourceDelta[] getAffectedChildren(final int kindMask) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResourceDelta[] getAffectedChildren(final int kindMask,
+				final int memberFlags) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getFlags() {
+			return CONTENT;
+		}
+
+		public IPath getFullPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getKind() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public IMarkerDelta[] getMarkerDeltas() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IPath getMovedFromPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IPath getMovedToPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IPath getProjectRelativePath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public IResource getResource() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
+
 	private static List<IErlModule> modulesAndIncludes;
 	private static List<IErlProject> projects;
 
@@ -48,6 +138,7 @@ public class ErlideTestUtils {
 				createFolderHelper(folder);
 			}
 		}
+		final IResource[] members = project.members();
 	}
 
 	public static void initModulesAndIncludes() {
@@ -182,7 +273,8 @@ public class ErlideTestUtils {
 		final IProject project = erlProject.getWorkspaceProject();
 		project.delete(true, null);
 		if (modulesAndIncludes != null) {
-			final List<IErlModule> list = Lists.newArrayList(modulesAndIncludes);
+			final List<IErlModule> list = Lists
+					.newArrayList(modulesAndIncludes);
 			for (final IErlModule module : list) {
 				if (module.getProject() == erlProject) {
 					deleteModule(module);
@@ -255,6 +347,12 @@ public class ErlideTestUtils {
 		final IPath last = p.removeFirstSegments(i);
 		final IPath first = p.removeLastSegments(p.segmentCount() - i);
 		return new IPath[] { first, last };
+	}
+
+	public static void refreshProjects() {
+		for (final IErlProject project : projects) {
+			project.resourceChanged(new ResourceDeltaStub());
+		}
 	}
 
 }
