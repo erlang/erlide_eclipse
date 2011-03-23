@@ -14,6 +14,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -45,7 +49,9 @@ import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.ui.views.helpers.StatsNameSorter;
 import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
+import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.cover.views.model.StatsTreeObject;
 
 /**
  * View for coverage statistics
@@ -61,7 +67,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private TreeViewer viewer;
     private DrillDownAdapter drillDownAdapter;
-    
+
     private Action openItem;
     private Action showHtml;
     private Action save;
@@ -71,15 +77,65 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private Action doubleClickAction;
     private Action showCoverage;
     private Action hideCoverage;
-    
+
     private final CoverBackend backend;
     private TreeColumn colName;
     private TreeColumn colLines;
     private TreeColumn colCovered;
     private TreeColumn colPercentage;
 
-    private Logger log;         //logger
-    
+    private Logger log; // logger
+
+    private ISelectionChangedListener viewerSelectionChanged = new ISelectionChangedListener() {
+
+        public void selectionChanged(SelectionChangedEvent event) {
+            event.getSelection();
+            ISelection selection = viewer.getSelection();
+
+            if (!(selection instanceof ITreeSelection)) {
+                final IStatus executionStatus = new Status(IStatus.ERROR,
+                        Activator.PLUGIN_ID,
+                        "Internall error occured: bad sellection type", null);
+                StatusManager.getManager().handle(executionStatus,
+                        StatusManager.SHOW);
+                return;
+            }
+
+            ITreeSelection treeSelection = (ITreeSelection) selection;
+            ICoverageObject obj = (ICoverageObject) treeSelection
+                    .getFirstElement();
+
+            switch (obj.getType()) {
+            case FUNCTION:
+                showHtml.setEnabled(false);
+                showCoverage.setEnabled(true);
+                hideCoverage.setEnabled(true);
+                openItem.setEnabled(true);
+                break;
+            case MODULE:
+                showHtml.setEnabled(true);
+                showCoverage.setEnabled(true);
+                hideCoverage.setEnabled(true);
+                openItem.setEnabled(true);
+                break;
+            case FOLDER:
+                showHtml.setEnabled(false);
+                showCoverage.setEnabled(false);
+                hideCoverage.setEnabled(false);
+                openItem.setEnabled(false);
+                break;
+            case PROJECT:
+                showHtml.setEnabled(true);
+                showCoverage.setEnabled(true);
+                hideCoverage.setEnabled(true);
+                openItem.setEnabled(false);
+                break;
+            }
+
+        }
+
+    };
+
     /**
      * The constructor.
      */
@@ -104,7 +160,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         containerLayout.marginHeight = 0;
         containerLayout.verticalSpacing = 3;
         parent.setLayout(containerLayout);
-        
+
         viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
                 | SWT.V_SCROLL);
         drillDownAdapter = new DrillDownAdapter(viewer);
@@ -114,6 +170,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         viewer.setInput(getViewSite());
         viewer.getTree().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
+        viewer.addSelectionChangedListener(viewerSelectionChanged);
 
         createTableTree();
         viewer.setInput(StatsTreeModel.getInstance());
@@ -179,7 +236,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         manager.add(new Separator());
         manager.add(restore);
         manager.add(save);
-        
+
     }
 
     private void fillContextMenu(final IMenuManager manager) {
