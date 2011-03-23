@@ -121,7 +121,6 @@ public class ErlideTestUtils {
                 createFolderHelper(folder);
             }
         }
-        final IResource[] members = project.members();
     }
 
     public static void initModulesAndIncludes() {
