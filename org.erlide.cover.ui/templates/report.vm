@@ -1,0 +1,21 @@
+<html>
+<body>
+<div>Cover plugin for ErlIde - coverage report (generated at $date) </div>
+<table>
+<th>
+	<td>Name</td>
+	<td>Total Lines</td>
+	<td>Covered Lines</td>
+	<td>Coverage %</td>
+</th>
+#foreach( $child in $children )
+  <tr>
+  	<td>$child.getLabel()</td>
+  	<td>$child.getLinesCount()</td>
+  	<td>$child.getCoverCount()</td>
+  	<td>$child.getPercentage()</td>
+  </tr>
+ #end
+</table>
+</body>
+</html>

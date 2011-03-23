@@ -22,4 +22,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/commons-io-2.0.1.jar,
- .
+ .,
+ lib/velocity-1.7.jar,
+ lib/velocity-tools-2.0.jar
