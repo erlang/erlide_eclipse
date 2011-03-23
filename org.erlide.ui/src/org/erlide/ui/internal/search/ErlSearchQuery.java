@@ -91,8 +91,7 @@ public class ErlSearchQuery implements ISearchQuery {
 
     public IStatus run(final IProgressMonitor monitor)
             throws OperationCanceledException {
-        final Backend backend = BackendCore.getBackendManager()
-                .getIdeBackend();
+        final Backend backend = BackendCore.getBackendManager().getIdeBackend();
         fResult = ErlideSearchServer.findRefs(backend, pattern, scope,
                 externalScope, getStateDir());
         final List<Match> l = Lists.newArrayListWithCapacity(fResult.size());

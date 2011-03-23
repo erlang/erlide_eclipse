@@ -572,9 +572,9 @@ public class ErlangProjectImportWizardPage extends
      *            details on the error
      */
     private void reportError(final InterruptedException exception) {
-        String description = ErlideUIPlugin
+        final String description = ErlideUIPlugin
                 .getResourceString("wizards.errors.projectfileerrordesc");
-        String title = ErlideUIPlugin
+        final String title = ErlideUIPlugin
                 .getResourceString("wizards.errors.projecterrortitle");
         ErrorDialog.openError(getShell(), description, title,
                 PluginUtils.makeStatus(exception));
@@ -582,9 +582,9 @@ public class ErlangProjectImportWizardPage extends
     }
 
     private void reportError() {
-        String title = ErlideUIPlugin
+        final String title = ErlideUIPlugin
                 .getResourceString("wizards.errors.projecterrortitle");
-        String description = ErlideUIPlugin
+        final String description = ErlideUIPlugin
                 .getResourceString("wizards.errors.projectfileerrordesc");
         MessageDialog.openError(getShell(), title, description);
     }
@@ -655,10 +655,10 @@ public class ErlangProjectImportWizardPage extends
     }
 
     private void createLinkFromPath(final IProgressMonitor monitor,
-            final IProject project, final int subTicks, File f)
+            final IProject project, final int subTicks, final File f)
             throws CoreException {
-        final SubProgressMonitor subMonitor = new SubProgressMonitor(
-                monitor, subTicks);
+        final SubProgressMonitor subMonitor = new SubProgressMonitor(monitor,
+                subTicks);
         final String name = f.getName();
         final IPath location = new Path(f.getAbsolutePath());
         IResource resource;
@@ -670,11 +670,11 @@ public class ErlangProjectImportWizardPage extends
         }
         if (!resource.isLinked()) {
             if (isDirectory) {
-                ((IFolder) resource).createLink(location,
-                        IResource.NONE, subMonitor);
+                ((IFolder) resource).createLink(location, IResource.NONE,
+                        subMonitor);
             } else {
-                ((IFile) resource).createLink(location,
-                        IResource.NONE, subMonitor);
+                ((IFile) resource).createLink(location, IResource.NONE,
+                        subMonitor);
             }
         } else {
             subMonitor.done();

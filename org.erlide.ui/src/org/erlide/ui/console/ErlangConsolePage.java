@@ -310,8 +310,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     boolean isInputComplete() {
         try {
             final String str = consoleInput.getText() + " ";
-            final OtpErlangObject o = BackendHelper.parseConsoleInput(BackendCore
-                    .getBackendManager().getIdeBackend(), str);
+            final OtpErlangObject o = BackendHelper.parseConsoleInput(
+                    BackendCore.getBackendManager().getIdeBackend(), str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;
             }

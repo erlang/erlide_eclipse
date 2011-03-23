@@ -329,7 +329,7 @@ public class RuntimeInfo {
     }
 
     public void useLongName(final boolean useLongName) {
-        this.longName = useLongName;
+        longName = useLongName;
     }
 
     public boolean getLongName() {
