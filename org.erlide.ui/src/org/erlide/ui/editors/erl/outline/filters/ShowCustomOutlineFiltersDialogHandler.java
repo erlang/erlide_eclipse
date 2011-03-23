@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.outline;
+package org.erlide.ui.editors.erl.outline.filters;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +18,9 @@ import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
+import org.erlide.ui.editors.erl.outline.FilterDescriptor;
+import org.erlide.ui.editors.erl.outline.PatternFilter;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.osgi.service.prefs.BackingStoreException;
 

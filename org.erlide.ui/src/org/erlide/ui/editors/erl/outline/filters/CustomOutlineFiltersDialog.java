@@ -1,5 +1,6 @@
-package org.erlide.ui.editors.erl.outline;
+package org.erlide.ui.editors.erl.outline.filters;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.erlide.core.common.CommonUtils;
+import org.erlide.ui.editors.erl.outline.FilterDescriptor;
 import org.erlide.ui.util.SWTUtil;
 
 import com.google.common.collect.Lists;
@@ -69,8 +71,8 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
      *            the Ids of the enabled filters
      */
     public CustomOutlineFiltersDialog(final Shell shell, final String viewId,
-            final boolean enablePatterns, final List<String> patterns,
-            final Set<String> enabledFilterIds) {
+            final boolean enablePatterns, final Collection<String> patterns,
+            final Collection<String> enabledFilterIds) {
 
         super(shell);
         Assert.isNotNull(viewId);
@@ -78,9 +80,9 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         Assert.isNotNull(enabledFilterIds);
 
         fViewId = viewId;
-        fPatterns = patterns;
+        fPatterns = Lists.newArrayList(patterns);
         fEnablePatterns = enablePatterns;
-        fEnabledFilterIds = enabledFilterIds;
+        fEnabledFilterIds = Sets.newHashSet(enabledFilterIds);
 
         fBuiltInFilters = FilterDescriptor.getFilterDescriptors(fViewId);
         fFilterDescriptorChangeHistory = new Stack<FilterDescriptor>();
