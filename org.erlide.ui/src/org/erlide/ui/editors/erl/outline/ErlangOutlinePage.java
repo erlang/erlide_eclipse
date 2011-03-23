@@ -11,6 +11,7 @@
 package org.erlide.ui.editors.erl.outline;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -69,6 +70,9 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * 
@@ -251,7 +255,18 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         fOutlineViewer.setLabelProvider(fEditor.createOutlineLabelProvider());
         fOutlineViewer.addPostSelectionChangedListener(this);
         fOutlineViewer.setInput(fModule);
-
+        final List<String> userDefinedPatterns = Lists.newArrayList();
+        final Set<String> enabledFilterIDs = Sets.newHashSet();
+        final boolean userFiltersEnabled = OutlineFilterUtils.loadViewDefaults(
+                userDefinedPatterns, enabledFilterIDs);
+        final List<String> emptyList = Lists.newArrayList();
+        final Set<String> emptySet = Sets.newHashSet();
+        if (!userFiltersEnabled) {
+            userDefinedPatterns.clear();
+        }
+        OutlineFilterUtils.updateViewerFilters(getTreeViewer(), emptyList,
+                emptySet, userDefinedPatterns, enabledFilterIDs,
+                getPatternFilter());
         fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(
                 fOutlineViewer) {
 
@@ -336,7 +351,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes")
+        final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }

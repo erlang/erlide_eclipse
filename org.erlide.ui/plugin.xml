@@ -898,7 +898,7 @@
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
     <handler
-          class="org.erlide.ui.editors.erl.outline.filters.ShowCustomOutlineFiltersDialogHandler"
+          class="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler"
           commandId="org.erlide.ui.command.showOutlineFilterDialog">
     </handler>
     <handler
