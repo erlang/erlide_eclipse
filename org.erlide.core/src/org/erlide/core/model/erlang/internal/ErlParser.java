@@ -451,7 +451,7 @@ public final class ErlParser {
         final String s = Util.stringValue(extra);
         final int p = s.indexOf('(');
         final String typeName = p < 0 ? s : s.substring(0, p);
-        final ErlTypespec a = new ErlTypespec(module, typeName, null, s);
+        final ErlTypespec a = new ErlTypespec(module, typeName, s);
         setPos(a, pos, false);
         return a;
     }

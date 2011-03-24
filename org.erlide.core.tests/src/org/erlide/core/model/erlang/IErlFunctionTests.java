@@ -7,37 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
-import org.erlide.test.support.ErlideTestUtils;
-import org.junit.Before;
 import org.junit.Test;
 
-public class IErlFunctionTests extends ErlModelTestBase {
-
-    private static final String MAKE_A_TUPLE = "make a tuple";
-    IErlModule module2;
-    private IErlFunction functionA;
-    private IErlFunction functionB;
-    private IErlFunction functionC;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        module2 = ErlideTestUtils.createModule(project, "yy.erl",
-                "-module(yy).\n-export([a/1, b/0]).\n"
-                        + "a(L) when is_list(L)->\n    lists:reverse(L);\n"
-                        + "a(A) when is_atom(A)->\n    atom_to_list(A).\n"
-                        + "b() ->\n    b.\n% " + MAKE_A_TUPLE + "\n"
-                        + "c(A, B, C) ->\n    {c, A, B, C}.\n");
-        module2.open(null);
-        final List<IErlElement> functions = module2
-                .getChildrenOfKind(Kind.FUNCTION);
-        functionA = (IErlFunction) functions.get(0);
-        functionB = (IErlFunction) functions.get(1);
-        functionC = (IErlFunction) functions.get(2);
-    }
+public class IErlFunctionTests extends ErlModelTestBase2 {
 
     // boolean isExported();
     @Test
@@ -97,7 +70,7 @@ public class IErlFunctionTests extends ErlModelTestBase {
         final String comment3 = functionC.getComment();
         assertNull(comment);
         assertNull(comment2);
-        assertEquals(MAKE_A_TUPLE, comment3);
+        assertEquals(ErlModelTestBase2.MAKE_A_TUPLE, comment3);
     }
 
     // String getModuleName();
