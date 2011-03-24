@@ -218,7 +218,7 @@ public class ErlideTestUtils {
         return ErlangCore.getModel().getErlangProject(project);
     }
 
-    private static void createFolderHelper(final IFolder folder)
+    public static void createFolderHelper(final IFolder folder)
             throws CoreException {
         if (!folder.exists()) {
             final IContainer parent = folder.getParent();
@@ -292,23 +292,18 @@ public class ErlideTestUtils {
         }
     }
 
-    public static void initProjects() {
+    public static void initProjects() throws CoreException {
         projects = Lists.newArrayList();
-        try {
-            final IErlModel model = ErlangCore.getModel();
-            model.open(null);
-            final List<IErlElement> children = model.getChildren();
-            for (final IErlElement child : children) {
-                if (child instanceof IErlProject) {
-                    final IErlProject project = (IErlProject) child;
-                    if (project.getName().startsWith("testproject")) {
-                        deleteProject(project);
-                    }
+        final IErlModel model = ErlangCore.getModel();
+        model.open(null);
+        final List<IErlElement> children = model.getChildren();
+        for (final IErlElement child : children) {
+            if (child instanceof IErlProject) {
+                final IErlProject project = (IErlProject) child;
+                if (project.getName().startsWith("testproject")) {
+                    deleteProject(project);
                 }
             }
-        } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 

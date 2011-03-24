@@ -5,37 +5,11 @@ import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import org.erlide.core.model.erlang.IErlElement.Kind;
-import org.erlide.test.support.ErlideTestUtils;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-public class IErlFunctionClauseTests extends ErlModelTestBase {
-
-    private IErlModule module2;
-    private IErlFunction functionA;
-    private IErlFunction functionB;
-    private IErlFunction functionC;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        module2 = ErlideTestUtils.createModule(project, "yy.erl",
-                "-module(yy).\n-export([a/1, b/0]).\n"
-                        + "a(L) when is_list(L)->\n    lists:reverse(L);\n"
-                        + "a(A) when is_atom(A)->\n    atom_to_list(A).\n"
-                        + "b() ->\n    ok.\n"
-                        + "c(A, B, C) ->\n    {c, A, B, C}.\n");
-        module2.open(null);
-        final List<IErlElement> functions = module2
-                .getChildrenOfKind(Kind.FUNCTION);
-        functionA = (IErlFunction) functions.get(0);
-        functionB = (IErlFunction) functions.get(1);
-        functionC = (IErlFunction) functions.get(2);
-    }
+public class IErlFunctionClauseTests extends ErlModelTestBase2 {
 
     // public String getHead();
     @Test
