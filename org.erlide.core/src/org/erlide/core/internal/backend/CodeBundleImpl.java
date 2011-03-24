@@ -25,10 +25,6 @@ import com.google.common.collect.Lists;
 
 public class CodeBundleImpl implements CodeBundle {
 
-    public static enum CodeContext {
-        ANY, COMMON, BUILDER, IDE, DEBUGGER
-    }
-
     private final Bundle bundle;
     private final Collection<Tuple<String, CodeContext>> paths;
     private final Tuple<String, String> init;
