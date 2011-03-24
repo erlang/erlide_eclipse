@@ -86,8 +86,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
     @Override
     public String toString() {
-        final StringBuilder b = new StringBuilder();
-        b.append(getName()).append('/').append(getArity());
+        final StringBuilder b = getNameWithArityBuilder();
         if (head != null && head.length() != 0) {
             b.append("  ").append(head);
         }
@@ -125,7 +124,14 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
     }
 
     public String getNameWithArity() {
-        return toString();
+        final StringBuilder b = getNameWithArityBuilder();
+        return b.toString();
+    }
+
+    private StringBuilder getNameWithArityBuilder() {
+        final StringBuilder b = new StringBuilder();
+        b.append(getName()).append('/').append(getArity());
+        return b;
     }
 
     /*
