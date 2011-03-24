@@ -150,7 +150,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                         .getAllIncludeDirs(project);
 
                 final RpcEventProcessor processor = new RpcEventProcessor(
-                        new BuildHandler(), backend);
+                        new BuildHandler(), backend.createMbox());
                 final OtpErlangPid watcher = processor.getPid();
                 final OtpErlangPid builder = (OtpErlangPid) backend.call(
                         "erlide_builder", "build_resources", "lsslsxp",
