@@ -22,47 +22,14 @@ import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
 import org.erlide.test.support.ErlideTestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class IErlProjectTests {
+public class IErlProjectTests extends ErlModelTestBase {
 
     private static final String XX_ERLIDEX = "xx.erlidex";
-    private static IErlProject[] projects;
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        ErlideTestUtils.initProjects();
-        // We set up projects here, it's quite costly
-        final String name1 = "testproject1";
-        final IErlProject project1 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
-        final String name2 = "testproject2";
-        final IErlProject project2 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name2), name2);
-        projects = new IErlProject[] { project1, project2 };
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        ErlideTestUtils.deleteProjects();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        ErlideTestUtils.initModulesAndIncludes();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        ErlideTestUtils.deleteModules();
-    }
 
     // Collection<IErlModule> getModules() throws ErlModelException;
     @Test

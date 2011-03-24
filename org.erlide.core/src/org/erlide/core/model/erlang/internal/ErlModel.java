@@ -385,10 +385,6 @@ public class ErlModel extends Openable implements IErlModel {
         fListeners.remove(listener);
     }
 
-    public boolean isVisibleInOutline() {
-        return false;
-    }
-
     @Override
     protected void closing(final Object info) throws ErlModelException {
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()

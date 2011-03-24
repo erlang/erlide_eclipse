@@ -12,53 +12,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.internal.ErlAttribute;
-import org.erlide.test.support.ErlideTestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-public class IParentTest {
-
-    private static IErlProject[] projects;
-
-    private IErlModule module;
-    private IErlProject project;
-
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        ErlideTestUtils.initProjects();
-        // We set up projects here, it's quite costly
-        final String name1 = "testproject1";
-        final IErlProject project1 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name1), name1);
-        final String name2 = "testproject2";
-        final IErlProject project2 = ErlideTestUtils.createProject(
-                ErlideTestUtils.getTmpPath(name2), name2);
-        projects = new IErlProject[] { project1, project2 };
-    }
-
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        ErlideTestUtils.deleteProjects();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        ErlideTestUtils.initModulesAndIncludes();
-        project = projects[0];
-        module = ErlideTestUtils.createModule(projects[0], "xx.erl",
-                "-module(xx).\n-include(\"yy.hrl\").\n"
-                        + "f(A) ->\n    lists:reverse(A).\n");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        ErlideTestUtils.deleteModules();
-    }
+public class IParentTests extends ErlModelTestBase {
 
     // List<IErlElement> getChildren() throws ErlModelException;
     @Test

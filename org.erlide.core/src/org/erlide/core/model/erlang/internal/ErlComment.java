@@ -38,10 +38,6 @@ public class ErlComment extends SourceRefElement implements IErlComment {
         return Kind.COMMENT;
     }
 
-    public boolean isVisibleInOutline() {
-        return false;
-    }
-
     @Override
     public String toString() {
         String result = "<comment";
