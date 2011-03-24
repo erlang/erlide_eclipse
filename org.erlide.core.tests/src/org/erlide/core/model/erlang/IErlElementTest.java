@@ -238,8 +238,13 @@ public class IErlElementTest extends ErlModelTestBase {
                     throws ErlModelException {
                 if (element instanceof IErlExternal) {
                     return false; // avoid digging through otp
-                } else if (element.getName().equals("ebin")) {
-                    return false; // avoid possible beam-files
+                } else {
+                    String name = element.getName();
+                    if (name.equals("ebin")) {
+                        return false; // avoid possible beam-files
+                    } else if (name.startsWith(".")) {
+                        return false; // avoid eclipse internals
+                    }
                 }
                 elements.add(element);
                 return true;
