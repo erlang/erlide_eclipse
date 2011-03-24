@@ -198,4 +198,8 @@ public class StatsTreeObject implements ICoverageObject {
         return col;
     }
 
+    public String getPercentageStringified() {
+        return String.format("%.2f ", getPercentage()) + "%";
+    }
+
 }

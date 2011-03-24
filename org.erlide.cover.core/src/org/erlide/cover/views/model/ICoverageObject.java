@@ -133,6 +133,12 @@ public interface ICoverageObject extends Serializable {
      * @return
      */
     public double getPercentage();
+    
+    /**
+     * get coverage ratio as a String (e.g. for html reports)
+     * @return
+     */
+    public String getPercentageStringified();
 
     /**
      * get array of children names

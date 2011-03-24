@@ -1,21 +1,45 @@
 <html>
+<head>
+<link rel="Stylesheet" type="text/css" href="$css_path" />
+</head>
 <body>
-<div>Cover plugin for ErlIde - coverage report (generated at $date) </div>
+<div class="title">Cover plugin for ErlIde - coverage report (generated at $date) </div>
+<br/>
+<h2>Coverage summary for: $obj.getLabel() </h2>
+<table class>
+<tr>
+	<th>Name</th>
+	<th class="total">Total Lines</th>
+	<th class="covered">Covered Lines</th>
+	<th class="percentage">Coverage %</th>
+</tr>
+<tr>
+	<td><b>$obj.getLabel()</b></td>
+	<td>$obj.getLinesCount()</td>
+	<td>$obj.getCoverCount()</td>
+	<td>$obj.getPercentageStringified()</td>
+</tr>
+</table>
+<h2>Coverage breakdown by $type </h2>
 <table>
-<th>
-	<td>Name</td>
-	<td>Total Lines</td>
-	<td>Covered Lines</td>
-	<td>Coverage %</td>
-</th>
+<tr>
+	<th>Name</th>
+	<th class="total">Total Lines</th>
+	<th class="covered">Covered Lines</th>
+	<th class="percentage">Coverage %</th>
+</tr>
 #foreach( $child in $children )
   <tr>
-  	<td>$child.getLabel()</td>
+  	<td><a href="$child.getHtmlPath()">$child.getLabel()</a></td>
   	<td>$child.getLinesCount()</td>
   	<td>$child.getCoverCount()</td>
-  	<td>$child.getPercentage()</td>
+  	<td>$child.getPercentageStringified()</td>
   </tr>
  #end
 </table>
+<br/>
+<br/>
+<br/>
+<div class="footer">Cover plugin for ErlIde 0.2.0 &copy Erlang Solutions</div>
 </body>
 </html>

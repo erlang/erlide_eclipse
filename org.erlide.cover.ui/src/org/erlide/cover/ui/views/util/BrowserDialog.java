@@ -101,7 +101,9 @@ public class BrowserDialog extends Dialog {
         browserLData.widthHint = 784;
         browserLData.heightHint = 500;
         browser.setLayoutData(browserLData);
-        browser.setUrl(url);
+       // browser.setUrl(url);
+        browser.setText(ReportGenerator.getInstance().getHTMLreport(object));
+        log.debug(ReportGenerator.getInstance().getHTMLreport(object));
         browser.addLocationListener(locationListener);
 
         comp = new Composite(dialogShell, SWT.NONE);
