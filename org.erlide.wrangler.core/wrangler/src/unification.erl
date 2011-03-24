@@ -93,14 +93,16 @@ same_type_expr_unification(Exp1, Exp2, Type) ->
 	    Exp1Name = refac_syntax:variable_name(Exp1),
 	    Exp2Name = refac_syntax:variable_name(Exp2),
             case lists:keysearch(category, 1, Exp1Ann) of
-		{value, {category, {macro_name, N, _}}} ->
+		{value, {category, {macro_name, N, N1}}} ->
 		    case lists:keysearch(category, 1, Exp2Ann) of
-			{value, {category, {macro_name, N, expression}}} ->
+			{value, {category, {macro_name, N, N1}}} ->
                             case Exp1Name of
 				Exp2Name -> {true, []};
-				_ -> false
+				_ -> 
+                                    false
 	 		    end;
-			_ -> false
+			_ ->
+                            false
 		    end;
 		_ -> {true, [{Exp1Name, rm_comments(Exp2)}]} 
 	    end;
