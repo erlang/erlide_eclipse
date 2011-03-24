@@ -34,14 +34,12 @@ public class IErlProjectTests extends ErlModelTestBase {
     // Collection<IErlModule> getModules() throws ErlModelException;
     @Test
     public void getModules() throws Exception {
-        final IErlModule moduleAA = ErlideTestUtils.createModule(projects[0],
-                "aa.erl", "-module(aa).\n");
         ErlideTestUtils.createInclude(projects[0], "bb.erl", "-module(bb).\n");
         ErlideTestUtils.createModule(projects[0], "cc.hrl",
                 "-define(A, hej).\n");
         ErlideTestUtils.createInclude(projects[0], "dd.hrl",
                 "-define(B, du).\n");
-        final List<IErlModule> expected = Lists.newArrayList(moduleAA);
+        final List<IErlModule> expected = Lists.newArrayList(module);
         final Collection<IErlModule> modules = projects[0].getModules();
         assertEquals(expected, modules);
     }
@@ -65,16 +63,13 @@ public class IErlProjectTests extends ErlModelTestBase {
     // Collection<IErlModule> getModulesAndIncludes() throws ErlModelException;
     @Test
     public void getModulesAndIncludes() throws Exception {
-        final IErlModule moduleAA = ErlideTestUtils.createModule(projects[0],
-                "aa.erl", "-module(aa).\n");
         ErlideTestUtils.createInclude(projects[0], "bb.erl", "-module(bb).\n");
         ErlideTestUtils.createModule(projects[0], "cc.hrl",
                 "-define(A, hej).\n");
         final IErlModule includeD = ErlideTestUtils.createInclude(projects[0],
                 "dd.hrl", "-define(B, du).\n");
         // FIXME should all of them be returned?
-        final List<IErlModule> expected = Lists
-                .newArrayList(moduleAA, includeD);
+        final List<IErlModule> expected = Lists.newArrayList(module, includeD);
         final Collection<IErlModule> includes = projects[0]
                 .getModulesAndIncludes();
         assertEquals(expected, includes);
@@ -308,8 +303,6 @@ public class IErlProjectTests extends ErlModelTestBase {
         try {
             // given
             // an Erlang project and a module
-            final IErlModule module = ErlideTestUtils.createModule(project,
-                    "aa.erl", "-module(aa).\n");
             final IPath srcxPath = new Path("srcx");
             final List<IPath> srcxDirs = Lists.newArrayList(srcxPath);
             project.open(null);
@@ -619,10 +612,10 @@ public class IErlProjectTests extends ErlModelTestBase {
         // a project with an external include and a
         // referenced project with an include, both have same name
         try {
-            final String xxErl = "xx.erl";
-            final String xxContents = "-module(xx).\n";
-            externalModuleFile = ErlideTestUtils.createTmpFile(xxErl,
-                    xxContents);
+            final String zzErl = "zz.erl";
+            final String xxxContents = "-module(zz).\n";
+            externalModuleFile = ErlideTestUtils.createTmpFile(zzErl,
+                    xxxContents);
             final String externalModulePath = externalModuleFile
                     .getAbsolutePath();
             externalsFile = ErlideTestUtils.createTmpFile(XX_ERLIDEX,
@@ -630,16 +623,16 @@ public class IErlProjectTests extends ErlModelTestBase {
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             final IErlProject project1 = projects[1];
             final IErlModule referencedModule = ErlideTestUtils.createModule(
-                    project1, xxErl, xxContents);
+                    project1, zzErl, xxxContents);
             project.open(null);
             // when
             // looking for module
-            final String xx = "xx";
-            final IErlModule xx1 = project.findModule(xx, null,
+            final String zz = "zz";
+            final IErlModule zz1 = project.findModule(zz, null,
                     Scope.PROJECT_ONLY);
-            final IErlModule xx2 = project.findModule(xx, null,
+            final IErlModule zz2 = project.findModule(zz, null,
                     Scope.ALL_PROJECTS);
-            final IErlModule xx3 = project.findModule(xx, null,
+            final IErlModule zz3 = project.findModule(zz, null,
                     Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject
                     .getDescription();
@@ -647,25 +640,25 @@ public class IErlProjectTests extends ErlModelTestBase {
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
             project.open(null);
-            final IErlModule xx4 = project.findModule(xx, null,
+            final IErlModule zz4 = project.findModule(zz, null,
                     Scope.PROJECT_ONLY);
-            final IErlModule xx5 = project.findModule(xx, null,
+            final IErlModule zz5 = project.findModule(zz, null,
                     Scope.ALL_PROJECTS);
-            final IErlModule xx6 = project.findModule(xx, null,
+            final IErlModule zz6 = project.findModule(zz, null,
                     Scope.REFERENCED_PROJECTS);
             // then
             // the non-external should be preferred
-            assertNotNull(xx1);
-            assertEquals(xxErl, xx1.getName());
-            assertNotSame(referencedModule, xx1);
-            assertEquals(referencedModule, xx2);
-            assertNotNull(xx3);
-            assertEquals(xxErl, xx3.getName());
-            assertNotSame(referencedModule, xx3);
-            assertNotNull(xx4);
-            assertNotSame(referencedModule, xx4);
-            assertEquals(referencedModule, xx5);
-            assertEquals(referencedModule, xx6);
+            assertNotNull(zz1);
+            assertEquals(zzErl, zz1.getName());
+            assertNotSame(referencedModule, zz1);
+            assertEquals(referencedModule, zz2);
+            assertNotNull(zz3);
+            assertEquals(zzErl, zz3.getName());
+            assertNotSame(referencedModule, zz3);
+            assertNotNull(zz4);
+            assertNotSame(referencedModule, zz4);
+            assertEquals(referencedModule, zz5);
+            assertEquals(referencedModule, zz6);
         } finally {
             if (externalModuleFile != null && externalModuleFile.exists()) {
                 externalModuleFile.delete();
