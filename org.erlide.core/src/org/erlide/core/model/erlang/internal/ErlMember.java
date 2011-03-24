@@ -40,10 +40,6 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         super(parent, name);
     }
 
-    public boolean isVisibleInOutline() {
-        return true;
-    }
-
     public void setNameRange(final int offset, final int length) {
         fNameRangeOffset = offset;
         fNameRangeLength = length;

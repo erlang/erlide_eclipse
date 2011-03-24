@@ -700,10 +700,6 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(nonErlangResources);
     }
 
-    public boolean isVisibleInOutline() {
-        return false;
-    }
-
     @Override
     protected void closing(final Object info) throws ErlModelException {
         // TODO Auto-generated method stub
