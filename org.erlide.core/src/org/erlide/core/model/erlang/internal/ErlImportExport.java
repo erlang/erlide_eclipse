@@ -5,18 +5,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.erlide.core.model.erlang.IErlImportExport;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 
-import com.ericsson.otp.erlang.OtpErlang;
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
-public abstract class ErlImportExport extends ErlMember implements IParent {
+public abstract class ErlImportExport extends ErlMember implements IParent,
+        IErlImportExport {
 
     protected List<ErlangFunction> fFunctions;
 
@@ -36,17 +35,6 @@ public abstract class ErlImportExport extends ErlMember implements IParent {
     public Collection<ErlangFunction> getFunctions() {
         return Collections.unmodifiableCollection(Lists
                 .newArrayList(fFunctions));
-    }
-
-    public OtpErlangObject toErlangObject() {
-        final OtpErlangObject[] funcTuples = new OtpErlangObject[fFunctions
-                .size()];
-        int i = 0;
-        for (final ErlangFunction f : fFunctions) {
-            funcTuples[i++] = OtpErlang.mkTuple(new OtpErlangAtom(f.name),
-                    new OtpErlangLong(f.arity));
-        }
-        return new OtpErlangList(funcTuples);
     }
 
 }
