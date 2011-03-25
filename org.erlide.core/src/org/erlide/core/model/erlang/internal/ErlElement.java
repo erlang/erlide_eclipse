@@ -32,8 +32,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.base.Objects;
@@ -256,34 +254,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     public IParent getParent() {
         return fParent;
-    }
-
-    /**
-     * Returns the element that is located at the given source position in this
-     * element. This is a helper method for <code>IErlModule#getElementAt</code>
-     * , and only works on compilation units and types. The position given is
-     * known to be within this element's source range already, and if no finer
-     * grained element is found at the position, this element is returned.
-     */
-    protected IErlElement getSourceElementAt(final int position)
-            throws ErlModelException {
-        if (this instanceof ISourceReference) {
-            for (final IErlElement i : internalGetChildren()) {
-                if (i instanceof SourceRefElement) {
-                    final SourceRefElement child = (SourceRefElement) i;
-                    final ISourceRange range = child.getSourceRange();
-                    final int start = range.getOffset();
-                    final int end = start + range.getLength();
-                    if (start <= position && position <= end) {
-                        return child.getSourceElementAt(position);
-                    }
-                }
-            }
-        } else {
-            // should not happen
-            Assert.isTrue(false);
-        }
-        return this;
     }
 
     static class NoResourceSchedulingRule implements ISchedulingRule {

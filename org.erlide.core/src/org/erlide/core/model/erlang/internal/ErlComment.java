@@ -13,18 +13,12 @@ import org.erlide.core.model.erlang.ISourceRange;
  */
 public class ErlComment extends SourceRefElement implements IErlComment {
 
-    private final boolean fIsEdoc;
     private final boolean fIsHeader;
 
     public ErlComment(final IParent parent, final String name,
-            final boolean isEdoc, final boolean isHeader) {
+            final boolean isHeader) {
         super(parent, name);
-        fIsEdoc = isEdoc;
         fIsHeader = isHeader;
-    }
-
-    public boolean isEdoc() {
-        return fIsEdoc;
     }
 
     public boolean isHeader() {
@@ -41,17 +35,10 @@ public class ErlComment extends SourceRefElement implements IErlComment {
     @Override
     public String toString() {
         String result = "<comment";
-        if (isEdoc()) {
-            result = result + ":edoc";
-        }
         if (isHeader()) {
             result = result + ":header";
         }
         return result + ", line=" + (getLineStart() + 1) + ">";
-    }
-
-    public String getHoverHelp() {
-        return null;
     }
 
     public ISourceRange getNameRange() {

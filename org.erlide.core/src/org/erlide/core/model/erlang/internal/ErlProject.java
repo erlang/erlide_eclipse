@@ -183,7 +183,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
         final Backend backend = CoreUtil.getBuildOrIdeBackend(fProject);
         final String name = backend.getRuntimeInfo().getName();
-        children.add(new ErlOtpExternalReferenceEntryList(this, name, backend));
+        children.add(new ErlOtpExternalReferenceEntryList(this, name));
     }
 
     private void addExternals(final List<IErlElement> children) {

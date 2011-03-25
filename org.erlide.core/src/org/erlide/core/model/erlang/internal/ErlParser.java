@@ -149,7 +149,7 @@ public final class ErlParser {
         } catch (final OtpErlangRangeException e1) {
         }
         final ErlComment comment = new ErlComment(module, Util.stringValue(s),
-                false, line == 0 || line == 1);
+                line == 0 || line == 1);
         try {
             final int ofs = ((OtpErlangLong) c.elementAt(3)).intValue();
             final int len = ((OtpErlangLong) c.elementAt(4)).intValue();

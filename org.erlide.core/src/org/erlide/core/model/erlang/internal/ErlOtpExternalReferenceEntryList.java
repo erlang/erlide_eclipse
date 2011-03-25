@@ -6,23 +6,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.jinterface.ErlLogger;
 
 public class ErlOtpExternalReferenceEntryList extends Openable implements
         IErlExternal {
 
-    private final Backend backend;
-
     public ErlOtpExternalReferenceEntryList(final IParent parent,
-            final String name, final Backend backend) {
+            final String name) {
         super(parent, name);
-        this.backend = backend;
     }
 
     public Kind getKind() {
@@ -32,16 +28,15 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        ErlLogger.debug(
-                "ErlOtpExternalReferenceEntryList#buildStructure %s %s",
-                backend.getJavaNodeName(), backend.getName());
+        final RpcCallSite backend = CoreUtil.getBuildOrIdeBackend(getProject()
+                .getWorkspaceProject());
         final List<String> libList = ErlideOpen.getLibDirs(backend);
-        addExternalEntries(pm, libList);
+        addExternalEntries(pm, libList, backend);
         return true;
     }
 
     private void addExternalEntries(final IProgressMonitor pm,
-            final List<String> libList) {
+            final List<String> libList, final RpcCallSite backend) {
         for (final String libDir : libList) {
             final List<String> srcInclude = ErlideOpen.getLibSrcInclude(
                     backend, libDir);
@@ -111,10 +106,6 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
 
     public boolean isRoot() {
         return true;
-    }
-
-    public RpcCallSite getBackend() {
-        return backend;
     }
 
     public boolean isOTP() {

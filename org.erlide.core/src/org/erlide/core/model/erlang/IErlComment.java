@@ -9,11 +9,9 @@ package org.erlide.core.model.erlang;
  */
 public interface IErlComment extends IErlMember {
 
-    String getHoverHelp();
+    // String getHoverHelp();
 
     boolean isHeader();
-
-    boolean isEdoc();
 
     /**
      * The number of %s preceding the comment. Useful for correct indentation
