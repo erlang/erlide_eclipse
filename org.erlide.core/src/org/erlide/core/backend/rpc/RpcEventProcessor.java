@@ -1,6 +1,5 @@
 package org.erlide.core.backend.rpc;
 
-import org.erlide.core.backend.Backend;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -19,9 +18,9 @@ public final class RpcEventProcessor implements Runnable {
 
     private OtpErlangPid starter;
 
-    public RpcEventProcessor(final RpcEventHandler h, final Backend backend) {
+    public RpcEventProcessor(final RpcEventHandler h, final OtpMbox mbox) {
         handler = h;
-        mbox = backend.createMbox();
+        this.mbox = mbox;
     }
 
     public void run() {

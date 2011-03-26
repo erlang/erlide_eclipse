@@ -21,20 +21,20 @@ import org.eclipse.core.resources.IResource;
  */
 public class CleanUpProviders {
 
-	/**
-	 * <p>
-	 * Construct a {@link CleanUpProvider} appropriate for a particular
-	 * {@link IResource}.
-	 * </p>
-	 * 
-	 * @param resource
-	 *            {@link IResource} for the Erlang module to clean up
-	 * 
-	 * @return {@link CleanUpProvider} appropriate for the supplied
-	 *         {@link IResource}
-	 */
-	public static CleanUpProvider createForIResource(IResource resource) {
-		return new ErlTidyCleanupProvider(resource);
-	}
+    /**
+     * <p>
+     * Construct a {@link CleanUpProvider} appropriate for a particular
+     * {@link IResource}.
+     * </p>
+     * 
+     * @param resource
+     *            {@link IResource} for the Erlang module to clean up
+     * 
+     * @return {@link CleanUpProvider} appropriate for the supplied
+     *         {@link IResource}
+     */
+    public static CleanUpProvider createForIResource(final IResource resource) {
+        return new ErlTidyCleanupProvider(resource);
+    }
 
 }

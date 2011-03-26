@@ -107,7 +107,8 @@ public class LiveExpressionsView extends ViewPart implements
         private String evaluate() {
             final RpcCallSite b = BackendCore.getBackendManager()
                     .getIdeBackend();
-            final BackendEvalResult r = BackendHelper.eval(b, fExpr + ".", null);
+            final BackendEvalResult r = BackendHelper
+                    .eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
             }

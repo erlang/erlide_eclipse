@@ -39,47 +39,37 @@ public class ErlideTestUtils {
 
     // TODO replace ResourceDeltaStub with a mock object
     public static class ResourceDeltaStub implements IResourceDelta {
+        @SuppressWarnings("rawtypes")
         public Object getAdapter(final Class adapter) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public void accept(final IResourceDeltaVisitor visitor)
                 throws CoreException {
-            // TODO Auto-generated method stub
-
         }
 
         public void accept(final IResourceDeltaVisitor visitor,
                 final boolean includePhantoms) throws CoreException {
-            // TODO Auto-generated method stub
-
         }
 
         public void accept(final IResourceDeltaVisitor visitor,
                 final int memberFlags) throws CoreException {
-            // TODO Auto-generated method stub
-
         }
 
         public IResourceDelta findMember(final IPath path) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IResourceDelta[] getAffectedChildren() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IResourceDelta[] getAffectedChildren(final int kindMask) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IResourceDelta[] getAffectedChildren(final int kindMask,
                 final int memberFlags) {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -88,37 +78,30 @@ public class ErlideTestUtils {
         }
 
         public IPath getFullPath() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public int getKind() {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public IMarkerDelta[] getMarkerDeltas() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IPath getMovedFromPath() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IPath getMovedToPath() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IPath getProjectRelativePath() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public IResource getResource() {
-            // TODO Auto-generated method stub
             return null;
         }
     }
