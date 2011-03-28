@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -49,7 +49,7 @@ public class ErlideDialyze {
             final OtpErlangObject result = backend.call("erlide_dialyze",
                     "format_warning", "x", warning);
             return Util.stringValue(result);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             e.printStackTrace();
         }
         return warning.toString();
@@ -59,14 +59,14 @@ public class ErlideDialyze {
             final String plt) {
         try {
             return backend.call("erlide_dialyze", "check_plt", "s", plt);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.debug(e);
         }
         return null;
     }
 
     public static List<String> getPltFiles(final Backend backend,
-            final String pltFiles) throws BackendException {
+            final String pltFiles) throws RpcException {
         final OtpErlangObject o = backend.call("erlide_dialyze",
                 "get_plt_files", "s", pltFiles);
         if (Util.isOk(o)) {

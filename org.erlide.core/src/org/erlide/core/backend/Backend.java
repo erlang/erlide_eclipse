@@ -145,60 +145,51 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public RpcFuture async_call(final String m, final String f,
-            final String signature, final Object... args)
-            throws BackendException {
+            final String signature, final Object... args) throws RpcException {
         try {
             return runtime.makeAsyncCall(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void async_call_cb(final RpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
-            throws BackendException {
+            throws RpcException {
         try {
             runtime.makeAsyncCbCall(cb, m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void cast(final String m, final String f, final String signature,
-            final Object... args) throws BackendException {
+            final Object... args) throws RpcException {
         try {
             runtime.makeCast(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
-            throws BackendException {
+            throws RpcException {
         return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         try {
             return runtime.makeCall(timeout, gleader, m, f, signature, a);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -310,7 +301,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         return runtime.getNode();
     }
 
-    private String getScriptId() throws BackendException {
+    private String getScriptId() throws RpcException {
         OtpErlangObject r;
         r = call("init", "script_id", "");
         if (r instanceof OtpErlangTuple) {

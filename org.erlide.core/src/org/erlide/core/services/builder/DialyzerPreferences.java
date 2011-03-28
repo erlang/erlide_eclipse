@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.erlang.internal.PreferencesHelper;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -34,7 +34,7 @@ public class DialyzerPreferences {
     private boolean noCheckPLT;
 
     public static DialyzerPreferences get(final IProject project)
-            throws CoreException, BackendException {
+            throws CoreException, RpcException {
         try {
             final DialyzerPreferences prefs = new DialyzerPreferences();
             prefs.load();
@@ -79,8 +79,7 @@ public class DialyzerPreferences {
         helper.flush();
     }
 
-    private Collection<String> getPLTPathsFromPreferences()
-            throws BackendException {
+    private Collection<String> getPLTPathsFromPreferences() throws RpcException {
 
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
@@ -94,7 +93,7 @@ public class DialyzerPreferences {
                 .getIdeBackend(), pltFilesString);
     }
 
-    public void load() throws BackingStoreException, BackendException {
+    public void load() throws BackingStoreException, RpcException {
         pltPaths = helper.getString(DialyzerPreferencesConstants.PLT_PATHS, "");
         pltPathsFromPrefs = getPLTPathsFromPreferences();
         enabledPltPaths = helper.getString(

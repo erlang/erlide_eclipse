@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -22,7 +22,7 @@ public class ErlideXref {
             final Collection<String> dirs) {
         try {
             backend.call(ERLIDE_XREF, "add_dirs", "ls", dirs);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
@@ -42,7 +42,7 @@ public class ErlideXref {
                     }
                 }
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e); // TODO report error
         }
         return result;
@@ -58,7 +58,7 @@ public class ErlideXref {
             final List<String> mods) {
         try {
             backend.call(ERLIDE_XREF, "remove_modules", "ls", mods);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e); // TODO report error
         }
     }

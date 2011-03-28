@@ -1,12 +1,12 @@
 package org.erlide.core.services.text;
 
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -28,7 +28,7 @@ public class ErlideNoparse {
             if (res.arity() > 2) {
                 // ErlLogger.debug("initialParse " + res.elementAt(2));
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return res;
@@ -40,7 +40,7 @@ public class ErlideNoparse {
         try {
             res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse",
                     "a", scannerModuleName);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return res;
@@ -81,7 +81,7 @@ public class ErlideNoparse {
                 ErlLogger.error("remove_cache_files %s %s", scannerModuleName,
                         res.toString());
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
         }
     }

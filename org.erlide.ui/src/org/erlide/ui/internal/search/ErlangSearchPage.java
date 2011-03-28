@@ -41,11 +41,11 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
@@ -616,7 +616,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         res = ErlideOpen.open(b, module, offset,
                                 ModelUtils.getImportsAsList(module), "",
                                 ErlangCore.getModel().getPathVars());
-                    } catch (final BackendException e) {
+                    } catch (final RpcException e) {
                         res = null;
                     }
                     ErlLogger.debug("searchPage(open) " + res);

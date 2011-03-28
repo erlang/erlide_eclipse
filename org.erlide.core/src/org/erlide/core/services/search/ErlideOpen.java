@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.core.common.Util;
 import org.erlide.core.internal.backend.BackendUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.jinterface.ErlLogger;
 
@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
 public class ErlideOpen {
 
     public static String getIncludeLib(final RpcCallSite backend, String s)
-            throws BackendException {
+            throws RpcException {
         final OtpErlangObject t = backend.call("erlide_open",
                 "get_include_lib", "s", s);
         if (t instanceof OtpErlangTuple) {
@@ -37,8 +37,7 @@ public class ErlideOpen {
 
     public static OtpErlangObject getSourceFromModule(
             final RpcCallSite backend, final OtpErlangList pathVars,
-            final String mod, final String externalModules)
-            throws BackendException {
+            final String mod, final String externalModules) throws RpcException {
         final OtpErlangObject res2 = backend.call("erlide_open",
                 "get_source_from_module", "ax", mod,
                 mkContext(externalModules, null, pathVars, null, null));
@@ -49,7 +48,7 @@ public class ErlideOpen {
     public static OpenResult open(final RpcCallSite backend,
             final IErlModule module, final int offset,
             final List<OtpErlangObject> imports, final String externalModules,
-            final OtpErlangList pathVars) throws BackendException {
+            final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<String> extra = getExtraSourcePaths();
         final String scanner = ErlangToolkit.createScannerModuleName(module);
@@ -107,7 +106,7 @@ public class ErlideOpen {
             if (res instanceof OtpErlangTuple) {
                 return (OtpErlangTuple) res;
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return null;
@@ -215,7 +214,7 @@ public class ErlideOpen {
                 }
                 return result;
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return Lists.newArrayList();
@@ -232,7 +231,7 @@ public class ErlideOpen {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 return Util.stringValue(t.elementAt(1));
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
         }
         return null;
@@ -243,7 +242,7 @@ public class ErlideOpen {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_lib_dirs", "");
             return getStringListTuple(res);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
             return null;
         }
@@ -255,7 +254,7 @@ public class ErlideOpen {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_lib_files", "s", entry);
             return getStringListTuple(res);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
             return null;
         }
@@ -267,7 +266,7 @@ public class ErlideOpen {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_lib_src_include", "s", entry);
             return getStringListTuple(res);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
             return null;
         }
@@ -302,7 +301,7 @@ public class ErlideOpen {
                 }
                 return result;
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

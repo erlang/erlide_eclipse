@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
@@ -209,20 +210,20 @@ public class BackendHelper {
             final OtpErlangObject val) {
         try {
             return b.call("erlide_syntax", "concrete", "x", val);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             return null;
         }
     }
 
     public static String prettyPrint(final RpcCallSite b,
-            final OtpErlangObject e) throws BackendException {
+            final OtpErlangObject e) throws RpcException {
         OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
         p = b.call("lists", "flatten", "x", p);
         return ((OtpErlangString) p).stringValue();
     }
 
     public static OtpErlangObject convertErrors(final RpcCallSite b,
-            final String lines) throws BackendException {
+            final String lines) throws RpcException {
         OtpErlangObject res;
         res = b.call("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
         return res;
@@ -233,7 +234,7 @@ public class BackendHelper {
         try {
             ErlLogger.debug("Start tracer to %s", tracer);
             b.call("erlide_backend", "start_tracer", "ps", tracer);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
         }
     }
 
@@ -241,7 +242,7 @@ public class BackendHelper {
         try {
             ErlLogger.debug("Start tracer to %s", logname);
             b.call("erlide_backend", "start_tracer", "s", logname);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
         }
     }
 

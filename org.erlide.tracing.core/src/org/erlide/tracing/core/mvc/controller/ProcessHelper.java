@@ -3,8 +3,8 @@ package org.erlide.tracing.core.mvc.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracedNode;
@@ -60,7 +60,7 @@ public class ProcessHelper {
                 processes[i] = new TracedProcess(tuple);
             }
             return processes;
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
         }
         return null;

@@ -18,13 +18,13 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.mvc.model.TraceCollections;
 import org.erlide.tracing.core.mvc.model.TracePattern;
@@ -272,14 +272,14 @@ public class TraceBackend {
                                 new OtpErlangInt(tracePattern.getArity()),
                                 matchSpec);
                     }
-                } catch (final BackendException e) {
+                } catch (final RpcException e) {
                     ErlLogger.error("Could not add pattern: " + e.getMessage());
                 }
             }
         }
     }
 
-    private void setProcessFlags() throws BackendException {
+    private void setProcessFlags() throws RpcException {
         if (ProcessMode.BY_PID.equals(processMode)) {
             // setting flags only for selected processes
             if (processes != null) {
@@ -311,7 +311,7 @@ public class TraceBackend {
                         loading = true;
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE,
                                 FUN_STOP, "");
-                    } catch (final BackendException e) {
+                    } catch (final RpcException e) {
                         ErlLogger.error("Could not stop tracing tool: "
                                 + e.getMessage());
                         errorObject = e;
@@ -340,7 +340,7 @@ public class TraceBackend {
                         tracerBackend.getEventDaemon().addHandler(handler);
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE,
                                 FUN_FILE_INFO, "s", new OtpErlangString(path));
-                    } catch (final BackendException e) {
+                    } catch (final RpcException e) {
                         ErlLogger.error(e);
                         errorObject = e;
                         finishLoading(TracingStatus.EXCEPTION_THROWN);
@@ -379,7 +379,7 @@ public class TraceBackend {
                                 FUN_LOAD, "sii", new OtpErlangString(
                                         activeResultSet.getFileName()), start,
                                 stop);
-                    } catch (final BackendException e) {
+                    } catch (final RpcException e) {
                         ErlLogger.error(e);
                         errorObject = e;
                         finishLoading(TracingStatus.EXCEPTION_THROWN);
