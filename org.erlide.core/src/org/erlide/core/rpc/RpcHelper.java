@@ -8,10 +8,8 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.rpc;
+package org.erlide.core.rpc;
 
-import org.erlide.core.backend.RpcCallback;
-import org.erlide.core.internal.backend.RpcFutureImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.TypeConverter;
 

@@ -3,8 +3,8 @@ package org.erlide.core.internal.backend;
 import java.io.File;
 
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

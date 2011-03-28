@@ -6,11 +6,11 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.core.common.Util;
 import org.erlide.core.internal.backend.BackendUtils;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.jinterface.ErlLogger;
 

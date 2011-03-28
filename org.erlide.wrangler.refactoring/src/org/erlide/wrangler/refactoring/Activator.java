@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResult;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 

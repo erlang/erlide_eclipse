@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.rpc;
+package org.erlide.core.rpc;
 
 public class RpcException extends Exception {
 

@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangLong;

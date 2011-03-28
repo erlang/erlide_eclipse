@@ -8,10 +8,9 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.rpc;
 
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.core.backend.BackendException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

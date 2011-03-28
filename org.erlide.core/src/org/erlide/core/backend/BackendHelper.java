@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.common.Util;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 

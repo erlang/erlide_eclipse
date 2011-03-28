@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

@@ -1,12 +1,12 @@
 package org.erlide.core.services.text;
 
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
