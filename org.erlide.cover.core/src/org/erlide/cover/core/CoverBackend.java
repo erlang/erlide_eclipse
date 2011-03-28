@@ -1,14 +1,10 @@
 package org.erlide.cover.core;
 
-import java.net.URL;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -48,14 +44,6 @@ public class CoverBackend {
 
     private Logger log; // logger
 
-    static {
-        // logger configuration
-        URL logURL = Platform.getBundle("org.erlide.cover.core").getEntry(
-                "/logs.conf");
-
-        PropertyConfigurator.configure(logURL);
-    }
-
     public static synchronized CoverBackend getInstance() {
         if (instance == null) {
             instance = new CoverBackend();
@@ -66,7 +54,7 @@ public class CoverBackend {
     private CoverBackend() {
         handler = new CoverEventHandler();
         coverRunning = false;
-        log = Logger.getLogger(this.getClass());
+        log = Activator.getDefault();
     }
 
     public void initialize(/* final ErlLaunchData data, */
@@ -82,7 +70,7 @@ public class CoverBackend {
         }
 
         if (backend != null && !backend.isStopped()) {
-            log.debug("is started");
+            log.info("is started");
             return;
         } else if (backend != null) {
             backend.stop();
@@ -97,7 +85,7 @@ public class CoverBackend {
             handleError("Could not find runtime");
         }
 
-        log.debug("create backend");
+        log.info("create backend");
 
         info = buildRuntimeInfo(rt0);
         final EnumSet<BackendOptions> options = EnumSet

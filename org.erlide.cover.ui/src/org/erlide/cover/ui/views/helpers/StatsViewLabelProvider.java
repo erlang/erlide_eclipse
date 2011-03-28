@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views.helpers;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -12,6 +11,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.erlide.cover.core.Activator;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
 
@@ -24,7 +25,7 @@ import org.erlide.cover.views.model.ObjectType;
 public class StatsViewLabelProvider extends LabelProvider implements
         ITableLabelProvider {
 
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = Activator.getDefault();
 
     public Image getColumnImage(final Object element, final int columnIndex) {
         Image img = null;

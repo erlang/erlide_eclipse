@@ -5,11 +5,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
-import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.cover.core.api.CoveragePerformer;
 import org.erlide.cover.core.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
@@ -45,11 +43,11 @@ public class CoverEventHandler extends EventHandler {
     private Logger log; // log
 
     public CoverEventHandler() {
-        log = Logger.getLogger(this.getClass());
+        log = Activator.getDefault();
     }
 
     public void addListener(final ICoverObserver listener) {
-        log.debug("adding listener");
+        log.info("adding listener");
         listeners.add(listener);
     }
 
@@ -118,7 +116,7 @@ public class CoverEventHandler extends EventHandler {
                 final double percent = Double.parseDouble(resTuple.elementAt(5)
                         .toString());
 
-                log.debug(String.format("Module %s %s %d %d %f", moduleName,
+                log.info(String.format("Module %s %s %d %d %f", moduleName,
                         htmlPath, allLines, coveredLines, percent));
 
                 final ModuleStats moduleStats = new ModuleStats();
@@ -169,8 +167,8 @@ public class CoverEventHandler extends EventHandler {
                 .getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());
-        log.debug(ppath);
-        log.debug(mpath);
+        log.info(ppath);
+        log.info(mpath);
 
         String[] parts = mpath.split("/"); // TODO ! platform independent?
 

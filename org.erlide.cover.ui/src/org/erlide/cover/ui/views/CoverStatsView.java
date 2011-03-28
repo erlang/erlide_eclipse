@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -9,9 +8,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.StatusLineContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -37,6 +34,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.ICoverEvent;
 import org.erlide.cover.core.ICoverObserver;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.actions.ClearCoverageAction;
 import org.erlide.cover.ui.actions.HideCoverageAction;
@@ -51,7 +49,6 @@ import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.cover.views.model.StatsTreeObject;
 
 /**
  * View for coverage statistics
@@ -145,7 +142,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
         backend.addAnnotationMaker(EditorTracker.getInstance());
         backend.getAnnotationMaker().addAnnotations();
-        log = Logger.getLogger(this.getClass());
+        log = Activator.getDefault();
     }
 
     /**
@@ -299,7 +296,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeShowHtmlAction() {
-        log.debug(viewer.getSelection());
+        log.info(viewer.getSelection());
         showHtml = new HtmlReportAction(viewer);
         showHtml.setText("Show html report");
         showHtml.setToolTipText("Shows generated html report");

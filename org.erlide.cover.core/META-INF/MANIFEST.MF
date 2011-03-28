@@ -11,10 +11,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.core;bundle-version="0.10.2"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: org.apache.log4j,
- org.erlide.cover.core,
+Export-Package: org.erlide.cover.core,
  org.erlide.cover.core.api,
  org.erlide.cover.runtime.launch,
  org.erlide.cover.views.model
-Bundle-ClassPath: lib/log4j-1.2.16.jar,
- .
+Bundle-ClassPath: .

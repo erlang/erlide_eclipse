@@ -1,15 +1,16 @@
 package org.erlide.cover.ui;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.erlide.cover.core.CoverBackend;
-import org.erlide.cover.ui.annotations.EditorTracker;
+import org.erlide.cover.core.Logger;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractUIPlugin implements Logger {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "org.erlide.cover.ui"; //$NON-NLS-1$
@@ -70,4 +71,17 @@ public class Activator extends AbstractUIPlugin {
     public static ImageDescriptor getImageDescriptor(final String path) {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
+
+	public void info(Object msg) {
+		log(IStatus.INFO, msg);
+	}
+
+	public void error(Object msg) {
+		log(IStatus.ERROR, msg);
+	}
+
+	private void log(int severity, Object msg) {
+		getLog().log(new Status(severity, PLUGIN_ID, String.valueOf(msg)));
+	}
+
 }

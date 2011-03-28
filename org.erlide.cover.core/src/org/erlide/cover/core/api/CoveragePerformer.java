@@ -5,17 +5,17 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.constants.CoverConstants;
+import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverEvent;
 import org.erlide.cover.core.CoverException;
 import org.erlide.cover.core.CoverStatus;
 import org.erlide.cover.core.ICoverObserver;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.StatsTreeModel;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -32,7 +32,7 @@ public class CoveragePerformer implements CoverAPI {
     private Logger log; // logger
 
     private CoveragePerformer() {
-        log = Logger.getLogger(this.getClass());
+        log = Activator.getDefault();
         coverNodes = new LinkedList<String>();
     }
 
@@ -112,7 +112,7 @@ public class CoveragePerformer implements CoverAPI {
         List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
         for (IPath include : config.getIncludeDirs()) {
-            log.debug(ppath.append(include));
+            log.info(ppath.append(include));
             includes.add(new OtpErlangList(ppath.append(include).toString()));
         }
 
@@ -144,7 +144,7 @@ public class CoveragePerformer implements CoverAPI {
                         .handleError("No such module at given project. Check your configuration");
                 return false;
             }
-            log.debug(module.getFilePath());
+            log.info(module.getFilePath());
             paths.add(new OtpErlangList(module.getFilePath()));
         }
 
@@ -168,7 +168,7 @@ public class CoveragePerformer implements CoverAPI {
         List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
         for (IErlModule module : config.getModules()) {
-            log.debug(module.getModuleName());
+            log.info(module.getModuleName());
             modules.add(new OtpErlangList(module.getModuleName()));
         }
 

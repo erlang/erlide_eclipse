@@ -3,7 +3,6 @@ package org.erlide.cover.core;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
 import org.erlide.cover.constants.TestConstants;
@@ -28,7 +27,7 @@ public class CoverRunner extends Thread {
 
     public CoverRunner() {
         perf = CoveragePerformer.getPerformer();
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
 
     @Override
@@ -54,10 +53,10 @@ public class CoverRunner extends Thread {
 
             // TODO handle res
 
-            log.debug(config.getProject().getWorkspaceProject().getLocation());
+            log.info(config.getProject().getWorkspaceProject().getLocation());
             IPath ppath = config.getProject().getWorkspaceProject()
                     .getLocation();
-            log.debug(ppath.append(config.getOutputDir()));
+            log.info(ppath.append(config.getOutputDir()));
 
             res = CoverBackend
                     .getInstance()
@@ -81,7 +80,7 @@ public class CoverRunner extends Thread {
             switch (CoverBackend.getInstance().getSettings().getType()) {
             case MODULE:
 
-                log.debug(config.getModules().iterator().next().getFilePath());
+                log.info(config.getModules().iterator().next().getFilePath());
 
                 CoverBackend
                         .getInstance()
@@ -97,14 +96,14 @@ public class CoverRunner extends Thread {
             case ALL:
                 List<String> testDirs = new LinkedList<String>();
                 for (IPath p : config.getSourceDirs()) {
-                    log.debug(p);
+                    log.info(p);
                     if (!p.toString().endsWith("test")) // !
                         testDirs.add(ppath.append(p).append("test").toString());
                 }
                 testDirs.add(ppath.append("test").toString());
 
                 for (String path : testDirs) {
-                    log.debug(path);
+                    log.info(path);
 
                     CoverBackend
                             .getInstance()

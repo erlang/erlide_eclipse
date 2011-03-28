@@ -1,7 +1,8 @@
 package org.erlide.cover.ui.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.erlide.cover.core.Activator;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeObject;
@@ -19,7 +20,7 @@ public class HideCoverageAction extends CoverageAction {
     public HideCoverageAction(TreeViewer viewer) {
         super(viewer);
         
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
     
     @Override
@@ -34,8 +35,8 @@ public class HideCoverageAction extends CoverageAction {
             ModuleStats module = (ModuleStats)(fs).getParent();
             String name = module.getLabel() + ".erl";
             
-            log.debug(fs.getLineStart());
-            log.debug(fs.getLineEnd());
+            log.info(fs.getLineStart());
+            log.info(fs.getLineEnd());
             
             marker.removeAnnotationsFragment(name, 
                     fs.getLineStart(), fs.getLineEnd());

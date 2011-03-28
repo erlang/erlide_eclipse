@@ -5,8 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.text.source.Annotation;
+import org.erlide.cover.core.Activator;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.LineResult;
 
 /**
@@ -23,7 +24,7 @@ public class CoverageMap {
     
     public CoverageMap() {
         coverage = new HashMap<String, Map<LineResult, Annotation>>();
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
 
     /**

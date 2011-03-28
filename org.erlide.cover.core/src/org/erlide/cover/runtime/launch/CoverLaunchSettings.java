@@ -2,10 +2,11 @@ package org.erlide.cover.runtime.launch;
 
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.CoverException;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.api.Configuration;
 import org.erlide.cover.core.api.IConfiguration;
 
@@ -35,7 +36,7 @@ public class CoverLaunchSettings {
         frameworkType = data.getFramework();
         config = new Configuration();
 
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
         if(data.getFramework() == null)
             throw new CoverException("No test framework set");
 
@@ -64,7 +65,7 @@ public class CoverLaunchSettings {
                 Collection<IErlModule> allModules = config.getProject()
                         .getModules();
                 for (IErlModule m : allModules) {
-                    log.debug(m.getFilePath());
+                    log.info(m.getFilePath());
                     if (!m.getFilePath().contains("/test/")) { // TODO !
                         config.addModule(m);
                     }

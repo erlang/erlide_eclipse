@@ -6,12 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.views.model.StatsTreeModel;
@@ -28,7 +28,7 @@ public class SaveAction extends Action {
 
     private Shell shell;
 
-    private Logger log = Logger.getLogger(getClass()); // logger
+    private Logger log = Activator.getDefault();
 
     public SaveAction(Shell shell) {
         this.shell = shell;
@@ -84,8 +84,8 @@ public class SaveAction extends Action {
 
         //
 
-        log.debug(location);
-        log.debug(name);
+        log.info(location);
+        log.info(name);
 
         ObjectOutputStream objOutStream;
         try {

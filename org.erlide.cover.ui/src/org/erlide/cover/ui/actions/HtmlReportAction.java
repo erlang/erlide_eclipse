@@ -1,15 +1,14 @@
 package org.erlide.cover.ui.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.views.util.BrowserDialog;
 import org.erlide.cover.views.model.FunctionStats;
@@ -32,18 +31,18 @@ public class HtmlReportAction extends Action {
     public HtmlReportAction(final TreeViewer viewer) {
         shell = viewer.getControl().getShell();
         this.viewer = viewer;
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
 
     @Override
     public void run() {
-        log.debug("html report!");
+        log.info("html report!");
 
         // viewer jest selection providerem
 
         final ISelection selection = viewer.getSelection();
 
-        log.debug(selection.getClass().getName());
+        log.info(selection.getClass().getName());
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
                     Activator.PLUGIN_ID,
@@ -55,9 +54,9 @@ public class HtmlReportAction extends Action {
 
         final ITreeSelection treeSelection = (ITreeSelection) selection;
 
-        log.debug(treeSelection.getFirstElement());
-        log.debug(treeSelection.getFirstElement().getClass().getName());
-        log.debug(treeSelection.getPaths());
+        log.info(treeSelection.getFirstElement());
+        log.info(treeSelection.getFirstElement().getClass().getName());
+        log.info(treeSelection.getPaths());
 
         final StatsTreeObject selObj = (StatsTreeObject) treeSelection
                 .getFirstElement();

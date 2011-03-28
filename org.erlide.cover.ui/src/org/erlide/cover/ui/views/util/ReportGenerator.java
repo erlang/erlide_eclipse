@@ -2,10 +2,11 @@ package org.erlide.cover.ui.views.util;
 
 import java.io.StringWriter;
 
-import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.erlide.cover.core.Activator;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.ICoverageObject;
 
 /**
@@ -24,7 +25,7 @@ public class ReportGenerator {
     private ReportGenerator() {
         ve = new VelocityEngine();
         ve.init();
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
 ;    }
     
     public synchronized ReportGenerator getInstance() {
