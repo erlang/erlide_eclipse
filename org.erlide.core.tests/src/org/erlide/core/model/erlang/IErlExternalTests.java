@@ -74,9 +74,17 @@ public class IErlExternalTests extends ErlModelTestBase {
         final List<IErlElement> externals = project
                 .getChildrenOfKind(Kind.EXTERNAL);
         final IErlExternal external = (IErlExternal) externals.get(0);
+        external.open(null);
         final IErlExternal external2 = (IErlExternal) externals.get(1);
+        external2.open(null);
+        final IErlExternal external3 = (IErlExternal) external.getChildren()
+                .get(0);
+        final IErlExternal external4 = (IErlExternal) external2.getChildren()
+                .get(0);
         assertFalse(external.isOTP());
         assertTrue(external2.isOTP());
+        assertFalse(external3.isOTP());
+        assertTrue(external4.isOTP());
     }
 
     // boolean hasIncludes();
