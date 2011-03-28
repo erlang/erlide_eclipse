@@ -58,11 +58,11 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
 import org.erlide.core.services.builder.DialyzerUtils.DialyzerErrorException;
@@ -300,7 +300,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             final DialyzerPreferences p = DialyzerPreferences.get(project);
             return p.hasOptionsAtLowestScope();
         } catch (final CoreException e) {
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
         }
         return false;
     }
@@ -516,7 +516,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             prefs = DialyzerPreferences.get(fProject);
         } catch (final CoreException e) {
             // FIXME apply to status line or setErrorMessage
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             // FIXME apply to status line or setErrorMessage
         }
     }

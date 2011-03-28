@@ -8,6 +8,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Assert;
 import org.erlide.core.common.Util;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
@@ -88,7 +89,7 @@ public class ErlideScanner {
             if (r instanceof OtpErlangTuple) {
                 ErlLogger.error("GOT::" + r.toString());
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.debug(e);
         }
     }
@@ -165,7 +166,7 @@ public class ErlideScanner {
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "check_all", "as", module, text);
             return o.toString();
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             return "";
         }
 
@@ -177,7 +178,7 @@ public class ErlideScanner {
                     .getIdeBackend()
                     .call(ERLIDE_SCANNER, "getText", "a", scannerName);
             return Util.stringValue(o);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             return "";
         }
     }

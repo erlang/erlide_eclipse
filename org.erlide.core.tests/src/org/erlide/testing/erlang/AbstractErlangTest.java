@@ -13,7 +13,7 @@ package org.erlide.testing.erlang;
 import static org.junit.Assert.fail;
 
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
 import org.junit.After;
 import org.junit.Before;
 

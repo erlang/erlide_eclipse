@@ -13,7 +13,7 @@ package org.erlide.core.cleanup;
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.rpc.RpcFuture;
+import org.erlide.core.rpc.RpcFuture;
 
 /**
  * <p>

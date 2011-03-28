@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.debug.ErlangLineBreakpoint;
@@ -34,6 +33,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 

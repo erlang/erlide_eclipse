@@ -583,17 +583,19 @@ public class FilteredModulesSelectionDialog extends
             final IResource resource = proxy.requestResource();
 
             final IProject project = resource.getProject();
+            final boolean accessible = project != null
+                    && project.isAccessible();
             if (projects.remove(project) || projects.remove(resource)) {
                 progressMonitor.worked(1);
-                addPaths(project);
+                if (accessible) {
+                    addPaths(project);
+                }
             }
 
-            if (project == resource) {
-                // FIXME (JC) all this seems too much... is it really necessary?
-                // couldn't we just assume all links in external files should be
-                // matchable?
-
-                // navigate even "external" lists
+            // FIXME (JC) all this seems too much... is it really necessary?
+            // couldn't we just assume all links in external files should be
+            // matchable?
+            if (project == resource && accessible) {
                 final IErlModel model = ErlangCore.getModel();
                 final IErlProject erlProject = model.findProject(project);
                 final String extMods = erlProject.getExternalModulesString();

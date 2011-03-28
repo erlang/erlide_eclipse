@@ -24,9 +24,9 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
