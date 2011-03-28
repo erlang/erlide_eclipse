@@ -261,8 +261,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
             String[] names, boolean replace, IProgressMonitor monitor)
             throws ErlModelException;
 
-    void notifyChange(IErlElement element);
-
     void addModelChangeListener(IErlModelChangeListener listener);
 
     void removeModelChangeListener(IErlModelChangeListener listener);

@@ -34,7 +34,6 @@ import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlFolder;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
@@ -112,10 +111,8 @@ public class ErlModule extends Openable implements IErlModule {
     protected synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
-            final IErlModel model = ErlangCore.getModel();
-            if (model != null) {
-                model.notifyChange(this);
-            }
+            final ErlModel model = getModel();
+            model.notifyChange(this);
             final IResource r = getResource();
             if (r instanceof IFile) {
                 timestamp = ((IFile) r).getLocalTimeStamp();
