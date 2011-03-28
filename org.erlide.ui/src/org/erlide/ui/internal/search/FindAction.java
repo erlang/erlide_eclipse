@@ -384,9 +384,9 @@ public abstract class FindAction extends SelectionDispatchAction {
         }
         if (ws != null) {
             SearchUtil.updateLRUWorkingSets(ws);
-            return SearchUtil.getWorkingSetsExternalScope(ws);
+            return SearchUtil.getWorkingSetsExternalScope(ws, false, false);
         } else {
-            return SearchUtil.getWorkspaceExternalScope();
+            return SearchUtil.getWorkspaceExternalScope(false, false);
         }
     }
 }

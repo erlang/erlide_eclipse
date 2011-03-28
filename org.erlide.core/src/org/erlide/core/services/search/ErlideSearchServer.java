@@ -54,12 +54,13 @@ public class ErlideSearchServer {
             final String stateDir) {
         final List<ModuleLineFunctionArityRef> result = Lists.newArrayList();
         try {
-            // ErlLogger.debug("Search for " + ref.getSearchObject() + "    " +
-            // getModulesFromScope(scope));
+            final OtpErlangList modules = getModulesFromScope(scope,
+                    externalScope);
+            // ErlLogger.debug("Search for " + ref.getSearchObject() + "    "
+            // + modules);
             final OtpErlangObject r = b.call(SEARCH_LONG_TIMEOUT,
                     "erlide_search_server", "find_refs", "xxs",
-                    ref.getSearchObject(),
-                    getModulesFromScope(scope, externalScope), stateDir);
+                    ref.getSearchObject(), modules, stateDir);
             if (Util.isOk(r)) {
                 addSearchResult(result, r);
             }

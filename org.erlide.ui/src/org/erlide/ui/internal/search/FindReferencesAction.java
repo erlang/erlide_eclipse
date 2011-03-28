@@ -76,6 +76,6 @@ public class FindReferencesAction extends FindAction {
 
     @Override
     protected ErlSearchScope getExternalScope() {
-        return SearchUtil.getWorkspaceExternalScope();
+        return SearchUtil.getWorkspaceExternalScope(false, false);
     }
 }

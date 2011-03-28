@@ -71,7 +71,7 @@ public class FindImplementorsAction extends FindAction {
 
     @Override
     protected ErlSearchScope getExternalScope() {
-        return SearchUtil.getWorkspaceExternalScope();
+        return SearchUtil.getWorkspaceExternalScope(false, false);
     }
 
     @Override

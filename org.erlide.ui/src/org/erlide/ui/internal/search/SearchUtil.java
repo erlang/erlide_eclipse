@@ -73,7 +73,7 @@ public class SearchUtil {
 
     static final int SEARCH_IN_SOURCES = 1;
     static final int SEARCH_IN_EXTERNALS = 2;
-    // static final int SEARCH_IN_OTP_RUNTIME = 4;
+    static final int SEARCH_IN_OTP_LIBRARIES = 4;
 
     private static final int ARI_TYPESPEC = -2;
     private static final int ARI_ATTRIBUTE = -3;
@@ -157,14 +157,16 @@ public class SearchUtil {
         return result;
     }
 
-    public static ErlSearchScope getWorkspaceExternalScope() {
+    public static ErlSearchScope getWorkspaceExternalScope(
+            final boolean addExternals, final boolean addOtp) {
         try {
             final Collection<IErlProject> erlangProjects = ErlangCore
                     .getModel().getErlangProjects();
             final ErlSearchScope result = new ErlSearchScope();
             final Set<String> externalModulePaths = new HashSet<String>();
             for (final IErlProject project : erlangProjects) {
-                addExternalModules(project, result, externalModulePaths);
+                addExternalModules(project, result, externalModulePaths,
+                        addExternals, addOtp);
             }
             return result;
         } catch (final ErlModelException e) {
@@ -174,7 +176,8 @@ public class SearchUtil {
     }
 
     private static void addExternalModules(final IParent element,
-            final ErlSearchScope result, final Set<String> externalModulePaths)
+            final ErlSearchScope result, final Set<String> externalModulePaths,
+            final boolean addExternals, final boolean addOtp)
             throws ErlModelException {
         final Collection<IErlElement> externals = element
                 .getChildrenOfKind(Kind.EXTERNAL);
@@ -186,7 +189,13 @@ public class SearchUtil {
                     if (theElement instanceof IErlExternal) {
                         final IErlExternal theExternal = (IErlExternal) theElement;
                         if (theExternal.isOTP()) {
-                            return false;
+                            if (!addOtp) {
+                                return false;
+                            }
+                        } else {
+                            if (!addExternals) {
+                                return false;
+                            }
                         }
                         theExternal.open(null);
                     }
@@ -214,7 +223,8 @@ public class SearchUtil {
     }
 
     public static ErlSearchScope getProjectsExternalScope(
-            final String[] projectNames) {
+            final String[] projectNames, final boolean addExternals,
+            final boolean addOtp) {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
         try {
@@ -226,7 +236,8 @@ public class SearchUtil {
                 if (ErlideUtil.hasErlangNature(project)) {
                     final IErlProject erlProject = model
                             .getErlangProject(project);
-                    addExternalModules(erlProject, result, externalModulePaths);
+                    addExternalModules(erlProject, result, externalModulePaths,
+                            addExternals, addOtp);
                 }
             }
         } catch (final ErlModelException e) {
@@ -250,7 +261,8 @@ public class SearchUtil {
     }
 
     public static ErlSearchScope getSelectionExternalScope(
-            final ISelection selection) {
+            final ISelection selection, final boolean addExternals,
+            final boolean addOtp) {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
         try {
@@ -259,7 +271,8 @@ public class SearchUtil {
                 for (final Object i : ss.toArray()) {
                     if (i instanceof IParent) {
                         final IParent parent = (IParent) i;
-                        addExternalModules(parent, result, externalModulePaths);
+                        addExternalModules(parent, result, externalModulePaths,
+                                addExternals, addOtp);
                     }
                 }
             }
@@ -502,7 +515,8 @@ public class SearchUtil {
     }
 
     public static ErlSearchScope getWorkingSetsExternalScope(
-            final IWorkingSet[] workingSets) {
+            final IWorkingSet[] workingSets, final boolean addExternals,
+            final boolean addOTP) {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
         try {
@@ -528,7 +542,8 @@ public class SearchUtil {
                         }
                     }
                     if (parent != null) {
-                        addExternalModules(parent, result, externalModulePaths);
+                        addExternalModules(parent, result, externalModulePaths,
+                                addExternals, addOTP);
                     }
                 }
             }

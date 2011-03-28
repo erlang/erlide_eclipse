@@ -211,13 +211,15 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         String scopeDescription = null;
         final boolean searchSources = (includeMask & SearchUtil.SEARCH_IN_SOURCES) != 0;
         final boolean searchExternals = (includeMask & SearchUtil.SEARCH_IN_EXTERNALS) != 0;
+        final boolean searchOtp = (includeMask & SearchUtil.SEARCH_IN_OTP_LIBRARIES) != 0;
         switch (getContainer().getSelectedScope()) {
         case ISearchPageContainer.WORKSPACE_SCOPE:
             if (searchSources) {
                 scope = SearchUtil.getWorkspaceScope();
             }
-            if (searchExternals) {
-                externalScope = SearchUtil.getWorkspaceExternalScope();
+            if (searchExternals || searchOtp) {
+                externalScope = SearchUtil.getWorkspaceExternalScope(
+                        searchExternals, searchOtp);
             }
             scopeDescription = SearchUtil.getWorkspaceScopeDescription();
             break;
@@ -229,8 +231,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         .getProjects(projectNames));
             }
             if (searchExternals) {
-                externalScope = SearchUtil
-                        .getProjectsExternalScope(projectNames);
+                externalScope = SearchUtil.getProjectsExternalScope(
+                        projectNames, searchExternals, searchOtp);
             }
             scopeDescription = SearchUtil.getProjectScopeDescription(SearchUtil
                     .getProjects(projectNames));
@@ -241,9 +243,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                         .getSelection());
             }
             if (searchExternals) {
-                externalScope = SearchUtil
-                        .getSelectionExternalScope(getContainer()
-                                .getSelection());
+                externalScope = SearchUtil.getSelectionExternalScope(
+                        getContainer().getSelection(), searchExternals,
+                        searchOtp);
             }
             scopeDescription = SearchUtil
                     .getSelectionScopeDescription(getContainer().getSelection());
@@ -261,8 +263,8 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
                 scope = SearchUtil.getWorkingSetsScope(workingSets);
             }
             if (searchExternals) {
-                externalScope = SearchUtil
-                        .getWorkingSetsExternalScope(workingSets);
+                externalScope = SearchUtil.getWorkingSetsExternalScope(
+                        workingSets, searchExternals, searchOtp);
             }
             SearchUtil.updateLRUWorkingSets(workingSets);
         }
@@ -394,12 +396,14 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         result.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
                 1));
         result.setText("Search In");
-        result.setLayout(new GridLayout(2, false));
+        result.setLayout(new GridLayout(3, false));
         fIncludeMasks = new Button[] {
                 createCheckButton(result, "Sourc&es",
                         SearchUtil.SEARCH_IN_SOURCES, true),
                 createCheckButton(result, "E&xternals",
-                        SearchUtil.SEARCH_IN_EXTERNALS, false), };
+                        SearchUtil.SEARCH_IN_EXTERNALS, false),
+                createCheckButton(result, "&OTP libraries",
+                        SearchUtil.SEARCH_IN_OTP_LIBRARIES, false) };
         return result;
     }
 
