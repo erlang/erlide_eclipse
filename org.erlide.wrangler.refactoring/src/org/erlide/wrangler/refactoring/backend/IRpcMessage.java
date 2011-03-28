@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResult;
 
 /**
  * Interface for handling RpcResultImpl objects of the Erlide's backend, which

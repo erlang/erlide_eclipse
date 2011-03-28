@@ -6,11 +6,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.util.CoreUtil;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 
 public class ErlOtpExternalReferenceEntryList extends Openable implements

@@ -8,10 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.backend;
-
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.backend.rpc.RpcResult;
+package org.erlide.core.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -33,29 +30,29 @@ public interface RpcCallSite {
             final String f, final String signature, final Object... args);
 
     RpcFuture async_call(final String m, final String f,
-            final String signature, final Object... args)
-            throws BackendException;
+            final String signature, final Object... args) throws RpcException;
 
     void async_call_cb(final RpcCallback cb, final String m, final String f,
-            final String signature, final Object... args)
-            throws BackendException;
+            final String signature, final Object... args) throws RpcException;
 
     void cast(final String m, final String f, final String signature,
-            final Object... args) throws BackendException;
+            final Object... args) throws RpcException;
 
     OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws BackendException;
+            final String signature, final Object... a) throws RpcException;
 
     /**
      * typed RPC with timeout, throws Exception
      * 
+     * @throws RpcException
+     *             TODO
      * @throws ConversionException
      */
     OtpErlangObject call(final int timeout, final String m, final String f,
-            final String signature, final Object... a) throws BackendException;
+            final String signature, final Object... a) throws RpcException;
 
     OtpErlangObject call(final int timeout, final OtpErlangObject gleader,
             final String m, final String f, final String signature,
-            final Object... a) throws BackendException;
+            final Object... a) throws RpcException;
 
 }

@@ -46,17 +46,12 @@ import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.rpc.RpcException;
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.backend.rpc.RpcHelper;
-import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.internal.backend.BackendUtil;
 import org.erlide.core.internal.backend.CodeManager;
 import org.erlide.core.internal.backend.ErlRuntime;
-import org.erlide.core.internal.backend.RpcResultImpl;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;
 import org.erlide.core.model.debug.ErlangDebugTarget;
@@ -65,6 +60,13 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcCallback;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.RpcHelper;
+import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -143,60 +145,51 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public RpcFuture async_call(final String m, final String f,
-            final String signature, final Object... args)
-            throws BackendException {
+            final String signature, final Object... args) throws RpcException {
         try {
             return runtime.makeAsyncCall(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void async_call_cb(final RpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
-            throws BackendException {
+            throws RpcException {
         try {
             runtime.makeAsyncCbCall(cb, m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void cast(final String m, final String f, final String signature,
-            final Object... args) throws BackendException {
+            final Object... args) throws RpcException {
         try {
             runtime.makeCast(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
-            throws BackendException {
+            throws RpcException {
         return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         try {
             return runtime.makeCall(timeout, gleader, m, f, signature, a);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -308,7 +301,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         return runtime.getNode();
     }
 
-    private String getScriptId() throws BackendException {
+    private String getScriptId() throws RpcException {
         OtpErlangObject r;
         r = call("init", "script_id", "");
         if (r instanceof OtpErlangTuple) {

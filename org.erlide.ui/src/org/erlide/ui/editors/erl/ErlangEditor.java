@@ -112,7 +112,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -123,6 +122,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlideOpen;
@@ -2227,7 +2227,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                                     getStateDir());
                     fRefs = getErlangRefs(theModule, findRefs);
                 }
-            } catch (final BackendException e) {
+            } catch (final RpcException e) {
                 ErlLogger.debug(e);
             }
             if (fRefs == null) {

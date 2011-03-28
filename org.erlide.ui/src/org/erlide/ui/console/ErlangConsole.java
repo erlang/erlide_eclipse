@@ -22,8 +22,8 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.rpc.RpcCallSite;
 
 public class ErlangConsole extends TextConsole {
     private final BackendShell shell;

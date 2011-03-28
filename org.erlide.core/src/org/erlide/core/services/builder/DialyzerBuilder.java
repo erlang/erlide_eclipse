@@ -15,11 +15,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
@@ -36,7 +36,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         DialyzerPreferences prefs;
         try {
             prefs = DialyzerPreferences.get(project);
-        } catch (final BackendException e1) {
+        } catch (final RpcException e1) {
             throw new CoreException(new Status(IStatus.ERROR,
                     ErlangPlugin.PLUGIN_ID, e1.toString()));
         }

@@ -3,8 +3,8 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -17,7 +17,7 @@ public class ErlideDoc {
         try {
             res = b.call("erlide_otp_doc", "get_proposals", "ass", mod, prefix,
                     stateDir);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return res;
@@ -29,7 +29,7 @@ public class ErlideDoc {
         try {
             res = b.call("erlide_otp_doc", "get_modules", "sls", prefix,
                     projectModules);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return res;
@@ -49,7 +49,7 @@ public class ErlideDoc {
             ErlLogger.debug("%s", input.toString());
             res = b.call("erlide_otp_doc", "get_doc", "sxs", module, input,
                     stateDir);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return res;
