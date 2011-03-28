@@ -131,7 +131,7 @@ public class ErlideTestUtils {
             final String moduleName, final String moduleContents)
             throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder("src");
-        final IErlModule module = createFile(moduleName, moduleContents, folder);
+        final IErlModule module = createModule(moduleName, moduleContents, folder);
         modulesAndIncludes.add(module);
         return module;
     }
@@ -141,19 +141,15 @@ public class ErlideTestUtils {
             throws CoreException {
         final IFolder folder = project.getWorkspaceProject().getFolder(
                 "include");
-        final IErlModule module = createFile(moduleName, moduleContents, folder);
+        final IErlModule module = createModule(moduleName, moduleContents, folder);
         modulesAndIncludes.add(module);
         return module;
     }
 
-    private static IErlModule createFile(final String moduleName,
+    public static IErlModule createModule(final String moduleName,
             final String moduleContents, final IFolder folder)
             throws CoreException {
-        final IFile file = folder.getFile(moduleName);
-        final File f = new File(file.getLocation().toOSString());
-        f.delete();
-        file.create(new ByteArrayInputStream(moduleContents.getBytes()), true,
-                null);
+        final IFile file = createFile(moduleName, moduleContents, folder);
         IErlModule module = ErlangCore.getModel().findModule(file);
         if (module == null) {
             final String path = file.getLocation().toPortableString();
@@ -161,6 +157,16 @@ public class ErlideTestUtils {
                     ErlangCore.getModel(), file.getName(), null, path, path);
         }
         return module;
+    }
+
+    public static IFile createFile(final String name, final String contents,
+            final IFolder folder) throws CoreException {
+        final IFile file = folder.getFile(name);
+        final File f = new File(file.getLocation().toOSString());
+        f.delete();
+        file.create(new ByteArrayInputStream(contents.getBytes()), true,
+                null);
+        return file;
     }
 
     public static void deleteModule(final IErlModule module)

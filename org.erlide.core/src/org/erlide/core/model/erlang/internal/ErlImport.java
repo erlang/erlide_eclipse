@@ -4,10 +4,7 @@ import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IParent;
 
-import com.ericsson.otp.erlang.OtpErlang;
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlImport extends ErlImportExport implements IErlImport {
 
@@ -43,9 +40,9 @@ public class ErlImport extends ErlImportExport implements IErlImport {
         return getName() + ": " + getImportModule();
     }
 
-    @Override
-    public OtpErlangObject toErlangObject() {
-        final OtpErlangObject funcs = super.toErlangObject();
-        return OtpErlang.mkTuple(new OtpErlangAtom(getImportModule()), funcs);
-    }
+    // @Override
+    // public OtpErlangObject toErlangObject() {
+    // final OtpErlangObject funcs = super.toErlangObject();
+    // return OtpErlang.mkTuple(new OtpErlangAtom(getImportModule()), funcs);
+    // }
 }

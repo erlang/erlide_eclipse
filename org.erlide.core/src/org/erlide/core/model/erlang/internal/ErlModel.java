@@ -621,7 +621,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
-        return ErlProject.findModule(null, includeName, includePath, false,
+        return ErlProject.findInclude(null, includeName, includePath, false,
                 false, Scope.ALL_PROJECTS);
     }
 }
