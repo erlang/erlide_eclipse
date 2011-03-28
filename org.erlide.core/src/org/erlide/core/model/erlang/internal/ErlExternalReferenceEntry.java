@@ -83,6 +83,11 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     }
 
     public boolean isOTP() {
+        final IParent parent = getParent();
+        if (parent instanceof IErlExternal) {
+            final IErlExternal external = (IErlExternal) parent;
+            return external.isOTP();
+        }
         return false;
     }
 
