@@ -2,7 +2,6 @@ package org.erlide.core.services.search;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcCallSite;
@@ -68,20 +67,6 @@ public class ErlideSearchServer {
             ErlLogger.error(e); // TODO report error
         }
         return result;
-    }
-
-    public static List<ModuleLineFunctionArityRef> findRefs(
-            final RpcCallSite b, final ErlangSearchPattern ref,
-            final IErlModule module, final String stateDir) {
-        final ErlSearchScope scope = new ErlSearchScope();
-        final ErlSearchScope externalScope = new ErlSearchScope();
-        final IResource r = module.getResource();
-        if (r != null) {
-            scope.addModule(module);
-        } else {
-            externalScope.addModule(module);
-        }
-        return findRefs(b, ref, scope, externalScope, stateDir);
     }
 
     private static void addSearchResult(

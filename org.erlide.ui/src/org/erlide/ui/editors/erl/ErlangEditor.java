@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -123,6 +124,7 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.rpc.RpcException;
+import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlideOpen;
@@ -460,7 +462,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
         // ovg= new OpenViewActionGroup(this),
-                esg = new ErlangSearchActionGroup(this) });
+        esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
         // openAction = new OpenAction(getSite(), getExternalModules(),
@@ -613,7 +615,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();
@@ -2222,9 +2225,17 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     return;
                 }
                 if (pattern != null) {
+                    final ErlSearchScope scope = new ErlSearchScope();
+                    final ErlSearchScope externalScope = new ErlSearchScope();
+                    final IResource r = theModule.getResource();
+                    if (r != null) {
+                        scope.addModule(theModule);
+                    } else {
+                        externalScope.addModule(theModule);
+                    }
                     final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
-                            .findRefs(ideBackend, pattern, theModule,
-                                    getStateDir());
+                            .findRefs(ideBackend, pattern, scope,
+                                    externalScope, getStateDir());
                     fRefs = getErlangRefs(theModule, findRefs);
                 }
             } catch (final RpcException e) {
