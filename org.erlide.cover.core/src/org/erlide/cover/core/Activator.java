@@ -1,12 +1,19 @@
 package org.erlide.cover.core;
 
-import org.osgi.framework.BundleActivator;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class Activator extends Plugin implements Logger {
+	
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.erlide.cover.core"; //$NON-NLS-1$
 
     private static BundleContext context;
 
+	private static Activator plugin;
+	
     static BundleContext getContext() {
         return context;
     }
@@ -20,6 +27,7 @@ public class Activator implements BundleActivator {
      */
     public void start(final BundleContext bundleContext) throws Exception {
         Activator.context = bundleContext;
+		plugin = this;
     }
 
     /*
@@ -31,5 +39,21 @@ public class Activator implements BundleActivator {
     public void stop(final BundleContext bundleContext) throws Exception {
         Activator.context = null;
     }
+
+	public void info(Object msg) {
+		log(IStatus.INFO, msg);
+	}
+
+	public void error(Object msg) {
+		log(IStatus.ERROR, msg);
+	}
+
+	private void log(int severity, Object msg) {
+		getLog().log(new Status(severity, PLUGIN_ID, String.valueOf(msg)));
+	}
+
+	public static Activator getDefault() {
+		return plugin;
+	}
 
 }

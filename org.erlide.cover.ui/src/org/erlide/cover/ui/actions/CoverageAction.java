@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.actions;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -8,6 +7,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.annotations.EditorTracker;
 import org.erlide.cover.views.model.StatsTreeObject;
@@ -26,7 +26,7 @@ public abstract class CoverageAction extends Action {
     private Logger log;     //logger
 
     public CoverageAction(TreeViewer viewer) {
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
         this.viewer = viewer;
         marker = EditorTracker.getInstance();
     }
@@ -34,7 +34,7 @@ public abstract class CoverageAction extends Action {
     @Override
     public void run() {
         
-        log.debug("show coverage!");
+        log.info("show coverage!");
         
         ISelection selection = viewer.getSelection();
         
@@ -48,7 +48,7 @@ public abstract class CoverageAction extends Action {
 
         ITreeSelection treeSelection = (ITreeSelection) selection;
         
-        log.debug(treeSelection.getFirstElement().getClass());
+        log.info(treeSelection.getFirstElement().getClass());
         
         perform((StatsTreeObject)treeSelection.getFirstElement());
     }

@@ -1,12 +1,9 @@
 package org.erlide.cover.ui.annotations;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -24,7 +21,9 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.ICoverAnnotationMarker;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.LineResult;
 import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
@@ -45,7 +44,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     private EditorTracker(final IWorkbench workbench) {
         this.workbench = workbench;
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
 
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
@@ -177,7 +176,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             ITextEditor editor = (ITextEditor) currentEditor;
 
-            log.debug(fileName);
+            log.info(fileName);
 
             for (final LineResult lr : list) {
 
@@ -223,7 +222,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
                         || (end != -1 && lr.getLineNum() > end))
                     continue;
 
-                log.debug(lr.getLineNum());
+                log.info(lr.getLineNum());
                 if (coverage.containsAnnotation(editor.getTitle(), lr)) {
                     Annotation ann = coverage.getAnnotation(editor.getTitle(),
                             lr);
@@ -242,12 +241,12 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
         final ITextEditor editor = (ITextEditor) part;
 
-        log.debug(editor.getTitle());
+        log.info(editor.getTitle());
 
         if (!coverage.containsFile(editor.getTitle()))
             return;
 
-        log.debug(coverage);
+        log.info(coverage);
 
         final Set<LineResult> list = coverage.getLineSet(editor.getTitle());
 
@@ -270,7 +269,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
         final IAnnotationModel annMod = editor.getDocumentProvider()
                 .getAnnotationModel(editor.getEditorInput());
 
-        log.debug("mark line " + lr.getLineNum());
+        log.info("mark line " + lr.getLineNum());
 
         try {
 
@@ -290,7 +289,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
             Annotation lastAnn = coverage.getAnnotation(editor.getTitle(), lr);
 
-            log.debug(lastAnn);
+            log.info(lastAnn);
 
             if (lastAnn == null) {
                 annMod.addAnnotation(annotation, pos);
@@ -332,7 +331,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
     public void clearAnnotations(final IWorkbenchPart part) {
 
         if (part != null)
-            log.debug(part.getTitle());
+            log.info(part.getTitle());
         if (part instanceof ITextEditor) {
             final ITextEditor editor = (ITextEditor) part;
 

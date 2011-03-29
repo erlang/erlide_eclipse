@@ -3,9 +3,10 @@ package org.erlide.cover.ui.actions;
 import java.io.File;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.erlide.core.ErlangCore;
+import org.erlide.cover.core.Activator;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.MD5Checksum;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageObject;
@@ -25,7 +26,7 @@ public class ShowCoverageAction extends CoverageAction {
 
     public ShowCoverageAction(TreeViewer viewer) {
         super(viewer);
-        log = Logger.getLogger(this.getClass());
+        log = Activator.getDefault();
     }
 
     @Override
@@ -44,8 +45,8 @@ public class ShowCoverageAction extends CoverageAction {
             String name = module.getLabel() + ".erl";
 
             if (ifMarkAnnotations(module)) {
-                log.debug(fs.getLineStart());
-                log.debug(fs.getLineEnd());
+                log.info(fs.getLineStart());
+                log.info(fs.getLineEnd());
                 module.couldBeMarked = true;
                 marker.addAnnotationsFragment(name, fs.getLineStart(),
                         fs.getLineEnd());

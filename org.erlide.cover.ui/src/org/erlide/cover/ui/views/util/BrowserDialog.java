@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views.util;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationEvent;
@@ -15,6 +14,7 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.Images;
 import org.erlide.cover.views.model.ICoverageObject;
@@ -47,7 +47,7 @@ public class BrowserDialog extends Dialog {
 
     public BrowserDialog(final Shell parent, final int style) {
         super(parent, style);
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
 
     public void open() {
@@ -271,12 +271,12 @@ public class BrowserDialog extends Dialog {
         public void changed(LocationEvent event) {
             if (object == null)
                 return;
-            log.debug(event.getSource());
+            log.info(event.getSource());
             String newUrl = browser.getUrl();
             titleLabel.setText(newUrl);
             String name = newUrl.substring(newUrl.lastIndexOf('/') + 1,
                     newUrl.length() - 5);
-            log.debug(name);
+            log.info(name);
             if (name.startsWith("mod_"))
                 name = name.substring(4);
 

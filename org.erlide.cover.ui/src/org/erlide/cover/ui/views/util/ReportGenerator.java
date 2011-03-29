@@ -5,13 +5,13 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.cover.ui.Activator;
+import org.erlide.cover.core.Activator;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.ICoverageObject;
 
 /**
@@ -38,8 +38,7 @@ public class ReportGenerator {
         props.put("file.resource.loader.cache", "true");
 
         ve.init(props);
-        log = Logger.getLogger(getClass());
-        ;
+        log = Activator.getDefault();
     }
 
     public static synchronized ReportGenerator getInstance() {

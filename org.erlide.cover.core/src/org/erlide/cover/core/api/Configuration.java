@@ -4,16 +4,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.cover.core.CoverBackend;
+import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.CoverException;
-import org.erlide.cover.core.CoverStatus;
+import org.erlide.cover.core.Logger;
 
 /**
  * Basic implementation of IConfiguration. Used to tell which modules at which
@@ -31,7 +30,7 @@ public class Configuration implements IConfiguration {
 
     public Configuration() {
         modules = new HashMap<String, IErlModule>();
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
 
     public void setProject(String name) {

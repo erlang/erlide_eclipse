@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -18,6 +17,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.erlide.core.ErlangCore;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.MD5Checksum;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.CoverageHelper;
@@ -45,7 +45,7 @@ public class RestoreAction extends Action {
     public RestoreAction(TreeViewer viewer) {
         this.shell = viewer.getControl().getShell();
         this.viewer = viewer;
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
     }
 
     @Override
@@ -154,7 +154,7 @@ public class RestoreAction extends Action {
             Date d = new Date();
             d.setTime(f.lastModified());
 
-            log.debug(df.format(d));
+            log.info(df.format(d));
 
             StringBuffer buf = new StringBuffer();
             buf.append(f.getName()).append(" (").append(df.format(d))

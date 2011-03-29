@@ -2,7 +2,6 @@ package org.erlide.cover.ui.actions;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IStatus;
@@ -22,6 +21,7 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
@@ -41,14 +41,14 @@ public class OpenItemAction extends Action {
     private Logger log; // logger
 
     public OpenItemAction(TreeViewer viewer) {
-        log = Logger.getLogger(getClass());
+        log = Activator.getDefault();
         this.viewer = viewer;
     }
 
     @Override
     public void run() {
 
-        log.debug("Open item!");
+        log.info("Open item!");
 
         ISelection selection = viewer.getSelection();
 
@@ -113,7 +113,7 @@ public class OpenItemAction extends Action {
             return null;
         }
     	
-    	log.debug(module.getFilePath());
+    	log.info(module.getFilePath());
     	
     	
     	File fileToOpen = new File(module.getFilePath());
@@ -126,7 +126,7 @@ public class OpenItemAction extends Action {
         try {
             IEditorPart p = IDE.openEditorOnFileStore(page, fileStore);
             
-            log.debug(p.getClass());
+            log.info(p.getClass());
             
             return p;
             
