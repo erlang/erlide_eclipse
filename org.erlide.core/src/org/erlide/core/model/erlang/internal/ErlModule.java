@@ -47,9 +47,10 @@ import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.parsing.ErlScanner;
 import org.erlide.core.parsing.ErlToken;
 import org.erlide.core.parsing.ErlangToolkit;
+import org.erlide.core.parsing.IErlScanner;
+import org.erlide.core.services.text.ErlScanner;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -65,7 +66,7 @@ public class ErlModule extends Openable implements IErlModule {
     private String initialText;
     private boolean parsed;
     private final String scannerName;
-    private ErlScanner scanner;
+    private IErlScanner scanner;
     private final boolean useCaches;
     private final Collection<IErlComment> comments;
 
@@ -417,7 +418,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             return;
         }
-        final ErlScanner s = scanner;
+        final IErlScanner s = scanner;
         if (s.willDispose()) {
             scanner = null;
         }
@@ -513,7 +514,7 @@ public class ErlModule extends Openable implements IErlModule {
         scanner.addRef();
     }
 
-    private ErlScanner getNewScanner() {
+    private IErlScanner getNewScanner() {
         final String filePath = getFilePath();
         if (filePath == null) {
             return null;
