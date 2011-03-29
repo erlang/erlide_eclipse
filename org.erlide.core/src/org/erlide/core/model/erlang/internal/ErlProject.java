@@ -41,7 +41,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -66,6 +65,7 @@ import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 

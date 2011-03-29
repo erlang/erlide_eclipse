@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 
 import org.erlide.core.backend.internal.BackendUtil;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
+
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";
 

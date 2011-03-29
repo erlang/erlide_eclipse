@@ -18,12 +18,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
