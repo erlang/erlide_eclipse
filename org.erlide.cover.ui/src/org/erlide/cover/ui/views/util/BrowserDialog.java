@@ -102,7 +102,7 @@ public class BrowserDialog extends Dialog {
         browser.setLayoutData(browserLData);
        // browser.setUrl(url);
         browser.setText(ReportGenerator.getInstance().getHTMLreport(object));
-        log.debug(ReportGenerator.getInstance().getHTMLreport(object));
+        log.info(ReportGenerator.getInstance().getHTMLreport(object));
         browser.addLocationListener(locationListener);
         browser.addLocationListener(new LocationListener() {
 
