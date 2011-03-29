@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.cover.ui.Activator;
-import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.ui.Images;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.StatsTreeModel;
@@ -24,7 +23,7 @@ import org.erlide.cover.views.model.StatsTreeModel;
 /**
  * Dialog for HTML browser
  * 
- * @author Aleksandra Lipiec <sleksandra.lipiec@erlang-solutions.com>
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * 
  */
 public class BrowserDialog extends Dialog {
@@ -105,6 +104,18 @@ public class BrowserDialog extends Dialog {
         browser.setText(ReportGenerator.getInstance().getHTMLreport(object));
         log.debug(ReportGenerator.getInstance().getHTMLreport(object));
         browser.addLocationListener(locationListener);
+        browser.addLocationListener(new LocationListener() {
+
+            public void changing(LocationEvent event) {
+                //TODO implement
+            }
+
+            public void changed(LocationEvent event) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+        });
 
         comp = new Composite(dialogShell, SWT.NONE);
         GridLayout compLayout = new GridLayout();

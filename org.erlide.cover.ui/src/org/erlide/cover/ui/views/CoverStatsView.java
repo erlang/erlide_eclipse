@@ -119,7 +119,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 openItem.setEnabled(true);
                 break;
             case FOLDER:
-                showHtml.setEnabled(false);
+                showHtml.setEnabled(true);
                 showCoverage.setEnabled(false);
                 hideCoverage.setEnabled(false);
                 openItem.setEnabled(false);
