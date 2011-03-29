@@ -23,7 +23,7 @@ import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.services.text.ErlToken;
+import org.erlide.core.parsing.ErlToken;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

@@ -25,7 +25,7 @@ import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
-import org.erlide.core.services.text.ErlideNoparse;
+import org.erlide.core.parsing.ErlideNoparse;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;

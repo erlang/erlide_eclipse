@@ -36,8 +36,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.services.builder.BuilderVisitor;
-import org.erlide.core.internal.services.builder.ErlideBuilder;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
@@ -47,6 +45,8 @@ import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.services.builder.internal.BuilderVisitor;
+import org.erlide.core.services.builder.internal.ErlideBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

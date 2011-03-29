@@ -1,4 +1,4 @@
-package org.erlide.core.services.text;
+package org.erlide.core.parsing;
 
 import java.util.ArrayList;
 import java.util.List;

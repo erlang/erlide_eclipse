@@ -1,7 +1,7 @@
 package org.erlide.core.backend.console;
 
 import org.erlide.core.backend.Backend;
-import org.erlide.core.internal.backend.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

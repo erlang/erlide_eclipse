@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.services.builder;
+package org.erlide.core.services.builder.internal;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;

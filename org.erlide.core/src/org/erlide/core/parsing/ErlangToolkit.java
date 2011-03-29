@@ -1,4 +1,4 @@
-package org.erlide.core.services.text;
+package org.erlide.core.parsing;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.common.Assert;
