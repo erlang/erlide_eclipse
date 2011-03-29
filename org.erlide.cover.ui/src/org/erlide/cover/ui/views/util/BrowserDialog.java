@@ -23,7 +23,7 @@ import org.erlide.cover.views.model.StatsTreeModel;
 /**
  * Dialog for HTML browser
  * 
- * @author Aleksandra Lipiec <sleksandra.lipiec@erlang-solutions.com>
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * 
  */
 public class BrowserDialog extends Dialog {
