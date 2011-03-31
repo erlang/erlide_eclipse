@@ -12,6 +12,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -59,8 +60,16 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
     private ElementListSelectionDialog moduleDialog;
 
     public void createControl(final Composite parent) {
+     //   final ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL);
         final Composite comp = new Composite(parent, SWT.NONE);
+      //  scrolled.setContent(comp);
+      //  scrolled.setExpandVertical(true);
         setControl(comp);
+        
+        
+       // 
+       // comp.setMinSize(SWT.DEFAULT, SWT.DEFAULT);
+       
 
         final GridLayout mainLayout = new GridLayout();
         mainLayout.numColumns = 3;

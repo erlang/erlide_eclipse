@@ -1,6 +1,8 @@
 <html>
 <head>
-<link rel="Stylesheet" type="text/css" href="$css_path" />
+    <style type="text/css">
+		$css
+	</style>
 </head>
 <body>
 <div class="title">Cover plugin for ErlIde - coverage report (generated at $date) </div>
