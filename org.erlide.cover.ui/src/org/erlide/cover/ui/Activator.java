@@ -1,9 +1,9 @@
 package org.erlide.cover.ui;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.erlide.cover.core.LogUtils;
 import org.erlide.cover.core.Logger;
 import org.osgi.framework.BundleContext;
 
@@ -72,16 +72,12 @@ public class Activator extends AbstractUIPlugin implements Logger {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-	public void info(Object msg) {
-		log(IStatus.INFO, msg);
-	}
+    public void info(Object msg) {
+        LogUtils.log(this, IStatus.INFO, msg, 1);
+    }
 
-	public void error(Object msg) {
-		log(IStatus.ERROR, msg);
-	}
-
-	private void log(int severity, Object msg) {
-		getLog().log(new Status(severity, PLUGIN_ID, String.valueOf(msg)));
-	}
+    public void error(Object msg) {
+        LogUtils.log(this, IStatus.ERROR, msg, 1);
+    }
 
 }
