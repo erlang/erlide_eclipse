@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local-project language="java" associate="file:/C:/Apps/erlide/meta/architecture/erlide" version="3.4.1171" flavor="j2se">
+<local-project language="java" version="3.4.1171" flavor="j2se">
   <property name="hide-externals" value="true" />
   <property name="show-needs-to-compile" value="false" />
   <property name="detail-mode" value="true" />
   <classpath relativeto="C:\Apps\erlide\meta\architecture">
-    <classpathentry kind="lib" path="C:\Apps\erlide\org.erlide.core\bin" />
+    <classpathentry kind="lib" path="..\..\org.erlide.core\bin" />
   </classpath>
   <transformations>
     <transformation in="org.erlide.core.*" out="*" />
