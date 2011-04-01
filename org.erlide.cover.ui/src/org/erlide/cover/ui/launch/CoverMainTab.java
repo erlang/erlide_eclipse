@@ -60,16 +60,17 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
     private ElementListSelectionDialog moduleDialog;
 
     public void createControl(final Composite parent) {
-     //   final ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.BORDER | SWT.V_SCROLL);
-        final Composite comp = new Composite(parent, SWT.NONE);
-      //  scrolled.setContent(comp);
-      //  scrolled.setExpandVertical(true);
-        setControl(comp);
-        
-        
-       // 
-       // comp.setMinSize(SWT.DEFAULT, SWT.DEFAULT);
-       
+        final ScrolledComposite scrolled = new ScrolledComposite(parent,
+                SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        final Composite comp = new Composite(scrolled, SWT.NONE);
+        scrolled.setContent(comp);
+        scrolled.setExpandVertical(true);
+        scrolled.setExpandHorizontal(true);
+        scrolled.setMinSize(760, 400);
+        setControl(scrolled);
+
+        //
+        // comp.setMinSize(SWT.DEFAULT, SWT.DEFAULT);
 
         final GridLayout mainLayout = new GridLayout();
         mainLayout.numColumns = 3;
