@@ -68,12 +68,9 @@ compile_dir(Dir) ->
 prepare(eunit, Arg) ->	
 	case eunit:test(Arg) of
 			ok ->
-				erlide_jrpc:event(?EVENT, {Arg, test_ok}),
-				ok;
-			Er ->
-				{error, #cover_error{place = Arg,
-									 type = testing,
-									 info = Er}}
+				erlide_jrpc:event(?EVENT, {Arg, test_ok});
+			_Err ->
+				erlide_jrpc:event(?EVENT, {Arg, test_failed})
 	end.
 
 %creates html report
