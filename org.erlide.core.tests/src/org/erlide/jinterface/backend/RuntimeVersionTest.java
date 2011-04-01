@@ -2,8 +2,9 @@ package org.erlide.jinterface.backend;
 
 import junit.framework.Assert;
 
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.junit.Test;
+
+import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class RuntimeVersionTest {
 

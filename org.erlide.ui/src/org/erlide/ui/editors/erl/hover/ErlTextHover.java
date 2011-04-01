@@ -38,7 +38,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.manager.BackendManager;
@@ -49,11 +49,11 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.core.services.text.ErlToken;
-import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
@@ -277,7 +277,7 @@ public class ErlTextHover implements ITextHover,
             final RpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlangScope.getModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
             r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,

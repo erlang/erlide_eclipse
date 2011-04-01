@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -28,27 +27,22 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendListener;
-import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.CodeBundle.CodeContext;
-import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlideBackendVisitor;
-import org.erlide.core.backend.launching.ErlangLaunchDelegate;
+import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.backend.internal.CodeBundleImpl;
+import org.erlide.core.backend.internal.EpmdWatchJob;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
-import org.erlide.core.internal.backend.BackendUtil;
-import org.erlide.core.internal.backend.CodeBundleImpl;
-import org.erlide.core.internal.backend.EpmdWatchJob;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
@@ -108,7 +102,7 @@ public final class BackendManager implements IEpmdListener {
 
     public Backend getBuildBackend(final IProject project)
             throws BackendException {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
                 project);
         if (erlProject == null) {
             return null;
@@ -133,46 +127,6 @@ public final class BackendManager implements IEpmdListener {
         }
         b.addProjectPath(project);
         return b;
-    }
-
-    private ILaunchConfiguration getLaunchConfiguration(final RuntimeInfo info,
-            final Set<BackendOptions> options) {
-        final ILaunchManager manager = DebugPlugin.getDefault()
-                .getLaunchManager();
-        final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
-        ILaunchConfigurationWorkingCopy workingCopy;
-        try {
-            final String name = getLaunchName(info, options);
-            workingCopy = type.newInstance(null, name);
-            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-                    "ISO-8859-1");
-            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
-                    info.getNodeName());
-            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                    info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
-                    info.getCookie());
-            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
-                    !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL,
-                    options.contains(BackendOptions.INTERNAL));
-            if (System.getProperty("erlide.internal.shortname", "false")
-                    .equals("true")) {
-                workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                        false);
-                info.useLongName(false);
-            }
-            return workingCopy;
-        } catch (final CoreException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getLaunchName(final RuntimeInfo info,
-            final Set<BackendOptions> options) {
-        return "internal_" + info.getNodeName();
     }
 
     public synchronized Set<Backend> getExecutionBackends(final IProject project) {

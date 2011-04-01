@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.internal.backend;
+package org.erlide.core.backend.internal;
 
 import org.eclipse.core.runtime.Assert;
 import org.erlide.core.backend.Backend;

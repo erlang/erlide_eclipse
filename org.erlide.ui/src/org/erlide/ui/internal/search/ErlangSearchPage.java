@@ -39,7 +39,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
@@ -625,9 +625,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final ErlangEditor erlangEditor = (ErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
-            // TODO how in the world can we find the proper build
-            // backend?
-            final RpcCallSite b = BackendCore.getBackendManager()
+            final RpcCallSite backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();
@@ -635,9 +633,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int offset = textSel.getOffset();
             OpenResult res;
             try {
-                res = ErlideOpen.open(b, module, offset,
-                        ModelUtils.getImportsAsList(module), "",
-                        ErlangCore.getModel().getPathVars());
+                res = ErlideOpen.open(backend, module, offset, ModelUtils
+                        .getImportsAsList(module), "", ErlangScope.getModel()
+                        .getPathVars());
             } catch (final RpcException e) {
                 res = null;
             }

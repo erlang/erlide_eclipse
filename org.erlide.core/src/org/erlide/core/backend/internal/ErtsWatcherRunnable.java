@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.backend;
+package org.erlide.core.backend.internal;
 
 import java.io.File;
 import java.io.FileInputStream;

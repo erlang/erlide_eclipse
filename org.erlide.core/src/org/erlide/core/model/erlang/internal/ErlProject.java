@@ -37,11 +37,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -66,6 +65,7 @@ import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -150,7 +150,7 @@ public class ErlProject extends Openable implements IErlProject {
             ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
             ErlLogger.debug("childcount %d", children.size());
-            final IErlModelManager modelManager = ErlangCore.getModelManager();
+            final IErlModelManager modelManager = ErlangScope.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
                     final IFolder folder = (IFolder) element;
@@ -1106,7 +1106,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }
         if (scope == Scope.ALL_PROJECTS) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlangScope.getModel();
             for (final IErlProject project2 : model.getErlangProjects()) {
                 if (!projects.contains(project2)) {
                     projects.add(project2);
@@ -1143,7 +1143,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }
         if (scope == Scope.ALL_PROJECTS) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlangScope.getModel();
             for (final IErlProject project2 : model.getErlangProjects()) {
                 if (!projects.contains(project2)) {
                     projects.add(project2);

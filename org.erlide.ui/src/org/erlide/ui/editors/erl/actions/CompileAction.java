@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.MessageReporter;
 import org.erlide.core.model.erlang.IErlModule;
@@ -58,7 +58,7 @@ public class CompileAction extends Action {
             e1.printStackTrace();
         }
         final OtpErlangList compilerOptions = prefs.export();
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
                 project);
 
         if ("erl".equals(resource.getFileExtension())) {

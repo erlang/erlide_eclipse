@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.erlide.core.internal.backend.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtil;
+
+import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";

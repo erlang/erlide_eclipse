@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.erlide.core.internal.services.builder;
+package org.erlide.core.services.builder.internal;
 
 import java.util.Set;
 
@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
@@ -52,7 +52,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
     private boolean visit(final IResource resource, final int kind,
             final boolean fullBuild) {
         if (resource.getType() == IResource.PROJECT) {
-            erlProject = ErlangCore.getModel().getErlangProject(
+            erlProject = ErlangScope.getModel().getErlangProject(
                     (IProject) resource);
             return true;
         }

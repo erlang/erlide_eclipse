@@ -9,7 +9,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.services.text.ErlToken;
+import org.erlide.core.parsing.ErlToken;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;

@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.services.text.ErlangToolkit;
+import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**

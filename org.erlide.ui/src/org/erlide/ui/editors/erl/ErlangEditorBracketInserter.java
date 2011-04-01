@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.services.text.ErlToken;
+import org.erlide.core.parsing.ErlToken;
 import org.erlide.core.services.text.ErlideScanner;
 import org.erlide.jinterface.ErlLogger;
 

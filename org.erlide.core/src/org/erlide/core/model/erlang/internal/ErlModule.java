@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -46,9 +46,10 @@ import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
+import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.parsing.ErlangToolkit;
+import org.erlide.core.parsing.IErlScanner;
 import org.erlide.core.services.text.ErlScanner;
-import org.erlide.core.services.text.ErlToken;
-import org.erlide.core.services.text.ErlangToolkit;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -64,7 +65,7 @@ public class ErlModule extends Openable implements IErlModule {
     private String initialText;
     private boolean parsed;
     private final String scannerName;
-    private ErlScanner scanner;
+    private IErlScanner scanner;
     private final boolean useCaches;
     private final Collection<IErlComment> comments;
 
@@ -94,16 +95,19 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             parsed = false;
         }
-        final boolean initialParse = !parsed;
         if (scanner == null) {
             // There are two places that we make the initial scanner... this
             // is one
             getScanner();
         }
         getScanner();
-        parsed = ErlParser.parse(this, scannerName, initialParse,
-                getFilePath(), useCaches);
-        disposeScanner();
+        try {
+            final ErlParser parser = new ErlParser();
+            parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
+                    useCaches);
+        } finally {
+            disposeScanner();
+        }
         return parsed;
     }
 
@@ -111,8 +115,10 @@ public class ErlModule extends Openable implements IErlModule {
     protected synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
-            final ErlModel model = getModel();
-            model.notifyChange(this);
+            final ErlModel model = (ErlModel) ErlangScope.getModel();
+            if (model != null) {
+                model.notifyChange(this);
+            }
             final IResource r = getResource();
             if (r instanceof IFile) {
                 timestamp = ((IFile) r).getLocalTimeStamp();
@@ -414,7 +420,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             return;
         }
-        final ErlScanner s = scanner;
+        final IErlScanner s = scanner;
         if (s.willDispose()) {
             scanner = null;
         }
@@ -437,7 +443,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public void dispose() {
         disposeScanner();
-        ErlangCore.getModelManager().removeModule(this);
+        ErlangScope.getModelManager().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
@@ -510,7 +516,7 @@ public class ErlModule extends Openable implements IErlModule {
         scanner.addRef();
     }
 
-    private ErlScanner getNewScanner() {
+    private IErlScanner getNewScanner() {
         final String filePath = getFilePath();
         if (filePath == null) {
             return null;

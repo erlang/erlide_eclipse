@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.runtimeinfo;
+package com.ericsson.otp.erlang;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.erlide.core.common.Assert;
+import org.erlide.jinterface.Assert;
 
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 
