@@ -107,8 +107,8 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
@@ -2214,7 +2214,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 final int offset = selection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend, theModule,
                         offset, ModelUtils.getImportsAsList(theModule), "",
-                        ErlangCore.getModel().getPathVars());
+                        ErlangScope.getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);

@@ -11,7 +11,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.ErlModelStatusConstants;
@@ -40,7 +40,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IErlModelManager manager = ErlangCore.getModelManager();
+        final IErlModelManager manager = ErlangScope.getModelManager();
         final IContainer c = (IContainer) getResource();
         try {
             // FIXME this is general stuff, should we put it in model or
@@ -114,7 +114,7 @@ public class ErlFolder extends Openable implements IErlFolder {
         /*
          * Get the project settings so that we can find the source nodes
          */
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
                 project);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         final IPath path = folder.getFullPath();

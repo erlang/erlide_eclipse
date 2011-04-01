@@ -1,4 +1,4 @@
-package org.erlide.core.internal.services.builder;
+package org.erlide.core.services.builder.internal;
 
 import java.util.Collection;
 import java.util.List;

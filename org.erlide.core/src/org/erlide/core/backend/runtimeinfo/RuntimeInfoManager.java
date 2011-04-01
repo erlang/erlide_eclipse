@@ -30,6 +30,8 @@ import org.erlide.core.common.PreferencesUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
+
 public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     private RuntimeInfo erlideRuntime;

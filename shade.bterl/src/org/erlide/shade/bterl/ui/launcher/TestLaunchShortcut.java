@@ -24,7 +24,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -136,7 +136,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 if (sel instanceof ITextSelection && !sel.isEmpty()) {
                     final ITextSelection tsel = (ITextSelection) sel;
                     try {
-                        final IErlModule module = ErlangCore.getModel()
+                        final IErlModule module = ErlangScope.getModel()
                                 .findModule(file);
                         if (module != null) {
                             result = module.getElementAt(tsel.getOffset());

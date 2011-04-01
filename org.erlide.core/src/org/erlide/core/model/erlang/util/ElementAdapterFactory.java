@@ -2,7 +2,7 @@ package org.erlide.core.model.erlang.util;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.model.erlang.IErlElement;
 
 public class ElementAdapterFactory implements IAdapterFactory {
@@ -15,7 +15,7 @@ public class ElementAdapterFactory implements IAdapterFactory {
             final Class adapterType) {
         if (adapterType == IErlElement.class
                 && adaptableObject instanceof IResource) {
-            return ErlangCore.getModel().findElement(
+            return ErlangScope.getModel().findElement(
                     (IResource) adaptableObject);
         }
         return null;

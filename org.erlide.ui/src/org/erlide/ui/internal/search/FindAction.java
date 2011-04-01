@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlElement;
@@ -227,7 +227,7 @@ public abstract class FindAction extends SelectionDispatchAction {
         final int offset = textSel.getOffset();
         try {
             final OpenResult res = ErlideOpen.open(b, module, offset,
-                    ModelUtils.getImportsAsList(module), "", ErlangCore
+                    ModelUtils.getImportsAsList(module), "", ErlangScope
                             .getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil

@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlElement;
@@ -462,7 +462,7 @@ public class ErlModel extends Openable implements IErlModel {
             element = findElement(file, true);
         }
         if (element == null) {
-            return (IErlModule) ErlangCore.getModelManager().create(file);
+            return (IErlModule) ErlangScope.getModelManager().create(file);
         }
         return (IErlModule) element;
     }

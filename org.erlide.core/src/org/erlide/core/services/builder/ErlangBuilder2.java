@@ -27,15 +27,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.internal.services.builder.BuildNotifier;
-import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.rpc.RpcEventHandler;
 import org.erlide.core.rpc.RpcEventProcessor;
+import org.erlide.core.services.builder.internal.BuildNotifier;
+import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -65,7 +65,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = ErlangScope.getModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
@@ -140,7 +140,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                 notifier.setProgressPerCompilationUnit(1.0f / n);
 
                 final IPath projectPath = project.getLocation();
-                final IErlProject erlProject = ErlangCore.getModel()
+                final IErlProject erlProject = ErlangScope.getModel()
                         .getErlangProject(project);
                 final String outputDir = projectPath.append(
                         erlProject.getOutputLocation()).toString();

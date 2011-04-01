@@ -13,13 +13,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.services.builder.BuilderMessages;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.rpc.RpcException;
+import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
@@ -43,7 +43,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (!prefs.getDialyzeOnCompile()) {
             return null;
         }
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = ErlangScope.getModel();
         final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
         DialyzerUtils.addModulesFromResource(model, project, modules);
         if (modules.size() != 0) {

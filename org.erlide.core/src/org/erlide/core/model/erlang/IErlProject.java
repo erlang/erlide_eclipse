@@ -17,8 +17,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.osgi.service.prefs.BackingStoreException;
+
+import com.ericsson.otp.erlang.RuntimeVersion;
 
 /**
  * An Erlang project represents a view of a project resource in terms of Erlang

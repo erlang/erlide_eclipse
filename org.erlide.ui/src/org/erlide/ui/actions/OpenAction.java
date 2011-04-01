@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -144,7 +144,7 @@ public class OpenAction extends SelectionDispatchAction {
         final int offset = selection.getOffset();
         try {
             final IErlProject project = module.getProject();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlangScope.getModel();
             final OpenResult res = ErlideOpen.open(b, module, offset,
                     ModelUtils.getImportsAsList(module),
                     project.getExternalModulesString(), model.getPathVars());
@@ -197,7 +197,7 @@ public class OpenAction extends SelectionDispatchAction {
         final IErlElement element = editor.getElementAt(offset, true);
         final Scope scope = NavigationPreferencePage.getCheckAllProjects() ? Scope.ALL_PROJECTS
                 : Scope.REFERENCED_PROJECTS;
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = ErlangScope.getModel();
         Object found = null;
         if (res.isExternalCall()) {
             found = findExternalCallOrType(module, res, erlProject, element,
@@ -250,7 +250,7 @@ public class OpenAction extends SelectionDispatchAction {
         String moduleName = null;
         final IErlImport ei = module.findImport(res.getFunction());
         if (ei != null) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlangScope.getModel();
             moduleName = ei.getImportModule();
             res2 = ErlideOpen.getSourceFromModule(backend, model.getPathVars(),
                     moduleName, erlProject.getExternalModulesString());

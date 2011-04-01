@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  ******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.jinterface;
 
 /* This class is not intended to be instantiated. */
 public final class Assert {
