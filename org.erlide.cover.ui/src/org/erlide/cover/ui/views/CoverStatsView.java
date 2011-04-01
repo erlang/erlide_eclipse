@@ -102,6 +102,9 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
             ICoverageObject obj = (ICoverageObject) treeSelection
                     .getFirstElement();
 
+            if (obj == null)
+                return;
+
             switch (obj.getType()) {
             case FUNCTION:
                 showHtml.setEnabled(false);
