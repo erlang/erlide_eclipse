@@ -51,7 +51,8 @@ public class ParsingTests {
         final String scannerModuleName = ErlangToolkit
                 .createScannerModuleName(module);
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        return ErlParser.parse(module, scannerModuleName, false, "", false);
+        ErlParser parser = new ErlParser();
+        return parser.parse(module, scannerModuleName, false, "", false);
     }
 
     @Test

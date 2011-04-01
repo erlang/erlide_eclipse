@@ -96,16 +96,19 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             parsed = false;
         }
-        final boolean initialParse = !parsed;
         if (scanner == null) {
             // There are two places that we make the initial scanner... this
             // is one
             getScanner();
         }
         getScanner();
-        parsed = ErlParser.parse(this, scannerName, initialParse,
-                getFilePath(), useCaches);
-        disposeScanner();
+        try {
+            ErlParser parser = new ErlParser();
+            parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
+                    useCaches);
+        } finally {
+            disposeScanner();
+        }
         return parsed;
     }
 
