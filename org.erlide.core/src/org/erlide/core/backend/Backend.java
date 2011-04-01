@@ -38,8 +38,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
@@ -532,7 +532,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public void addProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = ErlangScope.getModel().findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -566,7 +566,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public void removeProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = ErlangScope.getModel().findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {

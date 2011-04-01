@@ -54,8 +54,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.manager.BackendManager;
@@ -398,7 +398,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlangScope.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();

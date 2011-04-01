@@ -18,8 +18,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.rpc.RpcCallSite;
@@ -75,7 +75,7 @@ public final class ErlideUtil {
             final IFolder folder) {
         final IProject project = folder.getProject();
         final IPath folderPath = folder.getFullPath();
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
                 project);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath p : sourcePaths) {

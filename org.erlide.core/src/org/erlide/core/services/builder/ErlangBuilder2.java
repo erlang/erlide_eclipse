@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
@@ -65,7 +65,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = ErlangScope.getModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
@@ -140,7 +140,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                 notifier.setProgressPerCompilationUnit(1.0f / n);
 
                 final IPath projectPath = project.getLocation();
-                final IErlProject erlProject = ErlangCore.getModel()
+                final IErlProject erlProject = ErlangScope.getModel()
                         .getErlangProject(project);
                 final String outputDir = projectPath.append(
                         erlProject.getOutputLocation()).toString();

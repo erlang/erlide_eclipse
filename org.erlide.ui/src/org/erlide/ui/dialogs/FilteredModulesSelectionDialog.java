@@ -69,7 +69,7 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.erlang.IErlModel;
@@ -596,7 +596,7 @@ public class FilteredModulesSelectionDialog extends
             // couldn't we just assume all links in external files should be
             // matchable?
             if (project == resource && accessible) {
-                final IErlModel model = ErlangCore.getModel();
+                final IErlModel model = ErlangScope.getModel();
                 final IErlProject erlProject = model.findProject(project);
                 final String extMods = erlProject.getExternalModulesString();
                 final List<String> files = new ArrayList<String>();
@@ -659,7 +659,7 @@ public class FilteredModulesSelectionDialog extends
         }
 
         private void addPaths(final IProject project) {
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = ErlangScope.getModel()
                     .getErlangProject(project);
             validPaths.addAll(PluginUtils.getFullPaths(project,
                     erlProject.getIncludeDirs()));

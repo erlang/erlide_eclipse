@@ -37,7 +37,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
@@ -928,7 +927,7 @@ public final class ErlModelManager implements IErlModelManager {
                         // CCorePlugin.log(exception, "Exception occurred in
                         // listener of C
                         // element change notification"); //$NON-NLS-1$
-                        ErlangPlugin.getDefault().log(exception);
+                        ErlLogger.error(exception);
                     }
 
                     public void run() throws Exception {

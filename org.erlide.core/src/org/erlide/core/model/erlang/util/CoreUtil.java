@@ -23,7 +23,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
@@ -215,7 +215,7 @@ public final class CoreUtil {
     public static void loadModuleViaInput(final Backend b,
             final IProject project, final String module)
             throws ErlModelException, IOException {
-        final IErlProject p = ErlangCore.getModel().findProject(project);
+        final IErlProject p = ErlangScope.getModel().findProject(project);
         final IPath outputLocation = project.getFolder(p.getOutputLocation())
                 .getFile(module + ".beam").getLocation();
         final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,

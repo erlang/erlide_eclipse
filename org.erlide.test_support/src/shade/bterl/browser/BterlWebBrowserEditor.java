@@ -13,7 +13,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.internal.browser.DefaultBrowserSupport;
 import org.eclipse.ui.internal.browser.WebBrowserEditor;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -95,7 +95,7 @@ public class BterlWebBrowserEditor extends WebBrowserEditor {
 
         IErlModule mod;
         try {
-            mod = ErlangCore.getModel().findModuleIgnoreCase(module);
+            mod = ErlangScope.getModel().findModuleIgnoreCase(module);
         } catch (final ErlModelException e) {
             mod = null;
         }

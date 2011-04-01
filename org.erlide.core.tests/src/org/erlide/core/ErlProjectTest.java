@@ -186,7 +186,7 @@ public class ErlProjectTest {
 		// looking for lists:reverse/2 and lists:reverse/1
 		final RpcCallSite backend = BackendCore.getBackendManager()
 				.getIdeBackend();
-		final IErlModel model = ErlangCore.getModel();
+		final IErlModel model = ErlangScope.getModel();
 		final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
 				ModelUtils.getImportsAsList(moduleE),
 				project.getExternalModulesString(), model.getPathVars());

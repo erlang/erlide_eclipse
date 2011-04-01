@@ -57,7 +57,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.erlide.core.ErlangCoreOptions;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.SyntaxColorPreviewEditorConfiguration;
@@ -579,7 +579,7 @@ public class ColoringPreferencePage extends PreferencePage implements
                 buffer.append(separator);
             }
         } catch (final IOException io) {
-            ErlangPlugin.getDefault().log(io);
+            ErlLogger.error(io);
         } finally {
             if (reader != null) {
                 try {

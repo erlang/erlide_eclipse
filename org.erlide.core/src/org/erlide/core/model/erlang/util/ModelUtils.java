@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangScope;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -70,7 +70,7 @@ public class ModelUtils {
     public static String getExternalModulePath(final IErlModule module) {
         final List<String> result = Lists.newArrayList();
         IErlElement element = module;
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = ErlangScope.getModel();
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
@@ -101,7 +101,7 @@ public class ModelUtils {
     public static IErlModule getModuleFromExternalModulePath(
             final String modulePath) throws ErlModelException {
         final List<String> path = StringUtils.split(DELIMITER, modulePath);
-        final IErlElement childNamed = ErlangCore.getModel().getChildNamed(
+        final IErlElement childNamed = ErlangScope.getModel().getChildNamed(
                 path.get(0));
         ErlLogger.debug(">>childNamed %s", (childNamed == null ? "<null>"
                 : childNamed.getName()));
@@ -200,7 +200,7 @@ public class ModelUtils {
         if (project != null) {
             return project.findModule(moduleName, modulePath, scope);
         }
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = ErlangScope.getModel();
         if (scope == Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
         }
