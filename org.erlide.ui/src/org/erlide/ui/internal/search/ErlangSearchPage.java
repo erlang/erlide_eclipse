@@ -604,28 +604,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         } else if (sel instanceof ITextSelection) {
             final IEditorPart activePart = getActiveEditor();
             if (activePart instanceof ErlangEditor) {
-                final ErlangEditor erlangEditor = (ErlangEditor) activePart;
-                final IErlModule module = erlangEditor.getModule();
-                if (module != null) {
-                    // TODO how in the world can we find the proper build
-                    // backend?
-                    final RpcCallSite b = BackendCore.getBackendManager()
-                            .getIdeBackend();
-                    final ISelection ssel = erlangEditor.getSite()
-                            .getSelectionProvider().getSelection();
-                    final ITextSelection textSel = (ITextSelection) ssel;
-                    final int offset = textSel.getOffset();
-                    OpenResult res;
-                    try {
-                        res = ErlideOpen.open(b, module, offset,
-                                ModelUtils.getImportsAsList(module), "",
-                                ErlangCore.getModel().getPathVars());
-                    } catch (final RpcException e) {
-                        res = null;
-                    }
-                    ErlLogger.debug("searchPage(open) " + res);
-                    initData = determineInitValuesFrom(module, offset, res);
-                }
+                initData = tryErlangTextSelection(initData, activePart);
             }
             if (initData == null) {
                 initData = trySimpleTextSelection((ITextSelection) sel);
@@ -639,6 +618,33 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
         fPattern.setText(initData.getPattern());
         setSearchFor(initData.getSearchFor());
+    }
+
+    public SearchPatternData tryErlangTextSelection(SearchPatternData initData,
+            final IEditorPart activePart) {
+        final ErlangEditor erlangEditor = (ErlangEditor) activePart;
+        final IErlModule module = erlangEditor.getModule();
+        if (module != null) {
+            // TODO how in the world can we find the proper build
+            // backend?
+            final RpcCallSite b = BackendCore.getBackendManager()
+                    .getIdeBackend();
+            final ISelection ssel = erlangEditor.getSite()
+                    .getSelectionProvider().getSelection();
+            final ITextSelection textSel = (ITextSelection) ssel;
+            final int offset = textSel.getOffset();
+            OpenResult res;
+            try {
+                res = ErlideOpen.open(b, module, offset,
+                        ModelUtils.getImportsAsList(module), "",
+                        ErlangCore.getModel().getPathVars());
+            } catch (final RpcException e) {
+                res = null;
+            }
+            ErlLogger.debug("searchPage(open) " + res);
+            initData = determineInitValuesFrom(module, offset, res);
+        }
+        return initData;
     }
 
     private SearchPatternData tryStructuredSelection(

@@ -75,7 +75,7 @@ public class ErlSearchQuery implements ISearchQuery {
     }
 
     public boolean canRunInBackground() {
-        return false;
+        return true;
     }
 
     public String getLabel() {
