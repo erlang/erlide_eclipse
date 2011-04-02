@@ -123,10 +123,9 @@ public final class ErlangCore {
 
     private final BundleContext context;
     private final ServicesMap<IService> services;
-    private final ErlangPlugin plugin;
+    private final Plugin plugin;
 
-    public ErlangCore(final ErlangPlugin plugin,
-            final BundleContext bundleContext,
+    public ErlangCore(final Plugin plugin, final BundleContext bundleContext,
             final ServicesMap<IService> services) {
         context = bundleContext;
         this.services = services;
@@ -220,7 +219,7 @@ public final class ErlangCore {
         }
     }
 
-    public void start() throws CoreException {
+    public void start(final String version) throws CoreException {
         String dev = "";
         if (CommonUtils.isDeveloper()) {
             dev = " erlide developer version ***";
@@ -228,7 +227,6 @@ public final class ErlangCore {
         if (CommonUtils.isTest()) {
             dev += " test ***";
         }
-        final String version = plugin.getFeatureVersion();
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
