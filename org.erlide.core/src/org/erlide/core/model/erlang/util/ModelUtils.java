@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
@@ -43,8 +42,6 @@ import com.google.common.collect.Sets;
 
 public class ModelUtils {
 
-    public static final String EXTERNAL_FILES_PROJECT_NAME = "External_Files";
-
     private static final String DELIMITER = "<>";
 
     public static IErlTypespec findTypespec(final IErlModule module,
@@ -61,10 +58,6 @@ public class ModelUtils {
             }
         }
         return null;
-    }
-
-    public static boolean isExternalFilesProject(final IProject project) {
-        return project.getName().equals(EXTERNAL_FILES_PROJECT_NAME);
     }
 
     public static String getExternalModulePath(final IErlModule module) {
