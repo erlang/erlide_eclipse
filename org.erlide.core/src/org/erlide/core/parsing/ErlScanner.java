@@ -8,11 +8,9 @@
  *     Eric Merritt
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.services.text;
+package org.erlide.core.parsing;
 
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.parsing.ErlToken;
-import org.erlide.core.parsing.IErlScanner;
 
 /**
  * Erlang syntax scanner
