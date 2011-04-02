@@ -50,7 +50,6 @@ import org.erlide.core.backend.internal.CodeManager;
 import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;

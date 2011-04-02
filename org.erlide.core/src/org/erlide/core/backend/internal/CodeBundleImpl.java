@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.erlide.core.backend.BeamUtil;
 import org.erlide.core.backend.CodeBundle;
-import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.Tuple;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
