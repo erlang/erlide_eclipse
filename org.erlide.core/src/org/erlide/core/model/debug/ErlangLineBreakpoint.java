@@ -26,7 +26,6 @@ import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
 import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangLineBreakpoint extends Breakpoint implements
@@ -52,7 +51,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
             public void run(final IProgressMonitor monitor)
                     throws CoreException {
-                final IMarker marker = MarkerUtils
+                final IMarker marker = DebugMarkerUtils
                         .createErlangLineBreakpointMarker(resource, lineNumber,
                                 getModelIdentifier());
                 setMarker(marker);
