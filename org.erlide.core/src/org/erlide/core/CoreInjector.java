@@ -8,8 +8,7 @@ import org.eclipse.core.runtime.Platform;
 public class CoreInjector {
 
     public static ErlangCore injectErlangCore(final CoreScope coreScope) {
-        return new ErlangCore(coreScope.getPlugin(),
-                coreScope.getBundleContext(), null);
+        return new ErlangCore(coreScope.getPlugin(), null);
     }
 
     public IWorkspace injectWorkspace() {

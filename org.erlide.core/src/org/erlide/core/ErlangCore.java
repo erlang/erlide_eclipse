@@ -30,104 +30,15 @@ import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
-import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class ErlangCore {
 
     private ErlLogger logger;
-
-    /**
-     * Runs the given action as an atomic Erlang model operation.
-     * <p>
-     * After running a method that modifies Erlang elements, registered
-     * listeners receive after-the-fact notification of what just transpired, in
-     * the form of a element changed event. This method allows clients to call a
-     * number of methods that modify Erlang elements and only have element
-     * changed event notifications reported at the end of the entire batch.
-     * </p>
-     * <p>
-     * If this method is called outside the dynamic scope of another such call,
-     * this method runs the action and then reports a single element changed
-     * event describing the net effect of all changes done to Erlang elements by
-     * the action.
-     * </p>
-     * <p>
-     * If this method is called in the dynamic scope of another such call, this
-     * method simply runs the action.
-     * </p>
-     * 
-     * @param action
-     *            the action to perform
-     * @param monitor
-     *            a progress monitor, or <code>null</code> if progress reporting
-     *            and cancellation are not desired
-     * @throws CoreException
-     *             if the operation failed.
-     */
-    public static void run(final IWorkspaceRunnable action,
-            final IProgressMonitor monitor) throws CoreException {
-        run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
-    }
-
-    /**
-     * Runs the given action as an atomic Erlang model operation.
-     * <p>
-     * After running a method that modifies Erlang elements, registered
-     * listeners receive after-the-fact notification of what just transpired, in
-     * the form of a element changed event. This method allows clients to call a
-     * number of methods that modify Erlang elements and only have element
-     * changed event notifications reported at the end of the entire batch.
-     * </p>
-     * <p>
-     * If this method is called outside the dynamic scope of another such call,
-     * this method runs the action and then reports a single element changed
-     * event describing the net effect of all changes done to Erlang elements by
-     * the action.
-     * </p>
-     * <p>
-     * If this method is called in the dynamic scope of another such call, this
-     * method simply runs the action.
-     * </p>
-     * <p>
-     * The supplied scheduling rule is used to determine whether this operation
-     * can be run simultaneously with workspace changes in other threads. See
-     * <code>IWorkspace.run(...)</code> for more details.
-     * </p>
-     * 
-     * @param action
-     *            the action to perform
-     * @param rule
-     *            the scheduling rule to use when running this operation, or
-     *            <code>null</code> if there are no scheduling restrictions for
-     *            this operation.
-     * @param monitor
-     *            a progress monitor, or <code>null</code> if progress reporting
-     *            and cancellation are not desired
-     * @throws CoreException
-     *             if the operation failed.
-     */
-    public static void run(final IWorkspaceRunnable action,
-            final ISchedulingRule rule, final IProgressMonitor monitor)
-            throws CoreException {
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        if (workspace.isTreeLocked()) {
-            // new BatchOperation(action).run(monitor);
-        } else {
-            // use IWorkspace.run(...) to ensure that a build will be done in
-            // autobuild mode
-            // workspace.run(new BatchOperation(action), rule,
-            // IWorkspace.AVOID_UPDATE, monitor);
-        }
-    }
-
-    private final BundleContext context;
     private final ServicesMap<IService> services;
     private final Plugin plugin;
 
-    public ErlangCore(final Plugin plugin, final BundleContext bundleContext,
-            final ServicesMap<IService> services) {
-        context = bundleContext;
+    public ErlangCore(final Plugin plugin, final ServicesMap<IService> services) {
         this.services = services;
         this.plugin = plugin;
     }
@@ -259,6 +170,90 @@ public final class ErlangCore {
                 });
         ErlangDebugOptionsManager.getDefault().start();
         ErlLogger.debug("Started CORE");
+    }
+
+    /**
+     * Runs the given action as an atomic Erlang model operation.
+     * <p>
+     * After running a method that modifies Erlang elements, registered
+     * listeners receive after-the-fact notification of what just transpired, in
+     * the form of a element changed event. This method allows clients to call a
+     * number of methods that modify Erlang elements and only have element
+     * changed event notifications reported at the end of the entire batch.
+     * </p>
+     * <p>
+     * If this method is called outside the dynamic scope of another such call,
+     * this method runs the action and then reports a single element changed
+     * event describing the net effect of all changes done to Erlang elements by
+     * the action.
+     * </p>
+     * <p>
+     * If this method is called in the dynamic scope of another such call, this
+     * method simply runs the action.
+     * </p>
+     * 
+     * @param action
+     *            the action to perform
+     * @param monitor
+     *            a progress monitor, or <code>null</code> if progress reporting
+     *            and cancellation are not desired
+     * @throws CoreException
+     *             if the operation failed.
+     */
+    public static void run(final IWorkspaceRunnable action,
+            final IProgressMonitor monitor) throws CoreException {
+        run(action, ResourcesPlugin.getWorkspace().getRoot(), monitor);
+    }
+
+    /**
+     * Runs the given action as an atomic Erlang model operation.
+     * <p>
+     * After running a method that modifies Erlang elements, registered
+     * listeners receive after-the-fact notification of what just transpired, in
+     * the form of a element changed event. This method allows clients to call a
+     * number of methods that modify Erlang elements and only have element
+     * changed event notifications reported at the end of the entire batch.
+     * </p>
+     * <p>
+     * If this method is called outside the dynamic scope of another such call,
+     * this method runs the action and then reports a single element changed
+     * event describing the net effect of all changes done to Erlang elements by
+     * the action.
+     * </p>
+     * <p>
+     * If this method is called in the dynamic scope of another such call, this
+     * method simply runs the action.
+     * </p>
+     * <p>
+     * The supplied scheduling rule is used to determine whether this operation
+     * can be run simultaneously with workspace changes in other threads. See
+     * <code>IWorkspace.run(...)</code> for more details.
+     * </p>
+     * 
+     * @param action
+     *            the action to perform
+     * @param rule
+     *            the scheduling rule to use when running this operation, or
+     *            <code>null</code> if there are no scheduling restrictions for
+     *            this operation.
+     * @param monitor
+     *            a progress monitor, or <code>null</code> if progress reporting
+     *            and cancellation are not desired
+     * @throws CoreException
+     *             if the operation failed.
+     */
+    public static void run(final IWorkspaceRunnable action,
+            final ISchedulingRule rule, final IProgressMonitor monitor)
+            throws CoreException {
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        if (workspace.isTreeLocked()) {
+            // new BatchOperation(action).run(monitor);
+        } else {
+            // use IWorkspace.run(...) to ensure that a build will be done in
+            // autobuild mode
+            // workspace.run(new BatchOperation(action), rule,
+            // IWorkspace.AVOID_UPDATE, monitor);
+        }
     }
 
 }
