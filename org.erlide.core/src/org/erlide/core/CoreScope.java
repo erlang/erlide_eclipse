@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Plugin;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
@@ -22,10 +23,9 @@ import org.osgi.framework.BundleContext;
 public class CoreScope {
 
     private final BundleContext bundleContext;
-    private final ErlangPlugin plugin;
+    private final Plugin plugin;
 
-    public CoreScope(final ErlangPlugin plugin,
-            final BundleContext bundleContext) {
+    public CoreScope(final Plugin plugin, final BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.plugin = plugin;
     }
@@ -68,7 +68,7 @@ public class CoreScope {
         return bundleContext;
     }
 
-    public ErlangPlugin getPlugin() {
+    public Plugin getPlugin() {
         return plugin;
     }
 
