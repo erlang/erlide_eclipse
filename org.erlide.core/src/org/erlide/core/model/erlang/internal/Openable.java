@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.ErlModelStatusConstants;
 import org.erlide.core.model.erlang.IErlElement;
@@ -122,7 +122,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      */
     @Override
     public boolean exists() {
-        final IErlModelManager manager = ErlangScope.getModelManager();
+        final IErlModelManager manager = CoreScope.getModelManager();
         if (manager.getInfo(this) != null) {
             final IResource resource = getResource();
             if (resource != null) {
@@ -246,7 +246,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * @see IOpenable
      */
     public boolean isOpen() {
-        return ErlangScope.getModelManager().getInfo(this) != null;
+        return CoreScope.getModelManager().getInfo(this) != null;
     }
 
     /**

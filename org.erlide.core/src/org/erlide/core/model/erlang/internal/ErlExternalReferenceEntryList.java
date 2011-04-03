@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlModelManager;
@@ -59,7 +59,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (externalModuleTree == null || externalIncludeTree == null) {
             final RpcCallSite backend = CoreUtil
                     .getBuildOrIdeBackend(getProject().getWorkspaceProject());
-            final OtpErlangList pathVars = ErlangScope.getModel().getPathVars();
+            final OtpErlangList pathVars = CoreScope.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);
@@ -75,7 +75,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
                         externalIncludes, pathVars);
             }
         }
-        final IErlModelManager modelManager = ErlangScope.getModelManager();
+        final IErlModelManager modelManager = CoreScope.getModelManager();
         setChildren(null);
         final IErlProject project = (IErlProject) getAncestorOfKind(Kind.PROJECT);
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {

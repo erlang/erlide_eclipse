@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.erlang.IErlElement;
@@ -87,7 +87,7 @@ public class ErlModelCache implements IDisposable {
         projectIncludeDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
                 CACHE_SIZE);
         modelChangeListener = new ModelChangeListener();
-        ErlangScope.getModel().addModelChangeListener(modelChangeListener);
+        CoreScope.getModel().addModelChangeListener(modelChangeListener);
         noModelCache = ErlideUtil.isNoModelCache();
     }
 
@@ -170,7 +170,7 @@ public class ErlModelCache implements IDisposable {
     }
 
     public void dispose() {
-        ErlangScope.getModel().removeModelChangeListener(modelChangeListener);
+        CoreScope.getModel().removeModelChangeListener(modelChangeListener);
     }
 
     public void putExternalTree(final String externalPath,

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
@@ -140,7 +140,7 @@ public class DialyzeAction implements IObjectActionDelegate {
             final ISelection selection) {
         modules.clear();
         if (selection instanceof IStructuredSelection) {
-            final IErlModel model = ErlangScope.getModel();
+            final IErlModel model = CoreScope.getModel();
             final IStructuredSelection ss = (IStructuredSelection) selection;
             for (final Object i : ss.toList()) {
                 try {

@@ -34,7 +34,7 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        module = ErlangScope.getModelManager().getModuleFromText(null,
+        module = CoreScope.getModelManager().getModuleFromText(null,
                 "testing", "", null);
     }
 

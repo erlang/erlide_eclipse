@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
@@ -150,7 +150,7 @@ public class ErlProject extends Openable implements IErlProject {
             ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
             ErlLogger.debug("childcount %d", children.size());
-            final IErlModelManager modelManager = ErlangScope.getModelManager();
+            final IErlModelManager modelManager = CoreScope.getModelManager();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
                     final IFolder folder = (IFolder) element;
@@ -1106,7 +1106,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }
         if (scope == Scope.ALL_PROJECTS) {
-            final IErlModel model = ErlangScope.getModel();
+            final IErlModel model = CoreScope.getModel();
             for (final IErlProject project2 : model.getErlangProjects()) {
                 if (!projects.contains(project2)) {
                     projects.add(project2);
@@ -1143,7 +1143,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         }
         if (scope == Scope.ALL_PROJECTS) {
-            final IErlModel model = ErlangScope.getModel();
+            final IErlModel model = CoreScope.getModel();
             for (final IErlProject project2 : model.getErlangProjects()) {
                 if (!projects.contains(project2)) {
                     projects.add(project2);

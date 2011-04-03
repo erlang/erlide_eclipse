@@ -43,7 +43,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.PluginUtils;
@@ -290,7 +290,7 @@ public class ErlangProjectImportWizard extends Wizard implements INewWizard { //
             // buildPaths(monitor, root, project);
             // buildPaths(monitor, root, project);
 
-            final IErlProject erlProject = ErlangScope.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
 
             // String[] directories = findErlDirectories();

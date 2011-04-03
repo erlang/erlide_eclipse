@@ -33,7 +33,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
@@ -67,7 +67,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             if (!(element instanceof IResource)) {
                 return;
             }
-            final IErlElement erlElement = ErlangScope.getModel().findElement(
+            final IErlElement erlElement = CoreScope.getModel().findElement(
                     (IResource) element);
             final IErlProject project = erlElement.getProject();
             if (project != null) {

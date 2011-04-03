@@ -19,7 +19,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -117,13 +117,13 @@ public class ErlModelUtils {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
-            IErlModule module = ErlangScope.getModel().findModule(file);
+            IErlModule module = CoreScope.getModel().findModule(file);
             if (module != null) {
                 return module;
             }
             final String path = file.getLocation().toPortableString();
-            module = ErlangScope.getModelManager().getModuleFromFile(
-                    ErlangScope.getModel(), file.getName(), null, path, path);
+            module = CoreScope.getModelManager().getModuleFromFile(
+                    CoreScope.getModel(), file.getName(), null, path, path);
             module.setResource(file);
             return module;
         }
@@ -157,7 +157,7 @@ public class ErlModelUtils {
     public static void openMFA(final String module, final String function,
             final int arity) throws CoreException {
         ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
-                arity), null, ErlangScope.getModel().findModule(module), null,
+                arity), null, CoreScope.getModel().findModule(module), null,
                 Scope.ALL_PROJECTS);
     }
 

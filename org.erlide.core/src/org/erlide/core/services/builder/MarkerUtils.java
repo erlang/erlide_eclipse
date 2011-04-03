@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -118,7 +118,7 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlModel model = ErlangScope.getModel();
+                    final IErlModel model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
                     ErlLogger.debug("inc::" + fileName + " "
                             + resource.getName() + " " + erlProject.getName());
@@ -454,7 +454,7 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        final IErlProject p = ErlangScope.getModel().findProject(project);
+        final IErlProject p = CoreScope.getModel().findProject(project);
         if (p != null) {
             try {
                 // getMarkersFor(resource, p);

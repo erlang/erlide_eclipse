@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.ErlModelStatusConstants;
@@ -216,7 +216,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IErlElement
      */
     public ErlModel getModel() {
-        return (ErlModel) ErlangScope.getModel();
+        return (ErlModel) CoreScope.getModel();
     }
 
     /**
@@ -302,7 +302,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         // if I am not open, return true to avoid opening (case of an Erlang
         // project, a compilation unit or a class file).
         // also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
-        final Object elementInfo = ErlangScope.getModelManager().getInfo(this);
+        final Object elementInfo = CoreScope.getModelManager().getInfo(this);
         if (elementInfo instanceof ErlElement) {
             return !internalGetChildren().isEmpty();
         }
@@ -443,7 +443,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Debugging purposes
      */
     public Object toStringInfo(final int tab, final StringBuilder buffer) {
-        final Object info = ErlangScope.getModelManager().getInfo(this);
+        final Object info = CoreScope.getModelManager().getInfo(this);
         this.toStringInfo(tab, buffer, info);
         return info;
     }

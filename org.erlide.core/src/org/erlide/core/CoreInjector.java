@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Platform;
 
 public class CoreInjector {
 
-    public static ErlangCore injectErlangCore(final ErlangScope coreScope) {
+    public static ErlangCore injectErlangCore(final CoreScope coreScope) {
         return new ErlangCore(coreScope.getPlugin(),
                 coreScope.getBundleContext(), null);
     }

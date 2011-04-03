@@ -32,7 +32,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlElement;
@@ -511,7 +511,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fEditor = editor;
             fViewer = viewer;
             fViewer.addProjectionListener(this);
-            final IErlModel mdl = ErlangScope.getModel();
+            final IErlModel mdl = CoreScope.getModel();
             mdl.addModelChangeListener(this);
         }
     }
@@ -522,7 +522,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            ErlangScope.getModel().removeModelChangeListener(this);
+            CoreScope.getModel().removeModelChangeListener(this);
         }
     }
 
@@ -546,7 +546,7 @@ public class DefaultErlangFoldingStructureProvider implements
         initialize();
         if (fEditor instanceof ErlangEditor && fModule != null) {
             fElementListener = new ElementChangedListener();
-            ErlangScope.getModelManager().addElementChangedListener(
+            CoreScope.getModelManager().addElementChangedListener(
                     fElementListener);
             boolean structureKnown = false;
             try {
@@ -575,7 +575,7 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            ErlangScope.getModelManager().removeElementChangedListener(
+            CoreScope.getModelManager().removeElementChangedListener(
                     fElementListener);
             fElementListener = null;
         }

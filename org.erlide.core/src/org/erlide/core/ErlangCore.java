@@ -146,7 +146,7 @@ public final class ErlangCore {
 
     public void stop() {
         ResourcesPlugin.getWorkspace().removeSaveParticipant(plugin);
-        ErlangScope.getModelManager().shutdown();
+        CoreScope.getModelManager().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         logger.dispose();
     }

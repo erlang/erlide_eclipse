@@ -19,12 +19,12 @@ import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.internal.ErlModelManager;
 import org.osgi.framework.BundleContext;
 
-public class ErlangScope {
+public class CoreScope {
 
     private final BundleContext bundleContext;
     private final ErlangPlugin plugin;
 
-    public ErlangScope(final ErlangPlugin plugin,
+    public CoreScope(final ErlangPlugin plugin,
             final BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.plugin = plugin;

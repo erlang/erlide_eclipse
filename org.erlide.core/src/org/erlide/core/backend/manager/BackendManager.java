@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
@@ -102,7 +102,7 @@ public final class BackendManager implements IEpmdListener {
 
     public Backend getBuildBackend(final IProject project)
             throws BackendException {
-        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         if (erlProject == null) {
             return null;
