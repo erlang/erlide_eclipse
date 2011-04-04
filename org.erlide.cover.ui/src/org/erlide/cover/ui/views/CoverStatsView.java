@@ -104,6 +104,9 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
             
             //TODO
 
+            if (obj == null)
+                return;
+
             switch (obj.getType()) {
             case FUNCTION:
                 showHtml.setEnabled(false);

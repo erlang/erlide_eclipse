@@ -186,20 +186,16 @@ handle_call({prep, module, Module, Path}, _From, State) ->
 			TestA = list_to_atom(atom_to_list(Module) ++ "_tests"),
 			code:purge(TestA),
 			code:load_file(TestA),
-			case coverage:prepare(State#state.cover_type, Module) of
-				ok ->
-					Report = coverage:create_report(Module),
-						 case Report of		
-							{ok, Res} ->
-								erlide_jrpc:event(?EVENT, Res),
-								coverage:create_index([Res]);
-							{error, Reason} ->
-								erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-												   type = 'creating report',
-												   info = Reason}),
-								no_file
-						 end;
-				{error, _} ->
+			coverage:prepare(State#state.cover_type, Module),
+			Report = coverage:create_report(Module),
+			case Report of
+				{ok, Res} ->
+					erlide_jrpc:event(?EVENT, Res),
+					coverage:create_index([Res]);
+				{error, Reason} ->
+					erlide_jrpc:event(?EVENT, #cover_error{place = Module,
+									  type = 'creating report',
+								      info = Reason}),
 					no_file
 			end;
 		{error, _} ->

@@ -2,7 +2,6 @@ package org.erlide.cover.core;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 public class Activator extends Plugin implements Logger {
@@ -41,15 +40,11 @@ public class Activator extends Plugin implements Logger {
     }
 
 	public void info(Object msg) {
-		log(IStatus.INFO, msg);
+	    LogUtils.log(this, IStatus.INFO, msg, 1);
 	}
 
 	public void error(Object msg) {
-		log(IStatus.ERROR, msg);
-	}
-
-	private void log(int severity, Object msg) {
-		getLog().log(new Status(severity, PLUGIN_ID, String.valueOf(msg)));
+	    LogUtils.log(this, IStatus.ERROR, msg, 1);
 	}
 
 	public static Activator getDefault() {

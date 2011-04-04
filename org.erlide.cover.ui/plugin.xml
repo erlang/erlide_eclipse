@@ -58,7 +58,7 @@
       <specification
             annotationType="org.erlide.cover.ui.fullCoverageAnnotation"
             colorPreferenceKey="fullCoverage_Color"
-            colorPreferenceValue="150,220,80"
+            colorPreferenceValue="220,255,220"
             contributesToHeader="false"
             highlightPreferenceKey="fullCoverage_Highlight"
             highlightPreferenceValue="true"
@@ -83,7 +83,7 @@
       <specification
             annotationType="org.erlide.cover.ui.noCoverageAnnotation"
             colorPreferenceKey="noCoverage_Color"
-            colorPreferenceValue="184,71,71"
+            colorPreferenceValue="255,200,200"
             contributesToHeader="false"
             highlightPreferenceKey="noCoverage_Highlight"
             highlightPreferenceValue="true"
