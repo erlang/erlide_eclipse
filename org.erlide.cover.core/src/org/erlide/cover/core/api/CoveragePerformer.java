@@ -1,5 +1,6 @@
 package org.erlide.cover.core.api;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -82,11 +83,23 @@ public class CoveragePerformer implements CoverAPI {
                     names.toArray(new OtpErlangObject[0]));
 
             try {
-                final OtpErlangObject res = CoverBackend
+                OtpErlangObject res = CoverBackend
                         .getInstance()
                         .getBackend()
                         .call(CoverConstants.COVER_ERL_BACKEND,
                                 CoverConstants.FUN_START, "x", nodesList);
+
+            /*    IPath location = Activator.getDefault().getStateLocation()
+                        .append(CoverConstants.REPORT_DIR);
+                final File dir = location.toFile();
+                log.info(dir.getAbsolutePath());
+
+                res = CoverBackend
+                        .getInstance()
+                        .getBackend()
+                        .call(CoverConstants.COVER_ERL_BACKEND,
+                                CoverConstants.FUN_SET_REPORT_DIR, "s",
+                                dir.getAbsoluteFile());*/
 
                 // TODO: check if res is ok
 
@@ -141,7 +154,8 @@ public class CoveragePerformer implements CoverAPI {
                 }
                 CoverBackend
                         .getInstance()
-                        .handleError("No such module at given project. Check your configuration");
+                        .handleError(
+                                "No such module at given project. Check your configuration");
                 return false;
             }
             log.info(module.getFilePath());
@@ -183,9 +197,9 @@ public class CoveragePerformer implements CoverAPI {
                     && res.toString().equals("no_file"))
                 return; // do sth more then??
 
-            final StatsTreeModel model = StatsTreeModel.getInstance();
+          /*  final StatsTreeModel model = StatsTreeModel.getInstance();
             model.setIndex(res.toString().substring(1,
-                    res.toString().length() - 1));
+                    res.toString().length() - 1)); */
 
         } catch (BackendException e) {
             e.printStackTrace();

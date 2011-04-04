@@ -24,7 +24,7 @@
 </table>
 <h2>Coverage breakdown by $type </h2>
 <table>
-<tr>R
+<tr>
 	<th>Name</th>
 	<th class="total">Total Lines</th>
 	<th class="covered">Covered Lines</th>
@@ -32,7 +32,7 @@
 </tr>
 #foreach( $child in $children )
   <tr>
-  	<td><a href="$child.getLabel()">$child.getLabel()</a></td>
+  	<td><a href="$child.getHtmlPath()">$child.getLabel()</a></td>
   	<td>$child.getLinesCount()</td>
   	<td>$child.getCoverCount()</td>
   	<td>$child.getPercentageStringified()</td>

@@ -37,6 +37,7 @@ import org.erlide.cover.core.ICoverObserver;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.actions.ClearCoverageAction;
+import org.erlide.cover.ui.actions.EksportReports;
 import org.erlide.cover.ui.actions.HideCoverageAction;
 import org.erlide.cover.ui.actions.HtmlReportAction;
 import org.erlide.cover.ui.actions.OpenItemAction;
@@ -69,7 +70,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private Action showHtml;
     private Action save;
     private Action clear;
-    private Action refresh;
+    private Action eksportHTML;
     private Action restore;
     private Action doubleClickAction;
     private Action showCoverage;
@@ -102,7 +103,6 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
             ICoverageObject obj = (ICoverageObject) treeSelection
                     .getFirstElement();
             
-            //TODO
 
             if (obj == null)
                 return;
@@ -234,7 +234,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void fillLocalPullDown(final IMenuManager manager) {
         manager.add(clear);
-        manager.add(refresh);
+        manager.add(eksportHTML);
         manager.add(new Separator());
         manager.add(restore);
         manager.add(save);
@@ -254,7 +254,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void fillLocalToolBar(final IToolBarManager manager) {
         manager.add(clear);
-        manager.add(refresh);
+        manager.add(eksportHTML);
         manager.add(new Separator());
         manager.add(restore);
         manager.add(save);
@@ -331,18 +331,11 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeRefreshAction() {
-        refresh = new Action() {
-
-            @Override
-            public void run() {
-                showMessage("Action refresh");
-            }
-        };
+        eksportHTML = new EksportReports();
         // TODO change image
-        refresh.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+        eksportHTML.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_REDO));
-        refresh.setToolTipText("Refresh coverage statistics view");
-        refresh.setEnabled(false);
+        eksportHTML.setToolTipText("Eksport coverage reports in HTML format.");
     }
 
     private void makeDoubleClickAction() {

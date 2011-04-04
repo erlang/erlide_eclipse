@@ -7,6 +7,8 @@ package org.erlide.cover.constants;
  * 
  */
 public class CoverConstants {
+    
+    public static final String REPORT_DIR = "reports";
 
     public static final String COVER_ERL_BACKEND = "launcher";
     
@@ -16,5 +18,6 @@ public class CoverConstants {
     public static final String FUN_ANALYSE = "analyse";
     public static final String FUN_STOP = "stop";
     public static final String FUN_SET_INCLUDES = "set_includes"; 
+    public static final String FUN_SET_REPORT_DIR = "set_report_dir";
 
 }

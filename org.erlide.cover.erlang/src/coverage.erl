@@ -16,8 +16,8 @@
 -export([compile/3,
 		 compile_dir/1,
 		 prepare/2,
-		 create_report/1,
-		 create_index/1]).
+		 create_report/2,
+		 create_index/2]).
 
 %%----------------------------------------------
 %% API Functions
@@ -47,23 +47,6 @@ compile_dir(Dir) ->
 		Res -> {ok, Res}
 	end.
 
-%tests compilation (if modules with tests are diffrent then tested modules)
-%compile_test(Module, Path) ->
-%	Options = [debug_info,binary, report_errors, report_warnings],
-%	case compile:file(Path, Options) of
-%		    {ok, Module, Bin} ->
-%				Bin,
-%				code:load_binary(Module, Path, Bin),
-%				ok;
-%			 _ ->
-%				erlide_jrpc:event(?EVENT, #cover_error{place = Module,
-%											   type = 'preparing test',
-%											   info = "compilation error"}),
-%				%%TODO: check if loaded
-%				error
-%	end.
-	
-
 %prepare module
 prepare(eunit, Arg) ->	
 	case eunit:test(Arg) of
@@ -74,7 +57,7 @@ prepare(eunit, Arg) ->
 	end.
 
 %creates html report
-create_report(Modules) when is_list(Modules) ->
+create_report(Modules, ReportDir) when is_list(Modules) ->
 	io:format("~p~n", [Modules]),
 	lists:foldl(fun (Module,Acc) ->
 			io:format("~p~n", [Module]),
@@ -84,7 +67,7 @@ create_report(Modules) when is_list(Modules) ->
 					  true ->
 						  Module
 				  end,
-			Res = create_report(Mod), 
+			Res = create_report(Mod, ReportDir), 
 			case Res of
 			  {ok,Result} ->
 			      erlide_jrpc:event(?EVENT,Result), 
@@ -99,14 +82,14 @@ create_report(Modules) when is_list(Modules) ->
 			end
 		end,[],Modules);
 
-create_report(Module) ->
+create_report(Module, ReportDir) ->
     io:format("~p~n", [Module]), 
     ModRes = cover:analyse(Module,module), 
     FunRes = cover:analyse(Module,function), 
     LineRes = cover:analyse(Module,calls,line),  %%calls! 
     case {ModRes,FunRes,LineRes} of
       {{ok,_},{ok,_},{ok,_}} ->
-	  		Res = prepare_result(ModRes,FunRes,LineRes,Module), 
+	  		Res = prepare_result(ModRes,FunRes,LineRes,Module, ReportDir), 
 	  		{ok,Res};
       Error ->
 		  	io:format("~p~n", [Error]),
@@ -114,8 +97,8 @@ create_report(Module) ->
     end.
 
 % create index.html file
-create_index(Results) ->
-	IndexPath = filename:join([?COVER_DIR,  "index.html"]),
+create_index(Results, ReportDir) ->
+	IndexPath = filename:join([ReportDir,  "index.html"]),
 	case filelib:ensure_dir(IndexPath) of
 		{error, Res} ->
 			erlide_jrpc:event(?EVENT, #cover_error{type = 'creating index',
@@ -137,8 +120,8 @@ create_index(Results) ->
 %%----------------------------------------------
 
 
-prepare_result(ModRes, FunRes, LineRes, Module) ->
-	FileHtml = filename:join([?COVER_DIR,  "mod_" ++ atom_to_list(Module) ++ ".html"]),
+prepare_result(ModRes, FunRes, LineRes, Module, ReportDir) ->
+	FileHtml = filename:join([ReportDir,  "mod_" ++ atom_to_list(Module) ++ ".html"]),
 	filelib:ensure_dir(FileHtml),		%TODO: error handling
     ResHtml = cover:analyse_to_file(Module, FileHtml, [html]),
 	Out = case ResHtml of

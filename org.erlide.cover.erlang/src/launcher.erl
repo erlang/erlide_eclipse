@@ -17,11 +17,10 @@
 	 start_link/1,
 	 restart/1,
 	 stop/0,
-	 % perform/3,
-	 % prepare_and_perform/3,
 	 prepare/1,
 	 analyse/1,
-	 set_includes/1]).
+	 set_includes/1,
+	 set_report_dir/1]).
 
 -export([init/1,
 		 handle_call/3,
@@ -102,6 +101,9 @@ analyse(Modules) ->
 set_includes(Includes) ->
 	gen_server:call(?MODULE, {includes, Includes}).
 
+set_report_dir(Path) ->
+	gen_server:call(?MODULE, {report_dir, Path}).
+
 %%----------------------------------------------
 %% Local Functions
 %%----------------------------------------------
@@ -135,20 +137,23 @@ handle_cast(stop, State) ->
 handle_call({includes, Includes}, _From, State) ->
 	{reply, ok, State#state{includes = Includes}};
 
+handle_call({report_dir, Path}, _From, State) ->
+	{reply, ok, State#state{report_dir = Path}};
+
 handle_call({compile, Module, Path}, _From, #state{includes = Includes} = State) ->
 	Res = coverage:compile(Module, Path, Includes),
 	{reply, Res, State};
 
 handle_call({analyse, Modules}, _From, State) ->
 	io:format("~p~n", [Modules]),
-	ModsOk = coverage:create_report(Modules),
+	ModsOk = coverage:create_report(Modules, ?COVER_DIR),
 	io:format("~p~n", [ModsOk]),
 	Path = case ModsOk of
 				#cover_error{} ->
 					erlide_jrpc:event(?EVENT, ModsOk),
 					no_file;
 				_ ->
-					coverage:create_index(ModsOk)
+					coverage:create_index(ModsOk, ?COVER_DIR)
 		   end,
 	
 	erlide_jrpc:event(?EVENT, ?FINISHED),
@@ -258,10 +263,6 @@ handle_call({prep, all, PathSrc, PathTst}, _From, State) ->
 	erlide_jrpc:event(?EVENT, ?FINISHED),
 	
 	{reply, Path, State};
-
-%deprecated
-handle_call({prep, application, Name, Src}, _From, State) ->
-	{reply, ok, State};
 
 %% cast default
 handle_call(_, _From, State) ->

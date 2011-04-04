@@ -11,7 +11,8 @@
 
 %state
 -record(state, {cover_type,
-				includes = []}).
+				includes = [],
+				report_dir}).
 
 %results per module
 -record(module_res, {name, 

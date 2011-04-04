@@ -1,5 +1,10 @@
 package org.erlide.cover.ui.actions;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
@@ -8,11 +13,17 @@ import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.statushandlers.StatusManager;
+import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
+import org.erlide.cover.ui.CoverageHelper;
 import org.erlide.cover.ui.views.util.BrowserDialog;
+import org.erlide.cover.ui.views.util.ReportGenerator;
 import org.erlide.cover.views.model.FunctionStats;
+import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ModuleStats;
+import org.erlide.cover.views.model.ObjectType;
+import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
 
 /**
@@ -39,6 +50,19 @@ public class HtmlReportAction extends Action {
         log.info("html report!");
 
         // viewer jest selection providerem
+
+        if (StatsTreeModel.getInstance().getRoot().getHtmlPath() == null) {
+            IPath location = Activator.getDefault().getStateLocation()
+                    .append(CoverConstants.REPORT_DIR);
+            final File dir = location.toFile();
+
+            if (!dir.exists() && !dir.mkdir()) {
+                CoverageHelper.reportError("Can not save results!");
+                return;
+            }
+            generateReportTree(StatsTreeModel.getInstance().getRoot(),
+                    dir.getAbsolutePath());
+        }
 
         final ISelection selection = viewer.getSelection();
 
@@ -71,5 +95,37 @@ public class HtmlReportAction extends Action {
         }
 
         browser.open();
+    }
+
+    private void generateReportTree(ICoverageObject obj, String path) {
+        if (obj.getType().equals(ObjectType.MODULE))
+            return;
+        String reportPath = new StringBuilder(path).append(File.separator)
+                .append(obj.getLabel()).append(".html").toString();
+        log.info(reportPath);
+
+        String dirPath = new StringBuilder(path).append(File.separator)
+                .append(obj.getLabel()).toString();
+        File dir = new File(dirPath);
+        dir.mkdir();
+
+        for (ICoverageObject child : obj.getChildren())
+            generateReportTree(child, dirPath);
+
+        try {
+            String report = ReportGenerator.getInstance().getHTMLreport(obj);
+            log.info(report);
+            FileWriter writer = new FileWriter(reportPath);
+            writer.write(report);
+            writer.close();
+            obj.setHtmlPath(reportPath);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        for (ICoverageObject child : obj.getChildren())
+            generateReportTree(child, dirPath);
     }
 }

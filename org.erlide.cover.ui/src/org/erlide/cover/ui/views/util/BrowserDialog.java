@@ -1,5 +1,7 @@
 package org.erlide.cover.ui.views.util;
 
+import java.io.File;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationEvent;
@@ -18,6 +20,7 @@ import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.Images;
 import org.erlide.cover.views.model.ICoverageObject;
+import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 
 /**
@@ -29,7 +32,6 @@ import org.erlide.cover.views.model.StatsTreeModel;
 public class BrowserDialog extends Dialog {
 
     private Shell dialogShell;
-    private Label titleLabel;
     private Composite comp;
     private Button home;
     private Button up;
@@ -87,45 +89,13 @@ public class BrowserDialog extends Dialog {
         dialogShell.pack();
         dialogShell.setSize(800, 600);
 
-        titleLabel = new Label(dialogShell, SWT.NONE);
-        GridData titleLabelLData = new GridData();
-        titleLabelLData.widthHint = 784;
-        titleLabelLData.heightHint = 17;
-        titleLabel.setLayoutData(titleLabelLData);
-        titleLabel.setText(url);
-        titleLabel.setAlignment(SWT.CENTER);
-
         browser = new Browser(dialogShell, SWT.NONE | SWT.BORDER);
         GridData browserLData = new GridData();
         browserLData.widthHint = 784;
         browserLData.heightHint = 500;
         browser.setLayoutData(browserLData);
-        // browser.setUrl(url);
-        browser.setText(ReportGenerator.getInstance().getHTMLreport(object));
-        log.info(ReportGenerator.getInstance().getHTMLreport(object));
+        browser.setUrl(object.getHtmlPath());
         browser.addLocationListener(locationListener);
-        browser.addLocationListener(new LocationListener() {
-
-            public void changing(LocationEvent event) {
-                log.info("changing:" + event.location);
-                String name = event.location.substring(7);
-                log.info(name);
-                if(name != object.getLabel()) 
-                    browser.setText(ReportGenerator.getInstance().getHTMLreport(
-                            object));
-            
-                
-            }
-
-            public void changed(LocationEvent event) {
-                // TODO Auto-generated method stub
-                log.info(event.getSource());
-             //   browser.setUrl(null);
-             //   browser.setText(ReportGenerator.getInstance().getHTMLreport(
-             //           object));
-            }
-
-        });
 
         comp = new Composite(dialogShell, SWT.NONE);
         GridLayout compLayout = new GridLayout();
@@ -193,7 +163,6 @@ public class BrowserDialog extends Dialog {
                 }
                 setObject(sib);
                 browser.setUrl(url);
-                titleLabel.setText(url);
                 // disable buttons
                 next.setEnabled(true);
                 if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
@@ -219,7 +188,6 @@ public class BrowserDialog extends Dialog {
                 }
                 setObject(sib);
                 browser.setUrl(url);
-                titleLabel.setText(url);
                 // disable buttons
                 prev.setEnabled(true);
                 if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
@@ -239,7 +207,6 @@ public class BrowserDialog extends Dialog {
             if (object.getParent() != null) {
                 setObject(object.getParent());
                 browser.setUrl(url);
-                titleLabel.setText(url);
 
                 if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
                     next.setEnabled(false);
@@ -260,7 +227,6 @@ public class BrowserDialog extends Dialog {
         public void widgetSelected(SelectionEvent e) {
             setObject(StatsTreeModel.getInstance().getRoot());
             browser.setUrl(url);
-            titleLabel.setText(url);
             next.setEnabled(false);
             prev.setEnabled(false);
         }
@@ -283,8 +249,7 @@ public class BrowserDialog extends Dialog {
                 return;
             log.info(event.getSource());
             String newUrl = browser.getUrl();
-            titleLabel.setText(newUrl);
-            String name = newUrl.substring(newUrl.lastIndexOf('/') + 1,
+            String name = newUrl.substring(newUrl.lastIndexOf(File.separator) + 1,
                     newUrl.length() - 5);
             log.info(name);
             if (name.startsWith("mod_"))
@@ -294,14 +259,21 @@ public class BrowserDialog extends Dialog {
             if ((newObj = object.treeSearch(name)) != null) { // TODO ->
                                                               // findChild
                 setObject(newObj);
-                if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
+                if (object.getParent() == null) {
+                    up.setEnabled(false);
                     next.setEnabled(false);
-                else
-                    next.setEnabled(true);
-                if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
                     prev.setEnabled(false);
-                else
-                    prev.setEnabled(true);
+                } else {
+                    up.setEnabled(true);
+                    if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
+                        next.setEnabled(false);
+                    else
+                        next.setEnabled(true);
+                    if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
+                        prev.setEnabled(false);
+                    else
+                        prev.setEnabled(true);
+                }
             }
 
         }
