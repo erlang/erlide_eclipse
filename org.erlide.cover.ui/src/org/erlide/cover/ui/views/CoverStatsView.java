@@ -101,6 +101,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
             ITreeSelection treeSelection = (ITreeSelection) selection;
             ICoverageObject obj = (ICoverageObject) treeSelection
                     .getFirstElement();
+            
+            //TODO
 
             switch (obj.getType()) {
             case FUNCTION:

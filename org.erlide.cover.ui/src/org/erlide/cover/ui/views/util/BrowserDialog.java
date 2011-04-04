@@ -100,21 +100,31 @@ public class BrowserDialog extends Dialog {
         browserLData.widthHint = 784;
         browserLData.heightHint = 500;
         browser.setLayoutData(browserLData);
-       // browser.setUrl(url);
+        // browser.setUrl(url);
         browser.setText(ReportGenerator.getInstance().getHTMLreport(object));
         log.info(ReportGenerator.getInstance().getHTMLreport(object));
         browser.addLocationListener(locationListener);
         browser.addLocationListener(new LocationListener() {
 
             public void changing(LocationEvent event) {
-                //TODO implement
+                log.info("changing:" + event.location);
+                String name = event.location.substring(7);
+                log.info(name);
+                if(name != object.getLabel()) 
+                    browser.setText(ReportGenerator.getInstance().getHTMLreport(
+                            object));
+            
+                
             }
 
             public void changed(LocationEvent event) {
                 // TODO Auto-generated method stub
-                
+                log.info(event.getSource());
+             //   browser.setUrl(null);
+             //   browser.setText(ReportGenerator.getInstance().getHTMLreport(
+             //           object));
             }
-            
+
         });
 
         comp = new Composite(dialogShell, SWT.NONE);
