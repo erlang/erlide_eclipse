@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -35,16 +36,17 @@ import org.osgi.service.prefs.BackingStoreException;
 public final class ErlangCore {
 
     private ErlLogger logger;
-    private final ServicesMap<IService> services;
+    private final ServicesMap services;
     private final Plugin plugin;
+    private final IWorkspace workspace;
+    private final IExtensionRegistry extensionRegistry;
 
-    public ErlangCore(final Plugin plugin, final ServicesMap<IService> services) {
+    public ErlangCore(final Plugin plugin, final ServicesMap services,
+            IWorkspace workspace, IExtensionRegistry extensionRegistry) {
         this.services = services;
         this.plugin = plugin;
-    }
-
-    public <T extends IService> T getService(final Class<T> clazz) {
-        return clazz.cast(services.get(clazz));
+        this.workspace = workspace;
+        this.extensionRegistry = extensionRegistry;
     }
 
     public void init() {
@@ -170,6 +172,14 @@ public final class ErlangCore {
                 });
         ErlangDebugOptionsManager.getDefault().start();
         ErlLogger.debug("Started CORE");
+    }
+
+    public IWorkspace getWorkspace() {
+        return workspace;
+    }
+
+    public IExtensionRegistry getExtensionRegistry() {
+        return extensionRegistry;
     }
 
     /**

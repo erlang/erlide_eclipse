@@ -4,19 +4,32 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.manager.BackendService;
 
 public class CoreInjector {
 
     public static ErlangCore injectErlangCore(final CoreScope coreScope) {
-        return new ErlangCore(coreScope.getPlugin(), null);
+        return new ErlangCore(coreScope.getPlugin(), injectServiceMap(),
+                injectWorkspace(), injectExtensionRegistry());
     }
 
-    public IWorkspace injectWorkspace() {
+    private static ServicesMap injectServiceMap() {
+        ServicesMap result = new ServicesMap();
+        result.putService(BackendService.class, new BackendService());
+        return result;
+    }
+
+    public static IWorkspace injectWorkspace() {
         return ResourcesPlugin.getWorkspace();
     }
 
-    public IExtensionRegistry injectExtensionRegistry() {
+    public static IExtensionRegistry injectExtensionRegistry() {
         return Platform.getExtensionRegistry();
+    }
+
+    public static BackendManager injectBackendManager() {
+        return new BackendManager();
     }
 
     // public static final IErlModelManager injectModelManager() {
