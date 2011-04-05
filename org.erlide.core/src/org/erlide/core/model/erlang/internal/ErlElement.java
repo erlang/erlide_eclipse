@@ -299,14 +299,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IParent
      */
     public boolean hasChildren() {
-        // if I am not open, return true to avoid opening (case of an Erlang
-        // project, a compilation unit or a class file).
-        // also see https://bugs.eclipse.org/bugs/show_bug.cgi?id=52474
-        final Object elementInfo = CoreScope.getModelManager().getInfo(this);
-        if (elementInfo instanceof ErlElement) {
-            return !internalGetChildren().isEmpty();
-        }
-        return true;
+        return !internalGetChildren().isEmpty();
     }
 
     public boolean hasChildrenOfKind(final Kind kind) {
@@ -443,9 +436,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Debugging purposes
      */
     public Object toStringInfo(final int tab, final StringBuilder buffer) {
-        final Object info = CoreScope.getModelManager().getInfo(this);
-        this.toStringInfo(tab, buffer, info);
-        return info;
+        this.toStringInfo(tab, buffer, this);
+        return this;
     }
 
     /**
