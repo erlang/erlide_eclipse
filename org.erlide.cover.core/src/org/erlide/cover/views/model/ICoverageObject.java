@@ -23,6 +23,18 @@ public interface ICoverageObject extends Serializable {
      * @return
      */
     public String getHtmlPath();
+    
+    /**
+     * Return a path relative to reports directory
+     * @return
+     */
+    public String getRelativePath();
+    
+    /**
+     * Sets relative path
+     * @param path
+     */
+    public void setRelativePath(String path);
 
     /**
      * Set a path to the html report for the element

@@ -26,6 +26,7 @@ public class StatsTreeObject implements ICoverageObject {
     private int all; // total line number
     private int covered; // covered line number
     private String htmlPath; // name of html file
+    private String relativePath; //relative HTML path
 
     private ICoverageObject parent;
     private final Map<String, ICoverageObject> children;
@@ -166,7 +167,7 @@ public class StatsTreeObject implements ICoverageObject {
     public ICoverageObject getNextSiblingTo(String name) {
         List<String> l = new LinkedList<String>(children.keySet());
         ListIterator<String> it = l.listIterator(l.indexOf(name));
-        
+
         it.next();
         if (it.hasNext())
             return children.get(it.next());
@@ -187,19 +188,27 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public Collection<ICoverageObject> getModules() {
-        Collection<ICoverageObject> col = new HashSet<ICoverageObject>(); 
-        if(this.type.equals(ObjectType.MODULE)) {
+        Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
+        if (this.type.equals(ObjectType.MODULE)) {
             col.add(this);
         } else if (hasChildren()) {
-            for(ICoverageObject child : children.values())
+            for (ICoverageObject child : children.values())
                 col.addAll(child.getModules());
         }
-            
+
         return col;
     }
 
     public String getPercentageStringified() {
         return String.format("%.2f ", getPercentage()) + "%";
+    }
+
+    public String getRelativePath() {
+        return relativePath;
+    }
+
+    public void setRelativePath(String path) {
+        relativePath = path;
     }
 
 }

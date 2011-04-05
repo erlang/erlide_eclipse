@@ -113,7 +113,7 @@ public class HtmlReportAction extends Action {
             generateReportTree(child, dirPath);
 
         try {
-            String report = ReportGenerator.getInstance().getHTMLreport(obj);
+            String report = ReportGenerator.getInstance().getHTMLreport(obj, false);
             log.info(report);
             FileWriter writer = new FileWriter(reportPath);
             writer.write(report);

@@ -1,0 +1,47 @@
+<html>
+<head>
+    <style type="text/css">
+		$css
+	</style>
+</head>
+<body>
+<div class="title">Cover plugin for ErlIde - coverage report (generated at $date) </div>
+<br/>
+<h2>Coverage summary for: $obj.getLabel() </h2>
+<table class>
+<tr>
+	<th>Name</th>
+	<th class="total">Total Lines</th>
+	<th class="covered">Covered Lines</th>
+	<th class="percentage">Coverage %</th>
+</tr>
+<tr>
+	<td><b>$obj.getLabel()</b></td>
+	<td>$obj.getLinesCount()</td>
+	<td>$obj.getCoverCount()</td>
+	<td>$obj.getPercentageStringified()</td>
+</tr>
+</table>
+<h2>Coverage breakdown by $type </h2>
+<table>
+<tr>
+	<th>Name</th>
+	<th class="total">Total Lines</th>
+	<th class="covered">Covered Lines</th>
+	<th class="percentage">Coverage %</th>
+</tr>
+#foreach( $child in $children )
+  <tr>
+  	<td><a href="$child.getRelativePath()">$child.getLabel()</a></td>
+  	<td>$child.getLinesCount()</td>
+  	<td>$child.getCoverCount()</td>
+  	<td>$child.getPercentageStringified()</td>
+  </tr>
+ #end
+</table>
+<br/>
+<br/>
+<br/>
+<div class="footer">Cover plugin for ErlIde 0.2.0 &copy Erlang Solutions</div>
+</body>
+</html>

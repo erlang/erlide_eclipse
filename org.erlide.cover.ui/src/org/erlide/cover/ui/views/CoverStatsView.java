@@ -331,7 +331,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     }
 
     private void makeRefreshAction() {
-        eksportHTML = new EksportReports();
+        eksportHTML = new EksportReports(viewer.getControl().getShell());
         // TODO change image
         eksportHTML.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_REDO));

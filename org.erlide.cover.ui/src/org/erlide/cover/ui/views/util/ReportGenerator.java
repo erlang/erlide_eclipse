@@ -58,7 +58,7 @@ public class ReportGenerator {
         return instance;
     }
 
-    public String getHTMLreport(ICoverageObject obj) {
+    public String getHTMLreport(ICoverageObject obj, boolean relative) {
         // organize data
 
         String date = Calendar.getInstance().getTime().toString();
@@ -75,7 +75,7 @@ public class ReportGenerator {
             while ((line = stream.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-            
+
             cssCode = sb.toString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +91,7 @@ public class ReportGenerator {
         context.put("css", cssCode);
 
         try {
-            String templText = getTemplateFromJar();
+            String templText = getTemplateFromJar(relative);
             StringResourceLoader.getRepository().putStringResource(
                     "my_template", templText);
             Template t = ve.getTemplate("my_template");
@@ -108,10 +108,17 @@ public class ReportGenerator {
 
     }
 
-    private String getTemplateFromJar() throws IOException, URISyntaxException {
-        URL bundleRoot = Platform.getBundle(
-                org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
-                "/templates/report.vm");
+    private String getTemplateFromJar(boolean relative) throws IOException,
+            URISyntaxException {
+        URL bundleRoot;
+        if (relative)
+            bundleRoot = Platform.getBundle(
+                    org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
+                    "/templates/reportRel.vm");
+        else
+            bundleRoot = Platform.getBundle(
+                    org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
+                    "/templates/report.vm");
 
         BufferedReader stream = new BufferedReader(new InputStreamReader(
                 bundleRoot.openStream()));
