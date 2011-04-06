@@ -474,13 +474,6 @@ public final class ErlModelManager implements IErlModelManager {
     }
 
     /**
-     * @see org.erlide.core.model.erlang.IErlModelManager#getInfo(org.erlide.core.model.erlang.IErlElement)
-     */
-    public synchronized Object getInfo(final IErlElement element) {
-        return element;
-    }
-
-    /**
      * @see org.erlide.core.model.erlang.IErlModelManager#getErlangModel()
      */
     public final IErlModel getErlangModel() {

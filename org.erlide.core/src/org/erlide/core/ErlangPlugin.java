@@ -84,7 +84,7 @@ public class ErlangPlugin extends Plugin {
      */
     @Override
     public void start(final BundleContext context) throws Exception {
-        final ErlangScope coreScope = new ErlangScope(this, context);
+        final CoreScope coreScope = new CoreScope(this, context);
         core = CoreInjector.injectErlangCore(coreScope);
         core.init();
         super.start(context);

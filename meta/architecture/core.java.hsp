@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local-project language="java" version="3.4.1171" flavor="j2se">
+<local-project language="java" version="1.0.1171" flavor="j2se">
   <property name="hide-externals" value="true" />
   <property name="show-needs-to-compile" value="false" />
   <property name="detail-mode" value="true" />
@@ -11,13 +11,91 @@
   </transformations>
   <restructuring>
     <set version="1" name="Sandbox 1" hiview="Codemap" active="true" todo="false">
-      <action type="unwrap" active="true" description="Unwrap core">
+      <action type="unwrap" active="true" description="Unwrap services">
         <params>
-          <container-fqn fqn="core" type="folder">
-            <node name="core" type="folder" />
+          <container-fqn fqn="services" type="folder">
+            <node name="services" type="folder" />
           </container-fqn>
         </params>
-        <composite-set />
+        <composite-set>
+          <action type="move" active="true" description="Move services.text to root">
+            <params>
+              <source-fqn fqn="services.text" type="folder">
+                <node name="services" type="folder" />
+                <node name="text" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move services.builder to root">
+            <params>
+              <source-fqn fqn="services.builder" type="folder">
+                <node name="services" type="folder" />
+                <node name="builder" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move services.search to root">
+            <params>
+              <source-fqn fqn="services.search" type="folder">
+                <node name="services" type="folder" />
+                <node name="search" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move services.codeassist to root">
+            <params>
+              <source-fqn fqn="services.codeassist" type="folder">
+                <node name="services" type="folder" />
+                <node name="codeassist" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="remove-node" active="true" description="Remove services">
+            <params>
+              <source-fqn fqn="services" type="folder">
+                <node name="services" type="folder" />
+              </source-fqn>
+            </params>
+          </action>
+        </composite-set>
+      </action>
+      <action type="unwrap" active="true" description="Unwrap model">
+        <params>
+          <container-fqn fqn="model" type="folder">
+            <node name="model" type="folder" />
+          </container-fqn>
+        </params>
+        <composite-set>
+          <action type="move" active="true" description="Move model.erlang to root">
+            <params>
+              <source-fqn fqn="model.erlang" type="folder">
+                <node name="model" type="folder" />
+                <node name="erlang" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move model.debug to root">
+            <params>
+              <source-fqn fqn="model.debug" type="folder">
+                <node name="model" type="folder" />
+                <node name="debug" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="remove-node" active="true" description="Remove model">
+            <params>
+              <source-fqn fqn="model" type="folder">
+                <node name="model" type="folder" />
+              </source-fqn>
+            </params>
+          </action>
+        </composite-set>
       </action>
       <action type="move" active="true" description="Move backend.runtimeinfo to root">
         <params>
@@ -26,552 +104,6 @@
             <node name="runtimeinfo" type="folder" />
           </source-fqn>
           <to-fqn fqn="root" type="root" isroot="true" />
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.internal.BackendUtil to backend">
-        <params>
-          <source-fqn fqn="backend.internal.BackendUtil" type="class" path="org.erlide.core.backend.internal.BackendUtil">
-            <node name="backend" type="folder" />
-            <node name="internal" type="folder" />
-            <node name="BackendUtil" type="class" />
-          </source-fqn>
-          <to-fqn fqn="backend" type="folder">
-            <node name="backend" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.internal.BackendUtils to backend">
-        <params>
-          <source-fqn fqn="backend.internal.BackendUtils" type="class" path="org.erlide.core.backend.internal.BackendUtils">
-            <node name="backend" type="folder" />
-            <node name="internal" type="folder" />
-            <node name="BackendUtils" type="class" />
-          </source-fqn>
-          <to-fqn fqn="backend" type="folder">
-            <node name="backend" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="unwrap" active="true" description="Unwrap model">
-        <params>
-          <container-fqn fqn="model" type="folder">
-            <node name="model" type="folder" />
-          </container-fqn>
-        </params>
-        <composite-set />
-      </action>
-      <action type="move" active="true" description="Move debug to services">
-        <params>
-          <source-fqn fqn="debug" type="folder">
-            <node name="debug" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="services" type="folder">
-            <node name="services" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.launching to services">
-        <params>
-          <source-fqn fqn="backend.launching" type="folder">
-            <node name="backend" type="folder" />
-            <node name="launching" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="services" type="folder">
-            <node name="services" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move services.builder.BuilderHelper to services.builder.internal">
-        <params>
-          <source-fqn fqn="services.builder.BuilderHelper" type="class" path="org.erlide.core.services.builder.BuilderHelper">
-            <node name="services" type="folder" />
-            <node name="builder" type="folder" />
-            <node name="BuilderHelper" type="class" />
-          </source-fqn>
-          <to-fqn fqn="services.builder.internal" type="folder">
-            <node name="services" type="folder" />
-            <node name="builder" type="folder" />
-            <node name="internal" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move services.builder.MarkerUtils to services.builder.internal">
-        <params>
-          <source-fqn fqn="services.builder.MarkerUtils" type="class" path="org.erlide.core.services.builder.MarkerUtils">
-            <node name="services" type="folder" />
-            <node name="builder" type="folder" />
-            <node name="MarkerUtils" type="class" />
-          </source-fqn>
-          <to-fqn fqn="services.builder.internal" type="folder">
-            <node name="services" type="folder" />
-            <node name="builder" type="folder" />
-            <node name="internal" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move common.BeamUtil to backend">
-        <params>
-          <source-fqn fqn="common.BeamUtil" type="class" path="org.erlide.core.common.BeamUtil">
-            <node name="common" type="folder" />
-            <node name="BeamUtil" type="class" />
-          </source-fqn>
-          <to-fqn fqn="backend" type="folder">
-            <node name="backend" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.console to root">
-        <params>
-          <source-fqn fqn="backend.console" type="folder">
-            <node name="backend" type="folder" />
-            <node name="console" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="root" type="root" isroot="true" />
-        </params>
-      </action>
-      <action type="move" active="true" description="Move console to services">
-        <params>
-          <source-fqn fqn="console" type="folder">
-            <node name="console" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="services" type="folder">
-            <node name="services" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move services.console to root">
-        <params>
-          <source-fqn fqn="services.console" type="folder">
-            <node name="services" type="folder" />
-            <node name="console" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="root" type="root" isroot="true" />
-        </params>
-      </action>
-      <action type="move" active="true" description="Move console to backend">
-        <params>
-          <source-fqn fqn="console" type="folder">
-            <node name="console" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="backend" type="folder">
-            <node name="backend" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.ErlideBackendVisitor to backend.manager">
-        <params>
-          <source-fqn fqn="backend.ErlideBackendVisitor" type="class" path="org.erlide.core.backend.ErlideBackendVisitor">
-            <node name="backend" type="folder" />
-            <node name="ErlideBackendVisitor" type="class" />
-          </source-fqn>
-          <to-fqn fqn="backend.manager" type="folder">
-            <node name="backend" type="folder" />
-            <node name="manager" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.BackendListener to backend.manager">
-        <params>
-          <source-fqn fqn="backend.BackendListener" type="class" path="org.erlide.core.backend.BackendListener">
-            <node name="backend" type="folder" />
-            <node name="BackendListener" type="class" />
-          </source-fqn>
-          <to-fqn fqn="backend.manager" type="folder">
-            <node name="backend" type="folder" />
-            <node name="manager" type="folder" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move services.debug.ErlangDebugOptionsManager to root">
-        <params>
-          <source-fqn fqn="services.debug.ErlangDebugOptionsManager" type="class" path="org.erlide.core.model.debug.ErlangDebugOptionsManager">
-            <node name="services" type="folder" />
-            <node name="debug" type="folder" />
-            <node name="ErlangDebugOptionsManager" type="class" />
-          </source-fqn>
-          <to-fqn fqn="root" type="root" isroot="true" />
-        </params>
-      </action>
-      <action type="flatten" active="true" description="Flatten backend">
-        <params flattenLeafFolders="true">
-          <container-fqn fqn="backend" type="folder">
-            <node name="backend" type="folder" />
-          </container-fqn>
-        </params>
-        <composite-set>
-          <action type="move" active="true" description="Move backend.console.BackendShell to backend">
-            <params>
-              <source-fqn fqn="backend.console.BackendShell" type="class" path="org.erlide.core.backend.console.BackendShell">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-                <node name="BackendShell" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.console.BackendShellListener to backend">
-            <params>
-              <source-fqn fqn="backend.console.BackendShellListener" type="class" path="org.erlide.core.backend.console.BackendShellListener">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-                <node name="BackendShellListener" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.console.BackendShellManager to backend">
-            <params>
-              <source-fqn fqn="backend.console.BackendShellManager" type="class" path="org.erlide.core.backend.console.BackendShellManager">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-                <node name="BackendShellManager" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.console.ConsoleEventHandler to backend">
-            <params>
-              <source-fqn fqn="backend.console.ConsoleEventHandler" type="class" path="org.erlide.core.backend.console.ConsoleEventHandler">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-                <node name="ConsoleEventHandler" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.console.ErlideReshd to backend">
-            <params>
-              <source-fqn fqn="backend.console.ErlideReshd" type="class" path="org.erlide.core.backend.console.ErlideReshd">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-                <node name="ErlideReshd" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.console.IoRequest to backend">
-            <params>
-              <source-fqn fqn="backend.console.IoRequest" type="class" path="org.erlide.core.backend.console.IoRequest">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-                <node name="IoRequest" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.events.ErlangEvent to backend">
-            <params>
-              <source-fqn fqn="backend.events.ErlangEvent" type="class" path="org.erlide.core.backend.events.ErlangEvent">
-                <node name="backend" type="folder" />
-                <node name="events" type="folder" />
-                <node name="ErlangEvent" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.events.EventDaemon to backend">
-            <params>
-              <source-fqn fqn="backend.events.EventDaemon" type="class" path="org.erlide.core.backend.events.EventDaemon">
-                <node name="backend" type="folder" />
-                <node name="events" type="folder" />
-                <node name="EventDaemon" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.events.EventHandler to backend">
-            <params>
-              <source-fqn fqn="backend.events.EventHandler" type="class" path="org.erlide.core.backend.events.EventHandler">
-                <node name="backend" type="folder" />
-                <node name="events" type="folder" />
-                <node name="EventHandler" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.events.LogEventHandler to backend">
-            <params>
-              <source-fqn fqn="backend.events.LogEventHandler" type="class" path="org.erlide.core.backend.events.LogEventHandler">
-                <node name="backend" type="folder" />
-                <node name="events" type="folder" />
-                <node name="LogEventHandler" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.CodeBundleImpl to backend">
-            <params>
-              <source-fqn fqn="backend.internal.CodeBundleImpl" type="class" path="org.erlide.core.backend.internal.CodeBundleImpl">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="CodeBundleImpl" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.CodeManager to backend">
-            <params>
-              <source-fqn fqn="backend.internal.CodeManager" type="class" path="org.erlide.core.backend.internal.CodeManager">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="CodeManager" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.EpmdWatchJob to backend">
-            <params>
-              <source-fqn fqn="backend.internal.EpmdWatchJob" type="class" path="org.erlide.core.backend.internal.EpmdWatchJob">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="EpmdWatchJob" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.ErlRuntime to backend">
-            <params>
-              <source-fqn fqn="backend.internal.ErlRuntime" type="class" path="org.erlide.core.backend.internal.ErlRuntime">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="ErlRuntime" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.ErlangCode to backend">
-            <params>
-              <source-fqn fqn="backend.internal.ErlangCode" type="class" path="org.erlide.core.backend.internal.ErlangCode">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="ErlangCode" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.ErtsWatcherRunnable to backend">
-            <params>
-              <source-fqn fqn="backend.internal.ErtsWatcherRunnable" type="class" path="org.erlide.core.backend.internal.ErtsWatcherRunnable">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="ErtsWatcherRunnable" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.ExternalBackend to backend">
-            <params>
-              <source-fqn fqn="backend.internal.ExternalBackend" type="class" path="org.erlide.core.backend.internal.ExternalBackend">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="ExternalBackend" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.InternalBackend to backend">
-            <params>
-              <source-fqn fqn="backend.internal.InternalBackend" type="class" path="org.erlide.core.backend.internal.InternalBackend">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="InternalBackend" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.internal.OutputStreamMonitor to backend">
-            <params>
-              <source-fqn fqn="backend.internal.OutputStreamMonitor" type="class" path="org.erlide.core.backend.internal.OutputStreamMonitor">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-                <node name="OutputStreamMonitor" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.manager.BackendFactory to backend">
-            <params>
-              <source-fqn fqn="backend.manager.BackendFactory" type="class" path="org.erlide.core.backend.manager.BackendFactory">
-                <node name="backend" type="folder" />
-                <node name="manager" type="folder" />
-                <node name="BackendFactory" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.manager.BackendListener to backend">
-            <params>
-              <source-fqn fqn="backend.manager.BackendListener" type="class" path="org.erlide.core.backend.BackendListener">
-                <node name="backend" type="folder" />
-                <node name="manager" type="folder" />
-                <node name="BackendListener" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.manager.BackendManager to backend">
-            <params>
-              <source-fqn fqn="backend.manager.BackendManager" type="class" path="org.erlide.core.backend.manager.BackendManager">
-                <node name="backend" type="folder" />
-                <node name="manager" type="folder" />
-                <node name="BackendManager" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.manager.BackendManagerLaunchListener to backend">
-            <params>
-              <source-fqn fqn="backend.manager.BackendManagerLaunchListener" type="class" path="org.erlide.core.backend.manager.BackendManagerLaunchListener">
-                <node name="backend" type="folder" />
-                <node name="manager" type="folder" />
-                <node name="BackendManagerLaunchListener" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="move" active="true" description="Move backend.manager.ErlideBackendVisitor to backend">
-            <params>
-              <source-fqn fqn="backend.manager.ErlideBackendVisitor" type="class" path="org.erlide.core.backend.ErlideBackendVisitor">
-                <node name="backend" type="folder" />
-                <node name="manager" type="folder" />
-                <node name="ErlideBackendVisitor" type="class" />
-              </source-fqn>
-              <to-fqn fqn="backend" type="folder">
-                <node name="backend" type="folder" />
-              </to-fqn>
-            </params>
-          </action>
-          <action type="remove-node" active="true" description="Remove backend.internal">
-            <params>
-              <source-fqn fqn="backend.internal" type="folder">
-                <node name="backend" type="folder" />
-                <node name="internal" type="folder" />
-              </source-fqn>
-            </params>
-          </action>
-          <action type="remove-node" active="true" description="Remove backend.manager">
-            <params>
-              <source-fqn fqn="backend.manager" type="folder">
-                <node name="backend" type="folder" />
-                <node name="manager" type="folder" />
-              </source-fqn>
-            </params>
-          </action>
-          <action type="remove-node" active="true" description="Remove backend.events">
-            <params>
-              <source-fqn fqn="backend.events" type="folder">
-                <node name="backend" type="folder" />
-                <node name="events" type="folder" />
-              </source-fqn>
-            </params>
-          </action>
-          <action type="remove-node" active="true" description="Remove backend.console">
-            <params>
-              <source-fqn fqn="backend.console" type="folder">
-                <node name="backend" type="folder" />
-                <node name="console" type="folder" />
-              </source-fqn>
-            </params>
-          </action>
-        </composite-set>
-      </action>
-      <action type="add-extension-node" active="true" description="Add BackendUtil2 to backend">
-        <params name="BackendUtil2">
-          <parent-fqn fqn="backend" type="folder">
-            <node name="backend" type="folder" />
-          </parent-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move backend.BackendUtil.buildLocalNodeName(java.lang.String, boolean):java.lang.String to backend.BackendUtil2">
-        <params>
-          <source-fqn fqn="backend.BackendUtil.buildLocalNodeName(java.lang.String, boolean):java.lang.String" type="method" path="org.erlide.core.backend.internal.BackendUtil">
-            <node name="backend" type="folder" />
-            <node name="BackendUtil" type="class" />
-            <node name="buildLocalNodeName(java.lang.String, boolean):java.lang.String" type="method" />
-          </source-fqn>
-          <to-fqn fqn="backend.BackendUtil2" type="extension">
-            <node name="backend" type="folder" />
-            <node name="BackendUtil2" type="extension" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="add-extension-node" active="true" description="Add IParser to parsing">
-        <params name="IParser">
-          <parent-fqn fqn="parsing" type="folder">
-            <node name="parsing" type="folder" />
-          </parent-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move parsing.ErlideNoparse.initialParse(org.erlide.core.rpc.RpcCallSite, java.lang.String, java.lang.String, java.lang.String, boolean, boolean):com.ericsson.otp.erlang.OtpErlangTuple to parsing.IParser">
-        <params>
-          <source-fqn fqn="parsing.ErlideNoparse.initialParse(org.erlide.core.rpc.RpcCallSite, java.lang.String, java.lang.String, java.lang.String, boolean, boolean):com.ericsson.otp.erlang.OtpErlangTuple" type="method" path="org.erlide.core.parsing.ErlideNoparse">
-            <node name="parsing" type="folder" />
-            <node name="ErlideNoparse" type="class" />
-            <node name="initialParse(org.erlide.core.rpc.RpcCallSite, java.lang.String, java.lang.String, java.lang.String, boolean, boolean):com.ericsson.otp.erlang.OtpErlangTuple" type="method" />
-          </source-fqn>
-          <to-fqn fqn="parsing.IParser" type="extension">
-            <node name="parsing" type="folder" />
-            <node name="IParser" type="extension" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move parsing.ErlideNoparse.reparse(org.erlide.core.rpc.RpcCallSite, java.lang.String):com.ericsson.otp.erlang.OtpErlangTuple to parsing.IParser">
-        <params>
-          <source-fqn fqn="parsing.ErlideNoparse.reparse(org.erlide.core.rpc.RpcCallSite, java.lang.String):com.ericsson.otp.erlang.OtpErlangTuple" type="method" path="org.erlide.core.parsing.ErlideNoparse">
-            <node name="parsing" type="folder" />
-            <node name="ErlideNoparse" type="class" />
-            <node name="reparse(org.erlide.core.rpc.RpcCallSite, java.lang.String):com.ericsson.otp.erlang.OtpErlangTuple" type="method" />
-          </source-fqn>
-          <to-fqn fqn="parsing.IParser" type="extension">
-            <node name="parsing" type="folder" />
-            <node name="IParser" type="extension" />
-          </to-fqn>
         </params>
       </action>
     </set>
@@ -595,7 +127,7 @@
   <sourcepaths>
     <pathentry type="file" path="C:\Apps\erlide\org.erlide.core\src" />
   </sourcepaths>
-  <grid-set sep="." version="3.4.1171">
+  <grid-set sep="." version="1.0.1171">
     <grid name="Diagram 1" enforce="true" strict="false">
       <row>
         <cell name="launching" pattern="org.erlide.core.backend.launching.?" vexpanded="false" visibility="public">

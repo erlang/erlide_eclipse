@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
@@ -75,7 +75,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject = ErlangScope.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
@@ -123,7 +123,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
                     + project.getName());
         }
-        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         try {
             MarkerUtils.deleteMarkers(project);

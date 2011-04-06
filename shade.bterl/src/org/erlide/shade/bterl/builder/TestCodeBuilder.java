@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlProject;
@@ -483,7 +483,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
-        final IErlProject erlprj = ErlangScope.getModel().findProject(myProject);
+        final IErlProject erlprj = CoreScope.getModel().findProject(myProject);
         final Collection<IPath> srcDirs = erlprj.getSourceDirs();
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
         for (final IPath src : srcDirs) {
