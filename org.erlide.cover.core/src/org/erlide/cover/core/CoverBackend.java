@@ -18,6 +18,7 @@ import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.cover.api.CoverException;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 

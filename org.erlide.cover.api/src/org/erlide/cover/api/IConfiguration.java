@@ -1,4 +1,4 @@
-package org.erlide.cover.core.api;
+package org.erlide.cover.api;
 
 import java.util.Collection;
 

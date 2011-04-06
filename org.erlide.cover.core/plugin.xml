@@ -13,5 +13,11 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
+   <extension
+         point="org.erlide.cover.analysis">
+      <proxy
+            class="org.erlide.cover.core.CoveragePerformerProxy">
+      </proxy>
+   </extension>
 
 </plugin>

@@ -1,4 +1,4 @@
-package org.erlide.cover.core.api;
+package org.erlide.cover.api;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,9 +10,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.CoverException;
-import org.erlide.cover.core.Logger;
 
 /**
  * Basic implementation of IConfiguration. Used to tell which modules at which
@@ -26,11 +23,8 @@ public class Configuration implements IConfiguration {
     private IErlProject project;
     private Map<String, IErlModule> modules;
 
-    private Logger log; // logger
-
     public Configuration() {
         modules = new HashMap<String, IErlModule>();
-        log = Activator.getDefault();
     }
 
     public void setProject(String name) {

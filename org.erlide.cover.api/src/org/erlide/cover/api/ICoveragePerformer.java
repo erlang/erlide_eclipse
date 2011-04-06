@@ -1,9 +1,6 @@
-package org.erlide.cover.core.api;
+package org.erlide.cover.api;
 
 import java.util.Collection;
-
-import org.erlide.cover.core.CoverBackend;
-import org.erlide.cover.core.CoverException;
 
 /**
  * API for using cover plugin
@@ -11,8 +8,8 @@ import org.erlide.cover.core.CoverException;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * 
  */
-public interface CoverAPI {
-
+public interface ICoveragePerformer {
+    
     /**
      * Start cover on the nodes given
      * 

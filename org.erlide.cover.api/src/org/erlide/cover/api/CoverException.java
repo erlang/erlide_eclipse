@@ -1,20 +1,16 @@
-package org.erlide.cover.core;
+package org.erlide.cover.api;
 
 /**
- * Cover plugin exception clas.
+ * Cover plugin exception class.
  * Thrown if something inside Cover plugin goes wrong
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  *
  */
 public class CoverException extends Exception {
-    
-    public CoverException() {
-        super();
-    }
-    
-    public CoverException(String mesg) {
-        super(mesg);
-    }
 
+    public CoverException(String message) {
+        super(message);
+    }
+    
 }

@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
+import org.erlide.cover.api.CoverException;
+import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
-import org.erlide.cover.core.api.CoveragePerformer;
-import org.erlide.cover.core.api.IConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

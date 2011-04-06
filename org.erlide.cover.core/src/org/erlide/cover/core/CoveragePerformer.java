@@ -1,4 +1,4 @@
-package org.erlide.cover.core.api;
+package org.erlide.cover.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,21 +8,17 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.cover.api.ICoveragePerformer;
+import org.erlide.cover.api.CoverException;
+import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.CoverConstants;
-import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.CoverBackend;
-import org.erlide.cover.core.CoverEvent;
-import org.erlide.cover.core.CoverException;
-import org.erlide.cover.core.CoverStatus;
-import org.erlide.cover.core.ICoverObserver;
-import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.StatsTreeModel;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class CoveragePerformer implements CoverAPI {
+public class CoveragePerformer implements ICoveragePerformer {
 
     private static CoveragePerformer performer;
 
