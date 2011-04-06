@@ -514,10 +514,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.COMPILE);
         setAction("Compile file", compileAction);
 
-        cleanUpAction = new CleanUpAction(getModule().getResource());
-        cleanUpAction
-                .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
-        setAction("Clean Up...", cleanUpAction);
+        if (getModule() != null) {
+            cleanUpAction = new CleanUpAction(getModule().getResource());
+            cleanUpAction
+                    .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAN_UP);
+            setAction("Clean Up...", cleanUpAction);
+        }
 
         if (CommonUtils.isTest()) {
             testAction = new TestAction(

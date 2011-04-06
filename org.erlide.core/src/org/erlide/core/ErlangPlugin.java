@@ -87,11 +87,8 @@ public class ErlangPlugin extends Plugin {
         final ErlangScope coreScope = new ErlangScope(this, context);
         core = CoreInjector.injectErlangCore(coreScope);
         core.init();
-
         super.start(context);
-
-        core.start();
-
+        core.start(getFeatureVersion());
     }
 
     public String getFeatureVersion() {

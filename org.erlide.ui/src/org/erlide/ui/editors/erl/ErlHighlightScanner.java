@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.parsing.ErlToken;
-import org.erlide.core.services.text.ErlideScanner;
+import org.erlide.core.parsing.ErlideScanner;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;

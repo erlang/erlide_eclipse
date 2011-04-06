@@ -1,10 +1,9 @@
-package org.erlide.core.common;
+package org.erlide.core;
 
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.erlide.core.ErlangPlugin;
 
 import com.google.common.collect.Lists;
 

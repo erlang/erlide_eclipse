@@ -19,12 +19,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ErlangScope;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.debug.ErlangLineBreakpoint;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -411,20 +409,6 @@ public final class MarkerUtils {
         if (setPath) {
             marker.setAttribute(PATH_ATTRIBUTE, module.getFilePath());
         }
-        return marker;
-    }
-
-    public static IMarker createErlangLineBreakpointMarker(
-            final IResource resource, final int lineNumber,
-            final String modelIdentifier) throws CoreException {
-        final IMarker marker = resource
-                .createMarker(ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE);
-        marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
-        marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-        marker.setAttribute(IBreakpoint.ID, modelIdentifier);
-        marker.setAttribute(IMarker.MESSAGE,
-                "Line Breakpoint: " + resource.getName() + " [line: "
-                        + lineNumber + "]");
         return marker;
     }
 
