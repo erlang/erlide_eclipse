@@ -112,7 +112,7 @@ move_fun_command(ModorFileName, FunName, Arity, TargetModorFileName, SearchPaths
 	    case get_file_name(TargetModorFileName, SearchPaths) of
 		{ok, TargetFileName} ->
 		    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(OriginalFileName, true, SearchPaths, 8),
-		    ModName = get_module_name(Info),
+                    ModName = get_module_name(Info),
 		    case refac_util:funname_to_defpos(AnnAST, {ModName, FunName, Arity}) of
 			{ok, Pos} ->
 			    case Pos of
@@ -139,6 +139,7 @@ move_fun(FName, Line, Col, TargetModorFileName, SearchPaths, TabWidth, Editor) -
 	_ -> ok
     end,
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
+    
     case interface_api:pos_to_fun_def(AnnAST, {Line, Col}) of
 	{ok, _Def} ->
 	    ok;
@@ -434,7 +435,7 @@ do_add_fun(TargetModInfo, FormsToAdd, AttrsToAdd, MFAs = [{ModName, _, _}| _T],
 		       insert_export_form(AttrsToAdd, ProcessedForms)++ NewFormsToAdd;
 		   _ ->
 		       Export = make_export(FunsToExport1),
-		       insert_export_form([Export| AttrsToAdd], ProcessedForms) ++ NewFormsToAdd
+                       insert_export_form([Export| AttrsToAdd], ProcessedForms) ++ NewFormsToAdd
 	       end,
     refac_syntax:form_list(NewForms).
 
@@ -492,9 +493,14 @@ do_remove_module_qualifier(Node, {FileName, MFAs, TargetModName, SearchPaths, Ta
 		{{ModName, FunName}, Arity} ->
 		    case lists:member({ModName, FunName, Arity}, MFAs) of
 			true ->
-			    Op1 = copy_pos_attrs(Op, refac_syntax:atom(FunName)),
-			    Node1 = copy_pos_attrs(Node, refac_syntax:application(Op1, Args)),
-			    {Node1, true};
+                            case refac_syntax:type(Op) of 
+                                module_qualifier ->
+                                    Op1 = refac_syntax:module_qualifier_body(Op),
+                                    Node1 = copy_pos_attrs(Node, refac_syntax:application(Op1, Args)),
+                                    {Node1, true};
+                                _ ->
+                                    {Node, false}
+                            end;
 			_ ->
 			    case lists:keysearch({ModName, FunName, Arity}, 1, refac_util:apply_style_funs()) of
 				{value, _} ->
@@ -541,16 +547,19 @@ process_implicit_fun(Node, MFAs, TargetModName) ->
 
 insert_export_form(Attrs, Forms) ->
     {Forms11, Forms12} = lists:splitwith(fun (F) -> 
-						 is_attribute(F, module) orelse
-					         is_attribute(F, export) orelse
-					         is_attribute(F, import) orelse 
-						 is_attribute(F, include) orelse
-						 is_attribute(F, include_lib) orelse
-					         refac_syntax:type(F) == comment
+                                                 refac_syntax:type(F) == attribute orelse
+                                                     refac_syntax:type(F) == comment
 					 end, Forms),
-    {Forms111, Forms112}= lists:splitwith(fun(F) -> 
-						  refac_syntax:type(F)==comment 
-					  end, lists:reverse(Forms11)),
+    {Forms111, Forms112} =case lists:splitwith(fun(F) -> 
+                                                       not is_attribute(F, export) 
+                                               end, lists:reverse(Forms11)) of
+                              {_, []} ->
+                                  lists:splitwith(fun(F) -> 
+                                                          refac_syntax:type(F)==comment 
+                                                  end, lists:reverse(Forms11));
+                              {Fs1, Fs2} ->
+                                  {Fs1, Fs2}
+                          end,
     lists:reverse(Forms112)++Attrs ++ lists:reverse(Forms111) ++ Forms12.
     
    
@@ -1003,7 +1012,7 @@ analyze_file(FName, SearchPaths, TabWidth) ->
 			     _ -> []
 			 end,
 	    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
-	    Forms = refac_syntax:form_list_elements(AnnAST),
+            Forms = refac_syntax:form_list_elements(AnnAST),
 	    Includes = lists:append([lists:flatmap(fun (A) ->
 							   case refac_syntax:type(A) of
 							       string -> [refac_syntax:string_value(A)];
