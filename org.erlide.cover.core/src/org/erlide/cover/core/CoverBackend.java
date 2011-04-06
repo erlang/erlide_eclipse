@@ -24,9 +24,9 @@ import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 
 /**
  * Core backend for Cover-plugin
- * 
+ *
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- * 
+ *
  */
 public class CoverBackend {
 
@@ -41,7 +41,6 @@ public class CoverBackend {
     // private CoverLaunchData coverData;
     private CoverLaunchSettings settings;
     private String nodeName;
-    private boolean coverRunning;
 
     private Logger log; // logger
 
@@ -54,7 +53,6 @@ public class CoverBackend {
 
     private CoverBackend() {
         handler = new CoverEventHandler();
-        coverRunning = false;
         log = Activator.getDefault();
     }
 
@@ -102,18 +100,9 @@ public class CoverBackend {
         }
 
     }
-    
+
     public synchronized void startTesting() {
-
-        if (!coverRunning) {
-            coverRunning = true;
-            new CoverRunner().start();
-        }
-
-    }
-
-    public synchronized void coverageFinished() {
-        coverRunning = false;
+        new CoverRunner().start();
     }
 
     public CoverEventHandler getHandler() {

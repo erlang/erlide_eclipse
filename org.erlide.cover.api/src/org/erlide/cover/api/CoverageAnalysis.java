@@ -1,5 +1,6 @@
 package org.erlide.cover.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -9,39 +10,56 @@ import org.erlide.core.ErlangPlugin;
 
 /**
  * Public API for Cover plug-in
+ *
+ * Notes:
+ * - user should make sure that only one set of tests performs coverage at time,
+ *   that is: no calls to prepareAnalysis are made between
+ *   prepareAnalysis() - performAnalysis() call pair.
+ *
  * @author Krzysztof Goj
  */
 public class CoverageAnalysis {
-    
+
     /**
      * @return true if the Cover plug-in is installed.
      */
     public static boolean isAvailable() {
         return getCoveragePerformer() != null;
     }
-    
+
     /**
      * Intended to be run before running the tests.
-     * 
+     *
      * @throws UnsupportedOperationException when Cover plug-in is not installed
      * @throws CoverException on Cover-specific failures
      */
-    public static void prepareAnalysis(List<String> nodes, IConfiguration configuration) throws CoverException {
+    public static void prepareAnalysis(IConfiguration configuration) throws CoverException {
+        prepareAnalysis(new ArrayList<String>(), configuration);
+    }
+
+    /**
+     * Intended to be run before running the tests.
+     *
+     * @param additionalNodes - other nodes (besides Cover's node) that are used to gather the coverage info
+     *
+     * @throws UnsupportedOperationException when Cover plug-in is not installed
+     * @throws CoverException on Cover-specific failures
+     */
+    public static void prepareAnalysis(List<String> additionalNodes, IConfiguration configuration) throws CoverException {
         ICoveragePerformer performer = getCoveragePerformerOrThrow();
-        performer.startCover(nodes);
+        performer.startCover(additionalNodes);
         performer.setCoverageConfiguration(configuration);
     }
 
     /**
      * Intended to be run after running the tests.
      * Performs the actual analysis and displays the results to the user.
-     * 
+     *
      * @throws UnsupportedOperationException when Cover plug-in is not installed
      * @throws CoverException on Cover-specific failures
      */
     public static void performAnalysis() throws CoverException {
-        ICoveragePerformer performer = getCoveragePerformerOrThrow();
-        performer.analyse();
+        getCoveragePerformerOrThrow().analyse();
     }
 
     private static ICoveragePerformer getCoveragePerformerOrThrow() {
