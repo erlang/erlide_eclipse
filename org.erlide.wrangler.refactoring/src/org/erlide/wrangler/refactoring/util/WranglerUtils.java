@@ -39,8 +39,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.internal.ErlModel;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
@@ -468,7 +468,7 @@ public final class WranglerUtils {
      */
     public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
 
-        final ErlModel model = (ErlModel) CoreScope.getModel();
+        final IErlModel model = (IErlModel) CoreScope.getModel();
         for (final ChangedFile f : changedFiles) {
             IFile file;
             try {
