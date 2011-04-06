@@ -299,4 +299,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     IErlProject newProject(final String name, final String path)
             throws ErlModelException;
 
+    void notifyChange(IErlElement element);
+
 }
