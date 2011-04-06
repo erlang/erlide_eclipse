@@ -1,9 +1,22 @@
 package org.erlide.core;
 
-import java.util.HashMap;
+import java.util.Map;
 
-public class ServicesMap<T extends IService> extends HashMap<Class<T>, T> {
+import com.google.common.collect.Maps;
 
-    private static final long serialVersionUID = -4070815404811979592L;
+public class ServicesMap {
+    private final Map<Class<? extends IService>, IService> map;
+
+    public ServicesMap() {
+        map = Maps.newHashMap();
+    }
+
+    public <T extends IService> T getService(Class<T> key) {
+        return key.cast(map.get(key));
+    }
+
+    public <T extends IService> void putService(Class<T> key, T value) {
+        map.put(key, value);
+    }
 
 }

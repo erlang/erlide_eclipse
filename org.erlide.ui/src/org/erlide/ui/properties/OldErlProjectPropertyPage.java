@@ -20,7 +20,7 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.erlang.IErlProject;
@@ -110,7 +110,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
     public boolean performOk() {
         final IProject project = (IProject) getElement().getAdapter(
                 IProject.class);
-        final IErlProject erlProject = ErlangScope.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         erlProject.clearCaches();
         return super.performOk();

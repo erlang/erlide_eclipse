@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
@@ -43,7 +43,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (!prefs.getDialyzeOnCompile()) {
             return null;
         }
-        final IErlModel model = ErlangScope.getModel();
+        final IErlModel model = CoreScope.getModel();
         final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
         DialyzerUtils.addModulesFromResource(model, project, modules);
         if (modules.size() != 0) {

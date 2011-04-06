@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -46,10 +46,10 @@ import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
+import org.erlide.core.parsing.ErlScanner;
 import org.erlide.core.parsing.ErlToken;
 import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.parsing.IErlScanner;
-import org.erlide.core.services.text.ErlScanner;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -115,7 +115,7 @@ public class ErlModule extends Openable implements IErlModule {
     protected synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
-            final ErlModel model = (ErlModel) ErlangScope.getModel();
+            final ErlModel model = (ErlModel) CoreScope.getModel();
             if (model != null) {
                 model.notifyChange(this);
             }
@@ -443,7 +443,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public void dispose() {
         disposeScanner();
-        ErlangScope.getModelManager().removeModule(this);
+        CoreScope.getModelManager().removeModule(this);
     }
 
     public Set<IErlModule> getDirectDependentModules() throws ErlModelException {

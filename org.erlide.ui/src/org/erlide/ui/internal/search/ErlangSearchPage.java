@@ -39,7 +39,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
@@ -634,7 +634,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             OpenResult res;
             try {
                 res = ErlideOpen.open(backend, module, offset, ModelUtils
-                        .getImportsAsList(module), "", ErlangScope.getModel()
+                        .getImportsAsList(module), "", CoreScope.getModel()
                         .getPathVars());
             } catch (final RpcException e) {
                 res = null;

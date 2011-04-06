@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlElement.AcceptFlags;
 import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlProject.Scope;
@@ -127,7 +127,7 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getModel() throws Exception {
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        final IErlModel model = ErlangScope.getModel();
+        final IErlModel model = CoreScope.getModel();
         assertEquals(model, project.getModel());
         assertEquals(model, module.getModel());
         assertEquals(model, element.getModel());

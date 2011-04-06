@@ -1,4 +1,4 @@
-package org.erlide.core.services.text;
+package org.erlide.core.parsing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Util;
-import org.erlide.core.parsing.ErlToken;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.Assert;
 import org.erlide.jinterface.ErlLogger;

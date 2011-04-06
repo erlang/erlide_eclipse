@@ -52,8 +52,6 @@ public interface IErlModelManager extends ISaveParticipant {
     IErlProject createOtpProject(IProject project) throws CoreException,
             BackingStoreException;
 
-    Object getInfo(IErlElement element);
-
     IErlModel getErlangModel();
 
     /**

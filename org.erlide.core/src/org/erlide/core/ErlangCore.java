@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -30,12 +31,156 @@ import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
-import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class ErlangCore {
 
     private ErlLogger logger;
+    private final ServicesMap services;
+    private final Plugin plugin;
+    private final IWorkspace workspace;
+    private final IExtensionRegistry extensionRegistry;
+
+    public ErlangCore(final Plugin plugin, final ServicesMap services,
+            IWorkspace workspace, IExtensionRegistry extensionRegistry) {
+        this.services = services;
+        this.plugin = plugin;
+        this.workspace = workspace;
+        this.extensionRegistry = extensionRegistry;
+    }
+
+    public void init() {
+        final String dir = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toPortableString();
+        logger = ErlLogger.getInstance();
+        logger.setLogDir(dir);
+        ErlLogger.debug("Starting CORE " + Thread.currentThread());
+    }
+
+    public void stop() {
+        ResourcesPlugin.getWorkspace().removeSaveParticipant(plugin);
+        CoreScope.getModelManager().shutdown();
+        ErlangDebugOptionsManager.getDefault().shutdown();
+        logger.dispose();
+    }
+
+    public void log(final IStatus status) {
+        final Level lvl = getLevelFromStatus(status);
+        logger.log(lvl, status.getMessage());
+        final Throwable exception = status.getException();
+        if (exception != null) {
+            logger.log(lvl, exception);
+        }
+        getPlugin().getLog().log(status);
+    }
+
+    private Plugin getPlugin() {
+        return plugin;
+    }
+
+    private Level getLevelFromStatus(final IStatus status) {
+        Level lvl;
+        switch (status.getSeverity()) {
+        case IStatus.ERROR:
+            lvl = Level.SEVERE;
+            break;
+        case IStatus.WARNING:
+            lvl = Level.WARNING;
+            break;
+        case IStatus.INFO:
+            lvl = Level.INFO;
+            break;
+        default:
+            lvl = Level.FINEST;
+        }
+        return lvl;
+    }
+
+    public void logErrorMessage(final String message) {
+        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
+    }
+
+    public void logErrorStatus(final String message, final IStatus status) {
+        if (status == null) {
+            logErrorMessage(message);
+            return;
+        }
+        final MultiStatus multi = new MultiStatus(plugin.getBundle()
+                .getSymbolicName(), ErlangStatus.INTERNAL_ERROR.getValue(),
+                message, null);
+        multi.add(status);
+        log(multi);
+    }
+
+    public void log(final Throwable e) {
+        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
+                ErlangStatus.INTERNAL_ERROR.getValue(),
+                "Erlide internal error", e));
+    }
+
+    public void log(final String msg, final Throwable thr) {
+        final String id = plugin.getBundle().getSymbolicName();
+        final Status status = new Status(IStatus.ERROR, id, IStatus.OK, msg,
+                thr);
+        plugin.getLog().log(status);
+    }
+
+    public void debug(final String message) {
+        if (plugin.isDebugging()) {
+            ErlLogger.debug(message);
+        }
+    }
+
+    public void start(final String version) throws CoreException {
+        String dev = "";
+        if (CommonUtils.isDeveloper()) {
+            dev = " erlide developer version ***";
+        }
+        if (CommonUtils.isTest()) {
+            dev += " test ***";
+        }
+        ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+
+        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
+        runtimeInfoInitializer.initializeRuntimesList();
+
+        BackendCore.getBackendManager().loadCodepathExtensions();
+
+        ResourcesPlugin.getWorkspace().addSaveParticipant(plugin,
+                new ISaveParticipant() {
+                    public void doneSaving(final ISaveContext context1) {
+                    }
+
+                    public void prepareToSave(final ISaveContext context1)
+                            throws CoreException {
+                    }
+
+                    public void rollback(final ISaveContext context1) {
+                    }
+
+                    public void saving(final ISaveContext context1)
+                            throws CoreException {
+                        try {
+                            new InstanceScope().getNode(
+                                    plugin.getBundle().getSymbolicName())
+                                    .flush();
+                        } catch (final BackingStoreException e) {
+                            // ignore
+                        }
+                    }
+                });
+        ErlangDebugOptionsManager.getDefault().start();
+        ErlLogger.debug("Started CORE");
+    }
+
+    public IWorkspace getWorkspace() {
+        return workspace;
+    }
+
+    public IExtensionRegistry getExtensionRegistry() {
+        return extensionRegistry;
+    }
 
     /**
      * Runs the given action as an atomic Erlang model operation.
@@ -119,148 +264,6 @@ public final class ErlangCore {
             // workspace.run(new BatchOperation(action), rule,
             // IWorkspace.AVOID_UPDATE, monitor);
         }
-    }
-
-    private final BundleContext context;
-    private final ServicesMap<IService> services;
-    private final ErlangPlugin plugin;
-
-    public ErlangCore(final ErlangPlugin plugin,
-            final BundleContext bundleContext,
-            final ServicesMap<IService> services) {
-        context = bundleContext;
-        this.services = services;
-        this.plugin = plugin;
-    }
-
-    public <T extends IService> T getService(final Class<T> clazz) {
-        return clazz.cast(services.get(clazz));
-    }
-
-    public void init() {
-        final String dir = ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toPortableString();
-        logger = ErlLogger.getInstance();
-        logger.setLogDir(dir);
-        ErlLogger.debug("Starting CORE " + Thread.currentThread());
-    }
-
-    public void stop() {
-        ResourcesPlugin.getWorkspace().removeSaveParticipant(plugin);
-        ErlangScope.getModelManager().shutdown();
-        ErlangDebugOptionsManager.getDefault().shutdown();
-        logger.dispose();
-    }
-
-    public void log(final IStatus status) {
-        final Level lvl = getLevelFromStatus(status);
-        logger.log(lvl, status.getMessage());
-        final Throwable exception = status.getException();
-        if (exception != null) {
-            logger.log(lvl, exception);
-        }
-        getPlugin().getLog().log(status);
-    }
-
-    private Plugin getPlugin() {
-        return plugin;
-    }
-
-    private Level getLevelFromStatus(final IStatus status) {
-        Level lvl;
-        switch (status.getSeverity()) {
-        case IStatus.ERROR:
-            lvl = Level.SEVERE;
-            break;
-        case IStatus.WARNING:
-            lvl = Level.WARNING;
-            break;
-        case IStatus.INFO:
-            lvl = Level.INFO;
-            break;
-        default:
-            lvl = Level.FINEST;
-        }
-        return lvl;
-    }
-
-    public void logErrorMessage(final String message) {
-        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
-                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
-    }
-
-    public void logErrorStatus(final String message, final IStatus status) {
-        if (status == null) {
-            logErrorMessage(message);
-            return;
-        }
-        final MultiStatus multi = new MultiStatus(plugin.getBundle()
-                .getSymbolicName(), ErlangStatus.INTERNAL_ERROR.getValue(),
-                message, null);
-        multi.add(status);
-        log(multi);
-    }
-
-    public void log(final Throwable e) {
-        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
-                ErlangStatus.INTERNAL_ERROR.getValue(),
-                "Erlide internal error", e));
-    }
-
-    public void log(final String msg, final Throwable thr) {
-        final String id = plugin.getBundle().getSymbolicName();
-        final Status status = new Status(IStatus.ERROR, id, IStatus.OK, msg,
-                thr);
-        plugin.getLog().log(status);
-    }
-
-    public void debug(final String message) {
-        if (plugin.isDebugging()) {
-            ErlLogger.debug(message);
-        }
-    }
-
-    public void start() throws CoreException {
-        String dev = "";
-        if (CommonUtils.isDeveloper()) {
-            dev = " erlide developer version ***";
-        }
-        if (CommonUtils.isTest()) {
-            dev += " test ***";
-        }
-        final String version = plugin.getFeatureVersion();
-        ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
-
-        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
-        runtimeInfoInitializer.initializeRuntimesList();
-
-        BackendCore.getBackendManager().loadCodepathExtensions();
-
-        ResourcesPlugin.getWorkspace().addSaveParticipant(plugin,
-                new ISaveParticipant() {
-                    public void doneSaving(final ISaveContext context1) {
-                    }
-
-                    public void prepareToSave(final ISaveContext context1)
-                            throws CoreException {
-                    }
-
-                    public void rollback(final ISaveContext context1) {
-                    }
-
-                    public void saving(final ISaveContext context1)
-                            throws CoreException {
-                        try {
-                            new InstanceScope().getNode(
-                                    plugin.getBundle().getSymbolicName())
-                                    .flush();
-                        } catch (final BackingStoreException e) {
-                            // ignore
-                        }
-                    }
-                });
-        ErlangDebugOptionsManager.getDefault().start();
-        ErlLogger.debug("Started CORE");
     }
 
 }

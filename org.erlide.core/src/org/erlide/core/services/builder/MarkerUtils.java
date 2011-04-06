@@ -19,12 +19,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ErlangScope;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.debug.ErlangLineBreakpoint;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -120,7 +118,7 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlModel model = ErlangScope.getModel();
+                    final IErlModel model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
                     ErlLogger.debug("inc::" + fileName + " "
                             + resource.getName() + " " + erlProject.getName());
@@ -414,20 +412,6 @@ public final class MarkerUtils {
         return marker;
     }
 
-    public static IMarker createErlangLineBreakpointMarker(
-            final IResource resource, final int lineNumber,
-            final String modelIdentifier) throws CoreException {
-        final IMarker marker = resource
-                .createMarker(ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE);
-        marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
-        marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-        marker.setAttribute(IBreakpoint.ID, modelIdentifier);
-        marker.setAttribute(IMarker.MESSAGE,
-                "Line Breakpoint: " + resource.getName() + " [line: "
-                        + lineNumber + "]");
-        return marker;
-    }
-
     public static void addDialyzerWarningMarker(final IResource file,
             final String path, final String message, int lineNumber,
             final int severity) {
@@ -470,7 +454,7 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        final IErlProject p = ErlangScope.getModel().findProject(project);
+        final IErlProject p = CoreScope.getModel().findProject(project);
         if (p != null) {
             try {
                 // getMarkersFor(resource, p);
