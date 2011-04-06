@@ -65,8 +65,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 
     public void dispose() {
         if (fListener != null) {
-            CoreScope.getModelManager()
-                    .removeElementChangedListener(fListener);
+            CoreScope.getModel().removeElementChangedListener(fListener);
             fListener = null;
         }
     }
@@ -83,10 +82,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
             // TODO fixme
             fListener = new ElementChangedListener(null);
 
-            CoreScope.getModelManager().addElementChangedListener(fListener);
+            CoreScope.getModel().addElementChangedListener(fListener);
         } else if (!isModule && fListener != null) {
-            CoreScope.getModelManager()
-                    .removeElementChangedListener(fListener);
+            CoreScope.getModel().removeElementChangedListener(fListener);
             fListener = null;
         }
     }

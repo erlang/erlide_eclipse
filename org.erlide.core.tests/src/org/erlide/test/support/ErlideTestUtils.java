@@ -23,8 +23,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
@@ -152,11 +152,12 @@ public class ErlideTestUtils {
             final String moduleContents, final IFolder folder)
             throws CoreException {
         final IFile file = createFile(moduleName, moduleContents, folder);
-        IErlModule module = CoreScope.getModel().findModule(file);
+        final IErlModel model = CoreScope.getModel();
+        IErlModule module = model.findModule(file);
         if (module == null) {
             final String path = file.getLocation().toPortableString();
-            module = CoreScope.getModelManager().getModuleFromFile(
-                    CoreScope.getModel(), file.getName(), null, path, path);
+            module = model.getModuleFromFile(model, file.getName(), null, path,
+                    path);
         }
         return module;
     }
@@ -315,9 +316,9 @@ public class ErlideTestUtils {
     }
 
     public static IErlModule createModuleFromText(final String initialText) {
-        final IErlModule module = CoreScope.getModelManager()
-                .getModuleFromText(CoreScope.getModel(), "test1", initialText,
-                        "test1");
+        final IErlModel model = CoreScope.getModel();
+        final IErlModule module = model.getModuleFromText(model, "test1",
+                initialText, "test1");
         modulesAndIncludes.add(module);
         return module;
     }

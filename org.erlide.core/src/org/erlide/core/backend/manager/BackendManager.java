@@ -28,7 +28,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
@@ -304,7 +303,7 @@ public final class BackendManager implements IEpmdListener {
     }
 
     public void loadCodepathExtensions() {
-        final IExtensionPoint exPnt = ErlangPlugin.getCodepathExtension();
+        final IExtensionPoint exPnt = BackendCore.getCodepathExtension();
         // TODO listen to changes to the registry!
 
         final IExtension[] extensions = exPnt.getExtensions();

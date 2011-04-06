@@ -96,14 +96,24 @@ fold_expression_0(Candidates, FunClauseDef, Cmd, Editor) ->
 		   "against the selected function have been found!"});
 	_ -> ok
     end,
+    Body = refac_syntax:clause_body(FunClauseDef),
+    BodyType=case Body of 
+                 [E] ->
+                     case refac_syntax:type(E) of 
+                         match_expr ->
+                             {single, match_expr};
+                         _ ->
+                             {single, none_match_expr}
+                     end;
+                 _ -> 
+                     none_single
+             end,
     case Editor of
 	emacs ->
-	    FunClauseDef1 = term_to_list(FunClauseDef),
-	    Regions = [{SLine, SCol, ELine, ECol, term_to_list(Expr), 
-			term_to_list(NewExp), FunClauseDef1}
-		       || {{{SLine, SCol}, {ELine, ECol}}, Expr, NewExp} <- Candidates],
+            Regions = [{SLine, SCol, ELine, ECol, HashVal,term_to_list(NewExp), BodyType}
+		       || {{{SLine, SCol}, {ELine, ECol}}, HashVal, NewExp} <- Candidates],
 	    {ok, Regions, Cmd};
-	eclipse -> {ok, {FunClauseDef, Candidates}}
+	eclipse -> {ok, {BodyType, Candidates}}
     end.
 
 %%-spec(fold_expr_by_name/7::(filename(), string(), string(), string(), 
@@ -175,6 +185,8 @@ fold_expression_1_eclipse_1(AnnAST, Body, [Cand| Tail]) ->
     fold_expression_1_eclipse_1(AnnAST1, Body, Tail).
 
 do_fold_expression(FileName, CandidatesToFold, SearchPaths, TabWidth, LogMsg) ->
+    %% ?wrangler_io("\nCMD: ~p:do_fold_expression(~p, ~p,~p,~p,~p).\n", 
+    %%               [?MODULE, FileName, CandidatesToFold, SearchPaths, TabWidth, ""]),
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     AnnAST1 = fold_expression_1_1(AnnAST, CandidatesToFold),
     refac_write_file:write_refactored_files_for_preview([{{FileName, FileName}, AnnAST1}], TabWidth, LogMsg),
@@ -182,14 +194,11 @@ do_fold_expression(FileName, CandidatesToFold, SearchPaths, TabWidth, LogMsg) ->
 
 fold_expression_1_1(AnnAST, []) ->
     AnnAST;
-fold_expression_1_1(AnnAST, [{StartLine, StartCol, EndLine, EndCol, Expr0, FunApp0, FunClauseDef0}| Tail]) ->
-    Expr = list_to_term(Expr0),
-    FunClauseDef = list_to_term(FunClauseDef0),
+fold_expression_1_1(AnnAST, [{StartLine, StartCol, EndLine, EndCol, ExprHaveVal, FunApp0, BodyType}| Tail]) ->
     FunApp = list_to_term(FunApp0),
-    Body = refac_syntax:clause_body(FunClauseDef),
     {AnnAST1, _} = ast_traverse_api:stop_tdTP(
 		     fun do_replace_expr_with_fun_call/2,
-		     AnnAST, {Body, {{{StartLine, StartCol}, {EndLine, EndCol}}, Expr, FunApp}}),
+		     AnnAST, {BodyType, {{{StartLine, StartCol}, {EndLine, EndCol}}, ExprHaveVal, FunApp}}),
     fold_expression_1_1(AnnAST1, Tail).
 
 %% =============================================================================================
@@ -222,25 +231,21 @@ side_condition_analysis(FunClauseDef) ->
 %% Replace an expression/expression sequence with a function call/match expression whose right-hand side is the function call.
 %% ==========================================================================================================================
  
-do_replace_expr_with_fun_call(Tree, {ExprList, {Range, Expr, FunApp}}) ->
-    case ExprList of
-      [E] ->
-	  case refac_syntax:type(E) /= match_expr of
-	    true ->
-		do_replace_expr_with_fun_call_1(Tree, {Range, Expr, FunApp});
-	    false ->
-		do_replace_expr_with_fun_call_2(Tree, {Range, Expr, FunApp})
-	  end;
-      _ ->
-	  do_replace_expr_with_fun_call_2(Tree, {Range, Expr, FunApp})
+do_replace_expr_with_fun_call(Tree, {ExprList, {Range, HashVal, FunApp}}) ->
+    case ExprList of 
+        {single, none_match_expr} ->
+            do_replace_expr_with_fun_call_1(Tree, {Range, HashVal, FunApp});
+        _ ->
+            do_replace_expr_with_fun_call_2(Tree, {Range, HashVal, FunApp})
     end.
+	
 
-do_replace_expr_with_fun_call_1(Tree, {Range, Expr, NewExp}) ->
+do_replace_expr_with_fun_call_1(Tree, {Range, HashVal, NewExp}) ->
     case get_start_end_locations(Tree) of
 	Range ->
-	    case
-		Tree== Expr  %% This is necessary due to the inaccuracy of Range.
-		of
+            case
+                hash(Tree) == HashVal  %% This is necessary due to the inaccuracy of Range.
+            of
 		true ->
 		    {refac_util:rewrite_with_wrapper(Tree, NewExp), true};
 		false ->
@@ -302,9 +307,9 @@ search_candidate_exprs(AnnAST, {FunDefMod, CurrentMod}, FunName,FunClauseDef) ->
     Body = refac_syntax:clause_body(FunClauseDef),
     Pats = refac_syntax:clause_patterns(FunClauseDef),
     Fun = fun({Range, Expr, Subst, none}) -> 
-		  {Range, Expr, make_fun_call({FunDefMod, CurrentMod}, FunName, Pats, Subst)};
+		  {Range, hash(Expr), make_fun_call({FunDefMod, CurrentMod}, FunName, Pats, Subst)};
 	     ({Range, Expr, Subst, Pattern}) -> 
-		  {Range, Expr, make_match_expr({FunDefMod, CurrentMod}, FunName, Pats, Subst, Pattern)}
+		  {Range, hash(Expr), make_match_expr({FunDefMod, CurrentMod}, FunName, Pats, Subst, Pattern)}
 	  end,
     Res = do_search_candidate_exprs(AnnAST,Body),
     [Fun(R)|| R <- Res].
@@ -712,6 +717,21 @@ term_to_list(Term) ->
 
 list_to_term(List)->
     binary_to_term(list_to_binary(List)).
+
+
+hash(Tree) when is_list(Tree) ->
+    Toks=lists:append([begin
+                          Str=refac_prettypr:format(E),
+                          {_,Ts, _} = erl_scan:string(Str),
+                          Ts
+                       end||E<-Tree]),
+    NewStr=refac_util:concat_toks(Toks),
+    integer_to_list(erlang:crc32(NewStr));
+hash(Tree) ->
+    Str=refac_prettypr:format(Tree),
+    {_,Ts, _} = erl_scan:string(Str),
+    NewStr=refac_util:concat_toks(Ts),
+    integer_to_list(erlang:crc32(NewStr)).
 
 %%-spec(fold_expression_1/5::(filename(), atom(), integer(), [dir()], integer()) -> 
 %%	     {syntaxTree(), moduleInfo()} | {error, string()}).

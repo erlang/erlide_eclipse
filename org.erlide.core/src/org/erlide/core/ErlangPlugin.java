@@ -12,12 +12,8 @@ package org.erlide.core;
 
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -68,9 +64,9 @@ public class ErlangPlugin extends Plugin {
             core.stop();
         } finally {
             core = null;
+            plugin = null;
             // ensure we call super.stop as the last thing
             super.stop(context);
-            plugin = null;
         }
     }
 
@@ -92,7 +88,7 @@ public class ErlangPlugin extends Plugin {
     }
 
     public String getFeatureVersion() {
-        String version = null;
+        String version = "?";
         try {
             final IBundleGroupProvider[] providers = Platform
                     .getBundleGroupProviders();
@@ -105,7 +101,6 @@ public class ErlangPlugin extends Plugin {
             // ignore
         }
         final Version coreVersion = getBundle().getVersion();
-        version = version == null ? "?" : version;
         version = version + " (core=" + coreVersion.toString() + ")";
         return version;
     }
@@ -127,26 +122,6 @@ public class ErlangPlugin extends Plugin {
             }
         }
         return version;
-    }
-
-    public static IExtensionPoint getCodepathExtension() {
-        final IExtensionRegistry reg = Platform.getExtensionRegistry();
-        return reg.getExtensionPoint(PLUGIN_ID, "codepath");
-    }
-
-    public static IConfigurationElement[] getCodepathConfigurationElements() {
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(PLUGIN_ID, "codepath");
-    }
-
-    public static IConfigurationElement[] getSourcepathConfigurationElements() {
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(PLUGIN_ID, "sourcePathProvider");
-    }
-
-    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(PLUGIN_ID, "messageReporter");
     }
 
 }

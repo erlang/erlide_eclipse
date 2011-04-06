@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.internal.ErlModelManager;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
@@ -64,10 +64,9 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     protected void resetClauseHead(final int lineNumber,
             final IResource resource) {
         clauseHead = "";
-        final IErlModel model = ErlModelManager.getDefault().getErlangModel();
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
-            final IErlModule m = model.findModule(file);
+            final IErlModule m = CoreScope.getModel().findModule(file);
             if (m != null) {
                 try {
                     m.open(null);

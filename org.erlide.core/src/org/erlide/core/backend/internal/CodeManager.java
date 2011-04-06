@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendHelper;
@@ -109,7 +108,7 @@ public class CodeManager {
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 
-        final IConfigurationElement[] els = ErlangPlugin
+        final IConfigurationElement[] els = BackendCore
                 .getCodepathConfigurationElements();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();

@@ -62,7 +62,7 @@ public abstract class MessageReporter {
 
     private static List<MessageReporter> getAllImplementors() {
         final List<MessageReporter> result = Lists.newArrayList();
-        final IConfigurationElement[] elements = ErlangPlugin
+        final IConfigurationElement[] elements = ErlangCore
                 .getMessageReporterConfigurationElements();
         for (final IConfigurationElement element : elements) {
             try {

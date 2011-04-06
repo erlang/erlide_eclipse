@@ -23,6 +23,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
@@ -117,13 +118,14 @@ public class ErlModelUtils {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
-            IErlModule module = CoreScope.getModel().findModule(file);
+            final IErlModel model = CoreScope.getModel();
+            IErlModule module = model.findModule(file);
             if (module != null) {
                 return module;
             }
             final String path = file.getLocation().toPortableString();
-            module = CoreScope.getModelManager().getModuleFromFile(
-                    CoreScope.getModel(), file.getName(), null, path, path);
+            module = model.getModuleFromFile(model, file.getName(), null, path,
+                    path);
             module.setResource(file);
             return module;
         }

@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
-import org.erlide.core.model.erlang.IErlModelManager;
+import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IParent;
@@ -75,18 +75,18 @@ public class ErlExternalReferenceEntryList extends Openable implements
                         externalIncludes, pathVars);
             }
         }
-        final IErlModelManager modelManager = CoreScope.getModelManager();
         setChildren(null);
         final IErlProject project = (IErlProject) getAncestorOfKind(Kind.PROJECT);
+        final IErlModel model = getModel();
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
-            addExternalEntries(pm, externalModuleTree, modelManager, "modules",
+            addExternalEntries(pm, externalModuleTree, model, "modules",
                     externalModules, null, false);
             cache.putExternalTree(externalModules, project, externalModuleTree);
         }
         if (externalIncludeTree != null && !externalIncludeTree.isEmpty()
                 || !projectIncludes.isEmpty()) {
-            addExternalEntries(pm, externalIncludeTree, modelManager,
-                    "includes", externalIncludes, projectIncludes, true);
+            addExternalEntries(pm, externalIncludeTree, model, "includes",
+                    externalIncludes, projectIncludes, true);
             if (externalIncludeTree != null) {
                 cache.putExternalTree(externalIncludes, project,
                         externalIncludeTree);
@@ -96,10 +96,10 @@ public class ErlExternalReferenceEntryList extends Openable implements
     }
 
     private void addExternalEntries(final IProgressMonitor pm,
-            final List<ExternalTreeEntry> externalTree,
-            final IErlModelManager modelManager, final String rootName,
-            final String rootEntry, final List<String> otherItems,
-            final boolean includeDir) throws ErlModelException {
+            final List<ExternalTreeEntry> externalTree, final IErlModel model,
+            final String rootName, final String rootEntry,
+            final List<String> otherItems, final boolean includeDir)
+            throws ErlModelException {
         final Map<String, IErlExternal> pathToEntryMap = Maps.newHashMap();
         pathToEntryMap.put("root", this);
         IErlExternal parent = null;
@@ -109,8 +109,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 // final String name = entry.getName();
                 parent = pathToEntryMap.get(entry.getParentPath());
                 if (entry.isModule()) {
-                    final IErlModule module = modelManager.getModuleFromFile(
-                            parent, getNameFromPath(path), null, path, path);
+                    final IErlModule module = model.getModuleFromFile(parent,
+                            getNameFromPath(path), null, path, path);
                     parent.addChild(module);
                 } else {
                     final String name = getNameFromExternalPath(path);
@@ -129,8 +129,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
                 addChild(parent);
             }
             for (final String path : otherItems) {
-                final IErlModule module = modelManager.getModuleFromFile(
-                        parent, getNameFromPath(path), null, path, path);
+                final IErlModule module = model.getModuleFromFile(parent,
+                        getNameFromPath(path), null, path, path);
                 parent.addChild(module);
             }
         }
