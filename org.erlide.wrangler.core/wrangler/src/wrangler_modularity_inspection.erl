@@ -394,19 +394,20 @@ break_a_cycle(Cycle, ModCallerCallees, MG, Files) ->
     CycleCallerCallees0 = get_cycle_caller_callees_1(Cycle, ModCallerCallees),
     case find_weakest_link(CycleCallerCallees0, MG, Files) of 
 	{WeakestLink, _RefacCmds} -> 
-	    ?wrangler_io("Cyclic module dependency caused by exporting of non-API functions:\n~p\n", [Cycle]),
+	    ?wrangler_io("\nCyclic module dependency caused by exporting of non-API functions:\n~p\n", [Cycle]),
 	    ?wrangler_io("\n Refactoring suggestions:\n",[]),
 	    ?wrangler_io("\n~p\n", [_RefacCmds]),
 	    {WeakestLink,'_'};
 	none ->
 	    CycleCallerCallees = get_cycle_caller_callees(Cycle, ModCallerCallees),
-	    FlawMods= lists:filter(fun({_Mod, _, Callers, Callees, IsBehaviour}) ->
-					   list_insection(Callers, Callees)==[] andalso
-					       not IsBehaviour					       
+            FlawMods= lists:filter(fun({_Mod, _, Callers, Callees, _IsBehaviour}) ->
+					   list_insection(Callers, Callees)==[] %% andalso
+					       %% not IsBehaviour			
+                                               
 				   end, CycleCallerCallees),
 	    case FlawMods of 
 		[] -> 
-		    ?wrangler_io("Intra-layer cyclic module dependency found:~p\n",[Cycle]),
+		    ?wrangler_io("\nIntra-layer cyclic module dependency found:~p\n",[Cycle]),
 		    {{'_','_'},'_'};
 		_ -> 
 		    ?wrangler_io("\nInter-layer cyclic module dependency found:~p\n",[Cycle]),
@@ -518,7 +519,7 @@ get_cycle_caller_callees(Cycle, ModCallerCallees) ->
 
 get_cycle_node_caller_callees(Vs, _ ,Acc) when length(Vs) =<2 ->
     lists:reverse(Acc);
-get_cycle_node_caller_callees([V1, V2, V3|T], ModCallerCallees, Acc) ->
+get_cycle_node_caller_callees(_Vs=[V1, V2, V3|T], ModCallerCallees, Acc) ->
     CalledFunsV2V3=[{V3, F,A}||{{CallerMod, _}, CalleeMods}<- ModCallerCallees, 
 			      CallerMod==V2, 
 			    {CalleeMod, CalledFuns}<-CalleeMods,

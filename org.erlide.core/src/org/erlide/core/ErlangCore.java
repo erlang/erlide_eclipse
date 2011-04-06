@@ -18,11 +18,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -181,6 +183,11 @@ public final class ErlangCore {
 
     public IExtensionRegistry getExtensionRegistry() {
         return extensionRegistry;
+    }
+
+    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "messageReporter");
     }
 
     /**
