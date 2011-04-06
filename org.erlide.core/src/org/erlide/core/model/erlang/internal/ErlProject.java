@@ -37,8 +37,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
@@ -49,7 +49,6 @@ import org.erlide.core.model.erlang.IErlElementVisitor;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlFolder;
 import org.erlide.core.model.erlang.IErlModel;
-import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModelMarker;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
@@ -149,18 +148,17 @@ public class ErlProject extends Openable implements IErlProject {
             ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
             ErlLogger.debug("childcount %d", children.size());
-            final IErlModelManager modelManager = CoreScope.getModelManager();
+            final IErlModel model = getModel();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
                     final IFolder folder = (IFolder) element;
-                    final IErlFolder erlFolder = (IErlFolder) modelManager
+                    final IErlFolder erlFolder = (IErlFolder) model
                             .create(folder);
                     children.add(erlFolder);
                 } else if (element instanceof IFile) {
                     final IFile file = (IFile) element;
                     if (CommonUtils.isErlangFileContentFileName(file.getName())) {
-                        final IErlModule m = (IErlModule) modelManager
-                                .create(file);
+                        final IErlModule m = (IErlModule) model.create(file);
                         children.add(m);
                     }
                 }
@@ -381,7 +379,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         } catch (final CoreException e) {
             // could not flush markers: not much we can do
-            if (ErlModelManager.verbose) {
+            if (ErlModel.verbose) {
                 ErlLogger.warn(e);
             }
         }

@@ -16,8 +16,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.core.model.erlang.IErlModel;
-import org.erlide.core.model.erlang.IErlModelManager;
-import org.erlide.core.model.erlang.internal.ErlModelManager;
+import org.erlide.core.model.erlang.internal.ErlModel;
 import org.osgi.framework.BundleContext;
 
 public class CoreScope {
@@ -30,12 +29,8 @@ public class CoreScope {
         this.plugin = plugin;
     }
 
-    public static final IErlModelManager getModelManager() {
-        return ErlModelManager.getDefault();
-    }
-
     public static final IErlModel getModel() {
-        return getModelManager().getErlangModel();
+        return ErlModel.getErlangModel();
     }
 
     /**

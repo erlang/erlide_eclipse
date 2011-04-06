@@ -17,7 +17,7 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.ErlModelStatusConstants;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFolder;
-import org.erlide.core.model.erlang.IErlModelManager;
+import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IParent;
@@ -40,14 +40,14 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IErlModelManager manager = CoreScope.getModelManager();
+        final IErlModel model = getModel();
         final IContainer c = (IContainer) getResource();
         try {
             // FIXME this is general stuff, should we put it in model or
             // model manager?
             final IResource[] members = c.members();
             for (final IResource resource : members) {
-                manager.create(resource);
+                model.create(resource);
             }
         } catch (final CoreException e) {
             throw new ErlModelException(e,

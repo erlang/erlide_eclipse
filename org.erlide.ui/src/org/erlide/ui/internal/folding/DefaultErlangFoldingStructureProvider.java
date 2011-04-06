@@ -546,8 +546,7 @@ public class DefaultErlangFoldingStructureProvider implements
         initialize();
         if (fEditor instanceof ErlangEditor && fModule != null) {
             fElementListener = new ElementChangedListener();
-            CoreScope.getModelManager().addElementChangedListener(
-                    fElementListener);
+            CoreScope.getModel().addElementChangedListener(fElementListener);
             boolean structureKnown = false;
             try {
                 structureKnown = fModule.isStructureKnown();
@@ -575,8 +574,7 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            CoreScope.getModelManager().removeElementChangedListener(
-                    fElementListener);
+            CoreScope.getModel().removeElementChangedListener(fElementListener);
             fElementListener = null;
         }
     }

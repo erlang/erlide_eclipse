@@ -37,7 +37,7 @@ public class ErlReconciler implements IReconciler {
         fStrategy = strategy;
         this.path = path;
         if (path != null) {
-            CoreScope.getModelManager().putEdited(path, module);
+            CoreScope.getModel().putEdited(path, module);
         }
     }
 
@@ -504,7 +504,7 @@ public class ErlReconciler implements IReconciler {
         final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
         if (path != null) {
-            CoreScope.getModelManager().putEdited(path, null);
+            CoreScope.getModel().putEdited(path, null);
         }
     }
 
