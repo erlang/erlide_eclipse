@@ -17,6 +17,7 @@ import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.rpc.RpcHelper;
+import org.erlide.core.rpc.RpcResultCallback;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -87,6 +88,14 @@ public class ErlRuntime extends OtpNodeStatus {
                 state = State.DOWN;
             }
         }
+    }
+
+    public void makeAsyncResultCall(final RpcResultCallback cb, final String m,
+            final String f, final String signature, final Object[] args)
+            throws SignatureException {
+        final OtpErlangAtom gleader = new OtpErlangAtom("user");
+        RpcHelper.rpcCallWithProgress(cb, localNode, peerName, false, gleader,
+                m, f, signature, args);
     }
 
     public RpcFuture makeAsyncCall(final OtpErlangObject gleader,

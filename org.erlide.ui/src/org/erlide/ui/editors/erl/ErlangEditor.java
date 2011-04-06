@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -111,7 +110,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ExtensionHelper;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -123,6 +121,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
@@ -162,6 +161,10 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.google.common.collect.Lists;
 
 /**
  * The actual editor itself
@@ -2208,7 +2211,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
-            final Backend ideBackend = BackendCore.getBackendManager()
+            final RpcCallSite ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
 
@@ -2228,19 +2231,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 }
                 if (pattern != null) {
                     final ErlSearchScope scope = new ErlSearchScope();
-                    final ErlSearchScope externalScope = new ErlSearchScope();
-                    final IResource r = theModule.getResource();
-                    if (r != null) {
-                        scope.addModule(theModule);
-                    } else {
-                        externalScope.addModule(theModule);
-                    }
-                    final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
-                            .findRefs(ideBackend, pattern, scope,
-                                    externalScope, getStateDir());
+                    scope.addModule(theModule);
+                    final List<ModuleLineFunctionArityRef> findRefs = Lists
+                            .newArrayList();
+                    final OtpErlangObject refs = ErlideSearchServer.findRefs(
+                            ideBackend, pattern, scope, getStateDir());
+                    SearchUtil.addSearchResult(findRefs, refs);
                     fRefs = getErlangRefs(theModule, findRefs);
                 }
             } catch (final RpcException e) {
+                ErlLogger.debug(e);
+            } catch (final ErlModelException e) {
+                ErlLogger.debug(e);
+            } catch (final OtpErlangRangeException e) {
                 ErlLogger.debug(e);
             }
             if (fRefs == null) {

@@ -38,8 +38,8 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
@@ -65,6 +65,7 @@ import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.rpc.RpcHelper;
 import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResultCallback;
 import org.erlide.core.rpc.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -157,6 +158,16 @@ public abstract class Backend implements RpcCallSite, IDisposable,
             throws RpcException {
         try {
             runtime.makeAsyncCbCall(cb, m, f, signature, args);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
+        }
+    }
+
+    public void async_call_result(final RpcResultCallback cb, final String m,
+            final String f, final String signature, final Object... args)
+            throws RpcException {
+        try {
+            runtime.makeAsyncResultCall(cb, m, f, signature, args);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }

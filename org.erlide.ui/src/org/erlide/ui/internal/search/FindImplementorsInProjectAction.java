@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -60,7 +61,7 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
     }
 
     @Override
-    protected ErlSearchScope getScope() {
+    protected ErlSearchScope getScope() throws CoreException {
         return getProjectScope();
     }
 

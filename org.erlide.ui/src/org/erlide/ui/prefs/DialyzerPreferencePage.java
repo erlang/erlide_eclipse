@@ -54,14 +54,14 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
@@ -621,7 +621,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             final BackendManager backendManager = BackendCore
                     .getBackendManager();
             try {
-                Backend backend;
+                RpcCallSite backend;
                 if (fProject != null) {
                     backend = backendManager.getBuildBackend(fProject);
                 } else {
@@ -639,7 +639,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkPlt(final String pltPath,
-                final IProgressMonitor monitor, final Backend backend)
+                final IProgressMonitor monitor, final RpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);

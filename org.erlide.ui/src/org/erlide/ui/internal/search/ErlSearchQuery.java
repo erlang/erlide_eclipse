@@ -14,32 +14,33 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.RpcResultCallback;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
+import org.erlide.ui.ErlideUIPlugin;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class ErlSearchQuery implements ISearchQuery {
     private final ErlangSearchPattern pattern;
     private final ErlSearchScope scope;
-    private final ErlSearchScope externalScope;
     private final Map<String, IErlModule> pathToModuleMap;
     private ErlangSearchResult fSearchResult;
     private List<ModuleLineFunctionArityRef> fResult;
 
     private String stateDirCached = null;
     private final String scopeDescription;
+    private Backend fSearchBackend;
 
     public ErlSearchQuery(final ErlangSearchPattern pattern,
-            final ErlSearchScope scope, final ErlSearchScope externalScope,
-            final String scopeDescription) {
+            final ErlSearchScope scope, final String scopeDescription) {
         this.pattern = pattern;
         this.scope = scope;
-        this.externalScope = externalScope == null ? new ErlSearchScope()
-                : externalScope;
         this.scopeDescription = scopeDescription;
         pathToModuleMap = Maps.newHashMap();
         setupPathToModuleMap();
@@ -47,7 +48,6 @@ public class ErlSearchQuery implements ISearchQuery {
 
     private void setupPathToModuleMap() {
         addToModuleMap(scope);
-        addToModuleMap(externalScope);
     }
 
     private void addToModuleMap(final ErlSearchScope theScope) {
@@ -58,17 +58,6 @@ public class ErlSearchQuery implements ISearchQuery {
             }
         }
     }
-
-    // private void setupPathToModuleMap() {
-    // for (final IErlModule i : scope.getModules()) {
-    // final String path = i.getLocation().toPortableString();
-    // pathToModuleMap.put(path, module);
-    // }
-    // }
-    // for (final IErlModule i : externalScope) {
-    // pathToModuleMap.put(i.getFilePath(), i);
-    // }
-    // }
 
     public boolean canRerun() {
         return true;
@@ -91,9 +80,42 @@ public class ErlSearchQuery implements ISearchQuery {
 
     public IStatus run(final IProgressMonitor monitor)
             throws OperationCanceledException {
-        final Backend backend = BackendCore.getBackendManager().getIdeBackend();
-        fResult = ErlideSearchServer.findRefs(backend, pattern, scope,
-                externalScope, getStateDir());
+        fSearchBackend = BackendCore.getBackendManager().getIdeBackend();
+        final RpcResultCallback callback = new RpcResultCallback() {
+
+            public void start(final OtpErlangObject msg) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void stop(final OtpErlangObject msg) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void progress(final OtpErlangObject msg) {
+                // TODO Auto-generated method stub
+
+            }
+
+        };
+        try {
+            ErlideSearchServer.startFindRefs(fSearchBackend, pattern, scope,
+                    getStateDir(), callback);
+        } catch (final RpcException e) {
+            return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
+                    "Search error", e);
+        }
+        addMatches();
+        return Status.OK_STATUS;
+    }
+
+    public void cancel() throws RpcException {
+        // ska vanta med denna committa det andra forst!
+        // ErlideSearchServer.cancelSearch(fSearchBackend, fSearchDeamonPid);
+    }
+
+    private void addMatches() {
         final List<Match> l = Lists.newArrayListWithCapacity(fResult.size());
         final List<ErlangSearchElement> result = Lists
                 .newArrayListWithCapacity(fResult.size());
@@ -105,7 +127,6 @@ public class ErlSearchQuery implements ISearchQuery {
         fSearchResult = (ErlangSearchResult) getSearchResult();
         fSearchResult.setResult(result);
         fSearchResult.addMatches(l.toArray(new Match[l.size()]));
-        return Status.OK_STATUS;
     }
 
     private String getStateDir() {

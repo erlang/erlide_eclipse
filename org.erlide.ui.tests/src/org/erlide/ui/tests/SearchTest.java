@@ -89,7 +89,7 @@ public class SearchTest {
         final ErlSearchScope scope = new ErlSearchScope();
         scope.addModule(moduleA);
         scope.addModule(moduleB);
-        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, null, "");
+        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
         query.run(null);
         // then
         // it should be found in module b
@@ -119,7 +119,7 @@ public class SearchTest {
         final ErlSearchScope scope = new ErlSearchScope();
         scope.addModule(moduleA);
         scope.addModule(moduleB);
-        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, null, "");
+        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
         query.run(null);
         // then
         // it should be found in module b
