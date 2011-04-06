@@ -6,6 +6,7 @@ import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcResultCallback;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -38,12 +39,17 @@ public class ErlideSearchServer {
     }
 
     public static void startFindRefs(final RpcCallSite backend,
-            final ErlangSearchPattern ref, final ErlSearchScope scope,
+            final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir, final RpcResultCallback callback)
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
+        ErlLogger.debug("startFindRefs", pattern);
+        // final OtpErlangAtom DUMMY = new OtpErlangAtom("dummy");
+        // backend.call("erlide_search_server", "start_find_refs", "xxxs",
+        // DUMMY,
+        // pattern.getSearchObject(), modules, stateDir);
         backend.async_call_result(callback, "erlide_search_server",
-                "start_find_refs", "xxs", ref.getSearchObject(), modules,
+                "start_find_refs", "xxxs", pattern.getSearchObject(), modules,
                 stateDir);
     }
 

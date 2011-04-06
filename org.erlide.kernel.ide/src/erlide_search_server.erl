@@ -86,7 +86,11 @@ find_refs(Pattern, Modules, StateDir)
 
 %% 
 start_find_refs(JPid, Pattern, Modules, StateDir)
+  when is_tuple(Pattern), is_list(Modules), is_list(StateDir) ->
+    start_find_refs(JPid, [Pattern], Modules, StateDir); 
+start_find_refs(JPid, Pattern, Modules, StateDir)
   when is_list(Pattern), is_list(Modules), is_list(StateDir) ->
+    ?D({JPid, Pattern}),
     R = server_cmd(start_find_refs, {Pattern, Modules, JPid, StateDir}),
     R.
 
@@ -190,8 +194,9 @@ do_cmd(find_refs, {Ref, Modules, StateDir}, State) ->
     R = do_find_refs(Modules, Ref, StateDir, State, []),
     ?D(R),
     R;
-do_cmd(start_find_refs, {Ref, Modules, JPid, StateDir}, State) ->
-    R = do_start_find_refs(Modules, JPid, Ref, StateDir, State),
+do_cmd(start_find_refs, {Pattern, Modules, JPid, StateDir}, State) ->
+    ?D(start_find_refs),
+    R = do_start_find_refs(Pattern, Modules, JPid, StateDir, State),
     R;
 do_cmd(cancel_find_refs, Pid, _State) ->
     Pid ! cancel,
@@ -205,19 +210,25 @@ do_cmd(modules, _, #state{modules=Modules} = State) ->
     Names = [M || #module{scanner_name=M} <- Modules],
     {Names, State}.
 
-do_start_find_refs(Modules, Pattern, JPid, StateDir, State) ->
+do_start_find_refs(Pattern, Modules, JPid, StateDir, State) ->
+    ?D({do_start_find_refs, Pattern, JPid}),
     spawn_link(fun() ->
                        ModuleChunks = chunkify(Modules, 10),
+                       ?D({JPid, length(ModuleChunks)}),
                        JPid ! {start, length(ModuleChunks)},
+                       ?D({JPid, length(ModuleChunks)}),
                        R = do_background_find_refs(ModuleChunks, Pattern, JPid, StateDir, State),
+                       ?D({stop, R}),
                        JPid ! {stop, R}
-               end).
+               end),
+    ok.
 
 do_background_find_refs([], _Pattern, _JPid, _StateDir, _State) ->
     ok;
 do_background_find_refs([Chunk | Rest], Pattern, JPid, StateDir, State) ->
-    R = do_find_refs(Chunk, Pattern, StateDir, State, []),
-    JPid ! {progress, length(Chunk), R},
+    {R, _State} = do_find_refs(Chunk, Pattern, StateDir, State, []),
+    ?D({1, R}),
+    JPid ! {progress, {1, R}},
     do_background_find_refs(Rest, Pattern, JPid, StateDir, State).
 
 chunkify(List, N) ->

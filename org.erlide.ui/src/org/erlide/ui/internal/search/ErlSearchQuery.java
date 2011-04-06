@@ -11,7 +11,6 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcException;
@@ -22,7 +21,10 @@ import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.ui.ErlideUIPlugin;
 
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -35,7 +37,6 @@ public class ErlSearchQuery implements ISearchQuery {
 
     private String stateDirCached = null;
     private final String scopeDescription;
-    private Backend fSearchBackend;
 
     public ErlSearchQuery(final ErlangSearchPattern pattern,
             final ErlSearchScope scope, final String scopeDescription) {
@@ -80,33 +81,60 @@ public class ErlSearchQuery implements ISearchQuery {
 
     public IStatus run(final IProgressMonitor monitor)
             throws OperationCanceledException {
-        fSearchBackend = BackendCore.getBackendManager().getIdeBackend();
+        final Object locker = new Object();
         final RpcResultCallback callback = new RpcResultCallback() {
 
             public void start(final OtpErlangObject msg) {
-                // TODO Auto-generated method stub
-
+                if (fSearchResult != null) {
+                    fSearchResult.removeAll();
+                }
+                final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
+                int progressMax;
+                try {
+                    progressMax = progressMaxL.intValue();
+                } catch (final OtpErlangRangeException e) {
+                    progressMax = 10;
+                }
+                monitor.beginTask("Searching", progressMax);
             }
 
             public void stop(final OtpErlangObject msg) {
-                // TODO Auto-generated method stub
-
+                monitor.done();
+                synchronized (locker) {
+                    locker.notifyAll();
+                }
             }
 
             public void progress(final OtpErlangObject msg) {
-                // TODO Auto-generated method stub
-
+                final OtpErlangTuple t = (OtpErlangTuple) msg;
+                final OtpErlangLong progressL = (OtpErlangLong) t.elementAt(0);
+                final OtpErlangObject resultO = t.elementAt(1);
+                int progress = 1;
+                try {
+                    progress = progressL.intValue();
+                    final List<ModuleLineFunctionArityRef> result = Lists
+                            .newArrayList();
+                    SearchUtil.addSearchResult(result, resultO);
+                    addMatches(result);
+                } catch (final OtpErlangRangeException e) {
+                }
+                monitor.worked(progress);
             }
 
         };
         try {
-            ErlideSearchServer.startFindRefs(fSearchBackend, pattern, scope,
-                    getStateDir(), callback);
+            ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
+                    .getIdeBackend(), pattern, scope, getStateDir(), callback);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);
         }
-        addMatches();
+        synchronized (locker) {
+            try {
+                locker.wait();
+            } catch (final InterruptedException e) {
+            }
+        }
         return Status.OK_STATUS;
     }
 
@@ -115,16 +143,18 @@ public class ErlSearchQuery implements ISearchQuery {
         // ErlideSearchServer.cancelSearch(fSearchBackend, fSearchDeamonPid);
     }
 
-    private void addMatches() {
-        final List<Match> l = Lists.newArrayListWithCapacity(fResult.size());
-        final List<ErlangSearchElement> result = Lists
-                .newArrayListWithCapacity(fResult.size());
-        for (final ModuleLineFunctionArityRef ref : fResult) {
+    private void addMatches(final List<ModuleLineFunctionArityRef> chunk) {
+        final List<Match> l = Lists.newArrayListWithCapacity(chunk.size());
+        final List<ErlangSearchElement> resultAdded = Lists
+                .newArrayListWithCapacity(chunk.size());
+        for (final ModuleLineFunctionArityRef ref : chunk) {
             final Match m = SearchUtil.createMatch(ref, pathToModuleMap);
             l.add(m);
-            result.add((ErlangSearchElement) m.getElement());
+            resultAdded.add((ErlangSearchElement) m.getElement());
         }
         fSearchResult = (ErlangSearchResult) getSearchResult();
+        final List<ErlangSearchElement> result = fSearchResult.getResult();
+        result.addAll(resultAdded);
         fSearchResult.setResult(result);
         fSearchResult.addMatches(l.toArray(new Match[l.size()]));
     }
