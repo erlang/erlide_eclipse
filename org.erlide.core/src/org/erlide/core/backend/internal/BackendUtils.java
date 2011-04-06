@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.SourcePathProvider;
 
 import com.google.common.collect.Lists;
@@ -20,7 +20,7 @@ public class BackendUtils {
             throws CoreException {
         // TODO should be cached and listening to plugin changes?
         final List<SourcePathProvider> result = Lists.newArrayList();
-        final IConfigurationElement[] elements = ErlangPlugin
+        final IConfigurationElement[] elements = BackendCore
                 .getSourcepathConfigurationElements();
         for (final IConfigurationElement element : elements) {
             final SourcePathProvider provider = (SourcePathProvider) element
