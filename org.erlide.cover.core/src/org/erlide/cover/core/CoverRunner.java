@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.rpc.RpcException;
+import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverageAnalysis;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
@@ -20,7 +20,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * 
  */
-public class CoverRunner extends Thread {
+public class CoverRunner extends AbstractCoverRunner {
 
     // private final CoverBackend backend;
 

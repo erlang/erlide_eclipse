@@ -19,6 +19,7 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.cover.api.CoverException;
+import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 
@@ -54,19 +55,8 @@ public class CoverBackend {
         handler = new CoverEventHandler();
         log = Activator.getDefault();
     }
-
-    public void initialize(/* final ErlLaunchData data, */
-    final CoverLaunchData coverData) throws CoverException {
-
-        // this.coverData = coverData;
-
-        try {
-            settings = new CoverLaunchSettings(coverData.getType(), coverData);
-        } catch (final CoverException e1) {
-            settings = null;
-            throw e1;
-        }
-
+    
+    public void startBackend() {
         if (backend != null && !backend.isStopped()) {
             log.info("is started");
             return;
@@ -97,11 +87,26 @@ public class CoverBackend {
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
         }
+    }
+
+    public void initialize(/* final ErlLaunchData data, */
+    final CoverLaunchData coverData) throws CoverException {
+
+        // this.coverData = coverData;
+
+        try {
+            settings = new CoverLaunchSettings(coverData.getType(), coverData);
+        } catch (final CoverException e1) {
+            settings = null;
+            throw e1;
+        }
+
+        startBackend();
 
     }
 
-    public synchronized void startTesting() {
-        new CoverRunner().start();
+    public synchronized void startTesting(AbstractCoverRunner runner) {
+        runner.start();
     }
 
     public CoverEventHandler getHandler() {
@@ -136,11 +141,6 @@ public class CoverBackend {
 
     public CoverLaunchSettings getSettings() {
         return settings;
-    }
-
-    // input from external plugins
-    public void setPathsToCover(final List<String> filePaths) {
-        // TODO: ~custom coverage
     }
 
     private Backend createBackend() throws BackendException {

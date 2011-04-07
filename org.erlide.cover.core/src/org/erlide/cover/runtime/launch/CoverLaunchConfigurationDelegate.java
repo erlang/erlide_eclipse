@@ -8,6 +8,7 @@ import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
+import org.erlide.cover.core.CoverRunner;
 
 /**
  * Launch cover configuration
@@ -27,7 +28,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
             final CoverBackend coverBackend = CoverBackend.getInstance();
             coverBackend.initialize(coverData);
-            coverBackend.startTesting();
+            coverBackend.startTesting(new CoverRunner());
             return coverBackend.getBackend();
         } catch (final CoreException e) {
             // TODO Auto-generated catch block
