@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.cover"
       label="Erlang code coverage for ErlIde"
-      version="0.1.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="Erlang Solutions">
 
    <description>
@@ -27,6 +27,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.debug.core" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.erlide.jinterface" version="0.9.0" match="greaterOrEqual"/>
       <import plugin="org.erlide.core" version="0.10.2" match="greaterOrEqual"/>
+      <import plugin="org.erlide.cover.api" version="0.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.jdt.ui"/>
