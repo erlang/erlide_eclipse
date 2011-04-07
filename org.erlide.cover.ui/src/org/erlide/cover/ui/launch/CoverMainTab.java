@@ -93,14 +93,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         createAllTestsGroup(comp);
 
-      /*  appRadio = new Button(comp, SWT.RADIO);
-        appRadio.setText("Run tests for an application");
-        appRadio.setLayoutData(gData);
-        appRadio.addSelectionListener(radioSelectionListener);
-        appRadio.setEnabled(false);
-
-        createApplicationGroup(comp);*/
-
         final Label testLabel = new Label(comp, SWT.NONE);
         testLabel.setText("Testing framework: ");
         testCombo = new Combo(comp, SWT.NONE);
@@ -330,39 +322,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     private void createAllTestsGroup(final Composite comp) {
 
-        /*
-         * For later use:
-         * 
-         * ElementTreeSelectionDialog fileDialog = new
-         * ElementTreeSelectionDialog(
-         * 
-         * this.getShell(), new WorkbenchLabelProvider(), new
-         * BaseWorkbenchContentProvider());
-         * fileDialog.setTitle("Select file ore directory");
-         * fileDialog.setMessage("Select project, directory or file: ");
-         * fileDialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-         * fileDialog.setAllowMultiple(false);
-         * 
-         * 
-         * fileDialog.addFilter(new ViewerFilter() {
-         * 
-         * @Override public boolean select(Viewer viewer, Object parentElement,
-         * Object element) {
-         * 
-         * IWorkspaceRoot workspaceRoot =
-         * ResourcesPlugin.getWorkspace().getRoot();
-         * 
-         * if(parentElement.equals(workspaceRoot) && element instanceof
-         * IProject){ String name = ((IProject)element).getName();
-         * 
-         * try { if(!ErlangCore.getModel().getErlangProject(name).
-         * getModules().isEmpty()) { return true; } } catch (ErlModelException
-         * e) { e.printStackTrace(); } return false; }
-         * 
-         * return true; }
-         * 
-         * });
-         */
 
         final ElementListSelectionDialog projectDialog = new ElementListSelectionDialog(
                 getShell(), new ProjectLabelProvider());
@@ -378,33 +337,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         fileBr.getTextGridData().horizontalSpan = 2;
         fileBr.addModifyListener(basicModifyListener);
     }
-
-   /* private void createApplicationGroup(final Composite comp) {
-
-        final ElementListSelectionDialog projectDialog = new ElementListSelectionDialog(
-                getShell(), new ProjectLabelProvider());
-
-        final Object[] elements = createProjectArray();
-
-        projectDialog.setElements(elements);
-        projectDialog.setTitle("Select project");
-        projectDialog.setMessage("Select Erlang project: ");
-
-        final ElementListSelectionDialog appDialog = new ElementListSelectionDialog(
-                getShell(), new LabelProvider());
-
-        // TODO: create model for appilcations
-        appDialog.setElements(new Object[0]);
-        appDialog.setTitle("Select application");
-        appDialog.setMessage("Select Erlang application: ");
-
-        projectAppBr = browserWithLabel(comp, "Project:", projectDialog);
-        projectAppBr.addModifyListener(basicModifyListener);
-
-        appBr = browserWithLabel(comp, "Module:", appDialog);
-        appBr.addModifyListener(basicModifyListener);
-
-    }*/
 
     private ItemBrowser browserWithLabel(final Composite comp,
             final String text, final SelectionDialog dialog) {
@@ -446,7 +378,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         }
 
         public void widgetDefaultSelected(final SelectionEvent e) {
-            // TODO Auto-generated method stub
 
         }
 

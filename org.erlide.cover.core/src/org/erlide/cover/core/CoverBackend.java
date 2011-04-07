@@ -18,8 +18,9 @@ import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.AbstractCoverRunner;
+import org.erlide.cover.api.CoverException;
+import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 
@@ -29,7 +30,7 @@ import org.erlide.cover.runtime.launch.CoverLaunchSettings;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
  */
-public class CoverBackend {
+public class CoverBackend implements ICoverBackend {
 
     public static final String NODE_NAME = "cover_internal";
 
@@ -89,6 +90,12 @@ public class CoverBackend {
         }
     }
 
+    /**
+     * Initializes cover backend from launch configuration
+     * 
+     * @param coverData
+     * @throws CoverException
+     */
     public void initialize(/* final ErlLaunchData data, */
     final CoverLaunchData coverData) throws CoverException {
 
@@ -105,44 +112,80 @@ public class CoverBackend {
 
     }
 
-    public synchronized void startTesting(AbstractCoverRunner runner) {
+    /**
+     * Run coverage analisys
+     */
+    public synchronized void runCoverageAnalisys(AbstractCoverRunner runner) {
         runner.start();
     }
 
+    /**
+     * Get event handler that handles Erlang events
+     * @return
+     */
     public CoverEventHandler getHandler() {
         return handler;
     }
 
+    /**
+     * Get access to cover node
+     * @return
+     */
     public Backend getBackend() {
         return backend;
     }
 
+    /**
+     * Add listener for coverage events
+     * @param listener
+     */
     public void addListener(final ICoverObserver listener) {
         handler.addListener(listener);
     }
 
+    /**
+     * Get all listeners
+     * @return
+     */
     public List<ICoverObserver> getListeners() {
         return handler.getListeners();
     }
 
+    /**
+     * Set annotation marker for marking coverage in the editor
+     * @param am
+     */
     public void addAnnotationMaker(final ICoverAnnotationMarker am) {
         handler.addAnnotationMaker(am);
     }
 
+    /**
+     * Get annotation marker
+     * @return
+     */
     public ICoverAnnotationMarker getAnnotationMaker() {
         return handler.getAnnotationMaker();
     }
 
+    /**
+     * Handle all errors, provides graphical representation for final user.
+     * @param msg
+     */
     public void handleError(final String msg) {
         for (final ICoverObserver obs : handler.getListeners()) {
             obs.eventOccured(new CoverEvent(CoverStatus.ERROR, msg));
         }
     }
 
+    /**
+     * Check coverage settings
+     * @return
+     */
     public CoverLaunchSettings getSettings() {
         return settings;
     }
 
+    // creates erlang backend
     private Backend createBackend() throws BackendException {
         if (info != null) {
             try {
@@ -162,6 +205,7 @@ public class CoverBackend {
         throw new BackendException();
     }
 
+    // creates runtime info
     private RuntimeInfo buildRuntimeInfo(final RuntimeInfo rt0) {
         final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
         rt.setNodeName(NODE_NAME);

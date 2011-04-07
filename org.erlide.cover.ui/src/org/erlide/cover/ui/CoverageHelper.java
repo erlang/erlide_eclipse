@@ -11,6 +11,10 @@ import org.eclipse.ui.statushandlers.StatusManager;
  */
 public class CoverageHelper {
 
+    /**
+     * Report when error occured
+     * @param info
+     */
     public static void reportError(String info) {
         final IStatus executionStatus = new Status(IStatus.ERROR,
                 Activator.PLUGIN_ID, info, null);
@@ -18,6 +22,10 @@ public class CoverageHelper {
                 StatusManager.SHOW);
     }
     
+    /**
+     * Report for user information
+     * @param info
+     */
     public static void reportInfo(String info) {
         final IStatus executionStatus = new Status(IStatus.INFO,
                 Activator.PLUGIN_ID, info, null);

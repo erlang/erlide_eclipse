@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.cover.api.CoverException;
@@ -19,6 +18,12 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
+/**
+ * Implementation of coverage analysis operations
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
+ *
+ */
 public class CoveragePerformer implements ICoveragePerformer {
 
     private static CoveragePerformer performer;
@@ -40,6 +45,9 @@ public class CoveragePerformer implements ICoveragePerformer {
         return performer;
     }
 
+    /**
+     * Start cover
+     */
     public synchronized void startCover(final Collection<String> nodes)
             throws CoverException {
 
@@ -70,7 +78,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             coverNodes.add(CoverBackend.getInstance().getBackend()
                     .getFullNodeName());
 
-            // TODO: restarting
+            // TODO restarting
 
             final List<OtpErlangObject> names = new ArrayList<OtpErlangObject>(
                     coverNodes.size());
@@ -82,24 +90,12 @@ public class CoveragePerformer implements ICoveragePerformer {
                     names.toArray(new OtpErlangObject[0]));
 
             try {
-                final OtpErlangObject res = CoverBackend
+                CoverBackend
                         .getInstance()
                         .getBackend()
                         .call(CoverConstants.COVER_ERL_BACKEND,
                                 CoverConstants.FUN_START, "x", nodesList);
 
-                /*
-                 * IPath location = Activator.getDefault().getStateLocation()
-                 * .append(CoverConstants.REPORT_DIR); final File dir =
-                 * location.toFile(); log.info(dir.getAbsolutePath());
-                 * 
-                 * res = CoverBackend .getInstance() .getBackend()
-                 * .call(CoverConstants.COVER_ERL_BACKEND,
-                 * CoverConstants.FUN_SET_REPORT_DIR, "s",
-                 * dir.getAbsoluteFile());
-                 */
-
-                // TODO: check if res is ok
 
             } catch (final RpcException e) {
                 e.printStackTrace();
@@ -110,6 +106,9 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     }
 
+    /**
+     * Set coverage configuration
+     */
     public synchronized void setCoverageConfiguration(final IConfiguration conf)
             throws CoverException {
         config = conf;
@@ -128,25 +127,22 @@ public class CoveragePerformer implements ICoveragePerformer {
             includes.add(new OtpErlangList(ppath.append(include).toString()));
         }
 
-        OtpErlangObject res;
         try {
-            res = CoverBackend
+            CoverBackend
                     .getInstance()
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_SET_INCLUDES, "x", includes);
         } catch (final RpcException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
+            throw new CoverException(e1);
         }
-
-        // TODO: handle res
 
         recompileModules();
     }
 
+    // cover compilation of chosem modules 
     private void recompileModules() throws CoverException {
-        OtpErlangObject res;
         final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
                 config.getModules().size());
         for (final IErlModule module : config.getModules()) {
@@ -160,19 +156,21 @@ public class CoveragePerformer implements ICoveragePerformer {
         }
 
         try {
-            res = CoverBackend
+            CoverBackend
                     .getInstance()
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_PREP, "x", paths);
 
-            // TODO check the res
         } catch (final RpcException e) {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }
     }
 
+    /**
+     * Perform coverage analysis
+     */
     public synchronized void analyse() throws CoverException {
 
         final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(
@@ -183,22 +181,11 @@ public class CoveragePerformer implements ICoveragePerformer {
         }
 
         try {
-            final OtpErlangObject res = CoverBackend
+            CoverBackend
                     .getInstance()
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_ANALYSE, "x", modules);
-
-            if (res instanceof OtpErlangAtom
-                    && res.toString().equals("no_file")) {
-                return; // do sth more then??
-            }
-
-            /*
-             * final StatsTreeModel model = StatsTreeModel.getInstance();
-             * model.setIndex(res.toString().substring(1,
-             * res.toString().length() - 1));
-             */
 
         } catch (final RpcException e) {
             e.printStackTrace();
@@ -206,6 +193,9 @@ public class CoveragePerformer implements ICoveragePerformer {
         }
     }
 
+    /**
+     * Allows to check configuration
+     */
     public IConfiguration getConfig() {
         return config;
     }

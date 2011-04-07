@@ -35,13 +35,6 @@ public class ReportGenerator {
         ve = new VelocityEngine();
 
         Properties props = new Properties();
-        /*
-         * props.put("resource.loader", "file");
-         * props.put("file.resource.loader.class",
-         * "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-         * props.put("file.resource.loader.path", "");
-         * props.put("file.resource.loader.cache", "true");
-         */
 
         props.setProperty("resource.loader", "string");
         props.setProperty("string.resource.loader.class",
@@ -61,7 +54,7 @@ public class ReportGenerator {
         // organize data
 
         String date = Calendar.getInstance().getTime().toString();
-        String type = "file"; // TODO
+        String type = "file"; 
         String cssCode = "";
         try {
             URL bundleRoot = Platform.getBundle(
@@ -100,13 +93,13 @@ public class ReportGenerator {
 
             return writer.toString();
         } catch (Exception e) {
-            // TODO
             e.printStackTrace();
             return null;
         }
 
     }
 
+    // obtain templates
     private String getTemplateFromJar(boolean relative) throws IOException,
             URISyntaxException {
         URL bundleRoot;

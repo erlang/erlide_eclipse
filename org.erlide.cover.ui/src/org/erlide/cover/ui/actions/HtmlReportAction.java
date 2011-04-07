@@ -97,6 +97,11 @@ public class HtmlReportAction extends Action {
         browser.open();
     }
 
+    /**
+     * Generates html reports
+     * @param obj
+     * @param path
+     */
     private void generateReportTree(ICoverageObject obj, String path) {
         if (obj.getType().equals(ObjectType.MODULE))
             return;
@@ -121,7 +126,6 @@ public class HtmlReportAction extends Action {
             obj.setHtmlPath(reportPath);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

@@ -25,6 +25,10 @@ public class ModuleStats extends StatsTreeObject {
         super(ObjectType.MODULE);
     }
 
+    /**
+     * Coverage per line
+     * @return
+     */
     public List<LineResult> getLineResults() {
         return lineResults;
     }

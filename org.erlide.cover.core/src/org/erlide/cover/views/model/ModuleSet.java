@@ -27,6 +27,10 @@ public class ModuleSet {
         return map.get(name);
     }
 
+    /**
+     * All analysed module names
+     * @return
+     */
     public static Set<String> getNames() {
         return map.keySet();
     }

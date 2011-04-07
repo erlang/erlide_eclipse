@@ -10,6 +10,11 @@ import org.eclipse.jface.text.source.Annotation;
  */
 public class CoverageAnnotationFactory {
 
+    /**
+     * Create new coverage annotation
+     * @param type
+     * @return
+     */
     public static Annotation create(final String type) {
         return new Annotation(type, true, "");
     }

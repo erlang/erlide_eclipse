@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 /**
  * 
- * Data model for statatistics viewer
+ * Data model for statatistics view
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * 
@@ -33,6 +33,10 @@ public class StatsTreeModel implements Serializable {
         return model;
     }
 
+    /**
+     * Change model if results are restored
+     * @param mod
+     */
     public static void changeInstance(final StatsTreeModel mod) {
         model = mod;
     }
@@ -41,6 +45,9 @@ public class StatsTreeModel implements Serializable {
         return root;
     }
 
+    /**
+     * Clear the model tree
+     */
     public void clear() {
         root.removeAllChildren();
         root.setLiniesCount(0);
@@ -65,6 +72,11 @@ public class StatsTreeModel implements Serializable {
         setChanged(false);
     }
 
+    /**
+     * add lines for project
+     * @param allLines
+     * @param coveredLines
+     */
     public void addTotal(final int allLines, final int coveredLines) {
         final int all = root.getLinesCount() + allLines;
         final int cov = root.getCoverCount() + coveredLines;
@@ -84,6 +96,11 @@ public class StatsTreeModel implements Serializable {
         return timestamp;
     }
 
+    /**
+     * Searching for specified element in a model
+     * @param name
+     * @return
+     */
     public ICoverageObject treeSearch(final String name) {
         return root.treeSearch(name);
     }

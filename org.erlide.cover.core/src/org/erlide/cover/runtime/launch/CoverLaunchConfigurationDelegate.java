@@ -11,7 +11,7 @@ import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverRunner;
 
 /**
- * Launch cover configuration
+ * Cover launch configuration
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
  * 
@@ -28,10 +28,9 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
             final CoverBackend coverBackend = CoverBackend.getInstance();
             coverBackend.initialize(coverData);
-            coverBackend.startTesting(new CoverRunner());
+            coverBackend.runCoverageAnalisys(new CoverRunner());
             return coverBackend.getBackend();
         } catch (final CoreException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         } catch (final CoverException e) {

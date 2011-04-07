@@ -132,7 +132,6 @@ public class CoverEventHandler extends EventHandler {
                     final File file = new File(CoreScope.getModel().findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {
-                    // TODO
                     e.printStackTrace();
                 }
 

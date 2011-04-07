@@ -59,7 +59,6 @@ public class ItemBrowser {
                     }
                     text.setText(result);
                 }
-                // TODO: better serving results
             }
 
         });

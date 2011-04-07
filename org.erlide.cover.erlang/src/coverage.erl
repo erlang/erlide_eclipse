@@ -197,10 +197,10 @@ output_index(Path, Results, Total) ->
 				no_file
     end.
 
-output_header(IoDevice) ->
+output_header(_IoDevice) ->
     "<html>~n<head></head><body>".
 
-output_footer(IoDevice) ->
+output_footer(_IoDevice) ->
     "</body>~n</html>~n".
 
 
@@ -214,7 +214,7 @@ percentage_total(Results) when length(Results) > 0 ->
         0 -> 0.0;
         _ -> 100 * Covered / All
     end;
-percentage_total(Results)  ->
+percentage_total(_Results)  ->
 	0.0.
 
 

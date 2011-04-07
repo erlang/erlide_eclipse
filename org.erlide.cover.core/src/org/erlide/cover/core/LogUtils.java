@@ -4,6 +4,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
+/**
+ * Log class
+ * 
+ * @author Krzysztof Goj
+ *
+ */
 public class LogUtils {
 
     public static void log(final Plugin plugin, final int severity,

@@ -36,6 +36,10 @@ public class FunctionStats extends StatsTreeObject {
         this.arity = arity;
     }
 
+    /**
+     * First line of the function
+     * @return
+     */
     public int getLineStart() {
 
         if (lineStart != 0) {
@@ -58,6 +62,10 @@ public class FunctionStats extends StatsTreeObject {
         return lineStart;
     }
 
+    /**
+     * Last line of the function
+     * @return
+     */
     public int getLineEnd() {
 
         if (lineEnd != 0) {

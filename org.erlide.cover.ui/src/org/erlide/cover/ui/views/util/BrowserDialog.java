@@ -110,14 +110,12 @@ public class BrowserDialog extends Dialog {
         prev = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData prevLData = new GridData();
         prev.setLayoutData(prevLData);
-        // prev.setText("prev");
         prev.addSelectionListener(prevListener);
         prev.setImage(Activator.getImageDescriptor(Images.PREV).createImage());
 
         next = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData nextLData = new GridData();
         next.setLayoutData(nextLData);
-        // next.setText("next");
         next.addSelectionListener(nextListener);
         next.setImage(Activator.getImageDescriptor(Images.NEXT).createImage());
 
@@ -134,14 +132,12 @@ public class BrowserDialog extends Dialog {
         home = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData homeLData = new GridData();
         home.setLayoutData(homeLData);
-        // home.setText("down");
         home.addSelectionListener(homeListener);
         home.setImage(Activator.getImageDescriptor(Images.HOME).createImage());
 
         up = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
         GridData upLData = new GridData();
         up.setLayoutData(upLData);
-        // up.setText("up");
         up.addSelectionListener(upListener);
         up.setImage(Activator.getImageDescriptor(Images.UP).createImage());
 
@@ -156,7 +152,6 @@ public class BrowserDialog extends Dialog {
                 ICoverageObject sib = object.getParent().getPrevSiblingTo(
                         object.getLabel());
                 if (sib == null) {
-                    // CoverageHelper.reportInfo("No previous pages");
                     return;
                 }
                 setObject(sib);
@@ -169,7 +164,6 @@ public class BrowserDialog extends Dialog {
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
         }
 
     };
@@ -181,12 +175,10 @@ public class BrowserDialog extends Dialog {
                 ICoverageObject sib = object.getParent().getNextSiblingTo(
                         object.getLabel());
                 if (sib == null) {
-                    // CoverageHelper.reportInfo("No further pages");
                     return;
                 }
                 setObject(sib);
                 browser.setUrl(url);
-                // disable buttons
                 prev.setEnabled(true);
                 if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
                     next.setEnabled(false);
@@ -194,7 +186,6 @@ public class BrowserDialog extends Dialog {
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
         }
 
     };
@@ -215,7 +206,6 @@ public class BrowserDialog extends Dialog {
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
         }
 
     };
@@ -230,7 +220,6 @@ public class BrowserDialog extends Dialog {
         }
 
         public void widgetDefaultSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
         }
 
     };
@@ -238,7 +227,6 @@ public class BrowserDialog extends Dialog {
     private LocationListener locationListener = new LocationListener() {
 
         public void changing(LocationEvent event) {
-            // TODO Auto-generated method stub
 
         }
 

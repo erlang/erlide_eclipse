@@ -14,7 +14,7 @@ public interface ICoverBackend {
     public void startBackend();
     
     /**
-     * Performs coverage analisys implemented by runner.
+     * Performs coverage analysis implemented by runner.
      * 
      * @param runner
      */

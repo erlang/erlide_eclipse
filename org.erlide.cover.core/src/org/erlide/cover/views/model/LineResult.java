@@ -20,14 +20,26 @@ public class LineResult implements Comparable<LineResult>, Serializable {
         this.lineCalls = lineCalls;
     }
 
+    /**
+     * Get line number
+     * @return
+     */
     public int getLineNum() {
         return lineNum;
     }
 
+    /**
+     * How many times the line was called
+     * @return
+     */
     public int getLineCalls() {
         return lineCalls;
     }
 
+    /**
+     * If the line was called
+     * @return
+     */
     public boolean called() {
         return lineCalls != 0;
     }

@@ -22,7 +22,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class CoverRunner extends AbstractCoverRunner {
 
-    // private final CoverBackend backend;
 
     private final Logger log; // logger
     private static Semaphore semaphore = new Semaphore(1);
@@ -50,8 +49,9 @@ public class CoverRunner extends AbstractCoverRunner {
         }
     }
 
+    // performs tests
     private void runTests(final IConfiguration config) throws RpcException {
-        OtpErlangObject res = CoverBackend
+        CoverBackend
                 .getInstance()
                 .getBackend()
                 .call(TestConstants.TEST_ERL_BACKEND,
@@ -60,21 +60,19 @@ public class CoverRunner extends AbstractCoverRunner {
                         new OtpErlangAtom(CoverBackend.getInstance()
                                 .getSettings().getFramework()));
 
-        // TODO handle res
 
         log.info(config.getProject().getWorkspaceProject().getLocation());
         final IPath ppath = config.getProject().getWorkspaceProject()
                 .getLocation();
         log.info(ppath.append(config.getOutputDir()));
 
-        res = CoverBackend
+        CoverBackend
                 .getInstance()
                 .getBackend()
                 .call(TestConstants.TEST_ERL_BACKEND,
                         TestConstants.FUN_OUTPUT_DIR, "s",
                         ppath.append(config.getOutputDir()).toString());
 
-        // TODO handle res
 
         switch (CoverBackend.getInstance().getSettings().getType()) {
         case MODULE:

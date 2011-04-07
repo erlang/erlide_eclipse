@@ -91,12 +91,11 @@ public class OpenItemAction extends Action {
                 editor.setSelection(f);
                 
             } catch (ErlModelException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             
         } else {
-            // TODO: should be disabled
+            // disabled
         }
     }
 
@@ -108,7 +107,6 @@ public class OpenItemAction extends Action {
         try {
             module = CoreScope.getModel().findModule(name);
         } catch (ErlModelException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
             return null;
         }
