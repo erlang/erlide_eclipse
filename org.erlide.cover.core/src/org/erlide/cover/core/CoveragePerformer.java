@@ -8,6 +8,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.api.ICoveragePerformer;
@@ -100,7 +101,7 @@ public class CoveragePerformer implements ICoveragePerformer {
 
                 // TODO: check if res is ok
 
-            } catch (final BackendException e) {
+            } catch (final RpcException e) {
                 e.printStackTrace();
                 throw new CoverException(e.getMessage());
             }
@@ -134,7 +135,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_SET_INCLUDES, "x", includes);
-        } catch (final BackendException e1) {
+        } catch (final RpcException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
@@ -166,7 +167,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                             CoverConstants.FUN_PREP, "x", paths);
 
             // TODO check the res
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }
@@ -199,7 +200,7 @@ public class CoveragePerformer implements ICoveragePerformer {
              * res.toString().length() - 1));
              */
 
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }

@@ -14,5 +14,9 @@ public class CoverException extends Exception {
     public CoverException(final String message) {
         super(message);
     }
+    
+    public CoverException(final Exception e) {
+        super(e);
+    }
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.core.ErlangPlugin;
 
 /**
  * Public API for Cover plug-in
@@ -23,7 +22,12 @@ public class CoverageAnalysis {
      * @return true if the Cover plug-in is installed.
      */
     public static boolean isAvailable() {
-        return getCoveragePerformer() != null;
+        try {
+            return getCoveragePerformer() != null;
+        } catch (CoreException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -53,9 +57,13 @@ public class CoverageAnalysis {
      */
     public static void prepareAnalysis(final List<String> additionalNodes,
             final IConfiguration configuration) throws CoverException {
+        try {
         final ICoveragePerformer performer = getCoveragePerformerOrThrow();
         performer.startCover(additionalNodes);
         performer.setCoverageConfiguration(configuration);
+        } catch( CoreException e) {
+            throw new CoverException(e);
+        }
     }
 
     /**
@@ -68,10 +76,14 @@ public class CoverageAnalysis {
      *             on Cover-specific failures
      */
     public static void performAnalysis() throws CoverException {
-        getCoveragePerformerOrThrow().analyse();
+        try {
+            getCoveragePerformerOrThrow().analyse();
+        } catch (CoreException e) {
+            throw new CoverException(e);
+        }
     }
 
-    private static ICoveragePerformer getCoveragePerformerOrThrow() {
+    private static ICoveragePerformer getCoveragePerformerOrThrow() throws CoreException {
         final ICoveragePerformer result = getCoveragePerformer();
         if (result == null) {
             throw new UnsupportedOperationException();
@@ -79,11 +91,10 @@ public class CoverageAnalysis {
         return result;
     }
 
-    private static ICoveragePerformer getCoveragePerformer() {
+    private static ICoveragePerformer getCoveragePerformer() throws CoreException {
         final IConfigurationElement[] conf = Platform.getExtensionRegistry()
                 .getConfigurationElementsFor(ICoveragePerformerProxy.ID);
         ICoveragePerformerProxy proxy = null;
-        try {
             for (final IConfigurationElement ce : conf) {
                 if (proxy != null) {
                     throw new RuntimeException(
@@ -92,10 +103,6 @@ public class CoverageAnalysis {
                 proxy = (ICoveragePerformerProxy) ce
                         .createExecutableExtension("class");
             }
-        } catch (final CoreException e) {
-            ErlangPlugin.log("Exception when trying to get Coverage Performer",
-                    e);
-        }
         return proxy.getPerformer();
     }
 

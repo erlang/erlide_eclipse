@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -45,7 +45,7 @@ public class FunctionStats extends StatsTreeObject {
         final String mName = ((StatsTreeObject) getParent()).getLabel();
         IErlModule m;
         try {
-            m = ErlangCore.getModel().findModule(mName);
+            m = CoreScope.getModel().findModule(mName);
             final IErlFunction f = m.findFunction(new ErlangFunction(
                     getLabel(), getArity()));
 

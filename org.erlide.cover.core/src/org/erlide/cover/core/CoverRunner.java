@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.cover.api.CoverageAnalysis;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
@@ -49,7 +50,7 @@ public class CoverRunner extends Thread {
         }
     }
 
-    private void runTests(final IConfiguration config) throws BackendException {
+    private void runTests(final IConfiguration config) throws RpcException {
         OtpErlangObject res = CoverBackend
                 .getInstance()
                 .getBackend()
