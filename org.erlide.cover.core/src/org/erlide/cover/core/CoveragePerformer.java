@@ -1,6 +1,5 @@
-package org.erlide.cover.core.api;
+package org.erlide.cover.core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -9,21 +8,17 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.cover.api.ICoveragePerformer;
+import org.erlide.cover.api.CoverException;
+import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.CoverConstants;
-import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.CoverBackend;
-import org.erlide.cover.core.CoverEvent;
-import org.erlide.cover.core.CoverException;
-import org.erlide.cover.core.CoverStatus;
-import org.erlide.cover.core.ICoverObserver;
-import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.StatsTreeModel;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class CoveragePerformer implements CoverAPI {
+public class CoveragePerformer implements ICoveragePerformer {
 
     private static CoveragePerformer performer;
 
@@ -83,7 +78,7 @@ public class CoveragePerformer implements CoverAPI {
                     names.toArray(new OtpErlangObject[0]));
 
             try {
-                OtpErlangObject res = CoverBackend
+                final OtpErlangObject res = CoverBackend
                         .getInstance()
                         .getBackend()
                         .call(CoverConstants.COVER_ERL_BACKEND,
@@ -112,8 +107,7 @@ public class CoveragePerformer implements CoverAPI {
 
     }
 
-    public synchronized boolean setCoverageConfiguration(IConfiguration conf)
-            throws CoverException {
+    public synchronized void setCoverageConfiguration(IConfiguration conf) throws CoverException {
         config = conf;
 
         StatsTreeModel.getInstance()
@@ -143,20 +137,18 @@ public class CoveragePerformer implements CoverAPI {
 
         // TODO: handle res
 
-        // preparation - cover compilation
+        recompileModules();
+    }
+
+    private void recompileModules() throws CoverException {
+        OtpErlangObject res;
         List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
                 .getModules().size());
         for (IErlModule module : config.getModules()) {
             if (module == null) {
-                if (CoverBackend.getInstance().getListeners().size() == 0) {
-                    throw new RuntimeException(
-                            "No such module at given project. Check your configuration");
-                }
-                CoverBackend
-                        .getInstance()
-                        .handleError(
-                                "No such module at given project. Check your configuration");
-                return false;
+                final String msg = "No such module at given project. Check your configuration";
+                CoverBackend.getInstance().handleError(msg);
+                throw new CoverException(msg);
             }
             log.info(module.getFilePath());
             paths.add(new OtpErlangList(module.getFilePath()));
@@ -174,7 +166,6 @@ public class CoveragePerformer implements CoverAPI {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }
-        return true;
     }
 
     public synchronized void analyse() throws CoverException {

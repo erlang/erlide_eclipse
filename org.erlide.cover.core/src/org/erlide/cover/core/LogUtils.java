@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
 public class LogUtils {
-    
+
     public static void log(Plugin plugin, int severity, Object obj, int depth) {
         if (severity < IStatus.INFO)
             return;

@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.cover.api.Configuration;
+import org.erlide.cover.api.CoverException;
+import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.CoverException;
 import org.erlide.cover.core.Logger;
-import org.erlide.cover.core.api.Configuration;
-import org.erlide.cover.core.api.IConfiguration;
 
 /**
  * Settings for performing coverage.

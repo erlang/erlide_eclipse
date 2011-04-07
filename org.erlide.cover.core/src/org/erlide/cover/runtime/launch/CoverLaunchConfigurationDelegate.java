@@ -6,9 +6,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
+import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverEvent;
-import org.erlide.cover.core.CoverException;
 import org.erlide.cover.core.CoverStatus;
 
 /**
