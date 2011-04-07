@@ -8,7 +8,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -349,11 +348,6 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 doubleClickAction.run();
             }
         });
-    }
-
-    private void showMessage(final String message) {
-        MessageDialog.openInformation(viewer.getControl().getShell(),
-                "Coverage statistics", message);
     }
 
     /**

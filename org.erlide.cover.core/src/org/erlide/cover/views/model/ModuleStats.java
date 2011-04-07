@@ -13,13 +13,14 @@ public class ModuleStats extends StatsTreeObject {
 
     private static final long serialVersionUID = 1L;
 
-    private String md5;       //file hash (in order to check if 
-                              //marking annotations in editor makes sense)
-    private final List<LineResult> lineResults = 
-    	new LinkedList<LineResult>(); 	// results per line
-    public boolean couldBeMarked = true;  //if annotation could be marked for that file (if it has not changed)
-    
-    
+    private String md5; // file hash (in order to check if
+                        // marking annotations in editor makes sense)
+    private final List<LineResult> lineResults = new LinkedList<LineResult>(); // results
+                                                                               // per
+                                                                               // line
+    public boolean couldBeMarked = true; // if annotation could be marked for
+                                         // that file (if it has not changed)
+
     public ModuleStats() {
         super(ObjectType.MODULE);
     }
@@ -31,14 +32,14 @@ public class ModuleStats extends StatsTreeObject {
     public void addLine(final LineResult lr) {
         lineResults.add(lr);
     }
-    
+
     @Override
     public void addChild(final String name, final ICoverageObject child) {
-    	
-    	super.addChild(name, child);
+
+        super.addChild(name, child);
     }
 
-    public void setMd5(String md5) {
+    public void setMd5(final String md5) {
         this.md5 = md5;
     }
 

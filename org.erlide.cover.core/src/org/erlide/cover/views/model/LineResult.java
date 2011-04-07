@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class LineResult implements Comparable<LineResult>, Serializable {
 
     private static final long serialVersionUID = 1L;
-   
+
     private final int lineNum;
     private final int lineCalls;
 
@@ -44,15 +44,16 @@ public class LineResult implements Comparable<LineResult>, Serializable {
     public int compareTo(final LineResult lineRes2) {
         return lineNum - lineRes2.getLineNum();
     }
-    
+
     @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof LineResult &&
-                ((LineResult)obj).getLineNum() == lineNum)
+    public boolean equals(final Object obj) {
+        if (obj instanceof LineResult
+                && ((LineResult) obj).getLineNum() == lineNum) {
             return true;
+        }
         return false;
     }
-    
+
     @Override
     public int hashCode() {
         return lineNum;

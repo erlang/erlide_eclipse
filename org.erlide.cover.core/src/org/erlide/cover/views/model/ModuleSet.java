@@ -34,7 +34,7 @@ public class ModuleSet {
     public static void clear() {
         map.clear();
     }
-    
+
     public static Iterator<ModuleStats> iterator() {
         return map.values().iterator();
     }

@@ -13,6 +13,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -70,7 +71,7 @@ public class RestoreAction extends Action {
         
         resDialog.open();
 
-        if (resDialog.getReturnCode() != resDialog.OK)
+        if (resDialog.getReturnCode() != Window.OK)
             return;
      //  
         File f = (File)resDialog.getFirstResult();

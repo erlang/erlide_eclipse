@@ -20,29 +20,29 @@ public class StatsTreeObject implements ICoverageObject {
 
     private static final long serialVersionUID = 1L;
 
-    private ObjectType type;
+    private final ObjectType type;
 
     private String label; // name
     private int all; // total line number
     private int covered; // covered line number
     private String htmlPath; // name of html file
-    private String relativePath; //relative HTML path
+    private String relativePath; // relative HTML path
 
     private ICoverageObject parent;
     private final Map<String, ICoverageObject> children;
 
-    public StatsTreeObject(ObjectType type) {
+    public StatsTreeObject(final ObjectType type) {
         this.type = type;
         children = new HashMap<String, ICoverageObject>();
     }
 
-    public StatsTreeObject(final ICoverageObject parent, ObjectType type) {
+    public StatsTreeObject(final ICoverageObject parent, final ObjectType type) {
         this(type);
         this.parent = parent;
     }
 
     public StatsTreeObject(final String label, final int all,
-            final int covered, ObjectType type) {
+            final int covered, final ObjectType type) {
         this(type);
         this.label = label;
         this.all = all;
@@ -76,8 +76,7 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public void setParent(final ICoverageObject parent) {
-        if (parent instanceof ICoverageObject)
-            this.parent = (ICoverageObject) parent;
+            this.parent = parent;
     }
 
     public ICoverageObject getParent() {
@@ -85,10 +84,8 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public void addChild(final String name, final ICoverageObject child) {
-        if (child instanceof ICoverageObject) {
-            children.put(name, (ICoverageObject) child);
+            children.put(name, child);
             child.setParent(this);
-        }
     }
 
     public void removeChild(final String name) {
@@ -124,8 +121,9 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public double getPercentage() {
-        if (all > 0)
+        if (all > 0) {
             return covered / (double) all * 100;
+        }
         return 0;
     }
 
@@ -154,46 +152,51 @@ public class StatsTreeObject implements ICoverageObject {
     /**
      * Returns sibbling name to the name given
      */
-    public ICoverageObject getPrevSiblingTo(String name) {
-        List<String> l = new LinkedList<String>(children.keySet());
-        ListIterator<String> it = l.listIterator(l.indexOf(name));
+    public ICoverageObject getPrevSiblingTo(final String name) {
+        final List<String> l = new LinkedList<String>(children.keySet());
+        final ListIterator<String> it = l.listIterator(l.indexOf(name));
 
-        if (it.hasPrevious())
+        if (it.hasPrevious()) {
             return children.get(it.previous());
-        else
+        } else {
             return null;
+        }
     }
 
-    public ICoverageObject getNextSiblingTo(String name) {
-        List<String> l = new LinkedList<String>(children.keySet());
-        ListIterator<String> it = l.listIterator(l.indexOf(name));
+    public ICoverageObject getNextSiblingTo(final String name) {
+        final List<String> l = new LinkedList<String>(children.keySet());
+        final ListIterator<String> it = l.listIterator(l.indexOf(name));
 
         it.next();
-        if (it.hasNext())
+        if (it.hasNext()) {
             return children.get(it.next());
-        else
+        } else {
             return null;
+        }
     }
 
-    public ICoverageObject treeSearch(String name) {
-        if (this.label.equals(name))
+    public ICoverageObject treeSearch(final String name) {
+        if (label.equals(name)) {
             return this;
+        }
         ICoverageObject res = null;
-        for (ICoverageObject child : children.values()) {
+        for (final ICoverageObject child : children.values()) {
             res = child.treeSearch(name);
-            if (res != null)
+            if (res != null) {
                 break;
+            }
         }
         return res;
     }
 
     public Collection<ICoverageObject> getModules() {
-        Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
-        if (this.type.equals(ObjectType.MODULE)) {
+        final Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
+        if (type.equals(ObjectType.MODULE)) {
             col.add(this);
         } else if (hasChildren()) {
-            for (ICoverageObject child : children.values())
+            for (final ICoverageObject child : children.values()) {
                 col.addAll(child.getModules());
+            }
         }
 
         return col;
@@ -207,7 +210,7 @@ public class StatsTreeObject implements ICoverageObject {
         return relativePath;
     }
 
-    public void setRelativePath(String path) {
+    public void setRelativePath(final String path) {
         relativePath = path;
     }
 

@@ -31,10 +31,10 @@ public class StatsTreeModel implements Serializable {
         return model;
     }
 
-    public static void changeInstance(StatsTreeModel mod) {
+    public static void changeInstance(final StatsTreeModel mod) {
         model = mod;
     }
-    
+
     public ICoverageObject getRoot() {
         return root;
     }
@@ -44,7 +44,7 @@ public class StatsTreeModel implements Serializable {
         root.setLiniesCount(0);
         root.setCoverCount(0);
 
-        StringBuilder timeTmp = new StringBuilder();
+        final StringBuilder timeTmp = new StringBuilder();
         timeTmp.append(Calendar.getInstance().get(Calendar.YEAR))
                 .append(String.format("%02d",
                         Calendar.getInstance().get(Calendar.MONTH) + 1))
@@ -56,7 +56,7 @@ public class StatsTreeModel implements Serializable {
                         Calendar.getInstance().get(Calendar.MINUTE)))
                 .append(String.format("%02d",
                         Calendar.getInstance().get(Calendar.SECOND)));
-        
+
         timestamp = timeTmp.toString();
 
         ModuleSet.clear();
@@ -76,12 +76,12 @@ public class StatsTreeModel implements Serializable {
     public void setRootLabel(final String name) {
         root.setLabel(name);
     }
-    
+
     public String getTimestamp() {
         return timestamp;
     }
-    
-    public ICoverageObject treeSearch(String name) {
+
+    public ICoverageObject treeSearch(final String name) {
         return root.treeSearch(name);
     }
 

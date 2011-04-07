@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
@@ -77,7 +78,7 @@ public class SaveAction extends Action {
         nameDialog.open();
 
         String name = "";
-        if (nameDialog.getReturnCode() == InputDialog.OK)
+        if (nameDialog.getReturnCode() == Window.OK)
             name = nameDialog.getValue();
         else
             return;

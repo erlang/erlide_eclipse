@@ -12,7 +12,6 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.erlide.ui.launch.CodepathTab;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.RuntimeTab;
 
 /**
  * Tab group for cover launch configuration

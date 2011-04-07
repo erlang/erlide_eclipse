@@ -6,7 +6,6 @@ import java.util.concurrent.Semaphore;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
-import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.CoverageAnalysis;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
@@ -16,15 +15,15 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Class for launching cover
- *
+ * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- *
+ * 
  */
 public class CoverRunner extends Thread {
 
     // private final CoverBackend backend;
 
-    private Logger log; // logger
+    private final Logger log; // logger
     private static Semaphore semaphore = new Semaphore(1);
 
     public CoverRunner() {
@@ -33,16 +32,16 @@ public class CoverRunner extends Thread {
 
     @Override
     public void run() {
-        CoverBackend backend = CoverBackend.getInstance();
+        final CoverBackend backend = CoverBackend.getInstance();
         try {
 
             semaphore.acquireUninterruptibly();
-            IConfiguration config = backend.getSettings().getConfig();
+            final IConfiguration config = backend.getSettings().getConfig();
             CoverageAnalysis.prepareAnalysis(config);
             runTests(config);
             CoverageAnalysis.performAnalysis();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             backend.handleError("Exception while running cover: " + e);
         } finally {
@@ -50,7 +49,7 @@ public class CoverRunner extends Thread {
         }
     }
 
-    private void runTests(IConfiguration config) throws BackendException {
+    private void runTests(final IConfiguration config) throws BackendException {
         OtpErlangObject res = CoverBackend
                 .getInstance()
                 .getBackend()
@@ -63,7 +62,7 @@ public class CoverRunner extends Thread {
         // TODO handle res
 
         log.info(config.getProject().getWorkspaceProject().getLocation());
-        IPath ppath = config.getProject().getWorkspaceProject()
+        final IPath ppath = config.getProject().getWorkspaceProject()
                 .getLocation();
         log.info(ppath.append(config.getOutputDir()));
 
@@ -76,7 +75,6 @@ public class CoverRunner extends Thread {
 
         // TODO handle res
 
-
         switch (CoverBackend.getInstance().getSettings().getType()) {
         case MODULE:
 
@@ -88,21 +86,21 @@ public class CoverRunner extends Thread {
                     .call(TestConstants.TEST_ERL_BACKEND,
                             TestConstants.FUN_TEST,
                             "ss",
-                            CoverBackend.getInstance().getSettings()
-                                    .getType().name().toLowerCase(),
-                            config.getModules().iterator().next()
-                                    .getFilePath());
+                            CoverBackend.getInstance().getSettings().getType()
+                                    .name().toLowerCase(),
+                            config.getModules().iterator().next().getFilePath());
             break;
         case ALL:
-            List<String> testDirs = new LinkedList<String>();
-            for (IPath p : config.getSourceDirs()) {
+            final List<String> testDirs = new LinkedList<String>();
+            for (final IPath p : config.getSourceDirs()) {
                 log.info(p);
-                if (!p.toString().endsWith("test")) // !
+                if (!p.toString().endsWith("test")) {
                     testDirs.add(ppath.append(p).append("test").toString());
+                }
             }
             testDirs.add(ppath.append("test").toString());
 
-            for (String path : testDirs) {
+            for (final String path : testDirs) {
                 log.info(path);
 
                 CoverBackend
@@ -112,8 +110,7 @@ public class CoverRunner extends Thread {
                                 TestConstants.FUN_TEST,
                                 "ss",
                                 CoverBackend.getInstance().getSettings()
-                                        .getType().name().toLowerCase(),
-                                path);
+                                        .getType().name().toLowerCase(), path);
             }
             break;
         default:

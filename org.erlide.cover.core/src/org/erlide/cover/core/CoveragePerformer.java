@@ -8,9 +8,9 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.cover.api.ICoveragePerformer;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.IConfiguration;
+import org.erlide.cover.api.ICoveragePerformer;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.views.model.StatsTreeModel;
 
@@ -25,7 +25,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     private Collection<String> coverNodes;
     private IConfiguration config;
 
-    private Logger log; // logger
+    private final Logger log; // logger
 
     private CoveragePerformer() {
         log = Activator.getDefault();
@@ -33,19 +33,21 @@ public class CoveragePerformer implements ICoveragePerformer {
     }
 
     public static synchronized CoveragePerformer getPerformer() {
-        if (performer == null)
+        if (performer == null) {
             performer = new CoveragePerformer();
+        }
         return performer;
     }
 
-    public synchronized void startCover(Collection<String> nodes)
+    public synchronized void startCover(final Collection<String> nodes)
             throws CoverException {
 
         final StatsTreeModel model = StatsTreeModel.getInstance();
         model.clear();
-        if (CoverBackend.getInstance().getAnnotationMaker() != null)
+        if (CoverBackend.getInstance().getAnnotationMaker() != null) {
             CoverBackend.getInstance().getAnnotationMaker()
                     .clearAllAnnotations();
+        }
 
         for (final ICoverObserver obs : CoverBackend.getInstance()
                 .getListeners()) {
@@ -53,11 +55,12 @@ public class CoveragePerformer implements ICoveragePerformer {
         }
 
         boolean different = false;
-        for (String node : nodes)
+        for (final String node : nodes) {
             if (!coverNodes.contains(node)) {
                 different = true;
                 break;
             }
+        }
 
         if (coverNodes.isEmpty() || different) {
 
@@ -68,13 +71,13 @@ public class CoveragePerformer implements ICoveragePerformer {
 
             // TODO: restarting
 
-            List<OtpErlangObject> names = new ArrayList<OtpErlangObject>(
+            final List<OtpErlangObject> names = new ArrayList<OtpErlangObject>(
                     coverNodes.size());
-            for (String name : coverNodes) {
+            for (final String name : coverNodes) {
                 names.add(new OtpErlangAtom(name));
             }
 
-            OtpErlangList nodesList = new OtpErlangList(
+            final OtpErlangList nodesList = new OtpErlangList(
                     names.toArray(new OtpErlangObject[0]));
 
             try {
@@ -84,21 +87,20 @@ public class CoveragePerformer implements ICoveragePerformer {
                         .call(CoverConstants.COVER_ERL_BACKEND,
                                 CoverConstants.FUN_START, "x", nodesList);
 
-            /*    IPath location = Activator.getDefault().getStateLocation()
-                        .append(CoverConstants.REPORT_DIR);
-                final File dir = location.toFile();
-                log.info(dir.getAbsolutePath());
-
-                res = CoverBackend
-                        .getInstance()
-                        .getBackend()
-                        .call(CoverConstants.COVER_ERL_BACKEND,
-                                CoverConstants.FUN_SET_REPORT_DIR, "s",
-                                dir.getAbsoluteFile());*/
+                /*
+                 * IPath location = Activator.getDefault().getStateLocation()
+                 * .append(CoverConstants.REPORT_DIR); final File dir =
+                 * location.toFile(); log.info(dir.getAbsolutePath());
+                 * 
+                 * res = CoverBackend .getInstance() .getBackend()
+                 * .call(CoverConstants.COVER_ERL_BACKEND,
+                 * CoverConstants.FUN_SET_REPORT_DIR, "s",
+                 * dir.getAbsoluteFile());
+                 */
 
                 // TODO: check if res is ok
 
-            } catch (BackendException e) {
+            } catch (final BackendException e) {
                 e.printStackTrace();
                 throw new CoverException(e.getMessage());
             }
@@ -107,18 +109,20 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     }
 
-    public synchronized void setCoverageConfiguration(IConfiguration conf) throws CoverException {
+    public synchronized void setCoverageConfiguration(final IConfiguration conf)
+            throws CoverException {
         config = conf;
 
         StatsTreeModel.getInstance()
                 .setRootLabel(config.getProject().getName());
 
-        IPath ppath = config.getProject().getWorkspaceProject().getLocation();
+        final IPath ppath = config.getProject().getWorkspaceProject()
+                .getLocation();
 
         // set include files
-        List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(config
-                .getModules().size());
-        for (IPath include : config.getIncludeDirs()) {
+        final List<OtpErlangObject> includes = new ArrayList<OtpErlangObject>(
+                config.getModules().size());
+        for (final IPath include : config.getIncludeDirs()) {
             log.info(ppath.append(include));
             includes.add(new OtpErlangList(ppath.append(include).toString()));
         }
@@ -130,7 +134,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_SET_INCLUDES, "x", includes);
-        } catch (BackendException e1) {
+        } catch (final BackendException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
@@ -142,9 +146,9 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     private void recompileModules() throws CoverException {
         OtpErlangObject res;
-        List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(config
-                .getModules().size());
-        for (IErlModule module : config.getModules()) {
+        final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
+                config.getModules().size());
+        for (final IErlModule module : config.getModules()) {
             if (module == null) {
                 final String msg = "No such module at given project. Check your configuration";
                 CoverBackend.getInstance().handleError(msg);
@@ -162,7 +166,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                             CoverConstants.FUN_PREP, "x", paths);
 
             // TODO check the res
-        } catch (BackendException e) {
+        } catch (final BackendException e) {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }
@@ -170,29 +174,32 @@ public class CoveragePerformer implements ICoveragePerformer {
 
     public synchronized void analyse() throws CoverException {
 
-        List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(config
-                .getModules().size());
-        for (IErlModule module : config.getModules()) {
+        final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(
+                config.getModules().size());
+        for (final IErlModule module : config.getModules()) {
             log.info(module.getModuleName());
             modules.add(new OtpErlangList(module.getModuleName()));
         }
 
         try {
-            OtpErlangObject res = CoverBackend
+            final OtpErlangObject res = CoverBackend
                     .getInstance()
                     .getBackend()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_ANALYSE, "x", modules);
 
             if (res instanceof OtpErlangAtom
-                    && res.toString().equals("no_file"))
+                    && res.toString().equals("no_file")) {
                 return; // do sth more then??
+            }
 
-          /*  final StatsTreeModel model = StatsTreeModel.getInstance();
-            model.setIndex(res.toString().substring(1,
-                    res.toString().length() - 1)); */
+            /*
+             * final StatsTreeModel model = StatsTreeModel.getInstance();
+             * model.setIndex(res.toString().substring(1,
+             * res.toString().length() - 1));
+             */
 
-        } catch (BackendException e) {
+        } catch (final BackendException e) {
             e.printStackTrace();
             throw new CoverException(e.getMessage());
         }

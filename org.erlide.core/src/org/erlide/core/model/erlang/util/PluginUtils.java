@@ -47,7 +47,7 @@ public class PluginUtils {
             final Collection<IPath> sourcePaths) {
         final HashSet<IPath> result = new HashSet<IPath>();
         for (final IPath path : sourcePaths) {
-            String path_string = path.toString();
+            final String path_string = path.toString();
             if (path_string.equals(".")) {
                 result.add(project.getFullPath());
             } else {

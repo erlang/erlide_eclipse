@@ -10,7 +10,6 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 
-
 /**
  * Coverage statistics per function.
  * 
@@ -21,14 +20,14 @@ public class FunctionStats extends StatsTreeObject {
 
     private static final long serialVersionUID = 1L;
 
-    private int arity; 		// function arity
-    private int lineStart;  // first line of the function
-    private int lineEnd;	// last line of the function
+    private int arity; // function arity
+    private int lineStart; // first line of the function
+    private int lineEnd; // last line of the function
 
     public FunctionStats() {
         super(ObjectType.FUNCTION);
     }
-    
+
     public int getArity() {
         return arity;
     }
@@ -36,48 +35,50 @@ public class FunctionStats extends StatsTreeObject {
     public void setArity(final int arity) {
         this.arity = arity;
     }
-    
+
     public int getLineStart() {
-    	
-    	if(lineStart != 0)
-    		return lineStart;
-    	
-    	String mName = ((StatsTreeObject)getParent()).getLabel();
-    	IErlModule m;
+
+        if (lineStart != 0) {
+            return lineStart;
+        }
+
+        final String mName = ((StatsTreeObject) getParent()).getLabel();
+        IErlModule m;
         try {
             m = ErlangCore.getModel().findModule(mName);
-            IErlFunction f = m.findFunction(
-                    new ErlangFunction(getLabel(), getArity()));
-            
+            final IErlFunction f = m.findFunction(new ErlangFunction(
+                    getLabel(), getArity()));
+
             lineStart = f.getLineStart();
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         return lineStart;
     }
-    
+
     public int getLineEnd() {
-    	
-    	if(lineEnd != 0)
-    		return lineEnd;
-    	
-    	List<Integer> numList = new LinkedList<Integer>();
-    	for(ICoverageObject obj : getParent().getChildren()) {
-    		FunctionStats fs = (FunctionStats) obj;
-    		numList.add(fs.getLineStart());
-    	}
-    	
-    	Collections.sort(numList);
-    	int idx;
-    	if( (idx = numList.indexOf(getLineStart())) < numList.size() - 1) {
-    		lineEnd = numList.get(idx+1);
-    	} else {
-    		lineEnd = -1;
-    	}
-    	
-    	return lineEnd;
+
+        if (lineEnd != 0) {
+            return lineEnd;
+        }
+
+        final List<Integer> numList = new LinkedList<Integer>();
+        for (final ICoverageObject obj : getParent().getChildren()) {
+            final FunctionStats fs = (FunctionStats) obj;
+            numList.add(fs.getLineStart());
+        }
+
+        Collections.sort(numList);
+        int idx;
+        if ((idx = numList.indexOf(getLineStart())) < numList.size() - 1) {
+            lineEnd = numList.get(idx + 1);
+        } else {
+            lineEnd = -1;
+        }
+
+        return lineEnd;
     }
 
 }

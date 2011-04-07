@@ -21,54 +21,63 @@ import org.erlide.core.model.erlang.IErlProject;
 public class Configuration implements IConfiguration {
 
     private IErlProject project;
-    private Map<String, IErlModule> modules;
+    private final Map<String, IErlModule> modules;
 
     public Configuration() {
         modules = new HashMap<String, IErlModule>();
     }
 
-    public void setProject(String name) {
-        if (name == null || name.length() == 0)
+    public void setProject(final String name) {
+        if (name == null || name.length() == 0) {
             project = null;
-        else
+        } else {
             project = ErlangCore.getModel().getErlangProject(
                     ResourcesPlugin.getWorkspace().getRoot().getProject(name));
+        }
     }
 
-    public void addModule(String name) throws ErlModelException, CoverException {
+    public void addModule(final String name) throws ErlModelException,
+            CoverException {
 
-        if (project == null)
+        if (project == null) {
             throw new CoverException("no project set");
+        }
         IErlModule module = null;
         module = project.getModule(name);
         modules.put(name, module);
     }
 
-    public void addModule(IErlModule module) {
+    public void addModule(final IErlModule module) {
         modules.put(module.getModuleName(), module);
     }
 
+    @Override
     public IErlProject getProject() {
         return project;
     }
 
+    @Override
     public Collection<IErlModule> getModules() {
         return modules.values();
     }
 
+    @Override
     public IPath getOutputDir() {
         return project.getOutputLocation();
     }
 
+    @Override
     public Collection<IPath> getSourceDirs() {
         return project.getSourceDirs();
     }
 
+    @Override
     public Collection<IPath> getIncludeDirs() {
         return project.getIncludeDirs();
     }
 
-    public IErlModule getModule(String name) {
+    @Override
+    public IErlModule getModule(final String name) {
         return modules.get(name);
     }
 

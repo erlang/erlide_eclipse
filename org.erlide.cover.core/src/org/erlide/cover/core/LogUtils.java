@@ -6,23 +6,27 @@ import org.eclipse.core.runtime.Status;
 
 public class LogUtils {
 
-    public static void log(Plugin plugin, int severity, Object obj, int depth) {
-        if (severity < IStatus.INFO)
+    public static void log(final Plugin plugin, final int severity,
+            final Object obj, final int depth) {
+        if (severity < IStatus.INFO) {
             return;
-        String pluginId = plugin.getClass().getPackage().getName();
-        String msg = String.valueOf(obj) + stackInfo(depth + 3);
-        Status status = new Status(severity, pluginId, msg);
+        }
+        final String pluginId = plugin.getClass().getPackage().getName();
+        final String msg = String.valueOf(obj) + stackInfo(depth + 3);
+        final Status status = new Status(severity, pluginId, msg);
         plugin.getLog().log(status);
     }
 
-
-    private static String stackInfo(int depth) {
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (stackTrace.length <= depth)
+    private static String stackInfo(final int depth) {
+        final StackTraceElement[] stackTrace = Thread.currentThread()
+                .getStackTrace();
+        if (stackTrace.length <= depth) {
             return "";
-        StackTraceElement caller = stackTrace[depth];
-        return String.format("\n%s.%s(...)\n%s:%s", caller.getClassName(), caller.getMethodName(),
-                                                     caller.getFileName(),  caller.getLineNumber());
+        }
+        final StackTraceElement caller = stackTrace[depth];
+        return String.format("\n%s.%s(...)\n%s:%s", caller.getClassName(),
+                caller.getMethodName(), caller.getFileName(),
+                caller.getLineNumber());
     }
 
 }

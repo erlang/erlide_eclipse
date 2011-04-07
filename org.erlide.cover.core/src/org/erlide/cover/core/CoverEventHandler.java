@@ -39,7 +39,7 @@ public class CoverEventHandler extends EventHandler {
     private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
     private ICoverAnnotationMarker annotationMarker;
 
-    private Logger log; // log
+    private final Logger log; // log
 
     public CoverEventHandler() {
         log = Activator.getDefault();
@@ -108,9 +108,9 @@ public class CoverEventHandler extends EventHandler {
 
                 String htmlPath = resTuple.elementAt(2).toString();
                 htmlPath = htmlPath.substring(1, htmlPath.length() - 1);
-                int allLines = Integer.parseInt(resTuple.elementAt(3)
+                final int allLines = Integer.parseInt(resTuple.elementAt(3)
                         .toString());
-                int coveredLines = Integer.parseInt(resTuple.elementAt(4)
+                final int coveredLines = Integer.parseInt(resTuple.elementAt(4)
                         .toString());
                 final double percent = Double.parseDouble(resTuple.elementAt(5)
                         .toString());
@@ -128,11 +128,11 @@ public class CoverEventHandler extends EventHandler {
                 // calculate md5
 
                 try {
-                    File file = new File(ErlangCore.getModel()
+                    final File file = new File(ErlangCore.getModel()
                             .findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
-                } catch (Exception e) {
-                    //TODO
+                } catch (final Exception e) {
+                    // TODO
                     e.printStackTrace();
                 }
 
@@ -156,20 +156,21 @@ public class CoverEventHandler extends EventHandler {
     }
 
     // adds module to the statistics tree
-    private void addModuleToTree(ModuleStats moduleStats) {
+    private void addModuleToTree(final ModuleStats moduleStats) {
 
         ICoverageObject root = StatsTreeModel.getInstance().getRoot();
 
-        IConfiguration config = CoveragePerformer.getPerformer().getConfig();
+        final IConfiguration config = CoveragePerformer.getPerformer()
+                .getConfig();
 
-        String ppath = config.getProject().getProject().getWorkspaceProject()
-                .getLocation().toString();
+        final String ppath = config.getProject().getProject()
+                .getWorkspaceProject().getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());
         log.info(ppath);
         log.info(mpath);
 
-        String[] parts = mpath.split("/"); // TODO ! platform independent?
+        final String[] parts = mpath.split("/"); // TODO ! platform independent?
 
         root.setLiniesCount(root.getLinesCount() + moduleStats.getLinesCount());
         root.setCoverCount(root.getCoverCount() + moduleStats.getCoverCount());

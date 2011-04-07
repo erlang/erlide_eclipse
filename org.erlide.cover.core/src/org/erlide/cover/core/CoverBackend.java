@@ -24,9 +24,9 @@ import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 
 /**
  * Core backend for Cover-plugin
- *
+ * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
- *
+ * 
  */
 public class CoverBackend {
 
@@ -38,11 +38,10 @@ public class CoverBackend {
     private RuntimeInfo info;
     private ILaunchConfiguration launchConfig;
     private final CoverEventHandler handler;
-    // private CoverLaunchData coverData;
     private CoverLaunchSettings settings;
     private String nodeName;
 
-    private Logger log; // logger
+    private final Logger log; // logger
 
     public static synchronized CoverBackend getInstance() {
         if (instance == null) {
@@ -63,7 +62,7 @@ public class CoverBackend {
 
         try {
             settings = new CoverLaunchSettings(coverData.getType(), coverData);
-        } catch (CoverException e1) {
+        } catch (final CoverException e1) {
             settings = null;
             throw e1;
         }
@@ -75,8 +74,8 @@ public class CoverBackend {
             backend.stop();
         }
 
-        RuntimeInfo rt0 = RuntimeInfo.copy(BackendCore.getRuntimeInfoManager()
-                .getErlideRuntime(), false);
+        final RuntimeInfo rt0 = RuntimeInfo.copy(BackendCore
+                .getRuntimeInfoManager().getErlideRuntime(), false);
 
         if (rt0 == null) {
             log.error(String.format("Could not find runtime %s", BackendCore

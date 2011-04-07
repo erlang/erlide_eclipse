@@ -1,15 +1,11 @@
 package org.erlide.cover.runtime.launch;
 
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
-import org.erlide.cover.core.CoverEvent;
-import org.erlide.cover.core.CoverStatus;
 
 /**
  * Launch cover configuration
@@ -31,16 +27,15 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
             coverBackend.initialize(coverData);
             coverBackend.startTesting();
 
-        } catch (CoreException e) {
+        } catch (final CoreException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (CoverException e) {
-            if(CoverBackend.getInstance().getListeners().size() == 0)
+        } catch (final CoverException e) {
+            if (CoverBackend.getInstance().getListeners().size() == 0) {
                 throw new RuntimeException(e.getMessage());
-            CoverBackend
-                    .getInstance()
-                    .handleError(e.getMessage());
-        } 
+            }
+            CoverBackend.getInstance().handleError(e.getMessage());
+        }
 
     }
 
