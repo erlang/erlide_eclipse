@@ -30,14 +30,14 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.internal.services.builder.BuildNotifier;
-import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.services.builder.internal.BuildNotifier;
+import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -49,10 +49,20 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
 
     BuildNotifier notifier;
     private final BuilderHelper helper = new BuilderHelper();
+    private final IProject myProject;
+
+    public ErlangBuilder() {
+        super();
+        myProject = null;
+    }
+
+    public ErlangBuilder(final IProject prj) {
+        myProject = prj;
+    }
 
     @Override
     protected void clean(final IProgressMonitor monitor) throws CoreException {
-        final IProject currentProject = getProject();
+        final IProject currentProject = getMyProject();
         if (currentProject == null || !currentProject.isAccessible()) {
             return;
         }
@@ -65,7 +75,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
@@ -104,7 +114,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             @SuppressWarnings("rawtypes") final Map args,
             final IProgressMonitor monitor) throws CoreException {
         final long time = System.currentTimeMillis();
-        final IProject project = getProject();
+        final IProject project = getMyProject();
         if (project == null || !project.isAccessible()) {
             return new IProject[0];
         }
@@ -113,7 +123,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
                     + project.getName());
         }
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         try {
             MarkerUtils.deleteMarkers(project);
@@ -133,8 +143,8 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             final OtpErlangList compilerOptions = CompilerPreferences
                     .get(project);
 
-            ErlLogger.debug("******** building %s: %s", getProject().getName(),
-                    compilerOptions);
+            ErlLogger.debug("******** building %s: %s", getMyProject()
+                    .getName(), compilerOptions);
 
             final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                     kind, args, project);
@@ -243,7 +253,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
     }
 
     private void initializeBuilder(final IProgressMonitor monitor) {
-        final IProject currentProject = getProject();
+        final IProject currentProject = getMyProject();
         notifier = new BuildNotifier(monitor, currentProject);
         notifier.begin();
     }
@@ -267,7 +277,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         } else {
             final IResourceDelta delta = getDelta(currentProject);
             final Path path = new Path(".settings/org.erlide.core.prefs");
-            if (delta.findMember(path) != null) {
+            if (delta != null && delta.findMember(path) != null) {
                 ErlLogger
                         .info("project configuration changed: doing full rebuild");
                 resourcesToBuild = helper.getAffectedResources(args,
@@ -281,4 +291,10 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         return resourcesToBuild;
     }
 
+    public IProject getMyProject() {
+        if (myProject != null) {
+            return myProject;
+        }
+        return getProject();
+    }
 }

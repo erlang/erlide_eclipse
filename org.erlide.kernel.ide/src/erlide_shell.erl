@@ -282,6 +282,7 @@ loginfo(FmtStr, Args) ->
 	error_logger:info_msg("~s", [Txt]),
 	erlide_log:log(Txt),
 	fixme.
+
 logerror(FmtStr, Args) ->
 	%% See loginfo/2.
 	Txt = fmt(FmtStr, Args),

@@ -9,7 +9,6 @@ import java.io.File;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -18,6 +17,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.test.support.ErlideTestUtils;
@@ -186,15 +186,16 @@ public class ErlProjectTest {
 		// looking for lists:reverse/2 and lists:reverse/1
 		final RpcCallSite backend = BackendCore.getBackendManager()
 				.getIdeBackend();
-		final IErlModel model = ErlangCore.getModel();
+		final IErlModel model = CoreScope.getModel();
 		final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
 				ModelUtils.getImportsAsList(moduleE),
 				project.getExternalModulesString(), model.getPathVars());
 		final IErlElement function = ModelUtils.findFunction(res.getName(),
 				res.getFunction(), res.getPath(), project, Scope.PROJECT_ONLY,
 				moduleE);
-		final IErlElement module = project.findModule(function.getModuleName(),
-				res.getPath(), Scope.PROJECT_ONLY);
+		final IErlElement module = function instanceof IErlFunction ? project
+				.findModule(((IErlFunction) function).getModuleName(),
+						res.getPath(), Scope.PROJECT_ONLY) : null;
 		// then
 		// the function should be returned and the module, in External Files
 		assertNotNull(function);

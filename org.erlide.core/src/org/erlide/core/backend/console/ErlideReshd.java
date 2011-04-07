@@ -1,8 +1,8 @@
 package org.erlide.core.backend.console;
 
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.internal.backend.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -15,7 +15,7 @@ public class ErlideReshd {
                     "p", fBackend.getEventPid());
             final OtpErlangPid server = (OtpErlangPid) BackendUtil.ok(r);
             return server;
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             return null;
         }
     }

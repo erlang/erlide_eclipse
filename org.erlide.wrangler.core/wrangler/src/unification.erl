@@ -39,7 +39,7 @@
 
 expr_unification(Exp1, Exp2) ->
     expr_unification(Exp1, Exp2, syntax).
-expr_unification_extended(Exp1, Exp2) ->
+expr_unification_extended(Exp1, Exp2) -> 
     expr_unification(Exp1, Exp2, semantics).
 
 expr_unification(Exp1, Exp2, Type) ->
@@ -92,17 +92,19 @@ same_type_expr_unification(Exp1, Exp2, Type) ->
 	    Exp2Ann = refac_syntax:get_ann(Exp2),
 	    Exp1Name = refac_syntax:variable_name(Exp1),
 	    Exp2Name = refac_syntax:variable_name(Exp2),
-	    case lists:keysearch(category, 1, Exp1Ann) of
-		{value, {category, macro_name, none, _}} ->
+            case lists:keysearch(category, 1, Exp1Ann) of
+		{value, {category, {macro_name, N, N1}}} ->
 		    case lists:keysearch(category, 1, Exp2Ann) of
-			{value, {category, {macro_name, none, expression}}} ->
-			    case Exp1Name of
+			{value, {category, {macro_name, N, N1}}} ->
+                            case Exp1Name of
 				Exp2Name -> {true, []};
-				_ -> false
-			    end;
-			_ -> false
+				_ -> 
+                                    false
+	 		    end;
+			_ ->
+                            false
 		    end;
-		_ -> {true, [{Exp1Name, rm_comments(Exp2)}]}
+		_ -> {true, [{Exp1Name, rm_comments(Exp2)}]} 
 	    end;
 	atom ->
 	    case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of

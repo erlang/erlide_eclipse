@@ -22,17 +22,20 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.rpc.RpcCallSite;
 
 public class ErlangConsole extends TextConsole {
     private final BackendShell shell;
     protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
+    private final Backend backend;
 
     public ErlangConsole(final Backend backend) {
         super(backend.getName(), null, null, true);
+        this.backend = backend;
+
         shell = backend.getShell("main");
         consoleListeners = new ListenerList(ListenerList.IDENTITY);
 
@@ -47,7 +50,7 @@ public class ErlangConsole extends TextConsole {
     }
 
     public RpcCallSite getBackend() {
-        return shell.getBackend();
+        return backend;
     }
 
     public BackendShell getShell() {
@@ -61,8 +64,7 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + shell.getBackend().getRuntimeInfo().toString()
-                + " " + shell.hashCode();
+        return "Erlang: " + backend.getName();
     }
 
     @Override

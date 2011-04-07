@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -47,9 +46,10 @@ import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.services.text.ErlScanner;
-import org.erlide.core.services.text.ErlToken;
-import org.erlide.core.services.text.ErlangToolkit;
+import org.erlide.core.parsing.ErlScanner;
+import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.parsing.ErlangToolkit;
+import org.erlide.core.parsing.IErlScanner;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -65,7 +65,7 @@ public class ErlModule extends Openable implements IErlModule {
     private String initialText;
     private boolean parsed;
     private final String scannerName;
-    private ErlScanner scanner;
+    private IErlScanner scanner;
     private final boolean useCaches;
     private final Collection<IErlComment> comments;
 
@@ -82,7 +82,7 @@ public class ErlModule extends Openable implements IErlModule {
         scanner = null;
         this.useCaches = useCaches;
         comments = Lists.newArrayList();
-        if (ErlModelManager.verbose) {
+        if (ErlModel.verbose) {
             final IErlElement element = (IErlElement) parent;
             final String parentName = element.getName();
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
@@ -95,16 +95,19 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             parsed = false;
         }
-        final boolean initialParse = !parsed;
         if (scanner == null) {
             // There are two places that we make the initial scanner... this
             // is one
             getScanner();
         }
-        parsed = ErlParser.parse(this, scannerName, initialParse, path,
-                useCaches);
         getScanner();
-        disposeScanner();
+        try {
+            final ErlParser parser = new ErlParser();
+            parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
+                    useCaches);
+        } finally {
+            disposeScanner();
+        }
         return parsed;
     }
 
@@ -112,7 +115,7 @@ public class ErlModule extends Openable implements IErlModule {
     protected synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = getModel();
             if (model != null) {
                 model.notifyChange(this);
             }
@@ -134,14 +137,13 @@ public class ErlModule extends Openable implements IErlModule {
      */
     @Override
     public String getFilePath() {
-        if (path != null) {
-            return path;
+        if (fFile != null) {
+            final IPath location = fFile.getLocation();
+            if (location != null) {
+                return location.toString();
+            }
         }
-        final IPath location = fFile.getLocation();
-        if (location == null) {
-            return null;
-        }
-        return location.toString();
+        return path;
     }
 
     public IErlElement getElementAt(final int position)
@@ -238,9 +240,9 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public void removeChildren() {
-        super.removeChildren();
+    public void setChildren(final Collection<? extends IErlElement> children) {
         comments.clear();
+        super.setChildren(children);
     }
 
     public synchronized long getTimestamp() {
@@ -319,7 +321,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
-    public Collection<ErlangIncludeFile> getIncludedFiles()
+    public Collection<ErlangIncludeFile> getIncludeFiles()
             throws ErlModelException {
         if (!isStructureKnown()) {
             open(null);
@@ -418,7 +420,7 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             return;
         }
-        final ErlScanner s = scanner;
+        final IErlScanner s = scanner;
         if (s.willDispose()) {
             scanner = null;
         }
@@ -441,51 +443,42 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public void dispose() {
         disposeScanner();
-        ErlangCore.getModelManager().removeModule(this);
+        getModel().removeModule(this);
     }
 
-    public Set<IErlModule> getDirectDependents() throws ErlModelException {
+    public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = getProject();
-        for (final IErlModule m : project.getModules()) {
-            ErlLogger.debug(m.toString());
-            final boolean wasOpen = m.isOpen();
+        for (final IErlModule module : project.getModules()) {
+            final boolean wasOpen = module.isOpen();
             if (!wasOpen) {
-                m.open(null);
+                module.open(null);
             }
-            final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+            final Collection<ErlangIncludeFile> incs = module.getIncludeFiles();
             for (final ErlangIncludeFile inc : incs) {
                 if (inc.getFilename().equals(getName())) {
-                    result.add(m);
+                    result.add(module);
                     break;
                 }
             }
             if (!wasOpen) {
-                m.close();
+                module.close();
             }
         }
         return result;
     }
 
-    public Set<IErlModule> getAllDependents() throws ErlModelException {
-        final Set<IErlModule> mod = getDirectDependents();
-        return getAllDependents(mod, new HashSet<IErlModule>());
-    }
-
-    private Set<IErlModule> getAllDependents(final Set<IErlModule> current,
-            final Set<IErlModule> result) throws ErlModelException {
-        final Set<IErlModule> next = new HashSet<IErlModule>();
-        for (final IErlModule mod : current) {
-            final Collection<IErlModule> dep = mod.getDirectDependents();
-            result.add(mod);
-            next.addAll(dep);
+    public Set<IErlModule> getAllDependentModules() throws CoreException {
+        final Set<IErlModule> result = new HashSet<IErlModule>();
+        final IErlProject project = getProject();
+        for (final IErlModule module : project.getModules()) {
+            final List<IErlModule> allIncludedFiles = module
+                    .findAllIncludedFiles();
+            if (allIncludedFiles.contains(this)) {
+                result.add(module);
+            }
         }
-        if (next.size() == 0) {
-            return result;
-
-        } else {
-            return getAllDependents(next, result);
-        }
+        return result;
     }
 
     public synchronized void resetAndCacheScannerAndParser(final String newText)
@@ -523,14 +516,15 @@ public class ErlModule extends Openable implements IErlModule {
         scanner.addRef();
     }
 
-    private ErlScanner getNewScanner() {
-        if (path == null) {
+    private IErlScanner getNewScanner() {
+        final String filePath = getFilePath();
+        if (filePath == null) {
             return null;
         }
         if (initialText == null) {
             initialText = "";
         }
-        return new ErlScanner(scannerName, initialText, path, useCaches);
+        return new ErlScanner(scannerName, initialText, filePath, useCaches);
     }
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
@@ -549,10 +543,6 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
-    public String getInitialText() {
-        return initialText;
-    }
-
     public List<IErlModule> findAllIncludedFiles() throws CoreException {
         final List<IErlModule> checked = Lists.newArrayList();
         checked.add(this);
@@ -567,7 +557,7 @@ public class ErlModule extends Openable implements IErlModule {
             return includedFilesForModule;
         }
         final List<IErlModule> result = Lists.newArrayList();
-        final Collection<ErlangIncludeFile> includedFiles = getIncludedFiles();
+        final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
         final IErlProject project = getProject();
         if (project == null) {
             return result;
@@ -586,7 +576,7 @@ public class ErlModule extends Openable implements IErlModule {
             if (referencedIncludes == null) {
                 referencedIncludes = Lists.newArrayList();
                 final Collection<IErlProject> referencedProjects = project
-                        .getProjectReferences();
+                        .getReferencedProjects();
                 for (final IErlProject referencedProject : referencedProjects) {
                     referencedIncludes.addAll(referencedProject.getIncludes());
                 }
@@ -702,9 +692,20 @@ public class ErlModule extends Openable implements IErlModule {
         if (parent instanceof IErlFolder) {
             final IErlFolder folder = (IErlFolder) parent;
             folder.open(null);
-            return folder.findModule(includeName, includePath);
+            final IErlModule include = folder.findInclude(includeName,
+                    includePath);
+            if (include != null) {
+                return include;
+            }
         }
         return getProject().findInclude(includeName, includePath, scope);
+    }
+
+    public String getText() {
+        getScanner();
+        final String s = scanner.getText();
+        disposeScanner();
+        return s;
     }
 
 }

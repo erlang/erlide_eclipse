@@ -13,11 +13,13 @@ package org.erlide.core.backend.manager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.internal.ExternalBackend;
+import org.erlide.core.backend.internal.InternalBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.internal.backend.BackendUtil;
-import org.erlide.core.internal.backend.BackendUtils;
 import org.erlide.jinterface.ErlLogger;
 
 public class BackendFactory {
@@ -48,7 +50,8 @@ public class BackendFactory {
 
         final Backend b;
         try {
-            b = new Backend(data);
+            b = data.getLaunch() == null ? new InternalBackend(data)
+                    : new ExternalBackend(data);
             b.launchRuntime(data);
             b.initialize();
             return b;

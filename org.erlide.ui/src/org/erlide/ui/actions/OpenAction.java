@@ -19,10 +19,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlElement.Kind;
@@ -37,6 +36,8 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -143,7 +144,7 @@ public class OpenAction extends SelectionDispatchAction {
         final int offset = selection.getOffset();
         try {
             final IErlProject project = module.getProject();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             final OpenResult res = ErlideOpen.open(b, module, offset,
                     ModelUtils.getImportsAsList(module),
                     project.getExternalModulesString(), model.getPathVars());
@@ -177,7 +178,8 @@ public class OpenAction extends SelectionDispatchAction {
             final IErlModule module, final RpcCallSite backend,
             final int offset, final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
-            BadLocationException, OtpErlangRangeException, BackendException {
+            BadLocationException, OtpErlangRangeException, BackendException,
+            RpcException {
         final Object found = findOpenResult(editor, module, backend,
                 erlProject, res, offset);
         if (found instanceof IErlElement) {
@@ -190,12 +192,12 @@ public class OpenAction extends SelectionDispatchAction {
     public static Object findOpenResult(final ErlangEditor editor,
             final IErlModule module, final RpcCallSite backend,
             final IErlProject erlProject, final OpenResult res, final int offset)
-            throws CoreException, BackendException, ErlModelException,
-            BadLocationException, OtpErlangRangeException {
+            throws CoreException, RpcException, BackendException,
+            ErlModelException, BadLocationException, OtpErlangRangeException {
         final IErlElement element = editor.getElementAt(offset, true);
         final Scope scope = NavigationPreferencePage.getCheckAllProjects() ? Scope.ALL_PROJECTS
                 : Scope.REFERENCED_PROJECTS;
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         Object found = null;
         if (res.isExternalCall()) {
             found = findExternalCallOrType(module, res, erlProject, element,
@@ -234,7 +236,7 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findLocalCall(final IErlModule module,
             final RpcCallSite backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element, final Scope scope)
-            throws BackendException, CoreException {
+            throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }
@@ -248,7 +250,7 @@ public class OpenAction extends SelectionDispatchAction {
         String moduleName = null;
         final IErlImport ei = module.findImport(res.getFunction());
         if (ei != null) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             moduleName = ei.getImportModule();
             res2 = ErlideOpen.getSourceFromModule(backend, model.getPathVars(),
                     moduleName, erlProject.getExternalModulesString());

@@ -34,19 +34,19 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.rpc.RpcException;
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.internal.services.builder.BuilderVisitor;
-import org.erlide.core.internal.services.builder.ErlideBuilder;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.model.erlang.util.PluginUtils;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.services.builder.internal.BuilderVisitor;
+import org.erlide.core.services.builder.internal.ErlideBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -89,7 +89,7 @@ public final class BuilderHelper {
 
     public Collection<IPath> getIncludeDirs(final IProject project,
             final Collection<IPath> includeDirs) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         final Collection<IPath> projectIncludeDirs = erlProject
                 .getIncludeDirs();
@@ -132,12 +132,11 @@ public final class BuilderHelper {
     public void addDependents(final IResource resource,
             final IProject my_project, final Set<BuildResource> result)
             throws ErlModelException {
-        final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
+        final IErlProject eprj = CoreScope.getModel().findProject(my_project);
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
-                m.getScanner();
-                final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+                final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
                     if (samePath(ifile.getFilename(), resource.getName())) {
                         if (m.getModuleKind() == ModuleKind.ERL) {
@@ -148,7 +147,6 @@ public final class BuilderHelper {
                         break;
                     }
                 }
-                m.disposeScanner();
             }
         }
     }
@@ -197,7 +195,7 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
             final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
@@ -249,7 +247,7 @@ public final class BuilderHelper {
         boolean shouldCompile = beam == null;
 
         if (beam != null) {
-            final IErlProject eprj = ErlangCore.getModel().findProject(project);
+            final IErlProject eprj = CoreScope.getModel().findProject(project);
             if (eprj != null) {
                 shouldCompile = shouldCompileModule(project, source, beam,
                         shouldCompile, eprj);
@@ -269,8 +267,7 @@ public final class BuilderHelper {
             throws ErlModelException {
         final IErlModule m = eprj.getModule(source.getName());
         if (m != null) {
-            m.getScanner();
-            final Collection<ErlangIncludeFile> incs = m.getIncludedFiles();
+            final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile ifile : incs) {
                 final IResource rifile = findResourceByName(project,
                         ifile.getFilename());
@@ -281,7 +278,6 @@ public final class BuilderHelper {
                     break;
                 }
             }
-            m.disposeScanner();
         }
         return shouldCompile;
     }
@@ -357,7 +353,7 @@ public final class BuilderHelper {
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         final IPath outputDir = erlProject.getOutputLocation();
         final IResource ebinDir = project.findMember(outputDir);
@@ -435,7 +431,7 @@ public final class BuilderHelper {
                     br.setDerived(true);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IErlProject erlProject = ErlangCore.getModel()
+                    final IErlProject erlProject = CoreScope.getModel()
                             .getErlangProject(project);
                     compileErl(project, bbr, erlProject.getOutputLocation()
                             .toString(), backend, compilerOptions);
@@ -526,7 +522,7 @@ public final class BuilderHelper {
     }
 
     private IPath getBeamForErl(final IResource source) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 source.getProject());
         IPath p = erlProject.getOutputLocation();
         p = p.append(source.getName());
@@ -641,7 +637,7 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null

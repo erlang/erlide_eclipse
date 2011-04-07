@@ -6,11 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
@@ -28,6 +26,7 @@ import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.internal.SourceRange;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -42,8 +41,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public class ModelUtils {
-
-    public static final String EXTERNAL_FILES_PROJECT_NAME = "External_Files";
 
     private static final String DELIMITER = "<>";
 
@@ -63,14 +60,10 @@ public class ModelUtils {
         return null;
     }
 
-    public static boolean isExternalFilesProject(final IProject project) {
-        return project.getName().equals(EXTERNAL_FILES_PROJECT_NAME);
-    }
-
     public static String getExternalModulePath(final IErlModule module) {
         final List<String> result = Lists.newArrayList();
         IErlElement element = module;
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
@@ -101,7 +94,7 @@ public class ModelUtils {
     public static IErlModule getModuleFromExternalModulePath(
             final String modulePath) throws ErlModelException {
         final List<String> path = StringUtils.split(DELIMITER, modulePath);
-        final IErlElement childNamed = ErlangCore.getModel().getChildNamed(
+        final IErlElement childNamed = CoreScope.getModel().getChildNamed(
                 path.get(0));
         ErlLogger.debug(">>childNamed %s", (childNamed == null ? "<null>"
                 : childNamed.getName()));
@@ -139,7 +132,7 @@ public class ModelUtils {
         final List<String> result = Lists.newArrayList();
         final Set<String> names = Sets.newHashSet();
         addModuleNamesWithPrefix(prefix, result, names, project.getModules());
-        for (final IErlProject p : project.getProjectReferences()) {
+        for (final IErlProject p : project.getReferencedProjects()) {
             if (p != null) {
                 p.open(null);
                 addModuleNamesWithPrefix(prefix, result, names, p.getModules());
@@ -200,7 +193,7 @@ public class ModelUtils {
         if (project != null) {
             return project.findModule(moduleName, modulePath, scope);
         }
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         if (scope == Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
         }

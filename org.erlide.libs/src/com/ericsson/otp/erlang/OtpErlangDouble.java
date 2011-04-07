@@ -26,7 +26,6 @@ import java.io.Serializable;
  * {@link OtpErlangFloat} are used to provide representations corresponding to
  * the Java types Double and Float.
  */
-@SuppressWarnings("hiding")
 public class OtpErlangDouble extends OtpErlangObject implements Serializable,
         Cloneable {
     // don't change this!

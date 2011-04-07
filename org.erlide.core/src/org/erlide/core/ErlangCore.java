@@ -10,253 +10,184 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.logging.Level;
 
-import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.ISaveContext;
+import org.eclipse.core.resources.ISaveParticipant;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.core.model.erlang.IErlModel;
-import org.erlide.core.model.erlang.IErlModelManager;
-import org.erlide.core.model.erlang.internal.ErlModelManager;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.debug.ErlangDebugOptionsManager;
+import org.erlide.jinterface.ErlLogger;
+import org.osgi.service.prefs.BackingStoreException;
 
 public final class ErlangCore {
 
-    public static final IErlModelManager getModelManager() {
-        return ErlModelManager.getDefault();
+    private ErlLogger logger;
+    private final ServicesMap services;
+    private final Plugin plugin;
+    private final IWorkspace workspace;
+    private final IExtensionRegistry extensionRegistry;
+
+    public ErlangCore(final Plugin plugin, final ServicesMap services,
+            final IWorkspace workspace,
+            final IExtensionRegistry extensionRegistry) {
+        this.services = services;
+        this.plugin = plugin;
+        this.workspace = workspace;
+        this.extensionRegistry = extensionRegistry;
     }
 
-    public static final IErlModel getModel() {
-        return getModelManager().getErlangModel();
+    public void init() {
+        final String dir = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toPortableString();
+        logger = ErlLogger.getInstance();
+        logger.setLogDir(dir);
+        ErlLogger.debug("Starting CORE " + Thread.currentThread());
     }
 
-    /**
-     * Returns a table of all known configurable options with their default
-     * values. These options allow to configure the behaviour of the underlying
-     * components. The client may safely use the result as a template that they
-     * can modify and then pass to <code>setOptions</code>.
-     * 
-     * Helper constants have been defined on ErlangCore for each of the option
-     * PLUGIN_ID and their possible constant values.
-     * 
-     * Note: more options might be added in further releases.
-     * 
-     * <pre>
-     * RECOGNIZED OPTIONS:
-     * COMPILER / Generating Source Debug Attribute
-     *    When generated, this attribute will enable the debugger to present the
-     *    corresponding source code.
-     *     - option id:         &quot;org.erlide.core.model.erlang.compiler.debug.sourceFile&quot;
-     *     - possible values:   { &quot;generate&quot;, &quot;do not generate&quot; }
-     *     - default:           &quot;generate&quot;
-     * COMPILER / Edoc Comment Support
-     *   When this support is disabled, the compiler will ignore all Edoc problems options settings
-     *   and will not report any Edoc problem. It will also not find any reference in Edoc comment and
-     *   DOM AST Edoc node will be only a flat text instead of having structured tag elements.
-     *     - option id:         &quot;org.erlide.core.model.erlang.compiler.doc.comment.support&quot;
-     *     - possible values:   { &quot;enabled&quot;, &quot;disabled&quot; }
-     *     - default:           &quot;enabled&quot;
-     *                           COMPILER / Reporting Deprecation
-     *                              When enabled, the compiler will signal use of deprecated API either as an
-     *                              error or a warning.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.deprecation&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;warning&quot;
-     *                           COMPILER / Reporting Unused Local
-     *                              When enabled, the compiler will issue an error or a warning for unused local
-     *                              variables (that is, variables never read from)
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.unusedLocal&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     *                           COMPILER / Reporting Unused Parameter
-     *                              When enabled, the compiler will issue an error or a warning for unused method
-     *                              parameters (that is, parameters never read from)
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.unusedParameter&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     *                           COMPILER / Reporting Unused Private Functions
-     *                              When enabled, the compiler will issue an error or a warning whenever a private
-     *                              method or field is declared but never used within the same unit.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.unusedPrivateFunctions&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     *                           COMPILER / Reporting Local Variable Declaration Hiding another Variable
-     *                              When enabled, the compiler will issue an error or a warning whenever a local variable
-     *                              declaration is hiding some field or local variable (either locally, inherited or defined in enclosing type).
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.localVariableHiding&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     *                           COMPILER / Reporting Invalid Edoc Comment
-     *                              This is the generic control for the severity of Edoc problems.
-     *                              When enabled, the compiler will issue an error or a warning for a problem in Edoc.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.invalidEdoc&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     *                           COMPILER / Reporting Invalid Edoc Tags
-     *                              When enabled, the compiler will signal unbound or unexpected reference tags in Edoc.
-     *                              A 'throws' tag referencing an undeclared exception would be considered as unexpected.
-     * &lt;br&gt;
-     *                              Note that this diagnosis can be enabled based on the visibility of the construct associated with the Edoc;
-     *                              also see the setting &quot;org.erlide.core.model.erlang.compiler.problem.invalidEdocTagsVisibility&quot;.
-     * &lt;br&gt;
-     *                              The severity of the problem is controlled with option &quot;org.erlide.core.model.erlang.compiler.problem.invalidEdoc&quot;.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.invalidEdocTags&quot;
-     *                               - possible values:   { &quot;disabled&quot;, &quot;enabled&quot; }
-     *                               - default:           &quot;enabled&quot;
-     *                           COMPILER / Reporting Missing Edoc Tags
-     *                              This is the generic control for the severity of Edoc missing tag problems.
-     *                              When enabled, the compiler will issue an error or a warning when tags are missing in Edoc comments.
-     * &lt;br&gt;
-     *                              Note that this diagnosis can be enabled based on the visibility of the construct associated with the Edoc;
-     *                              also see the setting &quot;org.erlide.core.model.erlang.compiler.problem.missingEdocTagsVisibility&quot;.
-     * &lt;br&gt;
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.missingEdocTags&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     * COMPILER / Reporting Missing Edoc Comments
-     *   This is the generic control for the severity of missing Edoc comment problems.
-     *   When enabled, the compiler will issue an error or a warning when Edoc comments are missing.
-     * &lt;br&gt;
-     *   Note that this diagnosis can be enabled based on the visibility of the construct associated with the expected Edoc;
-     *   also see the setting &quot;org.erlide.core.model.erlang.compiler.problem.missingEdocCommentsVisibility&quot;.
-     * &lt;br&gt;
-     *     - option id:         &quot;org.erlide.core.model.erlang.compiler.problem.missingEdocComments&quot;
-     *     - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *     - default:           &quot;ignore&quot;
-     *                           COMPILER / Setting Compliance Level
-     *                              Select the compliance level for the compiler. In &quot;R9&quot; mode, source and target settings
-     *                              should not go beyond &quot;R9&quot; level.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.compliance&quot;
-     *                               - possible values:   { &quot;R9&quot;, &quot;R10&quot; }
-     *                               - default:           &quot;R10&quot;
-     *                           COMPILER / Maximum number of problems reported per compilation unit
-     *                              Specify the maximum number of problems reported on each compilation unit.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.maxProblemPerUnit&quot;
-     *                               - possible values:    &quot;&lt;n&gt;&quot; where &lt;n&gt; is zero or a positive integer (if zero then all problems are reported).
-     *                               - default:           &quot;100&quot;
-     *                           COMPILER / Define the Automatic Task Tags
-     *                              When the tag list is not empty, the compiler will issue a task marker whenever it encounters
-     *                              one of the corresponding tag inside any comment in Erlang source code.
-     *                              Generated task messages will include the tag, and range until the next line separator or comment ending.
-     *                              Note that tasks messages are trimmed. If a tag is starting with a letter or digit, then it cannot be leaded by
-     *                              another letter or digit to be recognized (&quot;fooToDo&quot; will not be recognized as a task for tag &quot;ToDo&quot;, but &quot;foo#ToDo&quot;
-     *                              will be detected for either tag &quot;ToDo&quot; or &quot;#ToDo&quot;). Respectively, a tag ending with a letter or digit cannot be followed
-     *                              by a letter or digit to be recognized (&quot;ToDofoo&quot; will not be recognized as a task for tag &quot;ToDo&quot;, but &quot;ToDo:foo&quot; will
-     *                              be detected either for tag &quot;ToDo&quot; or &quot;ToDo:&quot;).
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.taskTags&quot;
-     *                               - possible values:   { &quot;&lt;tag&gt;[,&lt;tag&gt;]*&quot; } where &lt;tag&gt; is a String without any wild-card or leading/trailing spaces
-     *                               - default:           &quot;TODO,FIXME,XXX&quot;
-     *                           COMPILER / Define the Automatic Task Priorities
-     *                              In parallel with the Automatic Task Tags, this list defines the priorities (high, normal or low)
-     *                              of the task markers issued by the compiler.
-     *                              If the default is specified, the priority of each task marker is &quot;NORMAL&quot;.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.taskPriorities&quot;
-     *                               - possible values:   { &quot;&lt;priority&gt;[,&lt;priority&gt;]*&quot; } where &lt;priority&gt; is one of &quot;HIGH&quot;, &quot;NORMAL&quot; or &quot;LOW&quot;
-     *                               - default:           &quot;NORMAL,HIGH,NORMAL&quot;
-     *                           COMPILER / Determine whether task tags are case-sensitive
-     *                              When enabled, task tags are considered in a case-sensitive way.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.compiler.taskCaseSensitive&quot;
-     *                               - possible values:   { &quot;enabled&quot;, &quot;disabled&quot; }
-     *                               - default:           &quot;enabled&quot;
-     *                           BUILDER / Abort if Invalid Classpath
-     *                              Allow to toggle the builder to abort if the classpath is invalid
-     *                               - option id:         &quot;org.erlide.core.model.erlang.builder.invalidClasspath&quot;
-     *                               - possible values:   { &quot;abort&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;abort&quot;
-     *                           BUILDER / Cleaning Output Folder(s)
-     *                              Indicate whether the ErlangBuilder is allowed to clean the output folders
-     *                              when performing full build operations.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.builder.cleanOutputFolder&quot;
-     *                               - possible values:   { &quot;clean&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;clean&quot;
-     *                           BUILDER / Reporting Duplicate Resources
-     *                              Indicate the severity of the problem reported when more than one occurrence
-     *                              of a resource is to be copied into the output location.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.builder.duplicateResourceTask&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot; }
-     *                               - default:           &quot;warning&quot;
-     *                           ErlangCORE / Computing Project Build Order
-     *                              Indicate whether ErlangCore should enforce the project build order to be based on
-     *                              the classpath prerequisite chain. When requesting to compute, this takes over
-     *                              the platform default order (based on project references).
-     *                               - option id:         &quot;org.erlide.core.model.erlang.computeErlangBuildOrder&quot;
-     *                               - possible values:   { &quot;compute&quot;, &quot;ignore&quot; }
-     *                               - default:           &quot;ignore&quot;
-     *                           ErlangCORE / Reporting Incomplete Classpath
-     *                              Indicate the severity of the problem reported when an entry on the classpath does not exist,
-     *                              is not legite or is not visible (for example, a referenced project is closed).
-     *                               - option id:         &quot;org.erlide.core.model.erlang.incompleteClasspath&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot;}
-     *                               - default:           &quot;error&quot;
-     *                           ErlangCORE / Reporting Classpath Cycle
-     *                              Indicate the severity of the problem reported when a project is involved in a cycle.
-     *                               - option id:         &quot;org.erlide.core.model.erlang.circularClasspath&quot;
-     *                               - possible values:   { &quot;error&quot;, &quot;warning&quot; }
-     *                               - default:           &quot;error&quot;
-     * ErlangCORE / Reporting Incompatible ERTS Level for Required Binaries
-     *   Indicate the severity of the problem reported when a project prerequisites another project
-     *   or library with an incompatible target ERTS level (e.g. project targeting R7 vm, but compiled against R10 libraries).
-     *     - option id:         &quot;org.erlide.core.model.erlang.incompatibleJDKLevel&quot;
-     *     - possible values:   { &quot;error&quot;, &quot;warning&quot;, &quot;ignore&quot; }
-     *     - default:           &quot;ignore&quot;
-     * </pre>
-     * 
-     * @return a mutable table containing the default settings of all known
-     *         options (key type: <code>String</code>; value type:
-     *         <code>String</code>)
-     * @see #setOptions(Hashtable)
-     */
-    public static Hashtable<String, String> getDefaultOptions() {
+    public void stop() {
+        ResourcesPlugin.getWorkspace().removeSaveParticipant(plugin);
+        CoreScope.getModel().shutdown();
+        ErlangDebugOptionsManager.getDefault().shutdown();
+        logger.dispose();
+    }
 
-        final Hashtable<String, String> defaultOptions = new Hashtable<String, String>(
-                10);
-
-        // see #initializeDefaultPluginPreferences() for changing default
-        // settings
-        final IEclipsePreferences preferences = new DefaultScope()
-                .getNode(ErlangPlugin.PLUGIN_ID);
-        final HashSet<String> optionNames = getModelManager().getOptionNames();
-
-        // initialize preferences to their default
-        final Iterator<String> iterator = optionNames.iterator();
-        while (iterator.hasNext()) {
-            final String propertyName = iterator.next();
-            defaultOptions.put(propertyName, preferences.get(propertyName, ""));
+    public void log(final IStatus status) {
+        final Level lvl = getLevelFromStatus(status);
+        logger.log(lvl, status.getMessage());
+        final Throwable exception = status.getException();
+        if (exception != null) {
+            logger.log(lvl, exception);
         }
-        // get encoding through resource plugin
-        defaultOptions.put(ErlangCoreOptions.CORE_ENCODING.getValue(),
-                getEncoding());
-
-        return defaultOptions;
+        getPlugin().getLog().log(status);
     }
 
-    /**
-     * Returns the workspace root default charset encoding.
-     * 
-     * @return the name of the default charset encoding for workspace root.
-     * @see IContainer#getDefaultCharset()
-     * @see ResourcesPlugin#getEncoding()
-     */
-    public static String getEncoding() {
-        // Verify that workspace is not shutting down (see bug
-        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=60687)
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        if (workspace != null) {
-            try {
-                return workspace.getRoot().getDefaultCharset();
-            } catch (final CoreException e) {
-                // fails silently and return plugin global encoding if core
-                // exception occurs
-            }
+    private Plugin getPlugin() {
+        return plugin;
+    }
+
+    private Level getLevelFromStatus(final IStatus status) {
+        Level lvl;
+        switch (status.getSeverity()) {
+        case IStatus.ERROR:
+            lvl = Level.SEVERE;
+            break;
+        case IStatus.WARNING:
+            lvl = Level.WARNING;
+            break;
+        case IStatus.INFO:
+            lvl = Level.INFO;
+            break;
+        default:
+            lvl = Level.FINEST;
         }
-        return ResourcesPlugin.getEncoding();
+        return lvl;
+    }
+
+    public void logErrorMessage(final String message) {
+        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
+                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
+    }
+
+    public void logErrorStatus(final String message, final IStatus status) {
+        if (status == null) {
+            logErrorMessage(message);
+            return;
+        }
+        final MultiStatus multi = new MultiStatus(plugin.getBundle()
+                .getSymbolicName(), ErlangStatus.INTERNAL_ERROR.getValue(),
+                message, null);
+        multi.add(status);
+        log(multi);
+    }
+
+    public void log(final Throwable e) {
+        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
+                ErlangStatus.INTERNAL_ERROR.getValue(),
+                "Erlide internal error", e));
+    }
+
+    public void log(final String msg, final Throwable thr) {
+        final String id = plugin.getBundle().getSymbolicName();
+        final Status status = new Status(IStatus.ERROR, id, IStatus.OK, msg,
+                thr);
+        plugin.getLog().log(status);
+    }
+
+    public void debug(final String message) {
+        if (plugin.isDebugging()) {
+            ErlLogger.debug(message);
+        }
+    }
+
+    public void start(final String version) throws CoreException {
+        String dev = "";
+        if (CommonUtils.isDeveloper()) {
+            dev = " erlide developer version ***";
+        }
+        if (CommonUtils.isTest()) {
+            dev += " test ***";
+        }
+        ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+
+        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
+        runtimeInfoInitializer.initializeRuntimesList();
+
+        BackendCore.getBackendManager().loadCodepathExtensions();
+
+        ResourcesPlugin.getWorkspace().addSaveParticipant(plugin,
+                new ISaveParticipant() {
+                    public void doneSaving(final ISaveContext context1) {
+                    }
+
+                    public void prepareToSave(final ISaveContext context1)
+                            throws CoreException {
+                    }
+
+                    public void rollback(final ISaveContext context1) {
+                    }
+
+                    public void saving(final ISaveContext context1)
+                            throws CoreException {
+                        try {
+                            new InstanceScope().getNode(
+                                    plugin.getBundle().getSymbolicName())
+                                    .flush();
+                        } catch (final BackingStoreException e) {
+                            // ignore
+                        }
+                    }
+                });
+        ErlangDebugOptionsManager.getDefault().start();
+        ErlLogger.debug("Started CORE");
+    }
+
+    public IWorkspace getWorkspace() {
+        return workspace;
+    }
+
+    public IExtensionRegistry getExtensionRegistry() {
+        return extensionRegistry;
+    }
+
+    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "messageReporter");
     }
 
     /**
@@ -343,6 +274,4 @@ public final class ErlangCore {
         }
     }
 
-    private ErlangCore() {
-    }
 }

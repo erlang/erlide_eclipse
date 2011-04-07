@@ -11,19 +11,19 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class OpenResult {
 
-    private boolean isExternalCall = false;
+    private boolean externalCall = false;
     private String name;
     private String fun;
     private int arity;
     private String path;
     // TODO rewrite this to use SearchFor
-    private boolean isRecord = false;
-    private boolean isMacro = false;
-    private boolean isLocalCall = false;
-    private boolean isInclude = false;
-    private boolean isVariable = false;
-    private boolean isDefine = false;
-    private boolean isField = false;
+    private boolean record = false;
+    private boolean macro = false;
+    private boolean localCall = false;
+    private boolean include = false;
+    private boolean variable = false;
+    private boolean define = false;
+    private boolean field = false;
 
     public OpenResult(final OtpErlangObject res) {
         if (!(res instanceof OtpErlangTuple)) {
@@ -36,7 +36,7 @@ public class OpenResult {
             if (kind.equals("external")) {
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple
                         .elementAt(1);
-                isExternalCall = true;
+                externalCall = true;
                 name = element.atomValue();
                 fun = ((OtpErlangAtom) openTuple.elementAt(2)).atomValue();
                 arity = ((OtpErlangLong) openTuple.elementAt(3)).intValue();
@@ -47,12 +47,12 @@ public class OpenResult {
                             .stringValue();
                 }
             } else if (kind.equals("include")) {
-                isInclude = true;
+                include = true;
                 final OtpErlangString s = (OtpErlangString) openTuple
                         .elementAt(1);
                 name = s.stringValue();
             } else if (kind.equals("local")) { // local call
-                isLocalCall = true;
+                localCall = true;
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple
                         .elementAt(1);
                 fun = element.atomValue();
@@ -61,17 +61,17 @@ public class OpenResult {
                 // final OtpErlangTuple mf = (OtpErlangTuple) tres.elementAt(1);
                 // final OtpErlangAtom var = (OtpErlangAtom) mf.elementAt(0);
             } else if (kind.startsWith("record") || kind.startsWith("macro")) {
-                isMacro = kind.startsWith("macro");
-                isRecord = kind.startsWith("record");
-                isDefine = kind.endsWith("_def");
+                macro = kind.startsWith("macro");
+                record = kind.startsWith("record");
+                define = kind.endsWith("_def");
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple
                         .elementAt(1);
                 name = element.toString();
-                if (isMacro) {
+                if (macro) {
                     name = removeQuestionMark(name);
                 }
             } else if (kind.equals("variable")) {
-                isVariable = true;
+                variable = true;
                 final OtpErlangObject o = openTuple.elementAt(1);
                 if (o instanceof OtpErlangTuple) {
                     final OtpErlangTuple t = (OtpErlangTuple) o;
@@ -82,7 +82,7 @@ public class OpenResult {
                     name = a.atomValue();
                 }
             } else if (kind.equals("field")) {
-                isField = true;
+                field = true;
                 final OtpErlangAtom recordNameA = (OtpErlangAtom) openTuple
                         .elementAt(1);
                 fun = recordNameA.atomValue();
@@ -104,7 +104,7 @@ public class OpenResult {
     }
 
     public boolean isExternalCall() {
-        return isExternalCall;
+        return externalCall;
     }
 
     public String getName() {
@@ -128,27 +128,27 @@ public class OpenResult {
     }
 
     public boolean isRecord() {
-        return isRecord;
+        return record;
     }
 
     public boolean isMacro() {
-        return isMacro;
+        return macro;
     }
 
     public boolean isLocalCall() {
-        return isLocalCall;
+        return localCall;
     }
 
     public boolean isInclude() {
-        return isInclude;
+        return include;
     }
 
     public boolean isVariable() {
-        return isVariable;
+        return variable;
     }
 
     public boolean isDefine() {
-        return isDefine;
+        return define;
     }
 
     /*
@@ -159,30 +159,30 @@ public class OpenResult {
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder("OpenResult {");
-        if (isRecord) {
+        if (record) {
             b.append("record");
-            if (isDefine) {
+            if (define) {
                 b.append("_def");
             }
             b.append(' ').append(name);
-        } else if (isMacro) {
+        } else if (macro) {
             b.append("macro");
-            if (isDefine) {
+            if (define) {
                 b.append("_def");
             }
             b.append(' ').append(name);
-        } else if (isInclude) {
+        } else if (include) {
             b.append("include \"").append(name).append('"');
-        } else if (isRecord) {
+        } else if (record) {
             b.append("record ").append(name);
-        } else if (isExternalCall) {
+        } else if (externalCall) {
             b.append("external ");
             b.append(name).append(':').append(fun).append('/').append(arity);
-        } else if (isLocalCall) {
+        } else if (localCall) {
             b.append("local ").append(fun).append('/').append(arity);
-        } else if (isVariable) {
+        } else if (variable) {
             b.append("variable ").append(name);
-        } else if (isField) {
+        } else if (field) {
             b.append("record_field ").append(name).append('.').append(fun);
         }
         if (path != null && path.length() > 0) {
@@ -193,6 +193,6 @@ public class OpenResult {
     }
 
     public boolean isField() {
-        return isField;
+        return field;
     }
 }

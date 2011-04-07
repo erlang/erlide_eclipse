@@ -37,4 +37,7 @@ public interface IErlFolder extends IParent, IErlElement, IOpenable {
 
     IErlModule findModule(String moduleName, String modulePath)
             throws ErlModelException;
+
+    IErlModule findInclude(String includeName, String includePath)
+            throws ErlModelException;
 }

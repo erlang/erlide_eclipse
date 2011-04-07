@@ -156,8 +156,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 
     @Override
     public boolean isLabelProperty(final Object element, final String property) {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     public IEditorInput getEditorInput(final Object element) {

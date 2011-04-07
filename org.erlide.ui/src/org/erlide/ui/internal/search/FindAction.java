@@ -29,16 +29,16 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
@@ -227,7 +227,7 @@ public abstract class FindAction extends SelectionDispatchAction {
         final int offset = textSel.getOffset();
         try {
             final OpenResult res = ErlideOpen.open(b, module, offset,
-                    ModelUtils.getImportsAsList(module), "", ErlangCore
+                    ModelUtils.getImportsAsList(module), "", CoreScope
                             .getModel().getPathVars());
             ErlLogger.debug("find " + res);
             final ErlangSearchPattern ref = SearchUtil
@@ -236,7 +236,7 @@ public abstract class FindAction extends SelectionDispatchAction {
             if (ref != null) {
                 performNewSearch(ref, scope, externalScope);
             }
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             final String title = "SearchMessages.Search_Error_search_title";
             final String message = "SearchMessages.Search_Error_codeResolve";
             ExceptionHandler.handle(e, getShell(), title, message);

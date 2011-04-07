@@ -3,8 +3,8 @@ package org.erlide.core.bdd;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 import org.jbehave.core.annotations.Given;
@@ -27,7 +27,7 @@ public class RpcSteps {
 
     @When("a rpc is done with args $m:$f($a)")
     public void aRpcIsDoneWith(final String m, final String f, final String a)
-            throws BackendException, TermParserException {
+            throws RpcException, TermParserException {
         System.out.println("WHEN " + m + ":" + f + " " + a);
         final OtpErlangObject args = termParser.parse(a);
         final String sig = "x";

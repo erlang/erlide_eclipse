@@ -53,7 +53,6 @@ public class OtpErlangFloat extends OtpErlangDouble implements Serializable,
             throws OtpErlangDecodeException, OtpErlangRangeException {
         super(buf);
 
-        @SuppressWarnings("unused")
         final float f = floatValue();
     }
 }

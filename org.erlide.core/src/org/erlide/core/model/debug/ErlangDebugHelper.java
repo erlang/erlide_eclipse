@@ -5,11 +5,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangDebugHelper {
@@ -43,7 +43,7 @@ public class ErlangDebugHelper {
 
     protected IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         final IFolder r = project.getFolder(erlProject.getOutputLocation());
         try {

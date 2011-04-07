@@ -43,7 +43,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.debug.ErlangDebugTarget;
 import org.erlide.core.model.debug.ErlangDebugTarget.TraceChangedEventData;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -420,10 +420,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // PlatformUI.getWorkbench().getWorkingSetManager()
         // .addPropertyChangeListener(getWorkingSetListener());
         return viewer;
-
         // registerContextMenu();
         // initDragAndDrop();
-
     }
 
     // @Override
@@ -536,13 +534,9 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // }
     //
     // public void mouseDown(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // public void mouseUp(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // });
@@ -566,7 +560,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         }
 
         IEditorPart part = null;
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         IErlModule module;
         try {
             module = model.findModule(moduleName);

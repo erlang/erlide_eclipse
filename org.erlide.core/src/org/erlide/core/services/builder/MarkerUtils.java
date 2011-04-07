@@ -19,13 +19,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.debug.ErlangLineBreakpoint;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -34,6 +31,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
@@ -120,12 +118,10 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlModel model = ErlangCore.getModel();
+                    final IErlModel model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
-                    ErlLogger
-                            .debug("inc::" + fileName + " "
-                                    + resource.getName() + " " + erlProject == null ? "null"
-                                    : erlProject.getName());
+                    ErlLogger.debug("inc::" + fileName + " "
+                            + resource.getName() + " " + erlProject.getName());
                     ErlLogger.debug("    " + entry.getValue());
 
                     final IErlModule includeFile = erlProject != null ? erlProject
@@ -416,20 +412,6 @@ public final class MarkerUtils {
         return marker;
     }
 
-    public static IMarker createErlangLineBreakpointMarker(
-            final IResource resource, final int lineNumber,
-            final String modelIdentifier) throws CoreException {
-        final IMarker marker = resource
-                .createMarker(ErlangLineBreakpoint.ERLANG_LINE_BREAKPOINT_MARKER_TYPE);
-        marker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
-        marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
-        marker.setAttribute(IBreakpoint.ID, modelIdentifier);
-        marker.setAttribute(IMarker.MESSAGE,
-                "Line Breakpoint: " + resource.getName() + " [line: "
-                        + lineNumber + "]");
-        return marker;
-    }
-
     public static void addDialyzerWarningMarker(final IResource file,
             final String path, final String message, int lineNumber,
             final int severity) {
@@ -472,7 +454,7 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        final IErlProject p = ErlangCore.getModel().findProject(project);
+        final IErlProject p = CoreScope.getModel().findProject(project);
         if (p != null) {
             try {
                 // getMarkersFor(resource, p);
@@ -490,7 +472,7 @@ public final class MarkerUtils {
         if (m == null) {
             return;
         }
-        m.getScanner();
+        // m.getScanner(); FIXME why did we need this?
         final Collection<IErlComment> cl = m.getComments();
         for (final IErlComment c : cl) {
             final String text = c.getName();
@@ -499,7 +481,7 @@ public final class MarkerUtils {
             mkMarker(resource, line, text, XXX, IMarker.PRIORITY_NORMAL);
             mkMarker(resource, line, text, FIXME, IMarker.PRIORITY_HIGH);
         }
-        m.disposeScanner();
+        // m.disposeScanner(); FIXME why did we need this?
     }
 
     private static void getNoScanMarkersFor(final IResource resource,

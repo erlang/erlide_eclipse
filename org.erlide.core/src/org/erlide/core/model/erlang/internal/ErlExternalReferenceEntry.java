@@ -6,11 +6,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlExternal;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.util.CoreUtil;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 
 import com.google.common.collect.Lists;
@@ -41,7 +42,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             // already done
             return true;
         }
-        final RpcCallSite backend = getBackend();
+        final RpcCallSite backend = CoreUtil.getBuildOrIdeBackend(getProject()
+                .getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlideOpen.getLibFiles(backend, entry);
             final List<IErlModule> children = Lists
@@ -54,15 +56,6 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             return true;
         }
         return false;
-    }
-
-    public RpcCallSite getBackend() {
-        final IParent parent = getParent();
-        if (parent instanceof IErlExternal) {
-            final IErlExternal external = (IErlExternal) parent;
-            return external.getBackend();
-        }
-        return null;
     }
 
     private String getName(final String file) {
@@ -90,6 +83,11 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
     }
 
     public boolean isOTP() {
+        final IParent parent = getParent();
+        if (parent instanceof IErlExternal) {
+            final IErlExternal external = (IErlExternal) parent;
+            return external.isOTP();
+        }
         return false;
     }
 

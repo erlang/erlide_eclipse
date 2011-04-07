@@ -29,13 +29,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
@@ -53,6 +51,8 @@ import com.google.common.collect.Sets;
 
 public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
+    private static final String CONSOLE_VIEW_ID = "org.eclipse.ui.console.ConsoleView";
+
     public void launch(final ISelection selection, final String mode) {
         ErlLogger.debug("** Launch:: " + selection.toString());
         if (selection.isEmpty()) {
@@ -67,7 +67,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             if (!(element instanceof IResource)) {
                 return;
             }
-            final IErlElement erlElement = ErlangCore.getModel().findElement(
+            final IErlElement erlElement = CoreScope.getModel().findElement(
                     (IResource) element);
             final IErlProject project = erlElement.getProject();
             if (project != null) {
@@ -98,7 +98,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final Set<IErlProject> depProjects = Sets.newHashSet();
         for (final IErlProject project : projects) {
             try {
-                depProjects.addAll(project.getProjectReferences());
+                depProjects.addAll(project.getReferencedProjects());
             } catch (final ErlModelException e) {
             }
         }
@@ -141,18 +141,9 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     }
 
     private void bringConsoleViewToFront() throws PartInitException {
-        final IWorkbenchWindow[] windows = PlatformUI.getWorkbench()
-                .getWorkbenchWindows();
-        for (final IWorkbenchWindow window : windows) {
-            final IWorkbenchPage[] pages = window.getPages();
-            for (final IWorkbenchPage page : pages) {
-                final IViewPart view = page
-                        .findView("org.eclipse.ui.console.ConsoleView");
-                if (view != null) {
-                    page.showView("org.eclipse.ui.console.ConsoleView");
-                }
-            }
-        }
+        final IWorkbenchPage activePage = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage();
+        activePage.showView(CONSOLE_VIEW_ID);
     }
 
     private ILaunchConfiguration getLaunchConfiguration(

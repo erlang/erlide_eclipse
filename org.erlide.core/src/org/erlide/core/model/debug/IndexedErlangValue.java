@@ -16,7 +16,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
@@ -136,7 +136,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final Collection<IProject> projects) {
         final List<IErlProject> result = Lists
                 .newArrayListWithCapacity(projects.size());
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         for (final IProject project : projects) {
             final IErlElement element = model.getChildWithResource(project);
             if (element instanceof IErlProject) {
@@ -244,9 +244,6 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         if (b.size() > 0) {
             final byte[] bytes = b.binaryValue();
             CharBuffer cb = null;
-            // FIXME: why are the character decoders so forgiving? I'd like
-            // to test for UTF-16 too, but the decoders never throws on
-            // anything...
             if (looksLikeAscii(bytes)) {
                 final String[] css = { "UTF-8", "ISO-8859-1" };
                 final String[] tryCharsets = css;

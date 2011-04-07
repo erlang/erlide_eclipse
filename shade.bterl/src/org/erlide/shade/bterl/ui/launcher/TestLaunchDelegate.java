@@ -31,7 +31,6 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.backend.launching.ErlangLaunchDelegate;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.jinterface.ErlLogger;
@@ -49,6 +48,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -76,9 +76,9 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     private IProject project;
 
     @Override
-    public void launch(final ILaunchConfiguration cfg, final String amode,
-            final ILaunch launch, final IProgressMonitor monitor)
-            throws CoreException {
+    protected boolean preLaunch(final ILaunchConfiguration cfg,
+            final String amode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
 
         projectName = cfg.getAttribute(TestLaunchAttributes.PROJECT, "");
         project = ResourcesPlugin.getWorkspace().getRoot()
@@ -92,14 +92,15 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         workdir = new File(wdir);
         if ("regression".equals(mode)) {
             RegressionLauncher.getInstance().launch(wdir, monitor);
-        } else {
-            doLaunch(cfg, launch, monitor);
+            return false;
         }
+        return true;
     }
 
-    private void doLaunch(final ILaunchConfiguration config,
-            final ILaunch launch, final IProgressMonitor monitor)
-            throws CoreException {
+    @Override
+    protected Backend doLaunch(final ILaunchConfiguration config,
+            final String amode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
 
         System.out.println("---@> launch " + workdir.getAbsolutePath() + " -> "
                 + suite + ":" + testcase + " (" + mode + ")");
@@ -107,34 +108,30 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             ErlLogger.warn(
                     "Attempting to start bterl tests in missing directory %s",
                     workdir.getAbsolutePath());
-            return;
+            return null;
         }
         if ("regression".equals(mode)) {
             // regression is handled elsewhere
-            return;
+            return null;
         }
         runMakeLinks(monitor);
 
         final ILaunchConfiguration cfg = setupConfiguration(config,
                 projectName, workdir);
 
-        final String amode = ILaunchManager.DEBUG_MODE.equals(mode) ? ILaunchManager.DEBUG_MODE
+        final String theMode = ILaunchManager.DEBUG_MODE.equals(amode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
 
-        super.doLaunch(cfg, amode, launch);
+        return super.doLaunch(cfg, amode, launch, monitor);
+    }
 
-        final Backend backend = BackendCore.getBackendManager()
-                .getBackendForLaunch(launch);
-        if (backend == null) {
-            ErlLogger.warn("Could not start backend for launch %s", launch
-                    .getLaunchConfiguration().getName());
-            return;
-        }
+    @Override
+    protected void postLaunch(final String amode, final Backend backend,
+            final IProgressMonitor monitor) {
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
         }
         startMonitorJob(monitor, backend);
-
         monitor.worked(1);
     }
 

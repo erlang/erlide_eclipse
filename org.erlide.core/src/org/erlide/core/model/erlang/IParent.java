@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
@@ -53,11 +54,14 @@ public interface IParent {
 
     boolean hasChildrenOfKind(Kind kind);
 
-    void addChild(IErlElement child);
-
-    void removeChild(IErlElement e);
-
     IErlElement getChildNamed(String s);
 
     IErlElement getChildWithResource(IResource rsrc);
+
+    void addChild(IErlElement child);
+
+    public void setChildren(final Collection<? extends IErlElement> children);
+
+    void removeChild(IErlElement e);
+
 }

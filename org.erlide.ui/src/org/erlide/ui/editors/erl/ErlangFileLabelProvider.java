@@ -54,7 +54,11 @@ public class ErlangFileLabelProvider extends LabelProvider implements
     @Override
     public void addListener(final ILabelProviderListener listener) {
         // TODO Auto-generated method stub
+    }
 
+    @Override
+    public void removeListener(final ILabelProviderListener listener) {
+        // TODO Auto-generated method stub
     }
 
     @Override
@@ -63,14 +67,7 @@ public class ErlangFileLabelProvider extends LabelProvider implements
 
     @Override
     public boolean isLabelProperty(final Object element, final String property) {
-        // TODO Auto-generated method stub
         return true;
-    }
-
-    @Override
-    public void removeListener(final ILabelProviderListener listener) {
-        // TODO Auto-generated method stub
-
     }
 
 }

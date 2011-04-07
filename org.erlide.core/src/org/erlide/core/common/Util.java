@@ -28,6 +28,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
+import org.erlide.jinterface.Assert;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -428,37 +429,6 @@ public final class Util {
      */
     public static boolean equalArraysOrNullSortFirst(Comparable[] a,
             Comparable[] b) {
-        if (a == b) {
-            return true;
-        }
-        if (a == null || b == null) {
-            return false;
-        }
-        final int len = a.length;
-        if (len != b.length) {
-            return false;
-        }
-        if (len >= 2) { // only need to sort if more than two items
-            a = sortCopy(a);
-            b = sortCopy(b);
-        }
-        for (int i = 0; i < len; ++i) {
-            if (!a[i].equals(b[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Compares two String arrays using equals() on the elements. The arrays are
-     * first sorted. Either or both arrays may be null. Returns true if both are
-     * null. Returns false if only one is null. If both are arrays, returns true
-     * iff they have the same length and iff, after sorting both arrays, all
-     * elements compare true with equals. The original arrays are left
-     * untouched.
-     */
-    public static boolean equalArraysOrNullSortFirst(String[] a, String[] b) {
         if (a == b) {
             return true;
         }

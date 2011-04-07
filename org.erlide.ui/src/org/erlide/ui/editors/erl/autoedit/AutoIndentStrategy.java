@@ -21,10 +21,10 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.core.services.text.IndentResult;
 import org.erlide.jinterface.ErlLogger;
@@ -135,9 +135,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
      *            the command
      */
 
-    // FIXME flytta en del av denna logik till erlang!! (t.ex. s� vill man
-    // inte
-    // vara "elektrisk" i kommentarer)
+    // FIXME flytta en del av denna logik till erlang!! (t.ex. vill man
+    // inte vara "elektrisk" i kommentarer)
     public void customizeDocumentCommand(final IDocument d,
             final DocumentCommand c) {
         if (c.length == 0 && c.text != null) {

@@ -36,30 +36,21 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.backend.internal.CodeManager;
+import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.rpc.RpcException;
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.backend.rpc.RpcHelper;
-import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.internal.backend.BackendUtil;
-import org.erlide.core.internal.backend.CodeManager;
-import org.erlide.core.internal.backend.ErlRuntime;
-import org.erlide.core.internal.backend.InitialCall;
-import org.erlide.core.internal.backend.RpcResultImpl;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;
 import org.erlide.core.model.debug.ErlangDebugTarget;
@@ -68,6 +59,13 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcCallback;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.RpcHelper;
+import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -87,7 +85,8 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
-public class Backend implements RpcCallSite, IDisposable, IStreamListener {
+public abstract class Backend implements RpcCallSite, IDisposable,
+        IStreamListener {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
@@ -98,15 +97,14 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
 
     private final RuntimeInfo info;
     private final ErlRuntime runtime;
-    private String currentVersion;
+    private String erlangVersion;
     private OtpMbox eventBox;
     private boolean stopped = false;
     private EventDaemon eventDaemon;
     private BackendShellManager shellManager;
     private final CodeManager codeManager;
-    private ILaunch launch;
+    protected ILaunch launch;
     private final BackendData data;
-    private boolean disposable;
     private ErlangDebugTarget debugTarget;
 
     public Backend(final BackendData data) throws BackendException {
@@ -119,13 +117,12 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
                 + BackendUtil.getHost(), info.getCookie());
         this.data = data;
         codeManager = new CodeManager(this);
-        disposable = false;
 
         launch = data.getLaunch();
-        if (launch != null) {
-            disposable = true;
-            setLaunch(launch);
-        }
+    }
+
+    public RpcCallSite getCallSite() {
+        return this;
     }
 
     public RpcResult call_noexception(final String m, final String f,
@@ -147,60 +144,51 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public RpcFuture async_call(final String m, final String f,
-            final String signature, final Object... args)
-            throws BackendException {
+            final String signature, final Object... args) throws RpcException {
         try {
             return runtime.makeAsyncCall(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void async_call_cb(final RpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
-            throws BackendException {
+            throws RpcException {
         try {
             runtime.makeAsyncCbCall(cb, m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void cast(final String m, final String f, final String signature,
-            final Object... args) throws BackendException {
+            final Object... args) throws RpcException {
         try {
             runtime.makeCast(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
-            throws BackendException {
+            throws RpcException {
         return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         try {
             return runtime.makeCall(timeout, gleader, m, f, signature, a);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -256,18 +244,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public void dispose() {
-        // TODO review!
-        if (disposable) {
-
-            try {
-                if (launch != null) {
-                    launch.terminate();
-                }
-            } catch (final DebugException e) {
-                e.printStackTrace();
-            }
-        }
-        // FIXME need to stop process too, via ErtsProcess
+        // runtime.stop();
 
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {
@@ -282,14 +259,14 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         }
     }
 
-    public String getCurrentVersion() {
-        if (currentVersion == null) {
+    public String getErlangVersion() {
+        if (erlangVersion == null) {
             try {
-                currentVersion = getScriptId();
+                erlangVersion = getScriptId();
             } catch (final Exception e) {
             }
         }
-        return currentVersion;
+        return erlangVersion;
     }
 
     private OtpMbox getEventBox() {
@@ -309,23 +286,21 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public String getName() {
-        if (info == null) {
+        if (runtime == null) {
             return "<not_connected>";
         }
-        return info.getNodeName();
+        return runtime.getNodeName();
     }
 
     public String getFullNodeName() {
-        synchronized (runtime) {
-            return runtime.getNodeName();
-        }
+        return runtime.getNodeName();
     }
 
     private synchronized OtpNode getNode() {
         return runtime.getNode();
     }
 
-    private String getScriptId() throws BackendException {
+    private String getScriptId() throws RpcException {
         OtpErlangObject r;
         r = call("init", "script_id", "");
         if (r instanceof OtpErlangTuple) {
@@ -556,7 +531,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public void addProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = CoreScope.getModel().findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -590,7 +565,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public void removeProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = CoreScope.getModel().findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -659,14 +634,10 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
     }
 
     public IStreamsProxy getStreamsProxy() {
-        final ErtsProcess p = getErtsProcess();
-        if (p == null) {
-            return null;
-        }
-        return p.getStreamsProxy();
+        return null;
     }
 
-    private void postLaunch() throws DebugException {
+    protected void postLaunch() throws DebugException {
         final Collection<IProject> projects = Lists.newArrayList(data
                 .getProjects());
         registerProjectsWithExecutionBackend(projects);
@@ -695,14 +666,6 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
                         init_call.getParameters());
             }
         }
-    }
-
-    private ErtsProcess getErtsProcess() {
-        final IProcess[] ps = launch.getProcesses();
-        if (ps == null || ps.length == 0) {
-            return null;
-        }
-        return (ErtsProcess) ps[0];
     }
 
     private void registerProjectsWithExecutionBackend(
@@ -778,7 +741,7 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
         final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
                 debuggerModules.length);
         for (final String module : debuggerModules) {
-            final OtpErlangBinary b = getBeam(module);
+            final OtpErlangBinary b = getDebuggerBeam(module);
             if (b != null) {
                 final OtpErlangString filename = new OtpErlangString(module
                         + ".erl");
@@ -799,43 +762,51 @@ public class Backend implements RpcCallSite, IDisposable, IStreamListener {
      *            the execution backend
      * @return
      */
-    private OtpErlangBinary getBeam(final String module) {
-        final Bundle b = Platform.getBundle("org.erlide.kernel.debugger");
+    private OtpErlangBinary getDebuggerBeam(final String module) {
         final String beamname = module + ".beam";
+        final Bundle bundle = Platform.getBundle("org.erlide.kernel.debugger");
+
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
                 ErlangPlugin.PLUGIN_ID, "codepath");
+
         // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
-        final String ver = getCurrentVersion();
+
+        final String ver = getErlangVersion();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
-            if (c.getName().equals(b.getSymbolicName())) {
+            if (c.getName().equals(bundle.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
-                Enumeration<?> e = b.getEntryPaths(dir_path + "/" + ver);
+                Enumeration<?> e = bundle.getEntryPaths(dir_path + "/" + ver);
                 if (e == null || !e.hasMoreElements()) {
-                    e = b.getEntryPaths(dir_path);
+                    e = bundle.getEntryPaths(dir_path);
                 }
                 if (e == null) {
                     ErlLogger.debug("* !!! error loading plugin "
-                            + b.getSymbolicName());
+                            + bundle.getSymbolicName());
                     return null;
                 }
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
                     final Path path = new Path(s);
-                    if (path.lastSegment().equals(beamname)) {
-                        if (path.getFileExtension() != null
-                                && "beam".compareTo(path.getFileExtension()) == 0) {
-                            final String m = path.removeFileExtension()
-                                    .lastSegment();
-                            try {
-                                return BeamUtil.getBeamBinary(m, b.getEntry(s));
-                            } catch (final Exception ex) {
-                                ErlLogger.warn(ex);
-                            }
-                        }
-                    }
+                    return getBeamFromBundlePath(bundle, beamname, s, path);
+                }
+            }
+        }
+        return null;
+    }
+
+    private OtpErlangBinary getBeamFromBundlePath(final Bundle bundle,
+            final String beamname, final String s, final Path path) {
+        if (path.lastSegment().equals(beamname)) {
+            if (path.getFileExtension() != null
+                    && "beam".compareTo(path.getFileExtension()) == 0) {
+                final String m = path.removeFileExtension().lastSegment();
+                try {
+                    return BeamUtil.getBeamBinary(m, bundle.getEntry(s));
+                } catch (final Exception ex) {
+                    ErlLogger.warn(ex);
                 }
             }
         }

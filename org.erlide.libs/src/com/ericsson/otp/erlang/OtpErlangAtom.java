@@ -25,7 +25,6 @@ import java.io.Serializable;
  * strings whose length is not more than {@link #maxAtomLength maxAtomLength}
  * characters.
  */
-@SuppressWarnings("hiding")
 public class OtpErlangAtom extends OtpErlangObject implements Serializable,
         Cloneable {
     // don't change this!

@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModel;
@@ -48,7 +48,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public ErlangFileContentProvider() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_CHANGE);
-        final IErlModel mdl = ErlangCore.getModel();
+        final IErlModel mdl = CoreScope.getModel();
         mdl.addModelChangeListener(this);
     }
 
@@ -58,7 +58,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IFile) {
-                parentElement = ErlangCore.getModel().findModule(
+                parentElement = CoreScope.getModel().findModule(
                         (IFile) parentElement);
             }
             if (parentElement instanceof IOpenable) {
@@ -113,7 +113,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        ErlangCore.getModel().removeModelChangeListener(this);
+        CoreScope.getModel().removeModelChangeListener(this);
     }
 
     public void inputChanged(final Viewer theViewer, final Object oldInput,
@@ -191,8 +191,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (SaveablesProvider.class.equals(required)) {
             // TODO return something useful
             return null;

@@ -25,7 +25,6 @@ package com.ericsson.otp.erlang;
  * 
  * @see OtpInputStream
  */
-@SuppressWarnings("serial")
 public class OtpErlangDecodeException extends OtpErlangException {
     /**
      * Provides a detailed message.

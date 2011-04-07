@@ -63,10 +63,6 @@ public class BackendShell {
         }
     }
 
-    public Backend getBackend() {
-        return backend;
-    }
-
     public String getId() {
         return fId;
     }
@@ -103,7 +99,7 @@ public class BackendShell {
     }
 
     public void add(final String text, final IoRequestKind kind) {
-        if (getBackend().isDistributed()
+        if (backend.isDistributed()
                 && IoRequest.RE_PROMPT.matcher(text).matches()) {
             return;
         }
@@ -142,7 +138,6 @@ public class BackendShell {
 
     private void deleteOldItems() {
         // TODO use a configuration for this
-        // TODO maybe we should count text lines?
         synchronized (requests) {
             if (requests.size() > MAX_REQUESTS) {
                 requests.subList(0, DELTA_REQUESTS).clear();

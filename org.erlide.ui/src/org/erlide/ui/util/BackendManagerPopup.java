@@ -17,7 +17,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendListener;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 public class BackendManagerPopup implements BackendListener {
