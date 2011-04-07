@@ -334,7 +334,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         eksportHTML = new EksportReports(viewer.getControl().getShell());
         // TODO change image
         eksportHTML.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_REDO));
+                .getImageDescriptor(ISharedImages.IMG_TOOL_UP));
         eksportHTML.setToolTipText("Eksport coverage reports in HTML format.");
     }
 

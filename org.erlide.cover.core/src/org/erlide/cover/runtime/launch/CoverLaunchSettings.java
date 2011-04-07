@@ -75,8 +75,7 @@ public class CoverLaunchSettings {
                 throw new CoverException(e.getMessage());
             }
             break;
-        case APPLICATION:
-            break;
+        
         case CUSTOM:
             break;
         }

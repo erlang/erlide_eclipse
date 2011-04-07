@@ -50,11 +50,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
     private ItemBrowser projectMBr; // projects browser
     private ItemBrowser moduleBr; // module browser
     private ItemBrowser fileBr; // file/directory browser
-    private ItemBrowser projectAppBr; // project browser for applications
-    private ItemBrowser appBr; // application browser
     private Button singleRadio; // radio button for single module
     private Button allRadio; // radio button for running all tests
-    private Button appRadio; // radio button for application
     private Combo testCombo; // framework
 
     private ElementListSelectionDialog moduleDialog;
@@ -66,11 +63,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         scrolled.setContent(comp);
         scrolled.setExpandVertical(true);
         scrolled.setExpandHorizontal(true);
-        scrolled.setMinSize(760, 400);
+        scrolled.setMinSize(760, 300);
         setControl(scrolled);
 
-        //
-        // comp.setMinSize(SWT.DEFAULT, SWT.DEFAULT);
 
         final GridLayout mainLayout = new GridLayout();
         mainLayout.numColumns = 3;
@@ -83,7 +78,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         final GridData gData = new GridData();
         gData.horizontalAlignment = GridData.FILL;
         gData.horizontalSpan = 3;
-        // gData.widthHint = 400;
 
         singleRadio = new Button(comp, SWT.RADIO);
         singleRadio.setText("Run tests for a single module");
@@ -99,19 +93,18 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         createAllTestsGroup(comp);
 
-        appRadio = new Button(comp, SWT.RADIO);
+      /*  appRadio = new Button(comp, SWT.RADIO);
         appRadio.setText("Run tests for an application");
         appRadio.setLayoutData(gData);
         appRadio.addSelectionListener(radioSelectionListener);
         appRadio.setEnabled(false);
 
-        createApplicationGroup(comp);
+        createApplicationGroup(comp);*/
 
         final Label testLabel = new Label(comp, SWT.NONE);
         testLabel.setText("Testing framework: ");
         testCombo = new Combo(comp, SWT.NONE);
-        testCombo.setItems(new String[] { FrameworkType.EUNIT.getRepr(),
-                FrameworkType.CT.getRepr(), FrameworkType.QC.getRepr() });
+        testCombo.setItems(new String[] { FrameworkType.EUNIT.getRepr() });
         testCombo.addModifyListener(basicModifyListener);
 
         Collection<IErlProject> projects;
@@ -170,19 +163,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         }
 
         try {
-            projectAppBr.setText(config.getAttribute(
-                    ICoverAttributes.APP_PROJECT, ""));
-        } catch (final CoreException e) {
-            projectAppBr.setText("");
-        }
-
-        try {
-            appBr.setText(config.getAttribute(ICoverAttributes.APPLICATION, ""));
-        } catch (final CoreException e) {
-            appBr.setText("");
-        }
-
-        try {
             final String type = config.getAttribute(ICoverAttributes.TYPE,
                     LaunchType.MODULE.toString());
 
@@ -195,9 +175,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 projectMBr.setEnabled(true);
                 moduleBr.setEnabled(true);
                 fileBr.setEnabled(false);
-                projectAppBr.setEnabled(false);
-                appBr.setEnabled(false);
-
+                
                 break;
 
             case ALL:
@@ -207,20 +185,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 projectMBr.setEnabled(false);
                 moduleBr.setEnabled(false);
                 fileBr.setEnabled(true);
-                projectAppBr.setEnabled(false);
-                appBr.setEnabled(false);
-
-                break;
-
-            case APPLICATION:
-
-                appRadio.setSelection(true);
-
-                projectMBr.setEnabled(false);
-                moduleBr.setEnabled(false);
-                fileBr.setEnabled(false);
-                projectAppBr.setEnabled(true);
-                appBr.setEnabled(true);
 
                 break;
 
@@ -231,8 +195,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 projectMBr.setEnabled(true);
                 moduleBr.setEnabled(true);
                 fileBr.setEnabled(false);
-                projectAppBr.setEnabled(false);
-                appBr.setEnabled(false);
 
                 break;
             }
@@ -254,12 +216,9 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
 
-        // TODO: inform, when nothing sellected; is it possible?
         LaunchType type;
         if (allRadio.getSelection()) {
             type = LaunchType.ALL;
-        } else if (appRadio.getSelection()) {
-            type = LaunchType.APPLICATION;
         } else {
             type = LaunchType.MODULE;
         }
@@ -267,7 +226,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ICoverAttributes.PROJECT, projectMBr.getText());
         config.setAttribute(ICoverAttributes.MODULE, moduleBr.getText());
         config.setAttribute(ICoverAttributes.FILE, fileBr.getText());
-        config.setAttribute(ICoverAttributes.APPLICATION, appBr.getText());
         config.setAttribute(ICoverAttributes.TYPE, type.toString());
         config.setAttribute(ICoverAttributes.COMBO, testCombo.getText());
     }
@@ -421,7 +379,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         fileBr.addModifyListener(basicModifyListener);
     }
 
-    private void createApplicationGroup(final Composite comp) {
+   /* private void createApplicationGroup(final Composite comp) {
 
         final ElementListSelectionDialog projectDialog = new ElementListSelectionDialog(
                 getShell(), new ProjectLabelProvider());
@@ -446,7 +404,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         appBr = browserWithLabel(comp, "Module:", appDialog);
         appBr.addModifyListener(basicModifyListener);
 
-    }
+    }*/
 
     private ItemBrowser browserWithLabel(final Composite comp,
             final String text, final SelectionDialog dialog) {
@@ -480,21 +438,11 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 projectMBr.setEnabled(true);
                 moduleBr.setEnabled(true);
                 fileBr.setEnabled(false);
-                projectAppBr.setEnabled(false);
-                appBr.setEnabled(false);
             } else if (e.widget.equals(allRadio)) {
                 projectMBr.setEnabled(false);
                 moduleBr.setEnabled(false);
                 fileBr.setEnabled(true);
-                projectAppBr.setEnabled(false);
-                appBr.setEnabled(false);
-            } else if (e.widget.equals(appRadio)) {
-                projectMBr.setEnabled(false);
-                moduleBr.setEnabled(false);
-                fileBr.setEnabled(false);
-                projectAppBr.setEnabled(true);
-                appBr.setEnabled(true);
-            }
+            } 
         }
 
         public void widgetDefaultSelected(final SelectionEvent e) {
