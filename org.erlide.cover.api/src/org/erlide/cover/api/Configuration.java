@@ -12,7 +12,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 
 /**
- * Basic implementation of IConfiguration. Used to tell which modules at which
+ * Basic implementation for IConfiguration. Used to tell which modules at which
  * project should be analysed
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
@@ -27,6 +27,12 @@ public class Configuration implements IConfiguration {
         modules = new HashMap<String, IErlModule>();
     }
 
+    /**
+     * Set Erlang project
+     * 
+     * @param name
+     *            name of an Erlang project
+     */
     public void setProject(final String name) {
         if (name == null || name.length() == 0) {
             project = null;
@@ -36,6 +42,17 @@ public class Configuration implements IConfiguration {
         }
     }
 
+    /**
+     * Add new module to cover configuration. The coverage of added module is
+     * going to be analized.
+     * 
+     * @param name
+     *            Erlang module name
+     * @throws ErlModelException
+     *             when there is no such module in the project
+     * @throws CoverException
+     *             if project is not set
+     */
     public void addModule(final String name) throws ErlModelException,
             CoverException {
 
@@ -47,6 +64,13 @@ public class Configuration implements IConfiguration {
         modules.put(name, module);
     }
 
+    /**
+     * Add new module to cover configuration. The coverage of added module is
+     * going to be analized.
+     * 
+     * @param module
+     *            Erlang module
+     */
     public void addModule(final IErlModule module) {
         modules.put(module.getModuleName(), module);
     }

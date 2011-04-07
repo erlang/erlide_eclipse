@@ -17,23 +17,45 @@ public interface IConfiguration {
     /**
      * Get Erlang project
      * 
-     * @return
+     * @return Erlang project
      */
     public IErlProject getProject();
 
     /**
-     * Get Erlang module
+     * Get all Erlang modules
      * 
-     * @return
+     * @return collection of Erlang modules
      */
     public Collection<IErlModule> getModules();
 
+    /**
+     * Get module by name
+     * 
+     * @param name
+     *            module name
+     * @return Erlang module
+     */
     public IErlModule getModule(String name);
 
+    /**
+     * Get path to project output directory (those, where beans are stored)
+     * 
+     * @return path to output directory
+     */
     public IPath getOutputDir();
 
+    /**
+     * Get paths to source directories
+     * 
+     * @return collection of paths to source directories
+     */
     public Collection<IPath> getSourceDirs();
 
+    /**
+     * Get paths to include directories
+     * 
+     * @return collection of paths to include directories
+     */
     public Collection<IPath> getIncludeDirs();
 
 }
