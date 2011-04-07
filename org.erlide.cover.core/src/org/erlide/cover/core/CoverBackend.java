@@ -83,7 +83,6 @@ public class CoverBackend implements ICoverBackend {
 
         try {
             backend = createBackend();
-            // backend.restart();
             backend.getEventDaemon().addHandler(handler);
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);

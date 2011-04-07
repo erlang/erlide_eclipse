@@ -69,6 +69,7 @@ public class StatsTreeModel implements Serializable {
         timestamp = timeTmp.toString();
 
         ModuleSet.clear();
+        root.setHtmlPath(null);
         setChanged(false);
     }
 
