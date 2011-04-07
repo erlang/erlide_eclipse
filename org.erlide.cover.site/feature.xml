@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.cover.site2"
       label="Erlang code coverage for ErlIde (update site)"
-      version="0.1.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="Erlang Solutions">
 
    <description url="http://www.example.com/description">
