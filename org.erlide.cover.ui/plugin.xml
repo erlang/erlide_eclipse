@@ -49,7 +49,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="org.erlide.cover.ui.launch.CoverTabGroup"
-            id="org.erlide.cover.ui.launchConfigurationTabGroupEUnit"
+            id="org.erlide.cover.ui.launchConfigurationTabGroupCover"
             type="org.erlide.cover.core.launchConfigurationCover">
       </launchConfigurationTabGroup>
    </extension>
@@ -105,6 +105,14 @@
             verticalRulerPreferenceKey="noCoverage_VerticalRuler"
             verticalRulerPreferenceValue="false">
       </specification>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="org.erlide.cover.core.launchConfigurationCover"
+            icon="icons/launch.gif"
+            id="org.erlide.cover.ui.launchConfigurationTypeImageCover">
+      </launchConfigurationTypeImage>
    </extension>
 
 </plugin>
