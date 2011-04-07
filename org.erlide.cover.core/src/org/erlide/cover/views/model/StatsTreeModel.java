@@ -18,10 +18,12 @@ public class StatsTreeModel implements Serializable {
 
     private ICoverageObject root;
     private String timestamp;
+    private boolean changed;
 
     private StatsTreeModel() {
         initialize();
         timestamp = "";
+        setChanged(false);
     }
 
     public static StatsTreeModel getInstance() {
@@ -60,6 +62,7 @@ public class StatsTreeModel implements Serializable {
         timestamp = timeTmp.toString();
 
         ModuleSet.clear();
+        setChanged(false);
     }
 
     public void addTotal(final int allLines, final int coveredLines) {
@@ -87,6 +90,14 @@ public class StatsTreeModel implements Serializable {
 
     private void initialize() {
         root = new StatsTreeObject("total", 0, 0, ObjectType.PROJECT);
+    }
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
+    public boolean isChanged() {
+        return changed;
     }
 
 }

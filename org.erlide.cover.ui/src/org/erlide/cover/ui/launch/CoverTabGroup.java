@@ -30,6 +30,7 @@ public class CoverTabGroup extends AbstractLaunchConfigurationTabGroup {
         setTabs(tabs.toArray(new ILaunchConfigurationTab[0]));
 
     }
+    
 
     private Collection<ILaunchConfigurationTab> createMyTabs(
             final ILaunchConfigurationDialog dialog, final String mode) {

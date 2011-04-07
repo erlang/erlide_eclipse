@@ -133,6 +133,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 break;
             }
 
+            if(StatsTreeModel.getInstance().isChanged())
+                showHtml.setEnabled(false);
         }
 
     };

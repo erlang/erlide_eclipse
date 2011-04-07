@@ -82,6 +82,7 @@ public class RestoreAction extends Action {
             Object obj = objStream.readObject();
             
             StatsTreeModel.changeInstance((StatsTreeModel)obj);
+            StatsTreeModel.getInstance().setChanged(true);
             
             viewer.setInput(StatsTreeModel.getInstance());
             
