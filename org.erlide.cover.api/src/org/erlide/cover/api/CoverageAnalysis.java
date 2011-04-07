@@ -18,92 +18,122 @@ import org.eclipse.core.runtime.Platform;
  */
 public class CoverageAnalysis {
 
-    /**
-     * @return true if the Cover plug-in is installed.
-     */
-    public static boolean isAvailable() {
-        try {
-            return getCoveragePerformer() != null;
-        } catch (CoreException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	/**
+	 * @return true if the Cover plug-in is installed.
+	 */
+	public static boolean isAvailable() {
+		try {
+			return getCoveragePerformer() != null;
+		} catch (CoreException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-    /**
-     * Intended to be run before running the tests.
-     * 
-     * @throws UnsupportedOperationException
-     *             when Cover plug-in is not installed
-     * @throws CoverException
-     *             on Cover-specific failures
-     */
-    public static void prepareAnalysis(final IConfiguration configuration)
-            throws CoverException {
-        prepareAnalysis(new ArrayList<String>(), configuration);
-    }
+	/**
+	 * Intended to be run before running the tests.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             when Cover plug-in is not installed
+	 * @throws CoverException
+	 *             on Cover-specific failures
+	 */
+	public static void prepareAnalysis(final IConfiguration configuration)
+			throws CoverException {
+		prepareAnalysis(new ArrayList<String>(), configuration);
+	}
 
-    /**
-     * Intended to be run before running the tests.
-     * 
-     * @param additionalNodes
-     *            - other nodes (besides Cover's node) that are used to gather
-     *            the coverage info
-     * 
-     * @throws UnsupportedOperationException
-     *             when Cover plug-in is not installed
-     * @throws CoverException
-     *             on Cover-specific failures
-     */
-    public static void prepareAnalysis(final List<String> additionalNodes,
-            final IConfiguration configuration) throws CoverException {
-        try {
-        final ICoveragePerformer performer = getCoveragePerformerOrThrow();
-        performer.startCover(additionalNodes);
-        performer.setCoverageConfiguration(configuration);
-        } catch( CoreException e) {
-            throw new CoverException(e);
-        }
-    }
+	/**
+	 * Intended to be run before running the tests.
+	 * 
+	 * @param additionalNodes
+	 *            - other nodes (besides Cover's node) that are used to gather
+	 *            the coverage info
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             when Cover plug-in is not installed
+	 * @throws CoverException
+	 *             on Cover-specific failures
+	 */
+	public static void prepareAnalysis(final List<String> additionalNodes,
+			final IConfiguration configuration) throws CoverException {
+		try {
+			final ICoveragePerformer performer = getCoveragePerformerOrThrow();
+			performer.startCover(additionalNodes);
+			performer.setCoverageConfiguration(configuration);
+		} catch (CoreException e) {
+			throw new CoverException(e);
+		}
+	}
 
-    /**
-     * Intended to be run after running the tests. Performs the actual analysis
-     * and displays the results to the user.
-     * 
-     * @throws UnsupportedOperationException
-     *             when Cover plug-in is not installed
-     * @throws CoverException
-     *             on Cover-specific failures
-     */
-    public static void performAnalysis() throws CoverException {
-        try {
-            getCoveragePerformerOrThrow().analyse();
-        } catch (CoreException e) {
-            throw new CoverException(e);
-        }
-    }
+	/**
+	 * Intended to be run after running the tests. Performs the actual analysis
+	 * and displays the results to the user.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             when Cover plug-in is not installed
+	 * @throws CoverException
+	 *             on Cover-specific failures
+	 */
+	public static void performAnalysis() throws CoverException {
+		try {
+			getCoveragePerformerOrThrow().analyse();
+		} catch (CoreException e) {
+			throw new CoverException(e);
+		}
+	}
 
-    private static ICoveragePerformer getCoveragePerformerOrThrow() throws CoreException {
-        final ICoveragePerformer result = getCoveragePerformer();
-        if (result == null) {
-            throw new UnsupportedOperationException();
-        }
-        return result;
-    }
+	/**
+	 * Intended to obtain access to Cover node, that coverage analysis could be
+	 * performed on.
+	 * 
+	 * @return Cover node
+	 * @throws CoverException
+	 *             on Cover-specific failures
+	 */
+	public static ICoverBackend getBackend() throws CoverException {
+		final IConfigurationElement[] conf = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(ICoveragePerformerProxy.ID);
+		ICoveragePerformerProxy proxy = null;
+		for (final IConfigurationElement ce : conf) {
+			if (proxy != null) {
+				throw new RuntimeException(
+						"There should be only one CoveragePerformerProxy implementation");
+			}
+			try {
+				proxy = (ICoveragePerformerProxy) ce
+						.createExecutableExtension("class");
+			} catch (CoreException e) {
+				e.printStackTrace();
+				throw new CoverException(e);
+			}
+		}
+		return proxy.getBackend();
+	}
 
-    private static ICoveragePerformer getCoveragePerformer() throws CoreException {
-        final IConfigurationElement[] conf = Platform.getExtensionRegistry()
-                .getConfigurationElementsFor(ICoveragePerformerProxy.ID);
-        ICoveragePerformerProxy proxy = null;
-            for (final IConfigurationElement ce : conf) {
-                if (proxy != null) {
-                    throw new RuntimeException(
-                            "There should be only one CoveragePerformerProxy implementation");
-                }
-                proxy = (ICoveragePerformerProxy) ce
-                        .createExecutableExtension("class");
-            }
-        return proxy.getPerformer();
-    }
+	private static ICoveragePerformer getCoveragePerformerOrThrow()
+			throws CoreException {
+		final ICoveragePerformer result = getCoveragePerformer();
+		if (result == null) {
+			throw new UnsupportedOperationException();
+		}
+		return result;
+	}
+
+	private static ICoveragePerformer getCoveragePerformer()
+			throws CoreException {
+		final IConfigurationElement[] conf = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(ICoveragePerformerProxy.ID);
+		ICoveragePerformerProxy proxy = null;
+		for (final IConfigurationElement ce : conf) {
+			if (proxy != null) {
+				throw new RuntimeException(
+						"There should be only one CoveragePerformerProxy implementation");
+			}
+			proxy = (ICoveragePerformerProxy) ce
+					.createExecutableExtension("class");
+		}
+		return proxy.getPerformer();
+	}
 
 }
