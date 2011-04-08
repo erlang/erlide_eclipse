@@ -54,24 +54,24 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendException;
+import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.BackendManager;
-import org.erlide.core.builder.DialyzerPreferences;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.services.builder.DialyzerPreferences;
+import org.erlide.core.services.builder.DialyzerUtils;
+import org.erlide.core.services.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.core.services.builder.ErlideDialyze;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
-
-import erlang.ErlideDialyze;
 
 public class DialyzerPreferencePage extends PropertyPage implements
         IWorkbenchPreferencePage {
@@ -300,7 +300,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             final DialyzerPreferences p = DialyzerPreferences.get(project);
             return p.hasOptionsAtLowestScope();
         } catch (final CoreException e) {
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
         }
         return false;
     }
@@ -398,10 +398,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
-                    final IProject p = ep.getProject();
+                    final IProject p = ep.getWorkspaceProject();
                     if (hasProjectSpecificOptions(p)) {
                         projectsWithSpecifics.add(p);
                     }
@@ -516,7 +516,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             prefs = DialyzerPreferences.get(fProject);
         } catch (final CoreException e) {
             // FIXME apply to status line or setErrorMessage
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             // FIXME apply to status line or setErrorMessage
         }
     }
@@ -618,10 +618,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            final BackendManager backendManager = ErlangCore
+            final BackendManager backendManager = BackendCore
                     .getBackendManager();
             try {
-                Backend backend;
+                RpcCallSite backend;
                 if (fProject != null) {
                     backend = backendManager.getBuildBackend(fProject);
                 } else {
@@ -639,7 +639,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkPlt(final String pltPath,
-                final IProgressMonitor monitor, final Backend backend)
+                final IProgressMonitor monitor, final RpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);

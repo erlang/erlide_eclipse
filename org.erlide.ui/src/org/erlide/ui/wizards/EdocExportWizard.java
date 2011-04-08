@@ -27,14 +27,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-
-import erlang.ErlideEdocExport;
 
 public class EdocExportWizard extends Wizard implements IExportWizard {
 
@@ -64,7 +62,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                 options.put("dir", new OtpErlangString(dest.getLocation()
                         .toString()));
                 final List<String> files = new ArrayList<String>();
-                final IErlProject erlProject = ErlangCore.getModel()
+                final IErlProject erlProject = CoreScope.getModel()
                         .findProject(project);
                 for (final IPath dir : erlProject.getSourceDirs()) {
                     final IFolder folder = project.getFolder(dir);

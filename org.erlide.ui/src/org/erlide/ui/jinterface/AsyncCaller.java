@@ -15,9 +15,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.rpc.RpcException;
-import org.erlide.backend.rpc.RpcFuture;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.RpcFuture;
 import org.erlide.ui.ErlideUIPlugin;
 
 public abstract class AsyncCaller<T> implements Runnable {

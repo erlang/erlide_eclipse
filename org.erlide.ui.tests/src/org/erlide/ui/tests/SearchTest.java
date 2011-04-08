@@ -5,10 +5,15 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
+import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.internal.search.ErlSearchQuery;
 import org.erlide.ui.internal.search.ErlangSearchElement;
@@ -18,11 +23,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern;
-import erlang.ErlangSearchPattern.LimitTo;
-import erlang.ErlangSearchPattern.SearchFor;
 
 public class SearchTest {
 
@@ -90,8 +90,8 @@ public class SearchTest {
         final ErlSearchScope scope = new ErlSearchScope();
         scope.addModule(moduleA);
         scope.addModule(moduleB);
-        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, null, "");
-        query.run(null);
+        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
+        query.run(new NullProgressMonitor());
         // then
         // it should be found in module b
         final ErlangSearchResult searchResult = (ErlangSearchResult) query
@@ -120,8 +120,8 @@ public class SearchTest {
         final ErlSearchScope scope = new ErlSearchScope();
         scope.addModule(moduleA);
         scope.addModule(moduleB);
-        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, null, "");
-        query.run(null);
+        final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
+        query.run(new NullProgressMonitor());
         // then
         // it should be found in module b
         final ErlangSearchResult searchResult = (ErlangSearchResult) query

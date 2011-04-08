@@ -19,21 +19,16 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendPlugin;
-import org.erlide.backend.CodeBundle;
-import org.erlide.backend.ErlBackend;
-import org.erlide.backend.util.BackendUtils;
-import org.erlide.backend.util.BeamUtil;
-import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.BeamUtil;
+import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
-
-import erlang.ErlangCode;
 
 public class CodeManager {
 
@@ -45,7 +40,7 @@ public class CodeManager {
     private final List<CodeBundle> registeredBundles;
 
     // only to be called by ErlideBackend
-    public CodeManager(final ErlideBackend b) {
+    public CodeManager(final Backend b) {
         backend = b;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
@@ -101,26 +96,26 @@ public class CodeManager {
         if (bin == null) {
             return false;
         }
-        return ErlBackend.loadBeam(backend, moduleName, bin);
+        return BackendHelper.loadBeam(backend, moduleName, bin);
     }
 
     private void loadPluginCode(final CodeBundle p) {
 
         final Bundle b = p.getBundle();
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
-                + backend.getInfo().getName());
+                + backend.getRuntimeInfo().getName());
 
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 
-        final IConfigurationElement[] els = BackendPlugin
+        final IConfigurationElement[] els = BackendCore
                 .getCodepathConfigurationElements();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
             if ("beam_dir".equals(el.getName())
                     && c.getName().equals(b.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
-                final String ver = backend.getCurrentVersion();
+                final String ver = backend.getErlangVersion();
                 @SuppressWarnings("rawtypes")
                 Enumeration e = null;
                 if (dir_path != null) {
@@ -147,7 +142,7 @@ public class CodeManager {
                                 ErlLogger.error("Could not load %s",
                                         beamModuleName);
                             }
-                            ErlangCore.getBackendManager().moduleLoaded(
+                            BackendCore.getBackendManager().moduleLoaded(
                                     backend, null, beamModuleName);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
@@ -198,13 +193,13 @@ public class CodeManager {
                     externalPath);
             if (accessible) {
                 ErlLogger.debug("adding %s to code path for %s:: %s",
-                        externalPath, backend, backend.getInfo());
+                        externalPath, backend, backend.getRuntimeInfo());
                 ErlangCode.addPathA(backend, externalPath);
                 return;
             } else {
                 ErlLogger.info("external code path %s for %s "
                         + "is not accessible, using plugin code", externalPath,
-                        backend, backend.getInfo());
+                        backend, backend.getRuntimeInfo());
             }
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
@@ -215,11 +210,11 @@ public class CodeManager {
                         localDir);
                 if (accessible) {
                     ErlLogger.debug("adding %s to code path for %s:: %s",
-                            localDir, backend, backend.getInfo());
+                            localDir, backend, backend.getRuntimeInfo());
                     ErlangCode.addPathA(backend, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundle()
-                            .getSymbolicName(), backend.getInfo());
+                            .getSymbolicName(), backend.getRuntimeInfo());
                     loadPluginCode(p);
                 }
             }
@@ -255,7 +250,7 @@ public class CodeManager {
         // see FindSupport.findInFragments
 
         final Bundle b = p.getBundle();
-        final String ver = backend.getCurrentVersion();
+        final String ver = backend.getErlangVersion();
         @SuppressWarnings("rawtypes")
         Enumeration e = b.getEntryPaths("/ebin/" + ver);
         if (e == null) {

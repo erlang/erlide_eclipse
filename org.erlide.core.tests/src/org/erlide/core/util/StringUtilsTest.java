@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.backend.util.StringUtils;
+import org.erlide.core.common.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,91 +53,6 @@ public class StringUtilsTest {
         assertNotNull(result);
         assertEquals(3, result.length);
         assertEquals("abc", new String(result));
-    }
-
-    /**
-     * Run the int countPercS(String) method test.
-     * 
-     * @throws Exception
-     * 
-     * @generatedBy CodePro at 2010-09-17 14:04
-     */
-    @Test
-    public void testCountPercS_1() throws Exception {
-        final String str = "";
-
-        final int result = StringUtils.countPercS(str);
-
-        // add additional test code here
-        assertEquals(0, result);
-    }
-
-    /**
-     * Run the int countPercS(String) method test.
-     * 
-     * @throws Exception
-     * 
-     * @generatedBy CodePro at 2010-09-17 14:04
-     */
-    @Test
-    public void testCountPercS_2() throws Exception {
-        final String str = "aaa";
-
-        final int result = StringUtils.countPercS(str);
-
-        // add additional test code here
-        assertEquals(0, result);
-    }
-
-    /**
-     * Run the int countPercS(String) method test.
-     * 
-     * @throws Exception
-     * 
-     * @generatedBy CodePro at 2010-09-17 14:04
-     */
-    @Test
-    public void testCountPercS_3() throws Exception {
-        final String str = "a%sa";
-
-        final int result = StringUtils.countPercS(str);
-
-        // add additional test code here
-        assertEquals(1, result);
-    }
-
-    /**
-     * Run the int countPercS(String) method test.
-     * 
-     * @throws Exception
-     * 
-     * @generatedBy CodePro at 2010-09-17 14:04
-     */
-    @Test
-    public void testCountPercS_4() throws Exception {
-        final String str = "a%ba";
-
-        final int result = StringUtils.countPercS(str);
-
-        // add additional test code here
-        assertEquals(0, result);
-    }
-
-    /**
-     * Run the int countPercS(String) method test.
-     * 
-     * @throws Exception
-     * 
-     * @generatedBy CodePro at 2010-09-17 14:04
-     */
-    @Test
-    public void testCountPercS_5() throws Exception {
-        final String str = "%s%s";
-
-        final int result = StringUtils.countPercS(str);
-
-        // add additional test code here
-        assertEquals(2, result);
     }
 
     /**

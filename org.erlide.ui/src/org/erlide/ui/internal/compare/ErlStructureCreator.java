@@ -42,13 +42,14 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IOpenable;
+import org.erlide.core.model.erlang.IParent;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 public class ErlStructureCreator extends StructureCreator {
@@ -284,12 +285,13 @@ public class ErlStructureCreator extends StructureCreator {
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         String s = "";
+        IErlModel model = CoreScope.getModel();
         if (element instanceof ResourceNode) {
             final ResourceNode rn = (ResourceNode) element;
             final IResource r = rn.getResource();
             if (r instanceof IFile) {
                 final IFile f = (IFile) r;
-                final IErlElement e = ErlangCore.getModel().findElement(r);
+                final IErlElement e = model.findElement(r);
                 if (e instanceof IErlModule) {
                     module = (IErlModule) e;
                 }
@@ -312,8 +314,8 @@ public class ErlStructureCreator extends StructureCreator {
             }
         }
         if (module == null) {
-            module = ErlangCore.getModelManager().getModuleFromText(null,
-                    fName, s, s);
+            module = model.getModuleFromText(
+                    model, fName, s, s);
         }
         ErlNode root = null;
         try {

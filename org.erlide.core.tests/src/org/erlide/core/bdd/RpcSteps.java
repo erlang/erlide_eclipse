@@ -2,11 +2,11 @@ package org.erlide.core.bdd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.erlide.backend.BackendException;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.core.backend.BackendManager;
-import org.erlide.jinterface.util.ParserException;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -22,12 +22,12 @@ public class RpcSteps {
     @Given("a backend")
     public void aBackend() {
         System.out.println("GIVEN");
-        backend = BackendManager.getDefault().getIdeBackend();
+        backend = BackendCore.getBackendManager().getIdeBackend();
     }
 
     @When("a rpc is done with args $m:$f($a)")
     public void aRpcIsDoneWith(final String m, final String f, final String a)
-            throws BackendException, ParserException {
+            throws RpcException, TermParserException {
         System.out.println("WHEN " + m + ":" + f + " " + a);
         final OtpErlangObject args = termParser.parse(a);
         final String sig = "x";
@@ -35,7 +35,8 @@ public class RpcSteps {
     }
 
     @Then("the result should be $value")
-    public void theResultShouldBe(final String value) throws ParserException {
+    public void theResultShouldBe(final String value)
+            throws TermParserException {
         System.out.println("THEN " + value + " expect " + value);
         final OtpErlangObject v = termParser.parse(value);
         assertThat("ok", result.equals(v));

@@ -33,13 +33,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.backend.runtime.RuntimeVersion;
-import org.erlide.backend.util.PreferencesUtils;
-import org.erlide.common.CommonUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.core.preferences.PathSerializer;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.PreferencesUtils;
+import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
+import org.erlide.core.model.erlang.internal.PathSerializer;
 import org.erlide.ui.ErlideUIPlugin;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.swtdesigner.SWTResourceManager;
 
 /**

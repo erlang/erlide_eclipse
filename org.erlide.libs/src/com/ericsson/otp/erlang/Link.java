@@ -19,7 +19,6 @@
 package com.ericsson.otp.erlang;
 
 // package scope
-@SuppressWarnings("hiding")
 class Link {
     private final OtpErlangPid local;
     private final OtpErlangPid remote;

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
-Bundle-Version: 1.1.1
+Bundle-Version: 0.11.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: commons-collections-3.2.1.jar,
  commons-io-1.4.jar,
@@ -13,7 +13,8 @@ Bundle-ClassPath: commons-collections-3.2.1.jar,
  mockito-all-1.6.jar,
  log4j-1.2.16.jar,
  quickcheck-0.5.jar,
- quickcheck-src-generator-0.5.jar
+ quickcheck-src-generator-0.5.jar,
+ jdepend-2.9.1.jar
 Export-Package: freemarker.cache,
  freemarker.core,
  freemarker.debug,
@@ -30,6 +31,8 @@ Export-Package: freemarker.cache,
  freemarker.log,
  freemarker.template,
  freemarker.template.utility,
+ jdepend.framework,
+ jdepend.textui,
  net.java.quickcheck,
  net.java.quickcheck.characteristic,
  net.java.quickcheck.collection,

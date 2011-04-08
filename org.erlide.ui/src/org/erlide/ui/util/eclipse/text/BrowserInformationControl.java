@@ -333,14 +333,7 @@ public class BrowserInformationControl extends AbstractInformationControl
             styles = new String[] {
                     "direction:rtl;", "overflow:hidden;", "word-wrap:break-word;" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         } else if (!resizable) {
-            // XXX: In IE, "word-wrap: break-word;" causes bogus wrapping even
-            // in non-broken words :-(see e.g. Javadoc of String).
-            // Re-check whether we really still need this now that the Javadoc
-            // Hover header already sets this style.
-            styles = new String[] { "overflow:hidden;"/*
-                                                       * ,
-                                                       * "word-wrap: break-word;"
-                                                       */};
+            styles = new String[] { "overflow:hidden;" };
         } else {
             styles = new String[] { "overflow:scroll;" }; //$NON-NLS-1$
         }

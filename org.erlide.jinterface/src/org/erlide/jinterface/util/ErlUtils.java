@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.TypeConverter;
+import org.erlide.jinterface.internal.BindingsImpl;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -33,7 +37,7 @@ public final class ErlUtils {
     final static private TermParser termParser = TermParser.getParser();
 
     public static OtpErlangObject parse(final String string)
-            throws ParserException {
+            throws TermParserException {
         return termParser.parse(string);
     }
 
@@ -48,10 +52,10 @@ public final class ErlUtils {
      * type signature of the argument, so that automatic conversion Java->Erlang
      * can be done. See TypeConverter.java2erlang for details.
      * 
-     * @see org.erlide.jinterface.util.TypeConverter
+     * @see org.erlide.jinterface.TypeConverter
      */
     public static OtpErlangObject format(final String fmt, final Object... args)
-            throws ParserException, SignatureException {
+            throws TermParserException, SignatureException {
         OtpErlangObject result;
         result = parse(fmt);
         List<Object> values = new ArrayList<Object>(args.length);
@@ -61,34 +65,34 @@ public final class ErlUtils {
     }
 
     public static Bindings match(final String pattern, final String term)
-            throws ParserException {
-        return match(parse(pattern), parse(term), new Bindings());
+            throws TermParserException {
+        return match(parse(pattern), parse(term), new BindingsImpl());
     }
 
     public static Bindings match(final String pattern,
-            final OtpErlangObject term) throws ParserException {
-        return match(parse(pattern), term, new Bindings());
+            final OtpErlangObject term) throws TermParserException {
+        return match(parse(pattern), term, new BindingsImpl());
     }
 
     public static Bindings match(final String pattern,
             final OtpErlangObject term, final Bindings bindings)
-            throws ParserException {
+            throws TermParserException {
         return match(parse(pattern), term, bindings);
     }
 
     public static Bindings match(final String pattern, final String term,
-            final Bindings bindings) throws ParserException {
+            final Bindings bindings) throws TermParserException {
         return match(parse(pattern), parse(term), bindings);
     }
 
     public static Bindings match(final OtpErlangObject pattern,
             final OtpErlangObject term) {
-        return match(pattern, term, new Bindings());
+        return match(pattern, term, new BindingsImpl());
     }
 
     public static Bindings match(final OtpErlangObject pattern,
-            final String term) throws ParserException {
-        return match(pattern, parse(term), new Bindings());
+            final String term) throws TermParserException {
+        return match(pattern, parse(term), new BindingsImpl());
     }
 
     /**
@@ -123,7 +127,7 @@ public final class ErlUtils {
             if (var.getName().equals("_")) {
                 return bindings;
             }
-            final Bindings result = new Bindings(bindings);
+            final Bindings result = new BindingsImpl(bindings);
             final OtpErlangObject old = bindings.get(var.getName());
             if (old == null) {
                 // no previous binding
@@ -184,7 +188,7 @@ public final class ErlUtils {
 
     private static OtpErlangObject fill(final OtpErlangObject template,
             final List<Object> values) throws SignatureException,
-            ParserException {
+            TermParserException {
         if (values.size() == 0) {
             return template;
         }
@@ -211,7 +215,7 @@ public final class ErlUtils {
             final Object ret = values.remove(0);
             final Signature[] signs = Signature.parse(holder.getName());
             if (signs.length == 0 && !(ret instanceof OtpErlangObject)) {
-                throw new ParserException("funny placeholder");
+                throw new TermParserException("funny placeholder");
             }
             final Signature sign = signs.length == 0 ? new Signature('x')
                     : signs[0];
@@ -227,7 +231,7 @@ public final class ErlUtils {
         if (patterns.length != terms.length) {
             return null;
         }
-        Bindings result = new Bindings(bindings);
+        Bindings result = new BindingsImpl(bindings);
         for (int i = 0; i < patterns.length; i++) {
             result = match(patterns[i], terms[i], result);
             if (result == null) {

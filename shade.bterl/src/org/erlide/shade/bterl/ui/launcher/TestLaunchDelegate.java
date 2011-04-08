@@ -24,22 +24,19 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.backend.Backend;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.backend.ErlLaunchAttributes;
-import org.erlide.backend.events.ErlangEvent;
-import org.erlide.backend.events.EventHandler;
-import org.erlide.backend.runtime.RuntimeVersion;
-import org.erlide.backend.util.PreferencesUtils;
-import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.debug.ErlangDebugHelper;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.launch.ErlangLaunchDelegate;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
+import org.erlide.core.common.PreferencesUtils;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
 import org.osgi.framework.Bundle;
 
@@ -51,6 +48,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -66,7 +64,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         try {
             BTERL_WATCHER_INIT_DEBUGGER = (OtpErlangTuple) TermParser
                     .getParser().parse("{bterl_watcher, init_debugger}");
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
         }
     }
 
@@ -78,9 +76,9 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     private IProject project;
 
     @Override
-    public void launch(final ILaunchConfiguration cfg, final String amode,
-            final ILaunch launch, final IProgressMonitor monitor)
-            throws CoreException {
+    protected boolean preLaunch(final ILaunchConfiguration cfg,
+            final String amode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
 
         projectName = cfg.getAttribute(TestLaunchAttributes.PROJECT, "");
         project = ResourcesPlugin.getWorkspace().getRoot()
@@ -94,14 +92,15 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         workdir = new File(wdir);
         if ("regression".equals(mode)) {
             RegressionLauncher.getInstance().launch(wdir, monitor);
-        } else {
-            doLaunch(cfg, launch, monitor);
+            return false;
         }
+        return true;
     }
 
-    private void doLaunch(final ILaunchConfiguration config,
-            final ILaunch launch, final IProgressMonitor monitor)
-            throws CoreException {
+    @Override
+    protected Backend doLaunch(final ILaunchConfiguration config,
+            final String amode, final ILaunch launch,
+            final IProgressMonitor monitor) throws CoreException {
 
         System.out.println("---@> launch " + workdir.getAbsolutePath() + " -> "
                 + suite + ":" + testcase + " (" + mode + ")");
@@ -109,33 +108,30 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             ErlLogger.warn(
                     "Attempting to start bterl tests in missing directory %s",
                     workdir.getAbsolutePath());
-            return;
+            return null;
         }
         if ("regression".equals(mode)) {
             // regression is handled elsewhere
-            return;
+            return null;
         }
         runMakeLinks(monitor);
 
         final ILaunchConfiguration cfg = setupConfiguration(config,
                 projectName, workdir);
 
-        final String amode = ILaunchManager.DEBUG_MODE.equals(mode) ? ILaunchManager.DEBUG_MODE
+        final String theMode = ILaunchManager.DEBUG_MODE.equals(amode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
-        super.doLaunch(cfg, amode, launch, true, null);
 
-        final ErlideBackend backend = ErlangCore.getBackendManager()
-                .getBackendForLaunch(launch);
-        if (backend == null) {
-            ErlLogger.warn("Could not start backend for launch %s", launch
-                    .getLaunchConfiguration().getName());
-            return;
-        }
+        return super.doLaunch(cfg, amode, launch, monitor);
+    }
+
+    @Override
+    protected void postLaunch(final String amode, final Backend backend,
+            final IProgressMonitor monitor) {
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
         }
         startMonitorJob(monitor, backend);
-
         monitor.worked(1);
     }
 
@@ -189,12 +185,13 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                         return filename.endsWith(".erl");
                     }
                 });
+
                 for (final String pm : modules) {
-                    System.out.println("reinterpret:: " + pm);
+                    ErlLogger.debug("reinterpret:: " + pm);
                     getDebugHelper()
                             .interpret(backend, project, pm, true, true);
                 }
-                getDebugTarget().installDeferredBreakpoints();
+                backend.getDebugTarget().installDeferredBreakpoints();
 
                 final OtpErlangPid pid = (OtpErlangPid) event.data;
                 backend.send(pid, new OtpErlangAtom("ok"));
@@ -306,7 +303,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final String args2 = ErlUtils.format("{~x,~s,~x,~x,~s}", e_flags,
                     cmd, trace, cb, workdirPath).toString();
             wc.setAttribute(ErlLaunchAttributes.ARGUMENTS, args2);
-        } catch (final ParserException e) {
+        } catch (final TermParserException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final SignatureException e) {

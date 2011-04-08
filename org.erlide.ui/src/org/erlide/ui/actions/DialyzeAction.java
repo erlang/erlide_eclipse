@@ -29,12 +29,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.builder.DialyzerUtils;
 
 import com.google.common.collect.Sets;
 
@@ -140,7 +140,7 @@ public class DialyzeAction implements IObjectActionDelegate {
             final ISelection selection) {
         modules.clear();
         if (selection instanceof IStructuredSelection) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             final IStructuredSelection ss = (IStructuredSelection) selection;
             for (final Object i : ss.toList()) {
                 try {

@@ -521,7 +521,7 @@ public class SWTResourceManager {
      * @return Cursor The system cursor matching the specific ID
      */
     public static Cursor getCursor(final int id) {
-        final Integer key = new Integer(id);
+        final Integer key = Integer.valueOf(id);
         Cursor cursor = m_IdToCursorMap.get(key);
         if (cursor == null) {
             cursor = new Cursor(Display.getDefault(), id);

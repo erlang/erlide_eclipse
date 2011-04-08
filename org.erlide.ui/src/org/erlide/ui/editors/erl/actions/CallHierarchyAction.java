@@ -16,22 +16,21 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.rpc.RpcFuture;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.FunctionRef;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.services.search.ErlangXref;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
-
-import erlang.ErlangXref;
-import erlang.FunctionRef;
 
 public class CallHierarchyAction extends Action {
 
@@ -96,7 +95,7 @@ public class CallHierarchyAction extends Action {
 
             @Override
             protected RpcFuture call() throws BackendException {
-                final RpcCallSite b = ErlangCore.getBackendManager()
+                final RpcCallSite b = BackendCore.getBackendManager()
                         .getIdeBackend();
                 final RpcFuture result = ErlangXref.addProject(b,
                         module.getProject());

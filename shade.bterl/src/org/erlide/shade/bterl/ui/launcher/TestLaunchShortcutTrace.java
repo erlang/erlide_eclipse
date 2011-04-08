@@ -3,8 +3,8 @@ package org.erlide.shade.bterl.ui.launcher;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlModule;
 
 public class TestLaunchShortcutTrace extends TestLaunchShortcut {
 

@@ -41,23 +41,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.backend.ErlLaunchAttributes;
-import org.erlide.common.CommonUtils;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFolder;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.internal.ErlExternalReferenceEntry;
-import org.erlide.core.erlang.internal.ErlExternalReferenceEntryList;
-import org.erlide.core.erlang.internal.ErlOtpExternalReferenceEntryList;
-import org.erlide.core.launch.ErlangLaunchDelegate;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.launching.ErlangLaunchDelegate;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFolder;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.IOpenable;
+import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntry;
+import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntryList;
+import org.erlide.core.model.erlang.internal.ErlOtpExternalReferenceEntryList;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
 
 /**
@@ -235,7 +235,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                     if (projNames == null) {
                         return;
                     }
-                    final IErlModel model = ErlangCore.getModel();
+                    final IErlModel model = CoreScope.getModel();
                     for (final String projName : projNames) {
                         final IErlElement prj = model.getChildNamed(projName);
                         getRoot().addAllErlangModules(prj);
@@ -421,7 +421,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      */
     public static void addModules(final Collection<String> interpret,
             final Collection<IErlModule> interpretedModules) {
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         for (final String i : interpret) {
             final String[] pm = i.split(":");
             IErlModule module = null;
@@ -440,7 +440,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 try {
                     module = model.findModule(i);
                 } catch (final ErlModelException e) {
-                    module = null;
                 }
             }
             if (module != null) {

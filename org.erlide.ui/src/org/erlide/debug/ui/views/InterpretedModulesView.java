@@ -31,16 +31,16 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.backend.ErlLaunchAttributes;
-import org.erlide.backend.ErtsProcess;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.common.CommonUtils;
-import org.erlide.core.debug.ErlangDebugElement;
-import org.erlide.core.debug.ErlangDebugHelper;
-import org.erlide.core.debug.ErlangDebugTarget;
-import org.erlide.core.debug.IErlangDebugNode;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.debug.ErlangDebugElement;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.IErlangDebugNode;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -277,7 +277,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             final boolean checked) {
         final String module = dti.getItem().getName();
         final String moduleWoExtension = CommonUtils.withoutExtension(module);
-        final IProject project = dti.getItem().getErlProject().getProject();
+        final IProject project = dti.getItem().getProject()
+                .getWorkspaceProject();
         final boolean interpret = checked;
         final RpcCallSite backend = erlangDebugTarget.getBackend();
 

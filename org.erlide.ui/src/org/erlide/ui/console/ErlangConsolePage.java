@@ -74,11 +74,11 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.ErlBackend;
-import org.erlide.backend.console.BackendShell;
-import org.erlide.backend.console.IoRequest;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.IoRequest;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -310,8 +310,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     boolean isInputComplete() {
         try {
             final String str = consoleInput.getText() + " ";
-            final OtpErlangObject o = ErlBackend.parseConsoleInput(ErlangCore
-                    .getBackendManager().getIdeBackend(), str);
+            final OtpErlangObject o = BackendHelper.parseConsoleInput(
+                    BackendCore.getBackendManager().getIdeBackend(), str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;
             }

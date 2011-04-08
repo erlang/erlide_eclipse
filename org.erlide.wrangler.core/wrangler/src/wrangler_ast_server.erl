@@ -380,21 +380,27 @@ quick_parse_annotate_file(FName, SearchPaths, TabWidth) ->
 	{error, Reason} -> erlang:error(Reason)
     end.
 
-
+%%TODO: CHECK WHY MERGE is necessary; it could produce 
+%% unaccruate info if preprocessor directives are used.
 merge_module_info(Info1, Info2) ->
-    Info = lists:usort(Info1 ++ Info2),
+    Info = lists:usort(Info1 ++ Info2), 
     F = fun(Attr) ->
 		lists:usort(lists:append(
 			      [Vs||{Attr1,Vs} <- Info, 
 				   Attr1==Attr]))
 	end,
+    F1 = fun(Attr) ->
+                 lists:append(
+                   [Vs||{Attr1,Vs} <- Info1, 
+                        Attr1==Attr])
+         end,
     M = case lists:keysearch(module, 1, Info) of
 		 {value, R} ->
 		     R;
 		 _ -> {module, []}
 	     end,
     NewInfo=[M, {exports,F(exports)}, {module_imports, F(module_imports)},
-	     {imports, F(imports)}, {attributes,F(attributes)},
+	     {imports, F(imports)}, {attributes,F1(attributes)},
 	     {records, F(records)}, {errors, F(errors)}, {warnings, F(warnings)},
 	     {functions, F(functions)}, {rules, F(rules)}],
     [{A,V}||{A, V}<-NewInfo, V=/=[]].

@@ -14,13 +14,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.core.builder.BuildResource;
-import org.erlide.core.builder.BuilderHelper;
-import org.erlide.core.builder.CompilerPreferences;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.CoreScope;
+import org.erlide.core.MessageReporter;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.services.builder.BuildResource;
+import org.erlide.core.services.builder.BuilderHelper;
+import org.erlide.core.services.builder.CompilerPreferences;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -44,7 +46,7 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final RpcCallSite b = ErlangCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();
@@ -56,7 +58,7 @@ public class CompileAction extends Action {
             e1.printStackTrace();
         }
         final OtpErlangList compilerOptions = prefs.export();
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
 
         if ("erl".equals(resource.getFileExtension())) {
@@ -66,6 +68,8 @@ public class CompileAction extends Action {
         if ("yrl".equals(resource.getFileExtension())) {
             helper.compileYrl(project, bres, b, compilerOptions);
         }
+        MessageReporter.showInfo(String.format("File '%s' was compiled.",
+                resource.getName()));
     }
 
     public IWorkbenchSite getSite() {

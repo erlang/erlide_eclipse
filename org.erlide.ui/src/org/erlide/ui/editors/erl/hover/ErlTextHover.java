@@ -38,35 +38,35 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.backend.Backend;
-import org.erlide.backend.rpc.RpcCallSite;
-import org.erlide.backend.util.Util;
-import org.erlide.core.backend.BackendManager;
-import org.erlide.core.erlang.ErlToken;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlPreprocessorDef;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlPreprocessorDef;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.parsing.ErlangToolkit;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.services.search.ErlideDoc;
+import org.erlide.core.services.search.OpenResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.information.ErlInformationPresenter;
-import org.erlide.ui.information.PresenterControlCreator;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-
-import erlang.ErlideDoc;
-import erlang.OpenResult;
 
 public class ErlTextHover implements ITextHover,
         IInformationProviderExtension2, ITextHoverExtension,
@@ -269,15 +269,15 @@ public class ErlTextHover implements ITextHover,
                 .toString();
         final IErlProject erlProject = module.getProject();
 
-        final BackendManager backendManager = ErlangCore.getBackendManager();
+        final BackendManager backendManager = BackendCore.getBackendManager();
         final Backend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject
-                    .getProject();
+                    .getWorkspaceProject();
             final RpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
             r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,

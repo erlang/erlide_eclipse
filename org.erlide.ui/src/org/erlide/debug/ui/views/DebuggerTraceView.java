@@ -43,14 +43,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.debug.ErlangDebugTarget;
-import org.erlide.core.debug.ErlangDebugTarget.TraceChangedEventData;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlangDebugTarget.TraceChangedEventData;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -420,10 +420,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // PlatformUI.getWorkbench().getWorkingSetManager()
         // .addPropertyChangeListener(getWorkingSetListener());
         return viewer;
-
         // registerContextMenu();
         // initDragAndDrop();
-
     }
 
     // @Override
@@ -536,13 +534,9 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // }
     //
     // public void mouseDown(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // public void mouseUp(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // });
@@ -566,7 +560,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         }
 
         IEditorPart part = null;
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = CoreScope.getModel();
         IErlModule module;
         try {
             module = model.findModule(moduleName);

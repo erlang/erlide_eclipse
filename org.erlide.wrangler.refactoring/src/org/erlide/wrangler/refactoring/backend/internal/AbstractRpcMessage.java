@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-import org.erlide.backend.rpc.RpcResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.rpc.RpcResult;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
@@ -19,7 +19,7 @@ import org.erlide.wrangler.refactoring.exception.WranglerException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * Abstract class for parsing RpcResult objects
+ * Abstract class for parsing RpcResultImpl objects
  * 
  * @author Gyorgy Orosz
  * @version %I%, %G%
@@ -38,7 +38,7 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
     public void parse(final RpcResult result) {
         try {
             if (!result.isOk()) {
-                org.erlide.jinterface.util.ErlLogger.error(
+                org.erlide.jinterface.ErlLogger.error(
                         "Erlide communication error: ", result);
                 setUnsuccessful("Communication error occured, please try again!");
                 ErlLogger.error(result.toString());

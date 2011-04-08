@@ -29,12 +29,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.services.builder.DialyzerUtils;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -137,7 +137,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             modules.clear();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             try {
                 model.open(null);
                 for (final Object i : structuredSelection.toList()) {

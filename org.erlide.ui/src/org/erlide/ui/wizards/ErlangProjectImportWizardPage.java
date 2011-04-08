@@ -71,7 +71,7 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.util.PluginUtils;
+import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 
@@ -568,26 +568,25 @@ public class ErlangProjectImportWizardPage extends
     /**
      * Displays an error that occured during the .project file creation. *
      * 
-     * @param x
+     * @param exception
      *            details on the error
      */
-    private void reportError(final InterruptedException x) {
-        ErrorDialog.openError(getShell(), ErlideUIPlugin
-                .getResourceString("wizards.errors.projectfileerrordesc"),
-                ErlideUIPlugin
-                        .getResourceString("wizards.errors.projecterrortitle"),
-                PluginUtils.makeStatus(x));
+    private void reportError(final InterruptedException exception) {
+        final String description = ErlideUIPlugin
+                .getResourceString("wizards.errors.projectfileerrordesc");
+        final String title = ErlideUIPlugin
+                .getResourceString("wizards.errors.projecterrortitle");
+        ErrorDialog.openError(getShell(), description, title,
+                PluginUtils.makeStatus(exception));
 
     }
 
     private void reportError() {
-        MessageDialog
-                .openError(
-                        getShell(),
-                        ErlideUIPlugin
-                                .getResourceString("wizards.errors.projecterrortitle"),
-                        ErlideUIPlugin
-                                .getResourceString("wizards.errors.projectfileerrordesc"));
+        final String title = ErlideUIPlugin
+                .getResourceString("wizards.errors.projecterrortitle");
+        final String description = ErlideUIPlugin
+                .getResourceString("wizards.errors.projectfileerrordesc");
+        MessageDialog.openError(getShell(), title, description);
     }
 
     boolean linkToResources(final String theProjectPath,
@@ -617,44 +616,8 @@ public class ErlangProjectImportWizardPage extends
             project.setDescription(description, new SubProgressMonitor(monitor,
                     300));
             final int subTicks = 600 / fileSystemObjects.size();
-            for (final Object fso : fileSystemObjects) {
-                if (fso instanceof File) {
-                    File f = (File) fso;
-                    for (;;) {
-                        String path = f.getPath();
-                        if (path.equals(theProjectPath)) {
-                            break;
-                        }
-                        path = f.getParent();
-                        if (path.equals(theProjectPath)) {
-                            final SubProgressMonitor subMonitor = new SubProgressMonitor(
-                                    monitor, subTicks);
-                            final String name = f.getName();
-                            final IPath location = new Path(f.getAbsolutePath());
-                            IResource resource;
-                            final boolean isDirectory = f.isDirectory();
-                            if (isDirectory) {
-                                resource = project.getFolder(name);
-                            } else {
-                                resource = project.getFile(name);
-                            }
-                            if (!resource.isLinked()) {
-                                if (isDirectory) {
-                                    ((IFolder) resource).createLink(location,
-                                            IResource.NONE, subMonitor);
-                                } else {
-                                    ((IFile) resource).createLink(location,
-                                            IResource.NONE, subMonitor);
-                                }
-                            } else {
-                                subMonitor.done();
-                            }
-                            break;
-                        }
-                        f = f.getParentFile();
-                    }
-                }
-            }
+            createLinks(theProjectPath, fileSystemObjects, monitor, project,
+                    subTicks);
             // project.create(description, IResource.REPLACE,
             // new SubProgressMonitor(monitor, 30));
             project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
@@ -666,6 +629,56 @@ public class ErlangProjectImportWizardPage extends
         }
         return true;
 
+    }
+
+    private void createLinks(final String theProjectPath,
+            final List<Object> fileSystemObjects,
+            final IProgressMonitor monitor, final IProject project,
+            final int subTicks) throws CoreException {
+        for (final Object fso : fileSystemObjects) {
+            if (fso instanceof File) {
+                File f = (File) fso;
+                for (;;) {
+                    String path = f.getPath();
+                    if (path.equals(theProjectPath)) {
+                        break;
+                    }
+                    path = f.getParent();
+                    if (path.equals(theProjectPath)) {
+                        createLinkFromPath(monitor, project, subTicks, f);
+                        break;
+                    }
+                    f = f.getParentFile();
+                }
+            }
+        }
+    }
+
+    private void createLinkFromPath(final IProgressMonitor monitor,
+            final IProject project, final int subTicks, final File f)
+            throws CoreException {
+        final SubProgressMonitor subMonitor = new SubProgressMonitor(monitor,
+                subTicks);
+        final String name = f.getName();
+        final IPath location = new Path(f.getAbsolutePath());
+        IResource resource;
+        final boolean isDirectory = f.isDirectory();
+        if (isDirectory) {
+            resource = project.getFolder(name);
+        } else {
+            resource = project.getFile(name);
+        }
+        if (!resource.isLinked()) {
+            if (isDirectory) {
+                ((IFolder) resource).createLink(location, IResource.NONE,
+                        subMonitor);
+            } else {
+                ((IFile) resource).createLink(location, IResource.NONE,
+                        subMonitor);
+            }
+        } else {
+            subMonitor.done();
+        }
     }
 
     /**

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.ui.editors.erl.ErlangEditor;
-
-import erlang.ErlSearchScope;
 
 /**
  * Finds references of the selected element in working sets. The action is
@@ -97,29 +97,31 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
     }
 
     @Override
-    protected ErlSearchScope getScope() {
+    protected ErlSearchScope getScope() throws CoreException {
         if (fWorkingSets != null) {
-            return SearchUtil.getWorkingSetsScope(fWorkingSets);
+            return SearchUtil.getWorkingSetsScope(fWorkingSets, false, false);
         } else {
-            return SearchUtil.getWorkspaceScope();
+            return SearchUtil.getWorkspaceScope(false, false);
         }
     }
 
     @Override
     public void run(final IErlElement element) {
         try {
-            super.performNewSearch(element, getWorkingSetsScope(fWorkingSets),
-                    getWorkingSetsExternalScope(fWorkingSets));
+            super.performNewSearch(element, getWorkingSetsScope(fWorkingSets));
         } catch (final InterruptedException e) {
+        } catch (final CoreException e) {
+            handleException(e);
         }
     }
 
     @Override
     public void run(final ITextSelection selection) {
         try {
-            performNewSearch(selection, getWorkingSetsScope(fWorkingSets),
-                    getWorkingSetsExternalScope(fWorkingSets));
+            performNewSearch(selection, getWorkingSetsScope(fWorkingSets));
         } catch (final InterruptedException e) {
+        } catch (final Exception e) {
+            handleException(e);
         }
     }
 

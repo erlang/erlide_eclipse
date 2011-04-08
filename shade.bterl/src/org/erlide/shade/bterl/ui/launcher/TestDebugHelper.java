@@ -8,9 +8,10 @@ import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.erlide.common.CommonUtils;
-import org.erlide.core.debug.ErlangDebugHelper;
-import org.erlide.core.erlang.ErlModelException;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.jinterface.ErlLogger;
 
 public class TestDebugHelper extends ErlangDebugHelper {
     private final File workdir;
@@ -25,7 +26,7 @@ public class TestDebugHelper extends ErlangDebugHelper {
         final String beam = CommonUtils.withoutExtension(module) + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {
             public boolean accept(final File dir, final String name) {
-                System.out.println(dir.getAbsolutePath() + "   " + name);
+                ErlLogger.debug(dir.getAbsolutePath() + "   " + name);
                 return name.equals(beam);
             }
         });

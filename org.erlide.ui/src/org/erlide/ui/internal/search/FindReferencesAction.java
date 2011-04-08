@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.erlide.ui.internal.search;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchSite;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.services.search.ErlSearchScope;
+import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.ui.editors.erl.ErlangEditor;
-
-import erlang.ErlSearchScope;
-import erlang.ErlangSearchPattern.LimitTo;
 
 /**
  * Finds references of the selected element in the workspace. The action is
@@ -66,17 +67,12 @@ public class FindReferencesAction extends FindAction {
     }
 
     @Override
-    protected ErlSearchScope getScope() {
-        return SearchUtil.getWorkspaceScope();
+    protected ErlSearchScope getScope() throws ErlModelException, CoreException {
+        return SearchUtil.getWorkspaceScope(false, false);
     }
 
     @Override
     protected String getScopeDescription() {
         return SearchUtil.getWorkspaceScopeDescription();
-    }
-
-    @Override
-    protected ErlSearchScope getExternalScope() {
-        return SearchUtil.getWorkspaceExternalScope();
     }
 }

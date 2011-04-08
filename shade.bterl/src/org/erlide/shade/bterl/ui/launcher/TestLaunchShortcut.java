@@ -24,15 +24,16 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.test_support.ui.suites.ResultsView;
+import org.erlide.core.CoreScope;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.test_support.ui.suites.TestResultsView;
 
 public class TestLaunchShortcut implements ILaunchShortcut {
 
@@ -52,19 +53,22 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         final ILaunchConfiguration launchConfig = getLaunchConfiguration(target);
         try {
             if (launchConfig != null) {
+                final TestResultsView view = (TestResultsView) PlatformUI
+                        .getWorkbench().getActiveWorkbenchWindow()
+                        .getActivePage().showView(TestResultsView.VIEW_ID);
+                if (view != null) {
+                    view.clearEvents();
+                    view.setMessage("Launching: " + getTargetName(target));
+                }
                 final ILaunch launch = launchConfig.launch(mode, Job
                         .getJobManager().createProgressGroup(), false, true);
-                final ErlideBackend backend = ErlangCore.getBackendManager()
+                final Backend backend = BackendCore.getBackendManager()
                         .getBackendForLaunch(launch);
                 if (backend == null) {
                     System.out.println("NULL backend for bterl");
                     return;
                 }
-                final ResultsView view = (ResultsView) PlatformUI
-                        .getWorkbench().getActiveWorkbenchWindow()
-                        .getActivePage().showView(ResultsView.VIEW_ID);
                 if (view != null) {
-                    view.clearEvents();
                     backend.getEventDaemon().addHandler(view.getEventHandler());
                 }
             }
@@ -74,12 +78,8 @@ public class TestLaunchShortcut implements ILaunchShortcut {
     }
 
     protected ILaunchConfiguration getLaunchConfiguration(final Object target) {
-        Object newtarget = target;
-        if (target instanceof IEditorPart) {
-            newtarget = getEditorTarget(target);
-        }
-
-        if (newtarget == null) {
+        final String targetName = getTargetName(target);
+        if (targetName == null) {
             return null;
         }
         final ILaunchManager manager = DebugPlugin.getDefault()
@@ -88,16 +88,31 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 .getLaunchConfigurationType("org.erlide.test_support.launchConfigurationType");
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
-            String targetName = newtarget.toString().replace('/', '_');
-            if (newtarget instanceof IErlFunctionClause) {
-                targetName = ((IErlFunctionClause) newtarget).getFunctionName();
-            }
-            workingCopy = type.newInstance(null, "internal_" + targetName);
+            workingCopy = type.newInstance(null,
+                    "internal_" + targetName.replace('/', '_'));
             return workingCopy;
         } catch (final CoreException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getTargetName(final Object target) {
+        Object newtarget = target;
+        if (target instanceof IEditorPart) {
+            newtarget = getEditorTarget(target);
+        }
+        if (newtarget == null) {
+            return null;
+        }
+        if (newtarget instanceof IResource) {
+            return ((IResource) newtarget).getProjectRelativePath().toString();
+        }
+        String targetName = newtarget.toString();
+        if (newtarget instanceof IErlFunctionClause) {
+            targetName = ((IErlFunctionClause) newtarget).getFunctionName();
+        }
+        return targetName;
     }
 
     public static Object getEditorTarget(final Object target) {
@@ -121,7 +136,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 if (sel instanceof ITextSelection && !sel.isEmpty()) {
                     final ITextSelection tsel = (ITextSelection) sel;
                     try {
-                        final IErlModule module = ErlangCore.getModel()
+                        final IErlModule module = CoreScope.getModel()
                                 .findModule(file);
                         if (module != null) {
                             result = module.getElementAt(tsel.getOffset());

@@ -176,16 +176,16 @@ public class OtpErlangTuple extends OtpErlangObject implements Serializable,
         final StringBuffer s = new StringBuffer();
         final int arity = elems.length;
 
-        s.append('{');
+        s.append("{");
 
         for (i = 0; i < arity; i++) {
             if (i > 0) {
-                s.append(',');
+                s.append(",");
             }
             s.append(elems[i].toString());
         }
 
-        s.append('}');
+        s.append("}");
 
         return s.toString();
     }

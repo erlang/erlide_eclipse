@@ -12,7 +12,7 @@ package org.erlide.wrangler.refactoring.selection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

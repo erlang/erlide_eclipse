@@ -12,13 +12,15 @@
          
          tc_start/1,
          tc_result/1,
-         tc_fail/1
+         tc_fail/1,
+         tc_skip/1
         ]).
 
 -include("erlide.hrl").
 
 start() ->
 	spawn(fun() ->
+                  ?Info({bterl_watcher, self()}),
 				  wait_start()
 		  end).
 
@@ -28,6 +30,7 @@ stop_when_done() ->
 	Jobs = test_server_ctrl:jobs(),
 	case Jobs of
 		[] ->
+            ?Info({"!!stop!! ", stop_bterl}),
 			init:stop();
 		_ ->
 			stop_when_done()
@@ -39,15 +42,15 @@ wait_start() ->
 	case Jobs of
 		[] ->
 			wait_start();
-		{'EXIT', _} ->
+		{'EXIT', _R} ->
 			wait_start();
 		_ ->
 			stop_when_done()
 	end.
 
 start_bterl(Str) ->
-    erlide_log:log({"!!", start_bterl, Str}),
-    {ok, {Flags, Cmd, Trace, Cb, Dir}=X} = erlide_backend:parse_term(Str++"."),
+    start(),
+    {ok, {Flags, Cmd, _Trace, Cb, _Dir}=X} = erlide_backend:parse_term(Str++"."),
     ?Info({start_bterl, X}),
 %%     Pids = case bt_run:has_flag($t, Flags) of 
 %%         true ->
@@ -57,6 +60,14 @@ start_bterl(Str) ->
 %%         false ->
 %%             []
 %%     end,
+    Init = case Cb of
+               undefined ->
+                   undefined;
+               {M, F} ->
+                   catch M:F()
+           end,
+    ?Info({">> init cb: ", Init}),
+    
     Pids = [],
 	case catch bt_run:run(Flags, Cmd, Pids, ?MODULE) of
 		{'EXIT', Reason} ->
@@ -69,8 +80,8 @@ start_bterl(Str) ->
     ok.
 
 init_debugger() ->
-    %% FIXME: DON'T HARDCODE THIS!
-            ?Info("initializing Debugger..."),
+    ?Info("initializing Debugger..."),
+    %% FIXME: DON'T HARDCODE THIS! wait until builder is done...
     timer:sleep(1000),
     erlide_jrpc:event(bterl_debugger, self()),
     receive

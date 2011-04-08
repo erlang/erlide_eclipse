@@ -40,7 +40,6 @@ public class OtpErlangUInt extends OtpErlangLong implements Serializable,
     public OtpErlangUInt(final int i) throws OtpErlangRangeException {
         super(i);
 
-        @SuppressWarnings("unused")
         final int j = uIntValue();
     }
 
@@ -63,7 +62,6 @@ public class OtpErlangUInt extends OtpErlangLong implements Serializable,
             throws OtpErlangRangeException, OtpErlangDecodeException {
         super(buf);
 
-        @SuppressWarnings("unused")
         final int j = uIntValue();
     }
 }

@@ -46,7 +46,6 @@ import java.net.Socket;
  * OtpConnection objects are returned by {@link OtpSelf#connect(OtpPeer)
  * OtpSelf.connect()} and {@link OtpSelf#accept() OtpSelf.accept()}.
  */
-@SuppressWarnings("hiding")
 public class OtpConnection extends AbstractConnection {
     protected OtpSelf self;
     protected GenericQueue queue; // messages get delivered here

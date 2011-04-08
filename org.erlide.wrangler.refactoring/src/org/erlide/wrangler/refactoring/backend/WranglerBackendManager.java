@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 
 /**
  * Stores Erlide backends for wrangler , and has interface to access them
@@ -29,7 +29,7 @@ public class WranglerBackendManager {
      */
     public static WranglerRefactoringBackend getRefactoringBackend() {
         if (refactoringBackend == null) {
-            refactoringBackend = new WranglerRefactoringBackend(ErlangCore
+            refactoringBackend = new WranglerRefactoringBackend(BackendCore
                     .getBackendManager().getIdeBackend());
         }
         return refactoringBackend;
@@ -42,7 +42,7 @@ public class WranglerBackendManager {
      */
     public static WranglerSyntaxBackend getSyntaxBackend() {
         if (syntaxBackend == null) {
-            syntaxBackend = new WranglerSyntaxBackend(ErlangCore
+            syntaxBackend = new WranglerSyntaxBackend(BackendCore
                     .getBackendManager().getIdeBackend());
         }
         return syntaxBackend;

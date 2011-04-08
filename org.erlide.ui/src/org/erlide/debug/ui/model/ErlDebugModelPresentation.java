@@ -15,14 +15,15 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
-import org.erlide.core.debug.ErlangDebugTarget;
-import org.erlide.core.debug.ErlangLineBreakpoint;
-import org.erlide.core.debug.ErlangProcess;
-import org.erlide.core.debug.ErlangStackFrame;
-import org.erlide.core.debug.ErlangUninterpretedStackFrame;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlangLineBreakpoint;
+import org.erlide.core.model.debug.ErlangProcess;
+import org.erlide.core.model.debug.ErlangStackFrame;
+import org.erlide.core.model.debug.ErlangUninterpretedStackFrame;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlProject.Scope;
+import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -155,8 +156,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
 
     @Override
     public boolean isLabelProperty(final Object element, final String property) {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     public IEditorInput getEditorInput(final Object element) {
@@ -170,8 +170,8 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlModule module = ModelUtils.findModule(null,
-                        null, lfs.getFullPath().toString(), true);
+                final IErlModule module = ModelUtils.findModule(null, null, lfs
+                        .getFullPath().toString(), Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {
                 e.printStackTrace();

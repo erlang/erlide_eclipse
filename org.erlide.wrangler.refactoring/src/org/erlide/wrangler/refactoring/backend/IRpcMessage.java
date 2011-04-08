@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.backend.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResult;
 
 /**
- * Interface for handling RpcResult objects of the Erlide's backend, which
+ * Interface for handling RpcResultImpl objects of the Erlide's backend, which
  * contains information about a RPC with Wrangler
  * 
  * @author Gyorgy Orosz
@@ -43,7 +43,7 @@ public interface IRpcMessage {
     public RefactoringState getRefactoringState();
 
     /**
-     * Parses an RpcResult object.
+     * Parses an RpcResultImpl object.
      * 
      * @param result
      *            result of an RPC

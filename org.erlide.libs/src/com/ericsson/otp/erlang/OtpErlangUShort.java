@@ -40,7 +40,6 @@ public class OtpErlangUShort extends OtpErlangLong implements Serializable,
     public OtpErlangUShort(final short s) throws OtpErlangRangeException {
         super(s);
 
-        @SuppressWarnings("unused")
         final short j = uShortValue();
     }
 
@@ -63,7 +62,6 @@ public class OtpErlangUShort extends OtpErlangLong implements Serializable,
             throws OtpErlangRangeException, OtpErlangDecodeException {
         super(buf);
 
-        @SuppressWarnings("unused")
         final short j = uShortValue();
     }
 }

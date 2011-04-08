@@ -14,8 +14,8 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
 
 public class BackendContentProvider implements IStructuredContentProvider {
 
@@ -30,8 +30,8 @@ public class BackendContentProvider implements IStructuredContentProvider {
     }
 
     public Object[] getElements(final Object inputElement) {
-        final Collection<ErlideBackend> bs = ErlangCore.getBackendManager()
+        final Collection<Backend> bs = BackendCore.getBackendManager()
                 .getAllBackends();
-        return bs.toArray(new ErlideBackend[bs.size()]);
+        return bs.toArray(new Backend[bs.size()]);
     }
 }

@@ -3,7 +3,7 @@ package org.erlide.ui.util;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.IEditorInput;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlElement;
 
 public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
 

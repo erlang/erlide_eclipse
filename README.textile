@@ -1,6 +1,6 @@
 erlide is an Erlang IDE based on Eclipse.
 
-Documentation may be found at http://github.com/erlide/erlide/wiki and (rather old) at http://erlide.org/erlide.html.
+Documentation may be found at "the wiki":http://github.com/erlide/erlide/wiki and (rather old) at "the project site":http://erlide.org/erlide.html.
 
 
 

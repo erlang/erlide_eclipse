@@ -22,7 +22,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
- * RpcResult parser class for parsing results of a n generalise function
+ * RpcResultImpl parser class for parsing results of a n generalise function
  * refactoring
  * 
  * @author Gyorgy Orosz

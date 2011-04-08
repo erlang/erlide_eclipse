@@ -44,13 +44,14 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.backend.ErlBackend;
-import org.erlide.common.CommonUtils;
 import org.erlide.core.ErlangStatus;
-import org.erlide.core.backend.ErlideBackend;
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.editors.erl.completion.ErlangContextType;
@@ -141,13 +142,16 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         erlConMan = new ErlConsoleManager();
         if (CommonUtils.isDeveloper()) {
-            erlConMan.runtimeAdded(ErlangCore.getBackendManager()
-                    .getIdeBackend());
+            final Backend ideBackend = BackendCore.getBackendManager()
+                    .getIdeBackend();
+            if (!ideBackend.hasConsole()) {
+                erlConMan.runtimeAdded(ideBackend);
+            }
         }
 
         startPeriodicDump();
         erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
-        ErlangCore.getBackendManager().addBackendListener(
+        BackendCore.getBackendManager().addBackendListener(
                 erlangDebuggerBackendListener);
     }
 
@@ -163,7 +167,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     public void stop(final BundleContext context) throws Exception {
         erlConMan.dispose();
         super.stop(context);
-        ErlangCore.getBackendManager().removeBackendListener(
+        BackendCore.getBackendManager().removeBackendListener(
                 erlangDebuggerBackendListener);
         if (ErlideImage.isInstalled()) {
             ErlideImage.dispose();
@@ -460,9 +464,9 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 @Override
                 protected IStatus run(final IProgressMonitor monitor) {
                     try {
-                        final ErlideBackend ideBackend = ErlangCore
+                        final RpcCallSite ideBackend = BackendCore
                                 .getBackendManager().getIdeBackend();
-                        final String info = ErlBackend
+                        final String info = BackendHelper
                                 .getSystemInfo(ideBackend);
                         final String sep = "\n++++++++++++++++++++++\n";
                         ErlLogger.debug(sep + info + sep);

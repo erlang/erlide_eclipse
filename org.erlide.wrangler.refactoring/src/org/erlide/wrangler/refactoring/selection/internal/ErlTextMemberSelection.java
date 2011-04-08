@@ -14,11 +14,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlMember;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.util.ErlRange;
@@ -80,7 +80,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     public IErlElement getErlElement() {
-        final IErlModule module = (IErlModule) ErlangCore.getModel()
+        final IErlModule module = (IErlModule) CoreScope.getModel()
                 .findElement(file);
         try {
             final IErlElement element = module.getElementAt(textSelection

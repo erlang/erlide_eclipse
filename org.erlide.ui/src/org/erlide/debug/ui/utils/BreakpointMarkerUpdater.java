@@ -22,11 +22,11 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.texteditor.IMarkerUpdater;
 import org.eclipse.ui.texteditor.MarkerUtilities;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.core.debug.ErlangDebugTarget;
-import org.erlide.core.debug.ErlangLineBreakpoint;
-import org.erlide.core.debug.IErlangBreakpoint;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.model.debug.ErlangDebugTarget;
+import org.erlide.core.model.debug.ErlangLineBreakpoint;
+import org.erlide.core.model.debug.IErlangBreakpoint;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * This class provides a mechanism to correct the placement of a breakpoint
