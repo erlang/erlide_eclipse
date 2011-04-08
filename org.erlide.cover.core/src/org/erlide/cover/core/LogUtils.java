@@ -14,7 +14,7 @@ public class LogUtils {
 
     public static void log(final Plugin plugin, final int severity,
             final Object obj, final int depth) {
-        if (severity < IStatus.INFO) {
+        if (severity < IStatus.WARNING) {
             return;
         }
         final String pluginId = plugin.getClass().getPackage().getName();
