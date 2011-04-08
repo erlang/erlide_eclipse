@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
@@ -90,7 +91,7 @@ public class SearchTest {
         scope.addModule(moduleA);
         scope.addModule(moduleB);
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
-        query.run(null);
+        query.run(new NullProgressMonitor());
         // then
         // it should be found in module b
         final ErlangSearchResult searchResult = (ErlangSearchResult) query
@@ -120,7 +121,7 @@ public class SearchTest {
         scope.addModule(moduleA);
         scope.addModule(moduleB);
         final ErlSearchQuery query = new ErlSearchQuery(ref, scope, "");
-        query.run(null);
+        query.run(new NullProgressMonitor());
         // then
         // it should be found in module b
         final ErlangSearchResult searchResult = (ErlangSearchResult) query
