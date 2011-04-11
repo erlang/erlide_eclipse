@@ -18,7 +18,6 @@ public class Activator implements BundleActivator {
      * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
      * )
      */
-    @Override
     public void start(final BundleContext bundleContext) throws Exception {
         Activator.context = bundleContext;
     }
@@ -29,7 +28,6 @@ public class Activator implements BundleActivator {
      * @see
      * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
-    @Override
     public void stop(final BundleContext bundleContext) throws Exception {
         Activator.context = null;
     }

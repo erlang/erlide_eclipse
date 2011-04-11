@@ -10,10 +10,8 @@ safe_erlide.log
 erlide.log
 External_Files
 cover_report
-*.html
 org.erlide.selfhost*
-org.erlide.cover.site.bak
-org.erlide.eunit.erlang.bak
+*.bak
 refac_proj
 junit-*
 Simple*

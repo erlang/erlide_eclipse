@@ -120,13 +120,13 @@ public class ErlLogger {
         addConsoleHandler(erlSimpleFormatter);
 
         logger.setUseParentHandlers(false);
-        logger.setLevel(java.util.logging.Level.WARNING);
+        logger.setLevel(java.util.logging.Level.FINEST);
     }
 
     private void addConsoleHandler(final ErlSimpleFormatter erlSimpleFormatter) {
         final ConsoleHandler consoleHandler = new ConsoleHandler();
         consoleHandler.setFormatter(erlSimpleFormatter);
-        final Level lvl = java.util.logging.Level.WARNING;
+        final Level lvl = java.util.logging.Level.FINEST;
         consoleHandler.setLevel(lvl);
         logger.addHandler(consoleHandler);
     }

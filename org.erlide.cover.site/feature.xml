@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.erlide.cover.site2"
-      label="Erlang code coverage for ErlIde (update site)"
+      id="org.erlide.cover.site"
+      label="Erlang code coverage for erlide (update site)"
       version="0.2.0.qualifier"
       provider-name="Erlang Solutions">
 

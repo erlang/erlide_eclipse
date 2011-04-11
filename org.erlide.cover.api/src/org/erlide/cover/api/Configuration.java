@@ -75,32 +75,26 @@ public class Configuration implements IConfiguration {
         modules.put(module.getModuleName(), module);
     }
 
-    @Override
     public IErlProject getProject() {
         return project;
     }
 
-    @Override
     public Collection<IErlModule> getModules() {
         return modules.values();
     }
 
-    @Override
     public IPath getOutputDir() {
         return project.getOutputLocation();
     }
 
-    @Override
     public Collection<IPath> getSourceDirs() {
         return project.getSourceDirs();
     }
 
-    @Override
     public Collection<IPath> getIncludeDirs() {
         return project.getIncludeDirs();
     }
 
-    @Override
     public IErlModule getModule(final String name) {
         return modules.get(name);
     }
