@@ -43,6 +43,7 @@ import org.erlide.core.backend.internal.EpmdWatchJob;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
@@ -315,7 +316,7 @@ public final class BackendManager implements IEpmdListener {
         }
     }
 
-    public Backend getByName(final String nodeName) {
+    public RpcCallSite getByName(final String nodeName) {
         final Collection<Backend> list = getAllBackends();
         for (final Backend b : list) {
             if (b.getName().equals(nodeName)) {

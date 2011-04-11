@@ -109,18 +109,19 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
     @Override
     public void run(final IErlElement element) {
         try {
-            super.performNewSearch(element, getWorkingSetsScope(fWorkingSets),
-                    getWorkingSetsExternalScope(fWorkingSets));
-        } catch (final InterruptedException e) {
+            super.performNewSearch(element, getWorkingSetsScope(fWorkingSets));
+        } catch (final Exception e) {
+            handleException(e);
         }
     }
 
     @Override
     public void run(final ITextSelection selection) {
         try {
-            performNewSearch(selection, getWorkingSetsScope(fWorkingSets),
-                    getWorkingSetsExternalScope(fWorkingSets));
+            performNewSearch(selection, getWorkingSetsScope(fWorkingSets));
         } catch (final InterruptedException e) {
+        } catch (final Exception e) {
+            handleException(e);
         }
     }
 }

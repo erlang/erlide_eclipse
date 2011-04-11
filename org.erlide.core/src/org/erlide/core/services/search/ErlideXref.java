@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.core.backend.Backend;
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
@@ -27,7 +26,7 @@ public class ErlideXref {
         }
     }
 
-    public static List<String> modules(final Backend backend) {
+    public static List<String> modules(final RpcCallSite backend) {
         final ArrayList<String> result = new ArrayList<String>();
         try {
             final OtpErlangObject res = backend
@@ -48,13 +47,13 @@ public class ErlideXref {
         return result;
     }
 
-    public static void setScope(final Backend backend, final List<String> scope) {
+    public static void setScope(final RpcCallSite backend, final List<String> scope) {
         final List<String> mods = modules(backend);
         removeModules(backend, mods);
         addDirs(backend, scope);
     }
 
-    private static void removeModules(final Backend backend,
+    private static void removeModules(final RpcCallSite backend,
             final List<String> mods) {
         try {
             backend.call(ERLIDE_XREF, "remove_modules", "ls", mods);

@@ -55,4 +55,7 @@ public interface RpcCallSite {
             final String m, final String f, final String signature,
             final Object... a) throws RpcException;
 
+    public abstract void async_call_result(final RpcResultCallback cb, final String m,
+            final String f, final String signature, final Object... args) throws RpcException;
+
 }

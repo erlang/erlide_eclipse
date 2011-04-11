@@ -129,8 +129,8 @@ public final class RpcHelper {
     public static void rpcCallWithProgress(final RpcResultCallback callback,
             final OtpNode node, final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
-            final String fun, final int timeout, final String signature,
-            final Object... args0) throws SignatureException {
+            final String fun, final String signature, final Object... args0)
+            throws SignatureException {
         final Object[] args = new Object[args0.length + 1];
         System.arraycopy(args0, 0, args, 1, args0.length);
         final OtpMbox mbox = node.createMbox();

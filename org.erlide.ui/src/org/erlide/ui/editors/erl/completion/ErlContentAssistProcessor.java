@@ -39,7 +39,6 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -256,7 +255,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final Backend backend = CoreUtil.getBuildOrIdeBackend(project);
+        final RpcCallSite backend = CoreUtil.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

@@ -110,7 +110,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ExtensionHelper;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -122,7 +121,9 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
+import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlideOpen;
@@ -160,6 +161,10 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
+import com.google.common.collect.Lists;
 
 /**
  * The actual editor itself
@@ -460,7 +465,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
         // ovg= new OpenViewActionGroup(this),
-                esg = new ErlangSearchActionGroup(this) });
+        esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
         // openAction = new OpenAction(getSite(), getExternalModules(),
@@ -615,7 +620,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();
@@ -2205,7 +2211,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection selection, final boolean hasChanged) {
-            final Backend ideBackend = BackendCore.getBackendManager()
+            final RpcCallSite ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
 
@@ -2224,12 +2230,20 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     return;
                 }
                 if (pattern != null) {
-                    final List<ModuleLineFunctionArityRef> findRefs = ErlideSearchServer
-                            .findRefs(ideBackend, pattern, theModule,
-                                    getStateDir());
+                    final ErlSearchScope scope = new ErlSearchScope();
+                    scope.addModule(theModule);
+                    final List<ModuleLineFunctionArityRef> findRefs = Lists
+                            .newArrayList();
+                    final OtpErlangObject refs = ErlideSearchServer.findRefs(
+                            ideBackend, pattern, scope, getStateDir());
+                    SearchUtil.addSearchResult(findRefs, refs);
                     fRefs = getErlangRefs(theModule, findRefs);
                 }
             } catch (final RpcException e) {
+                ErlLogger.debug(e);
+            } catch (final ErlModelException e) {
+                ErlLogger.debug(e);
+            } catch (final OtpErlangRangeException e) {
                 ErlLogger.debug(e);
             }
             if (fRefs == null) {

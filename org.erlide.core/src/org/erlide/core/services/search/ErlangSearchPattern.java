@@ -110,7 +110,7 @@ public abstract class ErlangSearchPattern {
         return returnRefsAndOrDefs(refs, defs);
     }
 
-    protected OtpErlangObject makeIncludePatternObject(final String s) {
+    protected static OtpErlangObject makeIncludePatternObject(final String s) {
         return new OtpErlangTuple(new OtpErlangObject[] { INCLUDE_REF_ATOM,
                 new OtpErlangString(s) });
     }
@@ -184,13 +184,13 @@ public abstract class ErlangSearchPattern {
                 new OtpErlangAtom(s), new OtpErlangLong(a) });
     }
 
-    private OtpErlangObject make3Tuple(final OtpErlangAtom atom,
+    private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
             final String a1, final String a2) {
         return new OtpErlangTuple(new OtpErlangObject[] { atom,
                 new OtpErlangAtom(a1), new OtpErlangAtom(a2) });
     }
 
-    private OtpErlangObject make4Tuple(final OtpErlangAtom atom,
+    private static OtpErlangObject make4Tuple(final OtpErlangAtom atom,
             final String s1, final String s2, final int a) {
         return new OtpErlangTuple(new OtpErlangObject[] { atom,
                 new OtpErlangAtom(s1), new OtpErlangAtom(s2),
