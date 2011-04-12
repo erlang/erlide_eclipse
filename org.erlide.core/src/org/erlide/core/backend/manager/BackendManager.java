@@ -115,7 +115,6 @@ public final class BackendManager implements IEpmdListener {
                 throw new BackendException(
                         "IDE backend is not created - check configuration!");
             }
-            ideBackend.addProjectPath(project);
             return ideBackend;
         }
         final String version = info.getVersion().asMajor().toString();
@@ -125,7 +124,6 @@ public final class BackendManager implements IEpmdListener {
             buildBackends.put(version, b);
             notifyBackendChange(b, BackendEvent.ADDED, null, null);
         }
-        b.addProjectPath(project);
         return b;
     }
 
