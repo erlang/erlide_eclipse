@@ -156,14 +156,6 @@ public class RuntimeInfo {
                 result.add(pathZ);
             }
         }
-        final String gotArgs = getArgs();
-        if (!empty(gotArgs)) {
-            final String[] xargs = split(gotArgs);
-            for (final String a : xargs) {
-                result.add(a);
-            }
-        }
-
         if (!startShell) {
             result.add("-noshell");
         }
@@ -181,6 +173,13 @@ public class RuntimeInfo {
             if (cky != null) {
                 result.add("-setcookie");
                 result.add(cky);
+            }
+        }
+        final String gotArgs = getArgs();
+        if (!empty(gotArgs)) {
+            final String[] xargs = split(gotArgs);
+            for (final String a : xargs) {
+                result.add(a);
             }
         }
 
