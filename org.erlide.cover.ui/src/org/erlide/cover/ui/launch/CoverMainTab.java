@@ -27,7 +27,6 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.ide.IDE;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
@@ -65,7 +64,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         scrolled.setExpandHorizontal(true);
         scrolled.setMinSize(760, 300);
         setControl(scrolled);
-
 
         final GridLayout mainLayout = new GridLayout();
         mainLayout.numColumns = 3;
@@ -167,7 +165,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 projectMBr.setEnabled(true);
                 moduleBr.setEnabled(true);
                 fileBr.setEnabled(false);
-                
+
                 break;
 
             case ALL:
@@ -322,7 +320,6 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     private void createAllTestsGroup(final Composite comp) {
 
-
         final ElementListSelectionDialog projectDialog = new ElementListSelectionDialog(
                 getShell(), new ProjectLabelProvider());
 
@@ -374,7 +371,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 projectMBr.setEnabled(false);
                 moduleBr.setEnabled(false);
                 fileBr.setEnabled(true);
-            } 
+            }
         }
 
         public void widgetDefaultSelected(final SelectionEvent e) {

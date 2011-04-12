@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.model.erlang.IErlProject;
 
-
 /**
  * Content provider for projects
  * 
@@ -22,9 +21,10 @@ public class ProjectTreeContentProvider implements ITreeContentProvider {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
-        projects = (Collection) newInput;
+        projects = (Collection<IErlProject>) newInput;
     }
 
     public Object[] getElements(final Object inputElement) {

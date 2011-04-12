@@ -214,7 +214,7 @@ public class CoverBackend implements ICoverBackend {
         return rt;
     }
 
-    private ILaunchConfiguration getLaunchConfiguration(final RuntimeInfo info,
+    private ILaunchConfiguration getLaunchConfiguration(final RuntimeInfo myInfo,
             final Set<BackendOptions> options) {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -222,18 +222,18 @@ public class CoverBackend implements ICoverBackend {
                 .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
 
-        nodeName = info.getNodeName();
+        nodeName = myInfo.getNodeName();
         try {
             workingCopy = type.newInstance(null,
-                    "internal " + info.getNodeName());
+                    "internal " + myInfo.getNodeName());
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
                     "ISO-8859-1");
             workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
-                    info.getNodeName());
+                    myInfo.getNodeName());
             workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                    info.getName());
+                    myInfo.getName());
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
-                    info.getCookie());
+                    myInfo.getCookie());
             workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
                     !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL,

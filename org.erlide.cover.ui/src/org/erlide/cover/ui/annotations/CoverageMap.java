@@ -6,25 +6,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.text.source.Annotation;
-import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.LineResult;
 
 /**
  * Stores information about which lines are marked with coverage annotations
  * 
  * @author Aleksnadra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- *
+ * 
  */
 public class CoverageMap {
-    
-    private Map<String, Map<LineResult, Annotation>> coverage;
-    
-    private Logger log;         // logger
-    
+
+    private final Map<String, Map<LineResult, Annotation>> coverage;
+
     public CoverageMap() {
         coverage = new HashMap<String, Map<LineResult, Annotation>>();
-        log = Activator.getDefault();
     }
 
     /**
@@ -35,40 +30,43 @@ public class CoverageMap {
      * @param ann
      */
     public void addAnnotation(String name, LineResult lr, Annotation ann) {
-        if(!coverage.containsKey(name))
+        if (!coverage.containsKey(name)) {
             coverage.put(name, new HashMap<LineResult, Annotation>());
-        
+        }
+
         coverage.get(name).put(lr, ann);
     }
-    
+
     /**
      * Gets annotation from specified file in specified line
+     * 
      * @param name
      * @param lr
      * @return
      */
     public Annotation getAnnotation(String name, LineResult lr) {
-        if(!coverage.containsKey(name))
+        if (!coverage.containsKey(name)) {
             return null;
+        }
         return coverage.get(name).get(lr);
     }
-    
+
     /**
      * Check if an there is any coverage annotation at specified line
+     * 
      * @param name
      * @param lr
      * @return
      */
     public boolean containsAnnotation(String name, LineResult lr) {
-        return coverage.containsKey(name) && 
-                coverage.get(name).containsKey(lr) &&
-                coverage.get(name).get(lr) != null;
+        return coverage.containsKey(name) && coverage.get(name).containsKey(lr)
+                && coverage.get(name).get(lr) != null;
     }
-    
+
     public boolean containsFile(String name) {
         return coverage.containsKey(name);
     }
-    
+
     /**
      * Check the type of specified cverage annotation
      * 
@@ -78,10 +76,10 @@ public class CoverageMap {
      * @return
      */
     public boolean checkType(String name, LineResult lr, String type) {
-        return containsAnnotation(name, lr) &&
-                coverage.get(name).get(lr).getType().equals(type);
+        return containsAnnotation(name, lr)
+                && coverage.get(name).get(lr).getType().equals(type);
     }
-    
+
     /**
      * Remove coverage annotations.
      * 
@@ -89,11 +87,11 @@ public class CoverageMap {
      * @param lr
      */
     public void removeAnnotation(String name, LineResult lr) {
-        if(containsAnnotation(name, lr)) {
+        if (containsAnnotation(name, lr)) {
             coverage.get(name).remove(lr);
         }
     }
-    
+
     /**
      * Remove all annotations for specified file
      * 
@@ -102,14 +100,13 @@ public class CoverageMap {
     public void removeAll(String name) {
         coverage.get(name).clear();
     }
-    
-    
+
     public void removeAll() {
         coverage.clear();
     }
-    
+
     public Set<LineResult> getLineSet(String name) {
         return new HashSet<LineResult>(coverage.get(name).keySet());
     }
-    
+
 }

@@ -12,7 +12,6 @@ import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * Class for launching cover
@@ -21,7 +20,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * 
  */
 public class CoverRunner extends AbstractCoverRunner {
-
 
     private final Logger log; // logger
     private static Semaphore semaphore = new Semaphore(1);
@@ -60,7 +58,6 @@ public class CoverRunner extends AbstractCoverRunner {
                         new OtpErlangAtom(CoverBackend.getInstance()
                                 .getSettings().getFramework()));
 
-
         log.info(config.getProject().getWorkspaceProject().getLocation());
         final IPath ppath = config.getProject().getWorkspaceProject()
                 .getLocation();
@@ -72,7 +69,6 @@ public class CoverRunner extends AbstractCoverRunner {
                 .call(TestConstants.TEST_ERL_BACKEND,
                         TestConstants.FUN_OUTPUT_DIR, "s",
                         ppath.append(config.getOutputDir()).toString());
-
 
         switch (CoverBackend.getInstance().getSettings().getType()) {
         case MODULE:

@@ -14,8 +14,6 @@ import org.eclipse.ui.ide.IDE;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.cover.core.Activator;
-import org.erlide.cover.core.Logger;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
@@ -28,8 +26,6 @@ import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
  */
 public class StatsViewLabelProvider extends LabelProvider implements
         ITableLabelProvider {
-
-    private Logger log = Activator.getDefault();
 
     public Image getColumnImage(final Object element, final int columnIndex) {
         Image img = null;
@@ -51,8 +47,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
             case MODULE:
                 IErlModule m;
                 try {
-                    m = CoreScope.getModel().findModule(
-                            statsEl.getLabel());
+                    m = CoreScope.getModel().findModule(statsEl.getLabel());
                 } catch (ErlModelException e) {
                     e.printStackTrace();
                     return null;

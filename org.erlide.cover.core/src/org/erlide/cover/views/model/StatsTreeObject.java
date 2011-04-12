@@ -76,7 +76,7 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public void setParent(final ICoverageObject parent) {
-            this.parent = parent;
+        this.parent = parent;
     }
 
     public ICoverageObject getParent() {
@@ -84,8 +84,8 @@ public class StatsTreeObject implements ICoverageObject {
     }
 
     public void addChild(final String name, final ICoverageObject child) {
-            children.put(name, child);
-            child.setParent(this);
+        children.put(name, child);
+        child.setParent(this);
     }
 
     public void removeChild(final String name) {
