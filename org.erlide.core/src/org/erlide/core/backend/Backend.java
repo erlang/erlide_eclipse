@@ -580,7 +580,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
-            ErlLogger.debug("backend %s: add path %s", getName(), outDir);
+            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {
                 final boolean accessible = ErlideUtil
                         .isAccessible(this, outDir);
