@@ -85,7 +85,7 @@ public class RuntimeInfo {
     }
 
     public void setCookie(final String cookie) {
-        this.cookie = cookie;
+        this.cookie = cookie.trim();
     }
 
     public String getNodeName() {
@@ -182,7 +182,6 @@ public class RuntimeInfo {
                 result.add(a);
             }
         }
-
         return result.toArray(new String[result.size()]);
     }
 
