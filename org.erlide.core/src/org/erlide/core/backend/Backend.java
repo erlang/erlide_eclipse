@@ -856,12 +856,11 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         }
     }
 
-    public void launchRuntime(final BackendData myData) {
+    public void launchRuntime() {
         if (launch != null) {
             return;
         }
-        final ILaunchConfiguration launchConfig = myData
-                .asLaunchConfiguration();
+        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             launch = launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, true);

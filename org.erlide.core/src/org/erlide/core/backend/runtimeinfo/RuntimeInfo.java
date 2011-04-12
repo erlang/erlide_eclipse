@@ -74,7 +74,7 @@ public class RuntimeInfo {
     }
 
     public void setArgs(final String args) {
-        this.args = args;
+        this.args = args.trim();
     }
 
     public String getCookie() {
