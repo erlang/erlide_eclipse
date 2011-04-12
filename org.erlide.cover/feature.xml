@@ -6,7 +6,7 @@
       provider-name="Erlang Solutions">
 
    <description>
-      This feature provides support for code coverage od Erlang projects.
+      This feature provides support for code coverage analysis of Erlang projects.
    </description>
 
    <copyright url="http://www.eclipse.org/legal/epl-v10.html">
