@@ -468,7 +468,7 @@ public final class WranglerUtils {
      */
     public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
 
-        final IErlModel model = (IErlModel) CoreScope.getModel();
+        final IErlModel model = CoreScope.getModel();
         for (final ChangedFile f : changedFiles) {
             IFile file;
             try {

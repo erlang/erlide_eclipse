@@ -19,8 +19,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
@@ -120,18 +120,22 @@ public final class MarkerUtils {
                 try {
                     final IErlModel model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
-                    ErlLogger.debug("inc::" + fileName + " "
-                            + resource.getName() + " " + erlProject.getName());
-                    ErlLogger.debug("    " + entry.getValue());
+                    if (erlProject != null) {
+                        final IErlModule includeFile = erlProject.findInclude(
+                                fileName, fileName, Scope.REFERENCED_PROJECTS);
+                        ErlLogger.debug("inc::" + fileName + " "
+                                + resource.getName() + " "
+                                + erlProject.getName());
+                        ErlLogger.debug("    " + entry.getValue());
 
-                    final IErlModule includeFile = erlProject != null ? erlProject
-                            .findInclude(fileName, fileName,
-                                    Scope.REFERENCED_PROJECTS) : null;
-                    if (includeFile == null) {
-                        res = resource;
+                        if (includeFile == null) {
+                            res = resource;
+                        } else {
+                            res = includeFile.getResource();
+                            // FIXME is this right?
+                        }
                     } else {
-                        res = includeFile.getResource();
-                        // FIXME is this right?
+                        res = resource;
                     }
                 } catch (final Exception e) {
                     ErlLogger.warn(e);

@@ -925,7 +925,7 @@ public class ErlangProjectImportWizardPage extends
      * @param map
      *            Map - key tree elements, values Lists of list elements
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     protected void updateSelections(final Map map) {
         super.updateSelections(map);

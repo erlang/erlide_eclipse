@@ -169,7 +169,6 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         return CommonUtils.packList(patterns, separator);
     }
 
-    @SuppressWarnings("unchecked")
     private void createCheckBoxList(final Composite parent) {
         // Filler
         new Label(parent, SWT.NONE);
