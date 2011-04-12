@@ -23,7 +23,6 @@ import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;

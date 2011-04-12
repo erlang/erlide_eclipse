@@ -75,5 +75,4 @@ public final class ErlangEvent {
     public boolean matchTopicAndNode(final String aTopic, final String aNode) {
         return topic.equals(aTopic) && node.equals(aNode);
     }
-
 }

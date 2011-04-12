@@ -74,7 +74,7 @@ public class RuntimeInfo {
     }
 
     public void setArgs(final String args) {
-        this.args = args;
+        this.args = args.trim();
     }
 
     public String getCookie() {
@@ -85,7 +85,7 @@ public class RuntimeInfo {
     }
 
     public void setCookie(final String cookie) {
-        this.cookie = cookie;
+        this.cookie = cookie.trim();
     }
 
     public String getNodeName() {
@@ -156,14 +156,6 @@ public class RuntimeInfo {
                 result.add(pathZ);
             }
         }
-        final String gotArgs = getArgs();
-        if (!empty(gotArgs)) {
-            final String[] xargs = split(gotArgs);
-            for (final String a : xargs) {
-                result.add(a);
-            }
-        }
-
         if (!startShell) {
             result.add("-noshell");
         }
@@ -183,7 +175,13 @@ public class RuntimeInfo {
                 result.add(cky);
             }
         }
-
+        final String gotArgs = getArgs();
+        if (!empty(gotArgs)) {
+            final String[] xargs = split(gotArgs);
+            for (final String a : xargs) {
+                result.add(a);
+            }
+        }
         return result.toArray(new String[result.size()]);
     }
 

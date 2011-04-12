@@ -52,7 +52,7 @@ public class BackendFactory {
         try {
             b = data.getLaunch() == null ? new InternalBackend(data)
                     : new ExternalBackend(data);
-            b.launchRuntime(data);
+            b.launchRuntime();
             b.initialize();
             return b;
         } catch (final BackendException e) {

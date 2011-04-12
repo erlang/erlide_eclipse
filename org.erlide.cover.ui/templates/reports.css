@@ -1,0 +1,74 @@
+
+body {
+    font-size: 12px:
+}
+
+h2 {
+    font-size: 14px;
+}
+
+div.title {
+    border: solid #333333 2px;
+    font-size: 11px;
+    color: #EEEEEE;
+    text-align: center;
+    background-color: #772222;
+    padding: 4px;
+}
+
+div.footer {
+    border: solid #333333 2px;
+    font-size: 11px;
+    color: #5599FF;
+    text-align: center;
+    background-color: #772222;
+    padding: 3px;
+}
+
+table {
+    width: 100%;
+    border: solid #000000 1px;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: fixed;
+}
+
+td {
+    border: solid #000000 1px;
+    padding: 2px 5px 2px 5px;
+}
+
+a, a:link {
+    text-decoration: none;
+    font-weight: bold;
+    color: #1144CC;
+}
+
+a:visited {
+    color: #112255;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+th {
+    border: solid #000000 1px;
+    background-color: #AA5555;
+    color: #EEEEEE;
+    padding: 3px;
+}
+
+th.total {
+    width: 120px;
+}
+
+th.covered {
+    width: 120px;
+}
+
+th.percentage {
+    width: 160px;    
+}
+
+

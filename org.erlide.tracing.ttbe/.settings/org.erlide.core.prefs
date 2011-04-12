@@ -1,5 +1,5 @@
-#Thu Aug 12 16:50:37 BST 2010
-backend_version=R14A
+#Wed Nov 17 12:08:47 CET 2010
+backend_version=R13B
 eclipse.preferences.version=1
 output_dir=ebin
 source_dirs=src;

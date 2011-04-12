@@ -1,0 +1,6 @@
+#Mon Mar 21 15:26:38 CET 2011
+backend_version=R13B
+eclipse.preferences.version=1
+include_dirs=src;
+output_dir=ebin
+source_dirs=src;
