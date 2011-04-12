@@ -16,6 +16,7 @@ public class ErlProjectImport {
     private final SortedSet<String> resources;
     private final List<String> sourceDirs;
     private final List<String> includeDirs;
+    private final String beamDir;
     private final List<String> directories;
 
     public ErlProjectImport(final OtpErlangObject o) {
@@ -29,7 +30,8 @@ public class ErlProjectImport {
         l = (OtpErlangList) t.elementAt(2);
         includeDirs = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());
-        l = (OtpErlangList) t.elementAt(3);
+        beamDir = Util.stringValue(t.elementAt(3));
+        l = (OtpErlangList) t.elementAt(4);
         directories = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());
         directories.add(0, ".");
@@ -57,5 +59,9 @@ public class ErlProjectImport {
 
     public List<String> getIncludeDirs() {
         return includeDirs;
+    }
+
+    public String getBeamDir() {
+        return beamDir;
     }
 }

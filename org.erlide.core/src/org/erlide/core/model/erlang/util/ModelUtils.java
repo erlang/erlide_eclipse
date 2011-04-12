@@ -94,10 +94,11 @@ public class ModelUtils {
     public static IErlModule getModuleFromExternalModulePath(
             final String modulePath) throws ErlModelException {
         final List<String> path = StringUtils.split(DELIMITER, modulePath);
-        final IErlElement childNamed = CoreScope.getModel().getChildNamed(
-                path.get(0));
-        ErlLogger.debug(">>childNamed %s", (childNamed == null ? "<null>"
-                : childNamed.getName()));
+        final IErlModel model = CoreScope.getModel();
+        model.open(null);
+        final IErlElement childNamed = model.getChildNamed(path.get(0));
+        ErlLogger.debug(">>childNamed %s", childNamed == null ? "<null>"
+                : childNamed.getName());
         if (childNamed instanceof IParent) {
             IParent parent = (IParent) childNamed;
             final int n = path.size() - 1;
@@ -113,8 +114,7 @@ public class ModelUtils {
                     break;
                 }
                 parent = getElementWithExternalName(parent, path.get(i));
-                ErlLogger.debug(">>parent %s", (parent == null ? "<null>"
-                        : parent));
+                ErlLogger.debug(">>parent %s", parent);
             }
             if (parent != null) {
                 final IErlElement child = parent.getChildNamed(path.get(n));
