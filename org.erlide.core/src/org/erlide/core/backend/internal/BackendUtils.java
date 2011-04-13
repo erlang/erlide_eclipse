@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.SourcePathProvider;
+import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 
@@ -52,6 +53,23 @@ public class BackendUtils {
             return path.removeFileExtension().lastSegment();
         }
         return null;
+    }
+
+    public static Collection<String> getExtraSourcePaths() {
+        final List<String> result = Lists.newArrayList();
+        Collection<SourcePathProvider> spps;
+        try {
+            spps = getSourcePathProviders();
+            for (final SourcePathProvider spp : spps) {
+                final Collection<IPath> paths = spp.getSourcePaths();
+                for (final IPath p : paths) {
+                    result.add(p.toString());
+                }
+            }
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+        }
+        return result;
     }
 
 }

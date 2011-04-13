@@ -70,13 +70,13 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.CoreScope;
+import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.PluginUtils;
 import org.erlide.core.model.erlang.util.ResourceUtil;
-import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -568,7 +568,7 @@ public class FilteredModulesSelectionDialog extends
             this.progressMonitor = progressMonitor;
             final IResource[] resources = container.members();
             projects = new ArrayList<IResource>(Arrays.asList(resources));
-            extraLocations.addAll(ErlideOpen.getExtraSourcePaths());
+            extraLocations.addAll(BackendUtils.getExtraSourcePaths());
             if (progressMonitor != null) {
                 progressMonitor.beginTask("Searching", projects.size());
             }
