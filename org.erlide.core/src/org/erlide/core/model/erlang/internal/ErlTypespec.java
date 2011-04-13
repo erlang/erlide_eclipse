@@ -12,8 +12,6 @@ package org.erlide.core.model.erlang.internal;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IParent;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
-
 /**
  * 
  * 
@@ -21,7 +19,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  */
 public class ErlTypespec extends ErlMember implements IErlTypespec {
 
-    private final OtpErlangObject fValue;
     private final String fExtra;
 
     /**
@@ -29,9 +26,8 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
      * @param name
      */
     protected ErlTypespec(final IParent parent, final String name,
-            final OtpErlangObject value, final String extra) {
+            final String extra) {
         super(parent, name);
-        fValue = value;
         fExtra = extra;
     }
 
@@ -42,17 +38,11 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
         return Kind.TYPESPEC;
     }
 
-    public OtpErlangObject getValue() {
-        return fValue;
-    }
-
     @Override
     public String toString() {
-        if (fValue != null) {
-            return getName() + ": " + fValue.toString(); // pp(fValue);
-        } else if (fExtra != null) {
+        if (fExtra != null) {
             return fExtra;
         }
-        return "";
+        return getName();
     }
 }

@@ -18,12 +18,12 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -52,7 +52,7 @@ public final class ErlideUtil {
 
         } catch (final OtpErlangRangeException e) {
             ErlLogger.error(e);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
         } finally {
             if (f != null) {
                 f.delete();
@@ -75,7 +75,7 @@ public final class ErlideUtil {
             final IFolder folder) {
         final IProject project = folder.getProject();
         final IPath folderPath = folder.getFullPath();
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath p : sourcePaths) {

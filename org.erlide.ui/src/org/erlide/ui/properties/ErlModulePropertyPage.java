@@ -10,11 +10,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -39,7 +39,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
 
         final IAdaptable element = getElement();
         final IFile file = (IFile) element.getAdapter(IFile.class);
-        final IErlModule module = ErlangCore.getModel().findModule(file);
+        final IErlModule module = CoreScope.getModel().findModule(file);
         String value = "There is no module information about this file.";
         if (module != null) {
             final IErlProject project = module.getProject();

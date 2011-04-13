@@ -36,9 +36,8 @@ import org.erlide.ui.dialogfields.StringButtonDialogField;
 import org.erlide.ui.dialogfields.StringDialogField;
 import org.erlide.ui.util.StatusInfo;
 
-public class AddRuntimeDialog
-
-extends StatusDialog implements IListAdapter<String> {
+public class AddRuntimeDialog extends StatusDialog implements
+        IListAdapter<String> {
 
     public static class StringLabelProvider implements ILabelProvider {
 

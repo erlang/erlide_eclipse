@@ -40,14 +40,14 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.Backend;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.builder.CompilerPreferences;
 import org.erlide.core.services.builder.CompilerPreferencesConstants;
 import org.erlide.jinterface.ErlLogger;
@@ -365,7 +365,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();
@@ -441,7 +441,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final Backend b = BackendCore.getBackendManager().getIdeBackend();
+        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null) {
             return OptionStatus.NO_RUNTIME;
         }

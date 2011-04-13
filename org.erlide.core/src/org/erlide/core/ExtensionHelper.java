@@ -1,6 +1,3 @@
-/*
- * Created on 21/08/2005
- */
 package org.erlide.core;
 
 import java.util.HashMap;
@@ -12,6 +9,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 
@@ -38,7 +36,8 @@ public class ExtensionHelper {
                     extensions = extensionPoint.getExtensions();
                     extensionsCache.put(type, extensions);
                 } catch (final Exception e) {
-                    ErlangPlugin.log("Error getting extension for:" + type, e);
+                    ErlLogger.error("Error getting extension for:" + type
+                            + " -- " + e.getMessage());
                     throw new RuntimeException(e);
                 }
             } else {
@@ -93,7 +92,7 @@ public class ExtensionHelper {
                 try {
                     list.add(element.createExecutableExtension("class"));
                 } catch (final Exception e) {
-                    ErlangPlugin.getDefault().log(e);
+                    ErlLogger.warn(e);
                 }
             }
         }

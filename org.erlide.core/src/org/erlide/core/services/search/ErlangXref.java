@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.backend.RpcCallSite;
-import org.erlide.core.backend.rpc.RpcFuture;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcFuture;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;

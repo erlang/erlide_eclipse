@@ -10,9 +10,9 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendListener;
-import org.erlide.core.backend.RpcCallSite;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlConsoleManager implements IDisposable, BackendListener {

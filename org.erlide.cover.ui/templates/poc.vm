@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Gimli's Widgetarium</title>
+    </head>
+    <body>
+        <table>
+            #set ($rowCount = 1)            
+            #set ($products = ["one", "two", "three"])
+            #foreach($product in $products)
+                #if ($rowCount % 2 == 0)
+                    #set ($bgcolor = "#FFFFFF")
+                #else
+                    #set ($bgcolor = "#CCCCCC")                
+                #end
+                <tr>
+                    <td bgcolor="$bgcolor">$product</td>
+                    <td bgcolor="$bgcolor">$product</td>
+                </tr>                        
+                #set ($rowCount = $rowCount + 1)
+            #end
+        </table>
+    </body>
+</html>

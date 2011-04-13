@@ -9,14 +9,11 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
-import com.ericsson.otp.erlang.OtpErlangObject;
 
 /**
  * 
  * @author Vlad Dumitrescu
  */
 public interface IErlTypespec extends IErlMember {
-
-    public OtpErlangObject getValue();
 
 }

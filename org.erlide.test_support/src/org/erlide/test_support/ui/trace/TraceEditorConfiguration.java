@@ -13,7 +13,7 @@ public class TraceEditorConfiguration extends TextSourceViewerConfiguration {
         super(preferenceStore);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
         final Map res = super.getHyperlinkDetectorTargets(sourceViewer);

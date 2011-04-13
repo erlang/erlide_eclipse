@@ -70,12 +70,8 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     }
 
     public String getFunctionName() {
-        final IParent parent = getParent();
-        if (parent instanceof IErlElement) {
-            final IErlElement element = (IErlElement) parent;
-            return element.getName();
-        }
-        return null;
+        final IErlElement element = (IErlElement) getParent();
+        return element.getName();
     }
 
     public int getArity() {

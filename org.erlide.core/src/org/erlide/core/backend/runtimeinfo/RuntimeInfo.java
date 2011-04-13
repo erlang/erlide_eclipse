@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.erlide.core.internal.backend.BackendUtil;
+import org.erlide.core.backend.internal.BackendUtil;
+
+import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";
@@ -72,7 +74,7 @@ public class RuntimeInfo {
     }
 
     public void setArgs(final String args) {
-        this.args = args;
+        this.args = args.trim();
     }
 
     public String getCookie() {
@@ -83,7 +85,7 @@ public class RuntimeInfo {
     }
 
     public void setCookie(final String cookie) {
-        this.cookie = cookie;
+        this.cookie = cookie.trim();
     }
 
     public String getNodeName() {
@@ -154,14 +156,6 @@ public class RuntimeInfo {
                 result.add(pathZ);
             }
         }
-        final String gotArgs = getArgs();
-        if (!empty(gotArgs)) {
-            final String[] xargs = split(gotArgs);
-            for (final String a : xargs) {
-                result.add(a);
-            }
-        }
-
         if (!startShell) {
             result.add("-noshell");
         }
@@ -181,7 +175,13 @@ public class RuntimeInfo {
                 result.add(cky);
             }
         }
-
+        final String gotArgs = getArgs();
+        if (!empty(gotArgs)) {
+            final String[] xargs = split(gotArgs);
+            for (final String a : xargs) {
+                result.add(a);
+            }
+        }
         return result.toArray(new String[result.size()]);
     }
 
@@ -329,7 +329,7 @@ public class RuntimeInfo {
     }
 
     public void useLongName(final boolean useLongName) {
-        this.longName = useLongName;
+        longName = useLongName;
     }
 
     public boolean getLongName() {

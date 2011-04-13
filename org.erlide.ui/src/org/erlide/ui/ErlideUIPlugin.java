@@ -49,6 +49,7 @@ import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.common.CommonUtils;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -463,7 +464,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 @Override
                 protected IStatus run(final IProgressMonitor monitor) {
                     try {
-                        final Backend ideBackend = BackendCore
+                        final RpcCallSite ideBackend = BackendCore
                                 .getBackendManager().getIdeBackend();
                         final String info = BackendHelper
                                 .getSystemInfo(ideBackend);

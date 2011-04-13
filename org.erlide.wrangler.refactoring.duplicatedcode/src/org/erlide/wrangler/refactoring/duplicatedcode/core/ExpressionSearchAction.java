@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
-import org.erlide.core.backend.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;

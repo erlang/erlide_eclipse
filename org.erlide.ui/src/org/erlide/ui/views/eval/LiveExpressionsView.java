@@ -62,7 +62,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendEvalResult;
 import org.erlide.core.backend.BackendHelper;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
@@ -107,7 +107,8 @@ public class LiveExpressionsView extends ViewPart implements
         private String evaluate() {
             final RpcCallSite b = BackendCore.getBackendManager()
                     .getIdeBackend();
-            final BackendEvalResult r = BackendHelper.eval(b, fExpr + ".", null);
+            final BackendEvalResult r = BackendHelper
+                    .eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
             }

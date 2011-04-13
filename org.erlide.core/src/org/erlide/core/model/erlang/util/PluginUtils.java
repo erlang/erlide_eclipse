@@ -19,8 +19,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.services.search.ErlideOpen;
 
@@ -47,7 +47,7 @@ public class PluginUtils {
             final Collection<IPath> sourcePaths) {
         final HashSet<IPath> result = new HashSet<IPath>();
         for (final IPath path : sourcePaths) {
-            String path_string = path.toString();
+            final String path_string = path.toString();
             if (path_string.equals(".")) {
                 result.add(project.getFullPath());
             } else {
@@ -59,7 +59,7 @@ public class PluginUtils {
 
     private static ContainerFilter getIncludePathFilter(final IProject project,
             final IContainer current) {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         return new ContainerFilter() {
             private final Set<IPath> paths = getFullPaths(project,
@@ -78,7 +78,7 @@ public class PluginUtils {
         private final Set<String> extra;
 
         SourcePathContainerFilter(final IProject project) {
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
             paths = getFullPaths(project, erlProject.getSourceDirs());
             extra = new HashSet<String>();

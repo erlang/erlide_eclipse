@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.11.0.qualifier"
+      version="0.11.1.qualifier"
       provider-name="erlide.org"
       image="erlang120.gif">
    <install-handler/>
@@ -37,6 +37,8 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <requires>
       <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui"/>
@@ -49,16 +51,15 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.navigator"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.help.ui"/>
-      <import plugin="org.eclipse.help.webapp"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.core.expressions"/>
-      <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.erlide.jinterface"/>
       <import plugin="org.erlide.core"/>
       <import plugin="org.erlide.libs" version="1.1.4" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
+      <import plugin="org.eclipse.help.ui"/>
+      <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.eclipse.ui.cheatsheets" version="3.3.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.erlide.kernel.builder"/>
       <import plugin="org.erlide.kernel.common"/>
       <import plugin="org.erlide.kernel.debugger"/>
@@ -66,6 +67,8 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.erlide.core" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.erlide.test_support" version="0.4.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.core" version="0.10.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -90,6 +93,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="shade.bterl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.cover.api"
          download-size="0"
          install-size="0"
          version="0.0.0"

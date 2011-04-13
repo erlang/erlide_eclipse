@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.RpcCallSite;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -43,7 +43,7 @@ public class ErlideIndent {
     public static IndentResult indentLine(final RpcCallSite b,
             final String oldLine, final String txt, final String insertedText,
             final int tabw, final boolean useTabs,
-            final Map<String, String> prefs) throws BackendException,
+            final Map<String, String> prefs) throws RpcException,
             OtpErlangRangeException {
         // ErlLogger.debug("indentLine '%s'", txt);
         final OtpErlangObject o = b.call("erlide_indent", "indent_line",
@@ -56,7 +56,7 @@ public class ErlideIndent {
     public static OtpErlangObject indentLines(final RpcCallSite b,
             final int offset, final int length, final String text,
             final int tabw, final boolean useTabs,
-            final Map<String, String> prefs) throws BackendException {
+            final Map<String, String> prefs) throws RpcException {
         final OtpErlangObject o = b.call(20000, "erlide_indent",
                 "indent_lines", "siiiolx", text, offset, length, tabw, useTabs,
                 fixIndentPrefs(prefs));
@@ -66,7 +66,7 @@ public class ErlideIndent {
     public static OtpErlangObject templateIndentLines(final RpcCallSite b,
             final String prefix, final String text, final int tabw,
             final boolean useTabs, final Map<String, String> prefs)
-            throws BackendException {
+            throws RpcException {
         final OtpErlangObject o = b.call(20000, "erlide_indent",
                 "template_indent_lines", "ssiolx", prefix, text, tabw, useTabs,
                 fixIndentPrefs(prefs));
@@ -81,7 +81,7 @@ public class ErlideIndent {
             final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset,
                     length);
             return r1;
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             return new OtpErlangString("");
         }
     }

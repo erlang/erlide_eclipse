@@ -201,7 +201,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         };
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
         final Map map = super.getHyperlinkDetectorTargets(sourceViewer);

@@ -30,14 +30,14 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.internal.services.builder.BuildNotifier;
-import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.services.builder.internal.BuildNotifier;
+import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -75,7 +75,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject = ErlangCore.getModel()
+            final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
@@ -123,7 +123,7 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
             ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
                     + project.getName());
         }
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
+        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         try {
             MarkerUtils.deleteMarkers(project);

@@ -24,10 +24,10 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.backend.runtimeinfo.RuntimeVersion;
 import org.erlide.core.model.erlang.IOldErlangProjectProperties;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 
 public final class OldErlangProjectProperties implements

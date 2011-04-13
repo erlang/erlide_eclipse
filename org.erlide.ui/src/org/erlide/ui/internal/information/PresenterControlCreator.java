@@ -196,9 +196,10 @@ public final class PresenterControlCreator extends
                 } else if (element instanceof OpenResult) {
                     final OpenResult or = (OpenResult) element;
                     try {
-                        OpenAction.openOpenResult(editor, editor.getModule(),
-                                BackendCore.getBackendManager().getIdeBackend(),
-                                -1, null, or);
+                        OpenAction
+                                .openOpenResult(editor, editor.getModule(),
+                                        BackendCore.getBackendManager()
+                                                .getIdeBackend(), -1, null, or);
                     } catch (final Exception e) {
                         e.printStackTrace();
                     }

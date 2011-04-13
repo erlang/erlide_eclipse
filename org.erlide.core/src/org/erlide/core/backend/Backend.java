@@ -38,25 +38,19 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
+import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.core.backend.internal.CodeManager;
+import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.rpc.RpcException;
-import org.erlide.core.backend.rpc.RpcFuture;
-import org.erlide.core.backend.rpc.RpcHelper;
-import org.erlide.core.backend.rpc.RpcResult;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.BeamUtil;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.internal.backend.BackendUtil;
-import org.erlide.core.internal.backend.CodeManager;
-import org.erlide.core.internal.backend.ErlRuntime;
-import org.erlide.core.internal.backend.RpcResultImpl;
 import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.debug.ErlangDebugNode;
 import org.erlide.core.model.debug.ErlangDebugTarget;
@@ -65,6 +59,14 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.util.CoreUtil;
 import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.RpcCallback;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.RpcHelper;
+import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.RpcResultCallback;
+import org.erlide.core.rpc.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -143,60 +145,61 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public RpcFuture async_call(final String m, final String f,
-            final String signature, final Object... args)
-            throws BackendException {
+            final String signature, final Object... args) throws RpcException {
         try {
             return runtime.makeAsyncCall(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public void async_call_cb(final RpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
-            throws BackendException {
+            throws RpcException {
         try {
             runtime.makeAsyncCbCall(cb, m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
+        }
+    }
+
+    public void async_call_result(final RpcResultCallback cb, final String m,
+            final String f, final String signature, final Object... args)
+            throws RpcException {
+        try {
+            runtime.makeAsyncResultCall(cb, m, f, signature, args);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
         }
     }
 
     public void cast(final String m, final String f, final String signature,
-            final Object... args) throws BackendException {
+            final Object... args) throws RpcException {
         try {
             runtime.makeCast(m, f, signature, args);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
     public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
-            throws BackendException {
+            throws RpcException {
         return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
     }
 
     public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
-            final String signature, final Object... a) throws BackendException {
+            final String signature, final Object... a) throws RpcException {
         try {
             return runtime.makeCall(timeout, gleader, m, f, signature, a);
-        } catch (final RpcException e) {
-            throw new BackendException(e);
         } catch (final SignatureException e) {
-            throw new BackendException(e);
+            throw new RpcException(e);
         }
     }
 
@@ -308,7 +311,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         return runtime.getNode();
     }
 
-    private String getScriptId() throws BackendException {
+    private String getScriptId() throws RpcException {
         OtpErlangObject r;
         r = call("init", "script_id", "");
         if (r instanceof OtpErlangTuple) {
@@ -539,7 +542,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public void addProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = CoreScope.getModel().findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -573,11 +576,11 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     public void removeProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = CoreScope.getModel().findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
-            ErlLogger.debug("backend %s: add path %s", getName(), outDir);
+            ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {
                 final boolean accessible = ErlideUtil
                         .isAccessible(this, outDir);
@@ -853,12 +856,11 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         }
     }
 
-    public void launchRuntime(final BackendData myData) {
+    public void launchRuntime() {
         if (launch != null) {
             return;
         }
-        final ILaunchConfiguration launchConfig = myData
-                .asLaunchConfiguration();
+        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             launch = launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, true);

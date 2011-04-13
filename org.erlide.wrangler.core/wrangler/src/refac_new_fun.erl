@@ -59,7 +59,7 @@ fun_extraction_1(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName,
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++ 
 	    FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++ 
 	      "{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewFunName ++ "\","
-														 ++ integer_to_list(TabWidth) ++ ").",
+        ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, [], TabWidth),
     ExpList = interface_api:pos_to_expr_list(AnnAST, Start, End),
     {ok, Fun} = interface_api:expr_to_fun(AnnAST, hd(ExpList)),
@@ -71,7 +71,7 @@ fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, T
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++ 
 	    FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++ 
 	      "{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewFunName ++ "\","
-														 ++ integer_to_list(TabWidth) ++ ").",
+        ++ integer_to_list(TabWidth) ++ ").",
     case refac_util:is_fun_name(NewFunName) of
 	true -> ok;
 	false -> throw({error, "Invalid function name!"})
@@ -320,27 +320,55 @@ commontest_name_checking(UsedFrameWorks, NewFunName, Arity) ->
 	false -> ok
     end.
 
-do_fun_extraction(FileName, AnnAST, ExpList, NewFunName, ParNames, VarsToExport, {EncFunName, EncFunArity, EncFunPos}) ->
+do_fun_extraction(FileName, AnnAST, ExpList, NewFunName, ParNames, VarsToExport, 
+                  {EncFunName, EncFunArity, EncFunPos}) ->
     NewFunName1 = refac_syntax:atom(NewFunName),
     Pars = [refac_syntax:variable(P) || P <- ParNames],
-    LastExprExportVars = [V || {V, _Pos} <- refac_util:get_var_exports(lists:last(ExpList))],
-    ExpList1 = case VarsToExport -- LastExprExportVars of
-		   [] -> case ExpList of
-			     [E] -> case refac_syntax:type(E) of
-					match_expr -> [refac_syntax:match_expr_body(E)];
-					_ -> [E]
-				    end;
-			     _ -> ExpList
-			 end;
-		   _ -> case VarsToExport of
-			    [V] ->
-				E = refac_syntax:variable(V),
-				ExpList ++ [E];
-			    [_V| _Vs] ->
-				Elems = [refac_syntax:variable(V) || V <- VarsToExport],
-				ExpList ++ [refac_syntax:tuple(Elems)]
-			end
-	       end,
+    ExportExpr = case VarsToExport of
+                     [] -> none;
+                     [V] -> refac_syntax:variable(V);
+                     [_V| _Vs] ->
+                         Elems = [refac_syntax:variable(V1) || V1 <- VarsToExport],
+                         refac_syntax:tuple(Elems)
+                 end,
+    ExpList1 = case VarsToExport of
+                   [] ->
+                       [E|Es] = lists:reverse(ExpList),
+                       case refac_syntax:type(E) of 
+                           match_expr ->
+                               Pat = refac_syntax:match_expr_pattern(E),
+                               case refac_syntax:type(Pat)==variable andalso 
+                                   refac_util:get_free_vars(Pat)==[] of 
+                                   true ->
+                                       lists:reverse([refac_syntax:match_expr_body(E)|Es]);
+                                   false ->
+                                      ExpList
+                               end;
+                           _ ->
+                               ExpList
+                       end;
+                   [V1] ->
+                       [E|Es] = lists:reverse(ExpList),
+                       case refac_syntax:type(E) of 
+                           match_expr ->
+                               Pat = refac_syntax:match_expr_pattern(E),
+                               case refac_syntax:type(Pat)==variable of 
+                                   true ->
+                                       case refac_syntax:variable_name(Pat)==V1 of 
+                                           true ->
+                                               lists:reverse([refac_syntax:match_expr_body(E)|Es]);
+                                           false ->
+                                               ExpList++[ExportExpr]
+                                       end;
+                                   _ ->
+                                       ExpList++[ExportExpr]
+                               end;
+                           _ ->
+                               ExpList++[ExportExpr]
+                       end;
+                   _ ->
+                       ExpList++[ExportExpr]
+               end,
     Clause = refac_syntax:clause(Pars, [], ExpList1),
     NewFun = refac_syntax:function(NewFunName1, [Clause]),
     Forms = refac_syntax:form_list_elements(AnnAST),

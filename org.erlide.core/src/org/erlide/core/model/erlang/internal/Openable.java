@@ -17,11 +17,9 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.ErlModelStatusConstants;
 import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlModelManager;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
@@ -122,23 +120,11 @@ public abstract class Openable extends ErlElement implements IOpenable {
      */
     @Override
     public boolean exists() {
-        final IErlModelManager manager = ErlangCore.getModelManager();
-        if (manager.getInfo(this) != null) {
-            final IResource resource = getResource();
-            if (resource != null) {
-                return resource.exists();
-            }
-            return true;
+        final IResource resource = getResource();
+        if (resource != null) {
+            return resource.exists();
         }
-        if (!parentExists()) {
-            return false;
-        }
-        // PackageFragmentRoot root = getPackageFragmentRoot();
-        // if (root != null && (root == this || !root.isArchive()))
-        // {
-        // return resourceExists();
-        // }
-        return super.exists();
+        return true;
     }
 
     /*
@@ -149,7 +135,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      */
     public synchronized void open(final IProgressMonitor monitor)
             throws ErlModelException {
-        if (ErlModelManager.verbose) {
+        if (ErlModel.verbose) {
             ErlLogger.debug("open " + isStructureKnown() + " > " + this);
         }
         // open the parent if necessary
@@ -246,7 +232,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * @see IOpenable
      */
     public boolean isOpen() {
-        return ErlangCore.getModelManager().getInfo(this) != null;
+        return true;
     }
 
     /**

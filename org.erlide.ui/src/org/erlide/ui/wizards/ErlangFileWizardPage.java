@@ -10,10 +10,13 @@
 
 package org.erlide.ui.wizards;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.text.BadLocationException;
@@ -40,7 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -193,17 +196,20 @@ public class ErlangFileWizardPage extends WizardPage {
                     container = resource.getParent();
                 }
                 final IProject project = resource.getProject();
-                final IErlProject erlProject = ErlangCore.getModel()
+                final IErlProject erlProject = CoreScope.getModel()
                         .getErlangProject(project);
                 String txt;
-                if (erlProject.hasSourceDir(container.getFullPath())) {
-                    txt = container.getFullPath().toString();
-                } else if (erlProject.getSourceDirs().size() > 0) {
-                    txt = container
-                            .getFolder(
-                                    new Path(erlProject.getSourceDirs()
-                                            .iterator().next().toString()))
-                            .getFullPath().toString();
+                final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
+                if (sourceDirs.size() > 0) {
+                    final IPath sourceDirWithinContainer = sourceDirWithinContainer(
+                            sourceDirs, container);
+                    if (sourceDirWithinContainer != null) {
+                        txt = sourceDirWithinContainer.toString();
+                    } else {
+                        final IPath path = project.getFullPath().append(
+                                sourceDirs.iterator().next());
+                        txt = path.toString();
+                    }
                 } else {
                     txt = container.getFullPath().toString();
                 }
@@ -213,6 +219,18 @@ public class ErlangFileWizardPage extends WizardPage {
         }
 
         fileText.setText("new_file");
+    }
+
+    private IPath sourceDirWithinContainer(final Collection<IPath> sourceDirs,
+            final IContainer container) {
+        final IPath containerPath = container.getFullPath();
+        for (final IPath sourceDir : sourceDirs) {
+            if (containerPath.equals(sourceDirs)
+                    || containerPath.isPrefixOf(sourceDir)) {
+                return sourceDir;
+            }
+        }
+        return null;
     }
 
     /**

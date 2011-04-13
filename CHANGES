@@ -1,3 +1,15 @@
+List of user visible changes between 0.11.0 and 0.11.1 (20110412)
+
+* added cover plugin, thanks to Aleksandra Lipiec
+
+271bdf2 http://www.assembla.com/spaces/erlide/tickets/712-import-erlang-project---link-option-support-should-be-rewritten
+648e214 815-extra-args-for-erlang-vm-doesn-t-work
+2e1dc1a http://www.assembla.com/spaces/erlide/tickets/560-erlang-search---should-run-in-background
+59375a2 fixed NPE when file was not in erlang project
+05a1e5d http://www.assembla.com/spaces/erlide/tickets/784-searching--separate-checkbox-for-otp
+ab9777c http://www.assembla.com/spaces/erlide/tickets/758-new-module---selects-non-existing-folder
+8f12974 http://www.assembla.com/spaces/erlide/tickets/808-open-module--problems-with-closed-projects
+
 List of user visible changes between 0.10.2 and 0.11.0 (20110322)
 
 for developers: more API have changed; we added many more unit tests.

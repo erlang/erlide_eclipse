@@ -15,7 +15,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.ErlLogger;
 
@@ -37,7 +37,7 @@ public class ErlReconciler implements IReconciler {
         fStrategy = strategy;
         this.path = path;
         if (path != null) {
-            ErlangCore.getModelManager().putEdited(path, module);
+            CoreScope.getModel().putEdited(path, module);
         }
     }
 
@@ -504,7 +504,7 @@ public class ErlReconciler implements IReconciler {
         final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
         if (path != null) {
-            ErlangCore.getModelManager().putEdited(path, null);
+            CoreScope.getModel().putEdited(path, null);
         }
     }
 

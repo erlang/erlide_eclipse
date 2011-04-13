@@ -12,7 +12,6 @@ package org.erlide.core.model.erlang.internal;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
@@ -94,11 +93,7 @@ abstract class SourceRefElement extends ErlElement implements ISourceReference {
             return;
         }
 
-        final ErlElement openableParentInfo = (ErlElement) ErlangCore
-                .getModelManager().getInfo(openableParent);
-        if (openableParentInfo == null) {
-            openableParent.open(pm);
-        }
+        openableParent.open(pm);
     }
 
     /**

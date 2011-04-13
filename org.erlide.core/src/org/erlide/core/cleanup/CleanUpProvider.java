@@ -20,11 +20,11 @@ package org.erlide.core.cleanup;
  */
 public interface CleanUpProvider {
 
-	/**
-	 * <p>
-	 * Perform clean up.
-	 * </p>
-	 */
-	public void cleanUp() throws Exception;
+    /**
+     * <p>
+     * Perform clean up.
+     * </p>
+     */
+    public void cleanUp() throws Exception;
 
 }
