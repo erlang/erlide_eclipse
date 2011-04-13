@@ -345,7 +345,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         getNode().registerStatusHandler(handler);
     }
 
-    private void setRemoteRex(final OtpErlangPid watchdog) {
+    private void linkToRemoteRex(final OtpErlangPid watchdog) {
         try {
             getEventBox().link(watchdog);
         } catch (final OtpErlangExit e) {

@@ -2210,7 +2210,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
 
         private void findRefs(final IErlModule theModule,
-                final ITextSelection selection, final boolean hasChanged) {
+                final ITextSelection aSelection, final boolean hasChanged) {
             final RpcCallSite ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
@@ -2219,7 +2219,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 return;
             }
             try {
-                final int offset = selection.getOffset();
+                final int offset = aSelection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend, theModule,
                         offset, ModelUtils.getImportsAsList(theModule), "",
                         CoreScope.getModel().getPathVars());

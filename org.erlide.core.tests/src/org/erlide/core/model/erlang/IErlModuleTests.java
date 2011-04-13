@@ -404,11 +404,11 @@ public class IErlModuleTests extends ErlModelTestBase {
     @Test
     public void findInclude() throws Exception {
         File externalIncludeFile = null;
-        final IErlProject project = projects[0];
-        final IProject workspaceProject = project.getWorkspaceProject();
+        final IErlProject myProject = projects[0];
+        final IProject workspaceProject = myProject.getWorkspaceProject();
         final IProject[] referencedProjects = workspaceProject
                 .getReferencedProjects();
-        final Collection<IPath> includeDirs = project.getIncludeDirs();
+        final Collection<IPath> includeDirs = myProject.getIncludeDirs();
         // given
         // a project with an external include and an internal include and a
         // referenced project with an include and an include in the same
@@ -422,15 +422,15 @@ public class IErlModuleTests extends ErlModelTestBase {
             final IPath p = new Path(externalIncludePath).removeLastSegments(1);
             final List<IPath> newIncludeDirs = Lists.newArrayList(includeDirs);
             newIncludeDirs.add(p);
-            project.setIncludeDirs(newIncludeDirs);
-            final IErlModule include = ErlideTestUtils.createInclude(project,
+            myProject.setIncludeDirs(newIncludeDirs);
+            final IErlModule include = ErlideTestUtils.createInclude(myProject,
                     "yy.hrl", "-define(Y, include).\n");
             final IErlProject project1 = projects[1];
             final IErlModule referencedInclude = ErlideTestUtils.createInclude(
                     project1, "zz.hrl", "-define(Z, referenced).\n");
             final IErlModule includeInModuleDir = ErlideTestUtils.createModule(
-                    project, "ww.hrl", "-define(WW, x).\n");
-            project.open(null);
+                    myProject, "ww.hrl", "-define(WW, x).\n");
+            myProject.open(null);
             // when
             // looking for includes
             final String xx = "xx";
@@ -459,7 +459,7 @@ public class IErlModuleTests extends ErlModelTestBase {
             description.setReferencedProjects(new IProject[] { project1
                     .getWorkspaceProject() });
             workspaceProject.setDescription(description, null);
-            project.open(null);
+            myProject.open(null);
             final IErlModule z4 = module.findInclude(zz, null,
                     Scope.PROJECT_ONLY);
             final IErlModule z5 = module.findInclude(zz, null,
@@ -469,7 +469,7 @@ public class IErlModuleTests extends ErlModelTestBase {
             final String ww = "ww";
             final IErlModule w1 = module.findInclude(ww, null,
                     Scope.PROJECT_ONLY);
-            final IErlModule w2 = project.findInclude(ww, null,
+            final IErlModule w2 = myProject.findInclude(ww, null,
                     Scope.PROJECT_ONLY);
             // then
             // scope should be respected
@@ -494,7 +494,7 @@ public class IErlModuleTests extends ErlModelTestBase {
             if (externalIncludeFile != null && externalIncludeFile.exists()) {
                 externalIncludeFile.delete();
             }
-            project.setIncludeDirs(includeDirs);
+            myProject.setIncludeDirs(includeDirs);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(referencedProjects);

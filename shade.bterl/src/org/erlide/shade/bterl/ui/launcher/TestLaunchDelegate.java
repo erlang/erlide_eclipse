@@ -122,7 +122,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String theMode = ILaunchManager.DEBUG_MODE.equals(amode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
 
-        return super.doLaunch(cfg, amode, launch, monitor);
+        return super.doLaunch(cfg, theMode, launch, monitor);
     }
 
     @Override
