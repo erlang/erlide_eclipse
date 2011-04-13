@@ -86,8 +86,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     protected String fName;
 
-    public static final ErlElement[] NO_ELEMENTS = new ErlElement[0];
-
     protected static final Object NO_INFO = new Object();
 
     /**

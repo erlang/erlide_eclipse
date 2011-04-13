@@ -61,6 +61,8 @@ public interface IErlElement extends IAdaptable, IDisposable {
         RECORD_FIELD
     }
 
+    public static final IErlElement[] NO_ELEMENTS = new IErlElement[0];
+
     /**
      * Returns whether this Erlang element exists in the model.
      * <p>

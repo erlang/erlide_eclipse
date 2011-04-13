@@ -157,7 +157,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
             final String f, final String signature, final Object... args)
             throws RpcException {
         try {
-            runtime.makeAsyncCbCall(cb, m, f, signature, args);
+            runtime.makeAsyncCbCall(cb, DEFAULT_TIMEOUT, m, f, signature, args);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }

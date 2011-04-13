@@ -70,7 +70,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code) {
         super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = ErlElement.NO_ELEMENTS;
+        fElements = IErlElement.NO_ELEMENTS;
     }
 
     /**
@@ -95,7 +95,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     public ErlModelStatus(final int severity, final int code,
             final String string) {
         super(severity, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = ErlElement.NO_ELEMENTS;
+        fElements = IErlElement.NO_ELEMENTS;
         fPath = null;
         fString = string;
     }
@@ -105,7 +105,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code, final Throwable throwable) {
         super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
-        fElements = ErlElement.NO_ELEMENTS;
+        fElements = IErlElement.NO_ELEMENTS;
     }
 
     /**
@@ -113,7 +113,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code, final IPath path) {
         super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = ErlElement.NO_ELEMENTS;
+        fElements = IErlElement.NO_ELEMENTS;
         fPath = path;
     }
 
@@ -162,7 +162,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
         super(ERROR, ErlangPlugin.PLUGIN_ID,
                 ErlModelStatusConstants.CORE_EXCEPTION,
                 "ErlModelStatus", coreException); //$NON-NLS-1$
-        fElements = ErlElement.NO_ELEMENTS;
+        fElements = IErlElement.NO_ELEMENTS;
     }
 
     protected int getBits() {
