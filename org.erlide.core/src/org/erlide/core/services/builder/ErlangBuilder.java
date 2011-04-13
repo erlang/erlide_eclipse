@@ -237,15 +237,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         } catch (final Exception e) {
             ErlLogger.error(e);
             final String msg = NLS.bind(
-                    BuilderMessages.build_inconsistentProject,
-                    e.getLocalizedMessage());
+                    BuilderMessages.build_inconsistentProject, e.getMessage(),
+                    e.getClass().getName());
             MarkerUtils.addProblemMarker(project, null, null, msg, 0,
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
             // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
-                    + " took "
+            ErlLogger.debug("Finished build of " + project.getName() + " took "
                     + Long.toString(System.currentTimeMillis() - time));
             // }
         }
