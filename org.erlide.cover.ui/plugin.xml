@@ -15,22 +15,7 @@
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="org.erlide.cover.core.perspectives.CoverPerspective">
-         <view
-               id="org.erlide.cover.core.views.TestResultView"
-               ratio="0.5"
-               relationship="right"
-               relative="org.eclipse.ui.views.TaskList">
-         </view>
-      </perspectiveExtension>
-      <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               id="org.erlide.eunit.ui.views.TestTableView"
-               ratio="0.5"
-               relationship="right"
-               relative="org.eclipse.ui.views.TaskList">
-         </view>
       </perspectiveExtension>
    </extension>
    <extension
@@ -41,9 +26,6 @@
       <contexts
             file="contexts.xml">
       </contexts>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectives">
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -113,6 +95,15 @@
             icon="icons/launch.gif"
             id="org.erlide.cover.ui.launchConfigurationTypeImageCover">
       </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.annotationTypes">
+      <type
+            name="org.erlide.cover.ui.fullCoverageAnnotation">
+      </type>
+      <type
+            name="org.erlide.cover.ui.noCoverageAnnotation">
+      </type>
    </extension>
 
 </plugin>
