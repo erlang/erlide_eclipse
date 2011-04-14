@@ -23,6 +23,7 @@ import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.parsing.ErlideNoparse;
 import org.erlide.core.rpc.RpcCallSite;
@@ -44,11 +45,14 @@ import com.google.common.collect.Lists;
  * @author jakob
  * 
  */
-public final class ErlParser {
+public final class ErlParser implements IErlParser {
 
     public ErlParser() {
     }
 
+    /* (non-Javadoc)
+     * @see org.erlide.core.model.erlang.internal.IErlParser#parse(org.erlide.core.model.erlang.IErlModule, java.lang.String, boolean, java.lang.String, boolean)
+     */
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
             final boolean useCaches) {

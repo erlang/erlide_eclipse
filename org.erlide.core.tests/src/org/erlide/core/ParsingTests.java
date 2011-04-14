@@ -15,6 +15,7 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.internal.ErlParser;
 import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.parsing.ErlideScanner;
@@ -52,7 +53,7 @@ public class ParsingTests {
         final String scannerModuleName = ErlangToolkit
                 .createScannerModuleName(module);
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final ErlParser parser = new ErlParser();
+        final IErlParser parser = new ErlParser();
         return parser.parse(module, scannerModuleName, false, "", false);
     }
 

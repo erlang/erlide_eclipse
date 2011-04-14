@@ -2,17 +2,19 @@ package org.erlide.core.parsing;
 
 public interface IErlScanner {
 
-    public abstract void addRef();
+    String getName();
 
-    public abstract boolean willDispose();
+    void addRef();
 
-    public abstract void dispose();
+    boolean willDispose();
 
-    public abstract void replaceText(final int offset, final int removeLength,
+    void dispose();
+
+    void replaceText(final int offset, final int removeLength,
             final String newText);
 
-    public abstract ErlToken getTokenAt(final int offset);
+    ErlToken getTokenAt(final int offset);
 
-    public abstract String getText();
+    String getText();
 
 }

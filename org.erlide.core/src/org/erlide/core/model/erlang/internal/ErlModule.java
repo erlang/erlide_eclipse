@@ -35,6 +35,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
@@ -102,7 +103,7 @@ public class ErlModule extends Openable implements IErlModule {
         }
         getScanner();
         try {
-            final ErlParser parser = new ErlParser();
+            final IErlParser parser = new ErlParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     useCaches);
         } finally {
