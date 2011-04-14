@@ -566,7 +566,7 @@ public class ErlProject extends Openable implements IErlProject {
         } else {
             final List<IErlModule> cached = erlModelCache
                     .getModulesForProject(this);
-            final ErlModel model = getModel();
+            final IErlModel model = getModel();
             if (cached != null) {
                 result.addAll(cached);
             } else {

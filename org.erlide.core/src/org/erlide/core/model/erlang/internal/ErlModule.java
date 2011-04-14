@@ -103,7 +103,7 @@ public class ErlModule extends Openable implements IErlModule {
         }
         getScanner();
         try {
-            final IErlParser parser = new ErlParser();
+            final IErlParser parser = getModel().getParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     useCaches);
         } finally {

@@ -56,6 +56,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModelChangeListener;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlangFirstThat;
@@ -126,6 +127,8 @@ public class ErlModel extends Openable implements IErlModel {
 
     OtpErlangList fCachedPathVars = null;
 
+    private final IErlParser parser;
+
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created. One should only
@@ -136,6 +139,7 @@ public class ErlModel extends Openable implements IErlModel {
      */
     ErlModel() {
         super(null, ""); //$NON-NLS-1$
+        parser = new ErlParser();
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IPathVariableManager pvm = workspace.getPathVariableManager();
         fPathVariableChangeListener = new PathVariableChangeListener();
@@ -1319,6 +1323,10 @@ public class ErlModel extends Openable implements IErlModel {
     public HashSet<String> getOptionNames() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public IErlParser getParser() {
+        return parser;
     }
 
 }

@@ -28,6 +28,7 @@ import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.ErlModelStatusConstants;
 import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlElementVisitor;
+import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IOpenable;
@@ -213,8 +214,8 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * @see IErlElement
      */
-    public ErlModel getModel() {
-        return (ErlModel) CoreScope.getModel();
+    public IErlModel getModel() {
+        return CoreScope.getModel();
     }
 
     /**

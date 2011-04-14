@@ -11,6 +11,7 @@
 package org.erlide.core.model.erlang;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 
 import org.eclipse.core.resources.IFile;
@@ -423,4 +424,9 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     void putEdited(String path, IErlModule module);
 
+    IErlParser getParser();
+
+    void accept(final IErlElement element, final IErlElementVisitor visitor,
+            final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            throws ErlModelException;
 }
