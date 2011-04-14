@@ -1,4 +1,4 @@
-package org.erlide.core.backend.launching;
+package org.erlide.core.debug;
 
 import java.util.ArrayList;
 import java.util.List;

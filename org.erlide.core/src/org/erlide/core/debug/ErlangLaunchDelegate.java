@@ -9,7 +9,7 @@
  * Vlad Dumitrescu
  * Jakob Cederlund
  *******************************************************************************/
-package org.erlide.core.backend.launching;
+package org.erlide.core.debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,6 @@ import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.debug.ErlangDebugHelper;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 

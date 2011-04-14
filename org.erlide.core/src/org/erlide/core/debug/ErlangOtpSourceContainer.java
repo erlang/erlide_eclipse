@@ -1,4 +1,4 @@
-package org.erlide.core.backend.launching;
+package org.erlide.core.debug;
 
 import java.io.File;
 import java.io.FilenameFilter;

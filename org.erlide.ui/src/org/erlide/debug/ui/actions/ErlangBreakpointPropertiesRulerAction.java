@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.core.model.debug.IErlangBreakpoint;
+import org.erlide.core.debug.IErlangBreakpoint;
 
 /**
  * Presents the standard properties dialog to configure the attibutes of a Java

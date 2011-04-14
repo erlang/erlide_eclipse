@@ -1,4 +1,4 @@
-package org.erlide.core.model.debug;
+package org.erlide.core.debug;
 
 public interface IErlangDebugNode {
     void addErlangProcess(ErlangProcess p);

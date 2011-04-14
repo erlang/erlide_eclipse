@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.model.debug;
+package org.erlide.core.debug;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
