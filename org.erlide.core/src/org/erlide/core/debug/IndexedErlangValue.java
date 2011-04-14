@@ -18,14 +18,14 @@ import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

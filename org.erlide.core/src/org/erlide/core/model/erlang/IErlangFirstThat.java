@@ -1,5 +1,7 @@
 package org.erlide.core.model.erlang;
 
+import org.erlide.core.model.root.api.IErlElement;
+
 /**
  * @author jakob
  * 

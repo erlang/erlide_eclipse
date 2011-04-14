@@ -3,7 +3,7 @@ package org.erlide.core.model.erlang.util;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.erlide.core.CoreScope;
-import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.root.api.IErlElement;
 
 public class ElementAdapterFactory implements IAdapterFactory {
 

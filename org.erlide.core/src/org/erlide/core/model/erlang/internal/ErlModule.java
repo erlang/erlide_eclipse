@@ -24,33 +24,36 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlExport;
-import org.erlide.core.model.erlang.IErlExternal;
-import org.erlide.core.model.erlang.IErlFolder;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.IErlangFirstThat;
-import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.parsing.ErlScanner;
-import org.erlide.core.parsing.ErlToken;
-import org.erlide.core.parsing.ErlangToolkit;
-import org.erlide.core.parsing.IErlScanner;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.ErlToken;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlExternal;
+import org.erlide.core.model.root.api.IErlFolder;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlParser;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlScanner;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.api.ISourceReference;
+import org.erlide.core.model.root.api.IErlProject.Scope;
+import org.erlide.core.model.root.internal.ErlModel;
+import org.erlide.core.model.root.internal.ErlScanner;
+import org.erlide.core.model.root.internal.Openable;
+import org.erlide.core.model.root.internal.SourceRange;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -70,7 +73,7 @@ public class ErlModule extends Openable implements IErlModule {
     private final boolean useCaches;
     private final Collection<IErlComment> comments;
 
-    protected ErlModule(final IParent parent, final String name,
+    public ErlModule(final IParent parent, final String name,
             final String initialText, final IFile file, final String path,
             final boolean useCaches) {
         super(parent, name);

@@ -19,10 +19,15 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.ErlToken;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlProject.Scope;
+import org.erlide.core.model.root.api.IOpenable;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.api.ISourceUnit;
 
 /**
  * Represents an entire Erlang compilation unit (<code>.erl</code> or
@@ -37,7 +42,8 @@ import org.erlide.core.parsing.ErlToken;
  * This interface is not intended to be implemented by clients.
  * </p>
  */
-public interface IErlModule extends IErlElement, IParent, IOpenable {
+public interface IErlModule extends IErlElement, IParent, IOpenable,
+        ISourceUnit {
 
     /**
      * Returns the smallest element within this module that includes the given

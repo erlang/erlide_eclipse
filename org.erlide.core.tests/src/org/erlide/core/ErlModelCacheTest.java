@@ -7,8 +7,8 @@ import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.IErlProject.Scope;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

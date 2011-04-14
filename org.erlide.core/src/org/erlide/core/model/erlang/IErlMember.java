@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.ISourceManipulation;
+import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.api.ISourceReference;
+
 public interface IErlMember extends IErlElement, ISourceReference,
         ISourceManipulation {
 

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.erlide.core.model.erlang.IErlElement.Kind;
+import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.Test;

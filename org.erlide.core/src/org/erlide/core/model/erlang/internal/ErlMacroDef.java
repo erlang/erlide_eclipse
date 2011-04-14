@@ -1,7 +1,8 @@
 package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlMacroDef;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.internal.ErlMember;
 
 import com.google.common.base.Objects;
 
@@ -15,7 +16,7 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
      * @param imports
      * @param module
      */
-    protected ErlMacroDef(final IParent parent, final String macro,
+    public ErlMacroDef(final IParent parent, final String macro,
             final String extra) {
         super(parent, "macro_definition");
         this.macro = macro;

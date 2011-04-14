@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.IErlProject;
 
 /**
  * Interface for coverage configuration

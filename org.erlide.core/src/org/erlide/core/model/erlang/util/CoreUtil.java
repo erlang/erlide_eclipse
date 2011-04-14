@@ -32,8 +32,8 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.common.CharOperation;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlProject;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 

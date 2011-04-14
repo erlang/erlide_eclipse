@@ -13,10 +13,10 @@ package org.erlide.ui.editors.erl.outline;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.CoreScope;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IParent;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangContentProvider implements ITreeContentProvider {

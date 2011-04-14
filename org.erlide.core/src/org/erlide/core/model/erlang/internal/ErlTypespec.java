@@ -10,7 +10,8 @@
 package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlTypespec;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.internal.ErlMember;
 
 /**
  * 
@@ -25,14 +26,14 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
      * @param parent
      * @param name
      */
-    protected ErlTypespec(final IParent parent, final String name,
+    public ErlTypespec(final IParent parent, final String name,
             final String extra) {
         super(parent, name);
         fExtra = extra;
     }
 
     /**
-     * @see org.erlide.core.model.erlang.IErlElement#getKind()
+     * @see org.erlide.core.model.root.api.IErlElement#getKind()
      */
     public Kind getKind() {
         return Kind.TYPESPEC;

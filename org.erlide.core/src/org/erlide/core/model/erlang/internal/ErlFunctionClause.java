@@ -14,10 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.internal.ErlMember;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -27,7 +28,7 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
     final String head;
     final List<String> parameters;
 
-    protected ErlFunctionClause(final IParent parent, final String name,
+    public ErlFunctionClause(final IParent parent, final String name,
             final String head, final OtpErlangList parameters) {
         super(parent, name);
         this.head = head;

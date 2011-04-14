@@ -10,9 +10,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.parsing.ErlangToolkit;
-import org.erlide.core.parsing.ErlideScanner;
+import org.erlide.core.model.erlang.internal.ErlideScanner;
 import org.erlide.jinterface.ErlLogger;
 
 /**
