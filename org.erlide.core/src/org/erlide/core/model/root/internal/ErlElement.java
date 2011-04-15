@@ -632,18 +632,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
-    public String getModuleName() {
-        final IErlModule module = getModule();
-        if (module != null) {
-            return module.getName();
-        }
-        final String path = getFilePath();
-        if (path != null) {
-            return new Path(path).lastSegment();
-        }
-        return null;
-    }
-
     public void dispose() {
         // XXX FIXME TODO
         // if (!LOCAL_CHILDREN) {

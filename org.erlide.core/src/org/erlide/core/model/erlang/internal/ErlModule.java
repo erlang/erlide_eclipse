@@ -415,7 +415,6 @@ public class ErlModule extends Openable implements IErlModule {
         // currently unused
     }
 
-    @Override
     public String getModuleName() {
         return CommonUtils.withoutExtension(getName());
     }

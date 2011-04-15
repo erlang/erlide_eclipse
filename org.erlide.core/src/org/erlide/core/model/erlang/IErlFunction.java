@@ -35,5 +35,4 @@ public interface IErlFunction extends IErlFunctionClause, IParent {
 
     String getComment();
 
-    String getModuleName();
 }

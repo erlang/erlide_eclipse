@@ -1,6 +1,8 @@
 package org.erlide.core.model.root.internal;
 
+import org.eclipse.core.runtime.Path;
 import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
@@ -54,6 +56,18 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
             }
         }
         return new SourceRange(fNameRangeOffset, fNameRangeLength);
+    }
+
+    public String getModuleName() {
+        final IErlModule module = getModule();
+        if (module != null) {
+            return module.getName();
+        }
+        final String path = getFilePath();
+        if (path != null) {
+            return new Path(path).lastSegment();
+        }
+        return null;
     }
 
 }
