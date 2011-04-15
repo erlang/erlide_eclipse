@@ -47,24 +47,6 @@ import com.google.common.collect.Lists;
 public abstract class ErlElement extends PlatformObject implements IErlElement,
         IParent, Cloneable {
 
-    public static final char EM_ESCAPE = '\\';
-
-    public static final char EM_PROJECT = '=';
-
-    public static final char EM_PACKAGE = '/';
-
-    public static final char EM_MODULE = '{';
-
-    public static final char EM_ATTRIBUTE = '<';
-
-    public static final char EM_FUNCTION = '^';
-
-    public static final char EM_LIBRARY = '~';
-
-    public static final char EM_BEAMFILE = '|';
-
-    public static final char EM_COUNT = '!';
-
     /**
      * A count to uniquely identify this element in the case that a duplicate
      * named element exists. For example, if there are two fields in a
@@ -157,26 +139,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
                     && fParent.equals(other.fParent);
         }
         return false;
-    }
-
-    protected void escapeMementoName(final StringBuilder buffer,
-            final String mementoName) {
-        for (int i = 0, length = mementoName.length(); i < length; i++) {
-            final char character = mementoName.charAt(i);
-            switch (character) {
-            case EM_ESCAPE:
-            case EM_COUNT:
-            case EM_PROJECT:
-            case EM_PACKAGE:
-            case EM_MODULE:
-            case EM_ATTRIBUTE:
-            case EM_FUNCTION:
-            case EM_LIBRARY:
-            case EM_BEAMFILE:
-                buffer.append(EM_ESCAPE);
-            }
-            buffer.append(character);
-        }
     }
 
     /**

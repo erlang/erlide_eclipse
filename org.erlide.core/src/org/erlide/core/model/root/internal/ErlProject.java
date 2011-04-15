@@ -395,15 +395,6 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     /**
-     * Returns the <code>char</code> that marks the start of this handles
-     * contribution to a memento.
-     */
-    protected char getHandleMementoDelimiter() {
-
-        return EM_PROJECT;
-    }
-
-    /**
      * Find the specific Erlang command amongst the given build spec and return
      * its index or -1 if not found.
      */
