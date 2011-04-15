@@ -2,7 +2,7 @@ package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.IParent;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

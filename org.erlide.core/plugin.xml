@@ -126,9 +126,9 @@
         point="org.eclipse.core.runtime.adapters">
      <factory
            adaptableType="org.eclipse.core.resources.IResource"
-           class="org.erlide.core.model.erlang.util.ElementAdapterFactory">
+           class="org.erlide.core.model.util.ElementAdapterFactory">
         <adapter
-              type="org.erlide.core.model.erlang.IErlElement">
+              type="org.erlide.core.model.root.api.IErlElement">
         </adapter>
      </factory>
   </extension>

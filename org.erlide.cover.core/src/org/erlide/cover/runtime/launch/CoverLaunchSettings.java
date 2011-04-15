@@ -2,8 +2,8 @@ package org.erlide.cover.runtime.launch;
 
 import java.util.Collection;
 
-import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.cover.api.Configuration;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.IConfiguration;

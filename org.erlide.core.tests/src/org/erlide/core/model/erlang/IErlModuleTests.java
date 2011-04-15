@@ -19,11 +19,13 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.model.erlang.IErlElement.Kind;
-import org.erlide.core.model.erlang.IErlProject.Scope;
-import org.erlide.core.model.erlang.util.ErlangFunction;
-import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.model.root.api.ErlToken;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlElement.Kind;
+import org.erlide.core.model.root.api.IErlProject.Scope;
+import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

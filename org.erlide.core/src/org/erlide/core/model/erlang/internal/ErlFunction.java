@@ -12,12 +12,13 @@ package org.erlide.core.model.erlang.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.internal.ErlMember;
+import org.erlide.core.model.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
@@ -44,7 +45,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
      * @param head
      * @param comment
      */
-    protected ErlFunction(final IParent parent, final String name,
+    public ErlFunction(final IParent parent, final String name,
             final int arity, final String head, final String comment,
             final boolean exported, final OtpErlangList parameters) {
         super(parent, name);

@@ -38,10 +38,10 @@ import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangLaunchDelegate;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

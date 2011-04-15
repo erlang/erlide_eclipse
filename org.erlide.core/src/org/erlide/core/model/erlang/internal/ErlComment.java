@@ -4,14 +4,15 @@
 package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlComment;
-import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.internal.ErlMember;
 
 /**
  * @author jakob
  * 
  */
-public class ErlComment extends SourceRefElement implements IErlComment {
+public class ErlComment extends ErlMember implements IErlComment {
 
     private final boolean fIsHeader;
 
@@ -26,7 +27,7 @@ public class ErlComment extends SourceRefElement implements IErlComment {
     }
 
     /**
-     * @see org.erlide.core.model.erlang.IErlElement#getKind()
+     * @see org.erlide.core.model.root.api.IErlElement#getKind()
      */
     public Kind getKind() {
         return Kind.COMMENT;
@@ -41,10 +42,12 @@ public class ErlComment extends SourceRefElement implements IErlComment {
         return result + ", line=" + (getLineStart() + 1) + ">";
     }
 
+    @Override
     public ISourceRange getNameRange() {
         return null;
     }
 
+    @Override
     public void setNameRange(final int offset, final int length) {
     }
 }

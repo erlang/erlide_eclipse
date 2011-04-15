@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
-import org.erlide.core.model.erlang.internal.PathSerializer;
+import org.erlide.core.model.root.internal.OldErlangProjectProperties;
+import org.erlide.core.model.root.internal.PathSerializer;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.RuntimeVersion;

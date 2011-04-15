@@ -18,8 +18,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.model.erlang.IErlProject.Scope;
-import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlProject.Scope;
+import org.erlide.core.model.root.internal.OldErlangProjectProperties;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -395,7 +397,7 @@ public class IErlProjectTests extends ErlModelTestBase {
 
     // TODO check more properties than source dirs property
     /**
-     * @see org.erlide.core.model.erlang.IErlProject#setAllProperties()
+     * @see org.erlide.core.model.root.api.IErlProject#setAllProperties()
      */
     @Test
     public void setAllProperties() throws Exception {
@@ -416,7 +418,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     }
 
     /**
-     * @see org.erlide.core.model.erlang.IErlProject#getReferencedProjects()
+     * @see org.erlide.core.model.root.api.IErlProject#getReferencedProjects()
      */
     @Test
     public void getReferencedProjects() throws Exception {

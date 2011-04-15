@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;

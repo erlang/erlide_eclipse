@@ -2,6 +2,8 @@ package org.erlide.core.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.ISourceRange;
 import org.junit.Test;
 
 public class IErlMemberTests extends ErlModelTestBase {

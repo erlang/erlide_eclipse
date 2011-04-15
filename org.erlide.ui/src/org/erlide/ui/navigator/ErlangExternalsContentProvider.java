@@ -7,13 +7,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.CoreScope;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.IOpenable;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IOpenable;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.api.IErlElement.Kind;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider
