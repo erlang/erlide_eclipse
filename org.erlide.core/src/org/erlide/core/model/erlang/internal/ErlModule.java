@@ -40,7 +40,6 @@ import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlTypespec;
-import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
@@ -55,6 +54,7 @@ import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 public class ErlModule extends Openable implements IErlModule {
@@ -149,8 +149,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
-        return getModel().innermostThat(this, new IErlangFirstThat() {
-            public boolean firstThat(final IErlElement e) {
+        return getModel().innermostThat(this, new Predicate<IErlElement>() {
+            public boolean apply(final IErlElement e) {
                 try {
                     if (e instanceof ISourceReference) {
                         final ISourceReference ch = (ISourceReference) e;
@@ -169,8 +169,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlElement getElementAtLine(final int lineNumber) {
-        return getModel().innermostThat(this, new IErlangFirstThat() {
-            public boolean firstThat(final IErlElement e) {
+        return getModel().innermostThat(this, new Predicate<IErlElement>() {
+            public boolean apply(final IErlElement e) {
                 if (e instanceof ISourceReference) {
                     final ISourceReference sr = (ISourceReference) e;
                     if (sr.getLineStart() <= lineNumber

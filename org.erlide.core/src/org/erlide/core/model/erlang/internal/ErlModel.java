@@ -59,7 +59,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.IErlProject.Scope;
-import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.IOpenable;
 import org.erlide.core.model.erlang.IParent;
 import org.erlide.core.model.erlang.IWorkingCopy;
@@ -75,6 +74,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -492,7 +492,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlElement innermostThat(final IErlElement el,
-            final IErlangFirstThat firstThat) {
+            final Predicate<IErlElement> firstThat) {
         if (el instanceof IParent) {
             final IParent p = (IParent) el;
             try {
@@ -505,7 +505,7 @@ public class ErlModel extends Openable implements IErlModel {
             } catch (final ErlModelException e) {
             }
         }
-        if (firstThat.firstThat(el)) {
+        if (firstThat.apply(el)) {
             return el;
         }
         return null;

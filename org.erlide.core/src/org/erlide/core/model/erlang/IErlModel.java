@@ -26,6 +26,7 @@ import org.erlide.core.model.erlang.util.IElementChangedListener;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.google.common.base.Predicate;
 
 /**
  * Represent the root Erlang element corresponding to the workspace. Since there
@@ -290,7 +291,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
             throws ErlModelException;
 
     IErlElement innermostThat(final IErlElement el,
-            final IErlangFirstThat firstThat);
+            final Predicate<IErlElement> firstThat);
 
     OtpErlangList getPathVars();
 
