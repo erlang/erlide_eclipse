@@ -14,11 +14,11 @@ import java.util.List;
 
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.internal.ErlMember;
+import org.erlide.core.model.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 

@@ -21,11 +21,11 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
-import org.erlide.core.model.erlang.util.ModelUtils;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.ModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

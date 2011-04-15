@@ -73,10 +73,10 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.util.PluginUtils;
-import org.erlide.core.model.erlang.util.ResourceUtil;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.PluginUtils;
+import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 

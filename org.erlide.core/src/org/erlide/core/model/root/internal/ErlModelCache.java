@@ -11,10 +11,10 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlideUtil;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModelChangeListener;
 import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.jinterface.util.LRUCache;
 

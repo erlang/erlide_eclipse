@@ -30,9 +30,9 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.test_support.ui.suites.TestResultsView;
 
 public class TestLaunchShortcut implements ILaunchShortcut {

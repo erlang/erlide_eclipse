@@ -24,8 +24,8 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ElementChangedEvent;
-import org.erlide.core.model.erlang.util.IElementChangedListener;
+import org.erlide.core.model.util.ElementChangedEvent;
+import org.erlide.core.model.util.IElementChangedListener;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;

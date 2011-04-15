@@ -11,9 +11,9 @@
 package org.erlide.ui.editors.erl.outline;
 
 import org.eclipse.swt.widgets.Display;
-import org.erlide.core.model.erlang.util.ElementChangedEvent;
-import org.erlide.core.model.erlang.util.IElementChangedListener;
 import org.erlide.core.model.root.api.IErlElementDelta;
+import org.erlide.core.model.util.ElementChangedEvent;
+import org.erlide.core.model.util.IElementChangedListener;
 
 class ElementChangedListener implements IElementChangedListener {
 

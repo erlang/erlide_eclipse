@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

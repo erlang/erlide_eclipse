@@ -1,4 +1,4 @@
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 import java.util.ArrayList;
 import java.util.Collection;

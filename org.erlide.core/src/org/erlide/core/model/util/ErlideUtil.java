@@ -9,7 +9,7 @@
  *     Vlad Dumitrescu
  *     Jakob C
  *******************************************************************************/
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 import java.io.File;
 import java.util.Collection;

@@ -34,8 +34,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.erlang.util.ErlangFunction;
-import org.erlide.core.model.erlang.util.ErlangIncludeFile;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.ErlToken;
 import org.erlide.core.model.root.api.IErlElement;
@@ -53,6 +51,8 @@ import org.erlide.core.model.root.internal.ErlModel;
 import org.erlide.core.model.root.internal.ErlScanner;
 import org.erlide.core.model.root.internal.Openable;
 import org.erlide.core.model.root.internal.SourceRange;
+import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

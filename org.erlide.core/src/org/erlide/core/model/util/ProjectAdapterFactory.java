@@ -1,4 +1,4 @@
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdapterFactory;

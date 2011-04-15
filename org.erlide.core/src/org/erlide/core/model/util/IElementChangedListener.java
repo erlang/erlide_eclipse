@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 /**
  * An element changed listener receives notification of changes to Java elements

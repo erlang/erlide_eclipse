@@ -7,7 +7,7 @@
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 import java.util.Collection;
 import java.util.HashSet;

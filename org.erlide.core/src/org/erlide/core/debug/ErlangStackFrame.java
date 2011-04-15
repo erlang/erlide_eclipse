@@ -24,9 +24,9 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

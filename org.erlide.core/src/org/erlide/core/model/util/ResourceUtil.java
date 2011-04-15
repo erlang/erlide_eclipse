@@ -4,7 +4,7 @@
  *
  * cvs-id : $Id$
  */
-package org.erlide.core.model.erlang.util;
+package org.erlide.core.model.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
