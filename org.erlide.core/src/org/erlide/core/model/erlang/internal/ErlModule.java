@@ -33,7 +33,6 @@ import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
-import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.erlang.util.ErlangFunction;
 import org.erlide.core.model.erlang.util.ErlangIncludeFile;
@@ -45,11 +44,11 @@ import org.erlide.core.model.root.api.IErlFolder;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlParser;
 import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.api.IErlScanner;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.api.ISourceReference;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.internal.ErlModel;
 import org.erlide.core.model.root.internal.ErlScanner;
 import org.erlide.core.model.root.internal.Openable;
@@ -58,6 +57,7 @@ import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 public class ErlModule extends Openable implements IErlModule {
@@ -152,8 +152,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
-        return getModel().innermostThat(this, new IErlangFirstThat() {
-            public boolean firstThat(final IErlElement e) {
+        return getModel().innermostThat(this, new Predicate<IErlElement>() {
+            public boolean apply(final IErlElement e) {
                 try {
                     if (e instanceof ISourceReference) {
                         final ISourceReference ch = (ISourceReference) e;
@@ -172,8 +172,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlElement getElementAtLine(final int lineNumber) {
-        return getModel().innermostThat(this, new IErlangFirstThat() {
-            public boolean firstThat(final IErlElement e) {
+        return getModel().innermostThat(this, new Predicate<IErlElement>() {
+            public boolean apply(final IErlElement e) {
                 if (e instanceof ISourceReference) {
                     final ISourceReference sr = (ISourceReference) e;
                     if (sr.getLineStart() <= lineNumber

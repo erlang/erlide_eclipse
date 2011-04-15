@@ -49,7 +49,6 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlangFirstThat;
 import org.erlide.core.model.erlang.internal.ErlModule;
 import org.erlide.core.model.erlang.util.ElementChangedEvent;
 import org.erlide.core.model.erlang.util.ErlangFunction;
@@ -65,10 +64,10 @@ import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlModelChangeListener;
 import org.erlide.core.model.root.api.IErlParser;
 import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.IWorkingCopy;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -76,6 +75,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -493,7 +493,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlElement innermostThat(final IErlElement el,
-            final IErlangFirstThat firstThat) {
+            final Predicate<IErlElement> firstThat) {
         if (el instanceof IParent) {
             final IParent p = (IParent) el;
             try {
@@ -506,7 +506,7 @@ public class ErlModel extends Openable implements IErlModel {
             } catch (final ErlModelException e) {
             }
         }
-        if (firstThat.firstThat(el)) {
+        if (firstThat.apply(el)) {
             return el;
         }
         return null;
