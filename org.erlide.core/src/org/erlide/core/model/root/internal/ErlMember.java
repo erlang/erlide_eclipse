@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.jinterface.ErlLogger;
@@ -66,6 +67,14 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         final String path = getFilePath();
         if (path != null) {
             return new Path(path).lastSegment();
+        }
+        return null;
+    }
+
+    public IErlModule getModule() {
+        final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
+        if (ancestor instanceof IErlModule) {
+            return (IErlModule) ancestor;
         }
         return null;
     }

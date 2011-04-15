@@ -18,11 +18,11 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlElement.AcceptFlags;
+import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlElementVisitor;
 import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlElement.AcceptFlags;
-import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.internal.ErlModelCache;
 import org.erlide.test.support.ErlideTestUtils;
@@ -79,10 +79,8 @@ public class IErlElementTest extends ErlModelTestBase {
     // IErlModule getModule();
     @Test
     public void getModule() throws Exception {
-        assertEquals(module, module.getModule());
-        assertNull(project.getModule());
         module.open(null);
-        final IErlElement element = module.getElementAtLine(3);
+        final IErlMember element = module.getElementAtLine(3);
         assertEquals(module, element.getModule());
     }
 

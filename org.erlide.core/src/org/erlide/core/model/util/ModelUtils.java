@@ -17,14 +17,14 @@ import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.internal.SourceRange;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
@@ -166,7 +166,7 @@ public class ModelUtils {
         return definedName;
     }
 
-    public static IErlElement findFunction(String moduleName,
+    public static IErlFunction findFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
             final IErlProject project, final Scope scope,
             final IErlModule module) throws CoreException {
@@ -181,7 +181,7 @@ public class ModelUtils {
                 if (function != null) {
                     return function;
                 }
-                return module2;
+                return null;
             }
         }
         return null;

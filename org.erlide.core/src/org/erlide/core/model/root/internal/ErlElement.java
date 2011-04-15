@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.CoreScope;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.ErlModelStatus;
 import org.erlide.core.model.root.api.ErlModelStatusConstants;
@@ -188,14 +187,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
         if (ancestor instanceof IErlProject) {
             return (IErlProject) ancestor;
-        }
-        return null;
-    }
-
-    public IErlModule getModule() {
-        final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
-        if (ancestor instanceof IErlModule) {
-            return (IErlModule) ancestor;
         }
         return null;
     }

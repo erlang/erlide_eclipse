@@ -62,7 +62,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
      */
     IErlElement getElementAt(int position) throws ErlModelException;
 
-    IErlElement getElementAtLine(int lineNumber);
+    IErlMember getElementAtLine(int lineNumber);
 
     /**
      * Is this module a real one, or an include file?

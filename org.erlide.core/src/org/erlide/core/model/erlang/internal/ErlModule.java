@@ -30,6 +30,7 @@ import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlExport;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
+import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
@@ -171,19 +172,20 @@ public class ErlModule extends Openable implements IErlModule {
         });
     }
 
-    public IErlElement getElementAtLine(final int lineNumber) {
-        return getModel().innermostThat(this, new Predicate<IErlElement>() {
-            public boolean apply(final IErlElement e) {
-                if (e instanceof ISourceReference) {
-                    final ISourceReference sr = (ISourceReference) e;
-                    if (sr.getLineStart() <= lineNumber
-                            && sr.getLineEnd() >= lineNumber) {
-                        return true;
+    public IErlMember getElementAtLine(final int lineNumber) {
+        return (IErlMember) getModel().innermostThat(this,
+                new Predicate<IErlElement>() {
+                    public boolean apply(final IErlElement e) {
+                        if (e instanceof ISourceReference) {
+                            final ISourceReference sr = (ISourceReference) e;
+                            if (sr.getLineStart() <= lineNumber
+                                    && sr.getLineEnd() >= lineNumber) {
+                                return true;
+                            }
+                        }
+                        return false;
                     }
-                }
-                return false;
-            }
-        });
+                });
     }
 
     public ModuleKind getModuleKind() {
