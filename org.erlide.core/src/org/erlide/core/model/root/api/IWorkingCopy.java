@@ -46,7 +46,7 @@ import org.erlide.core.model.erlang.IErlModule;
  * <code>getWorkingCopy</code> on a working copy returns the receiver.
  * </p>
  */
-public interface IWorkingCopy extends IErlModule {
+public interface IWorkingCopy {
 
     /**
      * Commits the contents of this working copy to its original element and
