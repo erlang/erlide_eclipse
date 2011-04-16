@@ -26,9 +26,9 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -50,7 +50,7 @@ public class ErlModelUtils {
     public static boolean openExternalFunction(final String moduleName,
             final ErlangFunction function, final String modulePath,
             final IErlModule module, final IErlProject project,
-            final Scope scope) throws CoreException {
+            final IErlModel.Scope scope) throws CoreException {
         final IErlModule module2 = ModelUtils.findModule(project, moduleName,
                 modulePath, scope);
         if (module2 != null) {
@@ -148,7 +148,7 @@ public class ErlModelUtils {
         }
         if (path != null) {
             final IErlModule module = ModelUtils.findModule(null, null, path,
-                    Scope.ALL_PROJECTS);
+                    IErlModel.Scope.ALL_PROJECTS);
             if (module != null) {
                 return module;
             }
@@ -160,7 +160,7 @@ public class ErlModelUtils {
             final int arity) throws CoreException {
         ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
                 arity), null, CoreScope.getModel().findModule(module), null,
-                Scope.ALL_PROJECTS);
+                IErlModel.Scope.ALL_PROJECTS);
     }
 
     public static void openMF(final String module, final String function)
@@ -170,7 +170,7 @@ public class ErlModelUtils {
 
     public static void openModule(final String moduleName) throws CoreException {
         final IErlModule module = ModelUtils.findModule(null, moduleName, null,
-                Scope.ALL_PROJECTS);
+                IErlModel.Scope.ALL_PROJECTS);
         if (module != null) {
             EditorUtility.openInEditor(module);
         }

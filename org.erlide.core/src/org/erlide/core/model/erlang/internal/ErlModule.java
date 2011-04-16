@@ -43,7 +43,6 @@ import org.erlide.core.model.root.api.IErlFolder;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlParser;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.api.IErlScanner;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
@@ -688,22 +687,6 @@ public class ErlModule extends Openable implements IErlModule {
             }
         }
         return false;
-    }
-
-    public IErlModule findInclude(final String includeName,
-            final String includePath, final Scope scope)
-            throws ErlModelException {
-        final IParent parent = getParent();
-        if (parent instanceof IErlFolder) {
-            final IErlFolder folder = (IErlFolder) parent;
-            folder.open(null);
-            final IErlModule include = folder.findInclude(includeName,
-                    includePath);
-            if (include != null) {
-                return include;
-            }
-        }
-        return getProject().findInclude(includeName, includePath, scope);
     }
 
     public String getText() {

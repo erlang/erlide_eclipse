@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -37,7 +36,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -67,7 +65,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * Handle for an Erlang Project.
@@ -684,8 +681,8 @@ public class ErlProject extends Openable implements IErlProject {
 
     public IErlModule getModule(final String name) {
         try {
-            return findModule(this, name, null, false, false,
-                    Scope.PROJECT_ONLY);
+            return ErlModel.findModuleFromProject(this, name, null, false,
+                    false, IErlModel.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
             final boolean hasExtension = CommonUtils.hasExtension(name);
             return null;
@@ -955,223 +952,12 @@ public class ErlProject extends Openable implements IErlProject {
         clearCaches();
     }
 
-    static IErlModule getModuleFromCacheByNameOrPath(final ErlProject project,
-            final String moduleName, final String modulePath, final Scope scope)
-            throws ErlModelException {
-        final ErlModelCache erlModelCache = ErlModel.getErlModelCache();
-        if (modulePath != null) {
-            final IErlModule module = erlModelCache.getModuleByPath(modulePath);
-            if (module != null
-                    && (project == null || project.moduleInProject(module))) {
-                return module;
-            }
-        }
-        return null;
-    }
-
-    private boolean moduleInProject(final IErlModule module) {
+    boolean moduleInProject(final IErlModule module) {
         final IErlProject project = module.getProject();
         if (project == null) {
             return false;
         }
         return equals(project);
-    }
-
-    static IErlModule findModule(final IErlProject project,
-            final String moduleName, final String modulePath,
-            final boolean ignoreCase, final boolean checkExternals,
-            final Scope scope) throws ErlModelException {
-        if (project != null) {
-            final IErlModule module = getModuleFromCacheByNameOrPath(
-                    (ErlProject) project, moduleName, modulePath, scope);
-            if (module != null && module.isOnSourcePath()) {
-                return module;
-            }
-        }
-        final Collection<IErlModule> modules = getAllModules(project,
-                checkExternals, scope);
-        ErlModelCache.getDefault().putModules(modules);
-        if (modulePath != null) {
-            for (final IErlModule module2 : modules) {
-                final String path2 = module2.getFilePath();
-                if (path2 != null && modulePath.equals(path2)) {
-                    return module2;
-                }
-            }
-        }
-        if (moduleName != null) {
-            final boolean hasExtension = CommonUtils.hasExtension(moduleName);
-            for (final IErlModule module2 : modules) {
-                final String name = hasExtension ? module2.getName() : module2
-                        .getModuleName();
-                if (ignoreCase) {
-                    if (moduleName.equalsIgnoreCase(name)) {
-                        return module2;
-                    }
-                } else {
-                    if (moduleName.equals(name)) {
-                        return module2;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    static IErlModule findInclude(final IErlProject project,
-            final String includeName, final String includePath,
-            final boolean ignoreCase, final boolean checkExternals,
-            final Scope scope) throws ErlModelException {
-        if (project != null) {
-            final IErlModule module = getModuleFromCacheByNameOrPath(
-                    (ErlProject) project, includeName, includePath, scope);
-            if (module != null && module.isOnIncludePath()) {
-                return module;
-            }
-        }
-        final Collection<IErlModule> modules = getAllIncludes(project,
-                checkExternals, scope);
-        ErlModelCache.getDefault().putModules(modules);
-        if (includePath != null) {
-            for (final IErlModule module2 : modules) {
-                final String path2 = module2.getFilePath();
-                if (path2 != null && includePath.equals(path2)) {
-                    return module2;
-                }
-            }
-        }
-        if (includeName != null) {
-            final boolean hasExtension = CommonUtils.hasExtension(includeName);
-            for (final IErlModule module2 : modules) {
-                final String name = hasExtension ? module2.getName() : module2
-                        .getModuleName();
-                if (ignoreCase) {
-                    if (includeName.equals(name)) {
-                        return module2;
-                    }
-                } else {
-                    if (includeName.equalsIgnoreCase(name)) {
-                        return module2;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private static Collection<IErlModule> getAllModules(
-            final IErlProject project, final boolean checkExternals,
-            final Scope scope) throws ErlModelException {
-        final List<IErlProject> projects = Lists.newArrayList();
-        final List<IErlModule> result = Lists.newArrayList();
-        final Set<String> paths = Sets.newHashSet();
-        if (project != null) {
-            projects.add(project);
-            if (scope == Scope.REFERENCED_PROJECTS) {
-                projects.addAll(project.getReferencedProjects());
-            }
-        }
-        if (scope == Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            for (final IErlProject project2 : model.getErlangProjects()) {
-                if (!projects.contains(project2)) {
-                    projects.add(project2);
-                }
-            }
-        }
-        for (final IErlProject project2 : projects) {
-            getAllModulesAux(project2.getModules(), result, paths);
-        }
-        if (checkExternals) {
-            if (project != null) {
-                getAllModulesAux(project.getExternalModules(), result, paths);
-            }
-            if (scope == Scope.ALL_PROJECTS) {
-                for (final IErlProject project2 : projects) {
-                    getAllModulesAux(project2.getExternalModules(), result,
-                            paths);
-                }
-            }
-        }
-        return result;
-    }
-
-    private static Collection<IErlModule> getAllIncludes(
-            final IErlProject project, final boolean checkExternals,
-            final Scope scope) throws ErlModelException {
-        final List<IErlProject> projects = Lists.newArrayList();
-        final List<IErlModule> result = Lists.newArrayList();
-        final Set<String> paths = Sets.newHashSet();
-        if (project != null) {
-            projects.add(project);
-            if (scope == Scope.REFERENCED_PROJECTS) {
-                projects.addAll(project.getReferencedProjects());
-            }
-        }
-        if (scope == Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            for (final IErlProject project2 : model.getErlangProjects()) {
-                if (!projects.contains(project2)) {
-                    projects.add(project2);
-                }
-            }
-        }
-        for (final IErlProject project2 : projects) {
-            getAllModulesAux(project2.getIncludes(), result, paths);
-        }
-        if (checkExternals) {
-            getAllModulesAux(project.getExternalIncludes(), result, paths);
-        }
-        return result;
-    }
-
-    private static void getAllModulesAux(final Collection<IErlModule> modules,
-            final List<IErlModule> result, final Set<String> paths) {
-        for (final IErlModule module : modules) {
-            final String path = module.getFilePath();
-            if (path != null) {
-                if (paths.contains(path)) {
-                    continue;
-                }
-                paths.add(path);
-            }
-            result.add(module);
-        }
-    }
-
-    public IErlModule findModule(final String moduleName,
-            final String modulePath, final Scope scope)
-            throws ErlModelException {
-        return findModule(this, moduleName, modulePath, false, true, scope);
-    }
-
-    public IErlModule findInclude(final String includeName,
-            final String includePath, final Scope scope)
-            throws ErlModelException {
-        return findInclude(this, includeName, includePath, false, true, scope);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.model.erlang.IErlFolder#findModule(java.lang.String,
-     * java.lang.String)
-     */
-    public IErlModule findModule(final String moduleName,
-            final String modulePath) throws ErlModelException {
-        return findModule(moduleName, modulePath, Scope.PROJECT_ONLY);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.core.model.erlang.IErlFolder#findInclude(java.lang.String,
-     * java.lang.String)
-     */
-    public IErlModule findInclude(final String includeName,
-            final String includePath) throws ErlModelException {
-        return findInclude(includeName, includePath, Scope.PROJECT_ONLY);
     }
 
     @Override

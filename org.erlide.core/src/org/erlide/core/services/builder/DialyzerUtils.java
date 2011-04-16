@@ -2,7 +2,6 @@ package org.erlide.core.services.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class DialyzerUtils {
 
@@ -146,30 +146,24 @@ public class DialyzerUtils {
             final IResource resource,
             final Map<IErlProject, Set<IErlModule>> modules)
             throws ErlModelException {
-        final IErlElement e = model.findElement(resource, true);
-        if (e instanceof IErlFolder) {
-            final IErlFolder f = (IErlFolder) e;
-            f.open(null);
-            final Collection<IErlModule> folderModules = f.getModules();
-            if (!folderModules.isEmpty()) {
-                final IErlProject p = f.getProject();
-                Set<IErlModule> ms = modules.get(p);
-                if (ms == null) {
-                    ms = new HashSet<IErlModule>();
-                }
-                ms.addAll(folderModules);
-                modules.put(p, ms);
-            }
-        } else if (e instanceof IErlModule) {
-            final IErlModule m = (IErlModule) e;
-            final IErlProject p = m.getProject();
-            Set<IErlModule> ms = modules.get(p);
-            if (ms == null) {
-                ms = new HashSet<IErlModule>();
-            }
-            ms.add(m);
-            modules.put(p, ms);
+        final IErlElement element = model.findElement(resource, true);
+        final IErlProject project = element.getProject();
+        Set<IErlModule> ms = modules.get(project);
+        if (ms == null) {
+            ms = Sets.newHashSet();
         }
+        if (element instanceof IErlFolder) {
+            final IErlFolder folder = (IErlFolder) element;
+            folder.open(null);
+            ms.addAll(folder.getModules());
+        } else if (element instanceof IErlModule) {
+            final IErlModule module = (IErlModule) element;
+            ms.add(module);
+        } else if (element instanceof IErlProject) {
+            project.open(null);
+            ms.addAll(project.getModules());
+        }
+        modules.put(project, ms);
     }
 
 }

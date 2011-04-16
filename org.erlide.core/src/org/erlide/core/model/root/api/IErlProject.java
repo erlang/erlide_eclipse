@@ -50,7 +50,7 @@ import com.ericsson.otp.erlang.RuntimeVersion;
  * 
  * @see ErlangCore#createRoot(org.eclipse.core.resources.IProject)
  */
-public interface IErlProject extends IErlFolder {
+public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     Collection<IErlModule> getModules() throws ErlModelException;
 
@@ -96,16 +96,6 @@ public interface IErlProject extends IErlFolder {
     Collection<IErlProject> getReferencedProjects() throws ErlModelException;
 
     IErlModule getModule(String name) throws ErlModelException;
-
-    enum Scope {
-        PROJECT_ONLY, REFERENCED_PROJECTS, ALL_PROJECTS
-    }
-
-    IErlModule findModule(String moduleName, String modulePath, Scope scope)
-            throws ErlModelException;
-
-    IErlModule findInclude(String includeName, String includePath, Scope scope)
-            throws ErlModelException;
 
     IProject getWorkspaceProject();
 

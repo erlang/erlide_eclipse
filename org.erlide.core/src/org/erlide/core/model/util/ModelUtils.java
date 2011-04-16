@@ -20,8 +20,8 @@ import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
@@ -168,7 +168,7 @@ public class ModelUtils {
 
     public static IErlFunction findFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
-            final IErlProject project, final Scope scope,
+            final IErlProject project, final IErlModel.Scope scope,
             final IErlModule module) throws CoreException {
         if (moduleName != null) {
             moduleName = resolveMacroValue(moduleName, module);
@@ -188,13 +188,14 @@ public class ModelUtils {
     }
 
     public static IErlModule findModule(final IErlProject project,
-            final String moduleName, final String modulePath, final Scope scope)
+            final String moduleName, final String modulePath, final IErlModel.Scope scope)
             throws ErlModelException {
-        if (project != null) {
-            return project.findModule(moduleName, modulePath, scope);
-        }
         final IErlModel model = CoreScope.getModel();
-        if (scope == Scope.ALL_PROJECTS) {
+        if (project != null) {
+            return model.findModuleFromProject(project, moduleName, modulePath,
+                    scope);
+        }
+        if (scope == IErlModel.Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
         }
         return null;
@@ -202,7 +203,7 @@ public class ModelUtils {
 
     public static IErlElement findTypeDef(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
-            final IErlProject project, final Scope scope) throws CoreException {
+            final IErlProject project, final IErlModel.Scope scope) throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
         final IErlModule module2 = findModule(project, moduleName, modulePath,
                 scope);
@@ -353,14 +354,14 @@ public class ModelUtils {
             final IErlProject project, final OpenResult res,
             final IErlModel model) throws CoreException, BackendException {
         if (module != null) {
-            final IErlModule include = module.findInclude(res.getName(),
-                    res.getPath(), Scope.REFERENCED_PROJECTS);
+            final IErlModule include = model.findIncludeFromModule(module,
+                    res.getName(), res.getPath(), IErlModel.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
         } else if (project != null) {
-            final IErlModule include = project.findInclude(res.getName(),
-                    res.getPath(), Scope.REFERENCED_PROJECTS);
+            final IErlModule include = model.findIncludeFromProject(project,
+                    res.getName(), res.getPath(), IErlModel.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }

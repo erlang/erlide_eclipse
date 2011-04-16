@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.ErlToken;
 import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceUnit;
@@ -141,8 +140,5 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
     boolean isOnSourcePath();
 
     boolean isOnIncludePath();
-
-    IErlModule findInclude(String includeName, String includePath, Scope scope)
-            throws ErlModelException;
 
 }

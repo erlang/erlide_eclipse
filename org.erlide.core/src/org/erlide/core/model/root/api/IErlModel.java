@@ -24,6 +24,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.osgi.service.prefs.BackingStoreException;
@@ -51,6 +52,10 @@ import com.google.common.base.Predicate;
  * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
 public interface IErlModel extends IErlElement, IOpenable, IParent {
+
+    enum Scope {
+        PROJECT_ONLY, REFERENCED_PROJECTS, ALL_PROJECTS
+    }
 
     /**
      * Copies the given elements to the specified container(s). If one container
@@ -433,4 +438,16 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     void accept(final IErlElement element, final IErlElementVisitor visitor,
             final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
             throws ErlModelException;
+
+    public IErlModule findModuleFromProject(final IErlProject project,
+            final String moduleName, final String modulePath, final IErlModel.Scope scope)
+            throws ErlModelException;
+
+    public IErlModule findIncludeFromProject(final IErlProject project,
+            final String includeName, final String includePath,
+            final IErlModel.Scope scope) throws ErlModelException;
+
+    public IErlModule findIncludeFromModule(final IErlModule module,
+            final String includeName, final String includePath,
+            final IErlModel.Scope scope) throws ErlModelException;
 }

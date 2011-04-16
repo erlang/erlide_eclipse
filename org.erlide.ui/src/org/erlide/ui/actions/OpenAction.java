@@ -29,11 +29,11 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.api.ISourceReference;
 import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.rpc.RpcCallSite;
@@ -195,8 +195,8 @@ public class OpenAction extends SelectionDispatchAction {
             throws CoreException, RpcException, BackendException,
             ErlModelException, BadLocationException, OtpErlangRangeException {
         final IErlElement element = editor.getElementAt(offset, true);
-        final Scope scope = NavigationPreferencePage.getCheckAllProjects() ? Scope.ALL_PROJECTS
-                : Scope.REFERENCED_PROJECTS;
+        final IErlModel.Scope scope = NavigationPreferencePage.getCheckAllProjects() ? IErlModel.Scope.ALL_PROJECTS
+                : IErlModel.Scope.REFERENCED_PROJECTS;
         final IErlModel model = CoreScope.getModel();
         Object found = null;
         if (res.isExternalCall()) {
@@ -235,7 +235,7 @@ public class OpenAction extends SelectionDispatchAction {
 
     private static IErlElement findLocalCall(final IErlModule module,
             final RpcCallSite backend, final IErlProject erlProject,
-            final OpenResult res, final IErlElement element, final Scope scope)
+            final OpenResult res, final IErlElement element, final IErlModel.Scope scope)
             throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
@@ -267,7 +267,7 @@ public class OpenAction extends SelectionDispatchAction {
 
     private static IErlElement findExternalCallOrType(final IErlModule module,
             final OpenResult res, final IErlProject project,
-            final IErlElement element, final Scope scope) throws CoreException {
+            final IErlElement element, final IErlModel.Scope scope) throws CoreException {
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypeDef(module, res.getName(), res.getFun(),
                     res.getPath(), project, scope);

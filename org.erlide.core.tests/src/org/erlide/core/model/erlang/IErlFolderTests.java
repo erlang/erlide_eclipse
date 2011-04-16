@@ -79,7 +79,6 @@ public class IErlFolderTests extends ErlModelTestBase {
     // boolean isSourcePathParent();
     @Test
     public void isSourcePathParent() throws Exception {
-        assertTrue(project2.isSourcePathParent());
         final IErlFolder srcFolder2 = (IErlFolder) project2
                 .getChildNamed("src");
         final IErlFolder includeFolder2 = (IErlFolder) project2

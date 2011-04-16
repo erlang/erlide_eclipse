@@ -24,9 +24,10 @@ import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlProject.Scope;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
@@ -128,17 +129,17 @@ public class ModelUtilsTests {
 		// within project
 		final IErlElement element1 = ModelUtils.findTypeDef(moduleB, "bx",
 				"concat_thing", moduleB.getResource().getLocation()
-						.toPortableString(), projects[0], Scope.PROJECT_ONLY);
+						.toPortableString(), projects[0], IErlModel.Scope.PROJECT_ONLY);
 		// in other project but path given
 		final IErlElement element2 = ModelUtils.findTypeDef(moduleB, "bx",
 				"concat_thing", moduleB.getResource().getLocation()
-						.toPortableString(), projects[1], Scope.PROJECT_ONLY);
+						.toPortableString(), projects[1], IErlModel.Scope.PROJECT_ONLY);
 		// in other project no path given, search all projects true
 		final IErlElement element3 = ModelUtils.findTypeDef(moduleB, "bx",
-				"concat_thing", null, projects[1], Scope.ALL_PROJECTS);
+				"concat_thing", null, projects[1], IErlModel.Scope.ALL_PROJECTS);
 		// in other project no path given, search all projects false, -> null
 		final IErlElement element4 = ModelUtils.findTypeDef(moduleB, "bx",
-				"concat_thing", null, projects[1], Scope.PROJECT_ONLY);
+				"concat_thing", null, projects[1], IErlModel.Scope.PROJECT_ONLY);
 		// then
 		// it should be returned if found
 		assertTrue(element1 instanceof IErlTypespec);
@@ -159,7 +160,7 @@ public class ModelUtilsTests {
 		// looking for it with ?MODULE
 		final IErlElement element1 = ModelUtils.findFunction("?MODULE",
 				new ErlangFunction("f", 0), null, projects[0],
-				Scope.PROJECT_ONLY, moduleD);
+				IErlModel.Scope.PROJECT_ONLY, moduleD);
 		// then
 		// it should be found
 		assertTrue(element1 instanceof IErlFunction);
@@ -313,7 +314,7 @@ public class ModelUtilsTests {
 			// when
 			// looking for it
 			final IErlModule module = ModelUtils.findModule(null, null,
-					absolutePath, Scope.ALL_PROJECTS);
+					absolutePath, IErlModel.Scope.ALL_PROJECTS);
 			// then
 			// we should find it
 			assertNotNull(module);
@@ -377,7 +378,7 @@ public class ModelUtilsTests {
 			// when
 			// looking for it with its external module path
 			final IErlModule module = ModelUtils.findModule(null, null,
-					absolutePath, Scope.ALL_PROJECTS);
+					absolutePath, IErlModel.Scope.ALL_PROJECTS);
 			assertNotNull(module);
 			final String externalModulePath = ModelUtils
 					.getExternalModulePath(module);
