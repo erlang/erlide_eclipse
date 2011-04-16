@@ -125,18 +125,24 @@ public final class RpcHelper {
     /**
      * Calls a function that supports sending progress reports back. The first
      * argument is implicit and is the pid where the reports are to be sent.
+     * 
+     * @return
+     * @throws RpcException
+     * @throws SignatureException
      */
-    public static void rpcCallWithProgress(final RpcResultCallback callback,
-            final OtpNode node, final String peer, final boolean logCalls,
+    public static OtpErlangObject rpcCallWithProgress(
+            final RpcResultCallback callback, final OtpNode node,
+            final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws SignatureException {
+            final String fun, final int timeout, final String signature,
+            final Object... args0) throws RpcException, SignatureException {
         final Object[] args = new Object[args0.length + 1];
         System.arraycopy(args0, 0, args, 1, args0.length);
         final OtpMbox mbox = node.createMbox();
         args[0] = mbox.self();
         new RpcResultReceiver(mbox, callback);
-        rpcCast(node, peer, logCalls, gleader, module, fun, signature, args);
+        return rpcCall(node, peer, logCalls, gleader, module, fun, timeout,
+                signature, args);
     }
 
     /**

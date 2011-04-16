@@ -19,10 +19,12 @@ import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
@@ -33,6 +35,7 @@ public class ErlSearchQuery implements ISearchQuery {
     private final ErlSearchScope scope;
     private final Map<String, IErlModule> pathToModuleMap;
     private ErlangSearchResult fSearchResult;
+    private OtpErlangPid fBackgroundSearchPid;
     private List<ModuleLineFunctionArityRef> fResult;
 
     private String stateDirCached = null;
@@ -119,12 +122,21 @@ public class ErlSearchQuery implements ISearchQuery {
                 } catch (final OtpErlangRangeException e) {
                 }
                 monitor.worked(progress);
+                if (monitor.isCanceled()) {
+                    try {
+                        ErlideSearchServer.cancelSearch(BackendCore
+                                .getBackendManager().getIdeBackend(),
+                                fBackgroundSearchPid);
+                    } catch (final RpcException e) {
+                    }
+                }
             }
 
         };
         try {
-            ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
-                    .getIdeBackend(), pattern, scope, getStateDir(), callback);
+            fBackgroundSearchPid = ErlideSearchServer.startFindRefs(BackendCore
+                    .getBackendManager().getIdeBackend(), pattern, scope,
+                    getStateDir(), callback);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);
@@ -139,7 +151,7 @@ public class ErlSearchQuery implements ISearchQuery {
     }
 
     public void cancel() throws RpcException {
-        // ska vanta med denna committa det andra forst!
+        ErlLogger.debug("cancel search");
         // ErlideSearchServer.cancelSearch(fSearchBackend, fSearchDeamonPid);
     }
 

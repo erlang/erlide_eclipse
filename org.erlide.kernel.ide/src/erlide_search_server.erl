@@ -198,9 +198,9 @@ do_cmd(start_find_refs, {Pattern, Modules, JPid, StateDir}, State) ->
     ?D(start_find_refs),
     R = do_start_find_refs(Pattern, Modules, JPid, StateDir, State),
     R;
-do_cmd(cancel_find_refs, Pid, _State) ->
+do_cmd(cancel_find_refs, Pid, State) ->
     Pid ! cancel,
-    stopped;
+    {stopped, State};
 do_cmd(remove_module, Module, #state{modules=Modules0} = State) ->
     Modules1 = lists:keydelete(Module, #module.scanner_name, Modules0),
     State#state{modules=Modules1};
@@ -212,16 +212,16 @@ do_cmd(modules, _, #state{modules=Modules} = State) ->
 
 do_start_find_refs(Pattern, Modules, JPid, StateDir, State) ->
     ?D({do_start_find_refs, Pattern, JPid}),
-    spawn_link(fun() ->
-                       ModuleChunks = chunkify(Modules, 10),
-                       ?D({JPid, length(ModuleChunks)}),
-                       JPid ! {start, length(ModuleChunks)},
-                       ?D({JPid, length(ModuleChunks)}),
-                       R = do_background_find_refs(ModuleChunks, Pattern, JPid, StateDir, State),
-                       ?D({stop, R}),
-                       JPid ! {stop, R}
-               end),
-    ok.
+    Pid = spawn_link(fun() ->
+                             ModuleChunks = chunkify(Modules, 10),
+                             ?D({JPid, length(ModuleChunks)}),
+                             JPid ! {start, length(ModuleChunks)},
+                             ?D({JPid, length(ModuleChunks)}),
+                             R = do_background_find_refs(ModuleChunks, Pattern, JPid, StateDir, State),
+                             ?D({stop, R}),
+                             JPid ! {stop, R}
+                     end),
+    {Pid, State}.
 
 do_background_find_refs([], _Pattern, _JPid, _StateDir, _State) ->
     ok;
@@ -229,7 +229,12 @@ do_background_find_refs([Chunk | Rest], Pattern, JPid, StateDir, State) ->
     {R, _State} = do_find_refs(Chunk, Pattern, StateDir, State, []),
     ?D({1, R}),
     JPid ! {progress, {1, R}},
-    do_background_find_refs(Rest, Pattern, JPid, StateDir, State).
+    receive
+        cancel -> 
+            ok
+    after 0 ->
+            do_background_find_refs(Rest, Pattern, JPid, StateDir, State)
+    end.
 
 chunkify(List, N) ->
     chunkify(List, N, []).

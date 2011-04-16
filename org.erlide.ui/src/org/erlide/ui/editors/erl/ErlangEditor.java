@@ -107,8 +107,8 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
@@ -2236,8 +2236,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                             .newArrayList();
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend, pattern, scope, getStateDir());
-                    SearchUtil.addSearchResult(findRefs, refs);
-                    fRefs = getErlangRefs(theModule, findRefs);
+                    if (refs != null) {
+                        SearchUtil.addSearchResult(findRefs, refs);
+                        fRefs = getErlangRefs(theModule, findRefs);
+                    }
                 }
             } catch (final RpcException e) {
                 ErlLogger.debug(e);

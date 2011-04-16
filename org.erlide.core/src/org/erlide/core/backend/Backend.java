@@ -163,11 +163,12 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         }
     }
 
-    public void async_call_result(final RpcResultCallback cb, final String m,
-            final String f, final String signature, final Object... args)
-            throws RpcException {
+    public OtpErlangObject call_result(final RpcResultCallback cb,
+            final String m, final String f, final int timeout,
+            final String signature, final Object... args) throws RpcException {
         try {
-            runtime.makeAsyncResultCall(cb, m, f, signature, args);
+            return runtime.makeAsyncResultCall(cb, m, f, timeout, signature,
+                    args);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
