@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -581,10 +582,15 @@ public class FilteredModulesSelectionDialog extends
             }
 
             final IResource resource = proxy.requestResource();
-
+            if (!resource.isAccessible()) {
+                return false;
+            }
             final IProject project = resource.getProject();
             final boolean accessible = project != null
                     && project.isAccessible();
+            if (project != null && !accessible) {
+                return false;
+            }
             if (projects.remove(project) || projects.remove(resource)) {
                 progressMonitor.worked(1);
                 if (accessible) {
@@ -638,9 +644,14 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
+            final ResourceAttributes resourceAttributes = resource
+                    .getResourceAttributes();
+            if (resourceAttributes == null) {
+                return false;
+            }
             if (CommonUtils.isErlangFileContentFileName(resource.getName())
                     && !resource.isLinked()
-                    && !resource.getResourceAttributes().isSymbolicLink()
+                    && !resourceAttributes.isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
                 final IContainer my_container = resource.getParent();
                 if (validPaths.contains(my_container.getFullPath())
