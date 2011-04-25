@@ -323,7 +323,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         uninstallOccurrencesFinder();
         if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
             final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
-            ec.getContentAssistProcessor().dispose();
+            if (ec != null) {
+                ec.getContentAssistProcessor().dispose();
+            }
         }
         if (fActivationListener != null) {
             PlatformUI.getWorkbench().removeWindowListener(fActivationListener);
@@ -465,7 +467,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
         // ovg= new OpenViewActionGroup(this),
-        esg = new ErlangSearchActionGroup(this) });
+                esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
         // openAction = new OpenAction(getSite(), getExternalModules(),
@@ -620,8 +622,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();

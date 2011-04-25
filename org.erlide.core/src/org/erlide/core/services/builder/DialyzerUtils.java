@@ -147,6 +147,9 @@ public class DialyzerUtils {
             final Map<IErlProject, Set<IErlModule>> modules)
             throws ErlModelException {
         final IErlElement element = model.findElement(resource, true);
+        if (element == null) {
+            return;
+        }
         final IErlProject project = element.getProject();
         Set<IErlModule> ms = modules.get(project);
         if (ms == null) {
