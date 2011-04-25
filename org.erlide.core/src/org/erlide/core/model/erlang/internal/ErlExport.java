@@ -24,9 +24,4 @@ public class ErlExport extends ErlImportExport implements IErlExport {
         return getName() + ": " + functions;
     }
 
-    @Override
-    public String getLabelString() {
-        return functions;
-    }
-
 }
