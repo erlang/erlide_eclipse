@@ -400,24 +400,30 @@ get_upto2([#token{kind=Delim} | Rest], Delim, Acc) ->
 get_upto2([T | Rest], Delim, Acc) ->
     get_upto2(Rest, Delim, [T | Acc]).
 
-check_clause([#token{kind = ';'} | Rest]) ->
+check_clause([#token{kind = ';'} | Rest], false) ->
     check_class(Rest) == function;
-check_clause(_) ->
+check_clause(_, _) ->
     false.
 
 split_clauses(F) ->
-    split_clauses(F, [], []).
+    split_clauses(F, false, [], []).
 
-split_clauses([], Acc, []) ->
+split_clauses([], _HaveWhen, Acc, []) ->
     erlide_util:reverse2(Acc);
-split_clauses([], Acc, ClAcc) ->
-    split_clauses([], [ClAcc | Acc], []);
-split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
-    case check_clause(Tokens) of
+split_clauses([], HaveWhen, Acc, ClAcc) ->
+    split_clauses([], HaveWhen, [ClAcc | Acc], []);
+split_clauses([#token{kind='end'} | Rest], _HaveWhen, Acc, ClAcc) ->
+    split_clauses(Rest, false, Acc, ClAcc);
+split_clauses([#token{kind=dot} | Rest], _HaveWhen, Acc, ClAcc) ->
+    split_clauses(Rest, false, Acc, ClAcc);
+split_clauses([#token{kind='when'} | Rest], _HaveWhen, Acc, ClAcc) ->
+    split_clauses(Rest, true, Acc, ClAcc);
+split_clauses([T | TRest] = Tokens, HaveWhen, Acc, ClAcc) ->
+    case check_clause(Tokens, HaveWhen) of
         false ->
-            split_clauses(TRest, Acc, [T | ClAcc]);
+            split_clauses(TRest, HaveWhen, Acc, [T | ClAcc]);
         true ->
-            split_clauses(TRest, [[T | ClAcc] | Acc], [])
+            split_clauses(TRest, HaveWhen, [[T | ClAcc] | Acc], [])
     end.
 
 %% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
