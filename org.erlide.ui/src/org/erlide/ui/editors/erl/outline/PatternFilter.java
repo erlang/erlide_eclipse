@@ -28,8 +28,7 @@ public class PatternFilter extends ViewerFilter {
 
     private String getName(final Object element) {
         if (element instanceof IErlElement) {
-            final IErlElement erlElement = (IErlElement) element;
-            return erlElement.getLabelString();
+            return ErlangLabelProvider.getLabelString(element);
         } else if (element instanceof IResource) {
             final IResource resource = (IResource) element;
             return resource.getName();

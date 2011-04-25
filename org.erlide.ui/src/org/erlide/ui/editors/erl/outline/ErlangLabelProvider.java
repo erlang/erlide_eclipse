@@ -27,6 +27,8 @@ import org.erlide.core.model.root.api.IErlElement;
 
 public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
+    private static final int LABEL_LENGTH_LIMIT = 200;
+
     protected ListenerList fListeners = new ListenerList(1);
 
     protected ErlangElementImageProvider fImageLabelProvider;
@@ -164,6 +166,11 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
      * @see ILabelProvider#getText
      */
     public String getText(final Object element) {
+        final String label = getLabelString(element);
+        return decorateText(label, element);
+    }
+
+    public static String getLabelString(final Object element) {
         String label;
         if (element instanceof IErlElement) {
             final IErlElement el = (IErlElement) element;
@@ -171,7 +178,14 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         } else {
             label = element.toString();
         }
-        return decorateText(label, element);
+        if (label.length() > LABEL_LENGTH_LIMIT) {
+            int i = label.indexOf(',', LABEL_LENGTH_LIMIT);
+            if (i == -1) {
+                i = LABEL_LENGTH_LIMIT;
+            }
+            label = label.substring(0, i) + "...";
+        }
+        return label;
     }
 
     // private String range(ISourceReference a)

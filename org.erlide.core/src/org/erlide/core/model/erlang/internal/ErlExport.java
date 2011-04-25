@@ -7,7 +7,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 
 public class ErlExport extends ErlImportExport implements IErlExport {
 
-    private static final int LABEL_LENGTH_LIMIT = 100;
     private final String functions;
 
     public ErlExport(final IParent parent, final OtpErlangList functionList,
@@ -27,15 +26,7 @@ public class ErlExport extends ErlImportExport implements IErlExport {
 
     @Override
     public String getLabelString() {
-        String s = functions;
-        if (s.length() > LABEL_LENGTH_LIMIT) {
-            int i = s.indexOf(',', LABEL_LENGTH_LIMIT);
-            if (i == -1) {
-                i = LABEL_LENGTH_LIMIT;
-            }
-            s = s.substring(0, i) + "...";
-        }
-        return s;
+        return functions;
     }
 
 }
