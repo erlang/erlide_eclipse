@@ -56,8 +56,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
         final Backend backend = doLaunch(config, mode, launch, monitor);
         if (backend == null) {
-            ErlLogger.warn("Could not start backend for launch %s", launch
-                    .getLaunchConfiguration().getName());
             return;
         }
         postLaunch(mode, backend, monitor);
@@ -100,6 +98,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         if (!isErlangInternalLaunch(launch)) {
             return BackendCore.getBackendManager().createExecutionBackend(data);
         }
+        // The backend was already created
         return null;
     }
 
