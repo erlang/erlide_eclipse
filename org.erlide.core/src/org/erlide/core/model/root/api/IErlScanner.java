@@ -1,6 +1,5 @@
 package org.erlide.core.model.root.api;
 
-
 public interface IErlScanner {
 
     String getName();

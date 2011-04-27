@@ -20,7 +20,6 @@ import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
@@ -188,8 +187,8 @@ public class ModelUtils {
     }
 
     public static IErlModule findModule(final IErlProject project,
-            final String moduleName, final String modulePath, final IErlModel.Scope scope)
-            throws ErlModelException {
+            final String moduleName, final String modulePath,
+            final IErlModel.Scope scope) throws ErlModelException {
         final IErlModel model = CoreScope.getModel();
         if (project != null) {
             return model.findModuleFromProject(project, moduleName, modulePath,
@@ -203,7 +202,8 @@ public class ModelUtils {
 
     public static IErlElement findTypeDef(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
-            final IErlProject project, final IErlModel.Scope scope) throws CoreException {
+            final IErlProject project, final IErlModel.Scope scope)
+            throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
         final IErlModule module2 = findModule(project, moduleName, modulePath,
                 scope);
@@ -355,13 +355,15 @@ public class ModelUtils {
             final IErlModel model) throws CoreException, BackendException {
         if (module != null) {
             final IErlModule include = model.findIncludeFromModule(module,
-                    res.getName(), res.getPath(), IErlModel.Scope.REFERENCED_PROJECTS);
+                    res.getName(), res.getPath(),
+                    IErlModel.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
         } else if (project != null) {
             final IErlModule include = model.findIncludeFromProject(project,
-                    res.getName(), res.getPath(), IErlModel.Scope.REFERENCED_PROJECTS);
+                    res.getName(), res.getPath(),
+                    IErlModel.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }

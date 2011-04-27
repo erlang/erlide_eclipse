@@ -26,7 +26,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.util.ErlangFunction;

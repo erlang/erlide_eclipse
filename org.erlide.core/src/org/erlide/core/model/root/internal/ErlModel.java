@@ -58,7 +58,6 @@ import org.erlide.core.model.root.api.IErlElementDelta;
 import org.erlide.core.model.root.api.IErlElementVisitor;
 import org.erlide.core.model.root.api.IErlFolder;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlModelChangeListener;
 import org.erlide.core.model.root.api.IErlParser;
 import org.erlide.core.model.root.api.IErlProject;
@@ -1334,8 +1333,8 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     static IErlModule getModuleFromCacheByNameOrPath(final ErlProject project,
-            final String moduleName, final String modulePath, final IErlModel.Scope scope)
-            throws ErlModelException {
+            final String moduleName, final String modulePath,
+            final IErlModel.Scope scope) throws ErlModelException {
         final ErlModelCache erlModelCache = getErlModelCache();
         if (modulePath != null) {
             final IErlModule module = erlModelCache.getModuleByPath(modulePath);
@@ -1470,15 +1469,15 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModuleFromProject(final IErlProject project,
-            final String moduleName, final String modulePath, final IErlModel.Scope scope)
-            throws ErlModelException {
+            final String moduleName, final String modulePath,
+            final IErlModel.Scope scope) throws ErlModelException {
         return findModuleFromProject(project, moduleName, modulePath, false,
                 true, scope);
     }
 
     public IErlModule findIncludeFromProject(final IErlProject project,
-            final String moduleName, final String modulePath, final IErlModel.Scope scope)
-            throws ErlModelException {
+            final String moduleName, final String modulePath,
+            final IErlModel.Scope scope) throws ErlModelException {
         return findIncludeFromProject(project, moduleName, modulePath, false,
                 true, scope);
     }

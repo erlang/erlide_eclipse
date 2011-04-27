@@ -10,10 +10,10 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
-import org.erlide.core.model.root.api.IErlElement.Kind;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider

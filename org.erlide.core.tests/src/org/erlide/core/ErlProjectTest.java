@@ -14,7 +14,6 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.rpc.RpcCallSite;
@@ -194,8 +193,8 @@ public class ErlProjectTest {
                 ModelUtils.getImportsAsList(moduleE),
                 project.getExternalModulesString(), model.getPathVars());
         final IErlFunction function = ModelUtils.findFunction(res.getName(),
-                res.getFunction(), res.getPath(), project, IErlModel.Scope.PROJECT_ONLY,
-                moduleE);
+                res.getFunction(), res.getPath(), project,
+                IErlModel.Scope.PROJECT_ONLY, moduleE);
         final IErlElement module = function != null ? model
                 .findModuleFromProject(project, function.getModuleName(),
                         res.getPath(), IErlModel.Scope.PROJECT_ONLY) : null;
@@ -230,7 +229,8 @@ public class ErlProjectTest {
             // when
             // looking for it
             final IErlModule externalModule = model.findModuleFromProject(
-                    project, externalFileName, null, IErlModel.Scope.PROJECT_ONLY);
+                    project, externalFileName, null,
+                    IErlModel.Scope.PROJECT_ONLY);
             // then
             // we should find it
             assertNotNull(externalModule);

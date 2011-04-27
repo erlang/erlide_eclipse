@@ -61,8 +61,13 @@ public final class ErlParser implements IErlParser {
     public ErlParser() {
     }
 
-    /* (non-Javadoc)
-     * @see org.erlide.core.model.erlang.internal.IErlParser#parse(org.erlide.core.model.erlang.IErlModule, java.lang.String, boolean, java.lang.String, boolean)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.erlide.core.model.erlang.internal.IErlParser#parse(org.erlide.core
+     * .model.erlang.IErlModule, java.lang.String, boolean, java.lang.String,
+     * boolean)
      */
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,

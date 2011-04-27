@@ -15,8 +15,8 @@ public class ElementAdapterFactory implements IAdapterFactory {
             final Class adapterType) {
         if (adapterType == IErlElement.class
                 && adaptableObject instanceof IResource) {
-            return CoreScope.getModel().findElement(
-                    (IResource) adaptableObject);
+            return CoreScope.getModel()
+                    .findElement((IResource) adaptableObject);
         }
         return null;
     }

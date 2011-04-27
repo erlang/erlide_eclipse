@@ -285,7 +285,7 @@ public class ErlStructureCreator extends StructureCreator {
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         String s = "";
-        IErlModel model = CoreScope.getModel();
+        final IErlModel model = CoreScope.getModel();
         if (element instanceof ResourceNode) {
             final ResourceNode rn = (ResourceNode) element;
             final IResource r = rn.getResource();
@@ -314,8 +314,7 @@ public class ErlStructureCreator extends StructureCreator {
             }
         }
         if (module == null) {
-            module = model.getModuleFromText(
-                    model, fName, s, s);
+            module = model.getModuleFromText(model, fName, s, s);
         }
         ErlNode root = null;
         try {

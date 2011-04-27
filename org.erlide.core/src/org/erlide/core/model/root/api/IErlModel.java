@@ -24,7 +24,6 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.osgi.service.prefs.BackingStoreException;
@@ -440,8 +439,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
             throws ErlModelException;
 
     public IErlModule findModuleFromProject(final IErlProject project,
-            final String moduleName, final String modulePath, final IErlModel.Scope scope)
-            throws ErlModelException;
+            final String moduleName, final String modulePath,
+            final IErlModel.Scope scope) throws ErlModelException;
 
     public IErlModule findIncludeFromProject(final IErlProject project,
             final String includeName, final String includePath,

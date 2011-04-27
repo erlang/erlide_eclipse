@@ -8,7 +8,6 @@ import java.io.File;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;

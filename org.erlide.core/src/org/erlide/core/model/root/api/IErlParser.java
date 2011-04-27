@@ -2,7 +2,6 @@ package org.erlide.core.model.root.api;
 
 import org.erlide.core.model.erlang.IErlModule;
 
-
 public interface IErlParser {
 
     public abstract boolean parse(final IErlModule module,

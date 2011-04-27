@@ -50,12 +50,11 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.api.ISourceReference;
-import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
@@ -475,7 +474,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
         final IErlModule theModule = ModelUtils.findModule(erlProject,
-                moduleName, null, checkAllProjects ? IErlModel.Scope.ALL_PROJECTS
+                moduleName, null,
+                checkAllProjects ? IErlModel.Scope.ALL_PROJECTS
                         : IErlModel.Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
             if (ModelUtils.isOtpModule(theModule)) {

@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlModelChangeListener;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.util.ErlangFunction;

@@ -8,8 +8,8 @@ import java.io.File;
 import java.util.List;
 
 import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IErlElement.Kind;
+import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;

@@ -187,7 +187,8 @@ public final class ErlangCore {
 
     public static IConfigurationElement[] getMessageReporterConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "messageReporter");
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+                "messageReporter");
     }
 
     /**

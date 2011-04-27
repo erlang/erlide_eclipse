@@ -42,7 +42,7 @@ public class BackendData extends GenericBackendData {
 
     public BackendData(final ILaunchConfiguration config, final String mode) {
         super(config, mode);
-        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoManager()
+        final RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoManager()
                 .getRuntime(getRuntimeName());
         if (runtimeInfo == null) {
             return;

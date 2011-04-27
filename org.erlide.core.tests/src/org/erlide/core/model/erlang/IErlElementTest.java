@@ -23,7 +23,6 @@ import org.erlide.core.model.root.api.IErlElement.Kind;
 import org.erlide.core.model.root.api.IErlElementVisitor;
 import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.internal.ErlModelCache;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;

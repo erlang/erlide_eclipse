@@ -28,7 +28,6 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModel.Scope;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.rpc.RpcCallSite;
@@ -123,7 +122,8 @@ public final class MarkerUtils {
                     if (erlProject != null) {
                         final IErlModule includeFile = model
                                 .findIncludeFromProject(erlProject, fileName,
-                                        fileName, IErlModel.Scope.REFERENCED_PROJECTS);
+                                        fileName,
+                                        IErlModel.Scope.REFERENCED_PROJECTS);
                         ErlLogger.debug("inc::" + fileName + " "
                                 + resource.getName() + " "
                                 + erlProject.getName());
