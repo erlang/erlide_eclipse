@@ -267,6 +267,8 @@ public final class OldErlangProjectProperties implements
         includeDirs = bprefs.includeDirs;
         sourceDirs = bprefs.sourceDirs;
         outputDir = bprefs.outputDir;
+        runtimeName = bprefs.runtimeName;
+        runtimeVersion = bprefs.runtimeVersion;
     }
 
     /*
