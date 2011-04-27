@@ -412,18 +412,15 @@ split_clauses([], _HaveWhen, Acc, []) ->
     erlide_util:reverse2(Acc);
 split_clauses([], HaveWhen, Acc, ClAcc) ->
     split_clauses([], HaveWhen, [ClAcc | Acc], []);
-split_clauses([#token{kind='end'} | Rest], _HaveWhen, Acc, ClAcc) ->
-    split_clauses(Rest, false, Acc, ClAcc);
-split_clauses([#token{kind=dot} | Rest], _HaveWhen, Acc, ClAcc) ->
-    split_clauses(Rest, false, Acc, ClAcc);
-split_clauses([#token{kind='when'} | Rest], _HaveWhen, Acc, ClAcc) ->
-    split_clauses(Rest, true, Acc, ClAcc);
-split_clauses([T | TRest] = Tokens, HaveWhen, Acc, ClAcc) ->
+split_clauses([#token{kind=Kind}=T | Rest], _HaveWhen, Acc, ClAcc) 
+  when Kind=:='end'; Kind=:=dot; Kind=:='->'; Kind=:='when' ->
+    split_clauses(Rest, Kind=:='when', Acc, [T | ClAcc]);
+split_clauses([T | Rest] = Tokens, HaveWhen, Acc, ClAcc) ->
     case check_clause(Tokens, HaveWhen) of
         false ->
-            split_clauses(TRest, HaveWhen, Acc, [T | ClAcc]);
+            split_clauses(Rest, HaveWhen, Acc, [T | ClAcc]);
         true ->
-            split_clauses(TRest, HaveWhen, [[T | ClAcc] | Acc], [])
+            split_clauses(Rest, HaveWhen, [[T | ClAcc] | Acc], [])
     end.
 
 %% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
