@@ -89,13 +89,12 @@ public class ErlRuntime extends OtpNodeStatus {
         }
     }
 
-    public OtpErlangObject makeAsyncResultCall(final RpcResultCallback cb,
-            final String m, final String f, final int timeout,
-            final String signature, final Object[] args)
-            throws SignatureException, RpcException {
+    public void makeAsyncResultCall(final RpcResultCallback cb, final String m,
+            final String f, final String signature, final Object[] args)
+            throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        return RpcHelper.rpcCallWithProgress(cb, localNode, peerName, false,
-                gleader, m, f, timeout, signature, args);
+        RpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
+                m, f, signature, args);
     }
 
     public RpcFuture makeAsyncCall(final OtpErlangObject gleader,

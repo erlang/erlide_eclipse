@@ -38,19 +38,15 @@ public class ErlideSearchServer {
                         new OtpErlangString(path) });
     }
 
-    public static OtpErlangPid startFindRefs(final RpcCallSite backend,
+    public static void startFindRefs(final RpcCallSite backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir, final RpcResultCallback callback)
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         ErlLogger.debug("startFindRefs", pattern);
-        // final OtpErlangAtom DUMMY = new OtpErlangAtom("dummy");
-        // backend.call("erlide_search_server", "start_find_refs", "xxxs",
-        // DUMMY,
-        // pattern.getSearchObject(), modules, stateDir);
-        return (OtpErlangPid) backend.call_result(callback,
-                "erlide_search_server", "start_find_refs", 10000, "xxxs",
-                pattern.getSearchObject(), modules, stateDir);
+        backend.async_call_result(callback, "erlide_search_server",
+                "start_find_refs", "xxxs", pattern.getSearchObject(), modules,
+                stateDir);
     }
 
     public static OtpErlangObject findRefs(final RpcCallSite backend,

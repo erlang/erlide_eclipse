@@ -228,7 +228,7 @@ do_background_find_refs([], _Pattern, _JPid, _StateDir, _State) ->
 do_background_find_refs([Chunk | Rest], Pattern, JPid, StateDir, State) ->
     {R, _State} = do_find_refs(Chunk, Pattern, StateDir, State, []),
     ?D({1, R}),
-    JPid ! {progress, {1, R}},
+    JPid ! {progress, {self(), 1, R}},
     receive
         cancel -> 
             ok
