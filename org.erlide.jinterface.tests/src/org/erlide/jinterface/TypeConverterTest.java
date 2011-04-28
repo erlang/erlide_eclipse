@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package com.ericsson.otp.erlang;
+package org.erlide.jinterface;
 
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +22,17 @@ import org.erlide.jinterface.TypeConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangBinary;
+import com.ericsson.otp.erlang.OtpErlangDouble;
+import com.ericsson.otp.erlang.OtpErlangFloat;
+import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.ericsson.otp.erlang.Signature;
+import com.ericsson.otp.erlang.SignatureException;
 
 public class TypeConverterTest {
 

@@ -1,4 +1,4 @@
-package org.erlide.jinterface.java;
+package org.erlide.jinterface.util;
 
 import junit.framework.Assert;
 
@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpFormatPlaceholder;
 import com.ericsson.otp.erlang.OtpOutputStream;
 import com.ericsson.otp.erlang.OtpPatternVariable;
 
-public class JInterfaceTest {
+public class TermParserTest {
 
     private final TermParser termParser = TermParser.getParser();
 
