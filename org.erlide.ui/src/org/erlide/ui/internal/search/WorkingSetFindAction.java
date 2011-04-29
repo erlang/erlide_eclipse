@@ -17,7 +17,7 @@ import org.erlide.model.ErlModelException;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.LimitTo;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * Wraps a <code>ErlangElementSearchActions</code> to find its results in the
@@ -50,7 +50,7 @@ public class WorkingSetFindAction extends FindAction {
      * Note: This constructor is for internal use only. Clients should not call
      * this constructor.
      */
-    public WorkingSetFindAction(final ErlangEditor editor,
+    public WorkingSetFindAction(final AbstractErlangEditor editor,
             final FindAction action, final String workingSetName) {
         super(editor);
         init(action, workingSetName);

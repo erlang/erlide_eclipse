@@ -81,7 +81,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
@@ -98,6 +97,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlAttribute;
 import org.erlide.model.erlang.IErlFunctionClause;
 import org.erlide.model.erlang.IErlMember;
@@ -145,8 +145,8 @@ import org.erlide.utils.SystemConfiguration;
  * 
  * @author Eric Merrit [cyberlync at gmail dot com]
  */
-public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
-        IOutlineSelectionHandler {
+public class ErlangEditor extends AbstractErlangEditor implements
+        IOutlineContentCreator, IOutlineSelectionHandler {
 
     public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
@@ -793,6 +793,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return (ISourceReference) element;
     }
 
+    @Override
     public IErlModule getModule() {
         if (fModule == null) {
             try {
@@ -820,6 +821,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * @return the most narrow element which includes the given offset
      * @throws ErlModelException
      */
+    @Override
     public IErlElement getElementAt(final int offset, final boolean reconcile) {
         final IErlModule module = getModule();
         if (module == null) {
@@ -1563,6 +1565,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return getSourceViewer();
     }
 
+    @Override
     public final IDocument getDocument() {
         final ISourceViewer v = getViewer();
         if (v == null) {
@@ -1663,6 +1666,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 .resetReconciler();
     }
 
+    @Override
     public void reconcileNow() {
         ((EditorConfiguration) getSourceViewerConfiguration()).reconcileNow();
     }
@@ -1978,6 +1982,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 .get(SmartTypingPreferencePage.PARENS));
         bracketInserter.setEmbraceSelectionEnabled(prefs
                 .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+    }
+
+    @Override
+    public ErlToken getTokenAt(final int offset) {
+        return getScanner().getTokenAt(offset);
     }
 
 }

@@ -46,6 +46,7 @@ import org.erlide.model.util.ErlangFunction;
 import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
@@ -89,7 +90,7 @@ public class OpenAction extends SelectionDispatchAction {
 
     }
 
-    public OpenAction(final ErlangEditor erlangEditor) {
+    public OpenAction(final AbstractErlangEditor erlangEditor) {
         super(erlangEditor.getSite());
         setText(ActionMessages.OpenAction_open_declaration_label);
         setToolTipText(ActionMessages.OpenAction_tooltip);

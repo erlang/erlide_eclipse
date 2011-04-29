@@ -48,7 +48,7 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.actions.SelectionDispatchAction;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
 import org.erlide.utils.ErlLogger;
 
@@ -69,14 +69,14 @@ public abstract class FindAction extends SelectionDispatchAction {
     // private static final IErlElement RETURN_WITHOUT_BEEP = ErlangCore
     // .create(ErlangPlugin.getWorkspace().getRoot());
 
-    private ErlangEditor fEditor;
+    private AbstractErlangEditor fEditor;
 
     FindAction(final IWorkbenchSite site) {
         super(site);
         init();
     }
 
-    FindAction(final ErlangEditor editor) {
+    FindAction(final AbstractErlangEditor editor) {
         this(editor.getEditorSite());
         fEditor = editor;
         setEnabled(true); // FIXME check selection, steal stuff from 'open'
@@ -329,7 +329,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     /**
      * @return the fEditor
      */
-    public ErlangEditor getEditor() {
+    public AbstractErlangEditor getEditor() {
         return fEditor;
     }
 

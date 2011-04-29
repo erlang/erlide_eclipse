@@ -7,6 +7,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -59,7 +60,7 @@ public final class OpenDeclarationAction extends Action {
                 } else if (element instanceof OpenResult) {
                     final OpenResult or = (OpenResult) element;
                     try {
-                        final ErlangEditor editor = input.getEditor();
+                        final AbstractErlangEditor editor = input.getEditor();
                         OpenAction.openOpenResult(editor, editor.getModule(),
                                 BackendCore.getBackendManager().getIdeBackend()
                                         .getRpcSite(), -1, null, or, null);

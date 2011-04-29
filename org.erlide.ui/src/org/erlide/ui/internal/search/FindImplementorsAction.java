@@ -15,7 +15,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.services.search.ErlSearchScope;
 import org.erlide.model.services.search.LimitTo;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * Finds references of the selected element in the workspace. The action is
@@ -48,7 +48,7 @@ public class FindImplementorsAction extends FindAction {
      * @param editor
      *            the Erlang editor
      */
-    public FindImplementorsAction(final ErlangEditor editor) {
+    public FindImplementorsAction(final AbstractErlangEditor editor) {
         super(editor);
     }
 

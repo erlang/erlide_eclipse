@@ -37,7 +37,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ContentAssistAction;
@@ -45,9 +44,13 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
+import org.erlide.core.model.erlang.ErlToken;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditorBracketInserter;
@@ -63,7 +66,8 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
-public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
+public class ErlangScratchPad extends AbstractErlangEditor implements
+        ISaveablePart2 {
 
     private ColorManager colorManager;
     private ErlangEditorBracketInserter fBracketInserter;
@@ -146,8 +150,8 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
         final IPreferenceStore store = getErlangEditorPreferenceStore();
         setPreferenceStore(store);
 
-        final ErlangSourceViewerConfiguration cfg = new ErlangSourceViewerConfiguration(
-                getPreferenceStore(), colorManager);
+        final ErlangSourceViewerConfiguration cfg = new ErlangScratchPadConfiguration(
+                getPreferenceStore(), colorManager, this);
         setSourceViewerConfiguration(cfg);
 
         // Runnable runnable = new Runnable() {
@@ -266,10 +270,10 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
         // ovg= new OpenViewActionGroup(this),
-        esg = new ErlangSearchActionGroup(getSite()) });
+        esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
-        openAction = new OpenAction(getSite());
+        openAction = new OpenAction(this);
         openAction
                 .setActionDefinitionId(IErlangEditorActionDefinitionIds.OPEN_EDITOR);
         setAction(IErlangEditorActionDefinitionIds.OPEN, openAction);
@@ -579,6 +583,35 @@ public class ErlangScratchPad extends TextEditor implements ISaveablePart2 {
     @Override
     protected void initializeKeyBindingScopes() {
         setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
+    }
+
+    @Override
+    public void reconcileNow() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public IErlElement getElementAt(final int offset, final boolean b) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IErlModule getModule() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IDocument getDocument() {
+        return getDocumentProvider().getDocument(this);
+    }
+
+    @Override
+    public ErlToken getTokenAt(final int offset) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
