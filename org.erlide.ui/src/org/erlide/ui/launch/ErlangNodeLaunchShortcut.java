@@ -131,13 +131,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             final Collection<IErlProject> projects) throws CoreException {
         final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(
                 projects, mode);
-        try {
-            bringConsoleViewToFront();
-            launchConfiguration.launch(mode, null);
-        } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        bringConsoleViewToFront();
+        launchConfiguration.launch(mode, null);
     }
 
     private void bringConsoleViewToFront() throws PartInitException {
@@ -177,6 +172,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlLaunchAttributes.CONSOLE, true);
         wc.setAttribute(ErlLaunchAttributes.INTERNAL, false);
         wc.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
+        wc.setAttribute(ErlLaunchAttributes.COOKIE, "erlide");
         wc.setAttribute("org.eclipse.debug.core.environmentVariables",
                 Maps.newHashMap());
         if (mode.equals("debug")) {

@@ -118,7 +118,6 @@ public class AbstractNode {
 
         final String dotCookieFilename = System.getProperty("user.home")
                 + File.separator + ".erlang.cookie";
-        System.err.printf("defaultCookie filename \"%s\"\n", dotCookieFilename);
         BufferedReader br = null;
 
         try {
