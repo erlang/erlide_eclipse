@@ -126,7 +126,7 @@ public final class RpcHelper {
      * Calls a function that supports sending progress reports back. The first
      * argument is implicit and is the pid where the reports are to be sent.
      */
-    public static void rpcCallWithProgress(final RpcResultCallback callback,
+    public static void rpcCastWithProgress(final RpcResultCallback callback,
             final OtpNode node, final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)

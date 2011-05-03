@@ -2,13 +2,14 @@ package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
+import org.erlide.core.model.root.internal.ErlMember;
 
 public class ErlRecordField extends ErlMember implements IErlRecordField {
 
     private final String fieldName;
     private String extra;
 
-    protected ErlRecordField(final IErlRecordDef parent, final String name) {
+    public ErlRecordField(final IErlRecordDef parent, final String name) {
         super(parent, "record_field");
         fieldName = name;
         extra = "";

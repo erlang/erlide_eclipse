@@ -12,7 +12,6 @@ package org.erlide.core.backend.internal;
 
 import java.io.IOException;
 
-import org.erlide.core.backend.Backend;
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
@@ -94,7 +93,7 @@ public class ErlRuntime extends OtpNodeStatus {
             final String f, final String signature, final Object[] args)
             throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        RpcHelper.rpcCallWithProgress(cb, localNode, peerName, false, gleader,
+        RpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
                 m, f, signature, args);
     }
 
@@ -118,13 +117,6 @@ public class ErlRuntime extends OtpNodeStatus {
             final Object... args) throws RpcException, SignatureException {
         makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
                 signature, args);
-    }
-
-    public void makeAsyncCbCall(final RpcCallback cb, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException, SignatureException {
-        makeAsyncCbCall(cb, Backend.DEFAULT_TIMEOUT, new OtpErlangAtom("user"),
-                module, fun, signature, args);
     }
 
     public void makeAsyncCbCall(final RpcCallback cb, final int timeout,

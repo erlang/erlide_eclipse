@@ -10,7 +10,8 @@
 package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlAttribute;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.internal.ErlMember;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -34,7 +35,7 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
     }
 
     /**
-     * @see org.erlide.core.model.erlang.IErlElement#getKind()
+     * @see org.erlide.core.model.root.api.IErlElement#getKind()
      */
     public Kind getKind() {
         return Kind.ATTRIBUTE;

@@ -11,6 +11,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.model.root.api.IErlFolder;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -77,7 +79,6 @@ public class IErlFolderTests extends ErlModelTestBase {
     // boolean isSourcePathParent();
     @Test
     public void isSourcePathParent() throws Exception {
-        assertTrue(project2.isSourcePathParent());
         final IErlFolder srcFolder2 = (IErlFolder) project2
                 .getChildNamed("src");
         final IErlFolder includeFolder2 = (IErlFolder) project2

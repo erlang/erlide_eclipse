@@ -36,12 +36,12 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -131,13 +131,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             final Collection<IErlProject> projects) throws CoreException {
         final ILaunchConfiguration launchConfiguration = getLaunchConfiguration(
                 projects, mode);
-        try {
-            bringConsoleViewToFront();
-            launchConfiguration.launch(mode, null);
-        } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        bringConsoleViewToFront();
+        launchConfiguration.launch(mode, null);
     }
 
     private void bringConsoleViewToFront() throws PartInitException {
@@ -177,6 +172,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         wc.setAttribute(ErlLaunchAttributes.CONSOLE, true);
         wc.setAttribute(ErlLaunchAttributes.INTERNAL, false);
         wc.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
+        wc.setAttribute(ErlLaunchAttributes.COOKIE, "erlide");
         wc.setAttribute("org.eclipse.debug.core.environmentVariables",
                 Maps.newHashMap());
         if (mode.equals("debug")) {

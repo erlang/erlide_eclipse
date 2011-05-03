@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.11.1.qualifier
+Bundle-Version: 0.11.2.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -240,7 +240,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.text.source,
    org.eclipse.core.runtime,
    org.eclipse.jface.resource,
-   org.erlide.core.model.erlang.util,
+   org.erlide.core.model.util,
    org.eclipse.ui,
    com.novocode.naf.swt.custom,
    org.eclipse.jface.preference,

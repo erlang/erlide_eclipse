@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.launching.ErlangLaunchDelegate;
+import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverRunner;

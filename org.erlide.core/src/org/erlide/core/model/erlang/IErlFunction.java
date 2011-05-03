@@ -11,7 +11,8 @@ package org.erlide.core.model.erlang;
 
 import java.util.List;
 
-import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.util.ErlangFunction;
 
 /**
  * 
@@ -34,5 +35,4 @@ public interface IErlFunction extends IErlFunctionClause, IParent {
 
     String getComment();
 
-    String getModuleName();
 }

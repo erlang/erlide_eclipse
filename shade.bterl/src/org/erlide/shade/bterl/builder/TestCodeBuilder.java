@@ -28,7 +28,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.services.builder.BuildResource;

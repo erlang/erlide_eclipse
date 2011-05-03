@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.core.model.util.ErlangFunction;
 import org.junit.Test;
 
 public class IErlFunctionTests extends ErlModelTestBase2 {

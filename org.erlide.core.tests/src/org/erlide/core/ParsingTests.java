@@ -11,13 +11,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.erlang.TestingSupport;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlModel;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.internal.ErlParser;
-import org.erlide.core.parsing.ErlangToolkit;
-import org.erlide.core.parsing.ErlideScanner;
+import org.erlide.core.model.erlang.internal.ErlideScanner;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class ParsingTests {
         final String scannerModuleName = ErlangToolkit
                 .createScannerModuleName(module);
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final ErlParser parser = new ErlParser();
+        final IErlParser parser = CoreScope.getModel().getParser();
         return parser.parse(module, scannerModuleName, false, "", false);
     }
 

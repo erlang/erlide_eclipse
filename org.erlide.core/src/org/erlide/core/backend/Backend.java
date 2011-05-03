@@ -51,14 +51,14 @@ import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.model.debug.ErlangDebugHelper;
-import org.erlide.core.model.debug.ErlangDebugNode;
-import org.erlide.core.model.debug.ErlangDebugTarget;
-import org.erlide.core.model.debug.ErlideDebug;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.util.CoreUtil;
-import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.ErlangDebugNode;
+import org.erlide.core.debug.ErlangDebugTarget;
+import org.erlide.core.debug.ErlideDebug;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.CoreUtil;
+import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
@@ -157,7 +157,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
             final String f, final String signature, final Object... args)
             throws RpcException {
         try {
-            runtime.makeAsyncCbCall(cb, m, f, signature, args);
+            runtime.makeAsyncCbCall(cb, DEFAULT_TIMEOUT, m, f, signature, args);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -345,7 +345,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         getNode().registerStatusHandler(handler);
     }
 
-    private void setRemoteRex(final OtpErlangPid watchdog) {
+    private void linkToRemoteRex(final OtpErlangPid watchdog) {
         try {
             getEventBox().link(watchdog);
         } catch (final OtpErlangExit e) {

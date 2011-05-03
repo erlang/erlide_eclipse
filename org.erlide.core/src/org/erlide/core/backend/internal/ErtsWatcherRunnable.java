@@ -11,11 +11,9 @@
 package org.erlide.core.backend.internal;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
@@ -92,22 +90,6 @@ final public class ErtsWatcherRunnable implements Runnable {
             }
         } catch (final IOException e) {
             ErlLogger.warn(e);
-        }
-    }
-
-    private void move(final File in, final File out) throws IOException {
-        final InputStream ins = new FileInputStream(in);
-        final OutputStream outs = new FileOutputStream(out);
-        try {
-            final byte[] buf = new byte[1024];
-            int len;
-            while ((len = ins.read(buf)) > 0) {
-                outs.write(buf, 0, len);
-            }
-        } finally {
-            ins.close();
-            outs.close();
-            in.delete();
         }
     }
 

@@ -30,9 +30,9 @@ import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
-import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.debug.ErlangDebugHelper;
+import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParser;
@@ -122,7 +122,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String theMode = ILaunchManager.DEBUG_MODE.equals(amode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
 
-        return super.doLaunch(cfg, amode, launch, monitor);
+        return super.doLaunch(cfg, theMode, launch, monitor);
     }
 
     @Override

@@ -33,10 +33,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.internal.OldErlangProjectProperties;
-import org.erlide.core.model.erlang.internal.PathSerializer;
+import org.erlide.core.model.root.internal.OldErlangProjectProperties;
+import org.erlide.core.model.root.internal.PathSerializer;
 import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
@@ -87,6 +88,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
         prefs = new OldErlangProjectProperties();
+        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoManager()
+                .getDefaultRuntime().getVersion());
 
         // create the composite to hold the widgets
         final Composite composite = new Composite(parent, SWT.NONE);

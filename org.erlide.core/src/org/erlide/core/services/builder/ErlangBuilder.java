@@ -34,7 +34,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.services.builder.internal.BuildNotifier;
 import org.erlide.core.services.builder.internal.BuilderMessages;
@@ -237,15 +237,14 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         } catch (final Exception e) {
             ErlLogger.error(e);
             final String msg = NLS.bind(
-                    BuilderMessages.build_inconsistentProject,
-                    e.getLocalizedMessage());
+                    BuilderMessages.build_inconsistentProject, e.getMessage(),
+                    e.getClass().getName());
             MarkerUtils.addProblemMarker(project, null, null, msg, 0,
                     IMarker.SEVERITY_ERROR);
         } finally {
             cleanup();
             // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Finished build of " + project.getName() //$NON-NLS-1$
-                    + " took "
+            ErlLogger.debug("Finished build of " + project.getName() + " took "
                     + Long.toString(System.currentTimeMillis() - time));
             // }
         }

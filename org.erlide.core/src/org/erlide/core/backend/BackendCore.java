@@ -39,12 +39,14 @@ public class BackendCore {
 
     public static IConfigurationElement[] getSourcepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "sourcePathProvider");
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+                "sourcePathProvider");
     }
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "codepath");
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+                "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {

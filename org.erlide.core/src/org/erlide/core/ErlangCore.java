@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.debug.ErlangDebugOptionsManager;
+import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -187,7 +187,8 @@ public final class ErlangCore {
 
     public static IConfigurationElement[] getMessageReporterConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "messageReporter");
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+                "messageReporter");
     }
 
     /**

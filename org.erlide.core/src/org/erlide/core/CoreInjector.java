@@ -15,7 +15,7 @@ public class CoreInjector {
     }
 
     private static ServicesMap injectServiceMap() {
-        ServicesMap result = new ServicesMap();
+        final ServicesMap result = new ServicesMap();
         result.putService(BackendService.class, new BackendService());
         return result;
     }

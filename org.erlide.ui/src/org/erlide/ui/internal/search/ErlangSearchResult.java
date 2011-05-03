@@ -16,7 +16,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ResourceUtil;
+import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.editors.erl.ErlangEditor;

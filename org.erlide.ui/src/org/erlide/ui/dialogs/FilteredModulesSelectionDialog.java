@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -70,13 +71,13 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.CoreScope;
+import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.IErlModel;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.util.PluginUtils;
-import org.erlide.core.model.erlang.util.ResourceUtil;
-import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.PluginUtils;
+import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
@@ -568,7 +569,7 @@ public class FilteredModulesSelectionDialog extends
             this.progressMonitor = progressMonitor;
             final IResource[] resources = container.members();
             projects = new ArrayList<IResource>(Arrays.asList(resources));
-            extraLocations.addAll(ErlideOpen.getExtraSourcePaths());
+            extraLocations.addAll(BackendUtils.getExtraSourcePaths());
             if (progressMonitor != null) {
                 progressMonitor.beginTask("Searching", projects.size());
             }
@@ -581,10 +582,15 @@ public class FilteredModulesSelectionDialog extends
             }
 
             final IResource resource = proxy.requestResource();
-
+            if (!resource.isAccessible()) {
+                return false;
+            }
             final IProject project = resource.getProject();
             final boolean accessible = project != null
                     && project.isAccessible();
+            if (project != null && !accessible) {
+                return false;
+            }
             if (projects.remove(project) || projects.remove(resource)) {
                 progressMonitor.worked(1);
                 if (accessible) {
@@ -638,9 +644,14 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
+            final ResourceAttributes resourceAttributes = resource
+                    .getResourceAttributes();
+            if (resourceAttributes == null) {
+                return false;
+            }
             if (CommonUtils.isErlangFileContentFileName(resource.getName())
                     && !resource.isLinked()
-                    && !resource.getResourceAttributes().isSymbolicLink()
+                    && !resourceAttributes.isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
                 final IContainer my_container = resource.getParent();
                 if (validPaths.contains(my_container.getFullPath())

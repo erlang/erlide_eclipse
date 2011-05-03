@@ -60,7 +60,7 @@ public class DependenciesTest {
         }
     }
 
-    private void printPackageList(final List<JavaPackage> list) {
+    protected void printPackageList(final List<JavaPackage> list) {
         System.out.print("[");
         for (final JavaPackage p : list) {
             System.out.print(p.getName() + ", ");

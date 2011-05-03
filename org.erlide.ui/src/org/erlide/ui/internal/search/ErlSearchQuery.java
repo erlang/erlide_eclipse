@@ -23,6 +23,7 @@ import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
@@ -33,7 +34,6 @@ public class ErlSearchQuery implements ISearchQuery {
     private final ErlSearchScope scope;
     private final Map<String, IErlModule> pathToModuleMap;
     private ErlangSearchResult fSearchResult;
-    private List<ModuleLineFunctionArityRef> fResult;
 
     private String stateDirCached = null;
     private final String scopeDescription;
@@ -107,8 +107,10 @@ public class ErlSearchQuery implements ISearchQuery {
 
             public void progress(final OtpErlangObject msg) {
                 final OtpErlangTuple t = (OtpErlangTuple) msg;
-                final OtpErlangLong progressL = (OtpErlangLong) t.elementAt(0);
-                final OtpErlangObject resultO = t.elementAt(1);
+                final OtpErlangPid backgroundSearchPid = (OtpErlangPid) t
+                        .elementAt(0);
+                final OtpErlangLong progressL = (OtpErlangLong) t.elementAt(1);
+                final OtpErlangObject resultO = t.elementAt(2);
                 int progress = 1;
                 try {
                     progress = progressL.intValue();
@@ -119,6 +121,14 @@ public class ErlSearchQuery implements ISearchQuery {
                 } catch (final OtpErlangRangeException e) {
                 }
                 monitor.worked(progress);
+                if (monitor.isCanceled()) {
+                    try {
+                        ErlideSearchServer.cancelSearch(BackendCore
+                                .getBackendManager().getIdeBackend(),
+                                backgroundSearchPid);
+                    } catch (final RpcException e) {
+                    }
+                }
             }
 
         };
@@ -136,11 +146,6 @@ public class ErlSearchQuery implements ISearchQuery {
             }
         }
         return Status.OK_STATUS;
-    }
-
-    public void cancel() throws RpcException {
-        // ska vanta med denna committa det andra forst!
-        // ErlideSearchServer.cancelSearch(fSearchBackend, fSearchDeamonPid);
     }
 
     private void addMatches(final List<ModuleLineFunctionArityRef> chunk) {

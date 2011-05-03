@@ -41,23 +41,23 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlElement.Kind;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.IErlProject.Scope;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
-import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.erlang.util.CoreUtil;
-import org.erlide.core.model.erlang.util.ErlangFunction;
-import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlElement.Kind;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.api.ISourceReference;
+import org.erlide.core.model.util.CoreUtil;
+import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.codeassist.ErlideContextAssist;
 import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
@@ -474,8 +474,9 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
         final IErlModule theModule = ModelUtils.findModule(erlProject,
-                moduleName, null, checkAllProjects ? Scope.ALL_PROJECTS
-                        : Scope.REFERENCED_PROJECTS);
+                moduleName, null,
+                checkAllProjects ? IErlModel.Scope.ALL_PROJECTS
+                        : IErlModel.Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
             if (ModelUtils.isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()

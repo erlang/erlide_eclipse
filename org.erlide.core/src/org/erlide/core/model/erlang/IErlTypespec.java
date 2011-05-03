@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
-
 /**
  * 
  * @author Vlad Dumitrescu

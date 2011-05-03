@@ -23,14 +23,13 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.IErlProject.Scope;
-import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -121,8 +120,10 @@ public final class MarkerUtils {
                     final IErlModel model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
-                        final IErlModule includeFile = erlProject.findInclude(
-                                fileName, fileName, Scope.REFERENCED_PROJECTS);
+                        final IErlModule includeFile = model
+                                .findIncludeFromProject(erlProject, fileName,
+                                        fileName,
+                                        IErlModel.Scope.REFERENCED_PROJECTS);
                         ErlLogger.debug("inc::" + fileName + " "
                                 + resource.getName() + " "
                                 + erlProject.getName());

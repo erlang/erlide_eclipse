@@ -1,10 +1,12 @@
 package org.erlide.core.model.erlang.internal;
 
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
-import org.erlide.core.model.erlang.IParent;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.internal.ErlElement;
+import org.erlide.core.model.root.internal.ErlMember;
 
 import com.google.common.base.Objects;
 
@@ -18,7 +20,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
      * @param imports
      * @param module
      */
-    protected ErlRecordDef(final IParent parent, final String extra) {
+    public ErlRecordDef(final IParent parent, final String extra) {
         super(parent, "record_definition");
         record = uptoCommaOrParen(extra);
         this.extra = extra;

@@ -30,7 +30,7 @@ public class ErlangFunctionCall {
     public ErlangFunctionCall(final OtpErlangTuple t) {
         final OtpErlangAtom m = (OtpErlangAtom) t.elementAt(0);
         final OtpErlangAtom f = (OtpErlangAtom) t.elementAt(1);
-        final OtpErlangList pars = (OtpErlangList) t.elementAt(2);
+        final OtpErlangList pars = Util.listValue(t.elementAt(2));
         module = m.atomValue();
         function = f.atomValue();
         final StringBuilder sb = new StringBuilder("(");
