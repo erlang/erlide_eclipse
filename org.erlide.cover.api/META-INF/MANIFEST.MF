@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cover Interfaces
 Bundle-SymbolicName: org.erlide.cover.api;singleton:=true
-Bundle-Version: 0.2
+Bundle-Version: 0.2.1
 Bundle-Activator: org.erlide.cover.api.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.erlide.core;bundle-version="0.11.0",

@@ -1,3 +1,13 @@
+List of user visible changes between 0.11.1 and 0.12.0 (20110503)
+
+2510907 826-launch---quick-launch-does-not-work-on-windows-some-times
+6b836bc Fix so that debugger handles arguments with small integers (they are given as OtpErlangString)
+a3d4a8d http://www.assembla.com/spaces/erlide/tickets/797-model---the-splitting-into-function-clauses-is-too-simple--causing-bad-code-formatting 
+359dd6c http://www.assembla.com/spaces/erlide/tickets/824-outline---sometimes-no-text
+a2b71ea http://www.assembla.com/spaces/erlide/tickets/549-open-module-dialog---too-slow revisited.
+0fcb0b5 http://www.assembla.com/spaces/erlide/tickets/819-searching--cancel-search
+cc9f87f changed Cover plugins names
+
 List of user visible changes between 0.11.0 and 0.11.1 (20110412)
 
 * added cover plugin, thanks to Aleksandra Lipiec
