@@ -30,7 +30,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -644,14 +643,7 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
-            final ResourceAttributes resourceAttributes = resource
-                    .getResourceAttributes();
-            if (resourceAttributes == null) {
-                return false;
-            }
             if (CommonUtils.isErlangFileContentFileName(resource.getName())
-                    && !resource.isLinked()
-                    && !resourceAttributes.isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
                 final IContainer my_container = resource.getParent();
                 if (validPaths.contains(my_container.getFullPath())
