@@ -11,7 +11,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.CoreScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -111,11 +110,7 @@ public class ErlFolder extends Openable implements IErlFolder {
 
     public boolean isSourcePathParent() {
         final IProject project = folder.getProject();
-        /*
-         * Get the project settings so that we can find the source nodes
-         */
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
+        final IErlProject erlProject = getProject();
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         final IPath path = folder.getFullPath();
         for (final IPath i : sourcePaths) {
@@ -126,15 +121,15 @@ public class ErlFolder extends Openable implements IErlFolder {
         return false;
     }
 
-    public static boolean isOnPaths(final IContainer con,
+    public static boolean isOnPaths(final IContainer container,
             final IContainer project, final Collection<IPath> paths) {
-        final IPath path = con.getFullPath();
-        for (final IPath i : paths) {
-            if (i.toString().equals(".")) {
-                if (project.getFullPath().equals(path)) {
+        final IPath containerPath = container.getFullPath();
+        for (final IPath path : paths) {
+            if (path.toString().equals(".")) {
+                if (project.getFullPath().equals(containerPath)) {
                     return true;
                 }
-            } else if (project.getFolder(i).getFullPath().equals(path)) {
+            } else if (project.getFolder(path).getFullPath().equals(containerPath)) {
                 return true;
             }
         }

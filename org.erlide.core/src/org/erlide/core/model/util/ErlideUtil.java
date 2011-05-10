@@ -12,16 +12,11 @@
 package org.erlide.core.model.util;
 
 import java.io.File;
-import java.util.Collection;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
@@ -69,22 +64,6 @@ public final class ErlideUtil {
             fgCacheNoModelCache = Boolean.valueOf("true".equals(test));
         }
         return fgCacheNoModelCache.booleanValue();
-    }
-
-    public static boolean isOnSourcePathOrParentToFolderOnSourcePath(
-            final IFolder folder) {
-        final IProject project = folder.getProject();
-        final IPath folderPath = folder.getFullPath();
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
-        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
-        for (final IPath p : sourcePaths) {
-            final IPath path = project.getFolder(p).getFullPath();
-            if (folderPath.isPrefixOf(path)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

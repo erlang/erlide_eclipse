@@ -845,12 +845,12 @@ public class ErlProject extends Openable implements IErlProject {
         return includeDirs;
     }
 
-    private Collection<IPath> resolvePaths(final Collection<IPath> includeDirs) {
+    private Collection<IPath> resolvePaths(final Collection<IPath> paths) {
         final IPathVariableManager pathVariableManager = ResourcesPlugin
                 .getWorkspace().getPathVariableManager();
         final List<IPath> cachedIncludeDirs = Lists
-                .newArrayListWithCapacity(includeDirs.size());
-        for (final IPath includeDir : includeDirs) {
+                .newArrayListWithCapacity(paths.size());
+        for (final IPath includeDir : paths) {
             final IPath resolvedPath = pathVariableManager
                     .resolvePath(includeDir);
             cachedIncludeDirs.add(resolvedPath);

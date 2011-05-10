@@ -544,7 +544,7 @@ public class FilteredModulesSelectionDialog extends
     private class ModuleProxyVisitor implements IResourceProxyVisitor {
 
         private final AbstractContentProvider proxyContentProvider;
-        private final ModuleFilter resourceFilter;
+        private final ModuleFilter moduleFilter;
         private final IProgressMonitor progressMonitor;
         private final List<IResource> projects;
         private final Set<IPath> validPaths = new HashSet<IPath>();
@@ -554,17 +554,17 @@ public class FilteredModulesSelectionDialog extends
          * Creates new ResourceProxyVisitor instance.
          * 
          * @param contentProvider
-         * @param resourceFilter
+         * @param moduleFilter
          * @param progressMonitor
          * @throws CoreException
          */
         public ModuleProxyVisitor(
                 final AbstractContentProvider contentProvider,
-                final ModuleFilter resourceFilter,
+                final ModuleFilter moduleFilter,
                 final IProgressMonitor progressMonitor) throws CoreException {
             super();
             proxyContentProvider = contentProvider;
-            this.resourceFilter = resourceFilter;
+            this.moduleFilter = moduleFilter;
             this.progressMonitor = progressMonitor;
             final IResource[] resources = container.members();
             projects = new ArrayList<IResource>(Arrays.asList(resources));
@@ -633,7 +633,7 @@ public class FilteredModulesSelectionDialog extends
                                 path = project.getLocation().append(v)
                                         .toString();
                             }
-                            proxyContentProvider.add(path, resourceFilter);
+                            proxyContentProvider.add(path, moduleFilter);
                         }
                     }
                 }
@@ -650,7 +650,7 @@ public class FilteredModulesSelectionDialog extends
                         || !extraLocations.isEmpty()
                         && extraLocations.contains(my_container.getLocation()
                                 .toString())) {
-                    proxyContentProvider.add(resource, resourceFilter);
+                    proxyContentProvider.add(resource, moduleFilter);
                 }
             }
 
