@@ -82,7 +82,7 @@ public class PluginUtils {
                     .getErlangProject(project);
             paths = getFullPaths(project, erlProject.getSourceDirs());
             extra = new HashSet<String>();
-            extra.addAll(BackendUtils.getExtraSourcePaths());
+            extra.addAll(BackendUtils.getExtraSourcePaths(project));
         }
 
         public boolean accept(final IContainer container) {

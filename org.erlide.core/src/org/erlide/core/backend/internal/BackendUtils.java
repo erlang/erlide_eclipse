@@ -3,6 +3,7 @@ package org.erlide.core.backend.internal;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -55,19 +56,30 @@ public class BackendUtils {
         return null;
     }
 
-    public static Collection<String> getExtraSourcePaths() {
+    public static Collection<String> getExtraSourcePaths(final IProject project) {
         final List<String> result = Lists.newArrayList();
         Collection<SourcePathProvider> spps;
         try {
             spps = getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {
-                final Collection<IPath> paths = spp.getSourcePaths();
+                final Collection<IPath> paths = spp
+                        .getSourcePathsForModel(project);
                 for (final IPath p : paths) {
                     result.add(p.toString());
                 }
             }
         } catch (final CoreException e) {
             ErlLogger.error(e);
+        }
+        return result;
+    }
+
+    public static Collection<String> getExtraSourcePaths() {
+        final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+                .getProjects();
+        final List<String> result = Lists.newArrayList();
+        for (final IProject project : projects) {
+            result.addAll(getExtraSourcePaths(project));
         }
         return result;
     }
