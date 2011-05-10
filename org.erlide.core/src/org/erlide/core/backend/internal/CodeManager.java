@@ -209,8 +209,9 @@ public class CodeManager {
                 final boolean accessible = ErlideUtil.isAccessible(backend,
                         localDir);
                 if (accessible) {
-                    ErlLogger.debug("adding %s to code path for %s:: %s",
-                            localDir, backend, backend.getRuntimeInfo());
+                    ErlLogger.debug("adding %s to code path for @%s:: %s",
+                            localDir, backend.hashCode(),
+                            backend.getRuntimeInfo());
                     ErlangCode.addPathA(backend, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundle()

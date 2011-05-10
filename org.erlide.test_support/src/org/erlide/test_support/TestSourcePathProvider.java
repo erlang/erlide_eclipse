@@ -62,7 +62,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
 
             public boolean visit(final IResource resource) throws CoreException {
                 final IProject project = resource.getProject();
-                if (isTestDir(resource)) {
+                if (project != null && isTestDir(resource)) {
                     final Set<IPath> ps = getProjectPaths(project);
                     ps.add(resource.getLocation());
                     result.put(project, ps);

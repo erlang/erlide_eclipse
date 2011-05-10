@@ -195,6 +195,7 @@ public class TestResultsView extends ViewPart {
                     + successful + ", Failed: " + failed + ", Skipped: "
                     + skipped);
         }
+        control.redraw();
     }
 
     private String formatTitle(final OtpErlangObject value) {
