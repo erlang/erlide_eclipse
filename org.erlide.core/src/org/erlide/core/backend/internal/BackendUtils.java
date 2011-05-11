@@ -56,19 +56,60 @@ public class BackendUtils {
         return null;
     }
 
-    public static Collection<String> getExtraSourcePaths(final IProject project) {
+    private abstract static class SPPMethod {
+        protected SourcePathProvider target;
+
+        public void setTarget(final SourcePathProvider spp) {
+            target = spp;
+        }
+
+        abstract public Collection<IPath> call(IProject project);
+    }
+
+    public static Collection<String> getExtraSourcePathsForBuild(
+            final IProject project) {
+        return BackendUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
+            @Override
+            public Collection<IPath> call(final IProject myProject) {
+                return target.getSourcePathsForBuild(myProject);
+            }
+        });
+    }
+
+    public static Collection<String> getExtraSourcePathsForModel(
+            final IProject project) {
+        return BackendUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
+            @Override
+            public Collection<IPath> call(final IProject myProject) {
+                return target.getSourcePathsForModel(myProject);
+            }
+        });
+    }
+
+    public static Collection<String> getExtraSourcePathsForExecution(
+            final IProject project) {
+        return BackendUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
+            @Override
+            public Collection<IPath> call(final IProject myProject) {
+                return target.getSourcePathsForExecution(myProject);
+            }
+        });
+    }
+
+    private static Collection<String> getExtraSourcePathsGeneric(
+            final IProject project, final SPPMethod method) {
         final List<String> result = Lists.newArrayList();
         Collection<SourcePathProvider> spps;
         try {
             spps = getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {
-                final Collection<IPath> paths = spp
-                        .getSourcePathsForModel(project);
+                method.setTarget(spp);
+                final Collection<IPath> paths = method.call(project);
                 for (final IPath p : paths) {
                     result.add(p.toString());
                 }
             }
-        } catch (final CoreException e) {
+        } catch (final Exception e) {
             ErlLogger.error(e);
         }
         return result;
@@ -79,7 +120,7 @@ public class BackendUtils {
                 .getProjects();
         final List<String> result = Lists.newArrayList();
         for (final IProject project : projects) {
-            result.addAll(getExtraSourcePaths(project));
+            result.addAll(getExtraSourcePathsForModel(project));
         }
         return result;
     }
