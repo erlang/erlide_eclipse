@@ -487,7 +487,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 .getExtraSourcePathsForBuild(myProject);
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
         for (final String src : srcDirs) {
-            final IPath srcPath = new Path(src);
+            final IPath srcPath = new Path(src).removeFirstSegments(rpath
+                    .segmentCount() - 1);
             if (srcPath.isPrefixOf(rpath)) {
                 return true;
             }

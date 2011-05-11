@@ -28,8 +28,9 @@ public class TestSourcePathProvider implements SourcePathProvider,
     Map<IProject, Set<IPath>> pathsMap;
 
     public TestSourcePathProvider() {
+        pathsMap = Maps.newHashMap();
         try {
-            pathsMap = computeSourcePaths();
+            computeSourcePaths();
         } catch (final CoreException e) {
             ErlLogger.warn(e);
             pathsMap = Maps.newHashMap();
@@ -56,8 +57,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
         return getProjectPaths(project);
     }
 
-    private Map<IProject, Set<IPath>> computeSourcePaths() throws CoreException {
-        final Map<IProject, Set<IPath>> result = Maps.newHashMap();
+    private void computeSourcePaths() throws CoreException {
         ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor() {
 
             public boolean visit(final IResource resource) throws CoreException {
@@ -65,13 +65,11 @@ public class TestSourcePathProvider implements SourcePathProvider,
                 if (project != null && isTestDir(resource)) {
                     final Set<IPath> ps = getProjectPaths(project);
                     ps.add(resource.getLocation());
-                    result.put(project, ps);
+                    pathsMap.put(project, ps);
                 }
                 return true;
             }
-
         });
-        return result;
     }
 
     private Set<IPath> getProjectPaths(final IProject project) {
