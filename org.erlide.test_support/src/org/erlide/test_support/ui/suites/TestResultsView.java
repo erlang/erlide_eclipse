@@ -1,5 +1,6 @@
 package org.erlide.test_support.ui.suites;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -172,7 +173,7 @@ public class TestResultsView extends ViewPart {
             final Bindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
-            final OtpErlangObject locations = bindings.get("L");
+            final Collection<OtpErlangObject> locations = bindings.getList("L");
             final OtpErlangObject reason = bindings.get("R");
             test = findCase(mod, fun);
             test.setFailed(reason, locations);

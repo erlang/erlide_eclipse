@@ -1,5 +1,6 @@
 package org.erlide.test_support.ui.suites;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -37,8 +38,15 @@ class TestResultsContentProvider implements ITreeContentProvider {
         if (parentElement instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) parentElement;
             if (data.getState() == TestState.FAILED) {
-                return new String[] { data.getFailLocations(),
-                        data.getFailReason() };
+                final Collection<OtpErlangObject> locations = data
+                        .getFailLocations();
+                if (locations.size() > 1) {
+                    return new String[] { locations.toString(),
+                            data.getFailReason() };
+                } else {
+                    // locations is pointing to the testcase
+                    return new String[] { data.getFailReason() };
+                }
             }
         }
         return NO_CHILDREN;

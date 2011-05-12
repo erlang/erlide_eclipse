@@ -1,23 +1,21 @@
 package org.erlide.test_support.ui.suites;
 
+import java.util.Collection;
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class TestCaseData {
 
     enum TestState {
         // order is important!
-        NOT_RUN,
-        SUCCESS,
-        SKIPPED,
-        RUNNING,
-        FAILED
+        NOT_RUN, SUCCESS, SKIPPED, RUNNING, FAILED
     }
 
     private final String suite;
     private final String testcase;
     private TestState state;
     private OtpErlangObject failReason;
-    private OtpErlangObject failLocations;
+    private Collection<OtpErlangObject> failLocations;
     private OtpErlangObject skipComment;
 
     public TestCaseData(final String mod, final String fun) {
@@ -40,7 +38,7 @@ public class TestCaseData {
     }
 
     public void setFailed(final OtpErlangObject reason,
-            final OtpErlangObject locations) {
+            final Collection<OtpErlangObject> locations) {
         state = TestState.FAILED;
         failReason = reason;
         failLocations = locations;
@@ -58,8 +56,8 @@ public class TestCaseData {
         return state;
     }
 
-    public String getFailLocations() {
-        return failLocations.toString();
+    public Collection<OtpErlangObject> getFailLocations() {
+        return failLocations;
     }
 
     public String getFailReason() {
