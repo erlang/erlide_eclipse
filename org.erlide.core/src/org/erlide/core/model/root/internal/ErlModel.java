@@ -1395,18 +1395,13 @@ public class ErlModel extends Openable implements IErlModel {
         final List<IErlProject> projects = Lists.newArrayList();
         final List<IErlModule> result = Lists.newArrayList();
         final Set<String> paths = Sets.newHashSet();
-        if (project != null) {
+        if (scope == IErlModel.Scope.ALL_PROJECTS) {
+            final IErlModel model = CoreScope.getModel();
+            projects.addAll(model.getErlangProjects());
+        } else {
             projects.add(project);
             if (scope == IErlModel.Scope.REFERENCED_PROJECTS) {
                 projects.addAll(project.getReferencedProjects());
-            }
-        }
-        if (scope == IErlModel.Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            for (final IErlProject project2 : model.getErlangProjects()) {
-                if (!projects.contains(project2)) {
-                    projects.add(project2);
-                }
             }
         }
         for (final IErlProject project2 : projects) {

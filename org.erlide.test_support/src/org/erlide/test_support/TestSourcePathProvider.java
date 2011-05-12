@@ -64,7 +64,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
                 final IProject project = resource.getProject();
                 if (project != null && isTestDir(resource)) {
                     final Set<IPath> ps = getProjectPaths(project);
-                    ps.add(resource.getLocation());
+                    ps.add(resource.getProjectRelativePath());
                     pathsMap.put(project, ps);
                 }
                 return true;

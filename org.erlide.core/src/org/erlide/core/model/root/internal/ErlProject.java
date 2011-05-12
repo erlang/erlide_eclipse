@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
@@ -509,8 +510,13 @@ public class ErlProject extends Openable implements IErlProject {
             return modulesForProject;
         }
         final List<IErlModule> result = new ArrayList<IErlModule>();
-        result.addAll(getModulesOrIncludes(fProject, getModel(),
-                getSourceDirs(), true));
+        final List<IPath> sourceDirs = Lists.newArrayList(getSourceDirs());
+        for (final String s : BackendUtils
+                .getExtraSourcePathsForModel(fProject)) {
+            sourceDirs.add(new Path(s));
+        }
+        result.addAll(getModulesOrIncludes(fProject, getModel(), sourceDirs,
+                true));
         ErlModel.getErlModelCache().putModulesForProject(this, result);
         return result;
     }
