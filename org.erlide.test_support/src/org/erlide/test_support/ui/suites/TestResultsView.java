@@ -20,8 +20,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
+import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -69,9 +71,15 @@ public class TestResultsView extends ViewPart {
                 final Object data = tree.getSelection()[0].getData();
                 if (data instanceof TestCaseData) {
                     final TestCaseData testData = (TestCaseData) data;
-                    openTestInEditor(testData);
+                    openMF(testData.getModule(), testData.getFunction());
+                } else if (data instanceof FailStackItem) {
+                    final FailStackItem item = (FailStackItem) data;
+                    openMF(item.getModule(), item.getFunction());
+                } else {
+                    System.out.println("CLICK " + data);
                 }
             }
+
         });
         tree.setLinesVisible(true);
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -82,12 +90,11 @@ public class TestResultsView extends ViewPart {
         initToolbar();
     }
 
-    protected void openTestInEditor(final TestCaseData testData) {
+    private void openMF(final String module, final String function) {
         try {
-            // TODO these utilities don't know about test code paths!!!
-            ErlModelUtils.openMF(testData.getModule(), testData.getFunction());
+            ErlModelUtils.openMF(module, function);
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.warn(e);
         }
     }
 

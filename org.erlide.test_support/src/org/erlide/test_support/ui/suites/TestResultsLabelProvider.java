@@ -2,6 +2,8 @@ package org.erlide.test_support.ui.suites;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.erlide.test_support.ui.suites.TestCaseData.FailLocations;
+import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.ui.ErlideImage;
 
 class TestResultsLabelProvider extends LabelProvider {
@@ -30,6 +32,13 @@ class TestResultsLabelProvider extends LabelProvider {
         if (element instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) element;
             return data.getModule() + " : " + data.getFunction();
+        } else if (element instanceof FailReason) {
+            final FailReason reason = (FailReason) element;
+            return "Failure reason: " + reason.getReason() + " -- "
+                    + reason.getFirstStackItem().toString();
+        } else if (element instanceof FailLocations) {
+            final FailLocations stack = (FailLocations) element;
+            return "Failure locations: ";
         }
         return element.toString();
     }
