@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.erlide.core.backend.internal.BackendUtil;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
+import com.google.common.base.Strings;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";
@@ -122,12 +123,11 @@ public class RuntimeInfo {
     }
 
     public String getWorkingDir() {
-        return workingDir == null || workingDir.length() == 0 ? "."
-                : workingDir;
+        return workingDir;
     }
 
     public void setWorkingDir(final String workingDir) {
-        this.workingDir = workingDir;
+        this.workingDir = Strings.isNullOrEmpty(workingDir) ? "." : workingDir;
     }
 
     @Override
