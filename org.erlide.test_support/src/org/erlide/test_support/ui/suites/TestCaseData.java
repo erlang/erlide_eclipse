@@ -1,7 +1,6 @@
 package org.erlide.test_support.ui.suites;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
@@ -129,7 +128,7 @@ public class TestCaseData {
     private final String suite;
     private final String testcase;
     private TestState state;
-    private FailReason failStack;
+    private FailReason failReason;
     private FailLocations failLocations;
     private OtpErlangObject skipComment;
 
@@ -155,17 +154,8 @@ public class TestCaseData {
     public void setFailed(final OtpErlangObject reason,
             final Collection<OtpErlangObject> locations) {
         state = TestState.FAILED;
-        failStack = parseReason(reason);
+        failReason = parseReason(reason);
         failLocations = new FailLocations(locations);
-    }
-
-    private Collection<FailLocation> parseLocations(
-            final Collection<OtpErlangObject> locations) {
-        final List<FailLocation> result = Lists.newArrayList();
-        for (final OtpErlangObject location : locations) {
-            result.add(new FailLocation(location));
-        }
-        return result;
     }
 
     private FailReason parseReason(final OtpErlangObject reason) {
@@ -199,7 +189,7 @@ public class TestCaseData {
     }
 
     public FailReason getFailStack() {
-        return failStack;
+        return failReason;
     }
 
     public void setSkipped(final OtpErlangObject comment) {

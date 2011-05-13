@@ -37,7 +37,6 @@ class TestResultsLabelProvider extends LabelProvider {
             return "Failure reason: " + reason.getReason() + " -- "
                     + reason.getFirstStackItem().toString();
         } else if (element instanceof FailLocations) {
-            final FailLocations stack = (FailLocations) element;
             return "Failure locations: ";
         }
         return element.toString();
