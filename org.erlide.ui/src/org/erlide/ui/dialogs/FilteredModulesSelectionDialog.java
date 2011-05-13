@@ -664,10 +664,12 @@ public class FilteredModulesSelectionDialog extends
         private void addPaths(final IProject project) {
             final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
-            validPaths.addAll(PluginUtils.getFullPaths(project,
-                    erlProject.getIncludeDirs()));
-            validPaths.addAll(PluginUtils.getFullPaths(project,
-                    erlProject.getSourceDirs()));
+            if (erlProject != null) {
+                validPaths.addAll(PluginUtils.getFullPaths(project,
+                        erlProject.getIncludeDirs()));
+                validPaths.addAll(PluginUtils.getFullPaths(project,
+                        erlProject.getSourceDirs()));
+            }
         }
     }
 
