@@ -100,8 +100,8 @@ public class TestCaseData {
         public String toString() {
             try {
                 final Bindings b = ErlUtils.match("{M:a, F:a, A}", item);
-                m = b.getAtom("M");
-                f = b.getAtom("F");
+                m = b.getQuotedAtom("M");
+                f = b.getQuotedAtom("F");
                 a = b.get("A");
                 final String aa = a.toString();
                 final String args = a instanceof OtpErlangLong ? " / "

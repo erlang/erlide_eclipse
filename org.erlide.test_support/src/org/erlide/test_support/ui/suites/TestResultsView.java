@@ -23,6 +23,7 @@ import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
+import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -75,11 +76,14 @@ public class TestResultsView extends ViewPart {
                 } else if (data instanceof FailStackItem) {
                     final FailStackItem item = (FailStackItem) data;
                     openMF(item.getModule(), item.getFunction());
-                } else {
-                    System.out.println("CLICK " + data);
+                } else if (data instanceof FailReason) {
+                    final FailReason reason = (FailReason) data;
+                    final FailStackItem item = reason.getFirstStackItem();
+                    if (item != null) {
+                        openMF(item.getModule(), item.getFunction());
+                    }
                 }
             }
-
         });
         tree.setLinesVisible(true);
         tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
