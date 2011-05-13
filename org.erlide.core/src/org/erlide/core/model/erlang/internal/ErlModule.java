@@ -55,6 +55,7 @@ import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.jinterface.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.base.Predicate;
@@ -694,6 +695,23 @@ public class ErlModule extends Openable implements IErlModule {
         final String s = scanner.getText();
         disposeScanner();
         return s;
+    }
+
+    public boolean exportsAllFunctions() {
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlAttribute) {
+                    final IErlAttribute attr = (IErlAttribute) e;
+                    if (attr.getName().equals("compile")
+                            && attr.getValue().equals(
+                                    new OtpErlangAtom("export_all"))) {
+                        return true;
+                    }
+                }
+            }
+        } catch (final ErlModelException e) {
+        }
+        return false;
     }
 
 }

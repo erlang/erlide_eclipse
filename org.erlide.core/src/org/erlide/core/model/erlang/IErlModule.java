@@ -141,4 +141,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     boolean isOnIncludePath();
 
+    boolean exportsAllFunctions();
+
 }

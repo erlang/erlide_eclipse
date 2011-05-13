@@ -78,7 +78,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
     }
 
     public boolean isExported() {
-        return fExported;
+        return fExported || getModule().exportsAllFunctions();
     }
 
     public void setArity(final int i) {
