@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -45,7 +46,6 @@ import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.internal.CodeManager;
 import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.manager.BackendManager;
@@ -57,7 +57,6 @@ import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcCallback;
@@ -115,7 +114,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
                     "Can't create backend without runtime information");
         }
         runtime = new ErlRuntime(info.getNodeName() + "@"
-                + BackendUtil.getHost(), info.getCookie());
+                + RuntimeInfo.getHost(), info.getCookie());
         this.data = data;
         codeManager = new CodeManager(this);
 
@@ -564,7 +563,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
                     }
                     name = name.substring(0, name.length() - 5);
                     try {
-                        CoreUtil.loadModuleViaInput(this, project, name);
+                        Backend.loadModuleViaInput(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();
                     } catch (final IOException e) {
@@ -875,5 +874,28 @@ public abstract class Backend implements RpcCallSite, IDisposable,
 
     public ErlangDebugTarget getDebugTarget() {
         return debugTarget;
+    }
+
+    public static void loadModuleViaInput(final Backend b,
+            final IProject project, final String module)
+            throws ErlModelException, IOException {
+        final IErlProject p = CoreScope.getModel().findProject(project);
+        final IPath outputLocation = project.getFolder(p.getOutputLocation())
+                .getFile(module + ".beam").getLocation();
+        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,
+                outputLocation);
+        if (bin != null) {
+            final String fmt = "code:load_binary(%s, %s, %s).\n";
+            final StringBuffer strBin = new StringBuffer();
+            strBin.append("<<");
+            for (final byte c : bin.binaryValue()) {
+                strBin.append(c).append(',');
+            }
+            strBin.deleteCharAt(strBin.length() - 1);
+            strBin.append(">>");
+            final String cmd = String.format(fmt, module, module,
+                    strBin.toString());
+            b.input(cmd);
+        }
     }
 }

@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
@@ -66,7 +65,7 @@ public class InternalErlideBuilder {
                     b.call("erlide_builder", "load", "ao", module,
                             b.doLoadOnAllNodes());
                 } else {
-                    CoreUtil.loadModuleViaInput(b, project, module);
+                    Backend.loadModuleViaInput(b, project, module);
                 }
                 backendManager.moduleLoaded(b, project, module);
             }

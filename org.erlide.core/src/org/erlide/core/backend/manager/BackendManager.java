@@ -37,7 +37,6 @@ import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.CodeBundle.CodeContext;
 import org.erlide.core.backend.ErlideBackendVisitor;
-import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.backend.internal.EpmdWatchJob;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -262,7 +261,7 @@ public final class BackendManager implements IEpmdListener {
                     .entrySet()) {
                 for (final Backend be : e.getValue()) {
                     final String bnode = be.getRuntimeInfo().getNodeName();
-                    if (BackendUtil.buildLocalNodeName(bnode, true)
+                    if (RuntimeInfo.buildLocalNodeName(bnode, true)
                             .equals(node)) {
                         removeExecutionBackend(e.getKey(), be);
                         break;
