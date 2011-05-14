@@ -18,7 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
-public class ErlideBuilder {
+public class InternalErlideBuilder {
 
     public static RpcFuture compileErl(final RpcCallSite backend,
             final IPath fn, final String outputdir,
