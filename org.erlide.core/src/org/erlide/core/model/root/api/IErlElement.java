@@ -241,4 +241,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     void clearCaches();
 
+    String toStringWithAncestors();
+
 }

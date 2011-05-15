@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.root.internal.ErlElement;
 
 /**
  * @see IErlModelStatus
@@ -207,7 +206,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 
             case ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST:
                 return Util
-                        .bind("element.doesNotExist", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
+                        .bind("element.doesNotExist", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.INDEX_OUT_OF_BOUNDS:
                 return Util.bind("status.indexOutOfBounds"); //$NON-NLS-1$
@@ -217,7 +216,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 
             case ErlModelStatusConstants.INVALID_DESTINATION:
                 return Util
-                        .bind("status.invalidDestination", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
+                        .bind("status.invalidDestination", fElements[0].toStringWithAncestors()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.INVALID_ELEMENT_TYPES:
                 final StringBuilder buff = new StringBuilder(
@@ -226,8 +225,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                     if (i > 0) {
                         buff.append(", "); //$NON-NLS-1$
                     }
-                    buff.append(((ErlElement) fElements[i])
-                            .toStringWithAncestors());
+                    buff.append((fElements[i]).toStringWithAncestors());
                 }
                 return buff.toString();
 
@@ -255,7 +253,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
                     return Util.bind("status.invalidSibling", fString); //$NON-NLS-1$
                 }
                 return Util
-                        .bind("status.invalidSibling", ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
+                        .bind("status.invalidSibling", (fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.IO_EXCEPTION:
                 return Util.bind("status.IOException"); //$NON-NLS-1$
@@ -284,7 +282,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
 
             case ErlModelStatusConstants.PATH_OUTSIDE_PROJECT:
                 return Util
-                        .bind("operation.pathOutsideProject", fString, ((ErlElement) fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
+                        .bind("operation.pathOutsideProject", fString, (fElements[0]).toStringWithAncestors()); //$NON-NLS-1$
 
             case ErlModelStatusConstants.READ_ONLY:
                 final IErlElement element = fElements[0];

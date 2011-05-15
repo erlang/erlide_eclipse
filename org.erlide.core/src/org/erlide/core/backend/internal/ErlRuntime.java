@@ -37,7 +37,7 @@ public class ErlRuntime extends OtpNodeStatus {
 
     private final String peerName;
     private State state;
-    private OtpNode localNode = null;
+    private OtpNode localNode;
 
     public ErlRuntime(final String name, final String cookie) {
         state = State.DISCONNECTED;
@@ -45,7 +45,7 @@ public class ErlRuntime extends OtpNodeStatus {
             localNode = ErlRuntime.createOtpNode(cookie);
             localNode.registerStatusHandler(this);
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         peerName = name;

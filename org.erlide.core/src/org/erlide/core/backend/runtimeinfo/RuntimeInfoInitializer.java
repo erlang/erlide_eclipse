@@ -11,13 +11,12 @@ import java.util.List;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.erlide.core.backend.BackendCore;
 
 public class RuntimeInfoInitializer {
     RuntimeInfoManager runtimeInfoManager;
 
-    public RuntimeInfoInitializer() {
-        runtimeInfoManager = BackendCore.getRuntimeInfoManager();
+    public RuntimeInfoInitializer(final RuntimeInfoManager runtimeInfoManager) {
+        this.runtimeInfoManager = runtimeInfoManager;
     }
 
     /**

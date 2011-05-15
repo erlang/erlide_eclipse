@@ -13,7 +13,6 @@ package org.erlide.core.model.root.api;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.erlang.IErlModule;
 
 /**
  * <p>
@@ -84,22 +83,10 @@ public interface IWorkingCopy {
     void destroy();
 
     /**
-     * Returns the original element the specified working copy element was
-     * created from, or <code>null</code> if this is not a working copy element.
-     * 
-     * @param workingCopyElement
-     *            the specified working copy element
-     * @return the original element the specified working copy element was
-     *         created from, or <code>null</code> if this is not a working copy
-     *         element
-     */
-    IErlElement getOriginal(IErlElement workingCopyElement);
-
-    /**
      * Returns the original element this working copy was created from, or
      * <code>null</code> if this is not a working copy.
      */
-    IErlModule getOriginalElement();
+    IErlElement getOriginalElement();
 
     /**
      * Returns whether this working copy's original element's content has not
