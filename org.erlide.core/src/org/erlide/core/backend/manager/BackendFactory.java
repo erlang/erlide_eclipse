@@ -13,7 +13,6 @@ package org.erlide.core.backend.manager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.backend.internal.BackendUtils;
 import org.erlide.core.backend.internal.ExternalBackend;
 import org.erlide.core.backend.internal.InternalBackend;
@@ -93,7 +92,7 @@ public class BackendFactory {
         final RuntimeInfo info = RuntimeInfo.copy(
                 runtimeInfoManager.getErlideRuntime(), false);
         if (info != null) {
-            final String defLabel = BackendUtil.getLabelProperty();
+            final String defLabel = BackendFactory.getLabelProperty();
             if (defLabel != null) {
                 info.setNodeName(defLabel);
             } else {
@@ -104,6 +103,10 @@ public class BackendFactory {
             info.setCookie("erlide");
         }
         return info;
+    }
+
+    public static String getLabelProperty() {
+        return System.getProperty("erlide.label", null);
     }
 
 }

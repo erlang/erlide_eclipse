@@ -35,8 +35,4 @@ public final class BackendUtil {
         return v;
     }
 
-    public static String getLabelProperty() {
-        return System.getProperty("erlide.label", null);
-    }
-
 }
