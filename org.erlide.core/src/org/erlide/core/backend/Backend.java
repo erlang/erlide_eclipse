@@ -47,7 +47,6 @@ import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.internal.CodeManager;
-import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.manager.BackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
@@ -96,25 +95,25 @@ public abstract class Backend implements RpcCallSite, IDisposable,
     }
 
     private final RuntimeInfo info;
-    private final ErlRuntime runtime;
+    private final IErlRuntime runtime;
     private String erlangVersion;
     private OtpMbox eventBox;
     private boolean stopped = false;
     private EventDaemon eventDaemon;
     private BackendShellManager shellManager;
-    private final CodeManager codeManager;
+    private final ICodeManager codeManager;
     protected ILaunch launch;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
 
-    public Backend(final BackendData data) throws BackendException {
+    public Backend(final BackendData data, final IErlRuntime runtime)
+            throws BackendException {
         info = data.getRuntimeInfo();
         if (info == null) {
             throw new BackendException(
                     "Can't create backend without runtime information");
         }
-        runtime = new ErlRuntime(info.getNodeName() + "@"
-                + RuntimeInfo.getHost(), info.getCookie());
+        this.runtime = runtime;
         this.data = data;
         codeManager = new CodeManager(this);
 

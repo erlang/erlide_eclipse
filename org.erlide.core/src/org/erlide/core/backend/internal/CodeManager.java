@@ -24,13 +24,14 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.BeamUtil;
 import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.backend.ICodeManager;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-public class CodeManager {
+public class CodeManager implements ICodeManager {
 
     private final Backend backend;
 

@@ -12,6 +12,7 @@ package org.erlide.core.backend.internal;
 
 import java.io.IOException;
 
+import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
@@ -25,7 +26,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class ErlRuntime extends OtpNodeStatus {
+public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private static final int MAX_RETRIES = 20;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));

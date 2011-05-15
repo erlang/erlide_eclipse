@@ -13,7 +13,9 @@ package org.erlide.core.backend.manager;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.internal.ErlRuntime;
 import org.erlide.core.backend.internal.ExternalBackend;
 import org.erlide.core.backend.internal.InternalBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -49,8 +51,11 @@ public class BackendFactory {
 
         final Backend b;
         try {
-            b = data.getLaunch() == null ? new InternalBackend(data)
-                    : new ExternalBackend(data);
+            final RuntimeInfo info = data.getRuntimeInfo();
+            final IErlRuntime runtime = new ErlRuntime(info.getNodeName() + "@"
+                    + RuntimeInfo.getHost(), info.getCookie());
+            b = data.getLaunch() == null ? new InternalBackend(data, runtime)
+                    : new ExternalBackend(data, runtime);
             b.launchRuntime();
             b.initialize();
             return b;
