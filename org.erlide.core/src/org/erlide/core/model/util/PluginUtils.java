@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.model.root.api.IErlProject;
 
 /**

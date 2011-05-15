@@ -1,4 +1,4 @@
-package org.erlide.core.backend.internal;
+package org.erlide.core.backend;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,10 +10,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.SourcePathProvider;
+import org.erlide.core.common.Util;
 import org.erlide.jinterface.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 
 public class BackendUtils {
@@ -123,6 +125,17 @@ public class BackendUtils {
             result.addAll(getExtraSourcePathsForModel(project));
         }
         return result;
+    }
+
+    public static OtpErlangObject ok(final OtpErlangObject v0) {
+        if (!(v0 instanceof OtpErlangTuple)) {
+            return v0;
+        }
+        final OtpErlangTuple v = (OtpErlangTuple) v0;
+        if (Util.isOk(v)) {
+            return v.elementAt(1);
+        }
+        return v;
     }
 
 }

@@ -70,7 +70,7 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.model.root.api.IErlModel;

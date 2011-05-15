@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.internal.BackendUtil;
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
@@ -28,7 +28,7 @@ public class ErlideDebug {
             final boolean showSystemProcesses, final boolean showErlideProcesses) {
         OtpErlangList procs = null;
         try {
-            procs = (OtpErlangList) BackendUtil.ok(backend
+            procs = (OtpErlangList) BackendUtils.ok(backend
                     .call("erlide_debug", "processes", "oo",
                             showSystemProcesses, showErlideProcesses));
         } catch (final RpcException e) {

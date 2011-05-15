@@ -3,7 +3,7 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
