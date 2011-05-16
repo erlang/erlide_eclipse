@@ -20,10 +20,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.backend.BeamUtil;
-import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeManager;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
@@ -38,14 +36,14 @@ public class CodeManager implements ICodeManager {
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
 
-    private final List<CodeBundle> registeredBundles;
+    private final List<ICodeBundle> registeredBundles;
 
     // only to be called by ErlideBackend
     public CodeManager(final Backend b) {
         backend = b;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
-        registeredBundles = new ArrayList<CodeBundle>();
+        registeredBundles = new ArrayList<ICodeBundle>();
     }
 
     public void addPath(final boolean usePathZ, final String path) {
@@ -67,18 +65,18 @@ public class CodeManager implements ICodeManager {
     }
 
     public void reRegisterBundles() {
-        for (final CodeBundle p : registeredBundles) {
+        for (final ICodeBundle p : registeredBundles) {
             registerBundle(p);
         }
     }
 
-    public void register(final CodeBundle b) {
+    public void register(final ICodeBundle b) {
         registeredBundles.add(b);
         registerBundle(b);
     }
 
     public void unregister(final Bundle b) {
-        final CodeBundle p = findBundle(b);
+        final ICodeBundle p = findBundle(b);
         if (p == null) {
             return;
         }
@@ -100,7 +98,7 @@ public class CodeManager implements ICodeManager {
         return BackendHelper.loadBeam(backend, moduleName, bin);
     }
 
-    private void loadPluginCode(final CodeBundle p) {
+    private void loadPluginCode(final ICodeBundle p) {
 
         final Bundle b = p.getBundle();
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
@@ -186,7 +184,7 @@ public class CodeManager implements ICodeManager {
         return false;
     }
 
-    private void registerBundle(final CodeBundle p) {
+    private void registerBundle(final ICodeBundle p) {
         final String externalPath = System.getProperty(p.getBundle()
                 .getSymbolicName() + ".ebin");
         if (externalPath != null) {
@@ -227,8 +225,8 @@ public class CodeManager implements ICodeManager {
         }
     }
 
-    private CodeBundle findBundle(final Bundle b) {
-        for (final CodeBundle p : registeredBundles) {
+    private ICodeBundle findBundle(final Bundle b) {
+        for (final ICodeBundle p : registeredBundles) {
             if (p.getBundle() == b) {
                 return p;
             }
@@ -247,7 +245,7 @@ public class CodeManager implements ICodeManager {
         return null;
     }
 
-    private void unloadPluginCode(final CodeBundle p) {
+    private void unloadPluginCode(final ICodeBundle p) {
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 

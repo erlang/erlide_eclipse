@@ -1,4 +1,4 @@
-package org.erlide.core.services.builder;
+package org.erlide.core.services.builder.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -19,7 +19,9 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.services.builder.internal.BuilderMessages;
+import org.erlide.core.services.builder.DialyzerPreferences;
+import org.erlide.core.services.builder.DialyzerUtils;
+import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.jinterface.ErlLogger;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {

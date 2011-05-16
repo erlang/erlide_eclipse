@@ -14,6 +14,10 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 
+/**
+ * @noextend This class is not intended to be subclassed by clients.
+ * @noinstantiate This class is not intended to be instantiated by clients.
+ */
 public class GenericBackendData {
 
     protected ILaunch launch;

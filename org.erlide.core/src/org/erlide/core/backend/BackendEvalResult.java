@@ -12,7 +12,7 @@ package org.erlide.core.backend;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
-public class BackendEvalResult {
+public final class BackendEvalResult {
 
     private boolean ok;
 

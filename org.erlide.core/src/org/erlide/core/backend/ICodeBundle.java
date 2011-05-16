@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.erlide.core.common.Tuple;
 import org.osgi.framework.Bundle;
 
-public interface CodeBundle {
+public interface ICodeBundle {
 
     public static enum CodeContext {
         ANY, COMMON, BUILDER, IDE, DEBUGGER

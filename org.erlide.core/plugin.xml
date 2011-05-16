@@ -24,7 +24,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.services.builder.ErlangBuilder">
+               class="org.erlide.core.services.builder.internal.ErlangBuilder">
          </run>
       </builder>
    </extension>
@@ -34,7 +34,7 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.erlide.core.services.builder.DialyzerBuilder">
+               class="org.erlide.core.services.builder.internal.DialyzerBuilder">
          </run></builder>
    </extension>
    <extension

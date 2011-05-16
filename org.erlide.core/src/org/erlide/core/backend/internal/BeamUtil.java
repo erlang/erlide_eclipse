@@ -1,4 +1,4 @@
-package org.erlide.core.backend;
+package org.erlide.core.backend.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 

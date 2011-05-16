@@ -11,7 +11,7 @@
 package org.erlide.core.backend;
 
 
-public interface ErlideBackendVisitor {
+public interface IErlideBackendVisitor {
 
     void visit(IBackend b);
 

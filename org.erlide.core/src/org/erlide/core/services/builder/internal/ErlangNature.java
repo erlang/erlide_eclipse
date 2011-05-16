@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.services.builder.DialyzerBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 /**

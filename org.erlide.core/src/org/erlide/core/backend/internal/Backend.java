@@ -44,9 +44,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendHelper;
-import org.erlide.core.backend.BeamUtil;
-import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.ICodeManager;
@@ -469,7 +467,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         BackendCore.getBackendManager().addBackendListener(getEventDaemon());
     }
 
-    public void register(final CodeBundle bundle) {
+    public void register(final ICodeBundle bundle) {
         codeManager.register(bundle);
     }
 
@@ -850,7 +848,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (isDistributed()) {
             connect();
             final IBackendManager bm = BackendCore.getBackendManager();
-            for (final CodeBundle bb : bm.getCodeBundles().values()) {
+            for (final ICodeBundle bb : bm.getCodeBundles().values()) {
                 register(bb);
             }
             initErlang(data.isMonitored(), data.isManaged());

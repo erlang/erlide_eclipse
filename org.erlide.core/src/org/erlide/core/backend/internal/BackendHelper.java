@@ -1,8 +1,10 @@
-package org.erlide.core.backend;
+package org.erlide.core.backend.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.core.backend.BackendEvalResult;
+import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;

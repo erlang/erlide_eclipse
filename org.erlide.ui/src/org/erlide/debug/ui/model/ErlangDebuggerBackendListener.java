@@ -14,7 +14,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.IBackend;
@@ -27,7 +27,7 @@ import org.erlide.ui.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 
-public class ErlangDebuggerBackendListener implements BackendListener {
+public class ErlangDebuggerBackendListener implements IBackendListener {
     public void runtimeRemoved(final IBackend backend) {
     }
 

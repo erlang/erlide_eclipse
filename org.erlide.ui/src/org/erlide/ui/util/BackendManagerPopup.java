@@ -15,14 +15,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
-public class BackendManagerPopup implements BackendListener {
+public class BackendManagerPopup implements IBackendListener {
 
-    private static final BackendListener fInstance = new BackendManagerPopup();
+    private static final IBackendListener fInstance = new BackendManagerPopup();
 
     private BackendManagerPopup() {
     }

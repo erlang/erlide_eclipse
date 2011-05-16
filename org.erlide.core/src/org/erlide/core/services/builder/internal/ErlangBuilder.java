@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.services.builder;
+package org.erlide.core.services.builder.internal;
 
 import java.util.Map;
 
@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.services.builder.ErlideBuilder;
 
 public class ErlangBuilder extends IncrementalProjectBuilder {
     @SuppressWarnings("rawtypes")

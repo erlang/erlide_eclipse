@@ -8,9 +8,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendListener;
-import org.erlide.core.backend.CodeBundle.CodeContext;
-import org.erlide.core.backend.ErlideBackendVisitor;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.ICodeBundle.CodeContext;
+import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.internal.CodeBundleImpl;
 import org.erlide.core.common.Tuple;
@@ -26,9 +26,9 @@ public interface IBackendManager {
 
     IBackend getIdeBackend();
 
-    void addBackendListener(final BackendListener listener);
+    void addBackendListener(final IBackendListener listener);
 
-    void removeBackendListener(final BackendListener listener);
+    void removeBackendListener(final IBackendListener listener);
 
     Collection<IBackend> getAllBackends();
 
@@ -36,7 +36,7 @@ public interface IBackendManager {
             final Collection<Tuple<String, CodeContext>> paths,
             final Tuple<String, String> init);
 
-    void forEachBackend(final ErlideBackendVisitor visitor);
+    void forEachBackend(final IErlideBackendVisitor visitor);
 
     void updateNodeStatus(final String host, final Collection<String> started,
             final Collection<String> stopped);

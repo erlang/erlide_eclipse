@@ -16,15 +16,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.backend.BeamUtil;
-import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.common.Tuple;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
 
-public class CodeBundleImpl implements CodeBundle {
+public class CodeBundleImpl implements ICodeBundle {
 
     private final Bundle bundle;
     private final Collection<Tuple<String, CodeContext>> paths;

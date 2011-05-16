@@ -44,7 +44,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.ErlideBackendVisitor;
+import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
@@ -232,7 +232,7 @@ public class ProcessListView extends ViewPart {
             ErlideProclist.processListInit(ideBackend);
         }
         BackendCore.getBackendManager().forEachBackend(
-                new ErlideBackendVisitor() {
+                new IErlideBackendVisitor() {
                     public void visit(final IBackend b) {
                         ErlideProclist.processListInit(b);
                     }

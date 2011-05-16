@@ -61,7 +61,7 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     void initErlang(final boolean monitor, final boolean watch);
 
-    void register(final CodeBundle bundle);
+    void register(final ICodeBundle bundle);
 
     void unregister(final Bundle b);
 

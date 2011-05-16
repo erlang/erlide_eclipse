@@ -32,10 +32,10 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendListener;
-import org.erlide.core.backend.CodeBundle;
-import org.erlide.core.backend.CodeBundle.CodeContext;
-import org.erlide.core.backend.ErlideBackendVisitor;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.ICodeBundle;
+import org.erlide.core.backend.ICodeBundle.CodeContext;
+import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.manager.BackendManagerLaunchListener;
 import org.erlide.core.backend.manager.IBackendFactory;
@@ -63,7 +63,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     private final Object ideBackendLock = new Object();
     private final Map<IProject, Set<IBackend>> executionBackends;
     private final Map<String, IBackend> buildBackends;
-    final List<BackendListener> listeners;
+    final List<IBackendListener> listeners;
     private final Map<Bundle, CodeBundleImpl> codeBundles;
 
     private final EpmdWatcher epmdWatcher;
@@ -151,11 +151,11 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         return ideBackend;
     }
 
-    public void addBackendListener(final BackendListener listener) {
+    public void addBackendListener(final IBackendListener listener) {
         listeners.add(listener);
     }
 
-    public void removeBackendListener(final BackendListener listener) {
+    public void removeBackendListener(final IBackendListener listener) {
         listeners.remove(listener);
     }
 
@@ -193,24 +193,24 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     public void addBundle(final Bundle b,
             final Collection<Tuple<String, CodeContext>> paths,
             final Tuple<String, String> init) {
-        final CodeBundle p = findBundle(b);
+        final ICodeBundle p = findBundle(b);
         if (p != null) {
             return;
         }
         final CodeBundleImpl pp = new CodeBundleImpl(b, paths, init);
         getCodeBundles().put(b, pp);
-        forEachBackend(new ErlideBackendVisitor() {
+        forEachBackend(new IErlideBackendVisitor() {
             public void visit(final IBackend bb) {
                 bb.register(pp);
             }
         });
     }
 
-    private CodeBundle findBundle(final Bundle b) {
+    private ICodeBundle findBundle(final Bundle b) {
         return getCodeBundles().get(b);
     }
 
-    public void forEachBackend(final ErlideBackendVisitor visitor) {
+    public void forEachBackend(final IErlideBackendVisitor visitor) {
         for (final IBackend b : getAllBackends()) {
             visitor.visit(b);
         }
@@ -287,7 +287,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         final Object[] copiedListeners = listeners.toArray();
         for (final Object element : copiedListeners) {
-            final BackendListener listener = (BackendListener) element;
+            final IBackendListener listener = (IBackendListener) element;
             switch (type) {
             case ADDED:
                 listener.runtimeAdded(b);

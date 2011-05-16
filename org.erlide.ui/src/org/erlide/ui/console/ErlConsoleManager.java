@@ -8,14 +8,14 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
-public class ErlConsoleManager implements IDisposable, BackendListener {
+public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<IBackend, IConsole> consoles;
     private final IConsoleManager conMan;
 

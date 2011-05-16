@@ -43,7 +43,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.internal.BackendHelper;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;

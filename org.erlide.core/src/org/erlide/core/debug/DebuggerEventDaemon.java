@@ -3,7 +3,7 @@ package org.erlide.core.debug;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
  * because the debugger can't be convinced to send erlide_jrpc events. The
  * handler is also hardcoded.
  */
-public class DebuggerEventDaemon implements BackendListener {
+public class DebuggerEventDaemon implements IBackendListener {
 
     private IBackend runtime;
     volatile boolean stopped = false;

@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.internal.BackendHelper;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
