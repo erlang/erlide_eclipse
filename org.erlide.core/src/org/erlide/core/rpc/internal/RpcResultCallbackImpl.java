@@ -11,7 +11,6 @@
 package org.erlide.core.rpc.internal;
 
 import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcHelper;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

@@ -14,14 +14,16 @@ import java.io.IOException;
 
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.RpcHelper;
+import org.erlide.core.rpc.IRpcHelper;
 import org.erlide.core.rpc.IRpcResultCallback;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.rpc.internal.RpcHelper;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
@@ -31,6 +33,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
     private static final Object connectLock = new Object();
+    private static final IRpcHelper rpcHelper = RpcHelper.getInstance();
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN
@@ -90,11 +93,11 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         }
     }
 
-    public void makeAsyncResultCall(final IRpcResultCallback cb, final String m,
-            final String f, final String signature, final Object[] args)
-            throws SignatureException {
+    public void makeAsyncResultCall(final IRpcResultCallback cb,
+            final String m, final String f, final String signature,
+            final Object[] args) throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        RpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
+        rpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
                 m, f, signature, args);
     }
 
@@ -102,7 +105,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         tryConnect();
-        return RpcHelper.sendRpcCall(localNode, peerName, false, gleader,
+        return rpcHelper.sendRpcCall(localNode, peerName, false, gleader,
                 module, fun, signature, args0);
     }
 
@@ -125,7 +128,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args)
             throws RpcException, SignatureException {
         tryConnect();
-        RpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout, gleader,
+        rpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout, gleader,
                 module, fun, signature, args);
     }
 
@@ -134,7 +137,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
         tryConnect();
-        final OtpErlangObject result = RpcHelper.rpcCall(localNode, peerName,
+        final OtpErlangObject result = rpcHelper.rpcCall(localNode, peerName,
                 false, gleader, module, fun, timeout, signature, args0);
         return result;
     }
@@ -150,7 +153,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         tryConnect();
-        RpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
+        rpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
                 signature, args0);
     }
 
@@ -212,6 +215,18 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
                 cookie);
         return node;
+    }
+
+    public void send(final OtpErlangPid pid, final Object msg)
+            throws RpcException, SignatureException {
+        tryConnect();
+        rpcHelper.send(localNode, pid, msg);
+    }
+
+    public void send(final String fullNodeName, final String name,
+            final Object msg) throws SignatureException, RpcException {
+        tryConnect();
+        rpcHelper.send(localNode, fullNodeName, name, msg);
     }
 
 }

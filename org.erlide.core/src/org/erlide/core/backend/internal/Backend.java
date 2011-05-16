@@ -67,12 +67,12 @@ import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcCallback;
 import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.core.rpc.IRpcHelper;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.IRpcCallback;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcHelper;
 import org.erlide.core.rpc.internal.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -214,9 +214,10 @@ public abstract class Backend implements IStreamListener, IBackend {
             return;
         }
         try {
-            RpcHelper.send(getNode(), pid, msg);
+            runtime.send(pid, msg);
         } catch (final SignatureException e) {
-            // shouldn't happen
+            ErlLogger.warn(e);
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
@@ -226,9 +227,10 @@ public abstract class Backend implements IStreamListener, IBackend {
             return;
         }
         try {
-            RpcHelper.send(getNode(), getFullNodeName(), name, msg);
+            runtime.send(getFullNodeName(), name, msg);
         } catch (final SignatureException e) {
-            // shouldn't happen
+            ErlLogger.warn(e);
+        } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
@@ -435,7 +437,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private static void setDefaultTimeout() {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
+            DEFAULT_TIMEOUT = IRpcHelper.INFINITY;
         } else {
             try {
                 DEFAULT_TIMEOUT = Integer.parseInt(t);

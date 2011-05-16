@@ -11,11 +11,12 @@
 package org.erlide.core.backend;
 
 import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.IRpcResultCallback;
+import org.erlide.core.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.SignatureException;
 
@@ -31,9 +32,9 @@ public interface IErlRuntime {
             final String f, final String signature, final Object[] args)
             throws SignatureException;
 
-    IRpcFuture makeAsyncCall(final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException, SignatureException;
+    IRpcFuture makeAsyncCall(final OtpErlangObject gleader,
+            final String module, final String fun, final String signature,
+            final Object... args0) throws RpcException, SignatureException;
 
     IRpcFuture makeAsyncCall(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException,
@@ -67,5 +68,11 @@ public interface IErlRuntime {
     boolean isAvailable();
 
     OtpNode getNode();
+
+    void send(OtpErlangPid pid, Object msg) throws SignatureException,
+            RpcException;
+
+    void send(String fullNodeName, String name, Object msg)
+            throws SignatureException, RpcException;
 
 }

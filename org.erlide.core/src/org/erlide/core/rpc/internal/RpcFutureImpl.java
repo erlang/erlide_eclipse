@@ -11,8 +11,8 @@
 package org.erlide.core.rpc.internal;
 
 import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.core.rpc.IRpcHelper;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcHelper;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -23,31 +23,33 @@ public class RpcFutureImpl implements IRpcFuture {
     private OtpErlangObject result = null;
     private final String env;
     private final boolean logCalls;
+    private final IRpcHelper helper;
 
     public RpcFutureImpl(final OtpMbox mbox, final String env,
-            final boolean logCalls) {
+            final boolean logCalls, final IRpcHelper helper) {
         this.mbox = mbox;
         this.env = env;
         this.logCalls = logCalls;
+        this.helper = helper;
     }
 
     public OtpErlangObject get() throws RpcException {
         if (isDone()) {
             if (logCalls) {
-                RpcHelper.debugLogCallArgs("call <- %s", result);
+                helper.debugLogCallArgs("call <- %s", result);
             }
             return result;
         }
-        return get(RpcHelper.INFINITY);
+        return get(IRpcHelper.INFINITY);
     }
 
     public OtpErlangObject get(final long timeout) throws RpcException {
         if (isDone()) {
             return result;
         }
-        result = RpcHelper.getRpcResult(mbox, timeout, env);
+        result = helper.getRpcResult(mbox, timeout, env);
         if (logCalls) {
-            RpcHelper.debugLogCallArgs("call <- %s", result);
+            helper.debugLogCallArgs("call <- %s", result);
         }
         return result;
     }
