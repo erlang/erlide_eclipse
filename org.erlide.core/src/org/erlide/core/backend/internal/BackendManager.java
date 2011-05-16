@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.manager;
+package org.erlide.core.backend.internal;
 
 import java.io.File;
 import java.util.Collection;
@@ -37,8 +37,9 @@ import org.erlide.core.backend.BackendListener;
 import org.erlide.core.backend.CodeBundle;
 import org.erlide.core.backend.CodeBundle.CodeContext;
 import org.erlide.core.backend.ErlideBackendVisitor;
-import org.erlide.core.backend.internal.CodeBundleImpl;
-import org.erlide.core.backend.internal.EpmdWatchJob;
+import org.erlide.core.backend.manager.BackendManagerLaunchListener;
+import org.erlide.core.backend.manager.IBackendFactory;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.root.api.IErlProject;
@@ -52,7 +53,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public final class BackendManager implements IEpmdListener {
+public final class BackendManager implements IEpmdListener, IBackendManager {
 
     public enum BackendEvent {
         ADDED, REMOVED, MODULE_LOADED
@@ -309,7 +310,7 @@ public final class BackendManager implements IEpmdListener {
             if (!extension.isValid()) {
                 continue;
             }
-            BackendCore.getBackendManager().addCodeBundle(extension);
+            addCodeBundle(extension);
         }
     }
 

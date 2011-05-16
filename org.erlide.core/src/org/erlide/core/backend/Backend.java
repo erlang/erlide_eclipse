@@ -47,7 +47,7 @@ import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.internal.CodeManager;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.debug.ErlangDebugHelper;
@@ -839,7 +839,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         // TODO managed = options.contains(BackendOptions.MANAGED);
         if (isDistributed()) {
             connect();
-            final BackendManager bm = BackendCore.getBackendManager();
+            final IBackendManager bm = BackendCore.getBackendManager();
             for (final CodeBundle bb : bm.getCodeBundles().values()) {
                 register(bb);
             }

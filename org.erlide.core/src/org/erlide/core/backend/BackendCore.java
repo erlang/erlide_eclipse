@@ -7,15 +7,16 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.internal.BackendFactory;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.internal.BackendManager;
 import org.erlide.core.backend.manager.IBackendFactory;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 
 public class BackendCore {
 
     private static IBackendFactory backendFactory;
     private static RuntimeInfoManager runtimeInfoManager;
-    private static BackendManager backendManager;
+    private static IBackendManager backendManager;
 
     public static final RuntimeInfoManager getRuntimeInfoManager() {
         if (runtimeInfoManager == null) {
@@ -31,7 +32,7 @@ public class BackendCore {
         return backendFactory;
     }
 
-    public static final BackendManager getBackendManager() {
+    public static final IBackendManager getBackendManager() {
         if (backendManager == null) {
             backendManager = new BackendManager();
         }

@@ -16,10 +16,10 @@ import org.eclipse.debug.core.ILaunchesListener2;
 
 public class BackendManagerLaunchListener implements ILaunchesListener2 {
 
-    private final BackendManager backendManager;
+    private final IBackendManager backendManager;
     private final ILaunchManager launchManager;
 
-    public BackendManagerLaunchListener(final BackendManager backendManager,
+    public BackendManagerLaunchListener(final IBackendManager backendManager,
             final ILaunchManager launchManager) {
         this.backendManager = backendManager;
         this.launchManager = launchManager;
