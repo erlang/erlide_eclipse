@@ -8,22 +8,20 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.manager;
+package org.erlide.core.backend.internal;
 
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.IErlRuntime;
-import org.erlide.core.backend.internal.ErlRuntime;
-import org.erlide.core.backend.internal.ExternalBackend;
-import org.erlide.core.backend.internal.InternalBackend;
+import org.erlide.core.backend.manager.IBackendFactory;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.ErlLogger;
 
-public class BackendFactory {
+public class BackendFactory implements IBackendFactory {
 
     final RuntimeInfoManager runtimeInfoManager;
 

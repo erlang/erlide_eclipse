@@ -1,4 +1,4 @@
-package org.erlide.core.backend.manager;
+package org.erlide.core.backend.internal;
 
 import org.erlide.core.IService;
 

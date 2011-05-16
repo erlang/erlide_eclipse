@@ -4,8 +4,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.erlide.core.backend.internal.BackendService;
 import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.manager.BackendService;
 
 public class CoreInjector {
 

@@ -69,7 +69,7 @@ public final class BackendManager implements IEpmdListener {
     private final Set<Backend> allBackends;
     private final EpmdWatchJob epmdWatcherJob;
     private final BackendManagerLaunchListener launchListener;
-    private final BackendFactory factory;
+    private final IBackendFactory factory;
 
     public BackendManager() {
         ideBackend = null;
