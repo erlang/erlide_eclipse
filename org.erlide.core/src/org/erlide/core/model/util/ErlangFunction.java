@@ -1,6 +1,5 @@
 package org.erlide.core.model.util;
 
-import org.erlide.core.internal.model.erlang.ErlFunction;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -85,11 +84,25 @@ public class ErlangFunction {
     }
 
     public String getNameWithParameters() {
-        return ErlFunction.getNameWithParameters(name, arity);
+        return ErlangFunction.getNameWithParameters(name, arity);
     }
 
     public OtpErlangTuple getNameArityTuple() {
         return new OtpErlangTuple(new OtpErlangObject[] {
                 new OtpErlangAtom(name), new OtpErlangLong(arity) });
+    }
+
+    public static String getNameWithParameters(final String name,
+            final int arity) {
+        final StringBuilder b = new StringBuilder();
+        b.append(name).append('(');
+        for (int i = 0; i < arity; i++) {
+            b.append('_');
+            if (i < arity - 1) {
+                b.append(", ");
+            }
+        }
+        b.append(')');
+        return b.toString();
     }
 }

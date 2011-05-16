@@ -34,8 +34,6 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.internal.services.builder.BuildNotifier;
-import org.erlide.core.internal.services.builder.BuilderMessages;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.jinterface.ErlLogger;

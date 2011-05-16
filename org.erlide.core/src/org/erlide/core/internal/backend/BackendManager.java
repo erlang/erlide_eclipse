@@ -32,11 +32,11 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeBundle.CodeContext;
 import org.erlide.core.backend.IErlideBackendVisitor;
-import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.manager.BackendManagerLaunchListener;
 import org.erlide.core.backend.manager.IBackendFactory;
 import org.erlide.core.backend.manager.IBackendManager;
@@ -64,7 +64,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     private final Map<IProject, Set<IBackend>> executionBackends;
     private final Map<String, IBackend> buildBackends;
     final List<IBackendListener> listeners;
-    private final Map<Bundle, CodeBundleImpl> codeBundles;
+    private final Map<Bundle, ICodeBundle> codeBundles;
 
     private final EpmdWatcher epmdWatcher;
     private final Set<IBackend> allBackends;
@@ -386,7 +386,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         epmdWatcherJob.stop();
     }
 
-    public Map<Bundle, CodeBundleImpl> getCodeBundles() {
+    public Map<Bundle, ICodeBundle> getCodeBundles() {
         return codeBundles;
     }
 }

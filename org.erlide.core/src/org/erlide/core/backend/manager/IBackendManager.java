@@ -8,12 +8,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeBundle.CodeContext;
 import org.erlide.core.backend.IErlideBackendVisitor;
-import org.erlide.core.backend.IBackend;
 import org.erlide.core.common.Tuple;
-import org.erlide.core.internal.backend.CodeBundleImpl;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.osgi.framework.Bundle;
@@ -66,6 +66,6 @@ public interface IBackendManager {
 
     void dispose();
 
-    Map<Bundle, CodeBundleImpl> getCodeBundles();
+    Map<Bundle, ICodeBundle> getCodeBundles();
 
 }
