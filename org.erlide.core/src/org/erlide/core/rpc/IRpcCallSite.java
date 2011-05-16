@@ -32,7 +32,7 @@ public interface IRpcCallSite {
     IRpcFuture async_call(final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
-    void async_call_cb(final RpcCallback cb, final String m, final String f,
+    void async_call_cb(final IRpcCallback cb, final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
     void cast(final String m, final String f, final String signature,

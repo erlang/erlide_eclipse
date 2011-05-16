@@ -70,10 +70,10 @@ import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcCallback;
+import org.erlide.core.rpc.IRpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcHelper;
-import org.erlide.core.rpc.RpcResultImpl;
+import org.erlide.core.rpc.internal.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
@@ -159,7 +159,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    public void async_call_cb(final RpcCallback cb, final String m,
+    public void async_call_cb(final IRpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
         try {

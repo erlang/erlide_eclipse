@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.rpc;
 
+import org.erlide.core.rpc.internal.RpcFutureImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.TypeConverter;
 
@@ -338,7 +339,7 @@ public final class RpcHelper {
     }
 
     public static void makeAsyncCbCall(final OtpNode node, final String peer,
-            final RpcCallback cb, final int timeout,
+            final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws SignatureException {

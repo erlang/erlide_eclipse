@@ -13,7 +13,7 @@ package org.erlide.core.backend.internal;
 import java.io.IOException;
 
 import org.erlide.core.backend.IErlRuntime;
-import org.erlide.core.rpc.RpcCallback;
+import org.erlide.core.rpc.IRpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.RpcHelper;
@@ -113,14 +113,14 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 args0);
     }
 
-    public void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+    public void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException, SignatureException {
         makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
                 signature, args);
     }
 
-    public void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+    public void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws RpcException, SignatureException {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
-import org.erlide.core.rpc.RpcCallback;
+import org.erlide.core.rpc.IRpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.IRpcResultCallback;
@@ -39,11 +39,11 @@ public interface IErlRuntime {
             final String signature, final Object... args0) throws RpcException,
             SignatureException;
 
-    void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+    void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException, SignatureException;
 
-    void makeAsyncCbCall(final RpcCallback cb, final int timeout,
+    void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws RpcException, SignatureException;
