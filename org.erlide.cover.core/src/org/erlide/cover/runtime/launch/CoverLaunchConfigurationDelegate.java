@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
@@ -19,8 +19,9 @@ import org.erlide.cover.core.CoverRunner;
 public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
     @Override
-    public Backend doLaunch(final ILaunchConfiguration config, final String mode,
-            final ILaunch launch, final IProgressMonitor monitor) {
+    public IBackend doLaunch(final ILaunchConfiguration config,
+            final String mode, final ILaunch launch,
+            final IProgressMonitor monitor) {
 
         CoverLaunchData coverData;
         try {

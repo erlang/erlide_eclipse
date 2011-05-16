@@ -13,7 +13,7 @@ package org.erlide.core.rpc;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public class RpcFutureImpl implements RpcFuture {
+public class RpcFutureImpl implements IRpcFuture {
 
     private final OtpMbox mbox;
     private OtpErlangObject result = null;

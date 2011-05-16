@@ -28,8 +28,8 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleListener;
 import org.eclipse.ui.console.IConsoleView;
-import org.erlide.core.backend.Backend;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
 
@@ -64,9 +64,9 @@ public class ConsoleRemoveLaunchAction extends Action implements
     public ConsoleRemoveLaunchAction(final ErlangConsole console) {
         this();
         fConsole = console;
-        final RpcCallSite backend = console.getBackend();
-        if (backend instanceof Backend) {
-            final Backend eb = (Backend) backend;
+        final IRpcCallSite backend = console.getBackend();
+        if (backend instanceof IBackend) {
+            final IBackend eb = (IBackend) backend;
             fLaunch = eb.getLaunch();
         }
         update();
@@ -145,9 +145,9 @@ public class ConsoleRemoveLaunchAction extends Action implements
         final IConsole console = fConsoleView.getConsole();
         if (console instanceof ErlangConsole) {
             final ErlangConsole pconsole = (ErlangConsole) console;
-            final RpcCallSite backend = pconsole.getBackend();
-            if (backend instanceof Backend) {
-                final Backend eb = (Backend) backend;
+            final IRpcCallSite backend = pconsole.getBackend();
+            if (backend instanceof IBackend) {
+                final IBackend eb = (IBackend) backend;
                 return eb.getLaunch();
             }
         }

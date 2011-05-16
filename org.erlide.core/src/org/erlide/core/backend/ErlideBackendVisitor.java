@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
+
 public interface ErlideBackendVisitor {
 
-    void visit(Backend b);
+    void visit(IBackend b);
 
 }

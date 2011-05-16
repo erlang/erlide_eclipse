@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.backend.internal;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,15 +41,24 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendData;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.BeamUtil;
+import org.erlide.core.backend.CodeBundle;
+import org.erlide.core.backend.ErlDebugConstants;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.ICodeManager;
+import org.erlide.core.backend.IErlRuntime;
+import org.erlide.core.backend.InitialCall;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.internal.CodeManager;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.IDisposable;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
@@ -57,13 +66,13 @@ import org.erlide.core.debug.ErlideDebug;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.core.rpc.IRpcResult;
+import org.erlide.core.rpc.IRpcResultCallback;
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.rpc.RpcHelper;
-import org.erlide.core.rpc.RpcResult;
-import org.erlide.core.rpc.RpcResultCallback;
 import org.erlide.core.rpc.RpcResultImpl;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
@@ -84,8 +93,7 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
-public abstract class Backend implements RpcCallSite, IDisposable,
-        IStreamListener {
+public abstract class Backend implements IStreamListener, IBackend {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
@@ -120,16 +128,16 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         launch = data.getLaunch();
     }
 
-    public RpcCallSite getCallSite() {
+    public IRpcCallSite getCallSite() {
         return this;
     }
 
-    public RpcResult call_noexception(final String m, final String f,
+    public IRpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
         return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
-    public RpcResult call_noexception(final int timeout, final String m,
+    public IRpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
             final OtpErlangObject result = runtime.makeCall(timeout, m, f,
@@ -142,7 +150,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         }
     }
 
-    public RpcFuture async_call(final String m, final String f,
+    public IRpcFuture async_call(final String m, final String f,
             final String signature, final Object... args) throws RpcException {
         try {
             return runtime.makeAsyncCall(m, f, signature, args);
@@ -161,7 +169,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         }
     }
 
-    public void async_call_result(final RpcResultCallback cb, final String m,
+    public void async_call_result(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
         try {
@@ -562,7 +570,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
                     }
                     name = name.substring(0, name.length() - 5);
                     try {
-                        Backend.loadModuleViaInput(this, project, name);
+                        loadModuleViaInput(this, project, name);
                     } catch (final ErlModelException e) {
                         e.printStackTrace();
                     } catch (final IOException e) {
@@ -875,7 +883,7 @@ public abstract class Backend implements RpcCallSite, IDisposable,
         return debugTarget;
     }
 
-    public static void loadModuleViaInput(final Backend b,
+    public static void loadModuleViaInput(final IBackend b,
             final IProject project, final String module)
             throws ErlModelException, IOException {
         final IErlProject p = CoreScope.getModel().findProject(project);

@@ -47,7 +47,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
@@ -623,7 +623,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final ErlangEditor erlangEditor = (ErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
-            final RpcCallSite backend = BackendCore.getBackendManager()
+            final IRpcCallSite backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();

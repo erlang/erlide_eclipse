@@ -121,7 +121,7 @@ import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.api.ISourceReference;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
@@ -2212,7 +2212,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection aSelection, final boolean hasChanged) {
-            final RpcCallSite ideBackend = BackendCore.getBackendManager()
+            final IRpcCallSite ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
 

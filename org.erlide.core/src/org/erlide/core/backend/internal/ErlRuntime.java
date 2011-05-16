@@ -15,9 +15,9 @@ import java.io.IOException;
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.RpcHelper;
-import org.erlide.core.rpc.RpcResultCallback;
+import org.erlide.core.rpc.IRpcResultCallback;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -90,7 +90,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         }
     }
 
-    public void makeAsyncResultCall(final RpcResultCallback cb, final String m,
+    public void makeAsyncResultCall(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object[] args)
             throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
@@ -98,7 +98,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 m, f, signature, args);
     }
 
-    public RpcFuture makeAsyncCall(final OtpErlangObject gleader,
+    public IRpcFuture makeAsyncCall(final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         tryConnect();
@@ -106,7 +106,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 module, fun, signature, args0);
     }
 
-    public RpcFuture makeAsyncCall(final String module, final String fun,
+    public IRpcFuture makeAsyncCall(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException,
             SignatureException {
         return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,

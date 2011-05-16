@@ -25,7 +25,7 @@ import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.internal.SourceRange;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -323,7 +323,7 @@ public class ModelUtils {
         return new String[] { "MODULE", "LINE", "FILE" };
     }
 
-    public static ISourceRange findVariable(final RpcCallSite backend,
+    public static ISourceRange findVariable(final IRpcCallSite backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,

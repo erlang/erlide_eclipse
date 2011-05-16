@@ -24,10 +24,10 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.common.PreferencesUtils;
@@ -98,7 +98,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @Override
-    protected Backend doLaunch(final ILaunchConfiguration config,
+    protected IBackend doLaunch(final ILaunchConfiguration config,
             final String amode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
 
@@ -126,7 +126,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @Override
-    protected void postLaunch(final String amode, final Backend backend,
+    protected void postLaunch(final String amode, final IBackend backend,
             final IProgressMonitor monitor) {
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
@@ -167,7 +167,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     private void initDebugger(final IProgressMonitor monitor,
-            final Backend backend) {
+            final IBackend backend) {
 
         // TODO do we do this like this?
 
@@ -202,7 +202,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     private void startMonitorJob(final IProgressMonitor monitor,
-            final Backend backend) {
+            final IBackend backend) {
 
         // TODO do this in a job
 

@@ -23,15 +23,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.common.CharOperation;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.root.api.ErlModelException;
-
 
 public final class CoreUtil {
     /**
@@ -208,7 +207,7 @@ public final class CoreUtil {
     private CoreUtil() {
     }
 
-    public static Backend getBuildOrIdeBackend(final IProject project) {
+    public static IBackend getBuildOrIdeBackend(final IProject project) {
         final IBackendManager backendManager = BackendCore.getBackendManager();
         if (project != null) {
             try {

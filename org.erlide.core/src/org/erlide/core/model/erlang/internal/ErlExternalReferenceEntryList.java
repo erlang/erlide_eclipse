@@ -18,7 +18,7 @@ import org.erlide.core.model.root.internal.ErlModel;
 import org.erlide.core.model.root.internal.ErlModelCache;
 import org.erlide.core.model.root.internal.Openable;
 import org.erlide.core.model.util.CoreUtil;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.jinterface.ErlLogger;
@@ -60,7 +60,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final RpcCallSite backend = CoreUtil
+            final IRpcCallSite backend = CoreUtil
                     .getBuildOrIdeBackend(getProject().getWorkspaceProject());
             final OtpErlangList pathVars = CoreScope.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
@@ -187,7 +187,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return false;
     }
 
-    public RpcCallSite getBackend() {
+    public IRpcCallSite getBackend() {
         return null;
     }
 

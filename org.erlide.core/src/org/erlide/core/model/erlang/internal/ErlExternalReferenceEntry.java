@@ -12,7 +12,7 @@ import org.erlide.core.model.root.api.IErlExternal;
 import org.erlide.core.model.root.api.IParent;
 import org.erlide.core.model.root.internal.Openable;
 import org.erlide.core.model.util.CoreUtil;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 
 import com.google.common.collect.Lists;
@@ -43,7 +43,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             // already done
             return true;
         }
-        final RpcCallSite backend = CoreUtil.getBuildOrIdeBackend(getProject()
+        final IRpcCallSite backend = CoreUtil.getBuildOrIdeBackend(getProject()
                 .getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlideOpen.getLibFiles(backend, entry);

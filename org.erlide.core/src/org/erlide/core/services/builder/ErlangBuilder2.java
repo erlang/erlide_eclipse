@@ -28,11 +28,11 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcEventHandler;
+import org.erlide.core.rpc.IRpcEventHandler;
 import org.erlide.core.rpc.RpcEventProcessor;
 import org.erlide.core.services.builder.internal.BuildNotifier;
 import org.erlide.core.services.builder.internal.BuilderMessages;
@@ -127,7 +127,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
                     args, project);
             final int n = resourcesToBuild.size();
             if (n > 0) {
-                final Backend backend = BackendCore.getBackendManager()
+                final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 if (backend == null) {
                     final String message = "No backend with the required "
@@ -222,7 +222,7 @@ public class ErlangBuilder2 extends IncrementalProjectBuilder {
         notifier = null;
     }
 
-    class BuildHandler implements RpcEventHandler {
+    class BuildHandler implements IRpcEventHandler {
 
         public boolean handleEvent(final OtpErlangObject msg) {
             notifier.checkCancel();

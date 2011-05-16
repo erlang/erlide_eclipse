@@ -24,7 +24,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.core.services.text.IndentResult;
 import org.erlide.jinterface.ErlLogger;
@@ -81,7 +81,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final RpcCallSite b = BackendCore.getBackendManager()
+            final IRpcCallSite b = BackendCore.getBackendManager()
                     .getIdeBackend();
             final int tabw = getTabWidthFromPreferences();
 

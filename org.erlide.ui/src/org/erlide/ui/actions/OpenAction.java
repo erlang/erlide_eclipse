@@ -35,7 +35,7 @@ import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.api.ISourceReference;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
@@ -139,7 +139,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final int offset = selection.getOffset();
         try {
             final IErlProject project = module.getProject();
@@ -174,7 +174,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static void openOpenResult(final ErlangEditor editor,
-            final IErlModule module, final RpcCallSite backend,
+            final IErlModule module, final IRpcCallSite backend,
             final int offset, final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException,
@@ -189,7 +189,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static Object findOpenResult(final ErlangEditor editor,
-            final IErlModule module, final RpcCallSite backend,
+            final IErlModule module, final IRpcCallSite backend,
             final IErlProject erlProject, final OpenResult res, final int offset)
             throws CoreException, RpcException, BackendException,
             ErlModelException, BadLocationException, OtpErlangRangeException {
@@ -234,7 +234,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     private static IErlElement findLocalCall(final IErlModule module,
-            final RpcCallSite backend, final IErlProject erlProject,
+            final IRpcCallSite backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
             final IErlModel.Scope scope) throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element)) {

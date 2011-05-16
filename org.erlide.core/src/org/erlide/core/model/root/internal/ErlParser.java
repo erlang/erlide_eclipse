@@ -37,7 +37,7 @@ import org.erlide.core.model.erlang.internal.ErlTypespec;
 import org.erlide.core.model.erlang.internal.ErlideNoparse;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlParser;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -72,7 +72,7 @@ public final class ErlParser implements IErlParser {
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
             final boolean useCaches) {
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null || module == null) {
             return false;
         }

@@ -22,7 +22,7 @@ import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.IErlFolder;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -64,7 +64,7 @@ public class DialyzerUtils {
                 final boolean fromSource = prefs.getFromSource();
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
                 MarkerUtils.removeDialyzerMarkers(project);
-                final RpcCallSite backend = BackendCore.getBackendManager()
+                final IRpcCallSite backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();

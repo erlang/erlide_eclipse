@@ -31,11 +31,11 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.services.builder.internal.BuildNotifier;
 import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
@@ -148,7 +148,7 @@ public class ErlideBuilder {
                         Integer.valueOf(n), resourcesToBuild.toString());
             }
             if (n > 0) {
-                final Backend backend = BackendCore.getBackendManager()
+                final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 if (backend == null) {
                     final String message = "No backend with the required "
@@ -160,7 +160,7 @@ public class ErlideBuilder {
                 backend.addProjectPath(project);
 
                 notifier.setProgressPerCompilationUnit(1.0f / n);
-                final Map<RpcFuture, IResource> results = new HashMap<RpcFuture, IResource>();
+                final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
                 for (final BuildResource bres : resourcesToBuild) {
                     notifier.checkCancel();
                     final IResource resource = bres.getResource();
@@ -168,14 +168,14 @@ public class ErlideBuilder {
                     if ("erl".equals(resource.getFileExtension())) {
                         final String outputDir = erlProject.getOutputLocation()
                                 .toString();
-                        final RpcFuture f = helper.startCompileErl(project,
+                        final IRpcFuture f = helper.startCompileErl(project,
                                 bres, outputDir, backend, compilerOptions,
                                 kind == IncrementalProjectBuilder.FULL_BUILD);
                         if (f != null) {
                             results.put(f, resource);
                         }
                     } else if ("yrl".equals(resource.getFileExtension())) {
-                        final RpcFuture f = helper.startCompileYrl(project,
+                        final IRpcFuture f = helper.startCompileYrl(project,
                                 resource, backend, compilerOptions);
                         if (f != null) {
                             results.put(f, resource);
@@ -186,14 +186,14 @@ public class ErlideBuilder {
                     }
                 }
 
-                final List<Entry<RpcFuture, IResource>> done = Lists
+                final List<Entry<IRpcFuture, IResource>> done = Lists
                         .newArrayList();
-                final List<Entry<RpcFuture, IResource>> waiting = Lists
+                final List<Entry<IRpcFuture, IResource>> waiting = Lists
                         .newArrayList(results.entrySet());
 
                 // TODO should use some kind of notification!
                 while (waiting.size() > 0) {
-                    for (final Entry<RpcFuture, IResource> result : waiting) {
+                    for (final Entry<IRpcFuture, IResource> result : waiting) {
                         notifier.checkCancel();
                         OtpErlangObject r;
                         try {

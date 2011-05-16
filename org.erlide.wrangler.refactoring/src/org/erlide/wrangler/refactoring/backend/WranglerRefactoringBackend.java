@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.internal.AbstractRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.RefactoringRpcMessage;
@@ -36,7 +36,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
     final static public String INSPECTION_MODULE = "wrangler_code_inspector";
     final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
 
-    protected RpcCallSite backend;
+    protected IRpcCallSite backend;
     public static final int UNLIMITED_TIMEOUT = Integer.MAX_VALUE;
 
     /**
@@ -45,7 +45,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * @param backend
      *            Erlide backend
      */
-    public WranglerRefactoringBackend(final RpcCallSite backend) {
+    public WranglerRefactoringBackend(final IRpcCallSite backend) {
         this.backend = backend;
     }
 
@@ -65,7 +65,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
     public IRpcMessage callWithParser(final IRpcMessage parser,
             final String functionName, final String signature,
             final Object... parameters) {
-        final RpcResult res = callWithoutParser(functionName, signature,
+        final IRpcResult res = callWithoutParser(functionName, signature,
                 parameters);
         parser.parse(res);
         return parser;
@@ -85,7 +85,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      */
     public AbstractRefactoringRpcMessage call(final String functionName,
             final String signature, final Object... parameters) {
-        final RpcResult res = callWithoutParser(functionName, signature,
+        final IRpcResult res = callWithoutParser(functionName, signature,
                 parameters);
         final AbstractRefactoringRpcMessage message = new RefactoringRpcMessage();
         message.parse(res);
@@ -103,7 +103,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            parameters array
      * @return raw RPC result
      */
-    public RpcResult callWithoutParser(final String functionName,
+    public IRpcResult callWithoutParser(final String functionName,
             final String signature, final Object... parameters) {
         /*
          * ErlLogger .info("Wrangler call: " + makeLogStr(functionName,
@@ -126,12 +126,12 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            parameters
      * @return RpcResultImpl object
      */
-    public RpcResult callWithoutParser(final int timeout,
+    public IRpcResult callWithoutParser(final int timeout,
             final String functionName, final String signature,
             final Object... parameters) {
         ErlLogger
                 .info("Wrangler call: " + makeLogStr(functionName, parameters));
-        RpcResult res;
+        IRpcResult res;
         if (timeout < 0) {
             res = backend.call_noexception(MODULE, functionName, signature,
                     parameters);
@@ -159,7 +159,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
             final String signature, final Object... parameters) {
         ErlLogger.info("Wrangler inspection call: "
                 + makeLogStr(functionName, parameters));
-        RpcResult res;
+        IRpcResult res;
         res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE,
                 functionName, signature, parameters);
         try {
@@ -186,11 +186,11 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      *            function parameters
      * @return RpcResultImpl wrapped result
      */
-    public RpcResult callInspection(final String functionName,
+    public IRpcResult callInspection(final String functionName,
             final String signature, final Object... parameters) {
         ErlLogger.info("Wrangler inspection call: "
                 + makeLogStr(functionName, parameters));
-        RpcResult res;
+        IRpcResult res;
         res = backend.call_noexception(UNLIMITED_TIMEOUT, INSPECTION_MODULE,
                 functionName, signature, parameters);
         return res;
@@ -202,11 +202,11 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * 
      * @return log list
      */
-    public RpcResult getLoggedInfo() {
-        final RpcResult res = backend.call_noexception("wrangler_error_logger",
+    public IRpcResult getLoggedInfo() {
+        final IRpcResult res = backend.call_noexception("wrangler_error_logger",
                 "get_logged_info", "");
         @SuppressWarnings("unused")
-        final RpcResult res2 = backend.call_noexception(
+        final IRpcResult res2 = backend.call_noexception(
                 "wrangler_error_logger", "remove_all_from_logger", "");
         return res;
     }

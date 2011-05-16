@@ -61,7 +61,7 @@ import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
@@ -621,7 +621,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             try {
-                RpcCallSite backend;
+                IRpcCallSite backend;
                 if (fProject != null) {
                     backend = backendManager.getBuildBackend(fProject);
                 } else {
@@ -639,7 +639,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkPlt(final String pltPath,
-                final IProgressMonitor monitor, final RpcCallSite backend)
+                final IProgressMonitor monitor, final IRpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);

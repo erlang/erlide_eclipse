@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.Util;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -28,7 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlideUtil {
 
-    public static boolean isAccessible(final RpcCallSite backend,
+    public static boolean isAccessible(final IRpcCallSite backend,
             final String localDir) {
         File f = null;
         try {

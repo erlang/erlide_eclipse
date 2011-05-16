@@ -24,7 +24,7 @@ import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
 import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.model.root.api.ISourceReference;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.jinterface.ErlLogger;
@@ -221,7 +221,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws RpcException {
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final OtpErlangObject r1 = ErlideIndent.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

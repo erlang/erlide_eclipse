@@ -6,9 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendListener;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 
 public class EventDaemon implements BackendListener {
 
-    private Backend runtime;
+    private IBackend runtime;
     volatile boolean stopped = false;
     List<EventHandler> handlers = new ArrayList<EventHandler>();
     final Object handlersLock = new Object();
@@ -26,7 +26,7 @@ public class EventDaemon implements BackendListener {
     final static boolean DEBUG = "true".equals(System
             .getProperty("erlide.event.daemon"));
 
-    public EventDaemon(final Backend b) {
+    public EventDaemon(final IBackend b) {
         runtime = b;
     }
 
@@ -40,10 +40,10 @@ public class EventDaemon implements BackendListener {
         stopped = true;
     }
 
-    public void runtimeAdded(final Backend b) {
+    public void runtimeAdded(final IBackend b) {
     }
 
-    public void runtimeRemoved(final Backend b) {
+    public void runtimeRemoved(final IBackend b) {
         if (b == runtime) {
             stop();
             runtime = null;
@@ -72,14 +72,14 @@ public class EventDaemon implements BackendListener {
         }
     }
 
-    public void moduleLoaded(final RpcCallSite backend, final IProject project,
+    public void moduleLoaded(final IRpcCallSite backend, final IProject project,
             final String moduleName) {
     }
 
     private final class HandlerJob implements Runnable {
-        private final Backend backend;
+        private final IBackend backend;
 
-        public HandlerJob(final Backend backend) {
+        public HandlerJob(final IBackend backend) {
             this.backend = backend;
         }
 

@@ -2,7 +2,7 @@ package org.erlide.core.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface RpcResultCallback {
+public interface IRpcResultCallback {
 
     public abstract void start(final OtpErlangObject msg);
 

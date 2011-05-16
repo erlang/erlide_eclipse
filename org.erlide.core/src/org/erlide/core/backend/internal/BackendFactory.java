@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.erlide.core.backend.internal;
 
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.backend.manager.IBackendFactory;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -29,25 +29,25 @@ public class BackendFactory implements IBackendFactory {
         this.runtimeInfoManager = runtimeInfoManager;
     }
 
-    public Backend createIdeBackend() {
+    public IBackend createIdeBackend() {
         ErlLogger.debug("Create ide backend");
         return createBackend(getIdeBackendData());
     }
 
-    public Backend createBuildBackend(final RuntimeInfo info) {
+    public IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
         return createBackend(getBuildBackendData(info));
     }
 
-    public Backend createBackend(final BackendData data) {
+    public IBackend createBackend(final BackendData data) {
         ErlLogger.debug("Create backend " + data.getNodeName());
         if (!data.isManaged() && !data.isAutostart()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
             return null;
         }
 
-        final Backend b;
+        final IBackend b;
         try {
             final RuntimeInfo info = data.getRuntimeInfo();
             final IErlRuntime runtime = new ErlRuntime(info.getNodeName() + "@"

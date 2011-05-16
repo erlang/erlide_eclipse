@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class RpcResultImpl implements RpcResult {
+public class RpcResultImpl implements IRpcResult {
 
     private OtpErlangObject fValue;
 
@@ -55,7 +55,7 @@ public class RpcResultImpl implements RpcResult {
         return "RPC:" + fOk + "=" + fValue.toString();
     }
 
-    public static RpcResult error(final String msg) {
+    public static IRpcResult error(final String msg) {
         final RpcResultImpl r = new RpcResultImpl(false);
         r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
                 new OtpErlangAtom(msg));

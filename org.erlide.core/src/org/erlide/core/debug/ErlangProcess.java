@@ -26,7 +26,7 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.core.model.util.ErlangFunction;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -52,7 +52,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private OtpErlangPid fCachedMetaPid = null;
 
-    private final RpcCallSite fBackend;
+    private final IRpcCallSite fBackend;
 
     private String fStatus;
 
@@ -64,7 +64,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     private ErlangFunctionCall fInitialCall;
     private boolean fTracing;
 
-    public ErlangProcess(final IDebugTarget target, final RpcCallSite backend,
+    public ErlangProcess(final IDebugTarget target, final IRpcCallSite backend,
             final OtpErlangPid pid) {
         super(target);
         fPid = pid;

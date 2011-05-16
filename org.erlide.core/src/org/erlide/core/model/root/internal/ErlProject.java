@@ -37,8 +37,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendUtils;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
@@ -59,7 +59,7 @@ import org.erlide.core.model.root.api.IOpenable;
 import org.erlide.core.model.root.internal.ErlModel.External;
 import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
@@ -175,7 +175,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addOtpExternals(final List<IErlElement> children) {
-        final Backend backend = CoreUtil.getBuildOrIdeBackend(fProject);
+        final IBackend backend = CoreUtil.getBuildOrIdeBackend(fProject);
         final String name = backend.getRuntimeInfo().getName();
         children.add(new ErlOtpExternalReferenceEntryList(this, name));
     }
@@ -187,7 +187,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
-                final RpcCallSite backend = CoreUtil
+                final IRpcCallSite backend = CoreUtil
                         .getBuildOrIdeBackend(fProject);
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());

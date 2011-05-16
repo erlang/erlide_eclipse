@@ -12,13 +12,13 @@ public final class RpcEventProcessor implements Runnable {
 
     private static final int TIMEOUT = 10000;
 
-    private final RpcEventHandler handler;
+    private final IRpcEventHandler handler;
     private final OtpMbox mbox;
     private volatile boolean terminated = true;
 
     private OtpErlangPid starter;
 
-    public RpcEventProcessor(final RpcEventHandler h, final OtpMbox mbox) {
+    public RpcEventProcessor(final IRpcEventHandler h, final OtpMbox mbox) {
         handler = h;
         this.mbox = mbox;
     }

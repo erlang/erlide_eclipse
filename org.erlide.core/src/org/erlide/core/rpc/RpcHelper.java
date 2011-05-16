@@ -98,7 +98,7 @@ public final class RpcHelper {
             final OtpErlangObject gleader, final String module,
             final String fun, final int timeout, final String signature,
             final Object... args0) throws RpcException, SignatureException {
-        final RpcFuture future = sendRpcCall(node, peer, logCalls, gleader,
+        final IRpcFuture future = sendRpcCall(node, peer, logCalls, gleader,
                 module, fun, signature, args0);
         OtpErlangObject result;
         result = future.get(timeout);
@@ -126,7 +126,7 @@ public final class RpcHelper {
      * Calls a function that supports sending progress reports back. The first
      * argument is implicit and is the pid where the reports are to be sent.
      */
-    public static void rpcCastWithProgress(final RpcResultCallback callback,
+    public static void rpcCastWithProgress(final IRpcResultCallback callback,
             final OtpNode node, final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
@@ -152,7 +152,7 @@ public final class RpcHelper {
      * @return
      * @throws RpcException
      */
-    public static synchronized RpcFuture sendRpcCall(final OtpNode node,
+    public static synchronized IRpcFuture sendRpcCall(final OtpNode node,
             final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
@@ -342,7 +342,7 @@ public final class RpcHelper {
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
             throws SignatureException {
-        final RpcFuture future = sendRpcCall(node, peer, false, gleader,
+        final IRpcFuture future = sendRpcCall(node, peer, false, gleader,
                 module, fun, signature, args);
         final Runnable target = new Runnable() {
             public void run() {

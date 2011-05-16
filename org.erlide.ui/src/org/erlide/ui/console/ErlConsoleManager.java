@@ -7,20 +7,20 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendListener;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlConsoleManager implements IDisposable, BackendListener {
-    private final Map<Backend, IConsole> consoles;
+    private final Map<IBackend, IConsole> consoles;
     private final IConsoleManager conMan;
 
     public ErlConsoleManager() {
-        consoles = new HashMap<Backend, IConsole>();
+        consoles = new HashMap<IBackend, IConsole>();
 
         final ConsolePlugin consolePlugin = ConsolePlugin.getDefault();
         conMan = consolePlugin.getConsoleManager();
@@ -28,7 +28,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
         BackendCore.getBackendManager().addBackendListener(this);
     }
 
-    public void runtimeAdded(final Backend b) {
+    public void runtimeAdded(final IBackend b) {
         if (b == null || !b.getRuntimeInfo().hasConsole()) {
             return;
         }
@@ -39,7 +39,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
         consoles.put(b, console);
     }
 
-    public void runtimeRemoved(final Backend b) {
+    public void runtimeRemoved(final IBackend b) {
         ErlLogger.debug("console REMOVED from " + b.getRuntimeInfo());
         final IConsole console = consoles.get(b);
         if (console == null) {
@@ -52,7 +52,7 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
         BackendCore.getBackendManager().removeBackendListener(this);
     }
 
-    public void moduleLoaded(final RpcCallSite backend, final IProject project,
+    public void moduleLoaded(final IRpcCallSite backend, final IProject project,
             final String moduleName) {
     }
 }

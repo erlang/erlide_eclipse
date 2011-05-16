@@ -15,7 +15,7 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
@@ -51,7 +51,7 @@ public class SimilarDetectionAction extends AbstractDuplicatesSearcherAction {
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
 
-        RpcResult result;
+        IRpcResult result;
         final String functionName = "sim_code_detection_eclipse";
         if (onlyInFile) {
 

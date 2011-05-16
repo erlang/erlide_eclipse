@@ -2,7 +2,7 @@ package org.erlide.core.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface RpcFuture {
+public interface IRpcFuture {
 
     public abstract OtpErlangObject get() throws RpcException;
 

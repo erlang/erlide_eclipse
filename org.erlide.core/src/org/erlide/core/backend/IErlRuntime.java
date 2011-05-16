@@ -12,8 +12,8 @@ package org.erlide.core.backend;
 
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcFuture;
-import org.erlide.core.rpc.RpcResultCallback;
+import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.core.rpc.IRpcResultCallback;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpNode;
@@ -27,15 +27,15 @@ public interface IErlRuntime {
 
     void remoteStatus(final String node, final boolean up, final Object info);
 
-    void makeAsyncResultCall(final RpcResultCallback cb, final String m,
+    void makeAsyncResultCall(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object[] args)
             throws SignatureException;
 
-    RpcFuture makeAsyncCall(final OtpErlangObject gleader, final String module,
+    IRpcFuture makeAsyncCall(final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException;
 
-    RpcFuture makeAsyncCall(final String module, final String fun,
+    IRpcFuture makeAsyncCall(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException,
             SignatureException;
 

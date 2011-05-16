@@ -14,7 +14,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -48,7 +48,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
             final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
             // TODO should it be the build backend?
-            final RpcCallSite backend = BackendCore.getBackendManager()
+            final IRpcCallSite backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             try {
                 final OtpErlangObject info = backend.call("erlide_backend",

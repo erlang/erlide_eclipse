@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * extend it locally.
  * 
  */
-public class RpcResultCallbackImpl implements RpcResultCallback {
+public class RpcResultCallbackImpl implements IRpcResultCallback {
     public void start(final OtpErlangObject msg) {
     }
 

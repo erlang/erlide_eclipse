@@ -12,13 +12,13 @@ package org.erlide.core.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public interface RpcCallSite {
+public interface IRpcCallSite {
 
     /**
      * typed RPC
      * 
      */
-    RpcResult call_noexception(final String m, final String f,
+    IRpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a);
 
     /**
@@ -26,10 +26,10 @@ public interface RpcCallSite {
      * 
      * @throws ConversionException
      */
-    RpcResult call_noexception(final int timeout, final String m,
+    IRpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args);
 
-    RpcFuture async_call(final String m, final String f,
+    IRpcFuture async_call(final String m, final String f,
             final String signature, final Object... args) throws RpcException;
 
     void async_call_cb(final RpcCallback cb, final String m, final String f,
@@ -55,7 +55,7 @@ public interface RpcCallSite {
             final String m, final String f, final String signature,
             final Object... a) throws RpcException;
 
-    public abstract void async_call_result(final RpcResultCallback cb,
+    public abstract void async_call_result(final IRpcResultCallback cb,
             final String m, final String f, final String signature,
             final Object... args) throws RpcException;
 

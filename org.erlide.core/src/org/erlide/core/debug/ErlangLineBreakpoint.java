@@ -24,7 +24,7 @@ import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangLineBreakpoint extends Breakpoint implements
@@ -95,7 +95,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     }
 
     private void createRequest(final int request) {
-        final RpcCallSite b = target.getBackend();
+        final IRpcCallSite b = target.getBackend();
         int line = -1;
         try {
             line = getLineNumber();

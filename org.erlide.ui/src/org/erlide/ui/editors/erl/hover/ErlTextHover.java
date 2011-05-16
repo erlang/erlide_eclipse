@@ -39,8 +39,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlangToolkit;
@@ -51,7 +51,7 @@ import org.erlide.core.model.root.api.ErlToken;
 import org.erlide.core.model.root.api.IErlModel;
 import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -270,11 +270,11 @@ public class ErlTextHover implements ITextHover,
         final IErlProject erlProject = module.getProject();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
-        final Backend ide = backendManager.getIdeBackend();
+        final IBackend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final RpcCallSite b = erlProject == null ? ide : backendManager
+            final IRpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
             final IErlModel model = CoreScope.getModel();
