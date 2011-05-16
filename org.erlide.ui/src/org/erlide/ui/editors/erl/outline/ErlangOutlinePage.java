@@ -50,12 +50,12 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
-import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlModelChangeListener;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.ISourceReference;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlModelChangeListener;
+import org.erlide.core.model.root.api.ISourceReference;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
@@ -351,8 +351,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes")
-        final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }

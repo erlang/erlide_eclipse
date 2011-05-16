@@ -1,8 +1,8 @@
 package org.erlide.core.services.search;
 
 import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcResultCallback;
@@ -44,10 +44,6 @@ public class ErlideSearchServer {
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         ErlLogger.debug("startFindRefs", pattern);
-        // final OtpErlangAtom DUMMY = new OtpErlangAtom("dummy");
-        // backend.call("erlide_search_server", "start_find_refs", "xxxs",
-        // DUMMY,
-        // pattern.getSearchObject(), modules, stateDir);
         backend.async_call_result(callback, "erlide_search_server",
                 "start_find_refs", "xxxs", pattern.getSearchObject(), modules,
                 stateDir);
@@ -70,7 +66,7 @@ public class ErlideSearchServer {
 
     public static void cancelSearch(final RpcCallSite backend,
             final OtpErlangPid searchDeamonPid) throws RpcException {
-        backend.call("erlide_search_server", "cancel_search", "x",
+        backend.call("erlide_search_server", "cancel_find_refs", "x",
                 searchDeamonPid);
     }
 

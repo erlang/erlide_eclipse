@@ -31,7 +31,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcEventHandler;
 import org.erlide.core.rpc.RpcEventProcessor;
 import org.erlide.core.services.builder.internal.BuildNotifier;

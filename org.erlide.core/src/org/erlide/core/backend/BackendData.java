@@ -29,8 +29,8 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.core.backend.launching.ErlangLaunchDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 
@@ -42,6 +42,14 @@ public class BackendData extends GenericBackendData {
 
     public BackendData(final ILaunchConfiguration config, final String mode) {
         super(config, mode);
+        final RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoManager()
+                .getRuntime(getRuntimeName());
+        if (runtimeInfo == null) {
+            return;
+        }
+        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "") == "") {
+            setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
+        }
     }
 
     public BackendData(final ILaunch launch) {

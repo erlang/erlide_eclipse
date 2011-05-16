@@ -22,15 +22,17 @@ import org.eclipse.core.runtime.IContributor;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.BeamUtil;
 import org.erlide.core.backend.CodeBundle;
-import org.erlide.core.model.erlang.util.ErlideUtil;
+import org.erlide.core.backend.ICodeManager;
+import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
-public class CodeManager {
+public class CodeManager implements ICodeManager {
 
     private final Backend backend;
 
@@ -209,8 +211,9 @@ public class CodeManager {
                 final boolean accessible = ErlideUtil.isAccessible(backend,
                         localDir);
                 if (accessible) {
-                    ErlLogger.debug("adding %s to code path for %s:: %s",
-                            localDir, backend, backend.getRuntimeInfo());
+                    ErlLogger.debug("adding %s to code path for @%s:: %s",
+                            localDir, backend.hashCode(),
+                            backend.getRuntimeInfo());
                     ErlangCode.addPathA(backend, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundle()

@@ -55,7 +55,8 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
 
     public void cleanUp() throws Exception {
         // lookup a backend to run erl_tidy with
-        final RpcCallSite Backend = BackendCore.getBackendManager().getIdeBackend();
+        final RpcCallSite Backend = BackendCore.getBackendManager()
+                .getIdeBackend();
 
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation()

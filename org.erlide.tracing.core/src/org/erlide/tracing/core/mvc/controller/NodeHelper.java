@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.tracing.core.TraceBackend;
 
 /**
@@ -55,7 +55,7 @@ public class NodeHelper {
         }
 
         final List<Backend> backends = new ArrayList<Backend>();
-        final BackendManager backendManager = BackendCore.getBackendManager();
+        final IBackendManager backendManager = BackendCore.getBackendManager();
         final Set<Backend> ignored = new HashSet<Backend>();
         Backend backend;
 

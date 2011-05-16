@@ -11,6 +11,8 @@
 package org.erlide.core.backend.runtimeinfo;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,9 +20,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.erlide.core.backend.internal.BackendUtil;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
+import com.google.common.base.Strings;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";
@@ -74,7 +77,7 @@ public class RuntimeInfo {
     }
 
     public void setArgs(final String args) {
-        this.args = args;
+        this.args = args.trim();
     }
 
     public String getCookie() {
@@ -85,7 +88,7 @@ public class RuntimeInfo {
     }
 
     public void setCookie(final String cookie) {
-        this.cookie = cookie;
+        this.cookie = cookie.trim();
     }
 
     public String getNodeName() {
@@ -122,12 +125,11 @@ public class RuntimeInfo {
     }
 
     public String getWorkingDir() {
-        return workingDir == null || workingDir.length() == 0 ? "."
-                : workingDir;
+        return workingDir;
     }
 
     public void setWorkingDir(final String workingDir) {
-        this.workingDir = workingDir;
+        this.workingDir = Strings.isNullOrEmpty(workingDir) ? "." : workingDir;
     }
 
     @Override
@@ -156,14 +158,6 @@ public class RuntimeInfo {
                 result.add(pathZ);
             }
         }
-        final String gotArgs = getArgs();
-        if (!empty(gotArgs)) {
-            final String[] xargs = split(gotArgs);
-            for (final String a : xargs) {
-                result.add(a);
-            }
-        }
-
         if (!startShell) {
             result.add("-noshell");
         }
@@ -173,7 +167,7 @@ public class RuntimeInfo {
         final String nameTag = longName || globalLongName ? "-name" : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
-            nameOption = BackendUtil
+            nameOption = RuntimeInfo
                     .buildLocalNodeName(getNodeName(), longName);
             result.add(nameTag);
             result.add(nameOption);
@@ -183,7 +177,13 @@ public class RuntimeInfo {
                 result.add(cky);
             }
         }
-
+        final String gotArgs = getArgs();
+        if (!empty(gotArgs)) {
+            final String[] xargs = split(gotArgs);
+            for (final String a : xargs) {
+                result.add(a);
+            }
+        }
         return result.toArray(new String[result.size()]);
     }
 
@@ -361,6 +361,37 @@ public class RuntimeInfo {
 
     public boolean loadOnAllNodes() {
         return loadAllNodes;
+    }
+
+    public static String buildLocalNodeName(final String label,
+            final boolean longName) {
+        if (label.indexOf('@') > 0) {
+            // ignore unique here?
+            return label;
+        }
+        if (longName) {
+            final String host = getHost();
+            return label + "@" + host;
+        } else {
+            return label;
+        }
+    }
+
+    public static String getHost() {
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+            if (System.getProperty("erlide.host") != null) {
+                final int dot = host.indexOf(".");
+                if (dot != -1) {
+                    host = host.substring(0, dot);
+                }
+            }
+        } catch (final IOException e) {
+            host = "localhost";
+            ErlLogger.error(e);
+        }
+        return host;
     }
 
 }

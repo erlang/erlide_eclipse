@@ -3,13 +3,10 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.erlide.core.backend.internal.BackendUtils;
-import org.erlide.core.common.SourcePathProvider;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.parsing.ErlangToolkit;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
@@ -50,30 +47,13 @@ public class ErlideOpen {
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
-        final Collection<String> extra = getExtraSourcePaths();
+        final Collection<String> extra = BackendUtils.getExtraSourcePaths();
         final String scanner = ErlangToolkit.createScannerModuleName(module);
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
                 scanner, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
         // ErlLogger.debug(">>>> " + res);
         return new OpenResult(res);
-    }
-
-    public static Collection<String> getExtraSourcePaths() {
-        final List<String> result = Lists.newArrayList();
-        Collection<SourcePathProvider> spps;
-        try {
-            spps = BackendUtils.getSourcePathProviders();
-            for (final SourcePathProvider spp : spps) {
-                final Collection<IPath> paths = spp.getSourcePaths();
-                for (final IPath p : paths) {
-                    result.add(p.toString());
-                }
-            }
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
-        }
-        return result;
     }
 
     public static OtpErlangTuple mkContext(final String externalModules,

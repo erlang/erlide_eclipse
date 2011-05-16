@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.11.0.qualifier
+Bundle-Version: 0.11.2.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -73,7 +73,8 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.dialogs",
  org.erlide.ui.editors.erl;
   x-friends:="org.erlide.wrangler.refactoring,
-   org.erlide.test_support";
+   org.erlide.test_support,
+   org.erlide.cover.ui";
   uses:="org.eclipse.jface.text,
    org.eclipse.core.runtime,
    org.eclipse.jface.text.information,
@@ -115,7 +116,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.editors.erl.handlers,
  org.erlide.ui.editors.erl.hover;x-internal:=true,
  org.erlide.ui.editors.erl.hyperlink;x-internal:=true,
- org.erlide.ui.editors.erl.outline;x-internal:=true;
+ org.erlide.ui.editors.erl.outline;x-friends:="org.erlide.cover.ui";
   uses:="org.eclipse.jface.text,
    org.eclipse.jface.action,
    org.erlide.ui.editors.erl,
@@ -145,7 +146,9 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.search;x-internal:=true,
  org.erlide.ui.internal.util;x-internal:=true,
  org.erlide.ui.jinterface;uses:="org.erlide.jinterface.rpc",
- org.erlide.ui.launch;x-friends:="org.erlide.selfhost";
+ org.erlide.ui.launch;
+  x-friends:="org.erlide.selfhost.plugin,
+   org.erlide.cover.ui";
   uses:="org.eclipse.debug.core,
    org.eclipse.debug.ui,
    org.eclipse.ui,
@@ -237,7 +240,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.jface.text.source,
    org.eclipse.core.runtime,
    org.eclipse.jface.resource,
-   org.erlide.core.model.erlang.util,
+   org.erlide.core.model.util,
    org.eclipse.ui,
    com.novocode.naf.swt.custom,
    org.eclipse.jface.preference,

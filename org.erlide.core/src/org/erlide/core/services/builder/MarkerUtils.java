@@ -19,18 +19,17 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.IErlProject.Scope;
-import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.api.ISourceRange;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -120,18 +119,24 @@ public final class MarkerUtils {
                 try {
                     final IErlModel model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
-                    ErlLogger.debug("inc::" + fileName + " "
-                            + resource.getName() + " " + erlProject.getName());
-                    ErlLogger.debug("    " + entry.getValue());
+                    if (erlProject != null) {
+                        final IErlModule includeFile = model
+                                .findIncludeFromProject(erlProject, fileName,
+                                        fileName,
+                                        IErlModel.Scope.REFERENCED_PROJECTS);
+                        ErlLogger.debug("inc::" + fileName + " "
+                                + resource.getName() + " "
+                                + erlProject.getName());
+                        ErlLogger.debug("    " + entry.getValue());
 
-                    final IErlModule includeFile = erlProject != null ? erlProject
-                            .findInclude(fileName, fileName,
-                                    Scope.REFERENCED_PROJECTS) : null;
-                    if (includeFile == null) {
-                        res = resource;
+                        if (includeFile == null) {
+                            res = resource;
+                        } else {
+                            res = includeFile.getResource();
+                            // FIXME is this right?
+                        }
                     } else {
-                        res = includeFile.getResource();
-                        // FIXME is this right?
+                        res = resource;
                     }
                 } catch (final Exception e) {
                     ErlLogger.warn(e);

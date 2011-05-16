@@ -1,3 +1,25 @@
+List of user visible changes between 0.11.1 and 0.12.0 (20110503)
+
+2510907 826-launch---quick-launch-does-not-work-on-windows-some-times
+6b836bc Fix so that debugger handles arguments with small integers (they are given as OtpErlangString)
+a3d4a8d http://www.assembla.com/spaces/erlide/tickets/797-model---the-splitting-into-function-clauses-is-too-simple--causing-bad-code-formatting 
+359dd6c http://www.assembla.com/spaces/erlide/tickets/824-outline---sometimes-no-text
+a2b71ea http://www.assembla.com/spaces/erlide/tickets/549-open-module-dialog---too-slow revisited.
+0fcb0b5 http://www.assembla.com/spaces/erlide/tickets/819-searching--cancel-search
+cc9f87f changed Cover plugins names
+
+List of user visible changes between 0.11.0 and 0.11.1 (20110412)
+
+* added cover plugin, thanks to Aleksandra Lipiec
+
+271bdf2 http://www.assembla.com/spaces/erlide/tickets/712-import-erlang-project---link-option-support-should-be-rewritten
+648e214 815-extra-args-for-erlang-vm-doesn-t-work
+2e1dc1a http://www.assembla.com/spaces/erlide/tickets/560-erlang-search---should-run-in-background
+59375a2 fixed NPE when file was not in erlang project
+05a1e5d http://www.assembla.com/spaces/erlide/tickets/784-searching--separate-checkbox-for-otp
+ab9777c http://www.assembla.com/spaces/erlide/tickets/758-new-module---selects-non-existing-folder
+8f12974 http://www.assembla.com/spaces/erlide/tickets/808-open-module--problems-with-closed-projects
+
 List of user visible changes between 0.10.2 and 0.11.0 (20110322)
 
 for developers: more API have changed; we added many more unit tests.

@@ -4,8 +4,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.manager.BackendService;
+import org.erlide.core.backend.internal.BackendManager;
+import org.erlide.core.backend.internal.BackendService;
+import org.erlide.core.backend.manager.IBackendManager;
 
 public class CoreInjector {
 
@@ -15,7 +16,7 @@ public class CoreInjector {
     }
 
     private static ServicesMap injectServiceMap() {
-        ServicesMap result = new ServicesMap();
+        final ServicesMap result = new ServicesMap();
         result.putService(BackendService.class, new BackendService());
         return result;
     }
@@ -28,7 +29,7 @@ public class CoreInjector {
         return Platform.getExtensionRegistry();
     }
 
-    public static BackendManager injectBackendManager() {
+    public static IBackendManager injectBackendManager() {
         return new BackendManager();
     }
 

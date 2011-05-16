@@ -18,6 +18,7 @@ public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
 
     private DirectoryTreeGroup sourceDirTreeGroup;
     private DirectoryTreeGroup includeDirTreeGroup;
+    private IPath ebinDir;
 
     public ErlangProjectImportIncludeAndSourceDirsWizardPage() {
         super("Select directories for source and include files");
@@ -51,11 +52,13 @@ public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
     }
 
     public void setup(final String projectDir, final List<String> allDirs,
-            final List<String> includeDirs, final List<String> sourceDirs) {
+            final List<String> includeDirs, final List<String> sourceDirs,
+            final IPath ebinDir) {
         sourceDirTreeGroup.setAllDirs(allDirs);
         sourceDirTreeGroup.setCheckedDirs(sourceDirs);
         includeDirTreeGroup.setAllDirs(allDirs);
         includeDirTreeGroup.setCheckedDirs(includeDirs);
+        this.ebinDir = ebinDir; // TODO create UI for output dir
     }
 
     @Override
@@ -82,4 +85,9 @@ public class ErlangProjectImportIncludeAndSourceDirsWizardPage extends
         }
         return result;
     }
+
+    public IPath getEbinDir() {
+        return ebinDir;
+    }
+
 }

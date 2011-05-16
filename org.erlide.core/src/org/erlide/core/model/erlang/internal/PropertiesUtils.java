@@ -20,7 +20,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.IOldErlangProjectProperties;
+import org.erlide.core.model.root.api.IOldErlangProjectProperties;
+import org.erlide.core.model.root.internal.ErlProjectInfo;
+import org.erlide.core.model.root.internal.PathEntry;
 import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;

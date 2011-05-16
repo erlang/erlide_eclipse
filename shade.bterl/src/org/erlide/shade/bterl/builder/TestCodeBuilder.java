@@ -22,13 +22,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.services.builder.BuildResource;
@@ -483,11 +483,13 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
-        final IErlProject erlprj = CoreScope.getModel().findProject(myProject);
-        final Collection<IPath> srcDirs = erlprj.getSourceDirs();
+        final Collection<String> srcDirs = BackendUtils
+                .getExtraSourcePathsForBuild(myProject);
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
-        for (final IPath src : srcDirs) {
-            if (src.isPrefixOf(rpath)) {
+        for (final String src : srcDirs) {
+            final IPath srcPath = new Path(src).removeFirstSegments(rpath
+                    .segmentCount() - 1);
+            if (srcPath.isPrefixOf(rpath)) {
                 return true;
             }
         }

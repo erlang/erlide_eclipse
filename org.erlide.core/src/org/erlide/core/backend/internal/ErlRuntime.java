@@ -12,7 +12,7 @@ package org.erlide.core.backend.internal;
 
 import java.io.IOException;
 
-import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.rpc.RpcCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
@@ -26,7 +26,7 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 
-public class ErlRuntime extends OtpNodeStatus {
+public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private static final int MAX_RETRIES = 20;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
@@ -38,15 +38,15 @@ public class ErlRuntime extends OtpNodeStatus {
 
     private final String peerName;
     private State state;
-    private OtpNode localNode = null;
+    private OtpNode localNode;
 
     public ErlRuntime(final String name, final String cookie) {
         state = State.DISCONNECTED;
         try {
-            localNode = BackendUtil.createOtpNode(cookie);
+            localNode = ErlRuntime.createOtpNode(cookie);
             localNode.registerStatusHandler(this);
         } catch (final IOException e) {
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
 
         peerName = name;
@@ -94,7 +94,7 @@ public class ErlRuntime extends OtpNodeStatus {
             final String f, final String signature, final Object[] args)
             throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        RpcHelper.rpcCallWithProgress(cb, localNode, peerName, false, gleader,
+        RpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
                 m, f, signature, args);
     }
 
@@ -118,13 +118,6 @@ public class ErlRuntime extends OtpNodeStatus {
             final Object... args) throws RpcException, SignatureException {
         makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
                 signature, args);
-    }
-
-    public void makeAsyncCbCall(final RpcCallback cb, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException, SignatureException {
-        makeAsyncCbCall(cb, Backend.DEFAULT_TIMEOUT, new OtpErlangAtom("user"),
-                module, fun, signature, args);
     }
 
     public void makeAsyncCbCall(final RpcCallback cb, final int timeout,
@@ -192,6 +185,33 @@ public class ErlRuntime extends OtpNodeStatus {
 
     public OtpNode getNode() {
         return localNode;
+    }
+
+    public static String createJavaNodeName() {
+        final String fUniqueId = ErlRuntime.getTimeSuffix();
+        return "jerlide_" + fUniqueId;
+    }
+
+    static String getTimeSuffix() {
+        String fUniqueId;
+        fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
+        return fUniqueId;
+    }
+
+    public static OtpNode createOtpNode(final String cookie) throws IOException {
+        OtpNode node;
+        if (cookie == null) {
+            node = new OtpNode(createJavaNodeName());
+        } else {
+            node = new OtpNode(createJavaNodeName(), cookie);
+        }
+        final String nodeCookie = node.cookie();
+        final int len = nodeCookie.length();
+        final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
+                : nodeCookie;
+        ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
+                cookie);
+        return node;
     }
 
 }

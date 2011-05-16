@@ -11,12 +11,13 @@
 package org.erlide.core.model.erlang;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.model.root.api.ISourceUnit;
 
 public interface IErlangReconcilingListener {
 
     void aboutToBeReconciled();
 
-    void reconciled(IErlModule ast, boolean forced,
+    void reconciled(ISourceUnit ast, boolean forced,
             IProgressMonitor progressMonitor);
 
 }

@@ -107,20 +107,20 @@ import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.ExtensionHelper;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.erlang.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
-import org.erlide.core.model.erlang.IErlElement;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.erlang.util.ModelUtils;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.api.ISourceReference;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
@@ -323,7 +323,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         uninstallOccurrencesFinder();
         if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
             final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
-            ec.getContentAssistProcessor().dispose();
+            if (ec != null) {
+                ec.getContentAssistProcessor().dispose();
+            }
         }
         if (fActivationListener != null) {
             PlatformUI.getWorkbench().removeWindowListener(fActivationListener);
@@ -465,7 +467,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         fActionGroups = new CompositeActionGroup(new ActionGroup[] {
         // oeg= new OpenEditorActionGroup(this),
         // ovg= new OpenViewActionGroup(this),
-        esg = new ErlangSearchActionGroup(this) });
+                esg = new ErlangSearchActionGroup(this) });
         fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { esg });
 
         // openAction = new OpenAction(getSite(), getExternalModules(),
@@ -620,8 +622,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();
@@ -2210,7 +2211,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
 
         private void findRefs(final IErlModule theModule,
-                final ITextSelection selection, final boolean hasChanged) {
+                final ITextSelection aSelection, final boolean hasChanged) {
             final RpcCallSite ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
@@ -2219,7 +2220,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 return;
             }
             try {
-                final int offset = selection.getOffset();
+                final int offset = aSelection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend, theModule,
                         offset, ModelUtils.getImportsAsList(theModule), "",
                         CoreScope.getModel().getPathVars());
@@ -2236,8 +2237,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                             .newArrayList();
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend, pattern, scope, getStateDir());
-                    SearchUtil.addSearchResult(findRefs, refs);
-                    fRefs = getErlangRefs(theModule, findRefs);
+                    if (refs != null) {
+                        SearchUtil.addSearchResult(findRefs, refs);
+                        fRefs = getErlangRefs(theModule, findRefs);
+                    }
                 }
             } catch (final RpcException e) {
                 ErlLogger.debug(e);

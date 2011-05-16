@@ -11,11 +11,12 @@ public class ServicesMap {
         map = Maps.newHashMap();
     }
 
-    public <T extends IService> T getService(Class<T> key) {
+    public <T extends IService> T getService(final Class<T> key) {
         return key.cast(map.get(key));
     }
 
-    public <T extends IService> void putService(Class<T> key, T value) {
+    public <T extends IService> void putService(final Class<T> key,
+            final T value) {
         map.put(key, value);
     }
 

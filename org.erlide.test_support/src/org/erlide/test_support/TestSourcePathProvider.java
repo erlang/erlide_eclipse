@@ -1,9 +1,11 @@
 package org.erlide.test_support;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -17,19 +19,21 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.jinterface.ErlLogger;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class TestSourcePathProvider implements SourcePathProvider,
         IResourceChangeListener {
 
-    Set<IPath> paths;
+    Map<IProject, Set<IPath>> pathsMap;
 
     public TestSourcePathProvider() {
+        pathsMap = Maps.newHashMap();
         try {
-            paths = computeSourcePaths();
+            computeSourcePaths();
         } catch (final CoreException e) {
             ErlLogger.warn(e);
-            paths = Sets.newHashSet();
+            pathsMap = Maps.newHashMap();
         }
         // System.out.println("## paths=" + paths);
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -37,23 +41,43 @@ public class TestSourcePathProvider implements SourcePathProvider,
                 IResourceChangeEvent.POST_CHANGE);
     }
 
-    public Collection<IPath> getSourcePaths() {
-        return paths;
+    public Collection<IPath> getSourcePathsForModel(final IProject project) {
+        return getProjectPaths(project);
     }
 
-    private Set<IPath> computeSourcePaths() throws CoreException {
-        final Set<IPath> result = Sets.newHashSet();
+    public Collection<IPath> getSourcePathsForBuild(final IProject project) {
+        return getProjectPaths(project);
+    }
+
+    public Collection<IPath> getSourcePathsForExecution(final IProject project) {
+        return getProjectPaths(project);
+    }
+
+    public Collection<IPath> getIncludePaths(final IProject project) {
+        return getProjectPaths(project);
+    }
+
+    private void computeSourcePaths() throws CoreException {
         ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor() {
 
             public boolean visit(final IResource resource) throws CoreException {
-                if (isTestDir(resource)) {
-                    result.add(resource.getLocation());
+                final IProject project = resource.getProject();
+                if (project != null && isTestDir(resource)) {
+                    final Set<IPath> ps = getProjectPaths(project);
+                    ps.add(resource.getProjectRelativePath());
+                    pathsMap.put(project, ps);
                 }
                 return true;
             }
-
         });
-        return result;
+    }
+
+    private Set<IPath> getProjectPaths(final IProject project) {
+        Set<IPath> ps = pathsMap.get(project);
+        if (ps == null) {
+            ps = Sets.newHashSet();
+        }
+        return ps;
     }
 
     public void resourceChanged(final IResourceChangeEvent event) {
@@ -75,6 +99,8 @@ public class TestSourcePathProvider implements SourcePathProvider,
                     }
                     // TODO isintestpath is slow...
                     final IPath parentLocation = parent.getLocation();
+                    final Set<IPath> paths = getProjectPaths(resource
+                            .getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED
                             && !paths.contains(parentLocation)
                             && isTestDir(parent)) {

@@ -33,14 +33,14 @@ public class ErlConsoleManager implements IDisposable, BackendListener {
             return;
         }
         final RuntimeInfo info = b.getRuntimeInfo();
-        ErlLogger.debug("console ADDED " + b + " " + info);
+        ErlLogger.debug("console ADDED to " + info);
         final ErlangConsole console = new ErlangConsole(b);
         conMan.addConsoles(new IConsole[] { console });
         consoles.put(b, console);
     }
 
     public void runtimeRemoved(final Backend b) {
-        ErlLogger.debug("console REMOVED " + b + " " + b.getRuntimeInfo());
+        ErlLogger.debug("console REMOVED from " + b.getRuntimeInfo());
         final IConsole console = consoles.get(b);
         if (console == null) {
             return;

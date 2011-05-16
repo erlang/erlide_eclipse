@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.erlide.core.services.codeassist;
 
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
 
 /**
  * Common protocol for Erlang elements that support source code assist and code

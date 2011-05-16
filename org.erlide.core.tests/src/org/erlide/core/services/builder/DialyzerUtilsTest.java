@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -212,7 +212,7 @@ public class DialyzerUtilsTest {
             final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
             final IResource selectedResource = selectResource(select,
                     erlProject, a);
-			DialyzerUtils.addModulesFromResource(CoreScope.getModel(),
+            DialyzerUtils.addModulesFromResource(CoreScope.getModel(),
                     selectedResource, modules);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
@@ -334,7 +334,7 @@ public class DialyzerUtilsTest {
             // when
             // collecting files to dialyze
             final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
-			DialyzerUtils.addModulesFromResource(CoreScope.getModel(),
+            DialyzerUtils.addModulesFromResource(CoreScope.getModel(),
                     erlProject.getResource(), modules);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();

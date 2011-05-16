@@ -56,7 +56,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.erlide.core.model.erlang.util.SourcePathProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.erlide.core.model.util.SourcePathProvider"/>
                </appInfo>
             </annotation>
          </attribute>

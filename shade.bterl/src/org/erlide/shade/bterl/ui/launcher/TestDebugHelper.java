@@ -9,8 +9,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.debug.ErlangDebugHelper;
-import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.model.root.api.ErlModelException;
 import org.erlide.jinterface.ErlLogger;
 
 public class TestDebugHelper extends ErlangDebugHelper {

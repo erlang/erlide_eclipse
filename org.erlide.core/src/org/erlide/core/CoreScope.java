@@ -15,8 +15,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.core.model.erlang.IErlModel;
-import org.erlide.core.model.erlang.internal.ErlModel;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.internal.ErlModel;
 import org.osgi.framework.BundleContext;
 
 public class CoreScope {

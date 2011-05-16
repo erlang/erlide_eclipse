@@ -94,7 +94,7 @@ public class PatternMatchTest {
 
     @Test
     public void testMatch_0() throws Exception {
-        final BindingsImpl b = new BindingsImpl();
+        final Bindings b = new BindingsImpl();
         b.put("W", new OtpErlangAtom("a"));
         final Bindings r = ErlUtils.match("[W, V]", "[a, b]", b);
         Assert.assertNotNull(r);

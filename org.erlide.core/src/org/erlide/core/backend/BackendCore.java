@@ -6,15 +6,17 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.manager.BackendFactory;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.internal.BackendFactory;
+import org.erlide.core.backend.internal.BackendManager;
+import org.erlide.core.backend.manager.IBackendFactory;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 
 public class BackendCore {
 
-    private static BackendFactory backendFactory;
+    private static IBackendFactory backendFactory;
     private static RuntimeInfoManager runtimeInfoManager;
-    private static BackendManager backendManager;
+    private static IBackendManager backendManager;
 
     public static final RuntimeInfoManager getRuntimeInfoManager() {
         if (runtimeInfoManager == null) {
@@ -23,14 +25,14 @@ public class BackendCore {
         return runtimeInfoManager;
     }
 
-    public static final BackendFactory getBackendFactory() {
+    public static final IBackendFactory getBackendFactory() {
         if (backendFactory == null) {
             backendFactory = new BackendFactory(getRuntimeInfoManager());
         }
         return backendFactory;
     }
 
-    public static final BackendManager getBackendManager() {
+    public static final IBackendManager getBackendManager() {
         if (backendManager == null) {
             backendManager = new BackendManager();
         }
@@ -39,12 +41,14 @@ public class BackendCore {
 
     public static IConfigurationElement[] getSourcepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "sourcePathProvider");
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+                "sourcePathProvider");
     }
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID, "codepath");
+        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+                "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {

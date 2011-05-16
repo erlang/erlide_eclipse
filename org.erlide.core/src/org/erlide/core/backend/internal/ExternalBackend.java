@@ -17,12 +17,14 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.launching.ErtsProcess;
+import org.erlide.core.backend.IErlRuntime;
+import org.erlide.core.debug.ErtsProcess;
 
 public class ExternalBackend extends Backend {
 
-    public ExternalBackend(final BackendData data) throws BackendException {
-        super(data);
+    public ExternalBackend(final BackendData data, final IErlRuntime runtime)
+            throws BackendException {
+        super(data, runtime);
         Assert.isNotNull(launch);
         setLaunch(launch);
     }

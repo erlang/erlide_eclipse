@@ -14,11 +14,13 @@ import org.eclipse.core.runtime.Assert;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.IErlRuntime;
 
 public class InternalBackend extends Backend {
 
-    public InternalBackend(final BackendData data) throws BackendException {
-        super(data);
+    public InternalBackend(final BackendData data, final IErlRuntime runtime)
+            throws BackendException {
+        super(data, runtime);
         Assert.isLegal(launch == null);
     }
 

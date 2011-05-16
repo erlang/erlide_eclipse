@@ -2,7 +2,6 @@ package org.erlide.core.services.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,19 +15,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlElement;
-import org.erlide.core.model.erlang.IErlFolder;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.ModuleKind;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.api.IErlFolder;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class DialyzerUtils {
 
@@ -146,30 +146,27 @@ public class DialyzerUtils {
             final IResource resource,
             final Map<IErlProject, Set<IErlModule>> modules)
             throws ErlModelException {
-        final IErlElement e = model.findElement(resource, true);
-        if (e instanceof IErlFolder) {
-            final IErlFolder f = (IErlFolder) e;
-            f.open(null);
-            final Collection<IErlModule> folderModules = f.getModules();
-            if (!folderModules.isEmpty()) {
-                final IErlProject p = f.getProject();
-                Set<IErlModule> ms = modules.get(p);
-                if (ms == null) {
-                    ms = new HashSet<IErlModule>();
-                }
-                ms.addAll(folderModules);
-                modules.put(p, ms);
-            }
-        } else if (e instanceof IErlModule) {
-            final IErlModule m = (IErlModule) e;
-            final IErlProject p = m.getProject();
-            Set<IErlModule> ms = modules.get(p);
-            if (ms == null) {
-                ms = new HashSet<IErlModule>();
-            }
-            ms.add(m);
-            modules.put(p, ms);
+        final IErlElement element = model.findElement(resource, true);
+        if (element == null) {
+            return;
         }
+        final IErlProject project = element.getProject();
+        Set<IErlModule> ms = modules.get(project);
+        if (ms == null) {
+            ms = Sets.newHashSet();
+        }
+        if (element instanceof IErlFolder) {
+            final IErlFolder folder = (IErlFolder) element;
+            folder.open(null);
+            ms.addAll(folder.getModules());
+        } else if (element instanceof IErlModule) {
+            final IErlModule module = (IErlModule) element;
+            ms.add(module);
+        } else if (element instanceof IErlProject) {
+            project.open(null);
+            ms.addAll(project.getModules());
+        }
+        modules.put(project, ms);
     }
 
 }

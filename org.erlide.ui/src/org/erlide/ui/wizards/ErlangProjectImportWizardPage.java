@@ -17,20 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -59,21 +48,13 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.erlang.util.PluginUtils;
-import org.erlide.ui.ErlideUIPlugin;
-import org.erlide.ui.perspectives.ErlangPerspective;
 
 public class ErlangProjectImportWizardPage extends
         ErlangWizardResourceImportPage implements Listener, IOverwriteQuery {
@@ -127,55 +108,9 @@ public class ErlangProjectImportWizardPage extends
      *            IStructuredSelection
      */
     public ErlangProjectImportWizardPage(final IStructuredSelection selection) {
-        this("alfa beta", selection);//$NON-NLS-1$
+        this("ErlangProjectImportWizardPage", selection); // $NON-NLS-1$
         setTitle(WizardMessages.DataTransfer_fileSystemTitle);
         setDescription(WizardMessages.FileImport_importFileSystem);
-    }
-
-    /**
-     * Creates a new button with the given id.
-     * <p>
-     * The <code>Dialog</code> implementation of this framework method creates a
-     * standard push button, registers for selection events including button
-     * presses and registers default buttons with its shell. The button id is
-     * stored as the buttons client data. Note that the parent's layout is
-     * assumed to be a GridLayout and the number of columns in this layout is
-     * incremented. Subclasses may override.
-     * </p>
-     * 
-     * @param parent
-     *            the parent composite
-     * @param id
-     *            the id of the button (see <code>IDialogConstants.*_ID</code>
-     *            constants for standard dialog button ids)
-     * @param label
-     *            the label from the button
-     * @param defaultButton
-     *            <code>true</code> if the button is to be the default button,
-     *            and <code>false</code> otherwise
-     */
-    protected Button createButton(final Composite parent, final int id,
-            final String label, final boolean defaultButton) {
-        // increment the number of columns in the button bar
-        ((GridLayout) parent.getLayout()).numColumns++;
-
-        final Button button = new Button(parent, SWT.PUSH);
-        button.setFont(parent.getFont());
-
-        final GridData buttonData = new GridData(GridData.FILL_HORIZONTAL);
-        button.setLayoutData(buttonData);
-
-        button.setData(Integer.valueOf(id));
-        button.setText(label);
-
-        if (defaultButton) {
-            final Shell shell = parent.getShell();
-            if (shell != null) {
-                shell.setDefaultButton(button);
-            }
-            button.setFocus();
-        }
-        return button;
     }
 
     /**
@@ -198,9 +133,17 @@ public class ErlangProjectImportWizardPage extends
         buttonData.horizontalSpan = 2;
         buttonComposite.setLayoutData(buttonData);
 
+        final Button button = new Button(buttonComposite, SWT.PUSH);
+        button.setFont(buttonComposite.getFont());
+
+        final GridData buttonData1 = new GridData(GridData.FILL_HORIZONTAL);
+        button.setLayoutData(buttonData1);
+
+        button.setData(Integer.valueOf(IDialogConstants.SELECT_TYPES_ID));
+        button.setText(SELECT_TYPES_TITLE);
+
         // types edit button
-        selectTypesButton = createButton(buttonComposite,
-                IDialogConstants.SELECT_TYPES_ID, SELECT_TYPES_TITLE, false);
+        selectTypesButton = button;
 
         final SelectionListener listener = new SelectionAdapter() {
             @Override
@@ -508,177 +451,6 @@ public class ErlangProjectImportWizardPage extends
         }
 
         return true;
-    }
-
-    /**
-     * The Finish button was pressed. Try to do the required work now and answer
-     * a boolean indicating success. If false is returned then the wizard will
-     * not close.
-     * 
-     * @return boolean
-     */
-    public boolean finish(final String theProjectPath,
-            final List<Object> fileSystemObjects) {
-        if (!ensureSourceIsValid()) {
-            return false;
-        }
-
-        saveWidgetValues();
-
-        if (fileSystemObjects.size() > 0) {
-            if (copyFiles) {
-                return importResources(fileSystemObjects);
-            }
-            try {
-                getContainer().run(false, true, new WorkspaceModifyOperation() {
-
-                    @Override
-                    protected void execute(final IProgressMonitor monitor)
-                            throws InvocationTargetException, CoreException {
-                        linkToResources(theProjectPath, fileSystemObjects,
-                                new SubProgressMonitor(monitor, 1));
-
-                        try {
-                            final IWorkbench workbench = ErlideUIPlugin
-                                    .getDefault().getWorkbench();
-                            workbench.showPerspective(ErlangPerspective.ID,
-                                    workbench.getActiveWorkbenchWindow());
-                        } catch (final WorkbenchException we) {
-                            // ignore
-                        }
-                    }
-                });
-            } catch (final InvocationTargetException x) {
-                reportError();
-                return false;
-            } catch (final InterruptedException x) {
-                reportError(x);
-                return false;
-            }
-            return true;
-        }
-
-        MessageDialog.openInformation(getContainer().getShell(),
-                WizardMessages.DataTransfer_information,
-                WizardMessages.FileImport_noneSelected);
-
-        return false;
-    }
-
-    /**
-     * Displays an error that occured during the .project file creation. *
-     * 
-     * @param exception
-     *            details on the error
-     */
-    private void reportError(final InterruptedException exception) {
-        final String description = ErlideUIPlugin
-                .getResourceString("wizards.errors.projectfileerrordesc");
-        final String title = ErlideUIPlugin
-                .getResourceString("wizards.errors.projecterrortitle");
-        ErrorDialog.openError(getShell(), description, title,
-                PluginUtils.makeStatus(exception));
-
-    }
-
-    private void reportError() {
-        final String title = ErlideUIPlugin
-                .getResourceString("wizards.errors.projecterrortitle");
-        final String description = ErlideUIPlugin
-                .getResourceString("wizards.errors.projectfileerrordesc");
-        MessageDialog.openError(getShell(), title, description);
-    }
-
-    boolean linkToResources(final String theProjectPath,
-            final List<Object> fileSystemObjects, final IProgressMonitor monitor)
-            throws InvocationTargetException, CoreException {
-        final String prjName = getProjectName();
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        final IProject project = workspace.getRoot().getProject(prjName);
-
-        final IProjectDescription description = workspace
-                .newProjectDescription(prjName);
-        description.setLocation(getProjectPath());
-
-        final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
-        System.arraycopy(old, 0, specs, 0, old.length);
-        final ICommand command = description.newCommand();
-        command.setBuilderName(ErlangPlugin.BUILDER_ID);
-        specs[old.length] = command;
-        description.setBuildSpec(specs);
-
-        description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
-
-        try {
-            monitor.beginTask(
-                    WizardMessages.WizardProjectsImportPage_CreateProjectsTask,
-                    1000);
-            project.setDescription(description, new SubProgressMonitor(monitor,
-                    300));
-            final int subTicks = 600 / fileSystemObjects.size();
-            createLinks(theProjectPath, fileSystemObjects, monitor, project,
-                    subTicks);
-            // project.create(description, IResource.REPLACE,
-            // new SubProgressMonitor(monitor, 30));
-            project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
-                    monitor, 300));
-        } catch (final CoreException e) {
-            throw new InvocationTargetException(e);
-        } finally {
-            monitor.done();
-        }
-        return true;
-
-    }
-
-    private void createLinks(final String theProjectPath,
-            final List<Object> fileSystemObjects,
-            final IProgressMonitor monitor, final IProject project,
-            final int subTicks) throws CoreException {
-        for (final Object fso : fileSystemObjects) {
-            if (fso instanceof File) {
-                File f = (File) fso;
-                for (;;) {
-                    String path = f.getPath();
-                    if (path.equals(theProjectPath)) {
-                        break;
-                    }
-                    path = f.getParent();
-                    if (path.equals(theProjectPath)) {
-                        createLinkFromPath(monitor, project, subTicks, f);
-                        break;
-                    }
-                    f = f.getParentFile();
-                }
-            }
-        }
-    }
-
-    private void createLinkFromPath(final IProgressMonitor monitor,
-            final IProject project, final int subTicks, final File f)
-            throws CoreException {
-        final SubProgressMonitor subMonitor = new SubProgressMonitor(monitor,
-                subTicks);
-        final String name = f.getName();
-        final IPath location = new Path(f.getAbsolutePath());
-        IResource resource;
-        final boolean isDirectory = f.isDirectory();
-        if (isDirectory) {
-            resource = project.getFolder(name);
-        } else {
-            resource = project.getFile(name);
-        }
-        if (!resource.isLinked()) {
-            if (isDirectory) {
-                ((IFolder) resource).createLink(location, IResource.NONE,
-                        subMonitor);
-            } else {
-                ((IFile) resource).createLink(location, IResource.NONE,
-                        subMonitor);
-            }
-        } else {
-            subMonitor.done();
-        }
     }
 
     /**
@@ -1153,7 +925,7 @@ public class ErlangProjectImportWizardPage extends
      * @param map
      *            Map - key tree elements, values Lists of list elements
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     @Override
     protected void updateSelections(final Map map) {
         super.updateSelections(map);

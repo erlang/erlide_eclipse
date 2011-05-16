@@ -3,7 +3,7 @@ package org.erlide.ui.editors.erl;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.parsing.ErlToken;
+import org.erlide.core.model.root.api.ErlToken;
 
 public final class ErlangWordFinder {
 

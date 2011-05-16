@@ -40,12 +40,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
 

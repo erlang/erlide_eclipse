@@ -34,19 +34,19 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.core.CoreScope;
-import org.erlide.core.model.erlang.ErlModelException;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlProject;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.erlang.util.ErlangIncludeFile;
-import org.erlide.core.model.erlang.util.PluginUtils;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.ErlangIncludeFile;
+import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.RpcFuture;
 import org.erlide.core.services.builder.internal.BuilderVisitor;
-import org.erlide.core.services.builder.internal.ErlideBuilder;
+import org.erlide.core.services.builder.internal.InternalErlideBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -174,7 +174,7 @@ public final class BuilderHelper {
     public void checkForClashes(final RpcCallSite backend,
             final IProject project) {
         try {
-            final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
+            final OtpErlangList res = InternalErlideBuilder.getCodeClashes(backend);
             for (final OtpErlangObject elem : res.elements()) {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
                 final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -204,7 +204,7 @@ public final class BuilderHelper {
                 dirList[j++] = project.getLocation().toPortableString() + "/"
                         + sp;
             }
-            final OtpErlangList res = ErlideBuilder.getSourceClashes(backend,
+            final OtpErlangList res = InternalErlideBuilder.getSourceClashes(backend,
                     dirList);
             for (int i = 0; i < res.arity(); i++) {
                 final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
@@ -376,7 +376,7 @@ public final class BuilderHelper {
         if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
             final String beamf = source.getFullPath().removeFileExtension()
                     .lastSegment();
-            ErlideBuilder.loadModule(project, beamf);
+            InternalErlideBuilder.loadModule(project, beamf);
             refreshDirs(project, t.elementAt(2));
         } else {
             // ErlLogger.debug(">>>> compile error... %s\n   %s",
@@ -481,7 +481,7 @@ public final class BuilderHelper {
                 }
 
                 createTaskMarkers(project, res);
-                return ErlideBuilder.compileErl(backend, res.getLocation(),
+                return InternalErlideBuilder.compileErl(backend, res.getLocation(),
                         outputDir, includeDirs, compilerOptions);
 
             } else {
@@ -566,7 +566,7 @@ public final class BuilderHelper {
             final String input = resource.getLocation().toString();
             final String output = resource.getLocation().removeFileExtension()
                     .toString();
-            return ErlideBuilder.compileYrl(backend, input, output);
+            return InternalErlideBuilder.compileYrl(backend, input, output);
         } catch (final Exception e) {
             e.printStackTrace();
             return null;

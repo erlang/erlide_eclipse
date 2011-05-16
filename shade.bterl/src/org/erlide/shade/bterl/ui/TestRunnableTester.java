@@ -12,7 +12,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.util.ErlangFunction;
+import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.shade.bterl.builder.ErlTestNature;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchShortcut;
 

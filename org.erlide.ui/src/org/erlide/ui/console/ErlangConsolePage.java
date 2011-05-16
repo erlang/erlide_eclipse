@@ -117,7 +117,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     StyledText consoleText;
     private boolean fGroupByLeader;
-    private boolean fColored;
     private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
     private final ErlConsoleDocument fDoc;
     final ErlangConsoleHistory history = new ErlangConsoleHistory();

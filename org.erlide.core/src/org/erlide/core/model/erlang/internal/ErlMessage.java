@@ -11,15 +11,16 @@
 package org.erlide.core.model.erlang.internal;
 
 import org.erlide.core.model.erlang.IErlMessage;
-import org.erlide.core.model.erlang.IParent;
-import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.internal.ErlMember;
 
 public class ErlMessage extends ErlMember implements IErlMessage {
 
     private final String message;
     private final MessageKind fKind;
 
-    protected ErlMessage(final IParent parent, final MessageKind kind,
+    public ErlMessage(final IParent parent, final MessageKind kind,
             final String name) {
         super(parent, name);
         fKind = kind;

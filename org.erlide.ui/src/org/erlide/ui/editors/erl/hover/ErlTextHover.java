@@ -41,16 +41,16 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.common.Util;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.erlang.IErlModel;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.erlang.IErlProject;
-import org.erlide.core.model.erlang.util.ModelUtils;
-import org.erlide.core.parsing.ErlToken;
-import org.erlide.core.parsing.ErlangToolkit;
+import org.erlide.core.model.root.api.ErlToken;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
@@ -269,7 +269,7 @@ public class ErlTextHover implements ITextHover,
                 .toString();
         final IErlProject erlProject = module.getProject();
 
-        final BackendManager backendManager = BackendCore.getBackendManager();
+        final IBackendManager backendManager = BackendCore.getBackendManager();
         final Backend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject

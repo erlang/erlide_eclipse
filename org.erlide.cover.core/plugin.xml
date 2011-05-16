@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.cover.runtime.launch.CoverLaunchConfigurationDelegate"
+            delegateName="Erlang Coverage configuration"
+            id="org.erlide.cover.core.launchConfigurationCover"
+            modes="run, debug"
+            name="Erlang Cover"
+            public="true"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.erlide.cover.analysis">
+      <proxy
+            class="org.erlide.cover.core.CoveragePerformerProxy">
+      </proxy>
+   </extension>
+
+</plugin>

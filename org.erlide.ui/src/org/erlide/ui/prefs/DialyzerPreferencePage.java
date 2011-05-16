@@ -57,10 +57,10 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.model.erlang.ErlModelException;
-import org.erlide.core.model.erlang.IErlModel;
-import org.erlide.core.model.erlang.IErlProject;
+import org.erlide.core.backend.manager.IBackendManager;
+import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.api.IErlProject;
 import org.erlide.core.rpc.RpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
@@ -618,7 +618,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            final BackendManager backendManager = BackendCore
+            final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             try {
                 RpcCallSite backend;
