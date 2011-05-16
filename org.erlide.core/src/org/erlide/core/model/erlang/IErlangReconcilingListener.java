@@ -11,7 +11,7 @@
 package org.erlide.core.model.erlang;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.root.api.ISourceUnit;
+import org.erlide.core.model.root.ISourceUnit;
 
 public interface IErlangReconcilingListener {
 

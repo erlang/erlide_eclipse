@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.model.erlang.FunctionRef;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.jinterface.Bindings;

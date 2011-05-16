@@ -17,11 +17,11 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlFolder;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlFolder;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -10,11 +10,11 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.erlide.core.model.erlang.internal.ErlAttribute;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlFolder;
-import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.internal.model.erlang.ErlAttribute;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlFolder;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

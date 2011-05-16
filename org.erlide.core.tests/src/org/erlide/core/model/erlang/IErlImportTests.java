@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

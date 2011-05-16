@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.internal.PreferencesHelper;
+import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;

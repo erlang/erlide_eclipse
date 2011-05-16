@@ -23,8 +23,8 @@ import org.eclipse.ui.IWorkbench;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.internal.ProjectPreferencesConstants;
+import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;

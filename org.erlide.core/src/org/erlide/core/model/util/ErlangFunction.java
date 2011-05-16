@@ -1,6 +1,6 @@
 package org.erlide.core.model.util;
 
-import org.erlide.core.model.erlang.internal.ErlFunction;
+import org.erlide.core.internal.model.erlang.ErlFunction;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

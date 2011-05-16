@@ -13,7 +13,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.TypeConverter;
 

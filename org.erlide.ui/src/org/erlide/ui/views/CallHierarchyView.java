@@ -37,7 +37,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.ErlLogger;

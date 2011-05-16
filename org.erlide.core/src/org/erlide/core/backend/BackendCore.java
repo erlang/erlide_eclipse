@@ -6,11 +6,11 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.internal.BackendFactory;
-import org.erlide.core.backend.internal.BackendManager;
 import org.erlide.core.backend.manager.IBackendFactory;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
+import org.erlide.core.internal.backend.BackendFactory;
+import org.erlide.core.internal.backend.BackendManager;
 
 public class BackendCore {
 

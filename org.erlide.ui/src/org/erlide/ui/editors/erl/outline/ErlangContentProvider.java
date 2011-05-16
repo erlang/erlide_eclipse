@@ -14,9 +14,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangContentProvider implements ITreeContentProvider {

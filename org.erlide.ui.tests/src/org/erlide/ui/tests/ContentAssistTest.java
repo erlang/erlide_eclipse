@@ -30,7 +30,7 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.ErlModelException;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.junit.After;

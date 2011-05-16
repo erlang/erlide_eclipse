@@ -13,8 +13,8 @@ import org.eclipse.core.runtime.Status;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.internal.BackendHelper;
-import org.erlide.core.model.erlang.internal.PreferencesHelper;
+import org.erlide.core.internal.backend.BackendHelper;
+import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.osgi.service.prefs.BackingStoreException;
 

@@ -25,7 +25,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
