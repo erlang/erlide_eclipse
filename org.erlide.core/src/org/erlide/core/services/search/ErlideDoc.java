@@ -3,7 +3,7 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -11,7 +11,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ErlideDoc {
-    public static OtpErlangObject getProposalsWithDoc(final RpcCallSite b,
+    public static OtpErlangObject getProposalsWithDoc(final IRpcCallSite b,
             final String mod, final String prefix, final String stateDir) {
         OtpErlangObject res = null;
         try {
@@ -23,7 +23,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static OtpErlangObject getModules(final RpcCallSite b,
+    public static OtpErlangObject getModules(final IRpcCallSite b,
             final String prefix, final List<String> projectModules) {
         OtpErlangObject res = null;
         try {
@@ -36,8 +36,8 @@ public class ErlideDoc {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject getOtpDoc(final RpcCallSite ide,
-            final RpcCallSite b, final int offset, final String stateDir,
+    public static OtpErlangObject getOtpDoc(final IRpcCallSite ide,
+            final IRpcCallSite b, final int offset, final String stateDir,
             final String module, final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
@@ -55,7 +55,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static String getOtpDocLocation(final RpcCallSite b) {
+    public static String getOtpDocLocation(final IRpcCallSite b) {
         // OtpErlangObject res = null;
         // try {
         // // commented out since target doesn't exist

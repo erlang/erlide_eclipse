@@ -12,7 +12,7 @@ package org.erlide.core.model.util;
 
 import java.util.EventObject;
 
-import org.erlide.core.model.root.api.IErlElementDelta;
+import org.erlide.core.model.root.IErlElementDelta;
 
 /**
  * An element changed event describes a change to the structure or contents of a

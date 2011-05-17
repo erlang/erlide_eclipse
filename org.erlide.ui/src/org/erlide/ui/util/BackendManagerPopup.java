@@ -14,15 +14,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendListener;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
-public class BackendManagerPopup implements BackendListener {
+public class BackendManagerPopup implements IBackendListener {
 
-    private static final BackendListener fInstance = new BackendManagerPopup();
+    private static final IBackendListener fInstance = new BackendManagerPopup();
 
     private BackendManagerPopup() {
     }
@@ -31,7 +31,7 @@ public class BackendManagerPopup implements BackendListener {
         BackendCore.getBackendManager().addBackendListener(fInstance);
     }
 
-    public void runtimeAdded(final Backend b) {
+    public void runtimeAdded(final IBackend b) {
         ErlLogger.debug("$$ added backend " + b);
         ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
         ErlLogger.debug("$$ added backend " + b.getRuntimeInfo().getName());
@@ -46,7 +46,7 @@ public class BackendManagerPopup implements BackendListener {
         });
     }
 
-    public void runtimeRemoved(final Backend b) {
+    public void runtimeRemoved(final IBackend b) {
         ErlLogger.debug("$$ removed backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
@@ -59,7 +59,7 @@ public class BackendManagerPopup implements BackendListener {
         });
     }
 
-    public void moduleLoaded(final RpcCallSite backend, final IProject project,
+    public void moduleLoaded(final IRpcCallSite backend, final IProject project,
             final String moduleName) {
     }
 }

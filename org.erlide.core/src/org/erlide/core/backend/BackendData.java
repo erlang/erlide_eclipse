@@ -36,7 +36,7 @@ import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 
-public class BackendData extends GenericBackendData {
+public final class BackendData extends GenericBackendData {
 
     public static final String PROJECT_NAME_SEPARATOR = ";";
 

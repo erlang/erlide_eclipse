@@ -45,11 +45,11 @@ import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatus;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendHelper;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.internal.backend.BackendHelper;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -142,10 +142,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
         erlConMan = new ErlConsoleManager();
         if (CommonUtils.isDeveloper()) {
-            final Backend ideBackend = BackendCore.getBackendManager()
-                    .getIdeBackend();
-            if (!ideBackend.hasConsole()) {
-                erlConMan.runtimeAdded(ideBackend);
+            try {
+                final IBackend ideBackend = BackendCore.getBackendManager()
+                        .getIdeBackend();
+                if (!ideBackend.hasConsole()) {
+                    erlConMan.runtimeAdded(ideBackend);
+                }
+            } catch (final Exception e) {
+                ErlLogger.warn(e);
             }
         }
 
@@ -464,7 +468,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
                 @Override
                 protected IStatus run(final IProgressMonitor monitor) {
                     try {
-                        final RpcCallSite ideBackend = BackendCore
+                        final IRpcCallSite ideBackend = BackendCore
                                 .getBackendManager().getIdeBackend();
                         final String info = BackendHelper
                                 .getSystemInfo(ideBackend);

@@ -26,11 +26,11 @@ import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 
@@ -373,7 +373,7 @@ public final class MarkerUtils {
     }
 
     public static void addDialyzerWarningMarkersFromResultList(
-            final IErlProject project, final RpcCallSite backend,
+            final IErlProject project, final IRpcCallSite backend,
             final OtpErlangList result) {
         if (result == null) {
             return;

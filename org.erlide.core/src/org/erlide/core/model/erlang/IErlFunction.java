@@ -11,7 +11,7 @@ package org.erlide.core.model.erlang;
 
 import java.util.List;
 
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 
 /**

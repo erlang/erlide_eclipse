@@ -17,7 +17,7 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
 import org.erlide.core.backend.BackendData;
-import org.erlide.core.backend.internal.ErtsWatcherRunnable;
+import org.erlide.core.backend.ErtsWatcherRunnable;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
 

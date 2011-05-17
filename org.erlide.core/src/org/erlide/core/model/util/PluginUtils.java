@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.internal.BackendUtils;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.backend.BackendUtils;
+import org.erlide.core.model.root.IErlProject;
 
 /**
  * Simple utility functions
@@ -82,7 +82,7 @@ public class PluginUtils {
                     .getErlangProject(project);
             paths = getFullPaths(project, erlProject.getSourceDirs());
             extra = new HashSet<String>();
-            extra.addAll(BackendUtils.getExtraSourcePaths());
+            extra.addAll(BackendUtils.getExtraSourcePathsForModel(project));
         }
 
         public boolean accept(final IContainer container) {

@@ -16,14 +16,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.CoreScope;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.AcceptFlags;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlElementVisitor;
-import org.erlide.core.model.root.api.IErlExternal;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.internal.ErlModelCache;
+import org.erlide.core.internal.model.root.ErlModelCache;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElementVisitor;
+import org.erlide.core.model.root.IErlExternal;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElement.AcceptFlags;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -308,7 +308,7 @@ public class IErlElementTest extends ErlModelTestBase {
 
     // void clearCaches();
     /**
-     * @see org.erlide.core.model.root.api.IErlElement#clearCaches()
+     * @see org.erlide.core.model.root.IErlElement#clearCaches()
      */
     // TODO check more than source dir cache
     @Test

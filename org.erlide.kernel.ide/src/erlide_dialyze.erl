@@ -21,7 +21,7 @@
 %%
 
 dialyze(Files, Plts, Includes, FromSource, NoCheckPLT) ->
-    ?D([Files, Plts, Includes]),
+    ?D([Files, Plts, Includes, FromSource, NoCheckPLT]),
     From = case FromSource of
 	       true -> src_code;
 	       false -> byte_code
@@ -34,7 +34,6 @@ dialyze(Files, Plts, Includes, FromSource, NoCheckPLT) ->
                 end,
     case catch dialyzer:run([{files_rec, Files}, 
                              PltOption, 
-                             {check_plt, false},
                              {from, From},
                              {include_dirs, Includes},
                              {check_plt, not NoCheckPLT}]) of

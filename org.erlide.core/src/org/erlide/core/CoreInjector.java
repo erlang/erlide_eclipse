@@ -4,8 +4,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.backend.manager.BackendService;
+import org.erlide.core.backend.manager.IBackendManager;
+import org.erlide.core.internal.backend.BackendManager;
+import org.erlide.core.internal.backend.BackendService;
 
 public class CoreInjector {
 
@@ -28,7 +29,7 @@ public class CoreInjector {
         return Platform.getExtensionRegistry();
     }
 
-    public static BackendManager injectBackendManager() {
+    public static IBackendManager injectBackendManager() {
         return new BackendManager();
     }
 

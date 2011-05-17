@@ -23,19 +23,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BeamUtil;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.common.CharOperation;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlProject;
-
-import com.ericsson.otp.erlang.OtpErlangBinary;
+import org.erlide.core.model.root.ErlModelException;
 
 public final class CoreUtil {
     /**
@@ -212,31 +207,8 @@ public final class CoreUtil {
     private CoreUtil() {
     }
 
-    public static void loadModuleViaInput(final Backend b,
-            final IProject project, final String module)
-            throws ErlModelException, IOException {
-        final IErlProject p = CoreScope.getModel().findProject(project);
-        final IPath outputLocation = project.getFolder(p.getOutputLocation())
-                .getFile(module + ".beam").getLocation();
-        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,
-                outputLocation);
-        if (bin != null) {
-            final String fmt = "code:load_binary(%s, %s, %s).\n";
-            final StringBuffer strBin = new StringBuffer();
-            strBin.append("<<");
-            for (final byte c : bin.binaryValue()) {
-                strBin.append(c).append(',');
-            }
-            strBin.deleteCharAt(strBin.length() - 1);
-            strBin.append(">>");
-            final String cmd = String.format(fmt, module, module,
-                    strBin.toString());
-            b.input(cmd);
-        }
-    }
-
-    public static Backend getBuildOrIdeBackend(final IProject project) {
-        final BackendManager backendManager = BackendCore.getBackendManager();
+    public static IBackend getBuildOrIdeBackend(final IProject project) {
+        final IBackendManager backendManager = BackendCore.getBackendManager();
         if (project != null) {
             try {
                 return backendManager.getBuildBackend(project);

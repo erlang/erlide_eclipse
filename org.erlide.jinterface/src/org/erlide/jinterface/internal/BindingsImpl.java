@@ -73,6 +73,14 @@ public final class BindingsImpl implements Bindings {
         throw new OtpErlangException("value is not an atom");
     }
 
+    public String getQuotedAtom(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangAtom) {
+            return ((OtpErlangAtom) r).toString();
+        }
+        throw new OtpErlangException("value is not an atom");
+    }
+
     public String getString(final String name) throws OtpErlangException {
         final OtpErlangObject r = get(name);
         if (r instanceof OtpErlangString) {

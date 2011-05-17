@@ -3,7 +3,7 @@ package org.erlide.core.bdd;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class RpcSteps {
 
-    private RpcCallSite backend;
+    private IRpcCallSite backend;
     private OtpErlangObject result = null;
     final private TermParser termParser = TermParser.getParser();
 

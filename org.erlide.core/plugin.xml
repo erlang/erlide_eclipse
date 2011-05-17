@@ -10,7 +10,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.erlide.core.services.builder.internal.ErlangNature">
+               class="org.erlide.core.internal.services.builder.ErlangNature">
          </run>
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>
@@ -24,7 +24,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.services.builder.ErlangBuilder">
+               class="org.erlide.core.internal.services.builder.ErlangBuilder">
          </run>
       </builder>
    </extension>
@@ -34,7 +34,7 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.erlide.core.services.builder.DialyzerBuilder">
+               class="org.erlide.core.internal.services.builder.DialyzerBuilder">
          </run></builder>
    </extension>
    <extension
@@ -128,7 +128,7 @@
            adaptableType="org.eclipse.core.resources.IResource"
            class="org.erlide.core.model.util.ElementAdapterFactory">
         <adapter
-              type="org.erlide.core.model.root.api.IErlElement">
+              type="org.erlide.core.model.root.IErlElement">
         </adapter>
      </factory>
   </extension>

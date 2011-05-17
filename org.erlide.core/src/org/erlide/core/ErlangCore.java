@@ -145,7 +145,8 @@ public final class ErlangCore {
         }
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
 
-        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer();
+        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
+                BackendCore.getRuntimeInfoManager());
         runtimeInfoInitializer.initializeRuntimesList();
 
         BackendCore.getBackendManager().loadCodepathExtensions();

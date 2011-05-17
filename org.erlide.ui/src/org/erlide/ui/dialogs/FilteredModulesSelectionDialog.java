@@ -30,7 +30,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -71,11 +70,11 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.internal.BackendUtils;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.ui.ErlideUIPlugin;
@@ -545,7 +544,7 @@ public class FilteredModulesSelectionDialog extends
     private class ModuleProxyVisitor implements IResourceProxyVisitor {
 
         private final AbstractContentProvider proxyContentProvider;
-        private final ModuleFilter resourceFilter;
+        private final ModuleFilter moduleFilter;
         private final IProgressMonitor progressMonitor;
         private final List<IResource> projects;
         private final Set<IPath> validPaths = new HashSet<IPath>();
@@ -555,17 +554,17 @@ public class FilteredModulesSelectionDialog extends
          * Creates new ResourceProxyVisitor instance.
          * 
          * @param contentProvider
-         * @param resourceFilter
+         * @param moduleFilter
          * @param progressMonitor
          * @throws CoreException
          */
         public ModuleProxyVisitor(
                 final AbstractContentProvider contentProvider,
-                final ModuleFilter resourceFilter,
+                final ModuleFilter moduleFilter,
                 final IProgressMonitor progressMonitor) throws CoreException {
             super();
             proxyContentProvider = contentProvider;
-            this.resourceFilter = resourceFilter;
+            this.moduleFilter = moduleFilter;
             this.progressMonitor = progressMonitor;
             final IResource[] resources = container.members();
             projects = new ArrayList<IResource>(Arrays.asList(resources));
@@ -634,7 +633,7 @@ public class FilteredModulesSelectionDialog extends
                                 path = project.getLocation().append(v)
                                         .toString();
                             }
-                            proxyContentProvider.add(path, resourceFilter);
+                            proxyContentProvider.add(path, moduleFilter);
                         }
                     }
                 }
@@ -644,21 +643,14 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
 
-            final ResourceAttributes resourceAttributes = resource
-                    .getResourceAttributes();
-            if (resourceAttributes == null) {
-                return false;
-            }
             if (CommonUtils.isErlangFileContentFileName(resource.getName())
-                    && !resource.isLinked()
-                    && !resourceAttributes.isSymbolicLink()
                     && !isLostFound(resource.getProjectRelativePath())) {
                 final IContainer my_container = resource.getParent();
                 if (validPaths.contains(my_container.getFullPath())
                         || !extraLocations.isEmpty()
                         && extraLocations.contains(my_container.getLocation()
                                 .toString())) {
-                    proxyContentProvider.add(resource, resourceFilter);
+                    proxyContentProvider.add(resource, moduleFilter);
                 }
             }
 
@@ -672,10 +664,12 @@ public class FilteredModulesSelectionDialog extends
         private void addPaths(final IProject project) {
             final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
-            validPaths.addAll(PluginUtils.getFullPaths(project,
-                    erlProject.getIncludeDirs()));
-            validPaths.addAll(PluginUtils.getFullPaths(project,
-                    erlProject.getSourceDirs()));
+            if (erlProject != null) {
+                validPaths.addAll(PluginUtils.getFullPaths(project,
+                        erlProject.getIncludeDirs()));
+                validPaths.addAll(PluginUtils.getFullPaths(project,
+                        erlProject.getSourceDirs()));
+            }
         }
     }
 

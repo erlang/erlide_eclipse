@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -26,12 +26,12 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BackendShell {
 
-    private final Backend backend;
+    private final IBackend backend;
     private OtpErlangPid server;
     private final String fId;
     private final ConsoleEventHandler handler;
 
-    public BackendShell(final Backend backend, final String id,
+    public BackendShell(final IBackend backend, final String id,
             final OtpErlangPid server) {
         this.backend = backend;
         fId = id;

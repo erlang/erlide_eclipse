@@ -1,7 +1,7 @@
 package org.erlide.core.model.erlang;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

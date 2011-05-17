@@ -15,7 +15,7 @@ import java.util.Map;
 
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.TypeConverter;
 
@@ -26,7 +26,7 @@ public class ErlideEdocExport {
     public static void files(final Collection<String> files,
             final Map<String, OtpErlangObject> options) throws RpcException,
             BackendException {
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final OtpErlangObject opts = TypeConverter.mapToProplist(options);
         b.call(15000, "edoc", "files", "lsx", files, opts);
     }

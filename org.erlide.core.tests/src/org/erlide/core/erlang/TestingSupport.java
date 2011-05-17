@@ -1,8 +1,8 @@
 package org.erlide.core.erlang;
 
-import org.erlide.core.model.erlang.internal.ErlAttribute;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.internal.model.erlang.ErlAttribute;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IParent;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

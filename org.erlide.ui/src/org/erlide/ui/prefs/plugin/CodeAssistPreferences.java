@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.erlang.internal.PreferencesHelper;
+import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CodeAssistPreferences {

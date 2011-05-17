@@ -26,16 +26,16 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.ISourceReference;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.root.ISourceReference;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
@@ -139,7 +139,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final int offset = selection.getOffset();
         try {
             final IErlProject project = module.getProject();
@@ -174,7 +174,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static void openOpenResult(final ErlangEditor editor,
-            final IErlModule module, final RpcCallSite backend,
+            final IErlModule module, final IRpcCallSite backend,
             final int offset, final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException,
@@ -189,7 +189,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static Object findOpenResult(final ErlangEditor editor,
-            final IErlModule module, final RpcCallSite backend,
+            final IErlModule module, final IRpcCallSite backend,
             final IErlProject erlProject, final OpenResult res, final int offset)
             throws CoreException, RpcException, BackendException,
             ErlModelException, BadLocationException, OtpErlangRangeException {
@@ -234,7 +234,7 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     private static IErlElement findLocalCall(final IErlModule module,
-            final RpcCallSite backend, final IErlProject erlProject,
+            final IRpcCallSite backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
             final IErlModel.Scope scope) throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element)) {

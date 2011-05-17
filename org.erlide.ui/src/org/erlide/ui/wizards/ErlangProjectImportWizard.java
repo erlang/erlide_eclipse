@@ -45,7 +45,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.model.root.internal.OldErlangProjectProperties;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;

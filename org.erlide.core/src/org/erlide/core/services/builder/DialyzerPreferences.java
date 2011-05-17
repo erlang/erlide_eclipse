@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.internal.PreferencesHelper;
+import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
@@ -79,8 +79,8 @@ public class DialyzerPreferences {
         helper.flush();
     }
 
-    private Collection<String> getPLTPathsFromPreferences() throws RpcException {
-
+    private static Collection<String> getPLTPathsFromPreferences()
+            throws RpcException {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
         final String pluginId = "org.erlide.ui";
@@ -91,6 +91,14 @@ public class DialyzerPreferences {
         }
         return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
                 .getIdeBackend(), pltFilesString);
+    }
+
+    public static String getAlternatePLTFileDirectoryFromPreferences()
+            throws RpcException {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "alternate_plt_file_directory";
+        final String pluginId = "org.erlide.ui";
+        return service.getString(pluginId, key, "", null);
     }
 
     public void load() throws BackingStoreException, RpcException {

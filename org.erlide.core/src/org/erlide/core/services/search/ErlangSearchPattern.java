@@ -10,7 +10,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMacroDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.IErlElement;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

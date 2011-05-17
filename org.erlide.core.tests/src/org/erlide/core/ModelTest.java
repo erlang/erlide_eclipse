@@ -3,7 +3,7 @@ package org.erlide.core;
 import static org.junit.Assert.assertNotNull;
 
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

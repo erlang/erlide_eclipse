@@ -25,8 +25,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
@@ -60,7 +60,7 @@ public class GlobalParameters {
         if (isQCchecked) {
             return hasQuickCheck;
         } else {
-            final RpcResult res = BackendCore.getBackendManager()
+            final IRpcResult res = BackendCore.getBackendManager()
                     .getIdeBackend()
                     .call_noexception("code", "which", "a", "eqc");
             if (!res.isOk()) {

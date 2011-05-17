@@ -40,7 +40,7 @@ import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.debug.IErlangDebugNode;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -280,7 +280,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final IProject project = dti.getItem().getProject()
                 .getWorkspaceProject();
         final boolean interpret = checked;
-        final RpcCallSite backend = erlangDebugTarget.getBackend();
+        final IRpcCallSite backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {

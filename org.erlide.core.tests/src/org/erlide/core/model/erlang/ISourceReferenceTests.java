@@ -2,9 +2,9 @@ package org.erlide.core.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.ISourceReference;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.root.ISourceReference;
 import org.junit.Test;
 
 public class ISourceReferenceTests extends ErlModelTestBase {

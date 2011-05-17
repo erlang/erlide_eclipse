@@ -12,11 +12,11 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.test.support.ErlideTestUtils;
@@ -186,7 +186,7 @@ public class ErlProjectTest {
         moduleE.open(null);
         // when
         // looking for lists:reverse/2 and lists:reverse/1
-        final RpcCallSite backend = BackendCore.getBackendManager()
+        final IRpcCallSite backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         final IErlModel model = project.getModel();
         final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
