@@ -45,8 +45,8 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -62,9 +62,6 @@ public final class BuilderHelper {
     }
 
     public static boolean isDebugging() {
-        if (ErlangPlugin.getDefault() == null) {
-            return false;
-        }
         return ErlangPlugin.getDefault().isDebugging()
                 && Platform.getDebugOption("org.erlide.core/debug/builder")
                         .equals("true");
@@ -174,7 +171,8 @@ public final class BuilderHelper {
     public void checkForClashes(final IRpcCallSite backend,
             final IProject project) {
         try {
-            final OtpErlangList res = InternalErlideBuilder.getCodeClashes(backend);
+            final OtpErlangList res = InternalErlideBuilder
+                    .getCodeClashes(backend);
             for (final OtpErlangObject elem : res.elements()) {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
                 final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -204,8 +202,8 @@ public final class BuilderHelper {
                 dirList[j++] = project.getLocation().toPortableString() + "/"
                         + sp;
             }
-            final OtpErlangList res = InternalErlideBuilder.getSourceClashes(backend,
-                    dirList);
+            final OtpErlangList res = InternalErlideBuilder.getSourceClashes(
+                    backend, dirList);
             for (int i = 0; i < res.arity(); i++) {
                 final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
                 final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -363,8 +361,8 @@ public final class BuilderHelper {
     }
 
     public void completeCompile(final IProject project, final IResource source,
-            final OtpErlangObject compilationResult, final IRpcCallSite backend,
-            final OtpErlangList compilerOptions) {
+            final OtpErlangObject compilationResult,
+            final IRpcCallSite backend, final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
             MarkerUtils.addProblemMarker(source, null, null,
                     "Could not compile file", 0, IMarker.SEVERITY_ERROR);
@@ -481,8 +479,9 @@ public final class BuilderHelper {
                 }
 
                 createTaskMarkers(project, res);
-                return InternalErlideBuilder.compileErl(backend, res.getLocation(),
-                        outputDir, includeDirs, compilerOptions);
+                return InternalErlideBuilder.compileErl(backend,
+                        res.getLocation(), outputDir, includeDirs,
+                        compilerOptions);
 
             } else {
                 return null;

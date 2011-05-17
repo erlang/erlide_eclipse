@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.Platform;
@@ -46,6 +47,7 @@ public class ErlangPlugin extends Plugin {
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
+            ResourcesPlugin.getWorkspace().removeSaveParticipant(this);
             if (core != null) {
                 core.stop();
             }
@@ -61,8 +63,10 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         final CoreScope coreScope = new CoreScope(this, context);
         core = CoreInjector.injectErlangCore(coreScope);
-        core.init();
         super.start(context);
+        ResourcesPlugin.getWorkspace().addSaveParticipant(this,
+                core.getSaveParticipant());
+
         core.start(getFeatureVersion());
     }
 
