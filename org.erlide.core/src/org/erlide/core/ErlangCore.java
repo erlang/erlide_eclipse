@@ -36,6 +36,10 @@ import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class ErlangCore {
+    public static final String PLUGIN_ID = "org.erlide.core";
+    public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
+    public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
+    private static String featureVersion;
 
     private ErlLogger logger;
     private final ServicesMap services;
@@ -50,6 +54,7 @@ public final class ErlangCore {
         this.plugin = plugin;
         this.workspace = workspace;
         this.extensionRegistry = extensionRegistry;
+        featureVersion = "?";
     }
 
     public void init() {
@@ -144,6 +149,7 @@ public final class ErlangCore {
             dev += " test ***";
         }
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+        featureVersion = version;
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
                 BackendCore.getRuntimeInfoManager());
@@ -188,7 +194,7 @@ public final class ErlangCore {
 
     public static IConfigurationElement[] getMessageReporterConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
                 "messageReporter");
     }
 
@@ -274,6 +280,10 @@ public final class ErlangCore {
             // workspace.run(new BatchOperation(action), rule,
             // IWorkspace.AVOID_UPDATE, monitor);
         }
+    }
+
+    public static String getFeatureVersion() {
+        return featureVersion;
     }
 
 }

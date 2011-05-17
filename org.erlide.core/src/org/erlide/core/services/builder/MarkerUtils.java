@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlComment;
@@ -49,15 +49,15 @@ public final class MarkerUtils {
     private static final String TODO = "TODO";
     // Copied from org.eclipse.ui.ide (since we don't want ui code in core)
     public static final String PATH_ATTRIBUTE = "org.eclipse.ui.views.markers.path";//$NON-NLS-1$
-    public static final String DIALYZE_WARNING_MARKER = ErlangPlugin.PLUGIN_ID
+    public static final String DIALYZE_WARNING_MARKER = ErlangCore.PLUGIN_ID
             + ".dialyzewarningmarker";
 
     private MarkerUtils() {
     }
 
-    public static final String PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+    public static final String PROBLEM_MARKER = ErlangCore.PLUGIN_ID
             + ".problemmarker";
-    public static final String TASK_MARKER = ErlangPlugin.PLUGIN_ID
+    public static final String TASK_MARKER = ErlangCore.PLUGIN_ID
             + ".taskmarker";
 
     public static void addMarker(final IResource file, final String path,

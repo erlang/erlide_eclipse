@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.manager.IBackendFactory;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
@@ -41,19 +41,19 @@ public class BackendCore {
 
     public static IConfigurationElement[] getSourcepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
                 "sourcePathProvider");
     }
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
                 "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
-        return reg.getExtensionPoint(ErlangPlugin.PLUGIN_ID, "codepath");
+        return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
     }
 
 }

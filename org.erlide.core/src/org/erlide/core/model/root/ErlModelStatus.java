@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.Util;
 
 /**
@@ -59,14 +59,14 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus() {
         // no code for an multi-status
-        super(ERROR, ErlangPlugin.PLUGIN_ID, 0, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, ErlangCore.PLUGIN_ID, 0, "ErlModelStatus", null); //$NON-NLS-1$
     }
 
     /**
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code) {
-        super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = IErlElement.NO_ELEMENTS;
     }
 
@@ -74,7 +74,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding elements.
      */
     public ErlModelStatus(final int code, final IErlElement[] elements) {
-        super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = elements;
         fPath = null;
     }
@@ -91,7 +91,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int severity, final int code,
             final String string) {
-        super(severity, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(severity, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = IErlElement.NO_ELEMENTS;
         fPath = null;
         fString = string;
@@ -101,7 +101,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code, final Throwable throwable) {
-        super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
+        super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
         fElements = IErlElement.NO_ELEMENTS;
     }
 
@@ -109,7 +109,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code, final IPath path) {
-        super(ERROR, ErlangPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = IErlElement.NO_ELEMENTS;
         fPath = path;
     }
@@ -156,7 +156,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final CoreException coreException) {
-        super(ERROR, ErlangPlugin.PLUGIN_ID,
+        super(ERROR, ErlangCore.PLUGIN_ID,
                 ErlModelStatusConstants.CORE_EXCEPTION,
                 "ErlModelStatus", coreException); //$NON-NLS-1$
         fElements = IErlElement.NO_ELEMENTS;

@@ -51,7 +51,7 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModelChangeListener;
@@ -309,7 +309,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         final Menu menu = manager.createContextMenu(tree);
         tree.setMenu(menu);
 
-        site.registerContextMenu(ErlangPlugin.PLUGIN_ID + ".outline", manager,
+        site.registerContextMenu(ErlangCore.PLUGIN_ID + ".outline", manager,
                 fOutlineViewer);
         fActionGroups = new CompositeActionGroup(
                 new ActionGroup[] { new ErlangSearchActionGroup(this) });

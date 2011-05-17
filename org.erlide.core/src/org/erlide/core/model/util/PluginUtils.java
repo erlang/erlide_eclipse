@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.model.root.IErlProject;
 
@@ -39,7 +39,7 @@ public class PluginUtils {
      * @return IStatus
      */
     public static IStatus makeStatus(final Exception x) {
-        return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID, 0,
+        return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID, 0,
                 x.getMessage(), x);
     }
 

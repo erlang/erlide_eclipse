@@ -6,13 +6,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CodeAssistPreferences {
 
-    private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID
             + "/codeassist";
 
     private final PreferencesHelper helper;
@@ -36,7 +36,7 @@ public class CodeAssistPreferences {
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
             throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangPlugin.PLUGIN_ID,
+                    ErlangCore.PLUGIN_ID,
                     "could not retrieve compiler options"));
         }
         return prefs;

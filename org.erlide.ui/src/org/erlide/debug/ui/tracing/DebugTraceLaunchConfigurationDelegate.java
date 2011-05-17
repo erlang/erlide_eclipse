@@ -11,7 +11,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 
 public class DebugTraceLaunchConfigurationDelegate extends
         LaunchConfigurationDelegate {
@@ -31,7 +31,7 @@ public class DebugTraceLaunchConfigurationDelegate extends
             final IProgressMonitor monitor) throws CoreException {
         if (!mode.equals(ILaunchManager.DEBUG_MODE)) {
             throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangPlugin.PLUGIN_ID, "debug mode not set"));
+                    ErlangCore.PLUGIN_ID, "debug mode not set"));
         }
         final DebugTraceTarget target = new DebugTraceTarget(launch,
                 parentLaunch, node, events);

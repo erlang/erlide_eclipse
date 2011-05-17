@@ -28,10 +28,6 @@ import org.osgi.framework.Version;
  */
 
 public class ErlangPlugin extends Plugin {
-    public static final String PLUGIN_ID = "org.erlide.core";
-    public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
-    public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
-
     private static ErlangPlugin plugin;
     private ErlangCore core;
 
@@ -40,11 +36,6 @@ public class ErlangPlugin extends Plugin {
         plugin = this;
     }
 
-    /**
-     * Returns the shared instance.
-     * 
-     * @return The plugin
-     */
     public static ErlangPlugin getDefault() {
         if (plugin == null) {
             plugin = new ErlangPlugin();
@@ -52,16 +43,12 @@ public class ErlangPlugin extends Plugin {
         return plugin;
     }
 
-    /*
-     * (non-Edoc) Shutdown the ErlangCore plug-in. <p> De-registers the
-     * ErlModelManager as a resource changed listener and save participant. <p>
-     * 
-     * @see org.eclipse.core.runtime.Plugin#stop(BundleContext)
-     */
     @Override
     public void stop(final BundleContext context) throws Exception {
         try {
-            core.stop();
+            if (core != null) {
+                core.stop();
+            }
         } finally {
             core = null;
             plugin = null;
@@ -70,14 +57,6 @@ public class ErlangPlugin extends Plugin {
         }
     }
 
-    /*
-     * (non-Edoc) Startup the ErlangCore plug-in. <p> Registers the
-     * ErlModelManager as a resource changed listener and save participant.
-     * Starts the background indexing, and restore saved classpath variable
-     * values. <p> @throws Exception
-     * 
-     * @see org.eclipse.core.runtime.Plugin#start(BundleContext)
-     */
     @Override
     public void start(final BundleContext context) throws Exception {
         final CoreScope coreScope = new CoreScope(this, context);
@@ -87,7 +66,7 @@ public class ErlangPlugin extends Plugin {
         core.start(getFeatureVersion());
     }
 
-    public String getFeatureVersion() {
+    private String getFeatureVersion() {
         String version = "?";
         try {
             final IBundleGroupProvider[] providers = Platform

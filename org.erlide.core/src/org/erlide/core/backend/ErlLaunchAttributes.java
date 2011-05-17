@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 
 /**
  * @noextend This interface is not intended to be extended by clients.
@@ -18,7 +18,7 @@ import org.erlide.core.ErlangPlugin;
  */
 public interface ErlLaunchAttributes {
 
-    final String prefix = ErlangPlugin.PLUGIN_ID;
+    final String prefix = ErlangCore.PLUGIN_ID;
 
     final String PROJECTS = prefix + ".projects";
 
