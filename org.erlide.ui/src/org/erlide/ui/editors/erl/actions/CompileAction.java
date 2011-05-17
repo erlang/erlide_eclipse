@@ -18,8 +18,8 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.core.services.builder.CompilerPreferences;
@@ -46,7 +46,7 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();

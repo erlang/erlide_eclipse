@@ -32,9 +32,9 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.common.ErlangFunctionCall;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -99,7 +99,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     private final List<ErlangProcess> fAllProcesses;
     private final List<ErlangProcess> fLocalProcesses;
-    final Backend fBackend;
+    final IBackend fBackend;
     private final ILaunch fLaunch;
     private boolean fDisconnected = false;
     // private final DebuggerListener fDbgListener;
@@ -121,7 +121,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     // private final WaitingForDebuggerListener waiter;
 
-    public ErlangDebugTarget(final ILaunch launch, final Backend b,
+    public ErlangDebugTarget(final ILaunch launch, final IBackend b,
             final Collection<IProject> projects, final int debugFlags)
             throws DebugException {
         super(null);
@@ -342,7 +342,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return null;
     }
 
-    public RpcCallSite getBackend() {
+    public IRpcCallSite getBackend() {
         return fBackend;
     }
 

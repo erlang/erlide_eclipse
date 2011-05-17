@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.common.Util;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -20,7 +20,7 @@ public class ErlideDialyze {
     private static final int FILE_TIMEOUT = 20000;
     private static final int INCLUDE_TIMEOUT = 4000;
 
-    public static OtpErlangObject dialyze(final RpcCallSite backend,
+    public static OtpErlangObject dialyze(final IRpcCallSite backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
             final Object noCheckPLT) {
@@ -42,7 +42,7 @@ public class ErlideDialyze {
         return null;
     }
 
-    public static String formatWarning(final RpcCallSite backend,
+    public static String formatWarning(final IRpcCallSite backend,
             final OtpErlangObject warning) {
         try {
             final OtpErlangObject result = backend.call("erlide_dialyze",
@@ -54,7 +54,7 @@ public class ErlideDialyze {
         return warning.toString();
     }
 
-    public static OtpErlangObject checkPlt(final RpcCallSite backend,
+    public static OtpErlangObject checkPlt(final IRpcCallSite backend,
             final String plt) {
         try {
             return backend.call("erlide_dialyze", "check_plt", "s", plt);
@@ -64,7 +64,7 @@ public class ErlideDialyze {
         return null;
     }
 
-    public static List<String> getPltFiles(final RpcCallSite backend,
+    public static List<String> getPltFiles(final IRpcCallSite backend,
             final String pltFiles) throws RpcException {
         final OtpErlangObject o = backend.call("erlide_dialyze",
                 "get_plt_files", "s", pltFiles);

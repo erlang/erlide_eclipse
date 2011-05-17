@@ -10,22 +10,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.StringUtils;
+import org.erlide.core.internal.model.root.SourceRange;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlExternal;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IOpenable;
-import org.erlide.core.model.root.api.IParent;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.internal.SourceRange;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlExternal;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -323,7 +323,7 @@ public class ModelUtils {
         return new String[] { "MODULE", "LINE", "FILE" };
     }
 
-    public static ISourceRange findVariable(final RpcCallSite backend,
+    public static ISourceRange findVariable(final IRpcCallSite backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,

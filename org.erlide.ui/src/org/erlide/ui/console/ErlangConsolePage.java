@@ -76,9 +76,9 @@ import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendHelper;
 import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.IoRequest;
+import org.erlide.core.internal.backend.BackendHelper;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

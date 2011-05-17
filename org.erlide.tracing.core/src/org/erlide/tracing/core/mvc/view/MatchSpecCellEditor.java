@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Constants;
 import org.erlide.tracing.core.mvc.model.MatchSpec;
@@ -70,7 +70,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
                 return null;
             }
             try {
-                final RpcCallSite backend = BackendCore.getBackendManager()
+                final IRpcCallSite backend = BackendCore.getBackendManager()
                         .getIdeBackend();
                 final OtpErlangTuple tuple = (OtpErlangTuple) backend.call(
                         Constants.ERLANG_HELPER_MODULE, Constants.FUN_STR2MS,

@@ -19,8 +19,8 @@ import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.IBackend;
 import org.erlide.ui.console.ConsoleMessages;
 import org.erlide.ui.console.ErlangConsole;
 
@@ -58,7 +58,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
      * @see org.eclipse.ui.texteditor.IUpdate#update()
      */
     public void update() {
-        final Backend backend = (Backend) fConsole.getBackend();
+        final IBackend backend = fConsole.getBackend();
         setEnabled(backend.isManaged() && !backend.isStopped()
                 && backend != BackendCore.getBackendManager().getIdeBackend());
     }
@@ -71,7 +71,7 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
     @Override
     public void run() {
         try {
-            final Backend backend = (Backend) fConsole.getBackend();
+            final IBackend backend = fConsole.getBackend();
             final ILaunch launch = backend.getLaunch();
             if (launch != null) {
                 terminate(launch);

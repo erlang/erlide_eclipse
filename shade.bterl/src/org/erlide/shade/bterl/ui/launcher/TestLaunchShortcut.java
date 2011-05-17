@@ -25,13 +25,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.test_support.ui.suites.TestResultsView;
 
@@ -62,7 +62,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 }
                 final ILaunch launch = launchConfig.launch(mode, Job
                         .getJobManager().createProgressGroup(), false, true);
-                final Backend backend = BackendCore.getBackendManager()
+                final IBackend backend = BackendCore.getBackendManager()
                         .getBackendForLaunch(launch);
                 if (backend == null) {
                     System.out.println("NULL backend for bterl");

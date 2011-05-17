@@ -29,11 +29,11 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.core.services.builder.internal.BuilderMessages;
+import org.erlide.core.services.builder.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
@@ -136,8 +136,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Set<BuildResource> resourcesToBuild,
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
-            final Map<RpcFuture, IResource> results = Maps.newHashMap();
-            RpcCallSite backend;
+            final Map<IRpcFuture, IResource> results = Maps.newHashMap();
+            IRpcCallSite backend;
             try {
                 backend = BackendCore.getBackendManager().getBuildBackend(
                         project);
@@ -170,19 +170,19 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                             + resource.getFullPath().toString() + " :: "
                             + outputDir + " -- " + compilerOptions);
                 }
-                final RpcFuture f = helper.startCompileErl(project, bres,
+                final IRpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
                     results.put(f, resource);
                 }
             }
-            final List<Entry<RpcFuture, IResource>> done = Lists.newArrayList();
-            final List<Entry<RpcFuture, IResource>> waiting = Lists
+            final List<Entry<IRpcFuture, IResource>> done = Lists.newArrayList();
+            final List<Entry<IRpcFuture, IResource>> waiting = Lists
                     .newArrayList(results.entrySet());
 
             // TODO should use some kind of notification!
             while (waiting.size() > 0) {
-                for (final Entry<RpcFuture, IResource> entry : waiting) {
+                for (final Entry<IRpcFuture, IResource> entry : waiting) {
                     if (monitor.isCanceled()) {
                         return;
                     }

@@ -21,13 +21,13 @@ import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlModelChangeListener;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IOpenable;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlModelChangeListener;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,

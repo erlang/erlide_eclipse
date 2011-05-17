@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.model.erlang.FunctionRef;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public final class ErlangXref {
 
-    public static void start(final RpcCallSite b) {
+    public static void start(final IRpcCallSite b) {
         try {
             b.call("erlide_xref", "start", "");
         } catch (final Exception e) {
@@ -26,7 +26,7 @@ public final class ErlangXref {
 
     }
 
-    public static void stop(final RpcCallSite b) {
+    public static void stop(final IRpcCallSite b) {
         try {
             b.call("erlide_xref", "stop", "");
         } catch (final Exception e) {
@@ -35,7 +35,7 @@ public final class ErlangXref {
 
     }
 
-    public static RpcFuture addProject(final RpcCallSite b,
+    public static IRpcFuture addProject(final IRpcCallSite b,
             final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
@@ -48,7 +48,7 @@ public final class ErlangXref {
         return null;
     }
 
-    public static void update(final RpcCallSite b) {
+    public static void update(final IRpcCallSite b) {
         try {
             b.call("erlide_xref", "update", "");
         } catch (final Exception e) {
@@ -57,7 +57,7 @@ public final class ErlangXref {
     }
 
     @SuppressWarnings("boxing")
-    public static FunctionRef[] functionUse(final RpcCallSite b,
+    public static FunctionRef[] functionUse(final IRpcCallSite b,
             final String mod, final String fun, final int arity) {
         try {
             final OtpErlangObject r = b.call("erlide_xref", "function_use",
@@ -81,7 +81,7 @@ public final class ErlangXref {
     private ErlangXref() {
     }
 
-    public static FunctionRef[] functionUse(final RpcCallSite b,
+    public static FunctionRef[] functionUse(final IRpcCallSite b,
             final FunctionRef ref) {
         return functionUse(b, ref.module, ref.function, ref.arity);
     }

@@ -7,7 +7,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class InitialCall {
+public final class InitialCall {
     private final String module;
     private final String function;
     private final int arity;

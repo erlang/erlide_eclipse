@@ -14,7 +14,7 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcResultCallback;
+import org.erlide.core.rpc.IRpcResultCallback;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlideSearchServer;
@@ -82,7 +82,7 @@ public class ErlSearchQuery implements ISearchQuery {
     public IStatus run(final IProgressMonitor monitor)
             throws OperationCanceledException {
         final Object locker = new Object();
-        final RpcResultCallback callback = new RpcResultCallback() {
+        final IRpcResultCallback callback = new IRpcResultCallback() {
 
             public void start(final OtpErlangObject msg) {
                 if (fSearchResult != null) {

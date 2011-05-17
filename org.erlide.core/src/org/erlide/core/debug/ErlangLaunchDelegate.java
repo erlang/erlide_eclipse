@@ -32,11 +32,11 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -54,7 +54,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         if (!doContinue) {
             return;
         }
-        final Backend backend = doLaunch(config, mode, launch, monitor);
+        final IBackend backend = doLaunch(config, mode, launch, monitor);
         if (backend == null) {
             return;
         }
@@ -67,7 +67,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return true;
     }
 
-    protected Backend doLaunch(final ILaunchConfiguration config,
+    protected IBackend doLaunch(final ILaunchConfiguration config,
             final String mode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
         BackendData data = new BackendData(config, mode);
@@ -105,7 +105,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return null;
     }
 
-    protected void postLaunch(final String mode, final Backend b,
+    protected void postLaunch(final String mode, final IBackend b,
             final IProgressMonitor monitor) throws CoreException {
     }
 

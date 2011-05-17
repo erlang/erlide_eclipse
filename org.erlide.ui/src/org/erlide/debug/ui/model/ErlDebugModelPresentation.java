@@ -21,7 +21,7 @@ import org.erlide.core.debug.ErlangProcess;
 import org.erlide.core.debug.ErlangStackFrame;
 import org.erlide.core.debug.ErlangUninterpretedStackFrame;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlModel;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;

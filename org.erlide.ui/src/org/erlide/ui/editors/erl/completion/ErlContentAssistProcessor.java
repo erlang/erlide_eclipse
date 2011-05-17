@@ -48,17 +48,17 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.ISourceReference;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.root.ISourceReference;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.codeassist.ErlideContextAssist;
 import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.core.services.search.ErlideDoc;
@@ -255,7 +255,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final RpcCallSite backend = CoreUtil.getBuildOrIdeBackend(project);
+        final IRpcCallSite backend = CoreUtil.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
@@ -349,7 +349,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         }
     }
 
-    private List<ICompletionProposal> getModules(final RpcCallSite backend,
+    private List<ICompletionProposal> getModules(final IRpcCallSite backend,
             final int offset, final String prefix) throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
         if (module != null) {
@@ -375,7 +375,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getAutoImportedFunctions(
-            final RpcCallSite backend, final int offset, final String prefix) {
+            final IRpcCallSite backend, final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
@@ -386,7 +386,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getImportedFunctions(
-            final RpcCallSite backend, final int offset, final String prefix) {
+            final IRpcCallSite backend, final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -414,7 +414,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         return result;
     }
 
-    private List<ICompletionProposal> getVariables(final RpcCallSite b,
+    private List<ICompletionProposal> getVariables(final IRpcCallSite b,
             final int offset, final String prefix) throws ErlModelException,
             BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
@@ -463,7 +463,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getExternalCallCompletions(
-            final RpcCallSite b, final IErlProject project, String moduleName,
+            final IRpcCallSite b, final IErlProject project, String moduleName,
             final int offset, final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
         moduleName = ModelUtils.resolveMacroValue(moduleName, module);

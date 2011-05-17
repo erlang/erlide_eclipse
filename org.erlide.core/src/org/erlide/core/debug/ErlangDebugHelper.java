@@ -7,14 +7,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.CoreScope;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 public class ErlangDebugHelper {
 
-    public void interpret(final RpcCallSite backend, final IProject project,
+    public void interpret(final IRpcCallSite backend, final IProject project,
             final String moduleName, final boolean distributed,
             final boolean interpret) {
         try {

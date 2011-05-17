@@ -31,9 +31,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.DialyzerUtils;
 
 import com.google.common.collect.Sets;

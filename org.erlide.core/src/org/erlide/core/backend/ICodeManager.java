@@ -20,7 +20,7 @@ public interface ICodeManager {
 
     void reRegisterBundles();
 
-    void register(final CodeBundle b);
+    void register(final ICodeBundle b);
 
     void unregister(final Bundle b);
 

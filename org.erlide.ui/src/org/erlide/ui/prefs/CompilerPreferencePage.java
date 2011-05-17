@@ -43,11 +43,11 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendHelper;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.internal.backend.BackendHelper;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.builder.CompilerPreferences;
 import org.erlide.core.services.builder.CompilerPreferencesConstants;
 import org.erlide.jinterface.ErlLogger;
@@ -441,7 +441,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null) {
             return OptionStatus.NO_RUNTIME;
         }

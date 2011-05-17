@@ -60,11 +60,11 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.CoreUtil;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
@@ -630,7 +630,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         protected IStatus run(final IProgressMonitor monitor) {
             try {
                 checkIfPltFilesShouldBeCopied();
-                final RpcCallSite backend = CoreUtil
+                final IRpcCallSite backend = CoreUtil
                         .getBuildOrIdeBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, monitor, backend);
@@ -692,7 +692,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkPlt(final String pltPath,
-                final IProgressMonitor monitor, final RpcCallSite backend)
+                final IProgressMonitor monitor, final IRpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
