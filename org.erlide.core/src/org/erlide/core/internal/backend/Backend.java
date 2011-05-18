@@ -40,7 +40,7 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
@@ -785,7 +785,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                ErlangCore.PLUGIN_ID, "codepath");
 
         // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?

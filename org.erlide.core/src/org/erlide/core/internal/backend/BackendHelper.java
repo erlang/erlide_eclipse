@@ -217,13 +217,6 @@ public class BackendHelper {
         }
     }
 
-    public static String prettyPrint(final IRpcCallSite b,
-            final OtpErlangObject e) throws RpcException {
-        OtpErlangObject p = b.call("erlide_pp", "expr", "x", e);
-        p = b.call("lists", "flatten", "x", p);
-        return ((OtpErlangString) p).stringValue();
-    }
-
     public static OtpErlangObject convertErrors(final IRpcCallSite b,
             final String lines) throws RpcException {
         OtpErlangObject res;

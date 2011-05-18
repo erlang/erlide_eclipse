@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.common.Util;
@@ -49,7 +49,7 @@ public class ErlideDebug {
         if (res instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) res;
             final OtpErlangObject o = t.elementAt(1);
-            final IStatus s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            final IStatus s = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     DebugException.REQUEST_FAILED, o.toString(), null);
             throw new DebugException(s);
         }

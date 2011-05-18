@@ -12,7 +12,7 @@ package org.erlide.ui.util;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 
 /**
  * A setable IStatus. Can be an error, warning, info or ok. For error, info and
@@ -167,7 +167,7 @@ public class StatusInfo implements IStatus {
      * @see IStatus#getPlugin()
      */
     public String getPlugin() {
-        return ErlangPlugin.PLUGIN_ID;
+        return ErlangCore.PLUGIN_ID;
     }
 
     /**

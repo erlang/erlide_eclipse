@@ -36,7 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -210,7 +210,7 @@ public class ErlProject extends Openable implements IErlProject {
      */
     public void configure() throws CoreException {
         // register Erlang builder
-        addToBuildSpec(ErlangPlugin.BUILDER_ID);
+        addToBuildSpec(ErlangCore.BUILDER_ID);
     }
 
     /*
@@ -322,7 +322,7 @@ public class ErlProject extends Openable implements IErlProject {
      */
     public void deconfigure() throws CoreException {
         // unregister Erlang builder
-        removeFromBuildSpec(ErlangPlugin.BUILDER_ID);
+        removeFromBuildSpec(ErlangCore.BUILDER_ID);
     }
 
     /**
@@ -399,7 +399,7 @@ public class ErlProject extends Openable implements IErlProject {
     private int getErlangCommandIndex(final ICommand[] buildSpec) {
 
         for (int i = 0; i < buildSpec.length; ++i) {
-            if (ErlangPlugin.BUILDER_ID.equals(buildSpec[i].getBuilderName())) {
+            if (ErlangCore.BUILDER_ID.equals(buildSpec[i].getBuilderName())) {
                 return i;
             }
         }
@@ -750,7 +750,7 @@ public class ErlProject extends Openable implements IErlProject {
                 : "default_external_modules";
         String result = getExternal(external, service, key, "org.erlide.ui");
         if ("".equals(result)) {
-            result = getExternal(external, service, key, ErlangPlugin.PLUGIN_ID);
+            result = getExternal(external, service, key, ErlangCore.PLUGIN_ID);
         }
         return result;
     }

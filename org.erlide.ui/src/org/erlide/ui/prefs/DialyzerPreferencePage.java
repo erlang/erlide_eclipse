@@ -59,7 +59,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
@@ -622,7 +622,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         IStatus newErrorStatus(final Throwable throwable) {
-            return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     throwable.getMessage());
         }
 

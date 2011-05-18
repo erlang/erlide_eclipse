@@ -36,7 +36,7 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOldErlangProjectProperties;
@@ -198,7 +198,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             description = project.getDescription();
 
-            description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+            description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
             project.setDescription(description, new SubProgressMonitor(monitor,
                     10));
 
