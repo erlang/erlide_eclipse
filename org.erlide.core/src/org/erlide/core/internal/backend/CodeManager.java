@@ -107,7 +107,7 @@ public class CodeManager implements ICodeManager {
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
 
-        final IConfigurationElement[] els = BackendCore
+        final IConfigurationElement[] els = BackendUtils
                 .getCodepathConfigurationElements();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();

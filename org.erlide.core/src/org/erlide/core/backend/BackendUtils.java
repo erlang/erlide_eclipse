@@ -8,8 +8,13 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.core.common.Util;
 import org.erlide.jinterface.ErlLogger;
@@ -24,8 +29,7 @@ public class BackendUtils {
             throws CoreException {
         // TODO should be cached and listening to plugin changes?
         final List<SourcePathProvider> result = Lists.newArrayList();
-        final IConfigurationElement[] elements = BackendCore
-                .getSourcepathConfigurationElements();
+        final IConfigurationElement[] elements = getSourcepathConfigurationElements();
         for (final IConfigurationElement element : elements) {
             final SourcePathProvider provider = (SourcePathProvider) element
                     .createExecutableExtension("class");
@@ -70,32 +74,35 @@ public class BackendUtils {
 
     public static Collection<String> getExtraSourcePathsForBuild(
             final IProject project) {
-        return BackendUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
-            @Override
-            public Collection<IPath> call(final IProject myProject) {
-                return target.getSourcePathsForBuild(myProject);
-            }
-        });
+        return BackendUtils.getExtraSourcePathsGeneric(project,
+                new SPPMethod() {
+                    @Override
+                    public Collection<IPath> call(final IProject myProject) {
+                        return target.getSourcePathsForBuild(myProject);
+                    }
+                });
     }
 
     public static Collection<String> getExtraSourcePathsForModel(
             final IProject project) {
-        return BackendUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
-            @Override
-            public Collection<IPath> call(final IProject myProject) {
-                return target.getSourcePathsForModel(myProject);
-            }
-        });
+        return BackendUtils.getExtraSourcePathsGeneric(project,
+                new SPPMethod() {
+                    @Override
+                    public Collection<IPath> call(final IProject myProject) {
+                        return target.getSourcePathsForModel(myProject);
+                    }
+                });
     }
 
     public static Collection<String> getExtraSourcePathsForExecution(
             final IProject project) {
-        return BackendUtils.getExtraSourcePathsGeneric(project, new SPPMethod() {
-            @Override
-            public Collection<IPath> call(final IProject myProject) {
-                return target.getSourcePathsForExecution(myProject);
-            }
-        });
+        return BackendUtils.getExtraSourcePathsGeneric(project,
+                new SPPMethod() {
+                    @Override
+                    public Collection<IPath> call(final IProject myProject) {
+                        return target.getSourcePathsForExecution(myProject);
+                    }
+                });
     }
 
     private static Collection<String> getExtraSourcePathsGeneric(
@@ -136,6 +143,23 @@ public class BackendUtils {
             return v.elementAt(1);
         }
         return v;
+    }
+
+    public static IConfigurationElement[] getSourcepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
+                "sourcePathProvider");
+    }
+
+    public static IConfigurationElement[] getCodepathConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
+                "codepath");
+    }
+
+    public static IExtensionPoint getCodepathExtension() {
+        final IExtensionRegistry reg = Platform.getExtensionRegistry();
+        return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
     }
 
 }
