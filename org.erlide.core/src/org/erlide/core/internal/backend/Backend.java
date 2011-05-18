@@ -875,8 +875,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNode().node();
     }
 
-    public ErlangDebugTarget getDebugTarget() {
-        return debugTarget;
+    public void installDeferredBreakpoints() {
+        debugTarget.installDeferredBreakpoints();
     }
 
     public static void loadModuleViaInput(final IBackend b,

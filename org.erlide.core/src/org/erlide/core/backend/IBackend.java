@@ -9,7 +9,6 @@ import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 
@@ -95,6 +94,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     String getJavaNodeName();
 
-    ErlangDebugTarget getDebugTarget();
+    void installDeferredBreakpoints();
 
 }
