@@ -171,7 +171,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         return fRuntimes.keySet();
     }
 
-    public boolean isDuplicateName(final String name) {
+    public boolean hasRuntimeWithName(final String name) {
         for (final RuntimeInfo vm : fRuntimes.values()) {
             if (vm.getName().equals(name)) {
                 return true;
