@@ -65,8 +65,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     void unregister(final Bundle b);
 
-    void setTrapExit(final boolean contains);
-
     ILaunch getLaunch();
 
     void setLaunch(final ILaunch launch);
