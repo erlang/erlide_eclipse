@@ -23,10 +23,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     IRpcCallSite getCallSite();
 
-    void send(final OtpErlangPid pid, final Object msg);
-
-    void send(final String name, final Object msg);
-
     OtpErlangObject receiveEvent(final long timeout) throws OtpErlangExit,
             OtpErlangDecodeException;
 
