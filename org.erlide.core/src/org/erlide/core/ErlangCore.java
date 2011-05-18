@@ -79,19 +79,18 @@ public final class ErlangCore {
                             plugin.getBundle().getSymbolicName()).flush();
                 } catch (final BackingStoreException e) {
                     // ignore
-        }
+                }
             }
         };
-		        final IPreferencesService service = Platform.getPreferencesService();
+        final IPreferencesService service = Platform.getPreferencesService();
         final String key = "erlide_log_directory";
         final String pluginId = "org.erlide.core";
         final String s = service.getString(pluginId, key, "", null);
         String dir;
         if (s != null) {
-            dir = logDir;
+            dir = s;
         } else {
-            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                    .toPortableString();
+            dir = logDir;
         }
 
         logger = ErlLogger.getInstance();
