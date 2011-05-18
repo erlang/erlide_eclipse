@@ -23,10 +23,12 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
@@ -53,8 +55,17 @@ public final class ErlangCore {
     }
 
     public void init() {
-        final String dir = ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toPortableString();
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "erlide_log_directory";
+        final String pluginId = "org.erlide.core";
+        final String s = service.getString(pluginId, key, "", null);
+        String dir;
+        if (s != null) {
+            dir = s;
+        } else {
+            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                    .toPortableString();
+        }
         logger = ErlLogger.getInstance();
         logger.setLogDir(dir);
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
