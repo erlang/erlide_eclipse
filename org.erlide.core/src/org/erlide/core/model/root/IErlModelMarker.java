@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.model.root;
 
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 
 /**
  * Markers used by the Erlang model.
@@ -27,7 +27,7 @@ public interface IErlModelMarker {
      * recognize those markers in the workspace that flag problems detected by
      * the Erlang tooling during compilation.
      */
-    String ERLANG_MODEL_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID + ".problem"; //$NON-NLS-1$
+    String ERLANG_MODEL_PROBLEM_MARKER = ErlangCore.PLUGIN_ID + ".problem"; //$NON-NLS-1$
 
     /**
      * Erlang model transient problem marker type (value
@@ -36,7 +36,7 @@ public interface IErlModelMarker {
      * problems detected by the Erlang tooling (such as a problem detected by
      * the outliner, or a problem detected during a code completion)
      */
-    String TRANSIENT_PROBLEM = ErlangPlugin.PLUGIN_ID + ".transient_problem"; //$NON-NLS-1$
+    String TRANSIENT_PROBLEM = ErlangCore.PLUGIN_ID + ".transient_problem"; //$NON-NLS-1$
 
     /**
      * Erlang model task marker type (value
@@ -49,7 +49,7 @@ public interface IErlModelMarker {
      * 
      * 
      */
-    String TASK_MARKER = ErlangPlugin.PLUGIN_ID + ".task"; //$NON-NLS-1$
+    String TASK_MARKER = ErlangCore.PLUGIN_ID + ".task"; //$NON-NLS-1$
 
     /**
      * Id marker attribute (value <code>"arguments"</code>). Arguments are
@@ -78,7 +78,7 @@ public interface IErlModelMarker {
      * be used to recognize those markers in the workspace that flag problems
      * detected by the Erlang tooling during classpath setting.
      */
-    String BUILDPATH_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+    String BUILDPATH_PROBLEM_MARKER = ErlangCore.PLUGIN_ID
             + ".buildpath_problem"; //$NON-NLS-1$
 
     /**
@@ -87,7 +87,7 @@ public interface IErlModelMarker {
      * be used to recognize those markers in the workspace that flag problems
      * detected by the Erlang tooling during classpath setting.
      */
-    String PATHENTRY_PROBLEM_MARKER = ErlangPlugin.PLUGIN_ID
+    String PATHENTRY_PROBLEM_MARKER = ErlangCore.PLUGIN_ID
             + ".pathentry_problem"; //$NON-NLS-1$
 
     /**

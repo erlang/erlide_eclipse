@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.internal.model.erlang.PropertiesUtils;
@@ -55,7 +55,7 @@ public final class OldErlangProjectProperties implements
         super();
         project = prj;
         final IEclipsePreferences root = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
+                .getNode(ErlangCore.PLUGIN_ID);
         // TODO load() should not be in constructor!
         load(root);
     }
@@ -131,7 +131,7 @@ public final class OldErlangProjectProperties implements
             return;
         }
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
+                .getNode(ErlangCore.PLUGIN_ID);
         if ("true".equals(System.getProperty("erlide.newprops"))) {
             try {
                 final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
@@ -349,7 +349,7 @@ public final class OldErlangProjectProperties implements
      */
     public void preferenceChange(final PreferenceChangeEvent event) {
         final IEclipsePreferences root = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
+                .getNode(ErlangCore.PLUGIN_ID);
         load(root);
     }
 

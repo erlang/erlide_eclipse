@@ -20,6 +20,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -35,26 +37,51 @@ import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
+import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class ErlangCore {
+    public static final String PLUGIN_ID = "org.erlide.core";
+    public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
+    public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
+    private static String featureVersion;
 
-    private ErlLogger logger;
+    private final ErlLogger logger;
     private final ServicesMap services;
     private final Plugin plugin;
     private final IWorkspace workspace;
     private final IExtensionRegistry extensionRegistry;
+    private final ISaveParticipant saveParticipant;
 
     public ErlangCore(final Plugin plugin, final ServicesMap services,
             final IWorkspace workspace,
-            final IExtensionRegistry extensionRegistry) {
+            final IExtensionRegistry extensionRegistry, final String logDir) {
         this.services = services;
         this.plugin = plugin;
         this.workspace = workspace;
         this.extensionRegistry = extensionRegistry;
-    }
+        featureVersion = "?";
+        saveParticipant = new ISaveParticipant() {
+            public void doneSaving(final ISaveContext context1) {
+            }
 
-    public void init() {
+            public void prepareToSave(final ISaveContext context1)
+                    throws CoreException {
+            }
+
+            public void rollback(final ISaveContext context1) {
+            }
+
+            public void saving(final ISaveContext context1)
+                    throws CoreException {
+                try {
+                    new InstanceScope().getNode(
+                            plugin.getBundle().getSymbolicName()).flush();
+                } catch (final BackingStoreException e) {
+                    // ignore
+                }
+            }
+        };
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "erlide_log_directory";
         final String pluginId = "org.erlide.core";
@@ -63,16 +90,14 @@ public final class ErlangCore {
         if (s != null) {
             dir = s;
         } else {
-            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
-                    .toPortableString();
+            dir = logDir;
         }
+
         logger = ErlLogger.getInstance();
         logger.setLogDir(dir);
-        ErlLogger.debug("Starting CORE " + Thread.currentThread());
     }
 
     public void stop() {
-        ResourcesPlugin.getWorkspace().removeSaveParticipant(plugin);
         CoreScope.getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         logger.dispose();
@@ -85,11 +110,7 @@ public final class ErlangCore {
         if (exception != null) {
             logger.log(lvl, exception);
         }
-        getPlugin().getLog().log(status);
-    }
-
-    private Plugin getPlugin() {
-        return plugin;
+        plugin.getLog().log(status);
     }
 
     private Level getLevelFromStatus(final IStatus status) {
@@ -147,6 +168,7 @@ public final class ErlangCore {
     }
 
     public void start(final String version) throws CoreException {
+        ErlLogger.debug("Starting CORE " + Thread.currentThread());
         String dev = "";
         if (CommonUtils.isDeveloper()) {
             dev = " erlide developer version ***";
@@ -155,6 +177,7 @@ public final class ErlangCore {
             dev += " test ***";
         }
         ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+        featureVersion = version;
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
                 BackendCore.getRuntimeInfoManager());
@@ -162,29 +185,6 @@ public final class ErlangCore {
 
         BackendCore.getBackendManager().loadCodepathExtensions();
 
-        ResourcesPlugin.getWorkspace().addSaveParticipant(plugin,
-                new ISaveParticipant() {
-                    public void doneSaving(final ISaveContext context1) {
-                    }
-
-                    public void prepareToSave(final ISaveContext context1)
-                            throws CoreException {
-                    }
-
-                    public void rollback(final ISaveContext context1) {
-                    }
-
-                    public void saving(final ISaveContext context1)
-                            throws CoreException {
-                        try {
-                            new InstanceScope().getNode(
-                                    plugin.getBundle().getSymbolicName())
-                                    .flush();
-                        } catch (final BackingStoreException e) {
-                            // ignore
-                        }
-                    }
-                });
         ErlangDebugOptionsManager.getDefault().start();
         ErlLogger.debug("Started CORE");
     }
@@ -199,7 +199,7 @@ public final class ErlangCore {
 
     public static IConfigurationElement[] getMessageReporterConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
                 "messageReporter");
     }
 
@@ -287,4 +287,27 @@ public final class ErlangCore {
         }
     }
 
+    public static String getFeatureVersion() {
+        return featureVersion;
+    }
+
+    public ISaveParticipant getSaveParticipant() {
+        return saveParticipant;
+    }
+
+    public boolean isDebugging() {
+        return plugin.isDebugging();
+    }
+
+    public Bundle getBundle() {
+        return plugin.getBundle();
+    }
+
+    public ILog getLog() {
+        return plugin.getLog();
+    }
+
+    public IPath getStateLocation() {
+        return plugin.getStateLocation();
+    }
 }

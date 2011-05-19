@@ -32,6 +32,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.ICodeBundle;
@@ -302,7 +303,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     public void loadCodepathExtensions() {
-        final IExtensionPoint exPnt = BackendCore.getCodepathExtension();
+        final IExtensionPoint exPnt = BackendUtils.getCodepathExtension();
         // TODO listen to changes to the registry!
 
         final IExtension[] extensions = exPnt.getExtensions();

@@ -9,7 +9,6 @@ import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 
@@ -23,10 +22,6 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 public interface IBackend extends IRpcCallSite, IDisposable {
 
     IRpcCallSite getCallSite();
-
-    void send(final OtpErlangPid pid, final Object msg);
-
-    void send(final String name, final Object msg);
 
     OtpErlangObject receiveEvent(final long timeout) throws OtpErlangExit,
             OtpErlangDecodeException;
@@ -65,8 +60,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     void unregister(final Bundle b);
 
-    void setTrapExit(final boolean contains);
-
     ILaunch getLaunch();
 
     void setLaunch(final ILaunch launch);
@@ -97,6 +90,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     String getJavaNodeName();
 
-    ErlangDebugTarget getDebugTarget();
+    void installDeferredBreakpoints();
 
 }

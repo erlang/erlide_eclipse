@@ -407,10 +407,10 @@ public class RuntimePreferencePage extends PreferencePage implements
     }
 
     /**
-     * @see IAddRuntimeDialogRequestor#isDuplicateName(String)
+     * @see IAddRuntimeDialogRequestor#hasRuntimeWithName(String)
      */
     public boolean isDuplicateName(final String name) {
-        return manager.isDuplicateName(name);
+        return manager.hasRuntimeWithName(name);
     }
 
     protected void editRuntime() {

@@ -40,13 +40,13 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeManager;
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.backend.InitialCall;
@@ -475,9 +475,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         codeManager.unregister(b);
     }
 
-    public void setTrapExit(final boolean contains) {
-    }
-
     public void streamAppended(final String text, final IStreamMonitor monitor) {
         final IStreamsProxy proxy = getStreamsProxy();
         if (monitor == proxy.getOutputStreamMonitor()) {
@@ -785,7 +782,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] els = reg.getConfigurationElementsFor(
-                ErlangPlugin.PLUGIN_ID, "codepath");
+                ErlangCore.PLUGIN_ID, "codepath");
 
         // TODO: this code assumes that the debugged debugTarget and the
         // erlide-plugin uses the same Erlang version, how can we escape this?
@@ -852,7 +849,6 @@ public abstract class Backend implements IStreamListener, IBackend {
                 register(bb);
             }
             initErlang(data.isMonitored(), data.isManaged());
-            // setTrapExit(data.useTrapExit());
 
             try {
                 postLaunch();
@@ -879,8 +875,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNode().node();
     }
 
-    public ErlangDebugTarget getDebugTarget() {
-        return debugTarget;
+    public void installDeferredBreakpoints() {
+        debugTarget.installDeferredBreakpoints();
     }
 
     public static void loadModuleViaInput(final IBackend b,

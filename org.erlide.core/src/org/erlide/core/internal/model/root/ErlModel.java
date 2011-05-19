@@ -46,7 +46,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.erlang.FunctionRef;
@@ -589,7 +589,7 @@ public class ErlModel extends Openable implements IErlModel {
                 final IProjectDescription description = project
                         .getDescription();
                 description
-                        .setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+                        .setNatureIds(new String[] { ErlangCore.NATURE_ID });
                 description.setName(name);
                 project.setDescription(description, null);
             }

@@ -13,7 +13,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
@@ -102,7 +102,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         final String launchName = config != null ? config.getName()
                 : "<unknown>";
         final IStatus status = new Status(IStatus.ERROR,
-                ErlangPlugin.PLUGIN_ID, IStatus.ERROR, "Can't replace code",
+                ErlangCore.PLUGIN_ID, IStatus.ERROR, "Can't replace code",
                 null);
         final String title = "Code Replace Failed";
         final String message = MessageFormat.format(

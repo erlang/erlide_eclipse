@@ -20,7 +20,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 
 /**
@@ -51,7 +51,7 @@ public class ErlangNature implements IProjectNature {
         if (project != null && project.isOpen()) {
             try {
                 final IProjectNature n = project
-                        .getNature(ErlangPlugin.NATURE_ID);
+                        .getNature(ErlangCore.NATURE_ID);
                 if (n instanceof ErlangNature) {
                     return (ErlangNature) n;
                 }
@@ -90,7 +90,7 @@ public class ErlangNature implements IProjectNature {
             final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 2];
             System.arraycopy(old, 0, specs, 0, old.length);
             ICommand command = description.newCommand();
-            command.setBuilderName(ErlangPlugin.BUILDER_ID);
+            command.setBuilderName(ErlangCore.BUILDER_ID);
             specs[old.length] = command;
             command = description.newCommand();
             command.setBuilderName(DialyzerBuilder.BUILDER_ID);
@@ -115,7 +115,7 @@ public class ErlangNature implements IProjectNature {
             int j = 0;
             while (j < old.length) {
                 final String oldBuilderName = old[j].getBuilderName();
-                if (!ErlangPlugin.BUILDER_ID.equals(oldBuilderName)
+                if (!ErlangCore.BUILDER_ID.equals(oldBuilderName)
                         && !DialyzerBuilder.BUILDER_ID.equals(oldBuilderName)) {
                     specs[i++] = old[j];
                 }
@@ -163,7 +163,7 @@ public class ErlangNature implements IProjectNature {
     private int getBuildSpecCount(final ICommand[] commands) {
         int count = 0;
         for (final ICommand element : commands) {
-            if (ErlangPlugin.BUILDER_ID.equals(element.getBuilderName())
+            if (ErlangCore.BUILDER_ID.equals(element.getBuilderName())
                     || DialyzerBuilder.BUILDER_ID.equals(element
                             .getBuilderName())) {
                 count++;
