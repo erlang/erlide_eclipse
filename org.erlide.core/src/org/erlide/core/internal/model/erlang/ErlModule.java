@@ -63,6 +63,8 @@ import com.google.common.collect.Lists;
 
 public class ErlModule extends Openable implements IErlModule {
 
+    private static final OtpErlangAtom EXPORT_ALL = new OtpErlangAtom(
+            "export_all");
     private long timestamp = IResource.NULL_STAMP;
     private IFile fFile;
     private final ModuleKind moduleKind;
@@ -698,18 +700,16 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public boolean exportsAllFunctions() {
-        try {
-            for (final IErlElement e : getChildren()) {
-                if (e instanceof IErlAttribute) {
-                    final IErlAttribute attr = (IErlAttribute) e;
-                    if (attr.getName().equals("compile")
-                            && attr.getValue().equals(
-                                    new OtpErlangAtom("export_all"))) {
+        for (final IErlElement e : internalGetChildren()) {
+            if (e instanceof IErlAttribute) {
+                final IErlAttribute attr = (IErlAttribute) e;
+                if (attr.getName().equals("compile")) {
+                    final OtpErlangObject value = attr.getValue();
+                    if (value != null && value.equals(EXPORT_ALL)) {
                         return true;
                     }
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return false;
     }
