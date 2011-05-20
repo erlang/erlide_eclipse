@@ -16,9 +16,9 @@ import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
 
-    private static final int LONG_TIMEOUT = 20000;
+    private static final int LONG_TIMEOUT = 60000;
     private static final int FILE_TIMEOUT = 20000;
-    private static final int INCLUDE_TIMEOUT = 4000;
+    private static final int INCLUDE_TIMEOUT = 40000;
 
     public static OtpErlangObject dialyze(final IRpcCallSite backend,
             final Collection<String> files, final Collection<String> pltPaths,
