@@ -137,11 +137,6 @@ public class ErlModule extends Openable implements IErlModule {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.internal.model.erlang.ErlElement#getFilePath()
-     */
     @Override
     public String getFilePath() {
         if (fFile != null) {
@@ -385,13 +380,6 @@ public class ErlModule extends Openable implements IErlModule {
         disposeScanner();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.core.model.erlang.IErlModule#postReconcile(org.eclipse.core
-     * .runtime .IProgressMonitor)
-     */
     public synchronized void postReconcile(final IProgressMonitor mon) {
         try {
             open(mon);

@@ -28,9 +28,9 @@ public class ErlideDebug {
             final boolean showSystemProcesses, final boolean showErlideProcesses) {
         OtpErlangList procs = null;
         try {
-            procs = (OtpErlangList) BackendUtils.ok(backend
-                    .call("erlide_debug", "processes", "oo",
-                            showSystemProcesses, showErlideProcesses));
+            procs = (OtpErlangList) BackendUtils.ok(backend.call(
+                    "erlide_debug", "processes", "oo", showSystemProcesses,
+                    showErlideProcesses));
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -170,7 +170,8 @@ public class ErlideDebug {
         }
     }
 
-    public static void resume(final IRpcCallSite backend, final OtpErlangPid meta) {
+    public static void resume(final IRpcCallSite backend,
+            final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "resume", "x", meta);
         } catch (final RpcException e) {

@@ -31,13 +31,6 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
         return (ExportsVariableResolver) fInstances.get(0);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#addFunction
-     * (java.lang.String, int)
-     */
     public void addFunction(final String name, final int arity) {
         for (final Object element0 : fInstances) {
             final ExportsVariableResolver element = (ExportsVariableResolver) element0;
@@ -45,13 +38,6 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions
-     * ()
-     */
     public void clearFunctions() {
         for (final Object element0 : fInstances) {
             final ExportsVariableResolver element = (ExportsVariableResolver) element0;
@@ -59,14 +45,6 @@ public class ExportsVariableResolver extends FunctionVariableResolver {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#resolve
-     * (org.eclipse.jface.text.templates.TemplateVariable,
-     * org.eclipse.jface.text.templates.TemplateContext)
-     */
     @Override
     public void resolve(final TemplateVariable variable,
             final TemplateContext context) {

@@ -28,29 +28,14 @@ public class ErlScanner implements IDisposable, IErlScanner {
         ErlideScanner.initialScan(scannerName, path, initialText, useCaches);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.parsing.IErlScanner#addRef()
-     */
     public void addRef() {
         ++refCount;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.parsing.IErlScanner#willDispose()
-     */
     public boolean willDispose() {
         return refCount == 1;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.parsing.IErlScanner#dispose()
-     */
     public void dispose() {
         --refCount;
         if (refCount == 0) {
@@ -58,31 +43,15 @@ public class ErlScanner implements IDisposable, IErlScanner {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.parsing.IErlScanner#replaceText(int, int,
-     * java.lang.String)
-     */
     public void replaceText(final int offset, final int removeLength,
             final String newText) {
         ErlideScanner.replaceText(scannerName, offset, removeLength, newText);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.parsing.IErlScanner#getTokenAt(int)
-     */
     public ErlToken getTokenAt(final int offset) {
         return ErlideScanner.getTokenAt(scannerName, offset);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.parsing.IErlScanner#getText()
-     */
     public String getText() {
         return ErlideScanner.getText(scannerName);
     }

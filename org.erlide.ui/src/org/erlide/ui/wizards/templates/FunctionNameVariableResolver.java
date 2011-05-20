@@ -26,13 +26,6 @@ public class FunctionNameVariableResolver extends TemplateVariableResolver {
         return fInstance;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-     * .eclipse.jface.text.templates.TemplateContext)
-     */
     @Override
     protected String resolve(final TemplateContext context) {
         return getFunctionName();

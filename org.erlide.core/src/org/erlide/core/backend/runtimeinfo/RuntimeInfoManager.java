@@ -148,8 +148,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     }
 
     protected IEclipsePreferences getRootPreferenceNode() {
-        return new InstanceScope()
-                .getNode(ErlangCore.PLUGIN_ID + "/runtimes");
+        return new InstanceScope().getNode(ErlangCore.PLUGIN_ID + "/runtimes");
     }
 
     public synchronized void setRuntimes(final Collection<RuntimeInfo> elements) {

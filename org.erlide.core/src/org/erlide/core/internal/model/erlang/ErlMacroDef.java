@@ -47,12 +47,6 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
         return Objects.hashCode(super.hashCode(), getDefinedName());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.core.internal.model.erlang.ErlElement#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object o) {
         if (o instanceof ErlMacroDef) {

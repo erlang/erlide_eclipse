@@ -155,9 +155,6 @@ public class ErlangProjectImportWizardPage extends
         setButtonLayoutData(selectTypesButton);
     }
 
-    /*
-     * (non-Javadoc) Method declared on IDialogPage.
-     */
     @Override
     public void createControl(final Composite parent) {
         super.createControl(parent);
@@ -905,10 +902,6 @@ public class ErlangProjectImportWizardPage extends
         // }
     }
 
-    /*
-     * (non-Javadoc) Method declared on IDialogPage. Set the selection up when
-     * it becomes visible.
-     */
     @Override
     public void setVisible(final boolean visible) {
         super.setVisible(visible);

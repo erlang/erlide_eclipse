@@ -30,11 +30,6 @@ public class ErlBreakpointAdapterFactory implements IAdapterFactory {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
-     */
     @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return new Class[] { IToggleBreakpointsTarget.class };

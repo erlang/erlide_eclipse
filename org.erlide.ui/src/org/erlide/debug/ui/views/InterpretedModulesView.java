@@ -248,22 +248,12 @@ public class InterpretedModulesView extends AbstractDebugView implements
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.debug.ui.AbstractDebugView#becomesHidden()
-     */
     @Override
     protected void becomesHidden() {
         setViewerInput(null);
         super.becomesHidden();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.debug.ui.AbstractDebugView#becomesVisible()
-     */
     @Override
     protected void becomesVisible() {
         super.becomesVisible();

@@ -201,17 +201,11 @@ public abstract class SelectionDispatchAction extends Action implements
     public void run(final ISelection selection) {
     }
 
-    /*
-     * (non-Javadoc) Method declared on IAction.
-     */
     @Override
     public void run() {
         dispatchRun(getSelection());
     }
 
-    /*
-     * (non-Javadoc) Method declared on ISelectionChangedListener.
-     */
     public void selectionChanged(final SelectionChangedEvent event) {
         dispatchSelectionChanged(event.getSelection());
     }

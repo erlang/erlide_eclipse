@@ -105,11 +105,6 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.wizard.Wizard#performFinish()
-     */
     @Override
     public boolean performFinish() {
         if (!validateFinish()) {
@@ -186,12 +181,6 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
-     * org.eclipse.jface.viewers.IStructuredSelection)
-     */
     public void init(final IWorkbench aWorkbench,
             final IStructuredSelection aSelection) {
         selection = aSelection;
@@ -207,11 +196,6 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
         // selection); // NON-NLS-1
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.wizard.IWizard#addPages()
-     */
     @Override
     public void addPages() {
         super.addPages();

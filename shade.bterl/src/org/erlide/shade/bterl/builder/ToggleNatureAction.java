@@ -16,11 +16,6 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 
     private ISelection selection;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
     @SuppressWarnings({ "rawtypes" })
     public void run(final IAction action) {
         if (selection instanceof IStructuredSelection) {

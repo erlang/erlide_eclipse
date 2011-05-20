@@ -24,27 +24,13 @@ public class Activator extends AbstractUIPlugin implements Logger {
     public Activator() {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-     * )
-     */
     @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        //CoverBackend.getInstance().addAnnotationMaker(EditorTracker.getInstance());
+        // CoverBackend.getInstance().addAnnotationMaker(EditorTracker.getInstance());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-     * )
-     */
     @Override
     public void stop(final BundleContext context) throws Exception {
         plugin = null;
@@ -72,11 +58,11 @@ public class Activator extends AbstractUIPlugin implements Logger {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    public void info(Object msg) {
+    public void info(final Object msg) {
         LogUtils.log(this, IStatus.INFO, msg, 1);
     }
 
-    public void error(Object msg) {
+    public void error(final Object msg) {
         LogUtils.log(this, IStatus.ERROR, msg, 1);
     }
 

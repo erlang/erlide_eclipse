@@ -8,8 +8,8 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.rpc.IRpcCallSite;
@@ -52,7 +52,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         BackendCore.getBackendManager().removeBackendListener(this);
     }
 
-    public void moduleLoaded(final IRpcCallSite backend, final IProject project,
-            final String moduleName) {
+    public void moduleLoaded(final IRpcCallSite backend,
+            final IProject project, final String moduleName) {
     }
 }

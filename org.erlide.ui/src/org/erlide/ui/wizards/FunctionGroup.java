@@ -299,24 +299,10 @@ public class FunctionGroup implements SelectionListener {
         return functions;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse
-     * .swt.events.SelectionEvent)
-     */
     public void widgetDefaultSelected(final SelectionEvent e) {
         // do nothing, I don't even know when this event is triggered.
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt
-     * .events.SelectionEvent)
-     */
     public void widgetSelected(final SelectionEvent e) {
         ErlLogger.debug("widgetSelected: e.item = " + e.item);
         ErlLogger.debug("widgetSelected: e.widget = " + e.widget);

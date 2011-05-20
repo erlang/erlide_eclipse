@@ -46,9 +46,8 @@ public class ExecutableExtensionsFactory implements
             class1 = bundle.loadClass(className);
             return null; // ErlangPlugin.getDefault().getInjector().getInstance(class1);
         } catch (final ClassNotFoundException e) {
-            throw new CoreException(
-                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
-                            "Could not load class " + className));
+            throw new CoreException(new Status(IStatus.ERROR,
+                    ErlangCore.PLUGIN_ID, "Could not load class " + className));
         }
     }
 

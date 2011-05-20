@@ -2,8 +2,6 @@ package org.erlide.jinterface.util;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.util.TermParser;
-import org.erlide.jinterface.util.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

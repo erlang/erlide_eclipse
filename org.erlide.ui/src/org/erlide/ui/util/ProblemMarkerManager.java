@@ -129,20 +129,10 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IAnnotationModelListener#modelChanged(IAnnotationModel)
-     */
     public void modelChanged(final IAnnotationModel model) {
         // no action
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IAnnotationModelListenerExtension#modelChanged(AnnotationModelEvent)
-     */
     public void modelChanged(final AnnotationModelEvent event) {
         if (event instanceof ErlangModuleAnnotationModelEvent) {
             final ErlangModuleAnnotationModelEvent emEvent = (ErlangModuleAnnotationModelEvent) event;

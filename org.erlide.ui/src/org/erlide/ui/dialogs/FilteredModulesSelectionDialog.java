@@ -18,6 +18,7 @@ import java.text.ParseException;
 import java.text.RuleBasedCollator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -79,6 +80,8 @@ import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+
+import com.google.common.collect.Lists;
 
 /**
  * Shows a list of resources to the user with a text entry field for a string
@@ -315,11 +318,6 @@ public class FilteredModulesSelectionDialog extends
     @Override
     protected ItemsFilter createFilter() {
         return new ModuleFilter(container, typeMask);
-    }
-
-    @Override
-    protected void applyFilter() {
-        super.applyFilter();
     }
 
     @Override
@@ -669,6 +667,12 @@ public class FilteredModulesSelectionDialog extends
                         erlProject.getIncludeDirs()));
                 validPaths.addAll(PluginUtils.getFullPaths(project,
                         erlProject.getSourceDirs()));
+                final Collection<IPath> extras = Lists.newArrayList();
+                for (final String p : BackendUtils
+                        .getExtraSourcePathsForModel(project)) {
+                    extras.add(new Path(p));
+                }
+                validPaths.addAll(PluginUtils.getFullPaths(project, extras));
             }
         }
     }

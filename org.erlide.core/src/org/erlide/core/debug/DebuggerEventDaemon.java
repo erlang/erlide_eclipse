@@ -3,8 +3,8 @@ package org.erlide.core.debug;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
@@ -103,8 +103,8 @@ public class DebuggerEventDaemon implements IBackendListener {
         }
     }
 
-    public void moduleLoaded(final IRpcCallSite backend, final IProject project,
-            final String moduleName) {
+    public void moduleLoaded(final IRpcCallSite backend,
+            final IProject project, final String moduleName) {
     }
 
     public OtpErlangPid getMBox() {

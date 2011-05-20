@@ -87,9 +87,8 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
                 expression, stackFrameNo, process.getMeta());
         if (err != null) {
             throw new DebugException(new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID,
-                    DebugException.TARGET_REQUEST_FAILED, "Bad expression",
-                    null));
+                    ErlangCore.PLUGIN_ID, DebugException.TARGET_REQUEST_FAILED,
+                    "Bad expression", null));
         }
 
     }

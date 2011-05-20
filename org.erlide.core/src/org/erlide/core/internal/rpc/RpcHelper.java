@@ -36,7 +36,7 @@ import com.ericsson.otp.erlang.SignatureException;
 public final class RpcHelper implements IRpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
-            .getBoolean("org.erlide.checkrpc");
+            .getBoolean("erlide.checkrpc");
     private static IRpcHelper instance;
 
     /**

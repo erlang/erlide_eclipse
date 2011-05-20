@@ -135,11 +135,6 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
         return b;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.model.erlang.IErlFunction#getNameWithParameters()
-     */
     public String getNameWithParameters() {
         return ErlangFunction.getNameWithParameters(getName(), getArity());
     }

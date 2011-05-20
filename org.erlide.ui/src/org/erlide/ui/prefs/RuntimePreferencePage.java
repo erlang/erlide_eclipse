@@ -133,46 +133,20 @@ public class RuntimePreferencePage extends PreferencePage implements
         performDefaults();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-     * (org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
     public void addSelectionChangedListener(
             final ISelectionChangedListener listener) {
         fSelectionListeners.add(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-     */
     public ISelection getSelection() {
         return new StructuredSelection(fRuntimeList.getCheckedElements());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
-     * (org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
     public void removeSelectionChangedListener(
             final ISelectionChangedListener listener) {
         fSelectionListeners.remove(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-     * .jface.viewers.ISelection)
-     */
     public void setSelection(final ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             if (!selection.equals(fPrevSelection)) {

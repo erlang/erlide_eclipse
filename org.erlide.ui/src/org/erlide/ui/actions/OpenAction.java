@@ -28,11 +28,11 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
-import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.rpc.IRpcCallSite;
@@ -90,16 +90,10 @@ public class OpenAction extends SelectionDispatchAction {
         PlatformUI.getWorkbench().getHelpSystem().setHelp(this, "erl.open");
     }
 
-    /*
-     * (non-Javadoc) Method declared on SelectionDispatchAction.
-     */
     @Override
     public void selectionChanged(final ITextSelection selection) {
     }
 
-    /*
-     * (non-Javadoc) Method declared on SelectionDispatchAction.
-     */
     @Override
     public void selectionChanged(final IStructuredSelection selection) {
         setEnabled(checkEnabled(selection));
@@ -127,9 +121,6 @@ public class OpenAction extends SelectionDispatchAction {
         return true;
     }
 
-    /*
-     * (non-Javadoc) Method declared on SelectionDispatchAction.
-     */
     @Override
     public void run(final ITextSelection selection) {
         final ErlangEditor editor = (ErlangEditor) getSite().getPage()
@@ -154,9 +145,6 @@ public class OpenAction extends SelectionDispatchAction {
         }
     }
 
-    /*
-     * (non-Javadoc) Method declared on SelectionDispatchAction.
-     */
     @Override
     public void run(final IStructuredSelection selection) {
         if (!checkEnabled(selection)) {

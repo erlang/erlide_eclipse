@@ -140,55 +140,26 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getControl()
-     */
     @Override
     public Control getControl() {
         return fOutlineViewer.getControl();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
-     */
     @Override
     public ISelection getSelection() {
         return fOutlineViewer.getSelection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
-     */
     @Override
     public TreeViewer getTreeViewer() {
         return fOutlineViewer;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setFocus()
-     */
     @Override
     public void setFocus() {
         getControl().setFocus();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
-     * .eclipse.jface.viewers.ISelection)
-     */
     @Override
     public void setSelection(final ISelection selection) {
         fOutlineViewer.setSelection(selection);

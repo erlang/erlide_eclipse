@@ -66,11 +66,6 @@ public class ErlFolder extends Openable implements IErlFolder {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.model.erlang.IErlFolder#getModules()
-     */
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         addModules(result);
@@ -129,7 +124,8 @@ public class ErlFolder extends Openable implements IErlFolder {
                 if (project.getFullPath().equals(containerPath)) {
                     return true;
                 }
-            } else if (project.getFolder(path).getFullPath().equals(containerPath)) {
+            } else if (project.getFolder(path).getFullPath()
+                    .equals(containerPath)) {
                 return true;
             }
         }

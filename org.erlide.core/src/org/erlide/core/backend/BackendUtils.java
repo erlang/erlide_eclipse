@@ -153,8 +153,8 @@ public class BackendUtils {
 
     public static IConfigurationElement[] getCodepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
-                "codepath");
+        return reg
+                .getConfigurationElementsFor(ErlangCore.PLUGIN_ID, "codepath");
     }
 
     public static IExtensionPoint getCodepathExtension() {

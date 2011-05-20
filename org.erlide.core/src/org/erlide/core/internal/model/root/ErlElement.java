@@ -576,11 +576,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return Util.normalizeSpaces(toString());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.core.model.erlang.IErlElement#getFilePath()
-     */
     public String getFilePath() {
         return null;
     }
