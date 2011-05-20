@@ -21,8 +21,7 @@ import com.google.common.collect.Lists;
 
 public class DialyzerPreferences {
 
-    private static final String QUALIFIER = ErlangCore.PLUGIN_ID
-            + "/dialyzer";
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/dialyzer";
 
     private final PreferencesHelper helper;
 
@@ -49,9 +48,9 @@ public class DialyzerPreferences {
             }
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID,
-                    "could not retrieve dialyzer options"));
+            throw new CoreException(
+                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
+                            "could not retrieve dialyzer options"));
         }
     }
 

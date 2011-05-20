@@ -342,13 +342,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     // ---- Widget creation ------------------------------------------------
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
-     * .Composite)
-     */
     public void createControl(final Composite parent) {
         initializeDialogUnits(parent);
         readConfiguration();
@@ -459,11 +452,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.DialogPage#dispose()
-     */
     @Override
     public void dispose() {
         writeConfiguration();

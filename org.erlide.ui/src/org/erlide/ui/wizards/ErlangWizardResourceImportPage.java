@@ -116,9 +116,6 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         return true;
     }
 
-    /**
-     * (non-Javadoc) Method declared on IDialogPage.
-     */
     public void createControl(final Composite parent) {
 
         initializeDialogUnits(parent);
@@ -456,9 +453,6 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         }
     }
 
-    /*
-     * (non-Javadoc) Method declared on WizardDataTransferPage.
-     */
     // protected final boolean validateDestinationGroup() {
     //
     // IPath containerPath = getContainerFullPath();

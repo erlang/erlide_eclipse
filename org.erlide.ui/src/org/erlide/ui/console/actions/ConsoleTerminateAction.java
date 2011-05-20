@@ -52,22 +52,12 @@ public class ConsoleTerminateAction extends Action implements IUpdate {
         update();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.texteditor.IUpdate#update()
-     */
     public void update() {
         final IBackend backend = fConsole.getBackend();
         setEnabled(backend.isManaged() && !backend.isStopped()
                 && backend != BackendCore.getBackendManager().getIdeBackend());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.IAction#run()
-     */
     @Override
     public void run() {
         try {

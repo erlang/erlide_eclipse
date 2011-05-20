@@ -123,13 +123,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
-     * .eclipse.core.resources.IResourceChangeEvent)
-     */
     public void resourceChanged(final IResourceChangeEvent event) {
         final IResourceDelta delta = event.getDelta();
         try {
@@ -142,13 +135,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
-     * .resources.IResourceDelta)
-     */
     public boolean visit(final IResourceDelta delta) {
 
         final IResource source = delta.getResource();

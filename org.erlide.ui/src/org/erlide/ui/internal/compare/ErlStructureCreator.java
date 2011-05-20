@@ -95,25 +95,11 @@ public class ErlStructureCreator extends StructureCreator {
             fInput = input;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#nodeChanged
-         * (org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
-         */
         @Override
         protected void nodeChanged(final DocumentRangeNode node) {
             save(this, fInput);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly
-         * ()
-         */
         @Override
         public boolean isReadOnly() {
             if (fInput instanceof IEditableContentExtension) {
@@ -123,13 +109,6 @@ public class ErlStructureCreator extends StructureCreator {
             return super.isReadOnly();
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit
-         * (org.eclipse.swt.widgets.Shell)
-         */
         @Override
         public IStatus validateEdit(final Shell shell) {
             if (fInput instanceof IEditableContentExtension) {

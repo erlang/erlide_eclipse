@@ -35,11 +35,6 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         ErlideUIPlugin.getDefault().getProblemMarkerManager().addListener(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IProblemChangedListener#problemsChanged(IResource[], boolean)
-     */
     public void problemsChanged(final IResource[] changedResources,
             final boolean isMarkerChange) {
         if (isMarkerChange) {

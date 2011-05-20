@@ -275,13 +275,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
-     * .swt.widgets.Composite)
-     */
     /**
      * @wbp.parser.entryPoint
      */
@@ -396,13 +389,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
-     * debug.core.ILaunchConfigurationWorkingCopy)
-     */
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
                 new ArrayList<String>());
@@ -450,13 +436,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
-     * .debug.core.ILaunchConfiguration)
-     */
     @SuppressWarnings("unchecked")
     public void initializeFrom(final ILaunchConfiguration config) {
         List<String> interpret;
@@ -506,13 +485,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse
-     * .debug.core.ILaunchConfigurationWorkingCopy)
-     */
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
                 getFlagCheckboxes());

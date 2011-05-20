@@ -526,13 +526,6 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
         return super.performCancel();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.preference.PreferencePage#createControl(org.eclipse
-     * .swt.widgets.Composite)
-     */
     @Override
     public void createControl(final Composite parent) {
         super.createControl(parent);

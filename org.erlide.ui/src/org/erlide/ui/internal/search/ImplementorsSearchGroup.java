@@ -117,9 +117,6 @@ public class ImplementorsSearchGroup extends ActionGroup {
         return MENU_TEXT;
     }
 
-    /*
-     * (non-Javadoc) Method declared in ActionGroup
-     */
     @Override
     public void fillActionBars(final IActionBars actionBars) {
         Assert.isNotNull(actionBars);
@@ -153,9 +150,6 @@ public class ImplementorsSearchGroup extends ActionGroup {
         addAction(action, manager);
     }
 
-    /*
-     * (non-Javadoc) Method declared on ActionGroup.
-     */
     @Override
     public void fillContextMenu(final IMenuManager manager) {
         final MenuManager erlangSearchMM = new MenuManager(getName(),

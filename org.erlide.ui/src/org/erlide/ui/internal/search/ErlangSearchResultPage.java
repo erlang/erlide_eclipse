@@ -50,12 +50,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
             fLabelProvider = labelProvider;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
-         */
         @Override
         public int category(final Object element) {
             if (element instanceof IContainer) {

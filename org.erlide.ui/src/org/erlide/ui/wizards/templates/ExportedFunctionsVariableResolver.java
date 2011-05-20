@@ -27,13 +27,6 @@ public class ExportedFunctionsVariableResolver extends FunctionVariableResolver 
         return (ExportedFunctionsVariableResolver) fInstances.get(0);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#addFunction
-     * (java.lang.String, int)
-     */
     public void addFunction(final String name, final int arity) {
         for (final Object element0 : fInstances) {
             final ExportedFunctionsVariableResolver element = (ExportedFunctionsVariableResolver) element0;
@@ -42,13 +35,6 @@ public class ExportedFunctionsVariableResolver extends FunctionVariableResolver 
         ExportsVariableResolver.getDefault().addFunction(name, arity);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.erlangsource.templates.FunctionVariableResolver#clearFunctions
-     * ()
-     */
     public void clearFunctions() {
         for (final Object element0 : fInstances) {
             final ExportedFunctionsVariableResolver element = (ExportedFunctionsVariableResolver) element0;

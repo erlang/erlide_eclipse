@@ -17,25 +17,12 @@ public class Activator extends Plugin implements Logger {
         return context;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
-     * )
-     */
     @Override
     public void start(final BundleContext bundleContext) throws Exception {
         Activator.context = bundleContext;
         plugin = this;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-     */
     @Override
     public void stop(final BundleContext bundleContext) throws Exception {
         Activator.context = null;

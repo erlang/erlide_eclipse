@@ -26,11 +26,6 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 
     private ISelection fSelection;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
     public void run(final IAction action) {
         if (fSelection instanceof IStructuredSelection) {
             for (final Iterator<?> it = ((IStructuredSelection) fSelection)
@@ -50,25 +45,11 @@ public class ToggleNatureAction implements IObjectActionDelegate {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
-     * .IAction, org.eclipse.jface.viewers.ISelection)
-     */
     public void selectionChanged(final IAction action,
             final ISelection selection) {
         fSelection = selection;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
-     * action.IAction, org.eclipse.ui.IWorkbenchPart)
-     */
     public void setActivePart(final IAction action,
             final IWorkbenchPart targetPart) {
     }

@@ -35,9 +35,9 @@ public class CodeAssistPreferences {
             prefs.load();
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID,
-                    "could not retrieve compiler options"));
+            throw new CoreException(
+                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
+                            "could not retrieve compiler options"));
         }
         return prefs;
     }

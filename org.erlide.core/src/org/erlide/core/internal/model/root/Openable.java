@@ -128,12 +128,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.erlide.core.erlang.IOpenable#open(org.eclipse.core.runtime.
-     * IProgressMonitor)
-     */
     public synchronized void open(final IProgressMonitor monitor)
             throws ErlModelException {
         if (ErlModel.verbose) {

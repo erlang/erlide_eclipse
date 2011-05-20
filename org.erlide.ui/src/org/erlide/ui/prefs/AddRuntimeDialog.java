@@ -318,11 +318,6 @@ public class AddRuntimeDialog extends StatusDialog implements
         return "ADD_VM_DIALOG_SECTION"; //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.window.Window#close()
-     */
     @Override
     public boolean close() {
         // DialogSettingsHelper.persistShellGeometry(getShell(),
@@ -330,13 +325,6 @@ public class AddRuntimeDialog extends StatusDialog implements
         return super.close();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.window.Window#getInitialLocation(org.eclipse.swt.graphics
-     * .Point)
-     */
     @Override
     protected Point getInitialLocation(final Point initialSize) {
         // Point initialLocation = DialogSettingsHelper
@@ -348,11 +336,6 @@ public class AddRuntimeDialog extends StatusDialog implements
         return super.getInitialLocation(initialSize);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.window.Window#getInitialSize()
-     */
     @Override
     protected Point getInitialSize() {
         final Point size = super.getInitialSize();

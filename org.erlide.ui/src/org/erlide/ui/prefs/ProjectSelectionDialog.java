@@ -106,9 +106,6 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         };
     }
 
-    /*
-     * (non-Javadoc) Method declared on Dialog.
-     */
     @Override
     protected Control createDialogArea(final Composite parent) {
         // page group
@@ -193,11 +190,6 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.dialogs.SelectionStatusDialog#computeResult()
-     */
     @Override
     protected void computeResult() {
     }
