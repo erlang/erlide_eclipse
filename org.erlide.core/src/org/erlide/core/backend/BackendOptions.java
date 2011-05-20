@@ -1,8 +1,6 @@
 package org.erlide.core.backend;
 
-/**
- * @deprecated
- */
+@Deprecated
 public enum BackendOptions {
     DEBUG, AUTOSTART, NO_CONSOLE, INTERNAL, IDE, LOAD_ALL_NODES
 }
