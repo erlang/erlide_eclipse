@@ -13,6 +13,7 @@ package org.erlide.ui.util;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -151,6 +152,9 @@ public class ErlModelUtils {
             if (module != null) {
                 return module;
             }
+            final IPath p = new Path(path);
+            return CoreScope.getModel().getModuleFromFile(null,
+                    p.lastSegment(), null, path, path);
         }
         return null;
     }
