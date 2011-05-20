@@ -588,8 +588,7 @@ public class ErlModel extends Openable implements IErlModel {
                 project.open(null);
                 final IProjectDescription description = project
                         .getDescription();
-                description
-                        .setNatureIds(new String[] { ErlangCore.NATURE_ID });
+                description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
                 description.setName(name);
                 project.setDescription(description, null);
             }
@@ -1392,18 +1391,22 @@ public class ErlModel extends Openable implements IErlModel {
     static Collection<IErlModule> getAllModules(final IErlProject project,
             final boolean checkExternals, final IErlModel.Scope scope)
             throws ErlModelException {
-        final List<IErlProject> projects = Lists.newArrayList();
+        final Set<IErlProject> projects = Sets.newHashSet();
         final List<IErlModule> result = Lists.newArrayList();
         final Set<String> paths = Sets.newHashSet();
-        if (scope == IErlModel.Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            projects.addAll(model.getErlangProjects());
-        } else {
+
+        if (project != null) {
             projects.add(project);
             if (scope == IErlModel.Scope.REFERENCED_PROJECTS) {
                 projects.addAll(project.getReferencedProjects());
             }
         }
+
+        if (scope == IErlModel.Scope.ALL_PROJECTS) {
+            final IErlModel model = CoreScope.getModel();
+            projects.addAll(model.getErlangProjects());
+        }
+
         for (final IErlProject project2 : projects) {
             ErlModel.getAllModulesAux(project2.getModules(), result, paths);
         }
