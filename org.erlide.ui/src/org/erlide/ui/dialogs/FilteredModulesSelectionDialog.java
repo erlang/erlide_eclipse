@@ -766,7 +766,10 @@ public class FilteredModulesSelectionDialog extends
             if ((filterTypeMask & resource.getType()) == 0) {
                 return false;
             }
-            return matches(resource.getName());
+            if (matches(resource.getName())) {
+                return !resource.getResourceAttributes().isSymbolicLink();
+            }
+            return false;
         }
 
         @Override
