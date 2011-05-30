@@ -6,11 +6,11 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.erlide.ui.ErlideImage;
 
-public class ClearResultsAction extends Action {
+public class ClearTestResultsAction extends Action {
     private final List<TestCaseData> events;
     private final TreeViewer treeViewer;
 
-    public ClearResultsAction(final TreeViewer treeViewer,
+    public ClearTestResultsAction(final TreeViewer treeViewer,
             final List<TestCaseData> events) {
         super("Clear results");
         this.events = events;

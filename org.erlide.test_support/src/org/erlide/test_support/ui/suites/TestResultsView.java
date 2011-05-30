@@ -107,7 +107,7 @@ public class TestResultsView extends ViewPart {
         final IMenuManager dropDownMenu = actionBars.getMenuManager();
         final IToolBarManager toolBar = actionBars.getToolBarManager();
 
-        final Action action = new ClearResultsAction(treeViewer, events);
+        final Action action = new ClearTestResultsAction(treeViewer, events);
         dropDownMenu.add(action);
         toolBar.add(action);
     }
