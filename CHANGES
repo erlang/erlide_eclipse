@@ -1,5 +1,7 @@
 List of user visible changes between 0.13.0 and 0.13.1 (20110527)
 
+4ad5c4f Update dialyzer plt with .beam files in ebin directories.
+2f997f1 Avoid too long error messages (> 30K) breaking down eclipse
 325b13e dont display symlinks in OpenModule
 21d6926 Outline disappeared from modules not in project (again)
 58adcaa made outputDirs a list (prepare for #847); current API is deprecated
