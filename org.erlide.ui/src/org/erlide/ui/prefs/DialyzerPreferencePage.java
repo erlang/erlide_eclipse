@@ -61,6 +61,8 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.CoreUtil;
@@ -629,11 +631,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
             try {
-                checkIfPltFilesShouldBeCopied();
+                final String alternatePltFileDirectory = DialyzerPreferences
+                        .getAlternatePLTFileDirectoryFromPreferences();
+                checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
                 final IRpcCallSite backend = CoreUtil
                         .getBuildOrIdeBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
-                    checkPlt(pltPath, monitor, backend);
+                    checkPlt(pltPath, alternatePltFileDirectory, monitor,
+                            backend);
                 }
             } catch (final Exception e) {
                 return newErrorStatus(e);
@@ -643,10 +648,9 @@ public class DialyzerPreferencePage extends PropertyPage implements
             return Status.OK_STATUS;
         }
 
-        private void checkIfPltFilesShouldBeCopied() throws RpcException,
+        private void checkIfPltFilesShouldBeCopied(
+                final String alternatePltFileDirectory) throws RpcException,
                 IOException {
-            final String alternatePltFileDirectory = DialyzerPreferences
-                    .getAlternatePLTFileDirectoryFromPreferences();
             if (alternatePltFileDirectory == null) {
                 return;
             }
@@ -692,12 +696,26 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
 
         private void checkPlt(final String pltPath,
+                final String alternatePltFileDirectory,
                 final IProgressMonitor monitor, final IRpcCallSite backend)
-                throws DialyzerErrorException, BackingStoreException {
+                throws DialyzerErrorException, BackingStoreException,
+                ErlModelException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
+                List<String> ebinDirs = null;
+                if (alternatePltFileDirectory != null) {
+                    ebinDirs = Lists.newArrayList();
+                    for (final IErlElement i : CoreScope.getModel()
+                            .getChildrenOfKind(Kind.PROJECT)) {
+                        final IErlProject project = (IErlProject) i;
+                        final String ebinDir = project.getWorkspaceProject()
+                                .getFolder(project.getOutputLocation())
+                                .getLocation().toString();
+                        ebinDirs.add(ebinDir);
+                    }
+                }
                 final OtpErlangObject result = ErlideDialyze.checkPlt(backend,
-                        pltPath);
+                        pltPath, ebinDirs);
                 DialyzerUtils.checkDialyzeError(result);
             } finally {
                 monitor.worked(1);

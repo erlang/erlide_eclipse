@@ -35,6 +35,7 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.DialyzerUtils;
+import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -44,6 +45,8 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
     final Map<IErlProject, Set<IErlModule>> modules = Maps.newHashMap();
 
     public static class DialyzerMessageDialog extends MessageDialog {
+
+        private static final int MAX_MESSAGE_LENGTH = 32767;
 
         public static void openError(final Shell parent, final String title,
                 final String message) {
@@ -57,10 +60,14 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
 
         public DialyzerMessageDialog(final Shell parentShell,
                 final String dialogTitle, final Image dialogTitleImage,
-                final String dialogMessage, final int dialogImageType,
+                String dialogMessage, final int dialogImageType,
                 final String[] dialogButtonLabels, final int defaultIndex) {
             super(parentShell, dialogTitle, dialogTitleImage, "",
                     dialogImageType, dialogButtonLabels, defaultIndex);
+            ErlLogger.error("dialyzer error:\n" + dialogMessage);
+            if (dialogMessage.length() > MAX_MESSAGE_LENGTH) {
+                dialogMessage = dialogMessage.substring(0, MAX_MESSAGE_LENGTH);
+            }
             this.dialogMessage = dialogMessage;
         }
 
