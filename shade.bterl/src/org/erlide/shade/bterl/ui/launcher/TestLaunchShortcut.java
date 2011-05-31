@@ -2,6 +2,7 @@ package org.erlide.shade.bterl.ui.launcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -105,6 +106,9 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         if (newtarget == null) {
             return null;
         }
+        if (newtarget instanceof IProject) {
+            return ((IProject) newtarget).getName();
+        }
         if (newtarget instanceof IResource) {
             return ((IResource) newtarget).getProjectRelativePath().toString();
         }
@@ -190,4 +194,5 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         }
         return (IErlModule) elem;
     }
+
 }

@@ -24,6 +24,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.ui.PlatformUI;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
@@ -38,6 +39,7 @@ import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
+import org.erlide.test_support.ui.suites.RegressionResultsView;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -91,7 +93,10 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         workdir = new File(wdir);
         if ("regression".equals(mode)) {
-            RegressionLauncher.getInstance().launch(wdir, monitor);
+            final RegressionResultsView rview = (RegressionResultsView) PlatformUI
+                    .getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .showView(RegressionResultsView.VIEW_ID);
+            RegressionLauncher.getInstance().launch(wdir, monitor, rview);
             return false;
         }
         return true;

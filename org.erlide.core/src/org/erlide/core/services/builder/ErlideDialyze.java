@@ -16,9 +16,10 @@ import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
 
-    private static final int LONG_TIMEOUT = 20000;
+    private static final int LONG_TIMEOUT = 60000;
     private static final int FILE_TIMEOUT = 20000;
-    private static final int INCLUDE_TIMEOUT = 4000;
+    private static final int INCLUDE_TIMEOUT = 40000;
+    private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
     public static OtpErlangObject dialyze(final IRpcCallSite backend,
             final Collection<String> files, final Collection<String> pltPaths,
@@ -55,9 +56,16 @@ public class ErlideDialyze {
     }
 
     public static OtpErlangObject checkPlt(final IRpcCallSite backend,
-            final String plt) {
+            final String plt, final List<String> ebinDirs) {
         try {
-            return backend.call("erlide_dialyze", "check_plt", "s", plt);
+            if (ebinDirs == null) {
+                return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
+                        "check_plt", "s", plt);
+            } else {
+                return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
+                        "update_plt_with_additional_paths", "sls", plt,
+                        ebinDirs);
+            }
         } catch (final RpcException e) {
             ErlLogger.debug(e);
         }
