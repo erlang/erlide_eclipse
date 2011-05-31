@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.13.0.qualifier
+Bundle-Version: 0.13.1.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -18,6 +18,7 @@ Export-Package: org.erlide.core,
  org.erlide.core.internal.backend;x-friends:="org.erlide.ui,shade.bterl",
  org.erlide.core.internal.model.erlang;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
  org.erlide.core.internal.model.root;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
+ org.erlide.core.internal.rpc;x-internal:=true,
  org.erlide.core.internal.services.builder;x-friends:="shade.bterl",
  org.erlide.core.model.erlang,
  org.erlide.core.model.root,

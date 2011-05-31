@@ -25,7 +25,9 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -136,6 +138,18 @@ public class DialyzerUtils {
         }
         if (result instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) result;
+            if (t.arity() > 0) {
+                final OtpErlangObject element = t.elementAt(0);
+                if (element instanceof OtpErlangLong) {
+                    final OtpErlangLong l = (OtpErlangLong) element;
+                    try {
+                        if (l.intValue() == 0) {
+                            return;
+                        }
+                    } catch (final OtpErlangRangeException e) {
+                    }
+                }
+            }
             final String s = Util.stringValue(t.elementAt(1)).replaceAll(
                     "\\\\n", "\n");
             throw new DialyzerErrorException(s);

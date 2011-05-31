@@ -33,13 +33,6 @@ public class IndentAction extends ErlangTextEditorAction {
         super(bundle, prefix, editor);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.actions.ErlangTextEditorAction#callErlang(org.eclipse.jface
-     * .text.ITextSelection, java.lang.String)
-     */
     @Override
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String text) throws RpcException {

@@ -19,11 +19,11 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.internal.model.root.ErlModelCache;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.AcceptFlags;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlElement.AcceptFlags;
-import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

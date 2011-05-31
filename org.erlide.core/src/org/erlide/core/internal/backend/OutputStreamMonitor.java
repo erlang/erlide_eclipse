@@ -73,13 +73,6 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         fContents = new StringBuffer();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.core.model.IStreamMonitor#addListener(org.eclipse.debug
-     * .core.IStreamListener)
-     */
     public synchronized void addListener(final IStreamListener listener) {
         fListeners.add(listener);
     }
@@ -107,11 +100,6 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         getNotifier().notifyAppend(text);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.debug.core.model.IStreamMonitor#getContents()
-     */
     public synchronized String getContents() {
         return fContents.toString();
     }
@@ -183,13 +171,6 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         fKilled = true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.core.model.IStreamMonitor#removeListener(org.eclipse
-     * .debug.core.IStreamListener)
-     */
     public synchronized void removeListener(final IStreamListener listener) {
         fListeners.remove(listener);
     }

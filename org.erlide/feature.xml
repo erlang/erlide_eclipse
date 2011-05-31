@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.13.0.qualifier"
+      version="0.13.1.qualifier"
       provider-name="erlide.org"
       image="erlang120.gif">
    <install-handler/>
@@ -57,7 +57,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.ui"/>
       <import plugin="org.eclipse.help.webapp"/>
-      <import plugin="org.eclipse.ui.cheatsheets" version="3.3.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.cheatsheets"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.erlide.kernel.builder"/>
@@ -68,7 +68,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.erlide.test_support" version="0.4.0" match="greaterOrEqual"/>
       <import plugin="org.erlide.core" version="0.10.2" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources"/>
    </requires>
 
    <plugin

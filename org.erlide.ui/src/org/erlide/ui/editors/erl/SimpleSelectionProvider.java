@@ -38,22 +38,10 @@ public class SimpleSelectionProvider implements ISelectionProvider {
         fSelectionChangedListeners = new ListenerList();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-     */
     public ISelection getSelection() {
         return fSelection;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
-     * .jface.viewers.ISelection)
-     */
     public void setSelection(final ISelection selection) {
         fSelection = selection;
 
@@ -64,25 +52,11 @@ public class SimpleSelectionProvider implements ISelectionProvider {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener
-     * (org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
     public void removeSelectionChangedListener(
             final ISelectionChangedListener listener) {
         fSelectionChangedListeners.remove(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
-     * (org.eclipse.jface.viewers.ISelectionChangedListener)
-     */
     public void addSelectionChangedListener(
             final ISelectionChangedListener listener) {
         fSelectionChangedListeners.add(listener);

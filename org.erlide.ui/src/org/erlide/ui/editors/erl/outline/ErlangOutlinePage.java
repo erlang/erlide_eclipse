@@ -51,7 +51,7 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModelChangeListener;
@@ -140,55 +140,26 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#getControl()
-     */
     @Override
     public Control getControl() {
         return fOutlineViewer.getControl();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getSelection()
-     */
     @Override
     public ISelection getSelection() {
         return fOutlineViewer.getSelection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.views.contentoutline.ContentOutlinePage#getTreeViewer()
-     */
     @Override
     public TreeViewer getTreeViewer() {
         return fOutlineViewer;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#setFocus()
-     */
     @Override
     public void setFocus() {
         getControl().setFocus();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.views.contentoutline.ContentOutlinePage#setSelection(org
-     * .eclipse.jface.viewers.ISelection)
-     */
     @Override
     public void setSelection(final ISelection selection) {
         fOutlineViewer.setSelection(selection);
@@ -309,7 +280,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         final Menu menu = manager.createContextMenu(tree);
         tree.setMenu(menu);
 
-        site.registerContextMenu(ErlangPlugin.PLUGIN_ID + ".outline", manager,
+        site.registerContextMenu(ErlangCore.PLUGIN_ID + ".outline", manager,
                 fOutlineViewer);
         fActionGroups = new CompositeActionGroup(
                 new ActionGroup[] { new ErlangSearchActionGroup(this) });

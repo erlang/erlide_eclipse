@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
-
 public interface IErlideBackendVisitor {
 
     void visit(IBackend b);

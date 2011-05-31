@@ -151,11 +151,6 @@ public class OpenResult {
         return define;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder("OpenResult {");

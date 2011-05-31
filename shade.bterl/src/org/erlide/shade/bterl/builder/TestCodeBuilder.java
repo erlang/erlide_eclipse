@@ -69,12 +69,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-     * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @SuppressWarnings("rawtypes")
     @Override
     protected IProject[] build(final int kind, final Map args,
@@ -176,7 +170,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     results.put(f, resource);
                 }
             }
-            final List<Entry<IRpcFuture, IResource>> done = Lists.newArrayList();
+            final List<Entry<IRpcFuture, IResource>> done = Lists
+                    .newArrayList();
             final List<Entry<IRpcFuture, IResource>> waiting = Lists
                     .newArrayList(results.entrySet());
 

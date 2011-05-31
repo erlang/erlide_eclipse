@@ -201,11 +201,6 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#addListener(ILabelProviderListener)
-     */
     public void addListener(final ILabelProviderListener listener) {
         if (fListeners == null) {
             fListeners = new ListenerList();
@@ -236,11 +231,6 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#dispose()
-     */
     public void dispose() {
         if (fProblemChangedListener != null) {
             ErlideUIPlugin.getDefault().getProblemMarkerManager()
@@ -256,11 +246,6 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#removeListener(ILabelProviderListener)
-     */
     public void removeListener(final ILabelProviderListener listener) {
         if (fListeners != null) {
             fListeners.remove(listener);
@@ -272,20 +257,10 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ILabelDecorator#decorateText(String, Object)
-     */
     public String decorateText(final String text, final Object element) {
         return text;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ILabelDecorator#decorateImage(Image, Object)
-     */
     public Image decorateImage(final Image image, final Object obj) {
         final int adornmentFlags = computeAdornmentFlags(obj);
         if (adornmentFlags != 0) {

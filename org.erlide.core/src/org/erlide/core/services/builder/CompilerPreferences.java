@@ -10,7 +10,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.internal.backend.BackendHelper;
@@ -26,8 +26,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class CompilerPreferences {
 
-    private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID
-            + "/compiler";
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/compiler";
     // private boolean debugInfo;
     // private boolean useExportAll;
     // private boolean warnModuleNotOnSourcePath;
@@ -54,9 +53,9 @@ public class CompilerPreferences {
             prefs.load();
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangPlugin.PLUGIN_ID,
-                    "could not retrieve compiler options"));
+            throw new CoreException(
+                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
+                            "could not retrieve compiler options"));
         }
         final OtpErlangList compilerOptions = prefs.export();
         return compilerOptions;

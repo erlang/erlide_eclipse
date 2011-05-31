@@ -39,12 +39,12 @@ import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementDelta;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
-import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.jinterface.ErlLogger;
@@ -1001,55 +1001,24 @@ public class DefaultErlangFoldingStructureProvider implements
         return map;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
-     * #collapseFunctions()
-     */
     public void collapseFunctions() {
         modifyFiltered(fCollapseFunctionsFilter, false);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
-     * #collapseComments()
-     */
     public void collapseComments() {
         modifyFiltered(fCollapseCommentsFilter, false);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
-     * #expandAll()
-     */
     public void expandAll() {
         modifyFiltered(fExpandAllFilter, true);
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
-     * #collapseElements(org.eclipse.jdt.core.IErlElement[])
-     */
     public void collapseElements(final IErlElement[] elements) {
         final Set<IErlElement> set = new HashSet<IErlElement>(
                 Arrays.asList(elements));
         modifyFiltered(new ErlangElementSetFilter(set, false), false);
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
-     * #expandElements(org.eclipse.jdt.core.IErlElement[])
-     */
     public void expandElements(final IErlElement[] elements) {
         final Set<IErlElement> set = new HashSet<IErlElement>(
                 Arrays.asList(elements));
@@ -1100,13 +1069,6 @@ public class DefaultErlangFoldingStructureProvider implements
                 modified.toArray(new Annotation[modified.size()]));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.core.model.erlang.IErlModelChangeListener#elementChanged(org
-     * .erlide .core.erlang.IErlElement)
-     */
     public void elementChanged(final IErlElement element) {
         // TODO fixa elementchangelistener n?n g?ng
         if (fEditor == null) {

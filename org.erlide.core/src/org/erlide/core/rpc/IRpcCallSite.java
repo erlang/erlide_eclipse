@@ -11,6 +11,7 @@
 package org.erlide.core.rpc;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IRpcCallSite {
 
@@ -58,5 +59,9 @@ public interface IRpcCallSite {
     public abstract void async_call_result(final IRpcResultCallback cb,
             final String m, final String f, final String signature,
             final Object... args) throws RpcException;
+
+    void send(final OtpErlangPid pid, final Object msg);
+
+    void send(final String name, final Object msg);
 
 }

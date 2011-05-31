@@ -37,13 +37,6 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
         fTreeViewer = treeViewer;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.swt.events.MouseMoveListener#mouseMove(org.eclipse.swt.events
-     * .MouseEvent)
-     */
     public void mouseMove(final MouseEvent e) {
         final Tree tree = fTreeViewer.getTree();
         if (tree.equals(e.getSource())) {

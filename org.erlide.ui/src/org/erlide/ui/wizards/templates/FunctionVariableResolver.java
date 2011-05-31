@@ -28,14 +28,6 @@ public class FunctionVariableResolver extends TemplateVariableResolver {
 
     protected ArrayList<Object[]> functions = new ArrayList<Object[]>();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-     * .eclipse.jface.text.templates.TemplateVariable,
-     * org.eclipse.jface.text.templates.TemplateContext)
-     */
     @Override
     public void resolve(final TemplateVariable variable,
             final TemplateContext context) {

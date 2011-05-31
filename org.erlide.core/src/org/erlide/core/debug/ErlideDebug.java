@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.common.Util;
@@ -28,9 +28,9 @@ public class ErlideDebug {
             final boolean showSystemProcesses, final boolean showErlideProcesses) {
         OtpErlangList procs = null;
         try {
-            procs = (OtpErlangList) BackendUtils.ok(backend
-                    .call("erlide_debug", "processes", "oo",
-                            showSystemProcesses, showErlideProcesses));
+            procs = (OtpErlangList) BackendUtils.ok(backend.call(
+                    "erlide_debug", "processes", "oo", showSystemProcesses,
+                    showErlideProcesses));
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
@@ -49,7 +49,7 @@ public class ErlideDebug {
         if (res instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) res;
             final OtpErlangObject o = t.elementAt(1);
-            final IStatus s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            final IStatus s = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     DebugException.REQUEST_FAILED, o.toString(), null);
             throw new DebugException(s);
         }
@@ -170,7 +170,8 @@ public class ErlideDebug {
         }
     }
 
-    public static void resume(final IRpcCallSite backend, final OtpErlangPid meta) {
+    public static void resume(final IRpcCallSite backend,
+            final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "resume", "x", meta);
         } catch (final RpcException e) {

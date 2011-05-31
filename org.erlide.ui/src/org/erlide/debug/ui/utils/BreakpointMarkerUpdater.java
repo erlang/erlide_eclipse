@@ -66,32 +66,14 @@ public class BreakpointMarkerUpdater implements IMarkerUpdater {
     public BreakpointMarkerUpdater() {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.texteditor.IMarkerUpdater#getAttribute()
-     */
     public String[] getAttribute() {
         return new String[] { IMarker.LINE_NUMBER };
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.texteditor.IMarkerUpdater#getMarkerType()
-     */
     public String getMarkerType() {
         return "org.eclipse.debug.core.breakpointMarker"; //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.texteditor.IMarkerUpdater#updateMarker(org.eclipse.core
-     * .resources.IMarker, org.eclipse.jface.text.IDocument,
-     * org.eclipse.jface.text.Position)
-     */
     public boolean updateMarker(final IMarker marker, final IDocument document,
             final Position position) {
         if (position.isDeleted()) {

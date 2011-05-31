@@ -113,13 +113,6 @@ public class Activator extends AbstractUIPlugin {
      * Path pluginPath = new Path(url.getPath()); return pluginPath; }
      */
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-     * )
-     */
     @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
@@ -127,13 +120,6 @@ public class Activator extends AbstractUIPlugin {
         initWrangler();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-     * )
-     */
     @Override
     public void stop(final BundleContext context) throws Exception {
         plugin = null;

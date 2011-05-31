@@ -384,7 +384,7 @@ get_external_modules_files(PackedFileNames, PathVars) ->
     Fun2 = fun(_Parent, _FileName, Acc) -> Acc end,
     FileNames = erlide_util:unpack(PackedFileNames),
     R = fold_externals(Fun, Fun2, FileNames, PathVars), 
-    ?D(R),
+    %%?D(R),
     R.
 
 replace_path_vars(FileNames, PathVars) ->
@@ -479,12 +479,17 @@ select_external([P | Rest], Mod) ->
 get_erl_from_dirs(undefined) ->
     [];
 get_erl_from_dirs(L) ->
+    ?D({get_erl_from_dirs, L}),
     lists:flatmap(fun(X) -> get_erl_from_dir(X) end,
                   L).
 
 get_erl_from_dir(D) ->
-    {ok, Fs} = file:list_dir(D),
-    [filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"] .
+    case file:list_dir(D) of
+        {ok, Fs} ->
+            [filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"];
+        _ ->
+            []
+    end.
 
 get_source(Mod) ->
     L = Mod:module_info(compile),

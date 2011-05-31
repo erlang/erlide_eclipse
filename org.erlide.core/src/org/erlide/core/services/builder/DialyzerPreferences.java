@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
@@ -21,8 +21,7 @@ import com.google.common.collect.Lists;
 
 public class DialyzerPreferences {
 
-    private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID
-            + "/dialyzer";
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/dialyzer";
 
     private final PreferencesHelper helper;
 
@@ -49,9 +48,9 @@ public class DialyzerPreferences {
             }
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangPlugin.PLUGIN_ID,
-                    "could not retrieve dialyzer options"));
+            throw new CoreException(
+                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
+                            "could not retrieve dialyzer options"));
         }
     }
 

@@ -3,6 +3,7 @@ package org.erlide.core;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.internal.backend.BackendManager;
@@ -12,7 +13,13 @@ public class CoreInjector {
 
     public static ErlangCore injectErlangCore(final CoreScope coreScope) {
         return new ErlangCore(coreScope.getPlugin(), injectServiceMap(),
-                injectWorkspace(), injectExtensionRegistry());
+                injectWorkspace(), injectExtensionRegistry(),
+                injectCoreLogDir());
+    }
+
+    private static String injectCoreLogDir() {
+        return ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                .toPortableString();
     }
 
     private static ServicesMap injectServiceMap() {
@@ -31,6 +38,10 @@ public class CoreInjector {
 
     public static IBackendManager injectBackendManager() {
         return new BackendManager();
+    }
+
+    public static IPath injectStateLocation(final CoreScope coreScope) {
+        return coreScope.getPlugin().getStateLocation();
     }
 
     // public static final IErlModelManager injectModelManager() {

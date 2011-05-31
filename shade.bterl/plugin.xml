@@ -80,11 +80,21 @@
             		</or>
            		 </iterate>
               </with>
+              <systemTest
+                    property="shade.bterl.systemTest1"
+                    value="false">
+              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
              id="org.erlide.test_support.launchConfigurationType">
        </configurationType>
+        <enablement>
+           <systemTest
+                 property="shade.bterl.systemTest1"
+                 value="false">
+           </systemTest>
+        </enablement>
     </shortcut>
     <shortcut
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutTrace"
@@ -104,11 +114,21 @@
             		</or>
            		 </iterate>
               </with>
+              <systemTest
+                    property="shade.bterl.systemTest1"
+                    value="false">
+              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
              id="org.erlide.test_support.launchConfigurationType">
        </configurationType>
+        <enablement>
+           <systemTest
+                 property="shade.bterl.systemTest1"
+                 value="false">
+           </systemTest>
+        </enablement>
     </shortcut>
     <shortcut
           class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRun"
@@ -128,11 +148,21 @@
             		</or>
            		 </iterate>
               </with>
+              <systemTest
+                    property="shade.bterl.systemTest1"
+                    value="false">
+              </systemTest>
            </enablement>
         </contextualLaunch>
         <configurationType
              id="org.erlide.test_support.launchConfigurationType">
        </configurationType>
+        <enablement>
+           <systemTest
+                 property="shade.bterl.systemTest1"
+                 value="false">
+           </systemTest>
+        </enablement>
     </shortcut>
 </extension>
 <extension

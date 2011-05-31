@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlModel;
@@ -79,7 +79,7 @@ public class DialyzeAction implements IObjectActionDelegate {
         }
 
         IStatus newErrorStatus(final Throwable throwable) {
-            return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     throwable.getMessage());
         }
 

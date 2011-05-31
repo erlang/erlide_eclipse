@@ -197,11 +197,6 @@ public class SelectionButtonDialogField extends DialogField {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.erlide.ui.internal.dialogfields.DialogField#refresh()
-     */
     @Override
     public void refresh() {
         super.refresh();

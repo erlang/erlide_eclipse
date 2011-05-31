@@ -20,6 +20,7 @@ public class TestLaunchShortcutRegression extends TestLaunchShortcut {
                 cfg.setAttribute(TestLaunchAttributes.WORKDIR,
                         getResolvedPath(dir));
             }
+            cfg.setAttribute(TestLaunchAttributes.PROJECT, prj.getName());
             cfg.setAttribute(TestLaunchAttributes.MODE, "regression");
         }
         return cfg;
