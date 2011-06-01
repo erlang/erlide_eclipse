@@ -74,9 +74,13 @@ public class DialyzerUtils {
                 collectFilesAndIncludeDirs(p, modules, project, files, names,
                         includeDirs, fromSource);
                 monitor.subTask("Dialyzing " + getFileNames(names));
-                final OtpErlangObject result = ErlideDialyze.dialyze(backend,
-                        files, pltPaths, includeDirs, fromSource, noCheckPLT);
+                OtpErlangObject result = ErlideDialyze.dialyze(backend, files,
+                        pltPaths, includeDirs, fromSource, noCheckPLT);
                 checkDialyzeError(result);
+                if (result instanceof OtpErlangTuple) {
+                    final OtpErlangTuple t = (OtpErlangTuple) result;
+                    result = t.elementAt(1);
+                }
                 MarkerUtils.addDialyzerWarningMarkersFromResultList(p, backend,
                         (OtpErlangList) result);
             } catch (final Exception e) {
@@ -143,7 +147,8 @@ public class DialyzerUtils {
                 if (element instanceof OtpErlangLong) {
                     final OtpErlangLong l = (OtpErlangLong) element;
                     try {
-                        if (l.intValue() == 0) {
+                        final int d = l.intValue();
+                        if (d == 0 || d == 1 || d == 2) {
                             return;
                         }
                     } catch (final OtpErlangRangeException e) {
