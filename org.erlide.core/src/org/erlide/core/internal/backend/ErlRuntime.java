@@ -45,12 +45,24 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
 
     public ErlRuntime(final String name, final String cookie) {
         state = State.DISCONNECTED;
-        try {
-            localNode = ErlRuntime.createOtpNode(cookie);
-            localNode.registerStatusHandler(this);
-        } catch (final IOException e) {
-            ErlLogger.error(e);
-        }
+        boolean nodeCreated = false;
+        int i = 0;
+        do {
+            try {
+                localNode = ErlRuntime.createOtpNode(cookie);
+                localNode.registerStatusHandler(this);
+                nodeCreated = true;
+                i++;
+            } catch (final IOException e) {
+                ErlLogger.error(
+                        "ErlRuntime could not be created (%s), retrying %d",
+                        e.getMessage(), i);
+                try {
+                    Thread.sleep(300);
+                } catch (final InterruptedException e1) {
+                }
+            }
+        } while (!nodeCreated && i < 10);
 
         peerName = name;
         // if (epmdWatcher.isRunningNode(name)) {
