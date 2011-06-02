@@ -11,6 +11,9 @@
 package org.erlide.ui.editors.erl.hover;
 
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -296,10 +299,11 @@ public class ErlTextHover implements ITextHover,
                         b, erlProject, or, offset);
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    final String comment = function.getComment();
+                    String comment = function.getComment();
                     if (comment == null) {
                         return null;
                     }
+                    comment = fixEncoding(comment);
                     result.append(comment);
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
@@ -318,4 +322,16 @@ public class ErlTextHover implements ITextHover,
                 result.toString(), 20);
     }
 
+    private static String fixEncoding(final String comment) {
+        try {
+            final byte[] bytes = comment.getBytes("ISO8859-1");
+            final ByteBuffer bb = ByteBuffer.wrap(bytes);
+            final CharBuffer cb = Charset.forName("UTF-8").newDecoder()
+                    .decode(bb);
+            return cb.toString();
+        } catch (final Exception e) {
+            // it was Latin-1
+        }
+        return comment;
+    }
 }
