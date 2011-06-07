@@ -155,7 +155,7 @@ public class DialyzerUtils {
                     }
                 }
             }
-            final String s = Util.stringValue(t.elementAt(1)).replaceAll(
+            final String s = Util.ioListToString(t.elementAt(1)).replaceAll(
                     "\\\\n", "\n");
             throw new DialyzerErrorException(s);
         }
