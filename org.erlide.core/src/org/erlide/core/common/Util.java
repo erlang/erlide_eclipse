@@ -1714,6 +1714,10 @@ public final class Util {
         return false;
     }
 
+    public static String ioListToString(final OtpErlangObject o) {
+        return ioListToString(o, Integer.MAX_VALUE - 1);
+    }
+
     public static String ioListToString(final OtpErlangObject o,
             final int maxLength) {
         StringBuilder sb = new StringBuilder();
