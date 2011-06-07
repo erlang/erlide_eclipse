@@ -1714,14 +1714,18 @@ public final class Util {
         return false;
     }
 
-    public static String ioListToString(final OtpErlangObject o) {
-        final StringBuilder sb = new StringBuilder();
-        ioListToStringBuilder(o, sb);
+    public static String ioListToString(final OtpErlangObject o,
+            final int maxLength) {
+        StringBuilder sb = new StringBuilder();
+        sb = ioListToStringBuilder(o, sb, maxLength);
         return sb.toString();
     }
 
-    private static void ioListToStringBuilder(final OtpErlangObject o,
-            final StringBuilder sb) {
+    private static StringBuilder ioListToStringBuilder(final OtpErlangObject o,
+            StringBuilder sb, final int maxLength) {
+        if (sb.length() >= maxLength) {
+            return sb;
+        }
         if (o instanceof OtpErlangLong) {
             final OtpErlangLong l = (OtpErlangLong) o;
             try {
@@ -1734,9 +1738,13 @@ public final class Util {
         } else if (o instanceof OtpErlangList) {
             final OtpErlangList l = (OtpErlangList) o;
             for (final OtpErlangObject i : l) {
-                ioListToStringBuilder(i, sb);
+                if (sb.length() < maxLength) {
+                    ioListToStringBuilder(i, sb, maxLength);
+                }
             }
-            ioListToStringBuilder(l.getLastTail(), sb);
+            if (sb.length() < maxLength) {
+                ioListToStringBuilder(l.getLastTail(), sb, maxLength);
+            }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
             try {
@@ -1744,9 +1752,14 @@ public final class Util {
                 sb.append(s);
             } catch (final UnsupportedEncodingException e) {
             }
-        } else {
+        } else if (o != null) {
             sb.append(o.toString());
         }
+        if (sb.length() >= maxLength) {
+            sb = new StringBuilder(sb.substring(0, maxLength));
+            sb.append("... <truncated>");
+        }
+        return sb;
     }
 
     public static String normalizeSpaces(final String string) {
