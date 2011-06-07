@@ -2,6 +2,8 @@ package org.erlide.core.common;
 
 import junit.framework.Assert;
 
+import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -37,4 +39,39 @@ public class UtilTest {
         Assert.assertEquals(expected, result);
     }
 
+    @Test
+    public void testIsTag_number() throws TermParserException {
+        final OtpErlangObject input = TermParser.getParser().parse("3");
+        Assert.assertEquals(false, Util.isTag(input, "ok"));
+    }
+
+    @Test
+    public void testIsTag_good_atom() throws TermParserException {
+        final OtpErlangObject input = TermParser.getParser().parse("ok");
+        Assert.assertEquals(true, Util.isTag(input, "ok"));
+    }
+
+    @Test
+    public void testIsTag_wrong_atom() throws TermParserException {
+        final OtpErlangObject input = TermParser.getParser().parse("okx");
+        Assert.assertEquals(false, Util.isTag(input, "ok"));
+    }
+
+    @Test
+    public void testIsTag_tuple_int() throws TermParserException {
+        final OtpErlangObject input = TermParser.getParser().parse("{3,9}");
+        Assert.assertEquals(false, Util.isTag(input, "ok"));
+    }
+
+    @Test
+    public void testIsTag_tuple_good_atom() throws TermParserException {
+        final OtpErlangObject input = TermParser.getParser().parse("{ok, 9}");
+        Assert.assertEquals(true, Util.isTag(input, "ok"));
+    }
+
+    @Test
+    public void testIsTag_tuple_wrong_atom() throws TermParserException {
+        final OtpErlangObject input = TermParser.getParser().parse("{okx, 9}");
+        Assert.assertEquals(false, Util.isTag(input, "ok"));
+    }
 }

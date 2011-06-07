@@ -1686,14 +1686,7 @@ public final class Util {
      * @return true if ok
      */
     public static boolean isOk(final OtpErlangObject o) {
-        if (o instanceof OtpErlangAtom) {
-            final OtpErlangAtom a = (OtpErlangAtom) o;
-            return a.atomValue().compareTo("ok") == 0;
-        } else if (o instanceof OtpErlangTuple) {
-            final OtpErlangTuple t = (OtpErlangTuple) o;
-            return isOk(t.elementAt(0));
-        }
-        return false;
+        return isTag(o, "ok");
     }
 
     /**
@@ -1704,14 +1697,20 @@ public final class Util {
      * @return true if error
      */
     public static boolean isError(final OtpErlangObject o) {
+        return isTag(o, "error");
+    }
+
+    protected static boolean isTag(final OtpErlangObject o, final String string) {
+        OtpErlangAtom tag = null;
         if (o instanceof OtpErlangAtom) {
-            final OtpErlangAtom a = (OtpErlangAtom) o;
-            return a.atomValue().compareTo("error") == 0;
+            tag = (OtpErlangAtom) o;
         } else if (o instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
-            return isError(t.elementAt(0));
+            if (t.elementAt(0) instanceof OtpErlangAtom) {
+                tag = (OtpErlangAtom) t.elementAt(0);
+            }
         }
-        return false;
+        return tag != null && string.equals(tag.atomValue());
     }
 
     public static String ioListToString(final OtpErlangObject o) {
