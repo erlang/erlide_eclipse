@@ -35,7 +35,7 @@ public class ErlideDialyze {
             final OtpErlangObject result = backend.call(timeout,
                     "erlide_dialyze", "dialyze", "lslslsoo", files, pltPaths,
                     incs, fromSource, noCheckPLT);
-            ErlLogger.debug("result %s", result.toString());
+            // ErlLogger.debug("result %s", result.toString());
             return result;
         } catch (final Exception e) {
             ErlLogger.debug(e);
