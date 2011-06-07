@@ -21,11 +21,37 @@
 %% API Functions
 %%
 
-dialyze(Files, Plts, Includes, FromSource, NoCheckPLT) ->
+dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
     From = case FromSource of
 	       true -> src_code;
 	       false -> byte_code
 	   end,
+    Plt = case PltFiles of
+              [] ->
+                  dialyzer_plt:new();
+              [Plt1] ->
+                  ?D(Plt1),
+                  dialyzer_plt:from_file(Plt1);
+              _ ->
+                  PltFiles = [dialyzer_plt:from_file(F) || F <- PltFiles],
+                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, PltFiles)
+          end,
+    ?D(before),
+    R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From)),
+    ?D(R),
+    case R of
+        {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= error ->
+            {error, flat(E)};
+        Result ->
+            Result
+    end.
+
+
+dialyze(Files, Plts, Includes, FromSource, NoCheckPLT, x) ->
+    From = case FromSource of
+           true -> src_code;
+           false -> byte_code
+       end,
     PltOption = case Plts of
                     [Plt] ->
                         {init_plt, Plt};
@@ -37,10 +63,10 @@ dialyze(Files, Plts, Includes, FromSource, NoCheckPLT) ->
                              {from, From},
                              {include_dirs, Includes},
                              {check_plt, not NoCheckPLT}]) of
-	{_ErrorOrExit, E} ->
-	    {error, flat(E)};
-	Result ->
-	    Result
+    {_ErrorOrExit, E} ->
+        {error, flat(E)};
+    Result ->
+        Result
     end.
 
 format_warning(Msg) ->
@@ -74,7 +100,7 @@ update_plt_with_additional_paths(FileName, Paths) ->
                     [];
 %%                     {?RET_NOTHING_SUSPICIOUS, []};
                 false ->
-                    do_analysis(AnalFiles, true, FileName, Plt, {Md5, ModDeps1})
+                    do_analysis(AnalFiles, FileName, Plt, {Md5, ModDeps1}, plt_build)
             end;
         ok ->
 %%             case Opts#options.output_plt of
@@ -92,7 +118,7 @@ update_plt_with_additional_paths(FileName, Paths) ->
         {old_version, Md5} ->
             PltInfo = {Md5, dict:new()},
             Files = [F || {F, _} <- Md5],
-            do_analysis(Files, true, FileName, dialyzer_plt:new(), PltInfo);
+            do_analysis(Files, FileName, dialyzer_plt:new(), PltInfo, plt_build);
         {error, no_such_file} ->
             Msg = io_lib:format("Could not find the PLT: ~s\n~s",
                                 [FileName, default_plt_error_msg()]),
@@ -445,23 +471,49 @@ expand_dependent_modules_1([], Included, _ModDeps) ->
      unknown_behaviours = []          :: [dialyzer_behaviours:behaviour()]
     }).
 
-do_analysis(Files, ErlangMode, FileName, Plt, PltInfo) ->
+do_analysis(Files, FileName, Plt, PltInfo, AnalysisType) ->
+    do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, [], true, byte_code).
+
+do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, NoCheckPLT, From) ->
     assert_writable(FileName),
-    hipe_compile(Files, ErlangMode),
+    hipe_compile(Files, true),
 %%     report_analysis_start(Options),
     State0 = new_state(),
     State1 = init_output(State0),
-    State2 = State1#cl_state{% legal_warnings = Options#options.legal_warnings,
+    DefaultWarns =
+%%         [?WARN_RETURN_NO_RETURN, ?WARN_RETURN_ONLY_EXIT
+%%                       , ?WARN_NOT_CALLED, ?WARN_NON_PROPER_LIST
+%%                       , ?WARN_MATCHING, ?WARN_OPAQUE, ?WARN_FUN_APP
+%%                       , ?WARN_FAILING_CALL, ?WARN_BIN_CONSTRUCTION
+%%                       , ?WARN_CONTRACT_TYPES, ?WARN_CONTRACT_SYNTAX
+%%                       , ?WARN_CONTRACT_NOT_EQUAL, ?WARN_CONTRACT_SUBTYPE
+%%                       , ?WARN_CONTRACT_SUPERTYPE, ?WARN_CALLGRAPH
+%%                       , ?WARN_UNMATCHED_RETURN, ?WARN_RACE_CONDITION
+%%                       , ?WARN_BEHAVIOUR, ?WARN_CONTRACT_RANGE], 
+        [?WARN_RETURN_NO_RETURN,
+         ?WARN_NOT_CALLED,
+         ?WARN_NON_PROPER_LIST,
+         ?WARN_FUN_APP,
+         ?WARN_MATCHING,
+         ?WARN_OPAQUE,
+         ?WARN_CALLGRAPH,
+         ?WARN_FAILING_CALL,
+         ?WARN_BIN_CONSTRUCTION,
+         ?WARN_CALLGRAPH,
+         ?WARN_CONTRACT_RANGE,
+         ?WARN_CONTRACT_TYPES,
+         ?WARN_CONTRACT_SYNTAX],
+    DefaultWarns1 = ordsets:from_list(DefaultWarns),
+    State2 = State1#cl_state{legal_warnings = DefaultWarns1,
                              output_plt = FileName,
                              plt_info = PltInfo,
-                             erlang_mode = ErlangMode,
-                             report_mode = quiet},
-    AnalysisType = plt_build,
+                             erlang_mode = true,
+                             report_mode = normal},
     InitAnalysis = #analysis{type = AnalysisType,
                              defines = [],
-                             include_dirs = [],
+                             include_dirs = IncludeDirs,
                              files = Files,
-                             start_from = byte_code,
+                             start_from = From,
                              plt = Plt,
                              use_contracts = true,
                              callgraph_file = ""},
@@ -487,26 +539,26 @@ assert_writable(PltFile) ->
 -spec hipe_compile([file:filename()], boolean()) -> 'ok'.
 
 hipe_compile(Files, ErlangMode) ->
-  NoNative = (get(dialyzer_options_native) =:= false),
-  FewFiles = (length(Files) < ?MIN_FILES_FOR_NATIVE_COMPILE),
-  case NoNative orelse FewFiles orelse ErlangMode of
-    true -> ok;
-    false ->
-      case erlang:system_info(hipe_architecture) of
-    undefined -> ok;
-    _ ->
-      Mods = [lists, dict, gb_sets, gb_trees, ordsets, sets,
-          cerl, cerl_trees, erl_types, erl_bif_types,
-          dialyzer_analysis_callgraph, dialyzer_codeserver,
-          dialyzer_dataflow, dialyzer_dep, dialyzer_plt,
-          dialyzer_succ_typings, dialyzer_typesig],
-%%       report_native_comp(Options),
-      {T1, _} = statistics(wall_clock),
-      native_compile(Mods),
-      {T2, _} = statistics(wall_clock)
-%%       report_elapsed_time(T1, T2, Options)
-      end
-  end.
+    NoNative = (get(dialyzer_options_native) =:= false),
+    FewFiles = (length(Files) < ?MIN_FILES_FOR_NATIVE_COMPILE),
+    case NoNative orelse FewFiles orelse ErlangMode of
+        true -> ok;
+        false ->
+            case erlang:system_info(hipe_architecture) of
+                undefined -> ok;
+                _ ->
+                    Mods = [lists, dict, gb_sets, gb_trees, ordsets, sets,
+                            cerl, cerl_trees, erl_types, erl_bif_types,
+                            dialyzer_analysis_callgraph, dialyzer_codeserver,
+                            dialyzer_dataflow, dialyzer_dep, dialyzer_plt,
+                            dialyzer_succ_typings, dialyzer_typesig],
+                    %%       report_native_comp(Options),
+                    {T1, _} = statistics(wall_clock),
+                    native_compile(Mods),
+                    {T2, _} = statistics(wall_clock)
+            %%       report_elapsed_time(T1, T2, Options)
+            end
+    end.
 
 native_compile(Mods) ->
   case erlang:system_info(schedulers) of
@@ -563,30 +615,40 @@ cl_loop(State, LogCache) ->
     BackendPid = State#cl_state.backend_pid,
     receive
         {BackendPid, log, LogMsg} ->
+            ?D({log, LogMsg}),
             %%io:format(State#cl_state.output ,"Log: ~s\n", [LogMsg]),
             cl_loop(State, lists:sublist([LogMsg|LogCache], ?LOG_CACHE_SIZE));
         {BackendPid, warnings, Warnings} ->
+            ?D({warnings, Warnings}),
             NewState = store_warnings(State, Warnings),
             cl_loop(NewState, LogCache);
         {BackendPid, unknown_behaviours, Behaviours} ->
+            ?D({unknown_behaviours, Behaviours}),
             NewState = store_unknown_behaviours(State, Behaviours),
             cl_loop(NewState, LogCache);
         {BackendPid, done, NewPlt, _NewDocPlt} ->
+            ?D(done),
             return_value(State, NewPlt);
         {BackendPid, ext_calls, ExtCalls} ->
+            ?D({ext_calls}), %% , ExtCalls}),
             cl_loop(State#cl_state{external_calls = ExtCalls}, LogCache);
         {BackendPid, ext_types, ExtTypes} ->
+            ?D({ext_types}), %% , ExtTypes}),
             cl_loop(State#cl_state{external_types = ExtTypes}, LogCache);
         {BackendPid, mod_deps, ModDeps} ->
+            ?D(mod_deps), % ?D({mod_deps, ModDeps}),
             NewState = State#cl_state{mod_deps = ModDeps},
             cl_loop(NewState, LogCache);
         {'EXIT', BackendPid, {error, Reason}} ->
+            ?D({Reason}),
             Msg = failed_anal_msg(Reason, LogCache),
             error(State, Msg);
         {'EXIT', BackendPid, Reason} when Reason =/= 'normal' ->
+            ?D({Reason}),
             Msg = failed_anal_msg(io_lib:format("~P", [Reason, 12]), LogCache),
             error(State, Msg);
         _Other ->
+            ?D({'_Other'}),
             %% io:format("Received ~p\n", [_Other]),
             cl_loop(State, LogCache)
     end.
@@ -802,6 +864,7 @@ start_analysis(State, Analysis) ->
     Fun = fun() -> 
                   dialyzer_analysis_callgraph:start(Self, LegalWarnings, Analysis)
           end,
+    erlang:process_flag(trap_exit, true),
     BackendPid = spawn_link(Fun),
     State#cl_state{backend_pid = BackendPid}.
 
@@ -818,4 +881,3 @@ default_plt_error_msg() ->
     "you can extend the PLT by the command:\n"
     "  dialyzer --add_to_plt --apps crypto\n"
     "For applications that are not in Erlang/OTP use an absolute file name.\n".
-
