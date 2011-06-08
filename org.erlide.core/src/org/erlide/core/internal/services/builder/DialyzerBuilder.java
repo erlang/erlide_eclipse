@@ -27,7 +27,7 @@ import org.erlide.jinterface.ErlLogger;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 
-    public static final String BUILDER_ID = "org.erlide.core.services.builder.DialyzerBuilder";
+    public static final String BUILDER_ID = "org.erlide.core.builder.dialyzer";
 
     // private static final BuilderHelper helper = new BuilderHelper();
 

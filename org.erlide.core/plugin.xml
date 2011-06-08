@@ -29,7 +29,7 @@
       </builder>
    </extension>
    <extension
-         id="builder.DialyzerBuilder"
+         id="builder.dialyzer"
          name="Dialyzer Builder"
          point="org.eclipse.core.resources.builders">
       <builder>
