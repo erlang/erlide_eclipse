@@ -1686,14 +1686,7 @@ public final class Util {
      * @return true if ok
      */
     public static boolean isOk(final OtpErlangObject o) {
-        if (o instanceof OtpErlangAtom) {
-            final OtpErlangAtom a = (OtpErlangAtom) o;
-            return a.atomValue().compareTo("ok") == 0;
-        } else if (o instanceof OtpErlangTuple) {
-            final OtpErlangTuple t = (OtpErlangTuple) o;
-            return isOk(t.elementAt(0));
-        }
-        return false;
+        return isTag(o, "ok");
     }
 
     /**
@@ -1704,24 +1697,38 @@ public final class Util {
      * @return true if error
      */
     public static boolean isError(final OtpErlangObject o) {
+        return isTag(o, "error");
+    }
+
+    protected static boolean isTag(final OtpErlangObject o, final String string) {
+        OtpErlangAtom tag = null;
         if (o instanceof OtpErlangAtom) {
-            final OtpErlangAtom a = (OtpErlangAtom) o;
-            return a.atomValue().compareTo("error") == 0;
+            tag = (OtpErlangAtom) o;
         } else if (o instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
-            return isError(t.elementAt(0));
+            if (t.elementAt(0) instanceof OtpErlangAtom) {
+                tag = (OtpErlangAtom) t.elementAt(0);
+            }
         }
-        return false;
+        return tag != null && string.equals(tag.atomValue());
     }
 
     public static String ioListToString(final OtpErlangObject o) {
-        final StringBuilder sb = new StringBuilder();
-        ioListToStringBuilder(o, sb);
+        return ioListToString(o, Integer.MAX_VALUE - 1);
+    }
+
+    public static String ioListToString(final OtpErlangObject o,
+            final int maxLength) {
+        StringBuilder sb = new StringBuilder();
+        sb = ioListToStringBuilder(o, sb, maxLength);
         return sb.toString();
     }
 
-    private static void ioListToStringBuilder(final OtpErlangObject o,
-            final StringBuilder sb) {
+    private static StringBuilder ioListToStringBuilder(final OtpErlangObject o,
+            StringBuilder sb, final int maxLength) {
+        if (sb.length() >= maxLength) {
+            return sb;
+        }
         if (o instanceof OtpErlangLong) {
             final OtpErlangLong l = (OtpErlangLong) o;
             try {
@@ -1734,9 +1741,13 @@ public final class Util {
         } else if (o instanceof OtpErlangList) {
             final OtpErlangList l = (OtpErlangList) o;
             for (final OtpErlangObject i : l) {
-                ioListToStringBuilder(i, sb);
+                if (sb.length() < maxLength) {
+                    ioListToStringBuilder(i, sb, maxLength);
+                }
             }
-            ioListToStringBuilder(l.getLastTail(), sb);
+            if (sb.length() < maxLength) {
+                ioListToStringBuilder(l.getLastTail(), sb, maxLength);
+            }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
             try {
@@ -1744,9 +1755,14 @@ public final class Util {
                 sb.append(s);
             } catch (final UnsupportedEncodingException e) {
             }
-        } else {
+        } else if (o != null) {
             sb.append(o.toString());
         }
+        if (sb.length() >= maxLength) {
+            sb = new StringBuilder(sb.substring(0, maxLength));
+            sb.append("... <truncated>");
+        }
+        return sb;
     }
 
     public static String normalizeSpaces(final String string) {

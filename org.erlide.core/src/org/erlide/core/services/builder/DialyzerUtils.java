@@ -23,6 +23,7 @@ import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -155,8 +156,12 @@ public class DialyzerUtils {
                     }
                 }
             }
-            final String s = Util.ioListToString(t.elementAt(1)).replaceAll(
-                    "\\\\n", "\n");
+            String s = Util.ioListToString(t.elementAt(1)).replaceAll("\\\\n",
+                    "\n");
+            if (s.length() > 2000) {
+                ErlLogger.error("%s", s);
+                s = s.substring(0, 2000);
+            }
             throw new DialyzerErrorException(s);
         }
     }

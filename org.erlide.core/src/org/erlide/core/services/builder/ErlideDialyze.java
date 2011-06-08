@@ -56,20 +56,14 @@ public class ErlideDialyze {
     }
 
     public static OtpErlangObject checkPlt(final IRpcCallSite backend,
-            final String plt, final List<String> ebinDirs) {
-        try {
-            if (ebinDirs == null) {
-                return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
-                        "check_plt", "s", plt);
-            } else {
-                return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
-                        "update_plt_with_additional_paths", "sls", plt,
-                        ebinDirs);
-            }
-        } catch (final RpcException e) {
-            ErlLogger.debug(e);
+            final String plt, final List<String> ebinDirs) throws RpcException {
+        if (ebinDirs == null) {
+            return backend.call(UPDATE_TIMEOUT, "erlide_dialyze", "check_plt",
+                    "s", plt);
+        } else {
+            return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
+                    "update_plt_with_additional_paths", "sls", plt, ebinDirs);
         }
-        return null;
     }
 
     public static List<String> getPltFiles(final IRpcCallSite backend,

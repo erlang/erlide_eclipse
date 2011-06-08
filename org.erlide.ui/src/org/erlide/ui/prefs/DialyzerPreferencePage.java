@@ -699,7 +699,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 final String alternatePltFileDirectory,
                 final IProgressMonitor monitor, final IRpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException,
-                ErlModelException {
+                ErlModelException, RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
                 List<String> ebinDirs = null;

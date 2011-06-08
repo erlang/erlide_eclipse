@@ -27,4 +27,11 @@ public class ErlangBuilder extends IncrementalProjectBuilder {
         final ErlideBuilder builder = new ErlideBuilder(project);
         return builder.build(kind, args, monitor, getDelta(project));
     }
+
+    @Override
+    protected void clean(final IProgressMonitor monitor) throws CoreException {
+        final IProject project = getProject();
+        final ErlideBuilder builder = new ErlideBuilder(project);
+        builder.clean(monitor);
+    }
 }
