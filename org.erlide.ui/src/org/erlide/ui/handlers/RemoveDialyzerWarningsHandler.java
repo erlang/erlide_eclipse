@@ -17,7 +17,7 @@ public class RemoveDialyzerWarningsHandler extends AbstractHandler implements
 
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final ISelection selection = HandlerUtil.getCurrentSelection(event);
-        if (selection instanceof IStructuredSelection) {
+        if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             for (final Object o : structuredSelection.toArray()) {
                 if (o instanceof IResource) {
@@ -35,9 +35,9 @@ public class RemoveDialyzerWarningsHandler extends AbstractHandler implements
     @Override
     public void setEnabled(final Object evaluationContext) {
         final IEvaluationContext ec = (IEvaluationContext) evaluationContext;
-        final Object selection = ec.getVariable("selection");
+        final ISelection selection = (ISelection) ec.getVariable("selection");
         boolean enabled = false;
-        if (selection instanceof IStructuredSelection) {
+        if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             for (final Object o : structuredSelection.toArray()) {
                 if (o instanceof IResource) {
