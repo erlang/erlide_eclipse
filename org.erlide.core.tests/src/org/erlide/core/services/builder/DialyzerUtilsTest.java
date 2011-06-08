@@ -104,10 +104,8 @@ public class DialyzerUtilsTest {
             // putting a dialyzer warning on it
             final int lineNumber = 3;
             final String message = "test message";
-            MarkerUtils.addDialyzerWarningMarker(
-                    erlProject.getWorkspaceProject(), erlModule.getResource()
-                            .getLocation().toPortableString(), lineNumber,
-                    message);
+            MarkerUtils.addDialyzerWarningMarker(erlModule.getResource()
+                    .getLocation().toPortableString(), lineNumber, message);
             // then
             // there should be a marker with proper file name and the proper
             // line number
@@ -149,7 +147,6 @@ public class DialyzerUtilsTest {
             final String message = "test message";
             final int lineNumber = 2;
             MarkerUtils.addDialyzerWarningMarker(
-                    erlProject.getWorkspaceProject(),
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then
             // the marker should have the proper file name and the include file

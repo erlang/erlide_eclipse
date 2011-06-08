@@ -81,7 +81,7 @@ public class DialyzerUtils {
                     final OtpErlangTuple t = (OtpErlangTuple) result;
                     result = t.elementAt(1);
                 }
-                MarkerUtils.addDialyzerWarningMarkersFromResultList(p, backend,
+                MarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
                         (OtpErlangList) result);
             } catch (final Exception e) {
                 throw new InvocationTargetException(e);

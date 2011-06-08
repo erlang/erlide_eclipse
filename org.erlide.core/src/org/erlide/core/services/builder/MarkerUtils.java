@@ -30,6 +30,7 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
@@ -373,12 +374,10 @@ public final class MarkerUtils {
     }
 
     public static void addDialyzerWarningMarkersFromResultList(
-            final IErlProject project, final IRpcCallSite backend,
-            final OtpErlangList result) {
+            final IRpcCallSite backend, final OtpErlangList result) {
         if (result == null) {
             return;
         }
-        final IProject p = project.getWorkspaceProject();
         for (final OtpErlangObject i : result) {
             final OtpErlangTuple t = (OtpErlangTuple) i;
             final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
@@ -395,7 +394,7 @@ public final class MarkerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            addDialyzerWarningMarker(p, filename, line, s);
+            addDialyzerWarningMarker(filename, line, s);
         }
     }
 
@@ -440,18 +439,23 @@ public final class MarkerUtils {
         }
     }
 
-    public static void addDialyzerWarningMarker(final IProject project,
-            final String filename, final int line, final String message) {
-        final IPath projectPath = project.getLocation();
-        final String projectPathString = projectPath.toPortableString();
-        IResource file;
-        if (filename.startsWith(projectPathString)) {
-            final String relFilename = filename.substring(projectPathString
-                    .length());
-            final IPath relPath = Path.fromPortableString(relFilename);
-            file = project.findMember(relPath);
-        } else {
-            file = null;
+    public static void addDialyzerWarningMarker(final String filename,
+            final int line, final String message) {
+        final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
+                .getRoot();
+        IResource file = null;
+        for (final IProject project : workspaceRoot.getProjects()) {
+            if (ErlideUtil.hasErlangNature(project)) {
+                final IPath projectPath = project.getLocation();
+                final String projectPathString = projectPath.toPortableString();
+                if (filename.startsWith(projectPathString)) {
+                    final String relFilename = filename
+                            .substring(projectPathString.length());
+                    final IPath relPath = Path.fromPortableString(relFilename);
+                    file = project.findMember(relPath);
+                    break;
+                }
+            }
         }
         MarkerUtils.addDialyzerWarningMarker(file, filename, message, line,
                 IMarker.SEVERITY_WARNING);
