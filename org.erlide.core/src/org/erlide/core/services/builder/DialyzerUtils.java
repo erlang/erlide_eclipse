@@ -35,6 +35,7 @@ import com.google.common.collect.Sets;
 
 public class DialyzerUtils {
 
+    private static final int MAX_MSG_LEN = 2000;
     private static BuilderHelper helper;
 
     public static void setHelper(final BuilderHelper h) {
@@ -156,13 +157,13 @@ public class DialyzerUtils {
                     }
                 }
             }
-            String s = Util.ioListToString(t.elementAt(1)).replaceAll("\\\\n",
-                    "\n");
-            if (s.length() > 2000) {
+            final String s = Util.ioListToString(t.elementAt(1),
+                    MAX_MSG_LEN + 10);
+            final String r = s.replaceAll("\\\\n", "\n");
+            if (s.length() > MAX_MSG_LEN) {
                 ErlLogger.error("%s", s);
-                s = s.substring(0, 2000);
             }
-            throw new DialyzerErrorException(s);
+            throw new DialyzerErrorException(r);
         }
     }
 
