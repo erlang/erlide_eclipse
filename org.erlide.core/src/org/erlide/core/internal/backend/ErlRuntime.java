@@ -49,10 +49,10 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         int i = 0;
         do {
             try {
+                i++;
                 localNode = ErlRuntime.createOtpNode(cookie);
                 localNode.registerStatusHandler(this);
                 nodeCreated = true;
-                i++;
             } catch (final IOException e) {
                 ErlLogger.error(
                         "ErlRuntime could not be created (%s), retrying %d",
