@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlide core (headless)"
-      version="0.13.1.qualifier"
+      version="0.13.2.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core">
 
