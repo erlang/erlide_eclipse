@@ -662,8 +662,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
                     final String newPath = copyPltFile(pltPath,
                             alternatePltFileDirectory);
                     selectedPLTPaths.remove(pltPath);
+                    selectedPLTPaths.remove(newPath);
                     shownPLTFiles.add(newPath);
                     selectedPLTPaths.add(newPath);
+                    checkedPltPaths.remove(newPath);
                     if (checkedPltPaths.remove(pltPath)) {
                         checkedPltPaths.add(newPath);
                     }

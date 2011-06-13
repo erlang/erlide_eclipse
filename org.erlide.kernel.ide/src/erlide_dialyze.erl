@@ -38,7 +38,6 @@ dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
           end,
     ?D(before),
     R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From)),
-    ?D(R),
     case R of
         {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= error ->
             {error, flat(E)};
@@ -88,7 +87,8 @@ check_plt(Plt) ->
 update_plt_with_additional_paths(FileName, Paths) ->
     case update_plt(FileName, Paths, [], []) of
         {differ, Md5, DiffMd5, ModDeps} ->
-%%             report_failed_plt_check(Opts, DiffMd5),
+            ?D({differ, Md5, DiffMd5, ModDeps}),
+            %%             report_failed_plt_check(Opts, DiffMd5),
             {AnalFiles, RemovedMods, ModDeps1} = 
                 expand_dependent_modules(Md5, DiffMd5, ModDeps),
             Plt = clean_plt(FileName, sets:from_list([])),
@@ -98,23 +98,24 @@ update_plt_with_additional_paths(FileName, Paths) ->
                     dialyzer_plt:to_file(FileName, Plt, ModDeps, 
                                          {Md5, ModDeps}),
                     [];
-%%                     {?RET_NOTHING_SUSPICIOUS, []};
+                %%                     {?RET_NOTHING_SUSPICIOUS, []};
                 false ->
+                    ?D({AnalFiles, FileName, ModDeps1}),
                     do_analysis(AnalFiles, FileName, Plt, {Md5, ModDeps1}, plt_build)
             end;
         ok ->
-%%             case Opts#options.output_plt of
-%%                 none -> ok;
-%%                 OutPlt ->
-%%                     {ok, Binary} = file:read_file(InitPlt),
-%%                     file:write_file(OutPlt, Binary)
-%%             end,
-%%             case Opts#options.report_mode of
-%%                 quiet -> ok;
-%%                 _ -> io:put_chars(" yes\n")
-%%             end,
+            %%             case Opts#options.output_plt of
+            %%                 none -> ok;
+            %%                 OutPlt ->
+            %%                     {ok, Binary} = file:read_file(InitPlt),
+            %%                     file:write_file(OutPlt, Binary)
+            %%             end,
+            %%             case Opts#options.report_mode of
+            %%                 quiet -> ok;
+            %%                 _ -> io:put_chars(" yes\n")
+            %%             end,
             [];
-%%             {?RET_NOTHING_SUSPICIOUS, []};
+        %%             {?RET_NOTHING_SUSPICIOUS, []};
         {old_version, Md5} ->
             PltInfo = {Md5, dict:new()},
             Files = [F || {F, _} <- Md5],
@@ -325,10 +326,13 @@ compute_new_md5(Md5, Paths, RemoveFiles0, AddFiles0) ->
 compute_new_md5_1([{File, Md5} = Entry|Entries], Paths, NewList, Diff) ->
     case compute_md5_from_file(File, Paths) of
         Md5 -> compute_new_md5_1(Entries, Paths, [Entry|NewList], Diff);
+        file_not_found ->
+            ?D(Entry),
+            compute_new_md5_1(Entries, Paths, [Entry|NewList], Diff);
         NewMd5 ->
+            ?D(File),
             ModName = beam_file_to_module(File),
-            compute_new_md5_1(Entries, Paths, [{File, NewMd5}|NewList], [{differ, ModName}|Diff]);
-        file_not_found -> compute_new_md5_1(Entries, Paths, [Entry|NewList], Diff)
+            compute_new_md5_1(Entries, Paths, [{File, NewMd5}|NewList], [{differ, ModName}|Diff])
     end;
 compute_new_md5_1([], _Paths, _NewList, []) ->
     ok;
@@ -352,6 +356,7 @@ compute_md5_from_file(File0, Paths) ->
     File = find_file(Paths, File0, filename:basename(File0)),
     case filelib:is_regular(File) of
         false ->
+            ?D({file_not_found, File0, File}),
             file_not_found;
         true ->
             case dialyzer_utils:get_abstract_code_from_beam(File) of
@@ -417,12 +422,18 @@ beam_file_to_module(Filename) ->
 
 expand_dependent_modules(Md5, DiffMd5, ModDeps) ->
     ChangedMods = sets:from_list([M || {differ, M} <- DiffMd5]),
+    ?D(ChangedMods),
     RemovedMods = sets:from_list([M || {removed, M} <- DiffMd5]),
+    ?D(RemovedMods),
     BigSet = sets:union(ChangedMods, RemovedMods),
     BigList = sets:to_list(BigSet),
+    ?D(BigList),
     ExpandedSet = expand_dependent_modules_1(BigList, BigSet, ModDeps),
+    ?D(ExpandedSet),
     NewModDeps = dialyzer_callgraph:strip_module_deps(ModDeps, BigSet),
-    AnalyzeMods = sets:subtract(ExpandedSet, RemovedMods),  
+    ?D(NewModDeps),
+    AnalyzeMods = sets:subtract(ExpandedSet, RemovedMods),
+    ?D(AnalyzeMods),
     FilterFun = fun(File) ->
                         Mod = list_to_atom(filename:basename(File, ".beam")),
                         sets:is_element(Mod, AnalyzeMods)
@@ -437,21 +448,21 @@ clean_plt(PltFile, RemovedMods) ->
     R.
 
 expand_dependent_modules_1([Mod|Mods], Included, ModDeps) ->
-  case dict:find(Mod, ModDeps) of
-    {ok, Deps} ->
-      NewDeps = sets:subtract(sets:from_list(Deps), Included), 
-      case sets:size(NewDeps) =:= 0 of
-    true -> expand_dependent_modules_1(Mods, Included, ModDeps);
-    false -> 
-      NewIncluded = sets:union(Included, NewDeps),
-      expand_dependent_modules_1(sets:to_list(NewDeps) ++ Mods, 
-                     NewIncluded, ModDeps)
-      end;
-    error ->
-      expand_dependent_modules_1(Mods, Included, ModDeps)
-  end;
+    case dict:find(Mod, ModDeps) of
+        {ok, Deps} ->
+            NewDeps = sets:subtract(sets:from_list(Deps), Included), 
+            case sets:size(NewDeps) =:= 0 of
+                true -> expand_dependent_modules_1(Mods, Included, ModDeps);
+                false -> 
+                    NewIncluded = sets:union(Included, NewDeps),
+                    expand_dependent_modules_1(sets:to_list(NewDeps) ++ Mods, 
+                                               NewIncluded, ModDeps)
+            end;
+        error ->
+            expand_dependent_modules_1(Mods, Included, ModDeps)
+    end;
 expand_dependent_modules_1([], Included, _ModDeps) ->
-  Included.
+    Included.
 
 -record(cl_state,
     {backend_pid                      :: pid(),
