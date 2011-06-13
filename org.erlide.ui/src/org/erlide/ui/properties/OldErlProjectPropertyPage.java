@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
-import java.util.Collection;
-import java.util.Iterator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -21,8 +19,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
@@ -85,14 +82,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        final Collection<RuntimeInfo> rs = BackendCore.getRuntimeInfoManager()
-                .getRuntimes();
-        final String[][] runtimes = new String[rs.size()][2];
-        final Iterator<RuntimeInfo> it = rs.iterator();
-        for (int i = 0; i < rs.size(); i++) {
-            runtimes[i][0] = it.next().getVersion().asMinor().toString();
-            runtimes[i][1] = runtimes[i][0];
-        }
+        final String[][] runtimes = RuntimeInfoManager.getAllRuntimesVersions();
         addField(new ComboFieldEditor(
                 ProjectPreferencesConstants.RUNTIME_VERSION,
                 "Runtime version:", runtimes, fieldEditorParent));

@@ -243,11 +243,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                     doc, offset - before.length(), before.length());
             result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
                     offset)));
-            return result.toArray(new ICompletionProposal[result.size()]);
+            if (result.size() == 0) {
+                return getNoCompletion(offset);
+            } else {
+                return result.toArray(new ICompletionProposal[result.size()]);
+            }
         } catch (final Exception e) {
             ErlLogger.warn(e);
             return null;
         }
+    }
+
+    private ICompletionProposal[] getNoCompletion(final int offset) {
+        return new ICompletionProposal[] { new DummyCompletionProposal(offset) };
     }
 
     private List<ICompletionProposal> addCompletions(final Set<Kinds> flags,

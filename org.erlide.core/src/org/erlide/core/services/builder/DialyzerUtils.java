@@ -23,6 +23,7 @@ import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -34,6 +35,7 @@ import com.google.common.collect.Sets;
 
 public class DialyzerUtils {
 
+    private static final int MAX_MSG_LEN = 2000;
     private static BuilderHelper helper;
 
     public static void setHelper(final BuilderHelper h) {
@@ -74,10 +76,14 @@ public class DialyzerUtils {
                 collectFilesAndIncludeDirs(p, modules, project, files, names,
                         includeDirs, fromSource);
                 monitor.subTask("Dialyzing " + getFileNames(names));
-                final OtpErlangObject result = ErlideDialyze.dialyze(backend,
-                        files, pltPaths, includeDirs, fromSource, noCheckPLT);
+                OtpErlangObject result = ErlideDialyze.dialyze(backend, files,
+                        pltPaths, includeDirs, fromSource, noCheckPLT);
                 checkDialyzeError(result);
-                MarkerUtils.addDialyzerWarningMarkersFromResultList(p, backend,
+                if (result instanceof OtpErlangTuple) {
+                    final OtpErlangTuple t = (OtpErlangTuple) result;
+                    result = t.elementAt(1);
+                }
+                MarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
                         (OtpErlangList) result);
             } catch (final Exception e) {
                 throw new InvocationTargetException(e);
@@ -143,16 +149,21 @@ public class DialyzerUtils {
                 if (element instanceof OtpErlangLong) {
                     final OtpErlangLong l = (OtpErlangLong) element;
                     try {
-                        if (l.intValue() == 0) {
+                        final int d = l.intValue();
+                        if (d == 0 || d == 1 || d == 2) {
                             return;
                         }
                     } catch (final OtpErlangRangeException e) {
                     }
                 }
             }
-            final String s = Util.stringValue(t.elementAt(1)).replaceAll(
-                    "\\\\n", "\n");
-            throw new DialyzerErrorException(s);
+            final String s = Util.ioListToString(t.elementAt(1),
+                    MAX_MSG_LEN + 10);
+            final String r = s.replaceAll("\\\\n", "\n");
+            if (s.length() > MAX_MSG_LEN) {
+                ErlLogger.error("%s", s);
+            }
+            throw new DialyzerErrorException(r);
         }
     }
 

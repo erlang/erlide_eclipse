@@ -662,8 +662,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
                     final String newPath = copyPltFile(pltPath,
                             alternatePltFileDirectory);
                     selectedPLTPaths.remove(pltPath);
+                    selectedPLTPaths.remove(newPath);
                     shownPLTFiles.add(newPath);
                     selectedPLTPaths.add(newPath);
+                    checkedPltPaths.remove(newPath);
                     if (checkedPltPaths.remove(pltPath)) {
                         checkedPltPaths.add(newPath);
                     }
@@ -699,7 +701,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 final String alternatePltFileDirectory,
                 final IProgressMonitor monitor, final IRpcCallSite backend)
                 throws DialyzerErrorException, BackingStoreException,
-                ErlModelException {
+                ErlModelException, RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
                 List<String> ebinDirs = null;

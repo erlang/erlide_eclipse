@@ -141,8 +141,8 @@ public final class OldErlangProjectProperties implements
                     PathSerializer.packList(sourceDirs));
             node.put(ProjectPreferencesConstants.INCLUDE_DIRS,
                     PathSerializer.packList(includeDirs));
-            node.put(ProjectPreferencesConstants.OUTPUT_DIR,
-                    outputDirs.toString());
+            node.put(ProjectPreferencesConstants.OUTPUT_DIR, getOutputDir()
+                    .toString());
             node.put(ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                     externalIncludesFile);
             if (runtimeVersion.isDefined()) {
