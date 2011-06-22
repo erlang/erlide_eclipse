@@ -245,8 +245,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         final String label = getName();
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
-            eventBox = getNode().createMbox("rex");
             wait_for_epmd();
+            eventBox = getNode().createMbox("rex");
 
             if (waitForCodeServer()) {
                 ErlLogger.debug("connected!");
