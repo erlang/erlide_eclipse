@@ -42,28 +42,31 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private final String peerName;
     private State state;
     private OtpNode localNode;
+    private final Object localNodeLock = new Object();
 
     public ErlRuntime(final String name, final String cookie) {
         state = State.DISCONNECTED;
         boolean nodeCreated = false;
-        int i = 0;
-        do {
-            try {
-                i++;
-                localNode = ErlRuntime.createOtpNode(cookie);
-                localNode.registerStatusHandler(this);
-                nodeCreated = true;
-            } catch (final IOException e) {
-                ErlLogger.error(
-                        "ErlRuntime could not be created (%s), retrying %d",
-                        e.getMessage(), i);
+        synchronized (localNodeLock) {
+            int i = 0;
+            do {
                 try {
-                    Thread.sleep(300);
-                } catch (final InterruptedException e1) {
+                    i++;
+                    localNode = ErlRuntime.createOtpNode(cookie);
+                    localNode.registerStatusHandler(this);
+                    nodeCreated = true;
+                } catch (final IOException e) {
+                    ErlLogger
+                            .error("ErlRuntime could not be created (%s), retrying %d",
+                                    e.getMessage(), i);
+                    try {
+                        Thread.sleep(300);
+                    } catch (final InterruptedException e1) {
+                    }
                 }
-            }
-        } while (!nodeCreated && i < 10);
+            } while (!nodeCreated && i < 10);
 
+        }
         peerName = name;
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
@@ -80,15 +83,15 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         while (!ok && tries > 0) {
             ErlLogger.debug("# ping..." + getNodeName() + " "
                     + Thread.currentThread().getName());
-            ok = localNode.ping(getNodeName(), RETRY_DELAY
-                    + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
+            ok = getNode().ping(getNodeName(),
+                    RETRY_DELAY + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
             tries--;
         }
         return ok;
     }
 
     public boolean connect() {
-        return localNode.ping(getNodeName(), RETRY_DELAY);
+        return getNode().ping(getNodeName(), RETRY_DELAY);
     }
 
     @Override
@@ -117,7 +120,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         tryConnect();
-        return rpcHelper.sendRpcCall(localNode, peerName, false, gleader,
+        return rpcHelper.sendRpcCall(getNode(), peerName, false, gleader,
                 module, fun, signature, args0);
     }
 
@@ -140,7 +143,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args)
             throws RpcException, SignatureException {
         tryConnect();
-        rpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout, gleader,
+        rpcHelper.makeAsyncCbCall(getNode(), peerName, cb, timeout, gleader,
                 module, fun, signature, args);
     }
 
@@ -149,7 +152,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
         tryConnect();
-        final OtpErlangObject result = rpcHelper.rpcCall(localNode, peerName,
+        final OtpErlangObject result = rpcHelper.rpcCall(getNode(), peerName,
                 false, gleader, module, fun, timeout, signature, args0);
         return result;
     }
@@ -165,7 +168,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         tryConnect();
-        rpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
+        rpcHelper.rpcCast(getNode(), peerName, false, gleader, module, fun,
                 signature, args0);
     }
 
@@ -199,7 +202,9 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     }
 
     public OtpNode getNode() {
-        return localNode;
+        synchronized (localNodeLock) {
+            return localNode;
+        }
     }
 
     public static String createJavaNodeName() {
@@ -232,13 +237,13 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public void send(final OtpErlangPid pid, final Object msg)
             throws RpcException, SignatureException {
         tryConnect();
-        rpcHelper.send(localNode, pid, msg);
+        rpcHelper.send(getNode(), pid, msg);
     }
 
     public void send(final String fullNodeName, final String name,
             final Object msg) throws SignatureException, RpcException {
         tryConnect();
-        rpcHelper.send(localNode, fullNodeName, name, msg);
+        rpcHelper.send(getNode(), fullNodeName, name, msg);
     }
 
 }

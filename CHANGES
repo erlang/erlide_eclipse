@@ -1,3 +1,19 @@
+List of user visible changes between 0.13.1 and 0.13.2 (20110613)
+
+1f7887d Update PLT with new paths
+b922bf1 better fix for huge dialyzer error handling
+2ce849b Made sure warnings shows up on resources
+881fd11 608-dialyzer---navigate-to-external-includes-from-markers
+3f6b1ab 864-clean-project-does-not-remove-files-in-ebin-directory
+f9c9661 https://redmine.shade.psgbg.se/issues/2100 (Wasn't this fixed once before?)
+168740e 830-completion--show-message-when-no-completions-are-available
+43cc05e 852-unicode-content-is-mangled-in-documentation-hover
+7fc1b0d 828-new-project-wizard---runtime-combo-is-empty
+bff1305 862-new-project-wizard-sets-output-dir-to--[ebin]
+cce70b8 sometimes epmd starts too slowly; retrying connection
+88a5dae Runs from own copy of dialyzer_cl to prevent check of plt and beams
+3905ca6 upgraded minimum erlang requirements to R13B
+
 List of user visible changes between 0.13.0 and 0.13.1 (20110527)
 
 4ad5c4f Update dialyzer plt with .beam files in ebin directories.

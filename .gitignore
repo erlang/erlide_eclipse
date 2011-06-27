@@ -8,6 +8,7 @@ safe_erlide.log
 .metadata
 .escabaseline
 erlide.log
+erlide.log.*
 External_Files
 cover_report
 org.erlide.selfhost*
