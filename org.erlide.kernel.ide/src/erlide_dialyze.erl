@@ -34,8 +34,8 @@ dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
                   ?D(Plt1),
                   dialyzer_plt:from_file(Plt1);
               _ ->
-                  PltFiles = [dialyzer_plt:from_file(F) || F <- PltFiles],
-                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, PltFiles)
+                  Plts = [dialyzer_plt:from_file(F) || F <- PltFiles],
+                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, Plts)
           end,
     ?D(before),
     R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From)),
