@@ -580,6 +580,10 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public void removeProjectPath(final IProject project) {
         final IErlProject eproject = CoreScope.getModel().findProject(project);
+        if (eproject == null) {
+            // can happen if project was removed
+            return;
+        }
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
