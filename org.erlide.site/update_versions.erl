@@ -3,7 +3,17 @@
 
 %% must be called from the root of the git workspace!
 
-%% works only against the LATEST release as Base!
+%% TODO redesign as below:
+%% check:
+%% - get projects info
+%% - compute new plugin versions
+%% - compute new feature versions
+%% modify:
+%% - update project information
+%% - update CHANGES
+%% commit:
+%% - commit 
+
 
 -mode(compile).
 %-module(update_versions).
@@ -13,17 +23,16 @@
 
 main([]) ->
     usage();
-main([Cmd]) ->
-    start(get_latest_tag(), list_to_atom(Cmd)).
-
-start(Base, Cmd) ->
+main([CmdStr]) ->
     try
-        io:format("Please ignore \"fatal:...\" messages below~n"),
+    	Cmd = list_to_atom(CmdStr),
+        io:format("Please ignore any \"fatal:...\" messages below~n"),
+        Base = get_latest_tag(),
         ?MODULE:Cmd(Base, projects_info(Base)),
-        io:format("Done!~n")
+        io:format("~nDone!~n")
     catch
         _:E ->
-            io:format("ERROR: ~p~n   ~p~n", [E, erlang:get_stacktrace()]),
+            io:format("ERROR: ~p~n   ~p~n~n", [E, erlang:get_stacktrace()]),
             usage()
     end.
 
@@ -51,14 +60,16 @@ script_name() ->
                   q=""
                  }).
 -record(plugin, {name, 
-                 version=#version{}, 
+                 crt_version=#version{}, 
                  old_version=#version{}, 
+                 new_version=#version{}, 
                  changed=nothing, 
                  code_changed=false
                 }).
 -record(feature, {name, 
-                  version=#version{}, 
+                  crt_version=#version{}, 
                   old_version=#version{}, 
+                  new_version=#version{}, 
                   features=[], 
                   plugins=[], 
                   changed=nothing, 
@@ -78,7 +89,7 @@ check(_Base, {Features, Plugins} ) ->
           end,
     ChangedPlugins = lists:filter(Fun1, Plugins),
 
-    Fun3 = fun(#plugin{name=Id, version=OldV, changed=C, code_changed=CC}) ->
+    Fun3 = fun(#plugin{name=Id, crt_version=OldV, changed=C, code_changed=CC}) ->
                   io:format("? ~p ~p ~n", [C, CC]),
                    Ch = if CC -> micro; true -> nothing end,
                    NewV = inc_version(OldV, max_change(C, Ch)),
@@ -95,7 +106,7 @@ check(_Base, {Features, Plugins} ) ->
           end,
     ChangedFeatures = lists:filter(Fun, Features),
 
-    Fun2 = fun(#feature{name=Id, version=OldV, children_changed=CC}) ->
+    Fun2 = fun(#feature{name=Id, crt_version=OldV, children_changed=CC}) ->
                    Old = version_string(OldV),
                    NewV = inc_version(OldV, CC),
                    New = version_string(NewV),
@@ -110,7 +121,7 @@ modify(Base, Projects) ->
     {CFs, CPs} = check(Base, Projects),
     io:format("modify\n"),
 
-    Fun2 = fun(#feature{name=Id, version=OldV, children_changed=CC}) ->
+    Fun2 = fun(#feature{name=Id, crt_version=OldV, children_changed=CC}) ->
                    Name = atom_to_list(Id)++"/feature.xml",
                    io:format("fff::: ~p~n", [Name]),
                    Old = version_string(OldV),
@@ -123,7 +134,7 @@ modify(Base, Projects) ->
            end,
     lists:foreach(Fun2, CFs),
 
-    Fun3 = fun(#plugin{name=Id, version=OldV, changed=C, code_changed=CC}) ->
+    Fun3 = fun(#plugin{name=Id, crt_version=OldV, changed=C, code_changed=CC}) ->
                    Name = atom_to_list(Id)++"/META-INF/MANIFEST.MF",
                    io:format("ppp::: ~p~n", [Name]),
                    Ch = if CC -> micro; true -> nothing end,
@@ -228,7 +239,7 @@ get_feature_content(Name, Base) ->
     end,
 
     #feature{name=list_to_atom(Name), 
-             version=Version, 
+             crt_version=Version, 
              old_version=Old, 
              features=Includes, 
              plugins=Plugins, 
@@ -239,7 +250,7 @@ get_plugin_content(Name, Base, Changed) ->
     Version = get_plugin_version(string:tokens(read_file(FN), "\n")),
     Old = get_plugin_version(read_old_file(FN, Base)),
     #plugin{name=list_to_atom(Name), 
-            version=Version, 
+            crt_version=Version, 
             old_version=Old, 
             changed=what_changed(Old, Version), 
             code_changed=lists:member(Name, Changed)}.
