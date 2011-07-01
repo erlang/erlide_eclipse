@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.osgi.util.NLS;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -33,7 +32,6 @@ import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.core.services.builder.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
@@ -213,9 +211,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
-            final String msg = NLS.bind(
-                    BuilderMessages.build_inconsistentProject,
-                    e.getLocalizedMessage());
+            // final String msg = NLS.bind(
+            // BuilderMessages.build_inconsistentProject,
+            // e.getLocalizedMessage());
             // MarkerHelper.addProblemMarker(project, null, msg, 0,
             // IMarker.SEVERITY_ERROR);
         }

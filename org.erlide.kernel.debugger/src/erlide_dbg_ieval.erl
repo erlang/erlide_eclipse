@@ -443,7 +443,7 @@ all_modules_on_stack() ->
     all_modules_on_stack(get(stack)).
 
 all_modules_on_stack(Stack) ->
-    [M || {X, {{M, _F, _As}, _Wh, _Bs}} <- Stack].
+    [M || {_X, {{M, _F, _As}, _Wh, _Bs}} <- Stack].
 
 saved_frames() ->
 %%     erlang:display(hej),

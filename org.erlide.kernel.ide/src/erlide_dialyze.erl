@@ -91,7 +91,7 @@ update_plt_with_additional_paths(FileName, Paths) ->
         {differ, Md5, DiffMd5, ModDeps} ->
             ?D({differ, Md5, DiffMd5, ModDeps}),
             %%             report_failed_plt_check(Opts, DiffMd5),
-            {AnalFiles, RemovedMods, ModDeps1} = 
+            {AnalFiles, _RemovedMods, ModDeps1} = 
                 expand_dependent_modules(Md5, DiffMd5, ModDeps, Paths),
             Plt = clean_plt(FileName, sets:from_list([])),
             case AnalFiles =:= [] of
@@ -490,7 +490,7 @@ expand_dependent_modules_1([], Included, _ModDeps) ->
 do_analysis(Files, FileName, Plt, PltInfo, AnalysisType) ->
     do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, [], true, byte_code).
 
-do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, NoCheckPLT, From) ->
+do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPLT, From) ->
     assert_writable(FileName),
     hipe_compile(Files, true),
 %%     report_analysis_start(Options),
@@ -569,10 +569,10 @@ hipe_compile(Files, ErlangMode) ->
                             dialyzer_dataflow, dialyzer_dep, dialyzer_plt,
                             dialyzer_succ_typings, dialyzer_typesig],
                     %%       report_native_comp(Options),
-                    {T1, _} = statistics(wall_clock),
+                    {_T1, _} = statistics(wall_clock),
                     native_compile(Mods),
-                    {T2, _} = statistics(wall_clock)
-            %%       report_elapsed_time(T1, T2, Options)
+                    {_T2, _} = statistics(wall_clock)
+            %%       report_elapsed_time(_T1, _T2, Options)
             end
     end.
 

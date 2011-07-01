@@ -376,9 +376,9 @@ check_all() ->
 %%     file:close(F).
 
 get_all_links_to_other() ->
-    DocDirs = get_all_doc_dirs(),
-    _Mods = [list_to_atom(M) || {D, E} <- DocDirs,
-                                M <- get_mod_doc_files(D, E)],
+%%     DocDirs = get_all_doc_dirs(),
+%%     _Mods = [list_to_atom(M) || {D, E} <- DocDirs,
+%%                                 M <- get_mod_doc_files(D, E)],
     ok.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -386,37 +386,37 @@ get_all_links_to_other() ->
 get_doc(Module, Input, StateDir) ->
     try
         ?D(Input),
-	case Input of
-	    {external, M, F, A, _Path} = External ->
-		?D({open, External}),
-		case get_doc_for_external(StateDir, M, [{F, A}]) of
-		    D when is_list(D) ->
-			{ok, lists:flatten(D), External};
-		    _Error ->
-			External
-		end;
-	    {local, F, A} = Local ->
-		case get_doc_for_external(StateDir, Module, [{F, A}]) of
-		    D when is_list(D) ->
-			{ok, lists:flatten(D), Local};
-		    _Error ->
-			Local
-		end;
-	    {macro, Macro} ->
-		{macro, Macro};
-	    {record, Record} ->
-		{record, Record};
+        case Input of
+            {external, M, F, A, _Path} = External ->
+                ?D({open, External}),
+                case get_doc_for_external(StateDir, M, [{F, A}]) of
+                    D when is_list(D) ->
+                        {ok, lists:flatten(D), External};
+                    _Error ->
+                        External
+                end;
+            {local, F, A} = Local ->
+                case get_doc_for_external(StateDir, Module, [{F, A}]) of
+                    D when is_list(D) ->
+                        {ok, lists:flatten(D), Local};
+                    _Error ->
+                        Local
+                end;
+            {macro, Macro} ->
+                {macro, Macro};
+            {record, Record} ->
+                {record, Record};
             {field, Record, Field} ->
                 {field, Record, Field};
-	    Error ->
-		?D(Error),
-		{error, Error}
-	end
+            Error ->
+                ?D(Error),
+                {error, Error}
+        end
     catch
-	error:E ->
-	    {error, E};
-	exit:E ->
-	    {error, E}
+        error:E ->
+            {error, E};
+        exit:E ->
+            {error, E}
     end.
 
 e(E) ->
