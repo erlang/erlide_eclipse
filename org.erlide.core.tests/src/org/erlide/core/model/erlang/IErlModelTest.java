@@ -331,8 +331,8 @@ public class IErlModelTest extends ErlModelTestBase {
             final String ww = "ww";
             final IErlModule w1 = model.findIncludeFromModule(module, ww, null,
                     IErlModel.Scope.PROJECT_ONLY);
-            final IErlModel model = myProject.getModel();
-            final IErlModule w2 = model.findIncludeFromProject(myProject, ww,
+            final IErlModel mymodel = myProject.getModel();
+            final IErlModule w2 = mymodel.findIncludeFromProject(myProject, ww,
                     null, IErlModel.Scope.PROJECT_ONLY);
             // then
             // scope should be respected

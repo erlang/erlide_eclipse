@@ -43,7 +43,7 @@ public class RegressionLauncher {
 
     public void launch(final String dir, final IProgressMonitor monitor,
             final RegressionResultsView rview) {
-        this.review = rview;
+        review = rview;
         initResultsView(dir, rview);
 
         // TODO queue requests for different directories? we need a manager...

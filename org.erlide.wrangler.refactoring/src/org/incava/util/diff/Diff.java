@@ -103,7 +103,7 @@ public class Diff {
     /**
      * Runs diff and returns the results.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     public List diff() {
         traverseSequences();
 
@@ -260,7 +260,7 @@ public class Diff {
     /**
      * Returns an array of the longest common subsequences.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     public Integer[] getLongestCommonSubsequences() {
         int aStart = 0;
         int aEnd = a.length - 1;
