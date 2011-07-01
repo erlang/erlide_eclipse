@@ -864,8 +864,13 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(cachedIncludeDirs);
     }
 
+    @Deprecated
     public IPath getOutputLocation() {
         return getProperties().getOutputDir();
+    }
+
+    public Collection<IPath> getOutputLocations() {
+        return getProperties().getOutputDirs();
     }
 
     public RuntimeInfo getRuntimeInfo() {

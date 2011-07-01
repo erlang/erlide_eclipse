@@ -203,8 +203,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * @return log list
      */
     public IRpcResult getLoggedInfo() {
-        final IRpcResult res = backend.call_noexception("wrangler_error_logger",
-                "get_logged_info", "");
+        final IRpcResult res = backend.call_noexception(
+                "wrangler_error_logger", "get_logged_info", "");
         @SuppressWarnings("unused")
         final IRpcResult res2 = backend.call_noexception(
                 "wrangler_error_logger", "remove_all_from_logger", "");

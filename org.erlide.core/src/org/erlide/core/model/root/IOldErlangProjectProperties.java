@@ -17,7 +17,10 @@ public interface IOldErlangProjectProperties {
 
     void setIncludeDirs(final Collection<IPath> includeDirs2);
 
+    @Deprecated
     IPath getOutputDir();
+
+    Collection<IPath> getOutputDirs();
 
     void setOutputDir(final IPath dir);
 

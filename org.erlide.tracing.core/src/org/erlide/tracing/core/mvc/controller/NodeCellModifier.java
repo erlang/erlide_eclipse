@@ -57,6 +57,7 @@ public class NodeCellModifier implements ICellModifier {
         case NODE_NAME:
             node.setNodeName((String) value);
             break;
+        default:
         }
         tableViewer.refresh();
     }

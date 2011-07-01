@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -358,8 +357,8 @@ public class IErlProjectTests extends ErlModelTestBase {
     public void getRuntimeInfo() throws Exception {
         final IErlProject aProject = projects[0];
         final RuntimeInfo info = aProject.getRuntimeInfo();
-        final String expected = ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toString();
+        // final String expected = ResourcesPlugin.getWorkspace().getRoot()
+        // .getLocation().toString();
         assertNotNull(info);
         // The working dir might be relative to the project and can also be "."
         // We need to convert it to a canonical absolute path in order to be

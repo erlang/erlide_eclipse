@@ -47,6 +47,7 @@ public class ProcessCellModifier implements ICellModifier {
                 return process.getName();
             case SELECTED:
                 return process.isSelected();
+            default:
             }
         } catch (final Exception e) {
         }

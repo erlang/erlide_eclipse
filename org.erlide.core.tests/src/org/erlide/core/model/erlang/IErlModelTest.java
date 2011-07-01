@@ -398,7 +398,6 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule referencedModule = ErlideTestUtils.createModule(
                     project1, "zz.erl", "-module(zz).\n");
             aProject.open(null);
-            final IErlModel model = aProject.getModel();
             // when
             // looking for modules
             final String xx = "xx";
@@ -502,7 +501,6 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule referencedModule = ErlideTestUtils.createModule(
                     project1, zzErl, xxxContents);
             aProject.open(null);
-            final IErlModel model = aProject.getModel();
             // when
             // looking for module
             final String zz = "zz";
@@ -581,7 +579,6 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule referencedInclude = ErlideTestUtils.createInclude(
                     project1, "zz.hrl", "-define(Z, referenced).\n");
             aProject.open(null);
-            final IErlModel model = aProject.getModel();
             // when
             // looking for includes
             final String xx = "xx";
@@ -680,7 +677,6 @@ public class IErlModelTest extends ErlModelTestBase {
             final IErlModule referencedInclude = ErlideTestUtils.createInclude(
                     project1, xxHrl, "-define(Z, referenced).\n");
             aProject.open(null);
-            final IErlModel model = aProject.getModel();
             // when
             // looking for includes
             final String xx = "xx";

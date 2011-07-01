@@ -16,7 +16,6 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 public class TreeContentProvider implements
 /* ILazyTreeContentProvider */ITreeContentProvider {
 
-    private final TreeViewer treeViewer;
     private Collection<ITreeNode> list;
     private final boolean hasChildrenValue;
 
@@ -31,7 +30,6 @@ public class TreeContentProvider implements
      */
     public TreeContentProvider(final TreeViewer treeViewer,
             final boolean hasChildrenValue) {
-        this.treeViewer = treeViewer;
         this.hasChildrenValue = hasChildrenValue;
     }
 
