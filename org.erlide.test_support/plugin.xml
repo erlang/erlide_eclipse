@@ -64,15 +64,6 @@
    </factory>
 </extension>
 <extension
-      point="org.eclipse.ui.editors">
-   <editor
-         class="shade.bterl.browser.BterlWebBrowserEditor"
-         contributorClass="org.eclipse.ui.internal.browser.WebBrowserEditorActionBarContributor"
-         id="org.erlide.test_support.browser"
-         name="Bterl Web Browser">
-   </editor>
-</extension>
-<extension
       point="org.eclipse.core.contenttype.contentTypes">
    <content-type
          base-type="org.eclipse.core.runtime.text"
