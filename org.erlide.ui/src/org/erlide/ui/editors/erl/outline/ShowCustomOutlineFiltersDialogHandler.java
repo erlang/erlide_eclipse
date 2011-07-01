@@ -23,7 +23,6 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
 
     public ShowCustomOutlineFiltersDialogHandler() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public Object execute(final ExecutionEvent event) throws ExecutionException {

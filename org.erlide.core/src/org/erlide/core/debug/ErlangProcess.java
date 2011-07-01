@@ -420,7 +420,6 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public boolean canTerminate() {
-        // TODO Auto-generated method stub
         return false;
     }
 

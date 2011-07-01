@@ -38,14 +38,6 @@ public abstract class SourceRefElement extends ErlElement implements
     }
 
     /**
-     * This element is being closed. Do any necessary cleanup.
-     */
-    @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // Do any necessary cleanup
-    }
-
-    /**
      * Returns a new element info for this element.
      */
     protected Object createElementInfo() {

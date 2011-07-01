@@ -523,10 +523,8 @@ public final class MarkerUtils {
                 reader.close();
             }
         } catch (final CoreException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

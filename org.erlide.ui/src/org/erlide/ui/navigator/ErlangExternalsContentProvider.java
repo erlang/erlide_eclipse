@@ -22,7 +22,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
 
     public ErlangExternalsContentProvider() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     private static final Object[] NO_CHILDREN = new Object[0];

@@ -42,13 +42,6 @@ public interface IRpcCallSite {
     OtpErlangObject call(final String m, final String f,
             final String signature, final Object... a) throws RpcException;
 
-    /**
-     * typed RPC with timeout, throws Exception
-     * 
-     * @throws RpcException
-     *             TODO
-     * @throws ConversionException
-     */
     OtpErlangObject call(final int timeout, final String m, final String f,
             final String signature, final Object... a) throws RpcException;
 

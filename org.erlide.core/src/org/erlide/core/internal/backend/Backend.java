@@ -838,7 +838,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public void initialize() {
         shellManager = new BackendShellManager(this);
-        // TODO managed = options.contains(BackendOptions.MANAGED);
         if (isDistributed()) {
             connect();
             final IBackendManager bm = BackendCore.getBackendManager();

@@ -362,13 +362,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     public void terminateBackendsForLaunch(final ILaunch launch) {
-        // TODO Auto-generated method stub
-
     }
 
     public void removeBackendsForLaunch(final ILaunch launch) {
-        // TODO Auto-generated method stub
-
     }
 
     public IBackend createExecutionBackend(final BackendData data) {

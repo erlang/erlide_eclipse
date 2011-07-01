@@ -246,9 +246,6 @@ public class CodeManager implements ICodeManager {
     }
 
     private void unloadPluginCode(final ICodeBundle p) {
-        // TODO Do we have to also check any fragments?
-        // see FindSupport.findInFragments
-
         final Bundle b = p.getBundle();
         final String ver = backend.getErlangVersion();
         @SuppressWarnings("rawtypes")

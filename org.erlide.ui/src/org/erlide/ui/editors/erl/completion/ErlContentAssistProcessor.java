@@ -208,7 +208,6 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 pos = interrogationMarkPos;
                 before = before.substring(interrogationMarkPos + 1);
             } else {
-                // TODO add more contexts...
                 pos = colonPos;
                 before = prefix;
                 if (element != null) {

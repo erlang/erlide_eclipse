@@ -12,7 +12,6 @@ package org.erlide.core.model.root;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -406,19 +405,7 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
      */
     void addElementChangedListener(IElementChangedListener listener);
 
-    /**
-     * @see org.erlide.core.model.erlang.ErlModelManager#getOptionNames()
-     */
-    HashSet<String> getOptionNames();
-
-    /**
-     * @see org.erlide.core.model.erlang.ErlModelManager#registerModelDelta(IErlElementDelta)
-     */
     void registerModelDelta(IErlElementDelta delta);
-
-    /**
-     * @see org.erlide.core.model.erlang.ErlModelManager#fire(int)
-     */
 
     void fire(int post_change);
 

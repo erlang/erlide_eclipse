@@ -1698,8 +1698,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     private void updateAnnotationViews(final Annotation annotation) {
-        // TODO Auto-generated method stub
-
     }
 
     // // the window is asymmetric, to allow finding number of arguments

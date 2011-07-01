@@ -180,8 +180,6 @@ public class FunctionGroup implements SelectionListener {
             }
 
             public void widgetDefaultSelected(final SelectionEvent e) {
-                // TODO Auto-generated method stub
-
             }
         });
 

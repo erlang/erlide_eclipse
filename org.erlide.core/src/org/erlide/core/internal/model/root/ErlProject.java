@@ -669,12 +669,6 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(nonErlangResources);
     }
 
-    @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
     public boolean isOnSourcePath() {
         return true; // FIXME eller? ska man kolla nature? fast det ar val
         // redan klart... kanske den inte ska arva fran

@@ -175,14 +175,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
     @Override
     protected void configureToolBar(final IToolBarManager tbm) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     protected void createActions() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

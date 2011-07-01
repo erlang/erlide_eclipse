@@ -159,12 +159,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
     }
 
     @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public boolean isOpen() {
         return super.isOpen();
     }
