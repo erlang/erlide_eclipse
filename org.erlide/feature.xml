@@ -2,7 +2,7 @@
 <feature
       id="org.erlide"
       label="Erlang IDE"
-      version="0.13.2.qualifier"
+      version="0.13.3.qualifier"
       provider-name="erlide.org"
       image="erlang120.gif">
    <install-handler/>

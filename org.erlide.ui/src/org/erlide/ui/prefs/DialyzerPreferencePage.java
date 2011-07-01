@@ -663,6 +663,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                             alternatePltFileDirectory);
                     selectedPLTPaths.remove(pltPath);
                     selectedPLTPaths.remove(newPath);
+                    shownPLTFiles.remove(newPath);
                     shownPLTFiles.add(newPath);
                     selectedPLTPaths.add(newPath);
                     checkedPltPaths.remove(newPath);

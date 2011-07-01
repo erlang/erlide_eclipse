@@ -1,3 +1,11 @@
+List of user visible changes between 0.13.2 and 0.13.3 (20110701)
+
+5725863 Fix bug with multiple plt-files in dialyzer run.
+8af1934 check for null project when cleaning backend
+0539c21 Update PLT with new paths Updating even when original beam files are missing.
+        838-implement-plt-copy-feature
+385cb68 sometimes the runtime is accessed before being initialized
+
 List of user visible changes between 0.13.1 and 0.13.2 (20110613)
 
 1f7887d Update PLT with new paths

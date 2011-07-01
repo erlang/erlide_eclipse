@@ -14,7 +14,6 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
@@ -85,9 +84,6 @@ public class DialyzerPreferences {
         final String pluginId = "org.erlide.ui";
         final String pltFilesString = service
                 .getString(pluginId, key, "", null);
-        if (pltFilesString.length() > 0) {
-            ErlLogger.debug("%s: '%s'", key, pltFilesString);
-        }
         return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
                 .getIdeBackend(), pltFilesString);
     }

@@ -16,6 +16,7 @@
 %% Exported Functions
 %%
 -export([dialyze/5, format_warning/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2]).
+         
 
 %%
 %% API Functions
@@ -33,8 +34,8 @@ dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
                   ?D(Plt1),
                   dialyzer_plt:from_file(Plt1);
               _ ->
-                  PltFiles = [dialyzer_plt:from_file(F) || F <- PltFiles],
-                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, PltFiles)
+                  Plts = [dialyzer_plt:from_file(F) || F <- PltFiles],
+                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, Plts)
           end,
     ?D(before),
     R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From)),
@@ -85,12 +86,13 @@ check_plt(Plt) ->
 %%% some parts stolen from dialyzer_cl:plt_common/3
 
 update_plt_with_additional_paths(FileName, Paths) ->
+    ?D(Paths),
     case update_plt(FileName, Paths, [], []) of
         {differ, Md5, DiffMd5, ModDeps} ->
             ?D({differ, Md5, DiffMd5, ModDeps}),
             %%             report_failed_plt_check(Opts, DiffMd5),
-            {AnalFiles, RemovedMods, ModDeps1} = 
-                expand_dependent_modules(Md5, DiffMd5, ModDeps),
+            {AnalFiles, _RemovedMods, ModDeps1} = 
+                expand_dependent_modules(Md5, DiffMd5, ModDeps, Paths),
             Plt = clean_plt(FileName, sets:from_list([])),
             case AnalFiles =:= [] of
                 true ->
@@ -323,8 +325,9 @@ compute_new_md5(Md5, Paths, RemoveFiles0, AddFiles0) ->
         {error, _What} = Error -> Error
     end.
 
-compute_new_md5_1([{File, Md5} = Entry|Entries], Paths, NewList, Diff) ->
-    case compute_md5_from_file(File, Paths) of
+compute_new_md5_1([{File0, Md5} = Entry|Entries], Paths, NewList, Diff) ->
+    File = find_file(Paths, File0),
+    case compute_md5_from_file(File) of
         Md5 -> compute_new_md5_1(Entries, Paths, [Entry|NewList], Diff);
         file_not_found ->
             ?D(Entry),
@@ -352,11 +355,9 @@ compute_new_md5_1([], _Paths, NewList, Diff) ->
 %% compute_md5_from_files(Files, Paths) ->
 %%     lists:keysort(1, [{F, compute_md5_from_file(F, Paths)} || F <- Files]).
 
-compute_md5_from_file(File0, Paths) ->
-    File = find_file(Paths, File0, filename:basename(File0)),
+compute_md5_from_file(File) ->
     case filelib:is_regular(File) of
         false ->
-            ?D({file_not_found, File0, File}),
             file_not_found;
         true ->
             case dialyzer_utils:get_abstract_code_from_beam(File) of
@@ -367,6 +368,9 @@ compute_md5_from_file(File0, Paths) ->
                     erlang:md5(term_to_binary(Abs))
             end
     end.
+
+find_file(Paths, File) ->
+    find_file(Paths, File, filename:basename(File)).
 
 find_file([], File, _Name) ->
     File;
@@ -420,7 +424,7 @@ beam_file_to_module(Filename) ->
 
 %% stolen from dialyzer_plt
 
-expand_dependent_modules(Md5, DiffMd5, ModDeps) ->
+expand_dependent_modules(Md5, DiffMd5, ModDeps, Paths) ->
     ChangedMods = sets:from_list([M || {differ, M} <- DiffMd5]),
     ?D(ChangedMods),
     RemovedMods = sets:from_list([M || {removed, M} <- DiffMd5]),
@@ -438,7 +442,8 @@ expand_dependent_modules(Md5, DiffMd5, ModDeps) ->
                         Mod = list_to_atom(filename:basename(File, ".beam")),
                         sets:is_element(Mod, AnalyzeMods)
                 end,
-    {[F || {F, _} <- Md5, FilterFun(F)], RemovedMods, NewModDeps}.
+    {[find_file(Paths, F) || {F, _} <- Md5, FilterFun(F)],
+     RemovedMods, NewModDeps}.
 
 clean_plt(PltFile, RemovedMods) ->
     %% Clean the plt from the removed modules.
@@ -485,7 +490,7 @@ expand_dependent_modules_1([], Included, _ModDeps) ->
 do_analysis(Files, FileName, Plt, PltInfo, AnalysisType) ->
     do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, [], true, byte_code).
 
-do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, NoCheckPLT, From) ->
+do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPLT, From) ->
     assert_writable(FileName),
     hipe_compile(Files, true),
 %%     report_analysis_start(Options),
@@ -564,10 +569,10 @@ hipe_compile(Files, ErlangMode) ->
                             dialyzer_dataflow, dialyzer_dep, dialyzer_plt,
                             dialyzer_succ_typings, dialyzer_typesig],
                     %%       report_native_comp(Options),
-                    {T1, _} = statistics(wall_clock),
+                    {_T1, _} = statistics(wall_clock),
                     native_compile(Mods),
-                    {T2, _} = statistics(wall_clock)
-            %%       report_elapsed_time(T1, T2, Options)
+                    {_T2, _} = statistics(wall_clock)
+            %%       report_elapsed_time(_T1, _T2, Options)
             end
     end.
 

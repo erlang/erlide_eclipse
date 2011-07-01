@@ -2,8 +2,6 @@ package org.erlide.test_support.ui.suites;
 
 import java.util.List;
 
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -12,7 +10,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 
 import com.google.common.collect.Lists;
@@ -51,9 +48,9 @@ public class RegressionResultsView extends ViewPart {
     }
 
     private void initToolbar() {
-        final IActionBars actionBars = getViewSite().getActionBars();
-        final IMenuManager dropDownMenu = actionBars.getMenuManager();
-        final IToolBarManager toolBar = actionBars.getToolBarManager();
+        // final IActionBars actionBars = getViewSite().getActionBars();
+        // final IMenuManager dropDownMenu = actionBars.getMenuManager();
+        // final IToolBarManager toolBar = actionBars.getToolBarManager();
 
         // final Action action = new ClearTestResultsAction(tableViewer,
         // events);

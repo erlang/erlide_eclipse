@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.common.Util;
 import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcResultCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -84,5 +85,12 @@ public class ErlideDialyze {
             }
         }
         return null;
+    }
+
+    public static void startCheckPlt(final IRpcCallSite backend,
+            final String plt, final List<String> ebinDirs,
+            final IRpcResultCallback callback) throws RpcException {
+        backend.async_call_result(callback, "erlide_dialyze",
+                "start_update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 }
