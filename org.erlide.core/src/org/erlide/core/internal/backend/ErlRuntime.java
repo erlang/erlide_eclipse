@@ -60,7 +60,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                             .error("ErlRuntime could not be created (%s), retrying %d",
                                     e.getMessage(), i);
                     try {
-                        Thread.sleep(300);
+                        localNodeLock.wait(300);
                     } catch (final InterruptedException e1) {
                     }
                 }

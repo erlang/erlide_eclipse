@@ -261,9 +261,9 @@ public class OpenAction extends SelectionDispatchAction {
             return ModelUtils.findTypeDef(module, res.getName(), res.getFun(),
                     res.getPath(), project, scope);
         }
-        final IErlElement result = ModelUtils.findFunction(res.getName(),
+        final IErlFunction result = ModelUtils.findFunction(res.getName(),
                 res.getFunction(), res.getPath(), project, scope, module);
-        if (result instanceof IErlFunction) {
+        if (result != null) {
             return result;
         }
         return ModelUtils.findFunction(res.getName(),

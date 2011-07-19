@@ -679,7 +679,7 @@ public class ErlModel extends Openable implements IErlModel {
                 false, false, IErlModel.Scope.ALL_PROJECTS);
     }
 
-    private static ErlModel fgErlangModel;
+    private static volatile ErlModel fgErlangModel;
 
     public static final IErlModel getErlangModel() {
         if (fgErlangModel == null) {

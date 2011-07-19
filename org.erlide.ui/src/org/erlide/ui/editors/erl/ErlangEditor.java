@@ -2136,7 +2136,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * @author jakob
      * 
      */
-    private class ErlangRef {
+    private static class ErlangRef {
         final private ErlangSearchElement element;
         final private int offset;
         final private int length;

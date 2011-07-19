@@ -225,7 +225,7 @@ public class ErlangFileWizardPage extends WizardPage {
             final IContainer container) {
         final IPath containerPath = container.getFullPath();
         for (final IPath sourceDir : sourceDirs) {
-            if (containerPath.equals(sourceDirs)
+            if (containerPath.equals(sourceDir)
                     || containerPath.isPrefixOf(sourceDir)) {
                 return sourceDir;
             }

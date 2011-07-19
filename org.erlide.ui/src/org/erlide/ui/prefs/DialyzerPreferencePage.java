@@ -97,7 +97,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     }
 
-    private class LabelProvider implements ILabelProvider {
+    private static class LabelProvider implements ILabelProvider {
 
         public void addListener(final ILabelProviderListener listener) {
         }
