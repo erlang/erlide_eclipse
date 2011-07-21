@@ -173,7 +173,7 @@ public final class BuilderHelper {
         try {
             final OtpErlangList res = InternalErlideBuilder
                     .getCodeClashes(backend);
-            for (final OtpErlangObject elem : res.elements()) {
+            for (final OtpErlangObject elem : res) {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
                 final String f1 = ((OtpErlangString) t.elementAt(0))
                         .stringValue();
@@ -395,7 +395,7 @@ public final class BuilderHelper {
     private void refreshDirs(final IProject project,
             final OtpErlangObject element) {
         final OtpErlangList list = (OtpErlangList) element;
-        for (final OtpErlangObject ebeam : list.elements()) {
+        for (final OtpErlangObject ebeam : list) {
             final OtpErlangString beam = (OtpErlangString) ebeam;
             IPath p = new Path(beam.stringValue());
             p = p.removeLastSegments(1);

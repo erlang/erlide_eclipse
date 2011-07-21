@@ -233,7 +233,7 @@ public class TraceBackend {
         } else {
             final OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
             activatedNodes = new ArrayList<String>();
-            for (final OtpErlangObject nodeName : nodeNames.elements()) {
+            for (final OtpErlangObject nodeName : nodeNames) {
                 final String nodeNameString = ((OtpErlangAtom) nodeName)
                         .atomValue();
                 activatedNodes.add(nodeNameString);

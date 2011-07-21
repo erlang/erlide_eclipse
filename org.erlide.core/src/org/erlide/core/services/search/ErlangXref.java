@@ -68,7 +68,7 @@ public final class ErlangXref {
             }
             final OtpErlangList l = (OtpErlangList) bind.get("L");
             final List<FunctionRef> result = new ArrayList<FunctionRef>();
-            for (final OtpErlangObject e : l.elements()) {
+            for (final OtpErlangObject e : l) {
                 result.add(new FunctionRef(e));
             }
             return result.toArray(new FunctionRef[result.size()]);

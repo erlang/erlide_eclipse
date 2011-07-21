@@ -28,7 +28,7 @@ public class ErlideContextAssist {
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                for (final OtpErlangObject i : l.elements()) {
+                for (final OtpErlangObject i : l) {
                     result.add(Util.stringValue(i));
                 }
             }

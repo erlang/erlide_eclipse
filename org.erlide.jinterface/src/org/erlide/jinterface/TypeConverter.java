@@ -250,9 +250,8 @@ public final class TypeConverter {
             return new String(((OtpErlangBinary) obj).binaryValue());
         }
         if (obj instanceof OtpErlangList) {
-            final OtpErlangObject[] els = ((OtpErlangList) obj).elements();
             final StringBuilder res = new StringBuilder();
-            for (final OtpErlangObject el : els) {
+            for (final OtpErlangObject el : (OtpErlangList) obj) {
                 if (el instanceof OtpErlangLong) {
                     final long l = ((OtpErlangLong) el).longValue();
                     res.append((char) (l & 0xFFFF));

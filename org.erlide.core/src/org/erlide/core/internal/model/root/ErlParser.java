@@ -411,7 +411,7 @@ public final class ErlParser implements IErlParser {
                 if (fields != null) {
                     final List<ErlRecordField> children = Lists
                             .newArrayListWithCapacity(fields.arity());
-                    for (final OtpErlangObject o : fields.elements()) {
+                    for (final OtpErlangObject o : fields) {
                         if (o instanceof OtpErlangTuple) {
                             final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
                             final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple
