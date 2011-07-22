@@ -15,7 +15,7 @@
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>
       <builder
-            id="org.erlide.core.builder.DialyzerBuilder">
+            id="org.erlide.core.builder.dialyzer">
       </builder>
    </extension>
    <extension
