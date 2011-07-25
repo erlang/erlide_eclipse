@@ -48,7 +48,7 @@ public final class BackendData extends GenericBackendData {
         if (runtimeInfo == null) {
             return;
         }
-        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "") == "") {
+        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
     }
@@ -59,6 +59,10 @@ public final class BackendData extends GenericBackendData {
 
     public BackendData(final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
+        if (info == null) {
+            throw new IllegalArgumentException(
+                    "BackendData can't be created with null RuntimeInfo");
+        }
         setRuntimeName(info.getName());
         setNodeName(info.getNodeName());
         setCookie(info.getCookie());
