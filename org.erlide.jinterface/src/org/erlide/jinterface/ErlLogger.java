@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -29,6 +28,8 @@ public class ErlLogger {
     private static ErlLogger instance;
     private Logger logger;
     private String logDir;
+    private ConsoleHandler consoleHandler = null;
+    private FileHandler fileHandler = null;
 
     public static ErlLogger getInstance() {
         if (instance == null) {
@@ -42,7 +43,12 @@ public class ErlLogger {
     }
 
     public final void setLogDir(final String dir) {
+        logger.removeHandler(consoleHandler);
+        logger.removeHandler(fileHandler);
         logDir = dir == null ? "./" : dir;
+        final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
+        addFileHandler(erlSimpleFormatter);
+        addConsoleHandler(erlSimpleFormatter);
     }
 
     public String getLogLocation() {
@@ -124,7 +130,7 @@ public class ErlLogger {
     }
 
     private void addConsoleHandler(final ErlSimpleFormatter erlSimpleFormatter) {
-        final ConsoleHandler consoleHandler = new ConsoleHandler();
+        consoleHandler = new ConsoleHandler();
         consoleHandler.setFormatter(erlSimpleFormatter);
         final Level lvl = java.util.logging.Level.FINEST;
         consoleHandler.setLevel(lvl);
@@ -132,12 +138,11 @@ public class ErlLogger {
     }
 
     private void addFileHandler(final ErlSimpleFormatter erlSimpleFormatter) {
-        Handler fh;
         try {
-            fh = new FileHandler(getLogLocation());
-            fh.setFormatter(erlSimpleFormatter);
-            fh.setLevel(java.util.logging.Level.FINEST);
-            logger.addHandler(fh);
+            fileHandler = new FileHandler(getLogLocation());
+            fileHandler.setFormatter(erlSimpleFormatter);
+            fileHandler.setLevel(java.util.logging.Level.FINEST);
+            logger.addHandler(fileHandler);
         } catch (final SecurityException e) {
             e.printStackTrace();
         } catch (final IOException e) {
