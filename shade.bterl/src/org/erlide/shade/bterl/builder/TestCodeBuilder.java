@@ -48,10 +48,10 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = true;
-
-    // "true".equals(System
-    // .getProperty("org.erlide.test_support.debug"));
+    private static final boolean DEBUG = "true".equals(System
+            .getProperty("erlide.test_support.debug"));
+    private static final boolean DISABLED = "true".equals(System
+            .getProperty("erlide.test_builder.disabled"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -71,6 +71,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     @Override
     protected IProject[] build(final int kind, final Map args,
             final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return null;
+        }
         if (kind == FULL_BUILD) {
             fullBuild(monitor);
         } else {
@@ -86,6 +89,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     @Override
     protected void clean(final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return;
+        }
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
