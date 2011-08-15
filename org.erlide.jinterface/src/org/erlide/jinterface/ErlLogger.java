@@ -122,8 +122,6 @@ public class ErlLogger {
         logger = Logger.getLogger("org.erlide");
 
         setLogDir(dir);
-        addFileHandler(erlSimpleFormatter);
-        addConsoleHandler(erlSimpleFormatter);
 
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);
