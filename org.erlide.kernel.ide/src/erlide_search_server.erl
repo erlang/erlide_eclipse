@@ -25,7 +25,9 @@
 %% called from Java
 -export([start/0, 
          stop/0,
-         find_refs/3]).
+         find_refs/3,
+         start_find_refs/4,
+         cancel_find_refs/1]).
 
 %% called from Erlang
 -export([remove_module/1,
@@ -82,11 +84,24 @@ find_refs(Pattern, Modules, StateDir)
     R = server_cmd(find_refs, {Pattern, Modules, StateDir}),
     R.
 
+%% 
+start_find_refs(JPid, Pattern, Modules, StateDir)
+  when is_tuple(Pattern), is_list(Modules), is_list(StateDir) ->
+    start_find_refs(JPid, [Pattern], Modules, StateDir); 
+start_find_refs(JPid, Pattern, Modules, StateDir)
+  when is_list(Pattern), is_list(Modules), is_list(StateDir) ->
+    ?D({JPid, Pattern}),
+    R = server_cmd(start_find_refs, {Pattern, Modules, JPid, StateDir}),
+    R.
+
 remove_module(ScannerName) ->
     server_cmd(remove_module, ScannerName).
 
 add_module_refs(ScannerName, Refs) ->
     server_cmd(add_module_refs, {ScannerName, Refs}).
+
+cancel_find_refs(Pid) ->
+    server_cmd(cancel_find_refs, Pid).
 
 %%
 %% Local Functions
@@ -179,6 +194,13 @@ do_cmd(find_refs, {Ref, Modules, StateDir}, State) ->
     R = do_find_refs(Modules, Ref, StateDir, State, []),
     ?D(R),
     R;
+do_cmd(start_find_refs, {Pattern, Modules, JPid, StateDir}, State) ->
+    ?D(start_find_refs),
+    R = do_start_find_refs(Pattern, Modules, JPid, StateDir, State),
+    R;
+do_cmd(cancel_find_refs, Pid, State) ->
+    Pid ! cancel,
+    {stopped, State};
 do_cmd(remove_module, Module, #state{modules=Modules0} = State) ->
     Modules1 = lists:keydelete(Module, #module.scanner_name, Modules0),
     State#state{modules=Modules1};
@@ -187,6 +209,48 @@ do_cmd(state, _, State) ->
 do_cmd(modules, _, #state{modules=Modules} = State) ->
     Names = [M || #module{scanner_name=M} <- Modules],
     {Names, State}.
+
+do_start_find_refs(Pattern, Modules, JPid, StateDir, State) ->
+    ?D({do_start_find_refs, Pattern, JPid}),
+    Pid = spawn_link(fun() ->
+                             ModuleChunks = chunkify(Modules, 10),
+                             ?D({JPid, length(ModuleChunks)}),
+                             JPid ! {start, length(ModuleChunks)},
+                             ?D({JPid, length(ModuleChunks)}),
+                             R = do_background_find_refs(ModuleChunks, Pattern, JPid, StateDir, State),
+                             ?D({stop, R}),
+                             JPid ! {stop, R}
+                     end),
+    {Pid, State}.
+
+do_background_find_refs([], _Pattern, _JPid, _StateDir, _State) ->
+    ok;
+do_background_find_refs([Chunk | Rest], Pattern, JPid, StateDir, State) ->
+    {R, _State} = do_find_refs(Chunk, Pattern, StateDir, State, []),
+    ?D({1, R}),
+    JPid ! {progress, {self(), 1, R}},
+    receive
+        cancel -> 
+            ok
+    after 0 ->
+            do_background_find_refs(Rest, Pattern, JPid, StateDir, State)
+    end.
+
+chunkify(List, N) ->
+    chunkify(List, N, []).
+
+chunkify([], _, Acc) ->
+    lists:reverse(Acc);
+chunkify(List, N, Acc) ->
+    {Chunk, Rest} = chunkify_aux(List, N, []),
+    chunkify(Rest, N, [Chunk | Acc]).
+
+chunkify_aux([], _, Acc) ->
+    {lists:reverse(Acc), []};
+chunkify_aux(List, 0, Acc) ->
+    {lists:reverse(Acc), List};
+chunkify_aux([H | T], N, Acc) ->
+    chunkify_aux(T, N-1, [H | Acc]).
 
 do_find_refs([], _, _, State, Acc) ->
     {{ok, Acc}, State};

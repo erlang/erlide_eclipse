@@ -10,18 +10,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
 import org.erlide.core.erlang.TestingSupport;
-import org.erlide.core.erlang.internal.ErlParser;
-import org.erlide.core.text.ErlangToolkit;
+import org.erlide.core.internal.model.erlang.ErlideScanner;
+import org.erlide.core.model.erlang.ErlangToolkit;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import erlang.ErlideScanner;
 
 /**
  * @author jakob
@@ -36,8 +35,8 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        module = ErlangCore.getModelManager().getModuleFromText(null,
-                "testing", "", null);
+        final IErlModel model = CoreScope.getModel();
+        module = model.getModuleFromText(model, "testing", "", null);
     }
 
     /**
@@ -53,7 +52,8 @@ public class ParsingTests {
         final String scannerModuleName = ErlangToolkit
                 .createScannerModuleName(module);
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        return ErlParser.parse(module, scannerModuleName, false, "", false);
+        final IErlParser parser = CoreScope.getModel().getParser();
+        return parser.parse(module, scannerModuleName, false, "", false);
     }
 
     @Test

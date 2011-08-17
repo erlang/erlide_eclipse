@@ -2,11 +2,11 @@
 <feature
       id="org.erlide.headless"
       label="Erlide core (headless)"
-      version="0.9.5.qualifier"
+      version="0.13.3.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core">
 
-   <description url="http://www.example.com/description">
+   <description>
       This feature provides Erlang IDE support for Eclipse, that
 can be used without an UI (headless).
 For bug reports and feature requests, please use the SouceForge
@@ -14,7 +14,7 @@ trackers at http://sourceforge.net/projects/erlide/.
 Mailing to erlide-devel@sf.net would be the second option.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
+   <copyright>
       Copyright (c) 2004-2010 Vlad Dumitrescu, Jakob Cederlund, and
 others.
 All rights reserved. This program and the accompanying materials
@@ -31,6 +31,17 @@ is available from http://www.eclipse.org/legal/epl-v10.html
    <url>
       <update label="Erlide main update site" url="http://erlide.org/update/"/>
    </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.erlide.core" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.kernel.common" version="0.7.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.jinterface" version="0.9.5" match="greaterOrEqual"/>
+      <import plugin="org.erlide.libs" version="1.2.3" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
          id="org.erlide.core"
@@ -75,12 +86,5 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.erlide.backend"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>

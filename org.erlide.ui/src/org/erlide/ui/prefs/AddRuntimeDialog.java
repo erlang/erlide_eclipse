@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.backend.runtime.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.ui.dialogfields.DialogField;
 import org.erlide.ui.dialogfields.IDialogFieldListener;
 import org.erlide.ui.dialogfields.IListAdapter;
@@ -36,9 +36,8 @@ import org.erlide.ui.dialogfields.StringButtonDialogField;
 import org.erlide.ui.dialogfields.StringDialogField;
 import org.erlide.ui.util.StatusInfo;
 
-public class AddRuntimeDialog
-
-extends StatusDialog implements IListAdapter<String> {
+public class AddRuntimeDialog extends StatusDialog implements
+        IListAdapter<String> {
 
     public static class StringLabelProvider implements ILabelProvider {
 
@@ -319,11 +318,6 @@ extends StatusDialog implements IListAdapter<String> {
         return "ADD_VM_DIALOG_SECTION"; //$NON-NLS-1$
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.window.Window#close()
-     */
     @Override
     public boolean close() {
         // DialogSettingsHelper.persistShellGeometry(getShell(),
@@ -331,13 +325,6 @@ extends StatusDialog implements IListAdapter<String> {
         return super.close();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.window.Window#getInitialLocation(org.eclipse.swt.graphics
-     * .Point)
-     */
     @Override
     protected Point getInitialLocation(final Point initialSize) {
         // Point initialLocation = DialogSettingsHelper
@@ -349,11 +336,6 @@ extends StatusDialog implements IListAdapter<String> {
         return super.getInitialLocation(initialSize);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.window.Window#getInitialSize()
-     */
     @Override
     protected Point getInitialSize() {
         final Point size = super.getInitialSize();

@@ -19,37 +19,37 @@ import org.eclipse.core.expressions.PropertyTester;
  * @version %I%, %G%
  */
 public class WranglerTester extends PropertyTester {
-	/**
-	 * Default constructor
-	 */
-	public WranglerTester() {
-	}
+    /**
+     * Default constructor
+     */
+    public WranglerTester() {
+    }
 
-	/**
-	 * Test if QC, GraphViz is installed on the system.
-	 */
+    /**
+     * Test if QC, GraphViz is installed on the system.
+     */
 
-	public boolean test(Object receiver, String property, Object[] args,
-			Object expectedValue) {
-		if (property.equals("hasQuickCheck")) {
-			return true;// GlobalParameters.hasQuickCheck();
-		} else if ("hasGraphViz".equals(property)) {
+    public boolean test(final Object receiver, final String property,
+            final Object[] args, final Object expectedValue) {
+        if (property.equals("hasQuickCheck")) {
+            return true;// GlobalParameters.hasQuickCheck();
+        } else if ("hasGraphViz".equals(property)) {
 
-			// Bundle[] bs = Platform
-			// .getFragments(Platform
-			// .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
-			//
-			// for (int i = 0; i < bs.length; ++i) {
-			// if (bs[i].getSymbolicName().equals(
-			// "org.erlide.wrangler.refactoring.codeinspection")) {
-			//
-			// return true;
-			// }
-			// }
+            // Bundle[] bs = Platform
+            // .getFragments(Platform
+            // .getBundle(org.erlide.wrangler.refactoring.Activator.PLUGIN_ID));
+            //
+            // for (int i = 0; i < bs.length; ++i) {
+            // if (bs[i].getSymbolicName().equals(
+            // "org.erlide.wrangler.refactoring.codeinspection")) {
+            //
+            // return true;
+            // }
+            // }
 
-			return true;
-		}
+            return true;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

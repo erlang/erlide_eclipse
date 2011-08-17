@@ -31,75 +31,76 @@ import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
  */
 public class NewParameterNameInputDialog extends AbstractInputDialog {
 
-	private Text newParameterName;
-	private String data;
+    private Text newParameterName;
+    private String data;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param parentShell
-	 *            shell
-	 * @param title
-	 *            dialog title
-	 */
-	public NewParameterNameInputDialog(final Shell parentShell,
-			final String title) {
-		super(parentShell, title);
-	}
+    /**
+     * Constructor
+     * 
+     * @param parentShell
+     *            shell
+     * @param title
+     *            dialog title
+     */
+    public NewParameterNameInputDialog(final Shell parentShell,
+            final String title) {
+        super(parentShell, title);
+    }
 
-	/**
-	 * Get input data
-	 * 
-	 * @return input string
-	 */
-	public String getData() {
-		return data;
-	}
+    /**
+     * Get input data
+     * 
+     * @return input string
+     */
+    public String getData() {
+        return data;
+    }
 
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        final Composite composite = (Composite) super.createDialogArea(parent);
 
-		Label newParameterNameLabel = new Label(composite, SWT.WRAP);
-		newParameterNameLabel.setText("New parameter name:");
-		GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_CENTER);
-		minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		newParameterNameLabel.setLayoutData(minToksData);
-		newParameterNameLabel.setFont(parent.getFont());
+        final Label newParameterNameLabel = new Label(composite, SWT.WRAP);
+        newParameterNameLabel.setText("New parameter name:");
+        final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_CENTER);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        newParameterNameLabel.setLayoutData(minToksData);
+        newParameterNameLabel.setFont(parent.getFont());
 
-		newParameterName = new Text(composite, getInputTextStyle());
-		newParameterName.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-		newParameterName.addModifyListener(new ModifyListener() {
-			public void modifyText(final ModifyEvent e) {
-				data = newParameterName.getText();
-				validateInput();
-			}
-		});
+        newParameterName = new Text(composite, getInputTextStyle());
+        newParameterName.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        newParameterName.addModifyListener(new ModifyListener() {
+            public void modifyText(final ModifyEvent e) {
+                data = newParameterName.getText();
+                validateInput();
+            }
+        });
 
-		errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-		errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.HORIZONTAL_ALIGN_FILL));
-		errorMessageText.setBackground(errorMessageText.getDisplay()
-				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
+        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.HORIZONTAL_ALIGN_FILL));
+        errorMessageText.setBackground(errorMessageText.getDisplay()
+                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
-		setErrorMessage("New parameter name must be a valid variable name!");
-		newParameterName.setText("");
+        setErrorMessage("New parameter name must be a valid variable name!");
+        newParameterName.setText("");
 
-		return composite;
+        return composite;
 
-	}
+    }
 
-	@Override
-	protected void validateInput() {
-		IValidator v = new VariableNameValidator();
-		if (!v.isValid(newParameterName.getText()))
-			setErrorMessage("New parameter name must be a valid variable name!");
-		else
-			setErrorMessage(null);
+    @Override
+    protected void validateInput() {
+        final IValidator v = new VariableNameValidator();
+        if (!v.isValid(newParameterName.getText())) {
+            setErrorMessage("New parameter name must be a valid variable name!");
+        } else {
+            setErrorMessage(null);
+        }
 
-	}
+    }
 
 }

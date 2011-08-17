@@ -22,7 +22,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * An error dialog reporting a problem with a debug target which gives the user
@@ -55,13 +55,6 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
         this.target = target;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse
-     * .swt.widgets.Composite)
-     */
     @Override
     protected void createButtonsForButtonBar(final Composite parent) {
         super.createButtonsForButtonBar(parent);
@@ -79,11 +72,6 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
-     */
     @Override
     protected void buttonPressed(final int id) {
         if (id == TERMINATE_ID || id == DISCONNECT_ID || id == RESTART_ID) {

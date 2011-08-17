@@ -10,9 +10,13 @@
 
 package org.erlide.ui.wizards;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.text.BadLocationException;
@@ -39,10 +43,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.erlang.ModuleKind;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
@@ -183,23 +188,28 @@ public class ErlangFileWizardPage extends WizardPage {
             }
             final Object obj = ssel.getFirstElement();
             if (obj instanceof IResource) {
+                final IResource resource = (IResource) obj;
                 IContainer container;
-                if (obj instanceof IContainer) {
-                    container = (IContainer) obj;
+                if (resource instanceof IContainer) {
+                    container = (IContainer) resource;
                 } else {
-                    container = ((IResource) obj).getParent();
+                    container = resource.getParent();
                 }
-                final IOldErlangProjectProperties pp = ErlangCore
-                        .getProjectProperties(((IResource) obj).getProject());
+                final IProject project = resource.getProject();
+                final IErlProject erlProject = CoreScope.getModel()
+                        .getErlangProject(project);
                 String txt;
-                if (pp.hasSourceDir(container.getFullPath())) {
-                    txt = container.getFullPath().toString();
-                } else if (pp.getSourceDirs().size() > 0) {
-                    txt = container
-                            .getFolder(
-                                    new Path(pp.getSourceDirs().iterator()
-                                            .next().toString())).getFullPath()
-                            .toString();
+                final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
+                if (sourceDirs.size() > 0) {
+                    final IPath sourceDirWithinContainer = sourceDirWithinContainer(
+                            sourceDirs, container);
+                    if (sourceDirWithinContainer != null) {
+                        txt = sourceDirWithinContainer.toString();
+                    } else {
+                        final IPath path = project.getFullPath().append(
+                                sourceDirs.iterator().next());
+                        txt = path.toString();
+                    }
                 } else {
                     txt = container.getFullPath().toString();
                 }
@@ -209,6 +219,18 @@ public class ErlangFileWizardPage extends WizardPage {
         }
 
         fileText.setText("new_file");
+    }
+
+    private IPath sourceDirWithinContainer(final Collection<IPath> sourceDirs,
+            final IContainer container) {
+        final IPath containerPath = container.getFullPath();
+        for (final IPath sourceDir : sourceDirs) {
+            if (containerPath.equals(sourceDir)
+                    || containerPath.isPrefixOf(sourceDir)) {
+                return sourceDir;
+            }
+        }
+        return null;
     }
 
     /**
@@ -307,8 +329,8 @@ public class ErlangFileWizardPage extends WizardPage {
     private String parse(final Template template,
             final TemplateContextType contextType) {
         String s = getFileName();
-        if (ErlideUtil.hasModuleExtension(s)) {
-            s = ErlideUtil.withoutExtension(s);
+        if (ModuleKind.hasModuleExtension(s)) {
+            s = CommonUtils.withoutExtension(s);
         }
         ModuleVariableResolver.getDefault().setModule(s);
 

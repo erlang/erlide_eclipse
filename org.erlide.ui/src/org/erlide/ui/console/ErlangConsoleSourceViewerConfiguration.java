@@ -26,14 +26,14 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
-import org.erlide.jinterface.backend.console.IoRequest.IoRequestKind;
+import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.DoubleClickStrategy;
 import org.erlide.ui.editors.erl.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.ErlHighlightScanner;
 import org.erlide.ui.editors.erl.ErlangPairMatcher;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
-import org.erlide.ui.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
 
 final class ErlangConsoleSourceViewerConfiguration extends
         TextSourceViewerConfiguration {

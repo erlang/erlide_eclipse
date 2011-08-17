@@ -21,36 +21,36 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class InputPage extends WranglerPage {
 
-	/**
-	 * @param name
-	 *            input page title
-	 */
-	public InputPage(final String name) {
-		super(name);
-	}
+    /**
+     * @param name
+     *            input page title
+     */
+    public InputPage(final String name) {
+        super(name);
+    }
 
-	@Override
-	public IWizardPage getNextPage() {
-		controlWorkflow(this.getShell());
-		// from UserInPutPageWizard class
-		return super.getNextPage();
-	}
+    @Override
+    public IWizardPage getNextPage() {
+        controlWorkflow(getShell());
+        // from UserInPutPageWizard class
+        return super.getNextPage();
+    }
 
-	@Override
-	protected boolean performFinish() {
-		controlWorkflow(this.getShell());
-		return super.performFinish();
-	}
+    @Override
+    protected boolean performFinish() {
+        controlWorkflow(getShell());
+        return super.performFinish();
+    }
 
-	/**
-	 * Abstract method which could be use for controlling the workflow.
-	 * 
-	 * @param s
-	 *            shell
-	 */
-	protected void controlWorkflow(final Shell s) {
-	}
+    /**
+     * Abstract method which could be use for controlling the workflow.
+     * 
+     * @param s
+     *            shell
+     */
+    protected void controlWorkflow(final Shell s) {
+    }
 
-	abstract protected boolean isInputValid();
+    abstract protected boolean isInputValid();
 
 }

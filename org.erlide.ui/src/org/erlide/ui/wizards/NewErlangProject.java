@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -28,7 +27,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -37,15 +35,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.PluginUtils;
-import org.erlide.core.preferences.OldErlangProjectProperties;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOldErlangProjectProperties;
+import org.erlide.core.model.util.PluginUtils;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * Creates a new erlide project in the Eclipse workbench.
@@ -154,16 +154,14 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @return
      */
     private boolean validateFinish() {
-        ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
-                + "|");
         final IOldErlangProjectProperties prefs = buildPage.getPrefs();
-        if (prefs.getOutputDir().isEmpty()) {
+        if (prefs.getOutputDirs().isEmpty()) {
             reportError(ErlideUIPlugin
                     .getResourceString("wizard.errors.buildpath"));
             return false;
         }
 
-        if (prefs.getSourceDirs().size() == 0) {
+        if (prefs.getSourceDirs().isEmpty()) {
             reportError(ErlideUIPlugin
                     .getResourceString("wizards.errors.sourcepath"));
             return false;
@@ -198,7 +196,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             description = project.getDescription();
 
-            description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+            description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
             project.setDescription(description, new SubProgressMonitor(monitor,
                     10));
 
@@ -210,24 +208,25 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             buildPaths(monitor, root, project, new ArrayList<IPath>() {
                 {
-                    add(bprefs.getOutputDir());
+                    addAll(bprefs.getOutputDirs());
                 }
             });
             buildPaths(monitor, root, project, bprefs.getSourceDirs());
             buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-            final IOldErlangProjectProperties prefs = ErlangCore
-                    .getProjectProperties(project);
-            prefs.copyFrom(bprefs);
-            final IEclipsePreferences node = new ProjectScope(project)
-                    .getNode(ErlangPlugin.PLUGIN_ID);
-            prefs.store(node);
+            final IErlProject erlProject = CoreScope.getModel()
+                    .getErlangProject(project);
+            erlProject.setAllProperties(bprefs);
 
             // TODO add code path to backend
             // final String out = project.getLocation().append(
             // prefs.getOutputDir()).toString();
-        } catch (final CoreException x) {
-            reportError(x);
+        } catch (final CoreException e) {
+            ErlLogger.debug(e);
+            reportError(e);
+        } catch (final BackingStoreException e) {
+            ErlLogger.debug(e);
+            reportError(e);
         } finally {
             monitor.done();
         }

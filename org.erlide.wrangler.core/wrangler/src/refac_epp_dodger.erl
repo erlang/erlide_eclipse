@@ -67,7 +67,7 @@
 
 -module(refac_epp_dodger).
 
--export([parse_file/2, normal_parser/2]).
+-export([parse_file/2, normal_parser/2, fix_pos_in_form/2]).
 
 %% The following should be: 1) pseudo-uniquely identifiable, and 2)
 %% cause nice looking error messages when the parser has to give up.
@@ -245,8 +245,8 @@ parse_tokens(Ts) ->
 parse_tokens(Ts, Fix) ->
       case refac_parse:parse_form(Ts) of
         {ok, Form} ->
-	    Form;
-        {error, IoErr} ->
+              fix_pos_in_form(Ts, Form);
+          {error, IoErr} ->
 	    case Fix(Ts) of
 		{form, Form} ->
 		    Form;
@@ -448,27 +448,14 @@ rewrite_list([]) ->
 %% functions, we cannot assume that we know the exact representation of
 %% the syntax tree anymore - we must use refac_syntax functions to analyze
 %% and decompose the data.
-
 rewrite(Node) ->
     case refac_syntax:type(Node) of
 	atom ->
-	    case atom_to_list(refac_syntax:atom_value(Node)) of
+            case atom_to_list(refac_syntax:atom_value(Node)) of
 		?atom_prefix ++As ->
-		    {L,_} = refac_syntax:get_pos(Node),
-		    {_Ln, A1} =lists:splitwith(fun(A) -> A=/= 95 end, As), %% This can be removed;
-		    {Col, A2} = lists:splitwith(fun(A) -> A=/=95 end, tl(A1)),
-		    A = list_to_atom(tl(A2)),	
-		    N = refac_syntax:set_pos(refac_syntax:atom(A),{L,list_to_integer(Col)-1}),
-		    refac_syntax:set_pos(refac_syntax:macro(N),{L, list_to_integer(Col)-1});
-		   %% refac_syntax:copy_pos(Node, refac_syntax:macro(N));
+		    rewrite_macro(Node, As, ?atom_prefix);
 		?var_prefix ++As ->
-		    {L,_} = refac_syntax:get_pos(Node),
-		    {_Ln, A1} =lists:splitwith(fun(A) -> A=/= 95 end, As), %% This can be removed;
-		    {Col, A2} = lists:splitwith(fun(A) -> A=/=95 end, tl(A1)),
-		    A = list_to_atom(tl(A2)),		    
-		    N = refac_syntax:set_pos(refac_syntax:variable(A), {L,list_to_integer(Col)-1}),
-		    refac_syntax:set_pos(refac_syntax:macro(N),{L, list_to_integer(Col)-1});
-		   %%  refac_syntax:copy_pos(Node, refac_syntax:macro(N));
+		    rewrite_macro(Node, As, ?var_prefix);
 		_ ->
 		    Node
 	    end;
@@ -478,9 +465,9 @@ rewrite(Node) ->
 		atom ->
 		    case refac_syntax:atom_value(F) of
 			?macro_call ->
-			    [A | As] = refac_syntax:application_arguments(Node),
-			    M = refac_syntax:macro(A, rewrite_list(As)),
-			    refac_syntax:copy_pos(Node, M);
+                            [A| As] = refac_syntax:application_arguments(Node),
+                            M = refac_syntax:macro(A, rewrite_list(As)),
+                            refac_syntax:copy_pos(Node, M);
 			_ ->
 			    rewrite_1(Node)
 		    end;
@@ -491,12 +478,25 @@ rewrite(Node) ->
 	    rewrite_1(Node)
     end.
 
+make_macro_name(Name, ?atom_prefix) ->
+    refac_syntax:atom(Name);
+make_macro_name(Name, ?var_prefix) ->
+    refac_syntax:variable(Name).
+
+rewrite_macro(Node, As, Prefix) ->
+    {L,_} = refac_syntax:get_pos(Node),
+    {_Ln,A1} = lists:splitwith(fun (A) -> A=/=95 end,As), %% This can be removed;
+    {Col,A2} = lists:splitwith(fun (A) -> A=/=95 end,tl(A1)),
+    A = list_to_atom(tl(A2)),
+    N = refac_syntax:set_pos(make_macro_name(A,Prefix),{L,list_to_integer(Col)-1}),
+    refac_syntax:set_pos(refac_syntax:macro(N),{L,list_to_integer(Col)-1}).
+
 rewrite_1(Node) ->
     case refac_syntax:subtrees(Node) of
 	[] ->
 	    Node;
 	Gs ->
-	    Node1 = refac_syntax:make_tree(refac_syntax:type(Node),
+            Node1 = refac_syntax:make_tree(refac_syntax:type(Node),
 					 [[rewrite(T) || T <- Ts]
 					  || Ts <- Gs]),
 	    refac_syntax:copy_pos(Node, Node1)
@@ -529,6 +529,148 @@ fix_define([{atom, L, ?pp_form}, {'(', _}, {')', _}, {'->', _},
 fix_define(_Ts) ->
     error.
 
+get_token_pos(Ts, {T, _}, DefaultPos) ->
+    Ts1 =lists:dropwhile(fun(Tok) ->
+                                 case Tok of
+                                     {T, _} -> false;
+                                     _ -> true
+                                 end
+                         end, Ts),
+    case Ts1 of 
+        [{T, Pos}|Ts2] ->
+            {Pos,Ts2};
+        [] ->
+            {DefaultPos,[]}
+    end;        
+get_token_pos(Ts, {T, _, V}, DefaultPos) ->
+    Ts1 =lists:dropwhile(fun(Tok) ->
+                                 case Tok of
+                                     {T, _, V} -> false;
+                                     _ -> true
+                                 end
+                         end, Ts),
+    case Ts1 of 
+        [{T, Pos, V}|Ts2] ->
+            {Pos,Ts2};
+        [] ->
+            {DefaultPos,[]}
+    end.
+        
+
+
+unfold_atoms(As, Ts, DefaultPos) ->
+    unfold_atoms(As, Ts, DefaultPos, []).
+unfold_atoms([], Ts, _DefaultPos, Acc) ->
+    {lists:reverse(Acc), Ts};
+unfold_atoms([A|As], Ts, DefaultPos, Acc) ->
+    {Pos, Ts1} =get_token_pos(Ts, {atom, 0, A}, DefaultPos),
+    unfold_atoms(As, Ts1, DefaultPos, [{atom, Pos, A}|Acc]).
+
+
+
+unfold_vars(As, Ts, DefaultPos) ->
+    unfold_vars(As, Ts, DefaultPos, []).
+unfold_vars([], Ts, _DefaultPos, Acc) ->
+    {lists:reverse(Acc), Ts};
+unfold_vars([A|As], Ts, DefaultPos, Acc) ->
+    {Pos, Ts1} = get_token_pos(Ts, {var, 0, A}, DefaultPos),
+    unfold_atoms(As, Ts1, DefaultPos, [{var, Pos, A}|Acc]).
+
+
+unfold_function_names(Ns) ->
+    F = fun ({{atom, Pos1, Atom},{integer, Pos2, Arity}}) ->
+		N = refac_syntax:arity_qualifier(refac_syntax:set_pos(refac_syntax:atom(Atom), Pos1), 
+                                                 refac_syntax:set_pos(refac_syntax:integer(Arity),Pos2)),
+		refac_syntax:set_pos(N, Pos1)
+	end,
+    [F(N) || N <- Ns].
+       
+fix_pos_in_form(Ts, Form) ->
+    case Form of 
+        {attribute, _Pos, _, _Data} ->
+            fix_pos(Ts, Form);
+        _ ->
+            Form
+    end.
+
+fix_pos([{'-', _}, {atom, _, module}|Ts], {attribute, Pos, Name, Data}) ->
+    case Data of 
+        {M0, Vs0} ->
+            {M2, Ts2} = case is_list(M0) of 
+                            true ->
+                                unfold_atoms(M0, Ts, Pos);
+                            false ->
+                                {Pos1, Ts1} = get_token_pos(Ts, {atom, 0, M0}, Pos),
+                                {{atom, Pos1, M0}, Ts1}
+                        end,
+            {Vs1, _Ts3} = unfold_vars(Vs0, Ts2, Pos),
+            {attribute, Pos, Name, {M2, Vs1}};
+        M0 ->
+            {M2, _Ts2} = case is_list(M0) of 
+                            true ->
+                                unfold_atoms(M0, Ts, Pos);
+                            false ->
+                                {Pos1, Ts1} = get_token_pos(Ts, {atom, 0, M0}, Pos),
+                                {{atom, Pos1, M0}, Ts1}
+                        end,
+            {attribute, Pos, Name, M2}
+    end;
+fix_pos([{'-', _}, {atom, _, import}|Ts], {attribute, Pos, Name, Data}) ->
+    case Data of 
+        {Module, Imports} ->
+            M2=case is_list(Module) of 
+                   true ->
+                       {M1, _Ts1} = unfold_atoms(Module, Ts, Pos),
+                       M1;
+                   false ->
+                       {Pos1, _Ts1} =get_token_pos(Ts, {atom, 0, Module}, Pos),
+                       {atom, Pos1, Module}
+               end,
+            {Pos2, _Ts2} = get_token_pos(Ts, {'[',0}, Pos),
+            Is1=unfold_function_names(Imports),
+            Is2 = refac_syntax:set_pos(refac_syntax:list(Is1), Pos2),
+            {attribute, Pos, Name, {M2, Is2}};
+        _ ->
+            {M1, _Ts1} = unfold_atoms(Data, Ts, Pos),
+            {attribute, Pos, Name, M1}
+    end;
+
+fix_pos([{'-', _}, {atom, _, export}|Ts], {attribute, Pos, Name, Data}) ->
+    {Pos2, _Ts2} = get_token_pos(Ts, {'[',0}, Pos),
+    Es1=unfold_function_names(Data),
+    Data1=refac_syntax:set_pos(refac_syntax:list(Es1), Pos2),
+    {attribute, Pos, Name, Data1};
+
+fix_pos([{'-', _}, {atom, Pos, file}|Ts], {attribute, Pos, Name, Data}) ->
+    {File, Line} = Data,
+    {Pos1, Ts1} = get_token_pos(Ts, {string, 0, File}, Pos),
+    {Pos2, _Ts2} = get_token_pos(Ts1, {integer, 0, Line}, Pos),
+    Pos11= case Pos1 of 
+               {L1, C1} -> {abs(L1), C1};
+               _ -> Pos1
+           end,
+    Pos21=case Pos2 of 
+               {L2, C2} -> {abs(L2), C2};
+              _ -> Pos2
+          end,
+    Data1={{string, Pos11, File}, {integer,Pos21, Line}},
+    Pos0  = case Pos of 
+                {L, C} -> {abs(L), C};
+                _ -> Pos
+            end,
+    {attribute, Pos0, Name, Data1};
+fix_pos([{'-', _}, {atom, _, record}|Ts], {attribute, Pos, Name, Data}) ->
+    {Type, Entries} = Data,
+    {Pos1, _Ts1} = get_token_pos(Ts, {atom, 0, Type}, Pos),
+    Data1={{atom, Pos1, Type}, Entries},
+    {attribute, Pos, Name, Data1};
+
+fix_pos(_Toks, Form) ->
+    Form.
+
+        
+ 
+    
 %% @spec (Tokens::[term()]) -> string()
 %% 
 %% @doc Generates a string corresponding to the given token sequence.
@@ -557,3 +699,5 @@ token_loc(T) ->
       {_, L1} -> L1
     end.
 %% =====================================================================
+
+

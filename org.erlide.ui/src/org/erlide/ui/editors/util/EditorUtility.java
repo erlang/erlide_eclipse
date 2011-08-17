@@ -43,12 +43,12 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlExternal;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.ISourceRange;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlExternal;
+import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

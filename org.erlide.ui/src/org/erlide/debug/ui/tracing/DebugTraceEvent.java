@@ -6,8 +6,8 @@ import java.util.List;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.runtime.debug.ErlangProcess;
-import org.erlide.runtime.debug.ErlangStackFrame;
+import org.erlide.core.debug.ErlangProcess;
+import org.erlide.core.debug.ErlangStackFrame;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -43,7 +43,7 @@ public class DebugTraceEvent {
     // evaluated (ie at all, not only in a clause)
     // extra:
     // {Val} % on return
-    // {_, _, Bindings} % otherwise
+    // {_, _, BindingsImpl} % otherwise
 
     public OtpErlangTuple getTuple() {
         return event;

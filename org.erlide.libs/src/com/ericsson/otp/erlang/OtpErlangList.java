@@ -207,18 +207,18 @@ public class OtpErlangList extends OtpErlangObject implements
 
     protected String toString(final int start) {
         final StringBuffer s = new StringBuffer();
-        s.append('[');
+        s.append("[");
 
         for (int i = start; i < arity(); i++) {
             if (i > start) {
-                s.append(',');
+                s.append(",");
             }
             s.append(elems[i].toString());
         }
         if (lastTail != null) {
-            s.append('|').append(lastTail.toString());
+            s.append("|").append(lastTail.toString());
         }
-        s.append(']');
+        s.append("]");
 
         return s.toString();
     }

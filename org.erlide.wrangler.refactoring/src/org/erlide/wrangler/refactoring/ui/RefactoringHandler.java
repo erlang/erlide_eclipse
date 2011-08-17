@@ -25,9 +25,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.rpc.IRpcResult;
+import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
@@ -79,7 +80,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
@@ -94,7 +94,7 @@ public class RefactoringHandler extends AbstractHandler {
 		try {
 			GlobalParameters.setSelection(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage().getSelection());
-		} catch (WranglerException e1) {
+		} catch (final WranglerException e1) {
 
 			MessageDialog.openError(PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getShell(), "Error",
@@ -102,14 +102,15 @@ public class RefactoringHandler extends AbstractHandler {
 			return null;
 		}
 
-		if (!checkForDirtyEditors())
+		if (!checkForDirtyEditors()) {
 			return null;
+		}
 
 		DefaultWranglerRefactoringWizard wizard = null;
 		WranglerRefactoring refactoring = null;
-		String actionId = event.getCommand().getId();
+		final String actionId = event.getCommand().getId();
 
-		ArrayList<WranglerPage> pages = new ArrayList<WranglerPage>();
+		final ArrayList<WranglerPage> pages = new ArrayList<WranglerPage>();
 
 		// run rename variable refactoring
 		if (actionId.equals("org.erlide.wrangler.refactoring.renamevariable")) {
@@ -149,13 +150,14 @@ public class RefactoringHandler extends AbstractHandler {
 			// run rename module refactoring
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.renamemodule")) {
-			boolean answer = MessageDialog
+			final boolean answer = MessageDialog
 					.openQuestion(PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getShell(), "Warning!",
 							"The requested operation cannot be undone. Would you like to continue?");
 
-			if (!answer)
+			if (!answer) {
 				return null;
+			}
 
 			pages.add(new CostumworkFlowInputPage("Rename module",
 					"Please type the new module name!", "New module name:",
@@ -167,11 +169,11 @@ public class RefactoringHandler extends AbstractHandler {
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.movefunction")) {
 
-			IProject project = GlobalParameters.getWranglerSelection()
-					.getErlElement().getErlProject().getProject();
-			ArrayList<String> moduleList = WranglerUtils
+			final IProject project = GlobalParameters.getWranglerSelection()
+					.getErlElement().getProject().getWorkspaceProject();
+			final ArrayList<String> moduleList = WranglerUtils
 					.getModuleNames(project);
-			String moduleName = GlobalParameters.getWranglerSelection()
+			final String moduleName = GlobalParameters.getWranglerSelection()
 					.getErlElement().getResource().getName();
 			moduleList.remove(WranglerUtils.removeExtension(moduleName));
 
@@ -194,7 +196,7 @@ public class RefactoringHandler extends AbstractHandler {
 
 			// run fold expression against a remote function
 		} else {
-			Shell activeShell = PlatformUI.getWorkbench().getDisplay()
+			final Shell activeShell = PlatformUI.getWorkbench().getDisplay()
 					.getActiveShell();
 			if (actionId
 					.equals("org.erlide.wrangler.refactoring.foldremoteexpression")) {
@@ -202,17 +204,17 @@ public class RefactoringHandler extends AbstractHandler {
 				// must store the selection, because, the user through the
 				// dialog
 				// may change it
-				IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+				final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
 						.getWranglerSelection();
 
-				RemoteFunctionClauseDialog dialog = new RemoteFunctionClauseDialog(
+				final RemoteFunctionClauseDialog dialog = new RemoteFunctionClauseDialog(
 						activeShell, "Fold expression");
 
 				dialog.open();
 				dialog.resetSelection();
 
 				if (dialog.isFinished()) {
-					IErlFunctionClause functionClause = dialog
+					final IErlFunctionClause functionClause = dialog
 							.getFunctionClause();
 					refactoring = new FoldRemoteExpressionRefactoring(
 							functionClause, sel);
@@ -222,8 +224,9 @@ public class RefactoringHandler extends AbstractHandler {
 							"Select expressions which should be folded!",
 							(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
-				} else
+				} else {
 					return null;
+				}
 
 				// run introduce macro refactoring
 			} else if (actionId
@@ -269,13 +272,14 @@ public class RefactoringHandler extends AbstractHandler {
 				 */
 				try {
 					refactoring = runGenFunRefactoring(pages, activeShell);
-				} catch (OtpErlangRangeException e) {
+				} catch (final OtpErlangRangeException e) {
 					e.printStackTrace();
 					return null;
 				}
 
-				if (refactoring == null)
+				if (refactoring == null) {
 					return null;
+				}
 
 				// fold against macro definition
 			} else if (actionId
@@ -291,7 +295,7 @@ public class RefactoringHandler extends AbstractHandler {
 				// normalize record expression
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.normalizerecordexpression")) {
-				boolean showDefaultFields = MessageDialog.openQuestion(
+				final boolean showDefaultFields = MessageDialog.openQuestion(
 						activeShell, "Showing defaults",
 						"Show record fields with default values?");
 				refactoring = new NormalizeRecordExpression(showDefaultFields);
@@ -346,7 +350,7 @@ public class RefactoringHandler extends AbstractHandler {
 			} else if (actionId
 					.equals("org.erlide.wrangler.refactoring.partitionexports")) {
 				refactoring = new PartitionExportsRefactoring();
-				SimpleInputPage page = new SimpleInputPage(
+				final SimpleInputPage page = new SimpleInputPage(
 						"Partition exports",
 						"Please input the the distance treshould between 0.1 and 1.0",
 						"Distance treshold",
@@ -354,10 +358,9 @@ public class RefactoringHandler extends AbstractHandler {
 						new NormalDoulbeValidator());
 				page.setInput("0.8");
 				pages.add(page);
-			}
-
-			else
+			} else {
 				return null;
+			}
 		}
 
 		refactoring.doBeforeRefactoring();
@@ -365,17 +368,17 @@ public class RefactoringHandler extends AbstractHandler {
 		wizard = new DefaultWranglerRefactoringWizard(refactoring,
 				RefactoringWizard.DIALOG_BASED_USER_INTERFACE, pages);
 
-		Shell shell = new Shell();
-		RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(
+		final Shell shell = new Shell();
+		final RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(
 				wizard);
 
 		try {
-			int ret = op.run(shell, refactoring.getName());
+			final int ret = op.run(shell, refactoring.getName());
 
 			if (RefactoringStatus.OK == ret) {
 				refactoring.doAfterRefactoring();
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
@@ -385,23 +388,24 @@ public class RefactoringHandler extends AbstractHandler {
 	}
 
 	private boolean checkForDirtyEditors() {
-		IEditorPart[] dirtyEditors = PlatformUI.getWorkbench()
+		final IEditorPart[] dirtyEditors = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getDirtyEditors();
 		if (dirtyEditors.length > 0) {
-			Boolean answer = MessageDialog
+			final Boolean answer = MessageDialog
 					.openQuestion(
 							PlatformUI.getWorkbench()
 									.getActiveWorkbenchWindow().getShell(),
 							"Unsaved changes",
 							"For running Wrangler refactorings, all Erlang files need to be saved. Would you like to continue with saving files?");
 			if (answer) {
-				for (IEditorPart ed : dirtyEditors) {
+				for (final IEditorPart ed : dirtyEditors) {
 					if (ed instanceof ITextEditor) {
-						ITextEditor ted = (ITextEditor) ed;
-						IFileEditorInput fei = (IFileEditorInput) ted
+						final ITextEditor ted = (ITextEditor) ed;
+						final IFileEditorInput fei = (IFileEditorInput) ted
 								.getEditorInput();
-						if (WranglerUtils.isErlangFile(fei.getFile()))
+						if (WranglerUtils.isErlangFile(fei.getFile())) {
 							ed.doSave(null);
+						}
 
 					}
 				}
@@ -418,40 +422,38 @@ public class RefactoringHandler extends AbstractHandler {
 	 */
 	protected void checkWarningMessages() {
 		try {
-			RpcResult res = WranglerBackendManager.getRefactoringBackend()
-					.getLoggedInfo();
+			final IRpcResult res = WranglerBackendManager
+					.getRefactoringBackend().getLoggedInfo();
 
 			if (res.isOk()) {
-				OtpErlangObject resobj = res.getValue();
+				final OtpErlangObject resobj = res.getValue();
 				if (!resobj.equals(new OtpErlangList())) {
-					OtpErlangList reslist = (OtpErlangList) resobj;
+					final OtpErlangList reslist = (OtpErlangList) resobj;
 					for (int i = 0; i < reslist.arity(); ++i) {
-						OtpErlangTuple restuple = (OtpErlangTuple) reslist
+						final OtpErlangTuple restuple = (OtpErlangTuple) reslist
 								.elementAt(i);
-						OtpErlangString msg = (OtpErlangString) restuple
-								.elementAt(1);
-						String formattedString = formatWarningString(msg
-								.stringValue());
+						final String formattedString = formatWarningString(ErlUtils
+								.asString(restuple.elementAt(1)));
 						WarningViewManager.addWarningMessage(formattedString);
 					}
 				}
 			} else {
 				ErlLogger.error("Wrangler logging error:" + res);
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private String formatWarningString(String stringValue) {
+	private String formatWarningString(final String stringValue) {
 		try {
 			String ret = stringValue.replaceAll("\\s=+\\s", "");
 			ret = ret.replaceAll("WARNING:\\s*", "");
 			ret = ret.replaceAll("((\\n)(\\n))", "\n");
 			ret = ret.replaceAll("\\s+$", "");
 			return ret;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return stringValue;
 		}
@@ -470,21 +472,22 @@ public class RefactoringHandler extends AbstractHandler {
 			throws OtpErlangRangeException {
 		WranglerRefactoring refactoring = null;
 
-		IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+		final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
 				.getWranglerSelection();
 
 		// Ask the user about a new name
-		NewParameterNameInputDialog dialog = new NewParameterNameInputDialog(
+		final NewParameterNameInputDialog dialog = new NewParameterNameInputDialog(
 				activeShell, "New parameter name");
 		dialog.open();
-		if (!dialog.isFinished())
+		if (!dialog.isFinished()) {
 			return null;
+		}
 
-		String newParamName = dialog.getData();
+		final String newParamName = dialog.getData();
 		dialog.close();
 
 		// call initial RPC
-		GenFunRefactoringMessage m = (GenFunRefactoringMessage) WranglerBackendManager
+		final GenFunRefactoringMessage m = (GenFunRefactoringMessage) WranglerBackendManager
 				.getRefactoringBackend().callWithParser(
 						new GenFunRefactoringMessage(), "generalise_eclipse",
 						"sxxsxi", sel.getFilePath(),
@@ -508,7 +511,7 @@ public class RefactoringHandler extends AbstractHandler {
 					(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
 
 		} else if (m.getRefactoringState() == RefactoringState.MORE_THAN_ONE_CLAUSE) {
-			boolean selectedClauseOnly = MessageDialog
+			final boolean selectedClauseOnly = MessageDialog
 					.openQuestion(
 							activeShell,
 							"Multiple clauses",
@@ -517,23 +520,24 @@ public class RefactoringHandler extends AbstractHandler {
 			refactoring = new GeneraliseFunctionRefactoring(
 					State.more_than_one_clause, m, selectedClauseOnly);
 			if (((OtpErlangList) m.getParameters().get(
-					GenFunReturnParameterName.dupsInClause)).arity() > 0)
+					GenFunReturnParameterName.dupsInClause)).arity() > 0) {
 				pages.add(new SelectionInputPage(
 						"Generalise expression",
 						"Please select which of them should be generalised!",
 						"Select one of them, which should be folded!",
 						(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
+			}
 
 		} else if (m.getRefactoringState() == RefactoringState.UNKNOWN_SIDE_EFFECT) {
-			boolean sideEffect = MessageDialog.openQuestion(activeShell,
+			final boolean sideEffect = MessageDialog.openQuestion(activeShell,
 					"Side effect",
 					"Does the expression selected has side effect?");
 
-			OtpErlangObject noOfClausesPar = m.getParameters().get(
+			final OtpErlangObject noOfClausesPar = m.getParameters().get(
 					GenFunReturnParameterName.noOfClauses);
 			if (noOfClausesPar != null
 					&& ((OtpErlangLong) noOfClausesPar).intValue() > 1) {
-				boolean selectedClauseOnly = MessageDialog
+				final boolean selectedClauseOnly = MessageDialog
 						.openQuestion(
 								activeShell,
 								"Multiple clauses",
@@ -543,17 +547,19 @@ public class RefactoringHandler extends AbstractHandler {
 						State.unknown_side_effect, m, selectedClauseOnly,
 						sideEffect);
 
-				if ((!selectedClauseOnly && ((OtpErlangList) m.getParameters()
-						.get(GenFunReturnParameterName.dupsInFun)).arity() > 0)
-						|| (selectedClauseOnly && ((OtpErlangList) m
-								.getParameters().get(
-										GenFunReturnParameterName.dupsInClause))
-								.arity() > 0))
+				if (!selectedClauseOnly
+						&& ((OtpErlangList) m.getParameters().get(
+								GenFunReturnParameterName.dupsInFun)).arity() > 0
+						|| selectedClauseOnly
+						&& ((OtpErlangList) m.getParameters().get(
+								GenFunReturnParameterName.dupsInClause))
+								.arity() > 0) {
 					pages.add(new SelectionInputPage(
 							"Generalise expression",
 							"Please select which of them should be generalised!",
 							"Select one of them, which should be folded!",
 							(CostumWorkflowRefactoringWithPositionsSelection) refactoring));
+				}
 
 			} else {
 				refactoring = new GeneraliseFunctionRefactoring(
@@ -570,9 +576,10 @@ public class RefactoringHandler extends AbstractHandler {
 			refactoring = new GeneraliseFunctionRefactoring(State.error,
 					m.getMessageString());
 
-		} else
+		} else {
 			// error?
 			return null;
+		}
 		return refactoring;
 	}
 

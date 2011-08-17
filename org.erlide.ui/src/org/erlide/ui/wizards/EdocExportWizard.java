@@ -27,15 +27,12 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
-
-import erlang.ErlideEdocExport;
 
 public class EdocExportWizard extends Wizard implements IExportWizard {
 
@@ -50,25 +47,25 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
 
         final Collection<IProject> projects = page.getSelectedResources();
         final Map<String, OtpErlangObject> options = page.getOptions();
-        for (final IProject prj : projects) {
-            if (!prj.isAccessible()) {
-                ErlLogger.debug("EDOC: " + prj.getName()
+        for (final IProject project : projects) {
+            if (!project.isAccessible()) {
+                ErlLogger.debug("EDOC: " + project.getName()
                         + " is not accessible, skipping.");
                 continue;
             }
-            ErlLogger.debug("EDOC: " + prj.getName());
+            ErlLogger.debug("EDOC: " + project.getName());
             try {
-                final IFolder dest = prj.getFolder(page.getDestination());
+                final IFolder dest = project.getFolder(page.getDestination());
                 if (!dest.exists()) {
                     dest.create(true, true, null);
                 }
                 options.put("dir", new OtpErlangString(dest.getLocation()
                         .toString()));
                 final List<String> files = new ArrayList<String>();
-                final IErlProject eprj = ErlangCore.getModel().findProject(prj);
-                final IOldErlangProjectProperties props = eprj.getProperties();
-                for (final IPath dir : props.getSourceDirs()) {
-                    final IFolder folder = prj.getFolder(dir);
+                final IErlProject erlProject = CoreScope.getModel()
+                        .findProject(project);
+                for (final IPath dir : erlProject.getSourceDirs()) {
+                    final IFolder folder = project.getFolder(dir);
                     if (folder.isAccessible()) {
                         folder.accept(new IResourceVisitor() {
                             public boolean visit(final IResource resource)

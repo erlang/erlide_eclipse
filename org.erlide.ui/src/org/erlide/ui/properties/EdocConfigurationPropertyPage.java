@@ -24,12 +24,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.services.search.ErlideDoc;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-
-import erlang.ErlideDoc;
 
 /**
  * Property page used to set the project's edoc location
@@ -76,7 +75,7 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
     @Override
     protected Control createContents(final Composite parent) {
         fInitialLocation = null;
-        final String s = ErlideDoc.getOtpDocLocation(ErlangCore
+        final String s = ErlideDoc.getOtpDocLocation(BackendCore
                 .getBackendManager().getIdeBackend());
         try {
             fInitialLocation = new URL("file", null, s);

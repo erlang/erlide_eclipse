@@ -71,45 +71,68 @@ collect_unsure_atoms_in_file(FileAST, AtomNames, AtomType) ->
     F = fun (T) ->
 		case refac_syntax:type(T) of
 		    function ->
-			collect_unsure_atoms(T, AtomNames, AtomType);
+                        collect_unsure_atoms(T, AtomNames, AtomType);
 		    _ -> []
 		end
 	end,
     R = lists:usort(lists:flatmap(F, refac_syntax:form_list_elements(FileAST))),
     [Pos || {atom, Pos, _} <- R].
 
+collect_unsure_atoms(Tree, AtomNames, AtomType) ->
+    F = fun (Node,S) ->
+		case refac_syntax:type(Node) of
+		    atom ->
+			AtomVal = refac_syntax:atom_value(Node),
+			case lists:member(AtomVal, AtomNames) of
+			    true ->
+				Pos = refac_syntax:get_pos(Node),
+				case Pos ==0 orelse Pos=={0,0} of
+				    true -> S;
+				    false ->
+                                        As = refac_syntax:get_ann(Node),
+                                        case lists:keysearch(type, 1, As) of
+					    {value, {type,{f_atom, [M, _F, A]}}} ->
+                                                case AtomType of 
+                                                    {f_atom, {M1, _,A1}} when length(AtomNames)==1->
+                                                        case unsure_match({M1,A1}, {M,A}) of 
+                                                            true ->
+                                                                S ++ [{atom, Pos, AtomVal}];
+                                                            false ->
+                                                                S
+                                                        end;
+                                                    f_atom ->
+                                                        case unsure_match({M,A}) of
+                                                            true ->
+                                                                S ++ [{atom, Pos, AtomVal}];
+                                                            false ->
+                                                                S
+                                                        end;  
+                                                    _ ->S
+                                                end;
+                                            {value, {type, _}} ->
+                                                S;
+                                            _ ->
+                                                S ++ [{atom, Pos, AtomVal}]
+                                        end
+                                end;
+			    false ->
+                                S
+			end;
+		    _ -> S
+		end
+	end,
+    ast_traverse_api:fold(F, [], Tree).
 
-collect_unsure_atoms(Tree, AtomNames, AtomType)->
-    F=fun(Node,S) ->
-	      case refac_syntax:type(Node) of
-		  atom ->
-		      AtomVal = refac_syntax:atom_value(Node),
-		      case lists:member(AtomVal, AtomNames) of
-			  true ->
-			      Pos = refac_syntax:get_pos(Node),
-			      case Pos ==0 orelse Pos=={0,0} of 
-				  true -> S;
-				  false ->
-				      As = refac_syntax:get_ann(Node),
-				      case lists:keysearch(type, 1, As) of
-					  {value, {type,{f_atom, [M, _F, A]}}}
-					    when AtomType==f_name andalso 
-						 (not (is_atom(M) andalso M /= '_' andalso
-						       is_integer(A))) ->
-					      S ++ [{atom, Pos, AtomVal}];			      
-					  {value, {type, _}} ->
-					      S;
-					  _ ->
-					      S ++ [{atom, Pos, AtomVal}]
-				      end
-			      end;
-			  false ->
-			      S
-		      end;
-		  _ -> S
-	      end
-      end,
-    refac_syntax_lib:fold(F, [], Tree).
+unsure_match({M, A}, {_M1, A1}) when is_integer(A1)->
+    A1==A andalso (not is_atom(M) orelse M=='_');
+unsure_match({M, _A}, {M1,A1}) when not is_integer(A1)->
+    (M==M1) orelse M=='_' orelse (not is_atom(M)).
+
+unsure_match({M,A}) when is_integer(A) ->
+    not (is_atom(M) andalso M/='_');
+unsure_match({_M,A}) when not is_integer(A) ->
+    true.
+
 
 has_warning_msg(Pid) ->
     Pid! {self(), get},
@@ -124,8 +147,8 @@ output_atom_warning_msg(Pid, NotRenamedWarnMsg, RenamedWarnMsg) ->
     Pid ! {self(), get},
     receive
       {Pid, {NotRenamed, Renamed}} ->
-	  output_atom_warnings({NotRenamed, Renamed}, NotRenamedWarnMsg, RenamedWarnMsg);
-      _ -> throw({error, "Refactoring failed because of a Wrangler error."})
+            output_atom_warnings({NotRenamed, Renamed}, NotRenamedWarnMsg, RenamedWarnMsg);
+        _ -> throw({error, "Refactoring failed because of a Wrangler error."})
     end.
 
 output_atom_warnings({[], []}, _, _) ->

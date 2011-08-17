@@ -36,76 +36,79 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class IntroduceLetRefactoring extends CostumWorkflowRefactoring {
 
-	OtpErlangObject expr, parentExpr;
+    OtpErlangObject expr, parentExpr;
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		// FIXME: what are the preconditions? add them!
-		return new RefactoringStatus();
-	}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        // FIXME: what are the preconditions? add them!
+        return new RefactoringStatus();
+    }
 
-	@Override
-	public String getName() {
-		return "Introduce ?LET";
-	}
+    @Override
+    public String getName() {
+        return "Introduce ?LET";
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"new_let_eclipse", "sxxsxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartPos(),
-				sel.getSelectionRange().getEndPos(), userInput,
-				sel.getSearchPath(), GlobalParameters.getTabWidth());
-	}
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "new_let_eclipse", "sxxsxi", sel.getFilePath(),
+                sel.getSelectionRange().getStartPos(),
+                sel.getSelectionRange().getEndPos(), userInput,
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
 
-	@Override
-	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
-		return new RefactoringWorkflowController(shell) {
+    @Override
+    public RefactoringWorkflowController getWorkflowController(final Shell shell) {
+        return new RefactoringWorkflowController(shell) {
 
-			@Override
-			public void doRefactoring() {
-				IErlSelection sel = GlobalParameters.getWranglerSelection();
-				RefactoringRpcMessage message = (RefactoringRpcMessage) run(sel);
-				if (message.isSuccessful()) {
-					changedFiles = message.getRefactoringChangeset();
-					status = new RefactoringStatus();
-				} else if (message.getRefactoringState() == RefactoringState.QUESTION) {
-					if (ask("Question", message.getMessageString())) {
-						OtpErlangTuple res = message.getResultObject();
-						expr = ((OtpErlangTuple) res.elementAt(2)).elementAt(0);
-						parentExpr = ((OtpErlangTuple) res.elementAt(2))
-								.elementAt(1);
-						message = (RefactoringRpcMessage) runAlternative(sel);
-						if (message.isSuccessful()) {
-							status = new RefactoringStatus();
-							changedFiles = message.getRefactoringChangeset();
-						} else
-							status = RefactoringStatus
-									.createFatalErrorStatus(message
-											.getMessageString());
-					} else {
-						status = RefactoringStatus
-								.createFatalErrorStatus("Refactoring failed: the expression selected is not a QuickCheck generator.");
-					}
+            @Override
+            public void doRefactoring() {
+                final IErlSelection sel = GlobalParameters
+                        .getWranglerSelection();
+                RefactoringRpcMessage message = (RefactoringRpcMessage) run(sel);
+                if (message.isSuccessful()) {
+                    changedFiles = message.getRefactoringChangeset();
+                    status = new RefactoringStatus();
+                } else if (message.getRefactoringState() == RefactoringState.QUESTION) {
+                    if (ask("Question", message.getMessageString())) {
+                        final OtpErlangTuple res = message.getResultObject();
+                        expr = ((OtpErlangTuple) res.elementAt(2)).elementAt(0);
+                        parentExpr = ((OtpErlangTuple) res.elementAt(2))
+                                .elementAt(1);
+                        message = (RefactoringRpcMessage) runAlternative(sel);
+                        if (message.isSuccessful()) {
+                            status = new RefactoringStatus();
+                            changedFiles = message.getRefactoringChangeset();
+                        } else {
+                            status = RefactoringStatus
+                                    .createFatalErrorStatus(message
+                                            .getMessageString());
+                        }
+                    } else {
+                        status = RefactoringStatus
+                                .createFatalErrorStatus("Refactoring failed: the expression selected is not a QuickCheck generator.");
+                    }
 
-				} else if (message.getRefactoringState() == RefactoringState.ERROR)
-					status = RefactoringStatus.createFatalErrorStatus(message
-							.getMessageString());
+                } else if (message.getRefactoringState() == RefactoringState.ERROR) {
+                    status = RefactoringStatus.createFatalErrorStatus(message
+                            .getMessageString());
+                }
 
-			}
+            }
 
-		};
-	}
+        };
+    }
 
-	@Override
-	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"new_let_1_eclipse", "ssxxxi", sel.getFilePath(), userInput,
-				expr, parentExpr, sel.getSearchPath(),
-				GlobalParameters.getTabWidth());
-	}
+    @Override
+    public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "new_let_1_eclipse", "ssxxxi", sel.getFilePath(), userInput,
+                expr, parentExpr, sel.getSearchPath(),
+                GlobalParameters.getTabWidth());
+    }
 
 }

@@ -23,16 +23,16 @@ public class TracePatternCellModifier implements ICellModifier {
      * @param tableViewer
      *            table viewer with which this cell modifier is used
      */
-    public TracePatternCellModifier(TableViewer tableViewer) {
+    public TracePatternCellModifier(final TableViewer tableViewer) {
         this.tableViewer = tableViewer;
     }
 
-    public boolean canModify(Object element, String property) {
+    public boolean canModify(final Object element, final String property) {
         return true;
     }
 
-    public Object getValue(Object element, String property) {
-        TracePattern pattern = (TracePattern) element;
+    public Object getValue(final Object element, final String property) {
+        final TracePattern pattern = (TracePattern) element;
         switch (TracePatternColumn.valueOf(property)) {
         case ENABLED:
             return new Boolean(pattern.isEnabled());
@@ -43,10 +43,11 @@ public class TracePatternCellModifier implements ICellModifier {
         case LOCAL:
             return new Boolean(pattern.isLocal());
         case ARITY:
-            if (pattern.getArity() < 0)
+            if (pattern.getArity() < 0) {
                 return "";
-            else
+            } else {
                 return String.valueOf(pattern.getArity());
+            }
         case MATCH_SPEC:
             return pattern.getMatchSpec();
         default:
@@ -54,8 +55,10 @@ public class TracePatternCellModifier implements ICellModifier {
         }
     }
 
-    public void modify(Object element, String property, Object value) {
-        TracePattern pattern = (TracePattern) ((TableItem) element).getData();
+    public void modify(final Object element, final String property,
+            final Object value) {
+        final TracePattern pattern = (TracePattern) ((TableItem) element)
+                .getData();
         switch (TracePatternColumn.valueOf(property)) {
         case ENABLED:
             pattern.setEnabled((Boolean) value);
@@ -74,10 +77,11 @@ public class TracePatternCellModifier implements ICellModifier {
                 pattern.setArity(-1);
             } else {
                 try {
-                    Integer arity = Integer.valueOf((String) value);
-                    if (arity >= 0)
+                    final Integer arity = Integer.valueOf((String) value);
+                    if (arity >= 0) {
                         pattern.setArity(arity.intValue());
-                } catch (NumberFormatException e) {
+                    }
+                } catch (final NumberFormatException e) {
                 }
             }
             break;

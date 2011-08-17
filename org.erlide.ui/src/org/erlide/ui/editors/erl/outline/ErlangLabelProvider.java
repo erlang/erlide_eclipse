@@ -23,9 +23,11 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.model.root.IErlElement;
 
 public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
+
+    private static final int LABEL_LENGTH_LIMIT = 200;
 
     protected ListenerList fListeners = new ListenerList(1);
 
@@ -136,11 +138,6 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return image;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ILabelProvider#getImage
-     */
     public Image getImage(final Object element) {
         final Image result = fImageLabelProvider.getImageLabel(element,
                 evaluateImageFlags(element));
@@ -158,12 +155,12 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return text;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ILabelProvider#getText
-     */
     public String getText(final Object element) {
+        final String label = getLabelString(element);
+        return decorateText(label, element);
+    }
+
+    public static String getLabelString(final Object element) {
         String label;
         if (element instanceof IErlElement) {
             final IErlElement el = (IErlElement) element;
@@ -171,7 +168,14 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         } else {
             label = element.toString();
         }
-        return decorateText(label, element);
+        if (label.length() > LABEL_LENGTH_LIMIT) {
+            int i = label.indexOf(',', LABEL_LENGTH_LIMIT);
+            if (i == -1) {
+                i = LABEL_LENGTH_LIMIT;
+            }
+            label = label.substring(0, i) + "...";
+        }
+        return label;
     }
 
     // private String range(ISourceReference a)
@@ -183,11 +187,6 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
     // }
     // }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#dispose
-     */
     public void dispose() {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
@@ -199,11 +198,6 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         fImageLabelProvider.dispose();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#addListener(ILabelProviderListener)
-     */
     public void addListener(final ILabelProviderListener listener) {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
@@ -214,20 +208,10 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         fListeners.add(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#isLabelProperty(Object, String)
-     */
     public boolean isLabelProperty(final Object element, final String property) {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IBaseLabelProvider#removeListener(ILabelProviderListener)
-     */
     public void removeListener(final ILabelProviderListener listener) {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
@@ -252,22 +236,10 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.IColorProvider#getForeground(java.lang.Object)
-     */
     public Color getForeground(final Object element) {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.viewers.IColorProvider#getBackground(java.lang.Object)
-     */
     public Color getBackground(final Object element) {
         return null;
     }

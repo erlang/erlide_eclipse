@@ -18,16 +18,16 @@ package org.erlide.wrangler.refactoring.exception;
  */
 public class WranglerRpcParsingException extends WranglerException {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param message
-	 *            message string
-	 */
-	public WranglerRpcParsingException(final String message) {
-		super(message);
-	}
+    /**
+     * Constructor
+     * 
+     * @param message
+     *            message string
+     */
+    public WranglerRpcParsingException(final String message) {
+        super(message);
+    }
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

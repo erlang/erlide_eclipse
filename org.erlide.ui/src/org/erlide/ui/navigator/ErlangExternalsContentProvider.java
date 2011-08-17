@@ -4,19 +4,16 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider
@@ -25,7 +22,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
 
     public ErlangExternalsContentProvider() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     private static final Object[] NO_CHILDREN = new Object[0];
@@ -49,7 +45,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
                 if (project.isOpen()) {
-                    parentElement = ErlangCore.getModel().findProject(project);
+                    parentElement = CoreScope.getModel().findProject(project);
                 }
             }
             if (parentElement instanceof IErlModule) {
@@ -80,23 +76,20 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final IErlElement elt = (IErlElement) element;
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
-            if (parent == ErlangCore.getModel() && filePath != null) {
-                try {
-                    // FIXME shouldn't this call be assigned to something!?
-                    ModelUtils.findExternalModuleFromPath(filePath);
-                } catch (final CoreException e) {
-                }
+            if (parent == CoreScope.getModel() && filePath != null) {
+                // try {
+                // FIXME shouldn't this call be assigned to something!?
+                // ModelUtils.findModule(null, null, filePath,
+                // Scope.ALL_PROJECTS);
+                // } catch (final CoreException e) {
+                // }
                 parent = elt.getParent();
             }
             if (parent instanceof IErlModule) {
                 final IErlModule mod = (IErlModule) parent;
-                try {
-                    final IResource resource = mod.getCorrespondingResource();
-                    if (resource != null) {
-                        return resource;
-                    }
-                } catch (final ErlModelException e) {
-                    ErlLogger.warn(e);
+                final IResource resource = mod.getCorrespondingResource();
+                if (resource != null) {
+                    return resource;
                 }
             } else {
                 return parent;
@@ -109,7 +102,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {
-                element = ErlangCore.getModel().findProject(project);
+                element = CoreScope.getModel().findProject(project);
             }
         }
         if (element instanceof IErlModule) {
@@ -130,20 +123,5 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         }
         return false;
     }
-    //
-    // public Object[] getChildren(final TreePath parentPath) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-    //
-    // public boolean hasChildren(final TreePath path) {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // public TreePath[] getParents(final Object element) {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
 
 }

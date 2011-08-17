@@ -40,7 +40,6 @@ public class OtpErlangPort extends OtpErlangObject implements Serializable,
      * 
      * @deprecated use OtpLocalNode:createPort() instead
      */
-    @SuppressWarnings("unused")
     private OtpErlangPort(final OtpSelf self) {
         final OtpErlangPort p = self.createPort();
 

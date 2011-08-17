@@ -19,7 +19,7 @@ public class ModuleNode extends TreeNode {
      * @param moduleName
      *            module name
      */
-    public ModuleNode(String moduleName) {
+    public ModuleNode(final String moduleName) {
         this.moduleName = moduleName;
         setImage(Activator.getImage(Images.INFO_NODE));
     }

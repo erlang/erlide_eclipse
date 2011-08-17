@@ -1,3 +1,146 @@
+List of user visible changes between 0.13.2 and 0.13.3 (20110701)
+
+5725863 Fix bug with multiple plt-files in dialyzer run.
+8af1934 check for null project when cleaning backend
+0539c21 Update PLT with new paths Updating even when original beam files are missing.
+        838-implement-plt-copy-feature
+385cb68 sometimes the runtime is accessed before being initialized
+
+List of user visible changes between 0.13.1 and 0.13.2 (20110613)
+
+1f7887d Update PLT with new paths
+b922bf1 better fix for huge dialyzer error handling
+2ce849b Made sure warnings shows up on resources
+881fd11 608-dialyzer---navigate-to-external-includes-from-markers
+3f6b1ab 864-clean-project-does-not-remove-files-in-ebin-directory
+f9c9661 https://redmine.shade.psgbg.se/issues/2100 (Wasn't this fixed once before?)
+168740e 830-completion--show-message-when-no-completions-are-available
+43cc05e 852-unicode-content-is-mangled-in-documentation-hover
+7fc1b0d 828-new-project-wizard---runtime-combo-is-empty
+bff1305 862-new-project-wizard-sets-output-dir-to--[ebin]
+cce70b8 sometimes epmd starts too slowly; retrying connection
+88a5dae Runs from own copy of dialyzer_cl to prevent check of plt and beams
+3905ca6 upgraded minimum erlang requirements to R13B
+
+List of user visible changes between 0.13.0 and 0.13.1 (20110527)
+
+4ad5c4f Update dialyzer plt with .beam files in ebin directories.
+2f997f1 Avoid too long error messages (> 30K) breaking down eclipse
+325b13e dont display symlinks in OpenModule
+21d6926 Outline disappeared from modules not in project (again)
+58adcaa made outputDirs a list (prepare for #847); current API is deprecated
+bb9dbb5 845-test_support--test-modules-are-not-shown-in--open-module-
+315c2ad 844-regression--f3-doesn-t-work-in-0-13-0
+d0273d1 http://www.assembla.com/spaces/erlide/tickets/844-regression--f3-doesn-t-work-in-0-13-0
+8c362f4 http://www.assembla.com/spaces/erlide/tickets/839-erlide-log-file---specify-directory
+
+List of user visible changes between 0.12.0 and 0.13.0 (20110517)
+
+* There are again some large refactorings of the API code, and we're not yet close to something stable. 
+
+943bb65 http://www.assembla.com/spaces/erlide/tickets/838-dialyzer---implement-plt-copy-feature
+fe3244b 814-npe-in--open-module--dialog
+98c50be 722-completion--nothing-is-shown-for-modules-using-export_all
+82d6b8c 752-test_support--improve-results-view-ui
+5f46626 750-test_support--links-to-source-from-results-view
+49397b8 549-open-module-dialog---too-slow The reading of resource attributes slowed down the searching a lot... removed
+
+List of user visible changes between 0.11.1 and 0.12.0 (20110503)
+
+2510907 826-launch---quick-launch-does-not-work-on-windows-some-times
+6b836bc Fix so that debugger handles arguments with small integers (they are given as OtpErlangString)
+a3d4a8d http://www.assembla.com/spaces/erlide/tickets/797-model---the-splitting-into-function-clauses-is-too-simple--causing-bad-code-formatting 
+359dd6c http://www.assembla.com/spaces/erlide/tickets/824-outline---sometimes-no-text
+a2b71ea http://www.assembla.com/spaces/erlide/tickets/549-open-module-dialog---too-slow revisited.
+0fcb0b5 http://www.assembla.com/spaces/erlide/tickets/819-searching--cancel-search
+cc9f87f changed Cover plugins names
+
+List of user visible changes between 0.11.0 and 0.11.1 (20110412)
+
+* added cover plugin, thanks to Aleksandra Lipiec
+
+271bdf2 http://www.assembla.com/spaces/erlide/tickets/712-import-erlang-project---link-option-support-should-be-rewritten
+648e214 815-extra-args-for-erlang-vm-doesn-t-work
+2e1dc1a http://www.assembla.com/spaces/erlide/tickets/560-erlang-search---should-run-in-background
+59375a2 fixed NPE when file was not in erlang project
+05a1e5d http://www.assembla.com/spaces/erlide/tickets/784-searching--separate-checkbox-for-otp
+ab9777c http://www.assembla.com/spaces/erlide/tickets/758-new-module---selects-non-existing-folder
+8f12974 http://www.assembla.com/spaces/erlide/tickets/808-open-module--problems-with-closed-projects
+
+List of user visible changes between 0.10.2 and 0.11.0 (20110322)
+
+for developers: more API have changed; we added many more unit tests.
+
+        765-navigation--hrl-file-found-instead-of-erl
+        793-testing---create-test-projects
+        794-testing---make-a-simple-test-case-on-test-projects
+a5a95dc updated jinterface to 1.5.4 (R14B02)
+708ca1b 804-console-buttons-are-disabled
+f964b6b show "wait" cursor while bterl compiles files
+504947e 710--compile-file--action-to-show-notification
+c77ebab 763-erlang-model---cache-problems First attempt, more tests needed...
+06ef299 491-add-action-to-run-erl_tidy-  (disabled, because reformatting doesn't work yet)
+
+
+List of user visible changes between 0.10.1 and 0.10.2 (20110301)
+
+for developers: the APIs have changed and they will keep changing, hopefully to something that is actually usable.
+
+5448312 787-indent---confused-by-macros-in-case-clauses
+1c8a50e OTP documentation in completion lists works again.
+d5acb87 Make sure includes in same dir as module is considered when finding things (NO TEST YET!)
+3db903f 782-dialyzer---add-checkbox-to-skip-plt-checks
+7b634c6 quicklaunch: autoinclude dependent projects
+03bdb94 764-dialyzer---add-a-way-to-specify-plt-files-from-the-outside#last_comment
+7b1c351 allow unicode chars in comments
+0857aec 764-dialyzer---add-a-way-to-specify-plt-files-from-the-outside
+effefa2 remove sdk feature from update site
+419fc1b 756-navigation--external-include-files-are-not-found
+71cde8a 757-erlang-model---command-line-option-to-turn-off-caching
+845a71a 756-navigation--external-include-files-are-not-found
+b73ca7b 734-make-modelutils-use-erlang-model--not-resource-model
+f0f52fd Clear project settings caches when project properties are changed (i.e. applied in the project property dialog). Move more from ModelUtils to model. Make sure Exceptions are propagated all the way to UI code (where they should be handled)
+3485a64 754-trying-to-open-an-erlang-debug-configuration-hangs-the-whole-eclipse
+f32762f 745-navigation---use-include-path-for-external-includes Fixed again...
+b505b5b 723-outline---custom-filters
+36c0275 745-navigation---use-include-path-for-external-includes Fixed again...
+c809647 732-navigation--merge-open-and-hover-code
+ace0fc2 updated to be consisitent with wrangler-0.9.2 Emacs version.
+f1bb551 727-dialyzer---better-gui-for-multiple-plt-files
+9b9667c 682-dialyzer---multiple-plt-files (preliminary but well working GUI)
+
+List of user visible changes between 0.10.0 and 0.10.1 (20110216)
+
+d5edcf0 754-trying-to-open-an-erlang-debug-configuration-hangs-the-whole-eclipse
+
+List of user visible changes between 0.9.5 and 0.10.0 (20110209)
+
+Minor version number updated because of internal API changes.
+
+90cea3f 43-closing-project-should-dispose-internal-model
+63fc8e3 modified markerutils to do less searching for resources
+79a16c3 711-import-erlang-project---link-option-bad--remove-temporarily fixed so that it indeed copies...
+99006d2 630-navigator--create-links-to-otp
+c9e954d 644-searching--show-an-icon-in-the-history (thanks, Vlad!)
+75199ff 731-erlang-navigator---external-should-expand-on-double-click
+2ff2612 611-duplicated-and-weird-code-
+6e7cdde 729-indent--can-t-handle-binary-compehensions
+7b74b4b 717--externals--folder-in-navigator-shows-for-closed-projects
+310dbc2 690-add-option-to-disable-content-assist Did it even better, with configurable delay
+df10484 https://github.com/erlide/erlide/issues/#issue/5 Fix problem to open files in erlang editor with other extension than erl, hrl or yrl
+22752f4 721-model---will-not-parse-file-in-non-erlang-project as noted by user on github https://github.com/erlide/erlide/issues/issue/5
+96ecb68 724-searching--record-references-with-dot-messes-up-the-searching
+a75a087 fix #726: strings larger than 64k are encoded as OtpErlangList, not OtpErlangString
+c56ea0f 682-dialyzer---multiple-plt-files (preliminary but well working GUI)
+
+655     eunit: create basic EUnit runner   
+659     navigator: double click on project should open it  
+687     eunit: no live feedback from runner    
+713     dialyzer - specify functionality and use cases 
+725     files with other extensions cannot be opened in erlang editor  
+727     dialyzer - better gui for multiple plt files   
+745     navigation---use-include-path-for-external-includes
+
 List of user visible changes between 0.9.4 and 0.9.5 (20110122)
 
 8146742 702 externals: make external reference faster and less memory-hungry
@@ -110,7 +253,7 @@ List of user visible changes between 0.8.2 and 0.8.6 (20100823)
 
 - now supporting Eclipse 3.5+ and Erlang R12+
 - build process updated 
-b865b6e provides folding for non-resource module editors https://www.assembla.com/spaces/erlide/tickets/591-opening-erl-files-in-non-erlang-projects-fails
+b865b6e provides folding for non-resource module editors 591-opening-erl-files-in-non-erlang-projects-fails
 428810f Fix of deadlock (eclipse hangs) with big files in erlang editor
 
 List of user visible changes between 0.8.1 and 0.8.2 (20100609)
@@ -121,7 +264,7 @@ List of user visible changes between 0.8.1 and 0.8.2 (20100609)
 03a15f0 Merge branch '567-and-316' into shade_alpha
 f8e99ad Merge branch 'folding_preferences' into shade_alpha
 cf1c584 520-indentation-doesn-t-work-for-records-with-type-specs
-40c768a http://www.assembla.com/spaces/erlide/tickets/575-new-module---template-error
+40c768a 575-new-module---template-error
 5afbbd9 316-navigate-to--macrofied--modules
 b189074 Handles hover, autocompletion and open on record given with macros (even if they are defined without macro).
 095f84f 464-renaming-a-module-leaves-a-scanner-process-running
@@ -213,296 +356,167 @@ bf9ab9e 468-split-erlang-code-so-that-compiler-backend-can-use-R11
 
 List of user visible changes between 0.6.5 and 0.7.0 (20091103)
 
-	http://www.assembla.com/spaces/erlide/tickets/362-random-erlang-crashes-on-Linux-with-exit-code-134
-
+	362-random-erlang-crashes-on-Linux-with-exit-code-134
 	delayed startup of backend until really needed
-
-	http://www.assembla.com/spaces/erlide/tickets/461-autocompletion-for-macros-records-with-quotes-doesn-t-work
-
+	461-autocompletion-for-macros-records-with-quotes-doesn-t-work
 	fix NPE if .erlang.cookie is empty
-
 	builder: now twice as fast (parallel) and interruptible
-
 	a NPE did hide connection problems
-
 	added "report problems" on help menu
-
 	documentation hover was too small at times
-
-	http://www.assembla.com/spaces/erlide/tickets/306-hover-documentation-with-non-edoc-comments-is-ugly
-
+	306-hover-documentation-with-non-edoc-comments-is-ugly
 	added option to start internal backends with short name
-
 	some console improvements (more to follow, it's not perfect yet!)
 		- no more ide console, use run/debug to start   
 		- stdout is captured (#221)
-
 	147   	Debugger - interpret and un-interpret modules   	 
-	
 	243 	debugger: show the current stack even outside interpreted code 	
-
 	355 	debugger - terminated processes with stack look like they're running 	
-
 	390 	scanner and parser - should only update caches on save etc 	
-
 	402 	overriden 'int' module lacks functionality of the original one 	
-
 	426 	start backend on a standalone node.  Only start+console+codeloading are supported
-
 	441 	add "system info" functionality 	
-
 	451 	ErlFolder.getModules(IParent) is very slow 	
-
 	457 	builder: scan for TODO without a full scan 	
 
 List of user visible changes between 0.6.2 and 0.6.5 (r2877)
 
 	The wrangler UI is completely revamped, offering much better user experience.
-
-	https://www.assembla.com/spaces/erlide/tickets/55-Erlang-Console-slowdown
-	
-	https://www.assembla.com/spaces/erlide/tickets/57-Honoring--file%28%29-attribute 
-
-	https://www.assembla.com/spaces/erlide/tickets/198--go-to-definition---if-no-match-was-found-based-on---args--use-first-matching-function-name \u2014 jakobc / detail
-
-	https://www.assembla.com/spaces/erlide/tickets/371-indent--error-after---MODULE \u2014 jakobc / detail
-
-	https://www.assembla.com/spaces/erlide/tickets/191-After-renaming-a-module-file--it-s-still-compiled-to-a-beam-with-the-old-name 
-
-	https://www.assembla.com/spaces/erlide/tickets/229-Allow-----to-be-a-valid-source-directory-%28i-e-the-project-root%29 
-
-	https://www.assembla.com/spaces/erlide/tickets/277-add-a--open-module--dialog-and-key-shortcut
+	55-Erlang-Console-slowdown
+	57-Honoring--file%28%29-attribute 
+	198--go-to-definition---if-no-match-was-found-based-on---args--use-first-matching-function-name \u2014 jakobc / detail
+	371-indent--error-after---MODULE \u2014 jakobc / detail
+	191-After-renaming-a-module-file--it-s-still-compiled-to-a-beam-with-the-old-name 
+	229-Allow-----to-be-a-valid-source-directory-%28i-e-the-project-root%29 
+	277-add-a--open-module--dialog-and-key-shortcut
 		Ctrl-Shift-M and Alt-Ctrl-Shift-M
-	
-	https://www.assembla.com/spaces/erlide/tickets/307-code-completion-and-otp-documentation-is-fetched-from-the-ide-backend--not-the-build-one 
-
-	https://www.assembla.com/spaces/erlide/tickets/348-No-error-when--module-entry-doesn-t-match-filename
-	
-	https://www.assembla.com/spaces/erlide/tickets/388-Change-key-binding-for--Reset-Outline-and-Cache-
-	
-	https://www.assembla.com/spaces/erlide/tickets/382-annotation-hover-should-use-default-viewer--not-the-html-one 
-
-	https://www.assembla.com/spaces/erlide/tickets/389-Navigates-to-External-Files-rather-than-internal-project 
-
-	https://www.assembla.com/spaces/erlide/tickets/390-scanner-and-parser---should-only-update-caches-on-save-etc
-	
-	https://www.assembla.com/spaces/erlide/tickets/393-add-Run-Debug-settings--working-directory----mnesia-dir- 
-
-	https://www.assembla.com/spaces/erlide/tickets/395-Expose-the-setting-to-use-%E2%80%93sname-instead-of-%E2%80%93name-in-the-erl-runtime-config 
-
-	https://www.assembla.com/spaces/erlide/tickets/397-problems-on-R11B5 
-
-	https://www.assembla.com/spaces/erlide/tickets/403-view-module_info-data-on-property-page-for-module 
-
-	https://www.assembla.com/spaces/erlide/tickets/406-ErlangEditor-getModule-can-return-null--not-all-call-sites-handle-that-case 
-
-	https://www.assembla.com/spaces/erlide/tickets/408--record%28-MODULE--%7B%7D%29-shown-incorrectly-in-outline 
-
-	https://www.assembla.com/spaces/erlide/tickets/414-console---ctrl-arrows-work-strangely 
-
+	307-code-completion-and-otp-documentation-is-fetched-from-the-ide-backend--not-the-build-one 
+	348-No-error-when--module-entry-doesn-t-match-filename
+	388-Change-key-binding-for--Reset-Outline-and-Cache-
+	382-annotation-hover-should-use-default-viewer--not-the-html-one 
+	389-Navigates-to-External-Files-rather-than-internal-project 
+	390-scanner-and-parser---should-only-update-caches-on-save-etc
+	393-add-Run-Debug-settings--working-directory----mnesia-dir- 
+	395-Expose-the-setting-to-use-%E2%80%93sname-instead-of-%E2%80%93name-in-the-erl-runtime-config 
+	397-problems-on-R11B5 
+	403-view-module_info-data-on-property-page-for-module 
+	406-ErlangEditor-getModule-can-return-null--not-all-call-sites-handle-that-case 
+	408--record%28-MODULE--%7B%7D%29-shown-incorrectly-in-outline 
+	414-console---ctrl-arrows-work-strangely 
 	nicer-looking console
-	
 	allow paths with unicode chars in them
-	
 	renamed external files project to External_Files (clearcase has problems with name with space in it) 
-	
 	filter illegal characters from node name 
-	
 	http://code.google.com/p/wranglerintegration/issues/detail?id=4 is fixed \u2014 oroszgy / detail
-	
 	http://code.google.com/p/wranglerintegration/issues/detail?id=3 is fixed \u2014 oroszgy / detail
-
 	added option to start erlang with -noshell (on by default)
-
 	launch config: made default to start the node if not found
 
 List of user visible changes between 0.6.0 and 0.6.2 (r2723)
 
 	fixed exception in getErlideRuntime when installing for the first time
-
 	duplicated code detection made to work in both Linux and Windows
-
 	Wrangler code-base update
-
-	http://www.assembla.com/spaces/erlide/tickets/344-navigation---F3-goes-wrong-if-call-contains-fun----a-1-
-
-	http://www.assembla.com/spaces/erlide/tickets/343-debugger---breakpoints---group-on-type-gives-Others-(type-unspecified)
-
-	work on https://www.assembla.com/spaces/erlide/tickets/367-completion---better-layout-of-documentation
-
-	http://www.assembla.com/spaces/erlide/tickets/365-hover-over-non-folded-comment-shows-popup
-
-	http://www.assembla.com/spaces/erlide/tickets/369-command-to-reset-scanner-and-parser-caches
-
-	http://www.assembla.com/spaces/erlide/tickets/367-completion---better-layout-of-documentation
-
+	344-navigation---F3-goes-wrong-if-call-contains-fun----a-1-
+	343-debugger---breakpoints---group-on-type-gives-Others-(type-unspecified)
+	work on 367-completion---better-layout-of-documentation
+	365-hover-over-non-folded-comment-shows-popup
+	369-command-to-reset-scanner-and-parser-caches
+	367-completion---better-layout-of-documentation
 	Added null-test for scanner (can get null scanner from reconciler and builder when deleting resources)
-
 	better looking edoc 
-
 	added support for setting debug_info and export_all options on Compiler
-
-	http://www.assembla.com/spaces/erlide/tickets/376-call-hierarchy--proof-of-concept: added a simplistic call hierarchy view, bound to Ctrl-Alt-H; more work required.
+	376-call-hierarchy--proof-of-concept: added a simplistic call hierarchy view, bound to Ctrl-Alt-H; more work required.
 
 
 List of user visible changes between 0.5.3 and 0.6.0 (r2571)
 
     fixed [erlide-Bugs-2771703 ] Can't start Erlide beyond 0.5.0
-
-    http://www.assembla.com/spaces/erlide/tickets/353-completion---X-rec---doesn-t-suggest-the-record-fields
-
+    353-completion---X-rec---doesn-t-suggest-the-record-fields
     fix for #2777621: also can't get above 0.5.0 working
-
     open should not find files not in the source path
-
     bug reported by daniel (indenting at eof in a gtt-file).
-
-    http://www.assembla.com/spaces/erlide/tickets/356-indent---cmd-i-crashes-if--Insert-spaces-for-tabs--is-selected
-
-    http://erlide.assembla.com/spaces/erlide/tickets/357-reconciler-can-hang-the-whole-eclipse
-
+    356-indent---cmd-i-crashes-if--Insert-spaces-for-tabs--is-selected
+    357-reconciler-can-hang-the-whole-eclipse
     work on #2777890: Editor hangs
-
     raised reconnection delay
 
 
 List of user visible changes between 0.5.2 and 0.5.3 (r2525)
 
 	Macros with lowercase didn't get hover, uppercase didn't complete
-
-	http://www.assembla.com/spaces/erlide/tickets/350-debugger---exited-process-sometimes-has-wrong-stack
-
-	work on http://www.assembla.com/spaces/erlide/tickets/349-Improve-console-view
-
+	350-debugger---exited-process-sometimes-has-wrong-stack
+	work on 349-Improve-console-view
 	improved layout of ReportPreferencePage, hopefully better on OSX
-
 	Major problems with scanner/noparser and synch, hopefully fixed:
  
 
 List of user visible changes between 0.5.1 and 0.5.2 (r2484)
 
 	Bug fixed: wrong arity for function calls with funs
-
 	bug: default ide runtime was not saved
-	
 	updated wrangler code base
-
-	https://www.assembla.com/spaces/erlide/tickets/315-console-doesn-t-work-with-R13
-
+	315-console-doesn-t-work-with-R13
 	raised rpc timeout value (fetching documentation is slow)
-
-	http://www.assembla.com/spaces/erlide/tickets/319-Sort-function-list-on-code-completion-after-module-
-
-	http://www.assembla.com/spaces/erlide/tickets/254-folding---preferences-don-t-work
-
+	319-Sort-function-list-on-code-completion-after-module-
+	254-folding---preferences-don-t-work
 	fixed bug: it didn't show function clauses, only functions w/o clauses (with 1 clause only)
-
-	http://www.assembla.com/spaces/erlide/tickets/310-model---put-externalIncludes-and-externalModules-and-path-vars-in-project-and-model
-
-	http://www.assembla.com/spaces/erlide/tickets/295-indentation---auto-linebreak-doesn-t-work-well
-
-	http://www.assembla.com/spaces/erlide/tickets/302-hover---it-should-use-the-fancy-new-eclipse-3-4-features
-
-	http://www.assembla.com/spaces/erlide/tickets/295-indentation---auto-linebreak-doesn-t-work-well
-
-	http://www.assembla.com/spaces/erlide/tickets/124-Editor-preference-page-doesn-t-work
-
-	http://www.assembla.com/spaces/erlide/tickets/295-indentation---auto-linebreak-doesn-t-work-well
-
-	http://www.assembla.com/spaces/erlide/tickets/202-Improved-code-completion-for-records
-
-	http://www.assembla.com/spaces/erlide/tickets/327-indentation--receive---after
-
-	http://www.assembla.com/spaces/erlide/tickets/322-Debugger---Keep-debug-context-even-if-the-process-is-killed-(works-in-OTP-debugger)
-
-	http://www.assembla.com/spaces/erlide/tickets/324-Debugger---Make-it-more-clear-when-a-breakpoint-has-been-hit
-
-	http://www.assembla.com/spaces/erlide/tickets/178-Debugger--group-erlang-processes-by-node
-
-	http://www.assembla.com/spaces/erlide/tickets/51-Syntax-colors
-
-	http://www.assembla.com/spaces/erlide/tickets/329-Unnecessary-parsing-of-hrl-files-on-doc-hovering
-
-	http://www.assembla.com/spaces/erlide/tickets/330-F3-doesn-t-find-definition-of-macro-if-name-begins-with-lowercase-letter
-
-	http://www.assembla.com/spaces/erlide/tickets/333-if-runtime-exists-but-is-broken--erlide-hangs
-
-	http://www.assembla.com/spaces/erlide/tickets/337-indent-problem
-
-	http://www.assembla.com/spaces/erlide/tickets/320-editor---bracket-insert-doesn-t-always-follow-prefs
-
+	310-model---put-externalIncludes-and-externalModules-and-path-vars-in-project-and-model
+	295-indentation---auto-linebreak-doesn-t-work-well
+	302-hover---it-should-use-the-fancy-new-eclipse-3-4-features
+	295-indentation---auto-linebreak-doesn-t-work-well
+	124-Editor-preference-page-doesn-t-work
+	295-indentation---auto-linebreak-doesn-t-work-well
+	202-Improved-code-completion-for-records
+	327-indentation--receive---after
+	322-Debugger---Keep-debug-context-even-if-the-process-is-killed-(works-in-OTP-debugger)
+	324-Debugger---Make-it-more-clear-when-a-breakpoint-has-been-hit
+	178-Debugger--group-erlang-processes-by-node
+	51-Syntax-colors
+	329-Unnecessary-parsing-of-hrl-files-on-doc-hovering
+	330-F3-doesn-t-find-definition-of-macro-if-name-begins-with-lowercase-letter
+	333-if-runtime-exists-but-is-broken--erlide-hangs
+	337-indent-problem
+	320-editor---bracket-insert-doesn-t-always-follow-prefs
 	http://erlide.assembla.com/spaces/erlide/tickets/250-build-file-command
-
-	http://www.assembla.com/spaces/erlide/tickets/303-NPE-in-ErlangEditor-InformationDispatchAction
-
-	http://www.assembla.com/spaces/erlide/tickets/334-add-edoc-exporter
+	303-NPE-in-ErlangEditor-InformationDispatchAction
+	334-add-edoc-exporter
 
 List of user visible changes between 0.5.0 and 0.5.1 (r2365)
 
 	Experimental refactoring support: Wrangler
-
 	added automated problem report if backend dies with exit code != 0
-
 	at startup, if no runtime is defined, search "obvious" locations and add all found runtimes. The newest will be set as default. 
-
 	ensuring that the ide backend exists (else print error messages as soon as possible)
-
 	OTP R13-version of JInterface
-
-	http://www.assembla.com/spaces/erlide/tickets/275-Indent----end--and-indent-after-newline
-
+	275-Indent----end--and-indent-after-newline
 	changed project properties to use a minimum required runtime version instead of a hardcoded runtime name
-
-	http://www.assembla.com/spaces/erlide/tickets/286-quick-outline---doesn-t-work-with-external-modules
-
+	286-quick-outline---doesn-t-work-with-external-modules
 	added Eclipse+Erlang launch configuration, to be used when debugging erlide itself
-
-	http://www.assembla.com/spaces/erlide/tickets/273-completion---doesn-t-find-some-builtins
-
-	http://www.assembla.com/spaces/erlide/tickets/289-code-completion---records-with---doesn-t-work
-
-	http://www.assembla.com/spaces/erlide/tickets/292-pressing-enter-at-the-end-of-a-line-sometimes-deletes-first-three-chars-on-next-line-
-
-	http://www.assembla.com/spaces/erlide/tickets/279-Text-Actions---shouldn-t-change-text-if-nothing-is-changed
-
-	http://www.assembla.com/spaces/erlide/tickets/287-debugger---better-display-of-binaries-and-lists
-	http://www.assembla.com/spaces/erlide/tickets/236-Debugger---show-records-as-records-in-Variables-view
-
-	https://www.assembla.com/spaces/erlide/tickets/269-debugger---better-display-of-stack-frames-and-breakpoints
-
-	http://www.assembla.com/spaces/erlide/tickets/290-code-completion---parameters-confused-by-binaries-in-clause-heads
-
+	273-completion---doesn-t-find-some-builtins
+	289-code-completion---records-with---doesn-t-work
+	292-pressing-enter-at-the-end-of-a-line-sometimes-deletes-first-three-chars-on-next-line-
+	279-Text-Actions---shouldn-t-change-text-if-nothing-is-changed
+	287-debugger---better-display-of-binaries-and-lists
+	236-Debugger---show-records-as-records-in-Variables-view
+	269-debugger---better-display-of-stack-frames-and-breakpoints
+	290-code-completion---parameters-confused-by-binaries-in-clause-heads
 	fixed serious bug (leaking threads in RpcDaemon)
-
-	http://www.assembla.com/spaces/erlide/tickets/299-indentation---the-atom-type-confuses-indentation
-
-	http://www.assembla.com/spaces/erlide/tickets/284-completion---context-sensitive
-
-	http://www.assembla.com/spaces/erlide/tickets/301-documentation-hover---doesn-t-work-in-extarnally-opened-files
-
-	http://www.assembla.com/spaces/erlide/tickets/300-quick-outline---still-doesn-t-work-with-external-modules
-
-	http://www.assembla.com/spaces/erlide/tickets/293-quick-outline--function-clauses-should-not-be-expanded-by-default
-
-	http://www.assembla.com/spaces/erlide/tickets/263-Show-non-edoc-comments-directly-from-code-on-hover-and-code-complete-
-
-	http://www.assembla.com/spaces/erlide/tickets/269-debugger---better-display-of-stack-frames-and-breakpoints
-
-	http://www.assembla.com/spaces/erlide/tickets/306-hover-documentation-with-non-edoc-comments-is-ugly
-
-	http://www.assembla.com/spaces/erlide/tickets/297-builder--backend-is-created-even-when-there-is-nothing-to-build
-
-	https://www.assembla.com/spaces/erlide/tickets/302-hover---it-should-use-the-fancy-new-eclipse-3-4-features
-
-	http://www.assembla.com/spaces/erlide/tickets/272-debugger---still-problems-with--debugged--tab-in-launch-config--dialog
-
-	http://www.assembla.com/spaces/erlide/tickets/304--line-macro-from-test_server-ruins-indentation
-
-	http://www.assembla.com/spaces/erlide/tickets/257--type---navigate-from-spec-to-declared-type
-
-	http://www.assembla.com/spaces/erlide/tickets/311-indent--error-with-macro-in--case-
-
-	http://www.assembla.com/spaces/erlide/tickets/312-outline---hide-type-and-spec-along-with-record-and-macro-defs
+	299-indentation---the-atom-type-confuses-indentation
+	284-completion---context-sensitive
+	301-documentation-hover---doesn-t-work-in-extarnally-opened-files
+	300-quick-outline---still-doesn-t-work-with-external-modules
+	293-quick-outline--function-clauses-should-not-be-expanded-by-default
+	263-Show-non-edoc-comments-directly-from-code-on-hover-and-code-complete-
+	269-debugger---better-display-of-stack-frames-and-breakpoints
+	306-hover-documentation-with-non-edoc-comments-is-ugly
+	297-builder--backend-is-created-even-when-there-is-nothing-to-build
+	302-hover---it-should-use-the-fancy-new-eclipse-3-4-features
+	272-debugger---still-problems-with--debugged--tab-in-launch-config--dialog
+	304--line-macro-from-test_server-ruins-indentation
+	257--type---navigate-from-spec-to-declared-type
+	311-indent--error-with-macro-in--case-
+	312-outline---hide-type-and-spec-along-with-record-and-macro-defs
 
 
 List of user visible changes between 0.4.3 and 0.5.0
@@ -513,96 +527,57 @@ List of user visible changes between 0.4.3 and 0.5.0
 	fixed bug when build backend was called "erlide"
 
 	Indentation uses tabs, indents only affected functions, and is
-	cleaned up a bit
-
+		cleaned up a bit
 	fixes around backend startup and ide backend
-
     Fixed autocompletion so that external modules can be completed
-      
+ 
     Fixed a slight oversight when accessing external files (it should be
 	created and have the erlang nature)
-
 	Added error marker if a file could not be compiled at all
-	(compiler crashed or no backend)
-
+		(compiler crashed or no backend)
     Auto-completion didn't work when both default_external_modules and
 	external_modules were specified (open did the right thing).
-
-	http://www.assembla.com/spaces/erlide/tickets/230-Sorting-in-outline-should-not-affect-clauses
-
-	http://www.assembla.com/spaces/erlide/tickets/167-Add-completion-of-variable-names
-
-	http://www.assembla.com/spaces/erlide/tickets/233-Indent-breaks-when-constructing-binary-and-using-$-notation-to-get-ascii-code-for-character-
-
-	http://www.assembla.com/spaces/erlide/tickets/236-Debugger---show-records-as-records-in-Variables-view
-
-	http://www.assembla.com/spaces/erlide/tickets/214: updated jinterface to R12
-
+	230-Sorting-in-outline-should-not-affect-clauses
+	167-Add-completion-of-variable-names
+	233-Indent-breaks-when-constructing-binary-and-using-$-notation-to-get-ascii-code-for-character-
+	236-Debugger---show-records-as-records-in-Variables-view
+	214: updated jinterface to R12
 	optimized RPC performance by caching call signatures
-
 	New, fancier, better, smarter reconciler!
 	  - Scans all changes after one delay
 	  - Parses after all changes, not for each one of them (no more
 	  shuffling after undo or find/replace)
 	  - Method to reconcile without delay and wait for it, so model is
 	  up-to-date, e.g. for model commands like Completion or Open
-
 	Small improvement of dirty region handling, works better with
 	  backspace
-
 	Autoindent now also uses tabs
-
 	Honour the Preferences -> General / Editors / Text Editors /
 	  Insert spaces for tabs checkbox, when indenting, if it's checked,
 	  use only spaces.
-
 	Restored reset handling in reconciler, so it doesn't reconcile
 	  during lengthy typing, but afterwards
-
 	added runtimeVersion project preference, to allow not specifying
 	  a runtime name (that are user specific)
-
-	http://www.assembla.com/spaces/erlide/tickets/127-Goto-variable-definition
-
-	http://www.assembla.com/spaces/erlide/tickets/184-Show-parameter-names-for-code-completed-functions
-
-	http://www.assembla.com/spaces/erlide/tickets/184-Show-parameter-names-for-code-completed-functions
-
+	127-Goto-variable-definition
+	184-Show-parameter-names-for-code-completed-functions
 	beautified edoc display and removed classes that were copied from jface 
-
-	http://www.assembla.com/spaces/erlide/tickets/197--go-to-definition--should-detect-even-M-F-N-constructs
-
-	http://www.assembla.com/spaces/erlide/tickets/196-New-project-wizard---exception-if-include-field-is-empty
-
-	http://www.assembla.com/spaces/erlide/tickets/122-Add-support-for-R12--type-and--spec-annotations
-      
-    Handles 'after' in 'try'. (Part of http://erlide.assembla.com/spaces/erlide/tickets/251-indent---more-bugs
-
-	http://www.assembla.com/spaces/erlide/tickets/259-completion-problem
-
-	http://www.assembla.com/spaces/erlide/tickets/251-indent---more-bugs
-
-	http://www.assembla.com/spaces/erlide/tickets/246-completion-proposals-don-t-work-for-quoted-module-name-
-
-	http://www.assembla.com/spaces/erlide/tickets/254-folding---preferences-don-t-work
-
+	197--go-to-definition--should-detect-even-M-F-N-constructs
+	196-New-project-wizard---exception-if-include-field-is-empty
+	122-Add-support-for-R12--type-and--spec-annotations
+  
+Handles 'after' in 'try'. (Part of http://erlide.assembla.com/spaces/erlide/tickets/251-indent---more-bugs
+	259-completion-problem
+	251-indent---more-bugs
+	246-completion-proposals-don-t-work-for-quoted-module-name-
+	254-folding---preferences-don-t-work
 	updated docs with installation instructions for eclipse 3.4
-
 	http://erlide.assembla.com/spaces/erlide/tickets/105-Allow-outline-for-external-erlang-files
-
 	Type specs was ugly in outline
-
-	http://www.assembla.com/spaces/erlide/tickets/167-Add-completion-of-variable-names
-	  
-	http://www.assembla.com/spaces/erlide/tickets/260-navigation-problems
-
-	http://www.assembla.com/spaces/erlide/tickets/262-folding---initial-folding-done-while-typing--annoying
-
-	http://www.assembla.com/spaces/erlide/tickets/258-outline-disappearing-again
-
-	http://www.assembla.com/spaces/erlide/tickets/86-Stopping-Erlang-launches
-
-	http://www.assembla.com/spaces/erlide/tickets/266: make backend restart after crash
-
-	http://www.assembla.com/spaces/erlide/tickets/267-indentation-error
-
+	167-Add-completion-of-variable-names
+	260-navigation-problems
+	262-folding---initial-folding-done-while-typing--annoying
+	258-outline-disappearing-again
+	86-Stopping-Erlang-launches
+	266: make backend restart after crash
+	267-indentation-error

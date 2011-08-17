@@ -12,26 +12,25 @@ package org.erlide.jinterface.util;
 
 import java.util.Collection;
 
-import org.erlide.jinterface.util.IOServer.Encoding;
-
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IOCallback {
 
-    OtpErlangObject putChars(OtpErlangPid from, Encoding encoding,
+    OtpErlangObject putChars(OtpErlangPid from, IOEncoding encoding,
             OtpErlangObject chars);
 
-    OtpErlangObject putChars(OtpErlangPid from, Encoding latin1, String module,
-            String function, Collection<OtpErlangObject> args);
+    OtpErlangObject putChars(OtpErlangPid from, IOEncoding latin1,
+            String module, String function, Collection<OtpErlangObject> args);
 
-    OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject);
+    OtpErlangObject getUntil(IOEncoding latin1, OtpErlangObject otpErlangObject);
 
-    OtpErlangObject getUntil(Encoding latin1, OtpErlangObject otpErlangObject,
-            long n);
+    OtpErlangObject getUntil(IOEncoding latin1,
+            OtpErlangObject otpErlangObject, long n);
 
-    OtpErlangObject getUntil(Encoding valueOf, OtpErlangObject otpErlangObject,
-            String m, String f, Collection<OtpErlangObject> a);
+    OtpErlangObject getUntil(IOEncoding valueOf,
+            OtpErlangObject otpErlangObject, String m, String f,
+            Collection<OtpErlangObject> a);
 
     OtpErlangObject getOpts();
 

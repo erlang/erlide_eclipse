@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.IBackendListener;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.jinterface.ErlLogger;
 
 public class BackendManagerPopup implements IBackendListener {
 
@@ -26,11 +28,13 @@ public class BackendManagerPopup implements IBackendListener {
     }
 
     public static void init() {
-        ErlangCore.getBackendManager().addBackendListener(fInstance);
+        BackendCore.getBackendManager().addBackendListener(fInstance);
     }
 
-    public void runtimeAdded(final Backend b) {
-        ErlLogger.debug("$$ added backend " + b.getInfo().getName());
+    public void runtimeAdded(final IBackend b) {
+        ErlLogger.debug("$$ added backend " + b);
+        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
+        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
@@ -42,8 +46,8 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
-    public void runtimeRemoved(final Backend b) {
-        ErlLogger.debug("$$ removed backend " + b.getInfo().getName());
+    public void runtimeRemoved(final IBackend b) {
+        ErlLogger.debug("$$ removed backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
@@ -55,7 +59,7 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
-    public void moduleLoaded(final Backend backend, final String projectName,
-            final String moduleName) {
+    public void moduleLoaded(final IRpcCallSite backend,
+            final IProject project, final String moduleName) {
     }
 }

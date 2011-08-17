@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.help; singleton:=true
-Bundle-Version: 0.8.1.qualifier
+Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.help,
  org.eclipse.help.ui,
- org.eclipse.help.webapp
+ org.eclipse.help.webapp,
+ org.eclipse.ui.cheatsheets;bundle-version="3.3.200"

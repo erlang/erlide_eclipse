@@ -17,19 +17,9 @@ public class ErlangFileActionProvider extends CommonActionProvider {
     private OpenErlangAction openAction;
     private ErlangSearchActionGroup searchActionGroup;
 
-    /**
-     * Construct Erlang File Action provider.
-     */
     public ErlangFileActionProvider() {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.navigator.CommonActionProvider#init(org.eclipse.ui.navigator
-     * .ICommonActionExtensionSite)
-     */
     @Override
     public void init(final ICommonActionExtensionSite aSite) {
 
@@ -46,13 +36,6 @@ public class ErlangFileActionProvider extends CommonActionProvider {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.ActionGroup#fillActionBars(org.eclipse.ui.IActionBars
-     * )
-     */
     @Override
     public void fillActionBars(final IActionBars actionBars) {
         /* Set up the property open action when enabled. */
@@ -62,13 +45,6 @@ public class ErlangFileActionProvider extends CommonActionProvider {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.
-     * action.IMenuManager)
-     */
     @Override
     public void fillContextMenu(final IMenuManager menu) {
         if (openAction.isEnabled()) {

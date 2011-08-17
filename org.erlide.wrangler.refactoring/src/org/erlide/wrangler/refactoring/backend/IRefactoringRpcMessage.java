@@ -20,12 +20,12 @@ import java.util.ArrayList;
  * @version %I%, %G%
  */
 public interface IRefactoringRpcMessage extends IRpcMessage {
-	/**
-	 * Successful refactorings contains source file modification, which are
-	 * represented with filename-source code pairs
-	 * 
-	 * @return changed files list
-	 */
-	public ArrayList<ChangedFile> getRefactoringChangeset();
+    /**
+     * Successful refactorings contains source file modification, which are
+     * represented with filename-source code pairs
+     * 
+     * @return changed files list
+     */
+    public ArrayList<ChangedFile> getRefactoringChangeset();
 
 }

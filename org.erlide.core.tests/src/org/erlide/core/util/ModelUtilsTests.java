@@ -2,7 +2,6 @@ package org.erlide.core.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -11,30 +10,26 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.backend.util.StringUtils;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlImport;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlPreprocessorDef;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IErlRecordDef;
-import org.erlide.core.erlang.IErlTypespec;
-import org.erlide.core.erlang.IOldErlangProjectProperties;
-import org.erlide.core.erlang.util.BackendUtils;
-import org.erlide.core.erlang.util.ErlangFunction;
-import org.erlide.core.erlang.util.ErlideUtil;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.backend.Backend;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.erlide.core.common.CommonUtils;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlImport;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlPreprocessorDef;
+import org.erlide.core.model.erlang.IErlRecordDef;
+import org.erlide.core.model.erlang.IErlTypespec;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ModelUtils;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,9 +42,7 @@ import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-
-import erlang.ErlideOpen;
-import erlang.OpenResult;
+import com.google.common.collect.Lists;
 
 public class ModelUtilsTests {
 
@@ -75,7 +68,7 @@ public class ModelUtilsTests {
 
     @Before
     public void setUp() throws Exception {
-        ErlideTestUtils.initModules();
+        ErlideTestUtils.initModulesAndIncludes();
     }
 
     @After
@@ -128,23 +121,28 @@ public class ModelUtilsTests {
         // ErlideTestUtils.createErlModule(projects[1],
         // "c.erl", "-module(c).\n-type cc() :: b:concat_thing().\n");
         moduleB.open(null);
+        projects[0].open(null);
         // moduleC.open(null);
         // when
         // looking for it
         // within project
-        final IErlElement element1 = ModelUtils.findExternalType(moduleB, "bx",
+        final IErlElement element1 = ModelUtils.findTypeDef(moduleB, "bx",
                 "concat_thing", moduleB.getResource().getLocation()
-                        .toPortableString(), projects[0], false);
+                        .toPortableString(), projects[0],
+                IErlModel.Scope.PROJECT_ONLY);
         // in other project but path given
-        final IErlElement element2 = ModelUtils.findExternalType(moduleB, "bx",
+        final IErlElement element2 = ModelUtils.findTypeDef(moduleB, "bx",
                 "concat_thing", moduleB.getResource().getLocation()
-                        .toPortableString(), projects[1], false);
+                        .toPortableString(), projects[1],
+                IErlModel.Scope.PROJECT_ONLY);
         // in other project no path given, search all projects true
-        final IErlElement element3 = ModelUtils.findExternalType(moduleB, "bx",
-                "concat_thing", null, projects[1], true);
+        final IErlElement element3 = ModelUtils
+                .findTypeDef(moduleB, "bx", "concat_thing", null, projects[1],
+                        IErlModel.Scope.ALL_PROJECTS);
         // in other project no path given, search all projects false, -> null
-        final IErlElement element4 = ModelUtils.findExternalType(moduleB, "bx",
-                "concat_thing", null, projects[1], false);
+        final IErlElement element4 = ModelUtils
+                .findTypeDef(moduleB, "bx", "concat_thing", null, projects[1],
+                        IErlModel.Scope.PROJECT_ONLY);
         // then
         // it should be returned if found
         assertTrue(element1 instanceof IErlTypespec);
@@ -163,48 +161,12 @@ public class ModelUtilsTests {
         moduleD.open(null);
         // when
         // looking for it with ?MODULE
-        final IErlElement element1 = ModelUtils.findExternalFunction("?MODULE",
-                new ErlangFunction("f", 0), null, projects[0], false, moduleD);
+        final IErlElement element1 = ModelUtils.findFunction("?MODULE",
+                new ErlangFunction("f", 0), null, projects[0],
+                IErlModel.Scope.PROJECT_ONLY, moduleD);
         // then
         // it should be found
         assertTrue(element1 instanceof IErlFunction);
-    }
-
-    @Test
-    public void findFunctionInExternalFilesTest() throws Exception {
-        // given
-        // a module with calls to the lists module
-        final IErlProject project = projects[0];
-        final IErlModule moduleE = ErlideTestUtils
-                .createModule(
-                        project,
-                        "e.erl",
-                        "-module(e).\n-export([f/0]).\nf() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
-        moduleE.open(null);
-        // when
-        // looking for lists:reverse/2 and lists:reverse/1
-        final Backend backend = ErlangCore.getBackendManager().getIdeBackend();
-        final IErlModel model = ErlangCore.getModel();
-        final OpenResult res = ErlideOpen.open(backend,
-                ErlangToolkit.createScannerModuleName(moduleE), 49,
-                ModelUtils.getImportsAsList(moduleE),
-                model.getExternalModules(project), model.getPathVars());
-        final IErlElement function = ModelUtils.findExternalFunction(
-                res.getName(), res.getFunction(), res.getPath(), project,
-                false, moduleE);
-        // final OpenResult res2 = ErlideOpen.open(backend,
-        // ErlangToolkit.createScannerModuleName(moduleE), 81,
-        // ModelUtils.getImportsAsList(moduleE),
-        // model.getExternalModules(project), model.getPathVars());
-        final IErlElement module = ModelUtils.findExternalModule(
-                function.getModuleName(), res.getPath(), project, false);
-        // then
-        // the function should be returned and the module, in External Files
-        assertNotNull(function);
-        assertTrue(function instanceof IErlFunction);
-        assertNotNull(module);
-        assertEquals(function.getParent(), module);
-        assertEquals(function.getModule().getProject(), project);
     }
 
     @Test
@@ -212,8 +174,8 @@ public class ModelUtilsTests {
         // given
         // a module with includes and record
         final IErlProject project = projects[0];
-        final IErlModule header = ErlideTestUtils
-                .createModule(project, "a.hrl",
+        final IErlModule include = ErlideTestUtils
+                .createInclude(project, "a.hrl",
                         "-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
         final IErlModule module = ErlideTestUtils
                 .createModule(
@@ -222,26 +184,27 @@ public class ModelUtilsTests {
                         "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
+        project.open(null);
         final IErlPreprocessorDef preprocessorDef1 = ModelUtils
-                .findPreprocessorDef(module, "rec1", Kind.RECORD_DEF, "");
+                .findPreprocessorDef(module, "rec1", Kind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef2 = ModelUtils
-                .findPreprocessorDef(header, "rec1", Kind.RECORD_DEF, "");
+                .findPreprocessorDef(include, "rec1", Kind.RECORD_DEF);
         final IErlPreprocessorDef preprocessorDef3 = ModelUtils
                 .findPreprocessorDef(Arrays.asList(projects), "f.erl", "rec2",
-                        Kind.RECORD_DEF, "");
+                        Kind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
         assertNotNull(preprocessorDef1);
         assertTrue(preprocessorDef1 instanceof IErlRecordDef);
         assertEquals(preprocessorDef1, preprocessorDef2);
-        assertEquals(preprocessorDef1.getParent(), header);
+        assertEquals(preprocessorDef1.getParent(), include);
         assertNotNull(preprocessorDef3);
         assertEquals(preprocessorDef3.getParent(), module);
     }
 
     @Test
-    public void findPreprocessorDefExternalHeaderTest() throws Exception {
+    public void findPreprocessorDefOtpIncludeTest() throws Exception {
         // given
         // a module with includes and record
         final IErlProject project = projects[0];
@@ -255,7 +218,7 @@ public class ModelUtilsTests {
         // when
         // looking for the record
         final IErlPreprocessorDef preprocessorDef = ModelUtils
-                .findPreprocessorDef(module, "file_info", Kind.RECORD_DEF, "");
+                .findPreprocessorDef(module, "file_info", Kind.RECORD_DEF);
         // then
         // the record should be returned
         assertNotNull(module);
@@ -280,67 +243,22 @@ public class ModelUtilsTests {
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
         final List<IErlPreprocessorDef> macrodDefs = ModelUtils
-                .getPreprocessorDefs(module, Kind.MACRO_DEF, "");
+                .getAllPreprocessorDefs(module, Kind.MACRO_DEF);
         final List<IErlPreprocessorDef> recordDefs = ModelUtils
-                .getPreprocessorDefs(module, Kind.RECORD_DEF, "");
+                .getAllPreprocessorDefs(module, Kind.RECORD_DEF);
         assertEquals(2, macrodDefs.size());
         assertEquals(3, recordDefs.size());
     }
 
     @Test
-    public void getExternalModule() throws Exception {
-        File externalFile = null;
-        IErlProject erlProject = null;
-        try {
-            // given
-            // an erlang project and an external file not in any project
-            final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
-            final String externalFileName = "external.erl";
-            externalFile = ErlideTestUtils
-                    .createTmpFile(externalFileName,
-                            "-module(external).\nf([_ | _]=L ->\n    atom_to_list(L).\n");
-            final String absolutePath = externalFile.getAbsolutePath();
-            final String externalsFileName = "x.erlidex";
-            final File externalsFile = ErlideTestUtils.createTmpFile(
-                    externalsFileName, absolutePath);
-            final IProject project = erlProject.getProject();
-            final IOldErlangProjectProperties properties = erlProject
-                    .getProperties();
-            final IEclipsePreferences root = new ProjectScope(project)
-                    .getNode(ErlangPlugin.PLUGIN_ID);
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store(root);
-            erlProject.open(null);
-            // when
-            // looking for it
-            final IErlModule externalModule = ModelUtils.getExternalModule(
-                    ErlideUtil.withoutExtension(externalFileName), erlProject);
-            // then
-            // we should find it
-            assertNotNull(externalModule);
-            assertTrue(StringUtils.equalFilePaths(absolutePath,
-                    externalModule.getFilePath()));
-        } finally {
-            if (externalFile != null && externalFile.exists()) {
-                externalFile.delete();
-            }
-            if (erlProject != null) {
-                ErlideTestUtils.deleteProject(erlProject);
-            }
-        }
-
-    }
-
-    @Test
     public void getExternalModuleWithPrefix() throws Exception {
         File externalFile = null;
-        IErlProject erlProject = null;
+        IErlProject project = null;
         try {
             // given
             // an erlang project and an external file not in any project
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+            project = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.erl";
             externalFile = ErlideTestUtils
                     .createTmpFile(externalFileName,
@@ -349,31 +267,30 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IProject project = erlProject.getProject();
-            final IOldErlangProjectProperties properties = erlProject
-                    .getProperties();
-            final IEclipsePreferences root = new ProjectScope(project)
-                    .getNode(ErlangPlugin.PLUGIN_ID);
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store(root);
-            erlProject.open(null);
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            project.open(null);
             // when
-            // looking for it
-            final Backend backend = BackendUtils
-                    .getBuildOrIdeBackend(erlProject.getProject());
-            final List<String> modules = ModelUtils
-                    .getExternalModulesWithPrefix(backend, "ex", erlProject);
+            // looking via prefix
+            final List<String> moduleNames0 = ModelUtils.findModulesWithPrefix(
+                    "ex", project, false);
+            final List<String> modules1 = ModelUtils.findModulesWithPrefix(
+                    "ex", project, true);
+            final List<String> listModules = ModelUtils.findModulesWithPrefix(
+                    "list", project, true);
             // then
-            // we should find it
-            assertEquals(modules.size(), 1);
-            assertEquals(ErlideUtil.withoutExtension(externalFileName),
-                    modules.get(0));
+            // we should find it iff we check externals
+            assertEquals(0, moduleNames0.size());
+            assertEquals(1, modules1.size());
+            assertEquals(CommonUtils.withoutExtension(externalFileName),
+                    modules1.get(0));
+            assertEquals(1, listModules.size());
+            assertEquals("lists", listModules.get(0));
         } finally {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
             }
-            if (erlProject != null) {
-                ErlideTestUtils.deleteProject(erlProject);
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
             }
         }
     }
@@ -381,12 +298,12 @@ public class ModelUtilsTests {
     @Test
     public void findExternalModuleFromPath() throws Exception {
         File externalFile = null;
-        IErlProject erlProject = null;
+        IErlProject project = null;
         try {
             // given
             // an erlang project and an external file not in any project
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+            project = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.erl";
             externalFile = ErlideTestUtils
                     .createTmpFile(externalFileName,
@@ -395,18 +312,12 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IProject project = erlProject.getProject();
-            final IOldErlangProjectProperties properties = erlProject
-                    .getProperties();
-            final IEclipsePreferences root = new ProjectScope(project)
-                    .getNode(ErlangPlugin.PLUGIN_ID);
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store(root);
-            erlProject.open(null);
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            project.open(null);
             // when
             // looking for it
-            final IErlModule module = ModelUtils
-                    .findExternalModuleFromPath(absolutePath);
+            final IErlModule module = ModelUtils.findModule(null, null,
+                    absolutePath, IErlModel.Scope.ALL_PROJECTS);
             // then
             // we should find it
             assertNotNull(module);
@@ -415,8 +326,8 @@ public class ModelUtilsTests {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
             }
-            if (erlProject != null) {
-                ErlideTestUtils.deleteProject(erlProject);
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
             }
         }
     }
@@ -426,9 +337,10 @@ public class ModelUtilsTests {
         // given
         // two erlang projects, the first references the second, second has
         // an erlang module
-        final IProject project = projects[0].getProject();
+        final IProject project = projects[0].getWorkspaceProject();
         final IProjectDescription description = project.getDescription();
-        final IProject[] refs = new IProject[] { projects[1].getProject() };
+        final IProject[] refs = new IProject[] { projects[1]
+                .getWorkspaceProject() };
         description.setReferencedProjects(refs);
         project.setDescription(description, null);
         final IErlModule module = ErlideTestUtils.createModule(projects[1],
@@ -438,24 +350,24 @@ public class ModelUtilsTests {
                 "-module(bbc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
         // when
         // looking for module with prefix, it should be found
-        final List<IErlModule> modules = ModelUtils
-                .getModulesWithReferencedProjectsWithPrefix(projects[0], "a");
+        final List<String> moduleNames = ModelUtils.findModulesWithPrefix("a",
+                projects[0], false);
         // then
         // we should find it
-        assertNotNull(modules);
-        assertEquals(1, modules.size());
-        assertEquals(module, modules.get(0));
+        assertNotNull(moduleNames);
+        assertEquals(1, moduleNames.size());
+        assertEquals(module.getModuleName(), moduleNames.get(0));
     }
 
     @Test
     public void getModuleFromExternalModulePath() throws Exception {
         File externalFile = null;
-        IErlProject erlProject = null;
+        IErlProject project = null;
         try {
             // given
             // an erlang project and an external file not in any project
             final String projectName = "testproject";
-            erlProject = ErlideTestUtils.createTmpErlProject(projectName);
+            project = ErlideTestUtils.createTmpErlProject(projectName);
             final String externalFileName = "external.erl";
             externalFile = ErlideTestUtils
                     .createTmpFile(externalFileName,
@@ -464,66 +376,31 @@ public class ModelUtilsTests {
             final String externalsFileName = "x.erlidex";
             final File externalsFile = ErlideTestUtils.createTmpFile(
                     externalsFileName, absolutePath);
-            final IProject project = erlProject.getProject();
-            final IOldErlangProjectProperties properties = erlProject
-                    .getProperties();
-            final IEclipsePreferences root = new ProjectScope(project)
-                    .getNode(ErlangPlugin.PLUGIN_ID);
-            properties.setExternalModulesFile(externalsFile.getAbsolutePath());
-            properties.store(root);
-            erlProject.open(null);
+            project.setExternalModulesFile(externalsFile.getAbsolutePath());
+            project.open(null);
             // when
             // looking for it with its external module path
-            final IErlModule module = ModelUtils
-                    .findExternalModuleFromPath(absolutePath);
+            final IErlModule module = ModelUtils.findModule(null, null,
+                    absolutePath, IErlModel.Scope.ALL_PROJECTS);
             assertNotNull(module);
             final String externalModulePath = ModelUtils
                     .getExternalModulePath(module);
+            ErlLogger.debug(" >> %s", externalModulePath);
             final IErlModule module2 = ModelUtils
                     .getModuleFromExternalModulePath(externalModulePath);
             // then
             // we should find it
+            assertNotNull(module2);
             assertEquals(externalFileName, module.getName());
             assertEquals(module, module2);
         } finally {
             if (externalFile != null && externalFile.exists()) {
                 externalFile.delete();
             }
-            if (erlProject != null) {
-                ErlideTestUtils.deleteProject(erlProject);
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
             }
         }
-    }
-
-    @Test
-    public void findIncludeFile() throws Exception {
-        // given
-        // a project with a module and an include including file.hrl
-        final IErlProject project = projects[0];
-        final String headerName = "a.hrl";
-        final IErlModule header = ErlideTestUtils
-                .createModule(
-                        project,
-                        headerName,
-                        "-include_lib(\"kernel/include/file.hrl\").\n-record(rec1, {field, another=def}).\n-define(MACRO(A), lists:reverse(A)).\n");
-        header.open(null);
-        final IErlModule module = ErlideTestUtils
-                .createModule(
-                        project,
-                        "f.erl",
-                        "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
-                                + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
-        module.open(null);
-        // when
-        // looking for the include
-        final String s = ModelUtils.findIncludeFile(project, headerName, "");
-        final String filePath = ModelUtils.findIncludeFile(project, "file.hrl",
-                "");
-        // then
-        // it should be found
-        assertEquals(header.getFilePath(), s);
-        assertNotNull(filePath);
-        assertNotSame("file.hrl", filePath);
     }
 
     @Test
@@ -531,11 +408,11 @@ public class ModelUtilsTests {
         // given
         // a project with a module and an include with a typespec
         final IErlProject project = projects[0];
-        final String headerName = "a.hrl";
-        final IErlModule header = ErlideTestUtils
-                .createModule(project, headerName,
+        final String includeName = "a.hrl";
+        final IErlModule include = ErlideTestUtils
+                .createModule(project, includeName,
                         "-type date() :: {pos_integer(), pos_integer(), pos_integer()}.\n");
-        header.open(null);
+        include.open(null);
         final IErlModule module = ErlideTestUtils
                 .createModule(
                         project,
@@ -545,12 +422,149 @@ public class ModelUtilsTests {
         module.open(null);
         // when
         // looking for the typespec
-        final IErlTypespec typespec = ModelUtils.findTypespec(module, "date",
-                "");
+        final IErlTypespec typespec = ModelUtils.findTypespec(module, "date");
         // then
         // it should be found
         assertNotNull(typespec);
-        assertEquals(typespec.getParent(), header);
+        assertEquals(typespec.getParent(), include);
+    }
+
+    @Test
+    public void findPreprocessorDefExternalIncludeOnIncludePathTest()
+            throws Exception {
+        File externalInclude = null;
+        IErlProject project = null;
+        // given
+        // a project with an include dir outside the model, the include file
+        // contains a record def
+        try {
+            // ErlModelCache.getDefault().setNoModelCache(true);
+            // ErlModelCache.getDefault().clearModelCache();
+            final String projectName = "testprojectx";
+            project = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            final IErlModule module = ErlideTestUtils.createModule(project,
+                    "a.erl", "-include(\"x.hrl\").\n");
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
+                    "-record(rec2, {field, another=def}.");
+            final String includePath = externalInclude.getAbsolutePath();
+            final IPath p = new Path(includePath).removeLastSegments(1);
+            project.setIncludeDirs(Lists.newArrayList(p));
+            project.open(null);
+            // when
+            // looking for the record def
+            final IErlPreprocessorDef preprocessorDef = ModelUtils
+                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+            final Collection<IErlProject> myprojects = Lists
+                    .newArrayList(project);
+            ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
+                    Kind.RECORD_DEF);
+            // then
+            // it should be found
+            assertNotNull(preprocessorDef);
+        } finally {
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
+            }
+            // ErlModelCache.getDefault().setNoModelCache(false);
+        }
+    }
+
+    @Test
+    public void findPreprocessorDefExternalIncludePathTest() throws Exception {
+        File externalInclude = null;
+        IErlProject project = null;
+        // given
+        // a project with an include dir outside the model, the include file
+        // contains a record def
+        try {
+            final String projectName = "testprojectx";
+            project = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            final IErlModule module = ErlideTestUtils.createModule(project,
+                    "a.erl", "-include(\"x.hrl\").\n");
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
+                    "-record(rec2, {field, another=def}.");
+            final String includePath = externalInclude.getAbsolutePath();
+            final String externalsFileName = "x.erlidex";
+            final File externalsFile = ErlideTestUtils.createTmpFile(
+                    externalsFileName, includePath);
+            project.setExternalIncludesFile(externalsFile.getAbsolutePath());
+            project.open(null);
+            // when
+            // looking for the record def
+            final IErlPreprocessorDef preprocessorDef = ModelUtils
+                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+            final Collection<IErlProject> myprojects = Lists
+                    .newArrayList(project);
+            ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
+                    Kind.RECORD_DEF);
+            // then
+            // it should be found
+            assertNotNull(preprocessorDef);
+        } finally {
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
+            }
+        }
+    }
+
+    @Test
+    public void findPreprocessorDefExternalIncludeOnIncludePathWithPathVariablesTest()
+            throws Exception {
+        // http://www.assembla.com/spaces/erlide/tickets/756-navigation--external-include-files-are-not-found
+        File externalInclude = null;
+        IErlProject project = null;
+        final IPathVariableManager pathVariableManager = ResourcesPlugin
+                .getWorkspace().getPathVariableManager();
+        final String pathVariableName = "TEST";
+        // given
+        // a project with an include dir outside the model, the include file
+        // contains a record def
+        try {
+            final String projectName = "testprojectx";
+            project = ErlideTestUtils.createProject(
+                    ErlideTestUtils.getTmpPath(projectName), projectName);
+            final IErlModule module = ErlideTestUtils.createModule(project,
+                    "a.erl", "-include(\"x.hrl\").\n");
+            final String includeName = "x.hrl";
+            externalInclude = ErlideTestUtils.createTmpFile(includeName,
+                    "-record(rec2, {field, another=def}.");
+            final String includePath = externalInclude.getAbsolutePath();
+            IPath path = new Path(includePath).removeLastSegments(1);
+            final IPath[] paths = ErlideTestUtils.splitPathAfter(1, path);
+            pathVariableManager.setValue(pathVariableName, paths[0]);
+            path = new Path(pathVariableName).append(paths[1]);
+            project.setIncludeDirs(Lists.newArrayList(path));
+            project.open(null);
+            // when
+            // looking for the record def
+            final IErlPreprocessorDef preprocessorDef = ModelUtils
+                    .findPreprocessorDef(module, "rec2", Kind.RECORD_DEF);
+            final Collection<IErlProject> myprojects = Lists
+                    .newArrayList(project);
+            ModelUtils.findPreprocessorDef(myprojects, "a.erl", "rec2",
+                    Kind.RECORD_DEF);
+            // then
+            // it should be found
+            assertNotNull(preprocessorDef);
+        } finally {
+            if (project != null) {
+                ErlideTestUtils.deleteProject(project);
+            }
+            if (externalInclude != null && externalInclude.exists()) {
+                externalInclude.delete();
+            }
+            pathVariableManager.setValue(pathVariableName, null);
+        }
     }
 
 }

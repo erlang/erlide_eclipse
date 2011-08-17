@@ -111,7 +111,7 @@ public class Signature {
     }
 
     /** To be used only by the unit tests. */
-    static void setUseCache(final boolean use) {
+    public static void setUseCache(final boolean use) {
         useCache = use;
     }
 

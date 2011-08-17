@@ -16,21 +16,21 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.rpc.RpcFuture;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.model.erlang.FunctionRef;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.core.services.search.ErlangXref;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
-
-import erlang.ErlangXref;
-import erlang.FunctionRef;
 
 public class CallHierarchyAction extends Action {
 
@@ -94,19 +94,23 @@ public class CallHierarchyAction extends Action {
             }
 
             @Override
-            protected RpcFuture call() throws BackendException {
-                final Backend b = ErlangCore.getBackendManager()
+            protected IRpcFuture call() throws BackendException {
+                final IRpcCallSite b = BackendCore.getBackendManager()
                         .getIdeBackend();
-                final RpcFuture result = ErlangXref.addProject(b,
+                final IRpcFuture result = ErlangXref.addProject(b,
                         module.getProject());
                 return result;
             }
 
             @Override
             protected void handleResult(final CallHierarchyView context,
-                    final RpcFuture result) {
+                    final IRpcFuture result) {
                 page.activate(context);
-                context.setRoot(module.getModel().findFunction(ref));
+                try {
+                    context.setRoot(module.getModel().findFunction(ref));
+                } catch (final ErlModelException e) {
+                    ErlLogger.error(e);
+                }
             }
         };
         ac.run();

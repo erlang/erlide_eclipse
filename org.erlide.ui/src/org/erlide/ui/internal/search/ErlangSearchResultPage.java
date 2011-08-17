@@ -31,8 +31,8 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInTargetList;
-import org.erlide.core.builder.MarkerUtils;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 
@@ -50,12 +50,6 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
             fLabelProvider = labelProvider;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
-         */
         @Override
         public int category(final Object element) {
             if (element instanceof IContainer) {
@@ -354,8 +348,9 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
                 final int fileCount = getInput().getElements().length;
                 if (itemCount < fileCount) {
                     final String format = "{0} (showing {1} of {2} files)";
-                    return MessageFormat.format(format, label, new Integer(
-                            itemCount), new Integer(fileCount));
+                    return MessageFormat.format(format, label,
+                            Integer.valueOf(itemCount),
+                            Integer.valueOf(fileCount));
                 }
             }
         }

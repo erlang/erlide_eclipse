@@ -8,8 +8,8 @@ import java.util.ResourceBundle;
 
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.text.ErlangToolkit;
+import org.erlide.core.model.erlang.ErlangToolkit;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
@@ -30,11 +30,6 @@ public class ClearCacheAction extends TextEditorAction {
         this.erlangEditor = erlangEditor;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         final IErlModule module = erlangEditor.getModule();

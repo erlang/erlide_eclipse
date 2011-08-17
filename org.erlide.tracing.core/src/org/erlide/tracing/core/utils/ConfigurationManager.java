@@ -11,7 +11,7 @@ import java.util.Collections;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Activator;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracePattern;
@@ -40,12 +40,12 @@ public final class ConfigurationManager {
      *            configuration name
      * @return loaded trace patterns
      */
-    public static TracePattern[] loadTPConfig(String configName) {
-        ArrayList<TracePattern> patterns = new ArrayList<TracePattern>();
+    public static TracePattern[] loadTPConfig(final String configName) {
+        final ArrayList<TracePattern> patterns = new ArrayList<TracePattern>();
 
-        Object[] objects = loadConfiguration(configName, TP_DIR);
+        final Object[] objects = loadConfiguration(configName, TP_DIR);
         if (objects != null) {
-            for (Object object : objects) {
+            for (final Object object : objects) {
                 patterns.add((TracePattern) object);
             }
         }
@@ -59,12 +59,12 @@ public final class ConfigurationManager {
      *            configuration name
      * @return loaded nodes
      */
-    public static TracedNode[] loadNodesConfig(String configName) {
-        ArrayList<TracedNode> nodes = new ArrayList<TracedNode>();
+    public static TracedNode[] loadNodesConfig(final String configName) {
+        final ArrayList<TracedNode> nodes = new ArrayList<TracedNode>();
 
-        Object[] objects = loadConfiguration(configName, NODES_DIR);
+        final Object[] objects = loadConfiguration(configName, NODES_DIR);
         if (objects != null) {
-            for (Object object : objects) {
+            for (final Object object : objects) {
                 nodes.add((TracedNode) object);
             }
         }
@@ -80,8 +80,9 @@ public final class ConfigurationManager {
      * @return <code>true</code> if configuration was saved, <code>false</code>
      *         otherwise
      */
-    public static boolean saveTPConfig(String configName) {
-        return saveConfiguration(configName, TP_DIR, TraceBackend.getInstance().getTracePatternsArray());
+    public static boolean saveTPConfig(final String configName) {
+        return saveConfiguration(configName, TP_DIR, TraceBackend.getInstance()
+                .getTracePatternsArray());
     }
 
     /**
@@ -92,8 +93,9 @@ public final class ConfigurationManager {
      * @return <code>true</code> if configuration was saved, <code>false</code>
      *         otherwise
      */
-    public static boolean saveNodesConfig(String configName) {
-        return saveConfiguration(configName, NODES_DIR, TraceBackend.getInstance().getTracedNodesArray());
+    public static boolean saveNodesConfig(final String configName) {
+        return saveConfiguration(configName, NODES_DIR, TraceBackend
+                .getInstance().getTracedNodesArray());
     }
 
     /**
@@ -104,7 +106,7 @@ public final class ConfigurationManager {
      * @return <code>true</code> if configuration was deleted,
      *         <code>false</code> otherwise
      */
-    public static boolean removeTPConfig(String configName) {
+    public static boolean removeTPConfig(final String configName) {
         return removeConfiguration(configName, TP_DIR);
     }
 
@@ -116,7 +118,7 @@ public final class ConfigurationManager {
      * @return <code>true</code> if configuration was deleted,
      *         <code>false</code> otherwise
      */
-    public static boolean removeNodesConfig(String configName) {
+    public static boolean removeNodesConfig(final String configName) {
         return removeConfiguration(configName, NODES_DIR);
     }
 
@@ -138,25 +140,27 @@ public final class ConfigurationManager {
         return getConfigurationsList(NODES_DIR);
     }
 
-    private static Object[] loadConfiguration(String configName, String dirName) {
+    private static Object[] loadConfiguration(final String configName,
+            final String dirName) {
 
-        IPath location = Activator.getDefault().getStateLocation().append(dirName).append(configName);
-        File file = location.toFile();
+        final IPath location = Activator.getDefault().getStateLocation()
+                .append(dirName).append(configName);
+        final File file = location.toFile();
 
         if (file.exists() && file.isFile()) {
             ObjectInputStream objectInputStream = null;
             try {
-                FileInputStream inputStream = new FileInputStream(file);
+                final FileInputStream inputStream = new FileInputStream(file);
                 objectInputStream = new ObjectInputStream(inputStream);
                 return (Object[]) objectInputStream.readObject();
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 ErlLogger.error(e);
             } finally {
                 if (objectInputStream != null) {
                     try {
                         objectInputStream.close();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         ErlLogger.error(e);
                     }
                 }
@@ -165,27 +169,30 @@ public final class ConfigurationManager {
         return null;
     }
 
-    private static boolean saveConfiguration(String configName, String dirName, Object configuration) {
+    private static boolean saveConfiguration(final String configName,
+            final String dirName, final Object configuration) {
         ObjectOutputStream objectOutputStream = null;
         try {
-            IPath location = Activator.getDefault().getStateLocation().append(dirName);
-            File dir = location.toFile();
+            final IPath location = Activator.getDefault().getStateLocation()
+                    .append(dirName);
+            final File dir = location.toFile();
 
             if (!dir.exists() && !dir.mkdir()) {
                 return false;
             }
 
-            FileOutputStream out = new FileOutputStream(location.append(configName).toFile());
+            final FileOutputStream out = new FileOutputStream(location.append(
+                    configName).toFile());
             objectOutputStream = new ObjectOutputStream(out);
             objectOutputStream.writeObject(configuration);
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             ErlLogger.error(e);
         } finally {
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     ErlLogger.error(e);
                 }
             }
@@ -193,24 +200,29 @@ public final class ConfigurationManager {
         return false;
     }
 
-    private static boolean removeConfiguration(String configName, String dirName) {
-        IPath location = Activator.getDefault().getStateLocation().append(dirName).append(configName);
-        File file = location.toFile();
+    private static boolean removeConfiguration(final String configName,
+            final String dirName) {
+        final IPath location = Activator.getDefault().getStateLocation()
+                .append(dirName).append(configName);
+        final File file = location.toFile();
         if (file.exists() && file.isFile()) {
             return file.delete();
-        } else
+        } else {
             return false;
+        }
     }
 
-    private static String[] getConfigurationsList(String dirName) {
-        ArrayList<String> configNames = new ArrayList<String>();
+    private static String[] getConfigurationsList(final String dirName) {
+        final ArrayList<String> configNames = new ArrayList<String>();
 
-        IPath location = Activator.getDefault().getStateLocation().append(dirName);
-        File dir = location.toFile();
+        final IPath location = Activator.getDefault().getStateLocation()
+                .append(dirName);
+        final File dir = location.toFile();
         if (dir.exists()) {
-            for (File file : dir.listFiles()) {
-                if (file.isFile())
+            for (final File file : dir.listFiles()) {
+                if (file.isFile()) {
                     configNames.add(file.getName());
+                }
             }
         }
         Collections.sort(configNames);

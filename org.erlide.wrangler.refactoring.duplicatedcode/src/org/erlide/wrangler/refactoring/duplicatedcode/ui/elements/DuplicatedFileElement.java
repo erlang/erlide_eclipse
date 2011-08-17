@@ -19,37 +19,37 @@ import org.eclipse.core.resources.IFile;
  * 
  */
 public class DuplicatedFileElement extends AbstractResultTreeParent {
-	IFile containingFile;
+    IFile containingFile;
 
-	// ITextEditor editor;
+    // ITextEditor editor;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param containFile
-	 *            file which is represented
-	 */
-	public DuplicatedFileElement(IFile containFile) {
-		// this.editor = editor;
-		this.containingFile = containFile;
-	}
+    /**
+     * Constructor
+     * 
+     * @param containFile
+     *            file which is represented
+     */
+    public DuplicatedFileElement(final IFile containFile) {
+        // this.editor = editor;
+        containingFile = containFile;
+    }
 
-	@Override
-	public String getName() {
-		return containingFile.getName();
-	}
+    @Override
+    public String getName() {
+        return containingFile.getName();
+    }
 
-	/*
-	 * public ITextEditor getTextEditor() { return editor; }
-	 */
+    /*
+     * public ITextEditor getTextEditor() { return editor; }
+     */
 
-	/**
-	 * Returns the represented file
-	 * 
-	 * @return represented file
-	 */
-	public IFile getContainingFile() {
-		return containingFile;
-	}
+    /**
+     * Returns the represented file
+     * 
+     * @return represented file
+     */
+    public IFile getContainingFile() {
+        return containingFile;
+    }
 
 }

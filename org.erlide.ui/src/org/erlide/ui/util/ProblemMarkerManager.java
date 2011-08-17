@@ -28,7 +28,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * Listens to resource deltas and filters for marker changes of type
@@ -129,20 +129,10 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IAnnotationModelListener#modelChanged(IAnnotationModel)
-     */
     public void modelChanged(final IAnnotationModel model) {
         // no action
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IAnnotationModelListenerExtension#modelChanged(AnnotationModelEvent)
-     */
     public void modelChanged(final AnnotationModelEvent event) {
         if (event instanceof ErlangModuleAnnotationModelEvent) {
             final ErlangModuleAnnotationModelEvent emEvent = (ErlangModuleAnnotationModelEvent) event;

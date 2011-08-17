@@ -12,9 +12,9 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -56,7 +56,7 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
                     .getSourceRange().getOffset()
                     + member.getSourceRange().getLength(), getEndLine() - 1,
                     document);
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             e.printStackTrace();
             return -1;
         }
@@ -90,7 +90,7 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
             range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
                     getEndCol(), member.getSourceRange().getOffset(), member
                             .getSourceRange().getLength());
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             e.printStackTrace();
             return null;
         }

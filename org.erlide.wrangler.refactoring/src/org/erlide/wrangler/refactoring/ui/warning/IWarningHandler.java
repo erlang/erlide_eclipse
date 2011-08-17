@@ -17,22 +17,22 @@ package org.erlide.wrangler.refactoring.ui.warning;
  * @version %I%, %G%
  */
 public interface IWarningHandler {
-	/**
-	 * Adds a warning message to the view.
-	 * 
-	 * @param message
-	 *            warning message
-	 */
-	public void addMessage(String message);
+    /**
+     * Adds a warning message to the view.
+     * 
+     * @param message
+     *            warning message
+     */
+    public void addMessage(String message);
 
-	/**
-	 * Removes all warning messages
-	 */
-	public void removeAll();
+    /**
+     * Removes all warning messages
+     */
+    public void removeAll();
 
-	/**
-	 * Refreshes the displayed warning messages.
-	 */
-	public void refresh();
+    /**
+     * Refreshes the displayed warning messages.
+     */
+    public void refresh();
 
 }

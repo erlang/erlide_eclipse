@@ -12,7 +12,7 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.erlide.core.builder.DialyzerBuilder</name>
+			<name>org.erlide.core.internal.services.builder.DialyzerBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

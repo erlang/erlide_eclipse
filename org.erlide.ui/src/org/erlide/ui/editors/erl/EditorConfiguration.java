@@ -34,14 +34,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
 import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
-import org.erlide.ui.information.ErlInformationPresenter;
-import org.erlide.ui.information.PresenterControlCreator;
+import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 
@@ -130,8 +131,9 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
         final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
-        final String path = editor != null ? editor.getPath() : null;
-        reconciler = new ErlReconciler(strategy, true, true, path);
+        final IErlModule module = editor != null ? editor.getModule() : null;
+        final String path = module != null ? module.getFilePath() : null;
+        reconciler = new ErlReconciler(strategy, true, true, path, module);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setDelay(500);
         return reconciler;

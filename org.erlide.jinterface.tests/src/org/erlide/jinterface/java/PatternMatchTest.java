@@ -11,10 +11,11 @@ package org.erlide.jinterface.java;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.util.Bindings;
+import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.internal.BindingsImpl;
 import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ParserException;
 import org.erlide.jinterface.util.TermParser;
+import org.erlide.jinterface.util.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -93,7 +94,7 @@ public class PatternMatchTest {
 
     @Test
     public void testMatch_0() throws Exception {
-        final Bindings b = new Bindings();
+        final Bindings b = new BindingsImpl();
         b.put("W", new OtpErlangAtom("a"));
         final Bindings r = ErlUtils.match("[W, V]", "[a, b]", b);
         Assert.assertNotNull(r);
@@ -163,7 +164,7 @@ public class PatternMatchTest {
         Assert.assertNull(r);
     }
 
-    @Test(expected = ParserException.class)
+    @Test(expected = TermParserException.class)
     public void testMatch_ellipsis_5() throws Exception {
         ErlUtils.match("[X | Y, Z]", "[x,y,z]");
     }

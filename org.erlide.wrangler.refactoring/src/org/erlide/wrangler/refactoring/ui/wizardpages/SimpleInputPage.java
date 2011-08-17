@@ -28,103 +28,103 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
  * @version %I%, %G%
  */
 public class SimpleInputPage extends InputPage {
-	protected String defaultInput = "";
-	protected String labelText;
+    protected String defaultInput = "";
+    protected String labelText;
 
-	protected String inputErrorMsg;
+    protected String inputErrorMsg;
 
-	IValidator validator;
+    IValidator validator;
 
-	protected Label inputLabel;
+    protected Label inputLabel;
 
-	protected Text inputText;
+    protected Text inputText;
 
-	protected Composite composite;
+    protected Composite composite;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            Refactoring name (title)
-	 * @param description
-	 *            description
-	 * @param labelText
-	 *            input label's text
-	 * @param inputErrorMsg
-	 *            error message in case of wrong input
-	 * @param validator
-	 *            validator object
-	 */
-	public SimpleInputPage(final String name, final String description,
-			final String labelText, final String inputErrorMsg,
-			final IValidator validator) {
-		super(name);
-		this.setDescription(description);
-		this.inputErrorMsg = inputErrorMsg;
-		this.labelText = labelText;
-		this.validator = validator;
-		setPageComplete(false);
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            Refactoring name (title)
+     * @param description
+     *            description
+     * @param labelText
+     *            input label's text
+     * @param inputErrorMsg
+     *            error message in case of wrong input
+     * @param validator
+     *            validator object
+     */
+    public SimpleInputPage(final String name, final String description,
+            final String labelText, final String inputErrorMsg,
+            final IValidator validator) {
+        super(name);
+        setDescription(description);
+        this.inputErrorMsg = inputErrorMsg;
+        this.labelText = labelText;
+        this.validator = validator;
+        setPageComplete(false);
 
-	}
+    }
 
-	public void createControl(final Composite parent) {
-		composite = new Composite(parent, SWT.NONE);
+    public void createControl(final Composite parent) {
+        composite = new Composite(parent, SWT.NONE);
 
-		inputLabel = new Label(composite, SWT.LEFT);
-		inputLabel.setText(labelText);
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-		inputLabel.setLayoutData(gridData);
+        inputLabel = new Label(composite, SWT.LEFT);
+        inputLabel.setText(labelText);
+        GridData gridData = new GridData();
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.horizontalSpan = 2;
+        inputLabel.setLayoutData(gridData);
 
-		inputText = new Text(composite, SWT.NONE);
-		gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.horizontalSpan = 2;
-		gridData.grabExcessHorizontalSpace = true;
-		inputText.setLayoutData(gridData);
+        inputText = new Text(composite, SWT.NONE);
+        gridData = new GridData();
+        gridData.horizontalAlignment = GridData.FILL;
+        gridData.horizontalSpan = 2;
+        gridData.grabExcessHorizontalSpace = true;
+        inputText.setLayoutData(gridData);
 
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		composite.setLayout(layout);
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        composite.setLayout(layout);
 
-		setControl(composite);
+        setControl(composite);
 
-		inputText.addModifyListener(new ModifyListener() {
+        inputText.addModifyListener(new ModifyListener() {
 
-			public void modifyText(final ModifyEvent e) {
-				isInputValid();
-			}
+            public void modifyText(final ModifyEvent e) {
+                isInputValid();
+            }
 
-		});
+        });
 
-		inputText.setText(defaultInput);
-		((SimpleWranglerRefactoring) getRefactoring()).setUserInput(inputText
-				.getText());
-	}
+        inputText.setText(defaultInput);
+        ((SimpleWranglerRefactoring) getRefactoring()).setUserInput(inputText
+                .getText());
+    }
 
-	@Override
-	protected boolean isInputValid() {
-		if (validator.isValid(inputText.getText())) {
-			((SimpleWranglerRefactoring) getRefactoring())
-					.setUserInput(inputText.getText());
-			setErrorMessage(null);
-			setPageComplete(true);
-			return true;
-		} else {
-			setPageComplete(false);
-			setErrorMessage(inputErrorMsg);
-			return false;
-		}
-	}
+    @Override
+    protected boolean isInputValid() {
+        if (validator.isValid(inputText.getText())) {
+            ((SimpleWranglerRefactoring) getRefactoring())
+                    .setUserInput(inputText.getText());
+            setErrorMessage(null);
+            setPageComplete(true);
+            return true;
+        } else {
+            setPageComplete(false);
+            setErrorMessage(inputErrorMsg);
+            return false;
+        }
+    }
 
-	/**
-	 * Sets the input text for the page
-	 * 
-	 * @param input
-	 *            default input text
-	 */
-	public void setInput(String input) {
-		defaultInput = input;
-	}
+    /**
+     * Sets the input text for the page
+     * 
+     * @param input
+     *            default input text
+     */
+    public void setInput(final String input) {
+        defaultInput = input;
+    }
 }

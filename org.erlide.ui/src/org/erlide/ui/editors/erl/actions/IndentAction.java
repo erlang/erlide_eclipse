@@ -6,17 +6,16 @@ import java.util.TreeMap;
 
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.util.Util;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.common.Util;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
-
-import erlang.ErlideIndent;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -34,16 +33,9 @@ public class IndentAction extends ErlangTextEditorAction {
         super(bundle, prefix, editor);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.actions.ErlangTextEditorAction#callErlang(org.eclipse.jface
-     * .text.ITextSelection, java.lang.String)
-     */
     @Override
     protected OtpErlangObject callErlang(final int offset, final int length,
-            final String text) throws BackendException {
+            final String text) throws RpcException {
         final OtpErlangObject r1 = doIndentLines(offset, length, text, false,
                 "");
         return r1;
@@ -51,12 +43,12 @@ public class IndentAction extends ErlangTextEditorAction {
 
     private static OtpErlangObject doIndentLines(final int offset,
             final int length, final String text, final boolean template,
-            final String prefix) throws BackendException {
+            final String prefix) throws RpcException {
         final int tabw = AutoIndentStrategy.getTabWidthFromPreferences();
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
-        final Backend b = ErlangCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
             final OtpErlangObject r1 = ErlideIndent.templateIndentLines(b,
@@ -71,7 +63,7 @@ public class IndentAction extends ErlangTextEditorAction {
 
     public static String indentLines(final int offset, final int length,
             final String text, final boolean template, final String prefix)
-            throws BackendException {
+            throws RpcException {
         return Util.stringValue(doIndentLines(offset, length, text, template,
                 prefix));
     }

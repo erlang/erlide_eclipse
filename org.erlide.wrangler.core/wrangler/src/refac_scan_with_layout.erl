@@ -47,7 +47,7 @@
 
 -module(refac_scan_with_layout).
 
--export([string/1,string/2,string/4]).
+-export([string/1,string/2,string/3, string/4]).
 
 -import(refac_scan, [reserved_word/1, escape_char/1]).
 
@@ -67,14 +67,15 @@
 string(Cs) ->
     string(Cs, {1, 1}, ?DEFAULT_TABWIDTH, ?DEFAULT_FILEFORMAT).
 
-string(Cs, {Line, Col}) -> string(Cs, {Line, Col}, ?DEFAULT_TABWIDTH, ?DEFAULT_FILEFORMAT).
+string(Cs, {Line, Col}) ->
+    string(Cs, {Line, Col}, ?DEFAULT_TABWIDTH, ?DEFAULT_FILEFORMAT).
+
+string(Cs, {Line, Col}, TabWidth) -> 
+    string(Cs, {Line, Col}, TabWidth, ?DEFAULT_FILEFORMAT).
 
 string(Cs, {Line, Col}, TabWidth, FileFormat)
-    when is_list(Cs), is_integer(Line), is_integer(Col), is_integer(TabWidth) ->
-    %     %% Debug replacement line for chopping string into 1-char segments
-    %     scan([], [], [], Pos, Cs, []).
+  when is_list(Cs), is_integer(Line), is_integer(Col), is_integer(TabWidth) ->
     scan(Cs, [], [], {Line, Col}, [], [],TabWidth,FileFormat).
-
 
 %% String
 more(Cs, Stack, Toks, {Line, Col}, eos, Errors, _TabWidth, _FileFormat, Fun) ->
@@ -560,14 +561,16 @@ scan_exponent(Cs, Stack, Toks, {Line, Col}, State,Errors, TabWidth,FileFormat) -
     end.
 
 scan_comment([$\r | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) ->
-    case FileFormat of 
-	mac -> [StartPos|S] = reverse([$\r|Stack]),
-	       scan(Cs, [], [{comment, StartPos, S}|Toks], {Line + 1, 1}, State, Errors, TabWidth,FileFormat);
-	_ ->  scan_comment(Cs, [$\r|Stack], Toks, {Line, Col + 1}, State, Errors, TabWidth,FileFormat)
-    end;	    
-scan_comment([$\n | Cs], Stack, Toks, {Line, _Col}, State, Errors, TabWidth,FileFormat) ->
-    [StartPos|S] = reverse([$\n|Stack]),
-    scan(Cs, [], [{comment, StartPos, S}|Toks], {Line + 1, 1}, State, Errors, TabWidth,FileFormat);
+    [StartPos|S] = reverse(Stack),
+    scan([$\r | Cs], [], [{comment, StartPos, S}|Toks], {Line, Col}, State, Errors, TabWidth,FileFormat);
+    %% case FileFormat of 
+    %%     mac -> [StartPos|S] = reverse([$\r|Stack]),
+    %%            scan(Cs, [], [{comment, StartPos, S}|Toks], {Line + 1, 1}, State, Errors, TabWidth,FileFormat);
+    %%     _ ->  scan_comment(Cs, [$\r|Stack], Toks, {Line, Col + 1}, State, Errors, TabWidth,FileFormat)
+    %% end;
+scan_comment([$\n | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) ->
+    [StartPos|S] = reverse(Stack),
+    scan([$\n | Cs], [], [{comment, StartPos, S}|Toks], {Line, Col}, State, Errors, TabWidth,FileFormat);
 scan_comment([C | Cs], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) ->
     scan_comment(Cs, [C|Stack], Toks, {Line, Col + 1}, State, Errors, TabWidth,FileFormat);
 scan_comment([], Stack, Toks, {Line, Col}, State, Errors, TabWidth,FileFormat) ->

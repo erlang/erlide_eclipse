@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="foldingStructureProviders" name="%foldingStructureProvidersExtensionPoint" schema="schema/foldingStructureProviders.exsd"/>
    <extension-point id="erlDndAdapter" name="Erlide Drag and Drop Adapter" schema="schema/erlDndAdapter.exsd"/>
+   <extension-point id="erlangElementFilters" name="Erlang Element Filters" schema="schema/erlangElementFilters.exsd"/>
 
      <extension
          point="org.eclipse.ui.editors">
@@ -288,10 +289,10 @@
          <enabledWhen>
             <or>
                <instanceof
-                     value="org.erlide.runtime.debug.IErlangBreakpoint">
+                     value="org.erlide.core.debug.IErlangBreakpoint">
                </instanceof>
                <adapt
-                     type="org.erlide.runtime.debug.IErlangBreakpoint">
+                     type="org.erlide.core.debug.IErlangBreakpoint">
                </adapt>
             </or>
          </enabledWhen>
@@ -332,10 +333,10 @@
       <objectContribution
             adaptable="false"
             id="org.erlide.runtime.debug.ErlangBreakpointActions"
-            objectClass="org.erlide.runtime.debug.ErlangLineBreakpoint">
+            objectClass="org.erlide.core.debug.ErlangLineBreakpoint">
          <action
                class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
-               definitionId="org.erlide.debug.ui.breakpoint.properties"
+               definitionId="org.erlide.ui.debug.breakpoint.properties"
                enablesFor="1"
                helpContextId="breakpoint_properties_action_context"
                id="org.eclipse.jdt.debug.ui.actions.ErlangBreakpointProperties"
@@ -493,6 +494,12 @@
             id="org.erlide.ui.search.implementors.in.workspace"
             name="Definitions in Workspace">
       </command>
+      <!--command   TODO reenable this when erl_tidy doesn't destroy formatting
+            categoryId="org.erlide.ui.erlideCategory"
+            description="Clean Up..."
+            id="org.erlide.ui.actions.cleanUp"
+            name="Clean Up...">
+      </command-->
       <command
             categoryId="org.eclipse.search.ui.category.search"
             description="Definitions in Project"
@@ -569,6 +576,25 @@
              id="org.erlide.ui.commandCategories.dialyzer"
              name="Dialyzer Commands">
        </category>
+       <command
+             description="Filter From Outline"
+             id="org.erlide.ui.command.showOutlineFilterDialog"
+             name="Filter...">
+       </command>
+       <command
+             description="Hide In Outline"
+             id="org.erlide.ui.command.toolbarFilter"
+             name="Hide In Outline">
+          <commandParameter
+                id="org.erlide.ui.filterId"
+                name="Filter ID"
+                optional="false">
+          </commandParameter>
+       </command>
+       <command
+             id="org.erlide.ui.command1"
+             name="name">
+       </command>
  </extension>
  <extension
        point="org.eclipse.ui.menus">
@@ -692,6 +718,48 @@
        <command
              commandId="org.erlide.ui.command.removeDialyzerWarnings"
              style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="menu:org.eclipse.ui.views.ContentOutline">
+       <command
+             commandId="org.erlide.ui.command.showOutlineFilterDialog"
+             icon="icons/full/elcl16/filter_ps.gif"
+             label="Filters..."
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="toolbar:org.eclipse.ui.views.ContentOutline">
+       <command
+             commandId="org.erlide.ui.command.toolbarFilter"
+             icon="icons/full/elcl16/hide_attributes.gif"
+             label="Hide Attributes"
+             style="toggle">
+          <parameter
+                name="org.erlide.ui.filterId"
+                value="attributesFilter">
+          </parameter>
+       </command>
+       <command
+             commandId="org.erlide.ui.command.toolbarFilter"
+             icon="icons/full/elcl16/hide_local_functions.gif"
+             label="Hide Local Functions"
+             style="toggle">
+          <parameter
+                name="org.erlide.ui.filterId"
+                value="localFunctionsFilter">
+          </parameter>
+       </command>
+       <command
+             commandId="org.erlide.ui.command.toolbarFilter"
+             icon="icons/full/elcl16/hide_macro_record_defs.gif"
+             label="Hide Macro, Record and Type Definitions"
+             style="toggle">
+          <parameter
+                name="org.erlide.ui.filterId"
+                value="macrosRecordsTypesFilter">
+          </parameter>
        </command>
     </menuContribution>
  </extension>
@@ -830,8 +898,12 @@
           commandId="org.erlide.ui.command.removeDialyzerWarnings">
     </handler>
     <handler
-          class="org.erlide.ui.handlers.CheckDialyzerPltFileHandler"
-          commandId="org.erlide.ui.command.checkDialyzerPLTFile">
+          class="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler"
+          commandId="org.erlide.ui.command.showOutlineFilterDialog">
+    </handler>
+    <handler
+          class="org.erlide.ui.editors.erl.outline.filters.ToolbarFilterHandler"
+          commandId="org.erlide.ui.command.toolbarFilter">
     </handler>
  </extension>
  <extension
@@ -1211,20 +1283,20 @@
                   </test>
                </and>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.root.IErlElement">
                </instanceof>
                <instanceof
                      value="org.eclipse.core.resources.IFolder">
                </instanceof>
                <adapt
-                     type="org.erlide.core.erlang.IErlModule">
+                     type="org.erlide.core.model.erlang.IErlModule">
                </adapt>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.root.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1260,14 +1332,14 @@
                      value="org.eclipse.core.resources.IProject">
                </instanceof>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.root.IErlElement">
                </instanceof>
             </or>
          </triggerPoints>
          <possibleChildren>
             <or>
                <instanceof
-                     value="org.erlide.core.erlang.IErlElement">
+                     value="org.erlide.core.model.root.IErlElement">
                </instanceof>
             </or>
          </possibleChildren>
@@ -1321,7 +1393,7 @@
                      type="org.eclipse.core.resources.IFile">
                </adapt>
                <instanceof
-                     value="org.erlide.core.erlang.IErlModule">
+                     value="org.erlide.core.model.erlang.IErlModule">
                </instanceof>
             </or>
          </selectionEnablement>
@@ -1473,6 +1545,13 @@
             class="org.erlide.debug.ui.model.ErlBreakpointAdapterFactory">
          <adapter type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget"/>
       </factory>
+      <factory
+            adaptableType="org.eclipse.ui.IEditorInput"
+            class="org.erlide.ui.util.EditorInputToModuleAdapterFactory">
+         <adapter
+               type="org.erlide.core.model.root.IErlElement">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -1540,15 +1619,24 @@
           modes="run,debug">
         <contextualLaunch>
             <enablement>
-               <with variable="selection">
-                  <count value="1"/>
-               	  <iterate>
-                     <adapt type="org.erlide.core.erlang.IErlProject">
-		             </adapt>
-		          </iterate>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <adapt
+                           type="org.erlide.core.model.root.IErlElement">
+                     </adapt>
+                  </iterate>
                </with>
             </enablement>
          </contextualLaunch>
+        <configurationType
+              id="org.erlide.core.launch.erlangProcess">
+        </configurationType>
+        <perspective
+              id="org.erlide.ui.perspectives.ErlangPerspective">
+        </perspective>
     </shortcut>
  </extension>
     <extension
@@ -1643,13 +1731,6 @@
       </contextType>
       <resolver
             class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverLocalFunctions"
-            name="Local Functions"
-            type="local_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver"
             contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverLocalFunctions"
             name="Local Functions"
@@ -1657,24 +1738,10 @@
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverExportedFunctions"
-            name="Exported Functions"
-            type="exported_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver"
             contextTypeId="org.erlide.ui.erlangsource.template.context.module"
             description="%variableResolverExportedFunctions"
             name="Exported Functions"
             type="exported_functions">
-      </resolver>
-      <resolver
-            class="org.erlide.ui.wizards.templates.ExportsVariableResolver"
-            contextTypeId="org.erlide.ui.erlangsource.template.context.module.element"
-            description="%variableResolverExports"
-            name="Exports"
-            type="exports">
       </resolver>
       <resolver
             class="org.erlide.ui.wizards.templates.ExportsVariableResolver"
@@ -1787,13 +1854,6 @@
       </specification>
    </extension>
    <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            class="org.erlide.ui.internal.search.ReferencesInWorkspaceHandler"
-            commandId="org.erlide.ui.search.references.in.workspace">
-      </handler>
-   </extension>
-   <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
       <hyperlinkDetector
             activate="true"
@@ -1814,9 +1874,9 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.backend.messageReporter">
+         point="org.erlide.core.messageReporter">
       <messageReporter
-            class="org.erlide.ui.MessageReporter">
+            class="org.erlide.ui.UIMessageReporter">
       </messageReporter>
    </extension>
    <extension
@@ -1833,5 +1893,48 @@
             id="org.erlide.ui.erlangLineBreakpointUpdater"
             markerType="org.erlide.core.erlang.lineBreakpoint.marker">
       </updater>
+   </extension>
+   <extension
+         point="org.erlide.ui.erlangElementFilters">
+      <filter
+            description="Hides -compile attributes"
+            id="compileAttributesFilter"
+            name="Compile Attributes"
+            pattern="compile:*"
+            targetId="org.eclipse.ui.views.ContentOutline">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.LocalFunctionsFilter"
+            description="Hide local (not exported) functions"
+            enabled="false"
+            id="localFunctionsFilter"
+            name="Local Functions">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.AttributesFilter"
+            description="Hide Attributes"
+            id="attributesFilter"
+            name="Hide Attributes">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.MacrosRecordsTypesFilter"
+            description="Hide Macro, Record and Type Definitions"
+            id="macrosRecordsTypesFilter"
+            name="Hide Macro, Record and Type Definitions">
+      </filter>
+      <filter
+            class="org.erlide.ui.editors.erl.outline.filters.TypespecFilter"
+            description="Hide -typespec attributes"
+            id="typespecsFilter"
+            name="Typespecs"
+            targetId="org.eclipse.ui.views.ContentOutline">
+      </filter>
+      <filter
+            description="Hide -file attributes"
+            id="fileAttributesFilter"
+            name="File Attributes"
+            pattern="file:*"
+            targetId="org.eclipse.ui.views.ContentOutline">
+      </filter>
    </extension>
 </plugin>

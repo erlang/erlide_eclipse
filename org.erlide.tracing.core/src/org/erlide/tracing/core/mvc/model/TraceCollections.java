@@ -18,8 +18,10 @@ public final class TraceCollections {
     private TraceCollections() {
     }
 
-    private static final Collection<ITreeNode> filesList = Collections.synchronizedSortedSet(new TreeSet<ITreeNode>());
-    private static final Collection<ITreeNode> tracesList = Collections.synchronizedList(new ArrayList<ITreeNode>());
+    private static final Collection<ITreeNode> filesList = Collections
+            .synchronizedSortedSet(new TreeSet<ITreeNode>());
+    private static final Collection<ITreeNode> tracesList = Collections
+            .synchronizedList(new ArrayList<ITreeNode>());
 
     /**
      * Returns collection of nodes that represents files with tracing results.

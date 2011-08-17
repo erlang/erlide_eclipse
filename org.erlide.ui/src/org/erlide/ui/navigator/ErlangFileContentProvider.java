@@ -19,17 +19,16 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.navigator.SaveablesProvider;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModelChangeListener;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.core.erlang.IOpenable;
-import org.erlide.core.erlang.IParent;
-import org.erlide.core.erlang.util.ModelUtils;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlModelChangeListener;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlangFileContentProvider implements ITreeContentProvider,
         IResourceChangeListener, IResourceDeltaVisitor,
@@ -49,7 +48,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public ErlangFileContentProvider() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_CHANGE);
-        final IErlModel mdl = ErlangCore.getModel();
+        final IErlModel mdl = CoreScope.getModel();
         mdl.addModelChangeListener(this);
     }
 
@@ -59,7 +58,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IFile) {
-                parentElement = ModelUtils.getModule((IFile) parentElement);
+                parentElement = CoreScope.getModel().findModule(
+                        (IFile) parentElement);
             }
             if (parentElement instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) parentElement;
@@ -88,12 +88,8 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
             final IErlElement elt = (IErlElement) element;
             final IParent parent = elt.getParent();
             if (parent instanceof IErlModule || parent instanceof IErlProject) {
-                try {
-                    final IErlElement e = (IErlElement) parent;
-                    return e.getCorrespondingResource();
-                } catch (final ErlModelException e) {
-                    ErlLogger.warn(e);
-                }
+                final IErlElement e = (IErlElement) parent;
+                return e.getCorrespondingResource();
             }
         }
         return null;
@@ -117,7 +113,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
 
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        ErlangCore.getModel().removeModelChangeListener(this);
+        CoreScope.getModel().removeModelChangeListener(this);
     }
 
     public void inputChanged(final Viewer theViewer, final Object oldInput,
@@ -127,13 +123,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org
-     * .eclipse.core.resources.IResourceChangeEvent)
-     */
     public void resourceChanged(final IResourceChangeEvent event) {
         final IResourceDelta delta = event.getDelta();
         try {
@@ -146,13 +135,6 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core
-     * .resources.IResourceDelta)
-     */
     public boolean visit(final IResourceDelta delta) {
 
         final IResource source = delta.getResource();

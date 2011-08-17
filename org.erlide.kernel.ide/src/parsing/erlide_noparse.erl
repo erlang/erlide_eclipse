@@ -117,15 +117,16 @@ do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer) ->
 do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     ?D({do_parse, ScannerName, length(Toks)}),
     {UncommentToks, Comments} = erlide_np_util:extract_comments(Toks),
-    %?D({length(UncommentToks), length(Comments)}),
-    %?D({UncommentToks}),
+    ?D({length(UncommentToks), length(Comments)}),
+    ?D({UncommentToks}),
     Functions = erlide_np_util:split_after_dots(UncommentToks),
     ?D(length(Functions)),
     AutoImports = erlide_util:add_auto_imported([]),
 %%     ?D(AutoImports),
     {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
-    ?D(length(Collected)),
+    ?D({'>>',length(Collected)}),
     CommentedCollected = erlide_np_util:get_function_comments(Collected, Comments),
+    ?D(CommentedCollected),
     Model = #model{forms=CommentedCollected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model),
 %%     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
@@ -179,7 +180,12 @@ fixup_form(Other) ->
     Other.
 
 to_binary(Comment) when is_list(Comment) ->
-    iolist_to_binary(Comment);
+    try 
+        iolist_to_binary(Comment) 
+    catch 
+        _:_ -> 
+            unicode:characters_to_binary(Comment) 
+    end;
 to_binary(Other) ->
     Other.
 
@@ -394,24 +400,27 @@ get_upto2([#token{kind=Delim} | Rest], Delim, Acc) ->
 get_upto2([T | Rest], Delim, Acc) ->
     get_upto2(Rest, Delim, [T | Acc]).
 
-check_clause([#token{kind = ';'} | Rest]) ->
+check_clause([#token{kind = ';'} | Rest], false) ->
     check_class(Rest) == function;
-check_clause(_) ->
+check_clause(_, _) ->
     false.
 
 split_clauses(F) ->
-    split_clauses(F, [], []).
+    split_clauses(F, false, [], []).
 
-split_clauses([], Acc, []) ->
+split_clauses([], _HaveWhen, Acc, []) ->
     erlide_util:reverse2(Acc);
-split_clauses([], Acc, ClAcc) ->
-    split_clauses([], [ClAcc | Acc], []);
-split_clauses([T | TRest] = Tokens, Acc, ClAcc) ->
-    case check_clause(Tokens) of
+split_clauses([], HaveWhen, Acc, ClAcc) ->
+    split_clauses([], HaveWhen, [ClAcc | Acc], []);
+split_clauses([#token{kind=Kind}=T | Rest], _HaveWhen, Acc, ClAcc) 
+  when Kind=:='end'; Kind=:=dot; Kind=:='->'; Kind=:='when' ->
+    split_clauses(Rest, Kind=:='when', Acc, [T | ClAcc]);
+split_clauses([T | Rest] = Tokens, HaveWhen, Acc, ClAcc) ->
+    case check_clause(Tokens, HaveWhen) of
         false ->
-            split_clauses(TRest, Acc, [T | ClAcc]);
+            split_clauses(Rest, HaveWhen, Acc, [T | ClAcc]);
         true ->
-            split_clauses(TRest, [[T | ClAcc] | Acc], [])
+            split_clauses(Rest, HaveWhen, [[T | ClAcc] | Acc], [])
     end.
 
 %% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->

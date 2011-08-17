@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate"
+            id="org.erlide.test_support.launchConfigurationType"
+            modes="run,debug"
+            name="BTerl test"
+            public="false"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
+   </extension>
+<extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut
+          class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRegression"
+          description="run the BTerl regression tests for this project"
+          icon="icons/run_bterl.gif"
+          id="org.erlide.test_support.regression"
+          label="Test regression"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canRegression"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+    <shortcut
+          class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRun"
+          description="run the BTerl tests"
+          icon="icons/run_bterl.gif"
+          id="org.erlide.test_support.run"
+          label="BTerl test"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canRun"/>
+            		</or>
+           		 </iterate>
+              </with>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+    </shortcut>
+    <shortcut
+          class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutCover"
+          description="run the BTerl tests with cover information"
+          id="org.erlide.test_support.cover"
+          icon="icons/run_bterl.gif"
+          label="BTerl test with cover"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canCover"/>
+            		</or>
+           		 </iterate>
+              </with>
+              <systemTest
+                    property="shade.bterl.systemTest1"
+                    value="false">
+              </systemTest>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+        <enablement>
+           <systemTest
+                 property="shade.bterl.systemTest1"
+                 value="false">
+           </systemTest>
+        </enablement>
+    </shortcut>
+    <shortcut
+          class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutTrace"
+          description="run the BTerl tests with trace enabled"
+          id="org.erlide.test_support.trace"
+          icon="icons/run_bterl.gif"
+          label="BTerl test with trace"
+          modes="run">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canTrace"/>
+            		</or>
+           		 </iterate>
+              </with>
+              <systemTest
+                    property="shade.bterl.systemTest1"
+                    value="false">
+              </systemTest>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+        <enablement>
+           <systemTest
+                 property="shade.bterl.systemTest1"
+                 value="false">
+           </systemTest>
+        </enablement>
+    </shortcut>
+    <shortcut
+          class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRun"
+          description="run the BTerl tests"
+          id="org.erlide.test_support.debug"
+          icon="icons/run_bterl.gif"
+          label="BTerl test"
+          modes="debug">
+        <contextualLaunch>
+           <enablement>
+              <with variable="selection">
+           		 <iterate>
+            		<or>
+               		    <test
+                           forcePluginActivation="true"
+                           property="org.erlide.test_support.ui.run.canDebug"/>
+            		</or>
+           		 </iterate>
+              </with>
+              <systemTest
+                    property="shade.bterl.systemTest1"
+                    value="false">
+              </systemTest>
+           </enablement>
+        </contextualLaunch>
+        <configurationType
+             id="org.erlide.test_support.launchConfigurationType">
+       </configurationType>
+        <enablement>
+           <systemTest
+                 property="shade.bterl.systemTest1"
+                 value="false">
+           </systemTest>
+        </enablement>
+    </shortcut>
+</extension>
+<extension
+      point="org.eclipse.core.expressions.propertyTesters">
+   <propertyTester
+         class="org.erlide.shade.bterl.ui.TestRunnableTester"
+         id="org.erlide.test_support.ui.bterlRunnable"
+         namespace="org.erlide.test_support.ui.run"
+         properties="canRun,canRegression,canCover,canTrace,canDebug"
+         type="java.lang.Object">
+   </propertyTester>
+</extension>
+<extension
+      id="builder"
+      name="Test code builder"
+      point="org.eclipse.core.resources.builders">
+   <builder
+         hasNature="true">
+      <run
+            class="org.erlide.shade.bterl.builder.TestCodeBuilder">
+      </run>
+   </builder>
+</extension>
+<extension
+      id="nature"
+      name="Erlang Test Project Nature"
+      point="org.eclipse.core.resources.natures">
+   <runtime>
+      <run
+            class="org.erlide.shade.bterl.builder.ErlTestNature">
+      </run>
+   </runtime>
+   <builder
+         id="shade.bterl.builder">
+   </builder>
+   <requires-nature
+         id="org.erlide.core.erlnature">
+   </requires-nature>
+</extension>
+<extension
+      point="org.eclipse.core.runtime.adapters">
+   <factory
+         adaptableType="org.erlide.core.model.erlang.IErlFunction"
+         class="org.erlide.test_support.ui.ErlElementAdapterFactory">
+      <adapter
+            type="org.eclipse.debug.ui.actions.ILaunchable">
+      </adapter>
+   </factory>
+   <factory
+         adaptableType="org.erlide.core.model.erlang.IErlFunctionClause"
+         class="org.erlide.test_support.ui.ErlElementAdapterFactory">
+      <adapter
+            type="org.eclipse.debug.ui.actions.ILaunchable">
+      </adapter>
+   </factory>
+   <factory
+         adaptableType="org.erlide.core.model.erlang.IErlModule"
+         class="org.erlide.test_support.ui.ErlElementAdapterFactory">
+      <adapter
+            type="org.eclipse.debug.ui.actions.ILaunchable">
+      </adapter>
+   </factory>
+</extension>
+   <!--extension
+         point="org.eclipse.ui.browserSupport">
+      <support
+            class="org.erlide.test_support.ui.browser.TestBrowserSupport"
+            default="false">
+      </support>
+   </extension-->
+</plugin>

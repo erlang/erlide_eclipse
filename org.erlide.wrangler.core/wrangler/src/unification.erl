@@ -39,7 +39,7 @@
 
 expr_unification(Exp1, Exp2) ->
     expr_unification(Exp1, Exp2, syntax).
-expr_unification_extended(Exp1, Exp2) ->
+expr_unification_extended(Exp1, Exp2) -> 
     expr_unification(Exp1, Exp2, semantics).
 
 expr_unification(Exp1, Exp2, Type) ->
@@ -63,7 +63,7 @@ expr_unification_1(Exp1, Exp2, Type) ->
 	    case length(Exp1) == length(Exp2) of
 	    true ->
 		    Res = [expr_unification(E1, E2, Type) || {E1, E2} <- lists:zip(Exp1, Exp2)],
-		    Unifiable = not lists:member(false, [false || false <- Res]),
+                    Unifiable = not lists:member(false, [false || false <- Res]),
 		    case Unifiable of
 			true ->
 			    {true, lists:usort(lists:append([S || {true, S} <- Res]))};
@@ -87,42 +87,44 @@ expr_unification_1(Exp1, Exp2, Type) ->
 same_type_expr_unification(Exp1, Exp2, Type) ->
     T1 = refac_syntax:type(Exp1),
     case T1 of
-      variable ->
+	variable ->
 	    Exp1Ann = refac_syntax:get_ann(Exp1),
 	    Exp2Ann = refac_syntax:get_ann(Exp2),
 	    Exp1Name = refac_syntax:variable_name(Exp1),
 	    Exp2Name = refac_syntax:variable_name(Exp2),
-	    case lists:keysearch(category, 1, Exp1Ann) of
-		{value, {category, macro_name, none, _}} ->
+            case lists:keysearch(category, 1, Exp1Ann) of
+		{value, {category, {macro_name, N, N1}}} ->
 		    case lists:keysearch(category, 1, Exp2Ann) of
-			{value, {category, {macro_name, none, expression}}} ->
-			    case Exp1Name of
+			{value, {category, {macro_name, N, N1}}} ->
+                            case Exp1Name of
 				Exp2Name -> {true, []};
-				_ -> false
-			    end;
-			_ -> false
+				_ -> 
+                                    false
+	 		    end;
+			_ ->
+                            false
 		    end;
-		_ -> {true, [{Exp1Name, rm_comments(Exp2)}]}
+		_ -> {true, [{Exp1Name, rm_comments(Exp2)}]} 
 	    end;
 	atom ->
 	    case refac_syntax:atom_value(Exp1) == refac_syntax:atom_value(Exp2) of
 		true ->
-		    Ann1=refac_syntax:get_ann(Exp1),
-		    Ann2=refac_syntax:get_ann(Exp2),
+		    Ann1 = refac_syntax:get_ann(Exp1),
+		    Ann2 = refac_syntax:get_ann(Exp2),
 		    case lists:keysearch(fun_def,1,Ann1) of
-			{value, {fun_def, {M,F, A, _, _}}} ->
+			{value, {fun_def, {M, F, A, _, _}}} ->
 			    case lists:keysearch(fun_def,1,Ann2) of
-				{value, {fun_def, {M1,F1,A1, _,_}}} ->
-				    case {M, F,A}=={M1, F1, A1} of
-					true-> {true, []};
+				{value, {fun_def, {M1,F1,A1,_,_}}} ->
+				    case {M, F, A}=={M1, F1, A1} of
+					true -> {true, []};
 					false ->
 					    false
 				    end;
-				false->
+				false ->
 				    false
 			    end;
 			false ->
-			    case lists:keysearch(fun_def,1, Ann2) of
+			    case lists:keysearch(fun_def, 1, Ann2) of
 				{value, _} ->
 				    false;
 				false ->
@@ -130,7 +132,7 @@ same_type_expr_unification(Exp1, Exp2, Type) ->
 			    end
 		    end;
 		_ -> false
-	  end;
+	    end;
 	operator ->
 	    case refac_syntax:operator_name(Exp1) == refac_syntax:operator_name(Exp2) of
 		true -> {true, []};
@@ -138,7 +140,7 @@ same_type_expr_unification(Exp1, Exp2, Type) ->
 	    end;
 	char ->
 	    case refac_syntax:char_value(Exp1) == refac_syntax:char_value(Exp2) of
-	    true -> {true, []};
+		true -> {true, []};
 		_ -> false
 	    end;
 	integer ->
@@ -157,11 +159,13 @@ same_type_expr_unification(Exp1, Exp2, Type) ->
 	    end;
 	underscore -> {true, []};
 	nil -> {true, []};
-	application when Type==semantics->
+	application when Type==semantics ->
 	    Op = refac_syntax:application_operator(Exp1),
-	    Args = refac_syntax:application_arguments(Exp1),
-	    case refac_syntax:type(Op)==variable andalso Args==[] andalso
-		refac_misc:get_free_vars(Exp2) == [] of 
+	    Args1 = refac_syntax:application_arguments(Exp1),
+	    Args2 = refac_syntax:application_arguments(Exp2),
+	    case refac_syntax:type(Op)==variable andalso Args1==[] andalso
+		Args2/=[] andalso refac_util:get_free_vars(Exp2) == [] 
+	    of
 		true ->
 		    OpName = refac_syntax:variable_name(Op),
 		    {true, [{OpName, refac_syntax:fun_expr([refac_syntax:clause([], none, [Exp2])])}]};
@@ -179,7 +183,7 @@ same_type_expr_unification(Exp1, Exp2, Type) ->
 	    SubTrees2 = erl_syntax:subtrees(Exp2),
 	    case length(SubTrees1) == length(SubTrees2) of
 		true ->
-		    expr_unification(SubTrees1, SubTrees2,Type);
+		    expr_unification(SubTrees1, SubTrees2, Type);
 		_ -> false
 	    end
     end.
@@ -191,11 +195,11 @@ non_same_type_expr_unification(Exp1, Exp2,_Type) ->
       variable ->
 	    case refac_code_search_utils:generalisable(Exp2) of
 	      false ->
-		  false;
+                    false;
 	      true ->
-		  Exp2Ann = refac_syntax:get_ann(Exp2),
-		  Exp1Name = refac_syntax:variable_name(Exp1),
-		  case lists:keysearch(category, 1, Exp2Ann) of
+                    Exp2Ann = refac_syntax:get_ann(Exp2),
+		    Exp1Name = refac_syntax:variable_name(Exp1),
+		    case lists:keysearch(category, 1, Exp2Ann) of
 		      {value, {category, application_op}} ->
 			  case lists:keysearch(fun_def, 1, Exp2Ann) of
 			      {value, {fun_def, {_M, _N, A, _P1, _P2}}} ->
@@ -210,8 +214,9 @@ non_same_type_expr_unification(Exp1, Exp2,_Type) ->
 			      false ->
 				  {true, [{Exp1Name, rm_comments(Exp2)}]};
 			      _ ->
-				  C = refac_syntax:clause([],[], [rm_comments(Exp2)]),
-				  {true, [{Exp1Name, refac_syntax:fun_expr([C])}]}
+                                  {true, [{Exp1Name, rm_comments(Exp2)}]}
+				  %% C = refac_syntax:clause([],[], [rm_comments(Exp2)]),
+				  %% {true, [{Exp1Name, refac_syntax:fun_expr([C])}]}
 			  end
 		  end
 	  end;

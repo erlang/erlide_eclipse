@@ -8,20 +8,22 @@ package org.erlide.tracing.core.mvc.view;
  */
 public enum NodeColumn {
 
-    ENABLED("Enabled", 60), NODE_NAME("Name", 150), TYPE("Type", 70), COOKIE("Cookie", 150);
+    ENABLED("Enabled", 60), NODE_NAME("Name", 150), TYPE("Type", 70), COOKIE(
+            "Cookie", 150);
 
     private final String name;
     private final int width;
 
-    private NodeColumn(String name, int width) {
+    private NodeColumn(final String name, final int width) {
         this.name = name;
         this.width = width;
     }
 
-    public static NodeColumn getByIndex(int index) {
-        for (NodeColumn column : NodeColumn.values()) {
-            if (column.ordinal() == index)
+    public static NodeColumn getByIndex(final int index) {
+        for (final NodeColumn column : NodeColumn.values()) {
+            if (column.ordinal() == index) {
                 return column;
+            }
         }
         return null;
     }

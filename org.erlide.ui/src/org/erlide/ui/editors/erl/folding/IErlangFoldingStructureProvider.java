@@ -5,7 +5,7 @@ package org.erlide.ui.editors.erl.folding;
 
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.IErlModelChangeListener;
+import org.erlide.core.model.root.IErlModelChangeListener;
 
 /**
  * Contributors to the <code>org.eclipse.jdt.ui.foldingStructureProvider</code>

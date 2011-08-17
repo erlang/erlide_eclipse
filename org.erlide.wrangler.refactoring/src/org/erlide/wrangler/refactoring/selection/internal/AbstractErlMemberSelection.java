@@ -15,7 +15,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.erlang.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 
 /**
@@ -25,54 +25,56 @@ import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
  * @version %I%, %G%
  */
 public abstract class AbstractErlMemberSelection extends AbstractErlSelection
-		implements IErlMemberSelection {
+        implements IErlMemberSelection {
 
-	protected ITextSelection textSelection;
+    protected ITextSelection textSelection;
 
-	protected IDocument document;
+    protected IDocument document;
 
-	/**
-	 * Default constructor
-	 */
-	public AbstractErlMemberSelection() {
-	}
+    /**
+     * Default constructor
+     */
+    public AbstractErlMemberSelection() {
+    }
 
-	public IDocument getDocument() {
-		return document;
-	}
+    public IDocument getDocument() {
+        return document;
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param editor
-	 *            the erlang editor which is used to get the current selection
-	 */
-	public AbstractErlMemberSelection(final ITextEditor editor) {
-		ITextSelection selection = (ITextSelection) (editor
-				.getSelectionProvider().getSelection());
-		IFileEditorInput input = (IFileEditorInput) editor.getEditorInput();
-		document = editor.getDocumentProvider().getDocument(input);
-		IFile afile = input.getFile();
-		store(selection, afile, document);
-	}
+    /**
+     * Constructor
+     * 
+     * @param editor
+     *            the erlang editor which is used to get the current selection
+     */
+    public AbstractErlMemberSelection(final ITextEditor editor) {
+        final ITextSelection selection = (ITextSelection) editor
+                .getSelectionProvider().getSelection();
+        final IFileEditorInput input = (IFileEditorInput) editor
+                .getEditorInput();
+        document = editor.getDocumentProvider().getDocument(input);
+        final IFile afile = input.getFile();
+        store(selection, afile, document);
+    }
 
-	protected void store(final ITextSelection selection, final IFile afile,
-			final IDocument adocument) {
-		this.file = afile;
-		textSelection = selection;
-	}
+    protected void store(final ITextSelection selection, final IFile afile,
+            final IDocument adocument) {
+        file = afile;
+        textSelection = selection;
+    }
 
-	/**
-	 * @Override public ITextEditor getEditor() { return editor; }
-	 */
+    /**
+     * @Override public ITextEditor getEditor() { return editor; }
+     */
 
-	public SelectionKind getKind() {
-		Kind k = getErlElement().getKind();
-		if (k == Kind.CLAUSE)
-			return SelectionKind.FUNCTION_CLAUSE;
-		else if (k == Kind.FUNCTION)
-			return SelectionKind.FUNCTION;
-		else
-			return SelectionKind.MODULE;
-	}
+    public SelectionKind getKind() {
+        final Kind k = getErlElement().getKind();
+        if (k == Kind.CLAUSE) {
+            return SelectionKind.FUNCTION_CLAUSE;
+        } else if (k == Kind.FUNCTION) {
+            return SelectionKind.FUNCTION;
+        } else {
+            return SelectionKind.MODULE;
+        }
+    }
 }

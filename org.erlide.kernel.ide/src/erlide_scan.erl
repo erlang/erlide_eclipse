@@ -82,10 +82,6 @@ string_thing(_) -> "string".
 %%  Returns:
 %%    {ok,[Tok]}
 %%    {error,{ErrorPos,?MODULE,What},EndPos}
-
-
-%% TODO if for syntax: not filtered; otherwise, yes.
-
 string(Cs) ->
     case string_ws(Cs) of
         {ok, Toks, Pos} ->

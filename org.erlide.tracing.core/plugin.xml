@@ -51,7 +51,7 @@
                <!--<visibleWhen>
                   <iterate>
                      <adapt
-                           type="org.erlide.core.erlang.IErlFunctionClause">
+                           type="org.erlide.core.model.erlang.IErlFunctionClause">
                      </adapt>
                   </iterate>
                </visibleWhen>-->

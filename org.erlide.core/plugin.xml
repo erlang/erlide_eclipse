@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+   <extension-point id="codepath" name="codepath" schema="schema/codepath.exsd"/>
+   <extension-point id="sourcePathProvider" name="sourcePathProvider" schema="schema/sourcePathProvider.exsd"/>
+   <extension-point id="messageReporter" name="messageReporter" schema="schema/messageReporter.exsd"/>
      <extension
          id="erlnature"
          name="Erlang Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.erlide.core.internal.ErlangNature">
+               class="org.erlide.core.internal.services.builder.ErlangNature">
          </run>
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>
       <builder
-            id="org.erlide.core.builder.DialyzerBuilder">
+            id="org.erlide.core.builder.dialyzer">
       </builder>
    </extension>
    <extension
@@ -21,17 +24,17 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.builder.ErlangBuilder">
+               class="org.erlide.core.internal.services.builder.ErlangBuilder">
          </run>
       </builder>
    </extension>
    <extension
-         id="builder.DialyzerBuilder"
+         id="builder.dialyzer"
          name="Dialyzer Builder"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.erlide.core.builder.DialyzerBuilder">
+               class="org.erlide.core.internal.services.builder.DialyzerBuilder">
          </run></builder>
    </extension>
    <extension
@@ -72,20 +75,20 @@
    <extension
          point="org.eclipse.debug.core.sourcePathComputers">
       <sourcePathComputer
-            class="org.erlide.runtime.launch.ErlangSourcePathComputerDelegate"
+            class="org.erlide.core.debug.ErlangSourcePathComputerDelegate"
             id="org.erlide.core.sourcepathcomputer"/>
    </extension>
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="org.erlide.runtime.launch.ErlangSourceLookupDirector"
+            class="org.erlide.core.debug.ErlangSourceLookupDirector"
             id="org.erlide.core.erlangLocatorDirector"
             name="erlide-launching.erlangSourceLocator"/>
    </extension>
     <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
-            class="org.erlide.runtime.debug.ErlangLineBreakpoint"
+            class="org.erlide.core.debug.ErlangLineBreakpoint"
             id="erlang.lineBreakpoint"
             markerType="org.erlide.core.erlang.lineBreakpoint.marker"
             name="%erlangLineBreakpoint.name"/>
@@ -97,25 +100,11 @@
       <super type="org.eclipse.debug.core.breakpointMarker"/>
       <persistent value="true"/>
    </extension>
-   <extension
-         id="org.erlide.core.erlang.lineBreakpoint.marker"
-         name="Erlang Line Breakpoint Marker"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.debug.core.lineBreakpointMarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
-         point="org.eclipse.debug.core.processFactories">
-      <processFactory
-            class="org.erlide.runtime.backend.internal.ErtsProcessFactory"
-            id="org.erlide.core.backend.ertsprocessfactory"/>
-   </extension>
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchDelegate"
+            delegate="org.erlide.core.debug.ErlangLaunchDelegate"
+            delegateName="Erlang application"
             id="org.erlide.core.launch.erlangProcess"
             modes="run, debug"
             name="Erlang application"
@@ -124,13 +113,23 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
       <launchConfigurationType
-            delegate="org.erlide.runtime.launch.ErlangLaunchDelegate"
+            delegate="org.erlide.core.debug.ErlangLaunchDelegate"
             id="org.erlide.core.launch.internal"
             modes="run"
-            name="internal"
+            name="internal Erlang node"
             public="false"
             sourceLocatorId="org.erlide.core.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
    </extension>
+  <extension
+        point="org.eclipse.core.runtime.adapters">
+     <factory
+           adaptableType="org.eclipse.core.resources.IResource"
+           class="org.erlide.core.model.util.ElementAdapterFactory">
+        <adapter
+              type="org.erlide.core.model.root.IErlElement">
+        </adapter>
+     </factory>
+  </extension>
 </plugin>

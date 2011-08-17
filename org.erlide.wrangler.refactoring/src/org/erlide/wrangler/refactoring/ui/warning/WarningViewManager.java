@@ -34,7 +34,7 @@ public class WarningViewManager {
      * @param _view
      *            Warning message view
      */
-    public static void setWarningView(IWarningHandler _view) {
+    public static void setWarningView(final IWarningHandler _view) {
         view = _view;
     }
 
@@ -44,7 +44,7 @@ public class WarningViewManager {
      * @param message
      *            warning message
      */
-    public static void addWarningMessage(String message) {
+    public static void addWarningMessage(final String message) {
         try {
             // if (view == null) {
             setWarningView((IWarningHandler) showWarningView());
@@ -52,7 +52,7 @@ public class WarningViewManager {
             view.addMessage(message);
             view.refresh();
 
-        } catch (Exception t) {
+        } catch (final Exception t) {
             t.printStackTrace();
         }
 
@@ -64,13 +64,14 @@ public class WarningViewManager {
      * @return view which is shown
      */
     public static IViewPart showWarningView() {
-        IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbench workbench = PlatformUI.getWorkbench();
 
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         try {
-            IViewPart theView = window.getActivePage().showView(warningViewID);
+            final IViewPart theView = window.getActivePage().showView(
+                    warningViewID);
             return theView;
-        } catch (PartInitException e) {
+        } catch (final PartInitException e) {
             e.printStackTrace();
         }
         return null;
@@ -80,10 +81,11 @@ public class WarningViewManager {
      * Hides the warning view.
      */
     public static void closeWarningView() {
-        IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbench workbench = PlatformUI.getWorkbench();
 
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IViewPart theView = window.getActivePage().findView(warningViewID);
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IViewPart theView = window.getActivePage()
+                .findView(warningViewID);
         window.getActivePage().hideView(theView);
 
     }

@@ -1,7 +1,7 @@
 package org.erlide.ui.internal.search;
 
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.IErlElement.Kind;
 
 public class ErlangSearchElement {
 

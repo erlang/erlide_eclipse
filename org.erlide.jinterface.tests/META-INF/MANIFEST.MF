@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: erlide Jinterface Tests Fragment
 Bundle-SymbolicName: org.erlide.jinterface.tests;singleton:=true
-Bundle-Version: 0.5.9.qualifier
+Bundle-Version: 0.11.3.qualifier
 Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.jinterface;bundle-version="0.6.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cover support for ErlIde (Erlang helper)
+Bundle-SymbolicName: org.erlide.cover.erlang;singleton:=true
+Bundle-Version: 0.2.1.qualifier
+Bundle-Vendor: Erlang Solutions
+Require-Bundle: org.erlide.core;bundle-version="0.10.2"

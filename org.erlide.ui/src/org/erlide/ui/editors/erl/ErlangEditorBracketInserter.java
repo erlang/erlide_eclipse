@@ -26,11 +26,10 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.erlide.core.erlang.ErlToken;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
-
-import erlang.ErlideScanner;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.internal.model.erlang.ErlideScanner;
+import org.erlide.core.model.root.ErlToken;
+import org.erlide.jinterface.ErlLogger;
 
 class ErlangEditorBracketInserter implements VerifyKeyListener,
         ILinkedModeListener {
@@ -195,26 +194,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
             final String selStr = fEmbraceSelection ? document.get(offset,
                     length) : "";
             if (selStr.length() == 0) {
-                // final IRegion startLine =
-                // document.getLineInformationOfOffset(offset);
-                final IRegion endLine = document
-                        .getLineInformationOfOffset(offset + length);
-
-                List<ErlToken> tokens = null;
-                final int getOffset = offset + length, getLength = endLine
-                        .getOffset() + endLine.getLength() - getOffset;
-                final String str = document.get(getOffset, getLength);
-                try {
-                    tokens = ErlideScanner.lightScanString(str, 0);
-                } catch (final BackendException e) {
-                }
-
-                int kind = ErlToken.KIND_OTHER;
-                if (tokens != null && tokens.size() > 0) {
-                    kind = tokens.get(0).getKind();
-                } else if (str.length() > 0) {
-                    kind = str.charAt(0);
-                }
+                final int kind = getKindOfBracket(document, offset, length);
                 // if (isStopper(kind)) {
                 // return;
                 // }
@@ -260,50 +240,8 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
             }
             final char character = event.character;
             final char closingCharacter = getPeerCharacter(character);
-            final StringBuilder buffer = new StringBuilder();
-            buffer.append(character);
-            buffer.append(selStr);
-            buffer.append(closingCharacter);
-
-            document.replace(offset, length, buffer.toString());
-
-            final BracketLevel level = new BracketLevel();
-            fBracketLevelStack.push(level);
-
-            final LinkedPositionGroup group = new LinkedPositionGroup();
-            group.addPosition(new LinkedPosition(document, offset + 1, 0,
-                    LinkedPositionGroup.NO_STOP));
-
-            final LinkedModeModel model = new LinkedModeModel();
-            model.addLinkingListener(this);
-            model.addGroup(group);
-            model.forceInstall();
-
-            level.fOffset = offset;
-            level.fLength = 2 + selStr.length();
-
-            // set up position tracking for our magic peers
-            if (fBracketLevelStack.size() == 1) {
-                document.addPositionCategory(CATEGORY);
-                document.addPositionUpdater(fUpdater);
-            }
-            level.fFirstPosition = new Position(offset, 1);
-            level.fSecondPosition = new Position(offset + 1, 1);
-            document.addPosition(CATEGORY, level.fFirstPosition);
-            document.addPosition(CATEGORY, level.fSecondPosition);
-
-            level.fUI = new EditorLinkedModeUI(model, fSourceViewer);
-            level.fUI.setSimpleMode(true);
-            level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
-                    getEscapeCharacter(closingCharacter), fBracketLevelStack));
-            level.fUI.setExitPosition(fSourceViewer,
-                    offset + 2 + selStr.length(), 0, Integer.MAX_VALUE);
-            level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
-            level.fUI.enter();
-
-            final IRegion newSelection = level.fUI.getSelectedRegion();
-            fSourceViewer.setSelectedRange(newSelection.getOffset(),
-                    newSelection.getLength());
+            updateDocument(document, offset, length, selStr, character,
+                    closingCharacter);
 
             event.doit = false;
 
@@ -312,6 +250,85 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
         } catch (final BadPositionCategoryException e) {
             ErlLogger.error(e);
         }
+    }
+
+    private void updateDocumentSelection(final IDocument document,
+            final int offset, final String selStr, final char closingCharacter)
+            throws BadLocationException, BadPositionCategoryException {
+        final BracketLevel level = new BracketLevel();
+        fBracketLevelStack.push(level);
+
+        final LinkedPositionGroup group = new LinkedPositionGroup();
+        group.addPosition(new LinkedPosition(document, offset + 1, 0,
+                LinkedPositionGroup.NO_STOP));
+
+        final LinkedModeModel model = new LinkedModeModel();
+        model.addLinkingListener(this);
+        model.addGroup(group);
+        model.forceInstall();
+
+        level.fOffset = offset;
+        level.fLength = 2 + selStr.length();
+
+        // set up position tracking for our magic peers
+        if (fBracketLevelStack.size() == 1) {
+            document.addPositionCategory(CATEGORY);
+            document.addPositionUpdater(fUpdater);
+        }
+        level.fFirstPosition = new Position(offset, 1);
+        level.fSecondPosition = new Position(offset + 1, 1);
+        document.addPosition(CATEGORY, level.fFirstPosition);
+        document.addPosition(CATEGORY, level.fSecondPosition);
+
+        level.fUI = new EditorLinkedModeUI(model, fSourceViewer);
+        level.fUI.setSimpleMode(true);
+        level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
+                getEscapeCharacter(closingCharacter), fBracketLevelStack));
+        level.fUI.setExitPosition(fSourceViewer, offset + 2 + selStr.length(),
+                0, Integer.MAX_VALUE);
+        level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
+        level.fUI.enter();
+
+        final IRegion newSelection = level.fUI.getSelectedRegion();
+        fSourceViewer.setSelectedRange(newSelection.getOffset(),
+                newSelection.getLength());
+    }
+
+    private void updateDocument(final IDocument document, final int offset,
+            final int length, final String selStr, final char character,
+            final char closingCharacter) throws BadLocationException,
+            BadPositionCategoryException {
+        final StringBuilder buffer = new StringBuilder();
+        buffer.append(character);
+        buffer.append(selStr);
+        buffer.append(closingCharacter);
+
+        document.replace(offset, length, buffer.toString());
+
+        updateDocumentSelection(document, offset, selStr, closingCharacter);
+    }
+
+    private int getKindOfBracket(final IDocument document, final int offset,
+            final int length) throws BadLocationException {
+        final IRegion endLine = document.getLineInformationOfOffset(offset
+                + length);
+
+        List<ErlToken> tokens = null;
+        final int getOffset = offset + length, getLength = endLine.getOffset()
+                + endLine.getLength() - getOffset;
+        final String str = document.get(getOffset, getLength);
+        try {
+            tokens = ErlideScanner.lightScanString(str, 0);
+        } catch (final BackendException e) {
+        }
+
+        int kind = ErlToken.KIND_OTHER;
+        if (tokens != null && tokens.size() > 0) {
+            kind = tokens.get(0).getKind();
+        } else if (str.length() > 0) {
+            kind = str.charAt(0);
+        }
+        return kind;
     }
 
     /*

@@ -20,20 +20,20 @@ import org.erlide.wrangler.refactoring.exception.WranglerException;
  */
 public class WranglerRefactoringException extends WranglerException {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param message
-	 *            error message
-	 */
-	public WranglerRefactoringException(String message) {
-		super(message);
+    /**
+     * Constructor
+     * 
+     * @param message
+     *            error message
+     */
+    public WranglerRefactoringException(final String message) {
+        super(message);
 
-	}
+    }
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = -3593105842104036784L;
+    private static final long serialVersionUID = -3593105842104036784L;
 
 }

@@ -24,19 +24,22 @@ public class ConfigurationSaveAsDialog extends InputDialog {
      * @param existingNames
      *            existing configurations
      */
-    public ConfigurationSaveAsDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue, Set<String> existingNames) {
-        super(parentShell, dialogTitle, dialogMessage, initialValue, new Validator(existingNames));
+    public ConfigurationSaveAsDialog(final Shell parentShell,
+            final String dialogTitle, final String dialogMessage,
+            final String initialValue, final Set<String> existingNames) {
+        super(parentShell, dialogTitle, dialogMessage, initialValue,
+                new Validator(existingNames));
     }
 
     private static class Validator implements IInputValidator {
 
         private final Set<String> existingNames;
 
-        public Validator(Set<String> existingNames) {
+        public Validator(final Set<String> existingNames) {
             this.existingNames = existingNames;
         }
 
-        public String isValid(String newText) {
+        public String isValid(final String newText) {
             if (newText == null || newText.length() == 0) {
                 return "";
             }

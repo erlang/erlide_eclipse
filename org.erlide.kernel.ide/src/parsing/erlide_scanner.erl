@@ -16,7 +16,7 @@
 %% Exported Functions
 %%
 
--export([light_scan_string/1, scan_string/1, convert_tokens/1,
+-export([light_scan_string/2, scan_string/1, convert_tokens/1,
          tokens_to_string/1, do_scan/2, get_all_tokens/1, initial_scan/5,
          get_token_at/2, replace_text/4, lines_to_text/1, get_token_window/4]).
 
@@ -26,8 +26,14 @@
 
 -define(CACHE_VERSION, 22).
 
-light_scan_string(B) ->
+light_scan_string(B, latin1) ->
     S = binary_to_list(B),
+    do_light_scan(S);
+light_scan_string(B, utf8) ->
+    S = unicode:characters_to_list(B),
+    do_light_scan(S).
+
+do_light_scan(S) ->
     case erlide_scan:string(S, {0, 0}) of
         {ok, T, _} ->
             ?D(T),
@@ -35,6 +41,8 @@ light_scan_string(B) ->
         {error, _, _} ->
             error
     end.
+
+
 
 scan_string(B) when is_binary(B) ->
     scan_string(binary_to_list(B));

@@ -216,13 +216,6 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
         checkStateChanged();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.internal.dialogfields.ListDialogField#replaceElement(java
-     * .lang.Object, java.lang.Object)
-     */
     @Override
     public void replaceElement(final Element oldElement,
             final Element newElement) {

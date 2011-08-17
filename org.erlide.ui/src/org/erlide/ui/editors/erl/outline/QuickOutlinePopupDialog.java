@@ -46,12 +46,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.editors.erl.outline.MemberFilterActionGroup.MemberFilter;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.util.StringMatcher;
@@ -111,13 +110,6 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         // fTreeViewerDefaultComparator = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.PopupDialog#createDialogArea(org.eclipse.swt
-     * .widgets.Composite)
-     */
     @Override
     protected Control createDialogArea(final Composite parent) {
         // Applies only to dialog body - not title. See createTitleControl
@@ -150,13 +142,6 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
                 false, null);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.PopupDialog#fillDialogMenu(org.eclipse.jface
-     * .action.IMenuManager)
-     */
     @Override
     protected void fillDialogMenu(final IMenuManager dialogMenu) {
         // Add the sort action
@@ -182,9 +167,9 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         // Create the tree viewer
         fTreeViewer = new TreeViewer(widget);
         // Add member filter, don't show attributes
-        final MemberFilter noAttributesFilter = new MemberFilter();
-        noAttributesFilter.addFilter(MemberFilter.FILTER_ATTRIBUTES);
-        fTreeViewer.addFilter(noAttributesFilter);
+        final FilterDescriptor filterDescriptor = FilterDescriptor
+                .getFilterDescriptor("attributesFilter");
+        fTreeViewer.addFilter(filterDescriptor.getViewerFilter());
         // Add the name pattern filter
         fNamePatternFilter = new QuickOutlineNamePatternFilter();
         fTreeViewer.addFilter(fNamePatternFilter);
@@ -281,53 +266,24 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
                 .getFirstElement();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#addDisposeListener(org.eclipse
-     * .swt.events.DisposeListener)
-     */
     public void addDisposeListener(final DisposeListener listener) {
         getShell().addDisposeListener(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#addFocusListener(org.eclipse
-     * .swt.events.FocusListener)
-     */
     public void addFocusListener(final FocusListener listener) {
         getShell().addFocusListener(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#computeSizeHint()
-     */
     public Point computeSizeHint() {
         // Return the shell's size
         // Note that it already has the persisted size if persisting is enabled.
         return getShell().getSize();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#dispose()
-     */
     public void dispose() {
         close();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#isFocusControl()
-     */
     public boolean isFocusControl() {
         if (fTreeViewer.getControl().isFocusControl()
                 || fFilterText.isFocusControl()) {
@@ -336,89 +292,37 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#removeDisposeListener(org.
-     * eclipse.swt.events.DisposeListener)
-     */
     public void removeDisposeListener(final DisposeListener listener) {
         getShell().removeDisposeListener(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#removeFocusListener(org.eclipse
-     * .swt.events.FocusListener)
-     */
     public void removeFocusListener(final FocusListener listener) {
         getShell().removeFocusListener(listener);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#setBackgroundColor(org.eclipse
-     * .swt.graphics.Color)
-     */
     public void setBackgroundColor(final Color background) {
         applyBackgroundColor(background, getContents());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#setFocus()
-     */
     public void setFocus() {
         getShell().forceFocus();
         fFilterText.setFocus();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.PopupDialog#getFocusControl()
-     */
     @Override
     protected Control getFocusControl() {
         return fFilterText;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#setForegroundColor(org.eclipse
-     * .swt.graphics.Color)
-     */
     public void setForegroundColor(final Color foreground) {
         applyForegroundColor(foreground, getContents());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#setInformation(java.lang.String
-     * )
-     */
     public void setInformation(final String information) {
         // Ignore
         // See IInformationControlExtension2
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControl#setLocation(org.eclipse.swt
-     * .graphics.Point)
-     */
     public void setLocation(final Point location) {
         /*
          * If the location is persisted, it gets managed by PopupDialog - fine.
@@ -439,30 +343,14 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#setSize(int, int)
-     */
     public void setSize(final int width, final int height) {
         getShell().setSize(width, height);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#setSizeConstraints(int,
-     * int)
-     */
     public void setSizeConstraints(final int maxWidth, final int maxHeight) {
         // Ignore
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControl#setVisible(boolean)
-     */
     public void setVisible(final boolean visible) {
         if (visible) {
             open();
@@ -472,11 +360,6 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.text.IInformationControlExtension#hasContents()
-     */
     public boolean hasContents() {
         if (fTreeViewer == null || fTreeViewer.getInput() == null) {
             return false;
@@ -484,13 +367,6 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.IInformationControlExtension2#setInput(java.lang
-     * .Object)
-     */
     public void setInput(final Object input) {
         // Input comes from ErlangSourceInfoProvider.getInformation2()
         // The input should be a model object of some sort
@@ -500,26 +376,12 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse.swt
-     * .events.DisposeEvent)
-     */
     public void widgetDisposed(final DisposeEvent e) {
         // Note: We do not reuse the dialog
         fTreeViewer = null;
         fFilterText = null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.PopupDialog#createTitleControl(org.eclipse.
-     * swt.widgets.Composite)
-     */
     @Override
     protected Control createTitleControl(final Composite parent) {
         // Applies only to dialog title - not body. See createDialogArea
@@ -702,11 +564,6 @@ public class QuickOutlinePopupDialog extends PopupDialog implements
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.PopupDialog#getInitialSize()
-     */
     @Override
     protected Point getInitialSize() {
         return new Point(400, 250);

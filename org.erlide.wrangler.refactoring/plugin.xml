@@ -133,7 +133,7 @@
 		point="org.eclipse.ui.popupMenus"> <objectContribution
 		adaptable="false"
 		id="org.erlide.wrangler.refactoring.functionclausecontribution"
-		objectClass="org.erlide.core.erlang.IErlFunctionClause"> <menu
+		objectClass="org.erlide.core.model.erlang.IErlFunctionClause"> <menu
 		id="org.erlide.wrangler.refactoring.functionclausecontribution.menu"
 		label="Refactor"> <groupMarker
 		name="org.erlide.wrangler.refactoring.popup.function"> </groupMarker>
@@ -173,7 +173,7 @@
 		menubarPath="org.erlide.wrangler.refactoring.modulecontribution.menu/org.erlide.wrangler.refactoring.popup.module">
 		</action> </objectContribution> <objectContribution adaptable="false"
 		id="org.erlide.wrangler.refactoring.preprocessordefcontribution"
-		objectClass="org.erlide.core.erlang.IErlPreprocessorDef"> <menu
+		objectClass="org.erlide.core.model.erlang.IErlPreprocessorDef"> <menu
 		id="org.erlide.wrangler.refactoring.preprocessordefcontribution.menu"
 		label="Refactor"> <groupMarker
 		name="org.erlide.wrangler.refactoring.popup.preprocessordef">
@@ -465,7 +465,7 @@
 					id="org.erlide.wrangler.refactoring.renamefunction" style="push">
 					<visibleWhen>
 						<iterate>
-							<adapt type="org.erlide.core.erlang.IErlFunctionClause" />
+							<adapt type="org.erlide.core.model.erlang.IErlFunctionClause" />
 						</iterate>
 					</visibleWhen>
 				</command>
@@ -473,7 +473,7 @@
 					id="org.erlide.wrangler.refactoring.movefunction" style="push">
 					<visibleWhen>
 						<iterate>
-							<adapt type="org.erlide.core.erlang.IErlFunctionClause" />
+							<adapt type="org.erlide.core.model.erlang.IErlFunctionClause" />
 						</iterate>
 					</visibleWhen>
 				</command>
@@ -481,7 +481,7 @@
 					id="org.erlide.wrangler.refactoring.functiontoprocess" style="push">
 					<visibleWhen>
 						<iterate>
-							<adapt type="org.erlide.core.erlang.IErlFunctionClause" />
+							<adapt type="org.erlide.core.model.erlang.IErlFunctionClause" />
 						</iterate>
 					</visibleWhen>
 				</command>
@@ -489,7 +489,7 @@
 					id="org.erlide.wrangler.refactoring.foldagainstmacro" style="push">
 					<visibleWhen>
 						<iterate>
-							<adapt type="org.erlide.core.erlang.IErlPreprocessorDef" />
+							<adapt type="org.erlide.core.model.erlang.IErlPreprocessorDef" />
 						</iterate>
 					</visibleWhen>
 				</command>
@@ -498,7 +498,7 @@
 					style="push">
 					<visibleWhen>
 						<iterate>
-							<adapt type="org.erlide.core.erlang.IErlPreprocessorDef" />
+							<adapt type="org.erlide.core.model.erlang.IErlPreprocessorDef" />
 						</iterate>
 					</visibleWhen>
 				</command>

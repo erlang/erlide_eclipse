@@ -28,15 +28,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.builder.DialyzerPreferences;
-import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.erlang.IErlProject;
-import org.osgi.service.prefs.BackingStoreException;
+import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.services.builder.DialyzerUtils;
+import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -44,9 +43,10 @@ import com.google.common.collect.Sets;
 public class RunDialyzerHandler extends AbstractHandler implements IHandler {
 
     final Map<IErlProject, Set<IErlModule>> modules = Maps.newHashMap();
-    private final DialyzerPreferences prefs = new DialyzerPreferences();
 
     public static class DialyzerMessageDialog extends MessageDialog {
+
+        private static final int MAX_MESSAGE_LENGTH = 32767;
 
         public static void openError(final Shell parent, final String title,
                 final String message) {
@@ -60,10 +60,14 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
 
         public DialyzerMessageDialog(final Shell parentShell,
                 final String dialogTitle, final Image dialogTitleImage,
-                final String dialogMessage, final int dialogImageType,
+                String dialogMessage, final int dialogImageType,
                 final String[] dialogButtonLabels, final int defaultIndex) {
             super(parentShell, dialogTitle, dialogTitleImage, "",
                     dialogImageType, dialogButtonLabels, defaultIndex);
+            ErlLogger.error("dialyzer error:\n" + dialogMessage);
+            if (dialogMessage.length() > MAX_MESSAGE_LENGTH) {
+                dialogMessage = dialogMessage.substring(0, MAX_MESSAGE_LENGTH);
+            }
             this.dialogMessage = dialogMessage;
         }
 
@@ -85,7 +89,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         }
 
         IStatus newErrorStatus(final Throwable throwable) {
-            return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     throwable.getMessage());
         }
 
@@ -94,10 +98,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
             final Set<IErlProject> keySet = modules.keySet();
             monitor.beginTask("Dialyzing", keySet.size());
             try {
-                prefs.load();
-                DialyzerUtils.doDialyze(monitor, modules, prefs);
-            } catch (final BackingStoreException e) {
-                return newErrorStatus(e);
+                DialyzerUtils.doDialyze(monitor, modules);
             } catch (final InvocationTargetException e) {
                 return newErrorStatus(e.getCause());
             }
@@ -143,7 +144,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             modules.clear();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             try {
                 model.open(null);
                 for (final Object i : structuredSelection.toList()) {

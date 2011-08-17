@@ -20,12 +20,12 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlElement.Kind;
-import org.erlide.core.erlang.IErlFolder;
-import org.erlide.core.erlang.IErlFunction;
-import org.erlide.core.erlang.IErlModel;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.IErlFunction;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlFolder;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.util.ImageDescriptorRegistry;
@@ -112,10 +112,10 @@ public class ErlangElementImageProvider {
             }
             return getWorkbenchImageDescriptor(file, flags);
         } else if (element instanceof IFolder) {
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             final IErlFolder ef = (IErlFolder) model
                     .findElement((IResource) element);
-            if (ef != null && ef.isOnSourcePath()) {
+            if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {
                 final ImageDescriptor desc = getErlImageDescriptor(ef, flags);
             }
         } else if (element instanceof IAdaptable) {

@@ -43,12 +43,14 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.CoreScope;
+import org.erlide.core.debug.ErlangDebugTarget;
+import org.erlide.core.debug.ErlangDebugTarget.TraceChangedEventData;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
-import org.erlide.runtime.debug.ErlangDebugTarget;
-import org.erlide.runtime.debug.ErlangDebugTarget.TraceChangedEventData;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -80,22 +82,11 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // % (ie at all, not only in a clause)
 
     private final class TreeContentProvider implements ITreeContentProvider {
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-         */
+
         public void dispose() {
 
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.ILazyTreeContentProvider#updateChildCount
-         * (java.lang.Object, int)
-         */
         // public void updateChildCount(Object element, int
         // currentChildCount) {
         //
@@ -115,12 +106,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // viewer.setChildCount(element, length);
         //
         // }
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#updateElement
-         * (java.lang.Object, int)
-         */
+
         // public void updateElement(Object parent, int index) {
         // MarkerItem newItem;
         //
@@ -140,12 +126,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // }
         //
         // }
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java
-         * .lang.Object)
-         */
+
         public Object[] getChildren(final Object parentElement) {
             if (parentElement instanceof ILaunch) {
                 final ILaunch launch = (ILaunch) parentElement;
@@ -159,12 +140,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
             return NO_CHILDREN;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements
-         * (java.lang.Object)
-         */
         public Object[] getElements(final Object inputElement) {
             // if (debugTarget == null) {
             // return NO_CHILDREN;
@@ -178,22 +153,10 @@ public class DebuggerTraceView extends AbstractDebugView implements
             // return traceList.toArray(new Object[traceList.size()]);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ILazyTreeContentProvider#getParent(
-         * java.lang.Object)
-         */
         public Object getParent(final Object element) {
             return parentMap.get(element);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java
-         * .lang.Object)
-         */
         public boolean hasChildren(final Object element) {
             if (element instanceof DebugTraceEvent) {
                 return false;
@@ -201,13 +164,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
             return true;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
-         * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-         */
         public void inputChanged(final Viewer theViewer, final Object oldInput,
                 final Object newInput) {
         }
@@ -320,25 +276,12 @@ public class DebuggerTraceView extends AbstractDebugView implements
         DebugPlugin.getDefault().addDebugEventListener(this);
 
         // viewer.getTree().addTreeListener(new TreeAdapter() {
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see
-        // * org.eclipse.swt.events.TreeAdapter#treeCollapsed(org.eclipse.
-        // * swt.events.TreeEvent)
-        // */
+
         // @Override
         // public void treeCollapsed(final TreeEvent e) {
         // removeExpandedCategory((MarkerCategory) e.item.getData());
         // }
         //
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see
-        // * org.eclipse.swt.events.TreeAdapter#treeExpanded(org.eclipse.swt
-        // * .events.TreeEvent)
-        // */
         // @Override
         // public void treeExpanded(final TreeEvent e) {
         // addExpandedCategory((MarkerCategory) e.item.getData());
@@ -347,13 +290,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
 
         // // Set help on the view itself
         // viewer.getControl().addHelpListener(new HelpListener() {
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see
-        // * org.eclipse.swt.events.HelpListener#helpRequested(org.eclipse
-        // * .swt.events.HelpEvent)
-        // */
+
         // public void helpRequested(HelpEvent e) {
         // Object provider = getAdapter(IContextProvider.class);
         // if (provider == null) {
@@ -368,13 +305,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // });
 
         viewer.getTree().addSelectionListener(new SelectionAdapter() {
-            /*
-             * (non-Javadoc)
-             * 
-             * @see
-             * org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse
-             * .swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 final Object o = getSelectedInTree();
@@ -418,10 +348,8 @@ public class DebuggerTraceView extends AbstractDebugView implements
         // PlatformUI.getWorkbench().getWorkingSetManager()
         // .addPropertyChangeListener(getWorkingSetListener());
         return viewer;
-
         // registerContextMenu();
         // initDragAndDrop();
-
     }
 
     // @Override
@@ -445,25 +373,12 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // DebugPlugin.getDefault().addDebugEventListener(this);
     //
     // // viewer.getTree().addTreeListener(new TreeAdapter() {
-    // // /*
-    // // * (non-Javadoc)
-    // // *
-    // // * @see
-    // // * org.eclipse.swt.events.TreeAdapter#treeCollapsed(org.eclipse.
-    // // * swt.events.TreeEvent)
-    // // */
+
     // // @Override
     // // public void treeCollapsed(final TreeEvent e) {
     // // removeExpandedCategory((MarkerCategory) e.item.getData());
     // // }
     // //
-    // // /*
-    // // * (non-Javadoc)
-    // // *
-    // // * @see
-    // // * org.eclipse.swt.events.TreeAdapter#treeExpanded(org.eclipse.swt
-    // // * .events.TreeEvent)
-    // // */
     // // @Override
     // // public void treeExpanded(final TreeEvent e) {
     // // addExpandedCategory((MarkerCategory) e.item.getData());
@@ -472,13 +387,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
     //
     // // // Set help on the view itself
     // // viewer.getControl().addHelpListener(new HelpListener() {
-    // // /*
-    // // * (non-Javadoc)
-    // // *
-    // // * @see
-    // // * org.eclipse.swt.events.HelpListener#helpRequested(org.eclipse
-    // // * .swt.events.HelpEvent)
-    // // */
     // // public void helpRequested(HelpEvent e) {
     // // Object provider = getAdapter(IContextProvider.class);
     // // if (provider == null) {
@@ -493,13 +401,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // // });
     //
     // viewer.getTree().addSelectionListener(new SelectionAdapter() {
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see
-    // * org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse
-    // * .swt.events.SelectionEvent)
-    // */
     // @Override
     // public void widgetSelected(final SelectionEvent e) {
     // final Object o = getSelectedInTree();
@@ -534,13 +435,9 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // }
     //
     // public void mouseDown(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // public void mouseUp(final MouseEvent e) {
-    // // TODO Auto-generated method stub
-    //
     // }
     //
     // });
@@ -552,30 +449,36 @@ public class DebuggerTraceView extends AbstractDebugView implements
     //
     // }
 
-    protected void gotoModuleLine(final String module, final int line) {
-        final IWorkbenchWindow dwindow = ErlideUIPlugin
+    protected void gotoModuleLine(final String moduleName, final int line) {
+        final IWorkbenchWindow window = ErlideUIPlugin
                 .getActiveWorkbenchWindow();
-        if (dwindow == null) {
+        if (window == null) {
             return;
         }
-        final IWorkbenchPage page = dwindow.getActivePage();
+        final IWorkbenchPage page = window.getActivePage();
         if (page == null) {
             return;
         }
 
         IEditorPart part = null;
-        final IErlModel model = ErlangCore.getModel();
-        final IErlModule m = model.findModule(module);
+        final IErlModel model = CoreScope.getModel();
+        IErlModule module;
+        try {
+            module = model.findModule(moduleName);
+        } catch (final ErlModelException e) {
+            ErlLogger.error(e);
+            return;
+        }
         IEditorInput input = null;
-        input = EditorUtility.getEditorInput(m);
+        input = EditorUtility.getEditorInput(module);
         if (input != null) {
-            final String editorId = EditorUtility.getEditorID(input, m);
+            final String editorId = EditorUtility.getEditorID(input, module);
             if (editorId != null) {
                 try {
                     part = page.openEditor(input, editorId);
                 } catch (final PartInitException e) {
-                    ErlideUIPlugin.errorDialog(dwindow.getShell(),
-                            "Go to File", "Exception occurred", e); //
+                    ErlideUIPlugin.errorDialog(window.getShell(), "Go to File",
+                            "Exception occurred", e); //
                 }
             }
         }

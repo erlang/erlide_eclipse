@@ -11,7 +11,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.runtime.debug.DummyProcess;
+import org.erlide.core.debug.DummyProcess;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 

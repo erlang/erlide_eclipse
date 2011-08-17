@@ -117,9 +117,30 @@ get_lib_files(Dir) ->
             {ok, []}
     end.
 
+get_includes_in_dir(Dir) ->
+    case file:list_dir(Dir) of
+        {ok, Files} ->
+            {ok, filter_includes(Files)};
+        _ ->
+            {ok, []}
+    end.
+
 %%
 %% Local Functions
 %%
+
+filter_includes(Files) ->
+    filter_includes(Files, []).
+
+filter_includes([], Acc) ->
+    lists:reverse(Acc);
+filter_includes([Filename | Rest], Acc) ->
+    case filename:extension(Filename) of
+        ".hrl" ->
+            filter_includes(Rest, [Filename | Acc]);
+        _ ->
+            filter_includes(Rest, Acc)
+    end.
 
 get_lib_dir(Dir) ->
     B = filename:basename(Dir),
@@ -363,7 +384,7 @@ get_external_modules_files(PackedFileNames, PathVars) ->
     Fun2 = fun(_Parent, _FileName, Acc) -> Acc end,
     FileNames = erlide_util:unpack(PackedFileNames),
     R = fold_externals(Fun, Fun2, FileNames, PathVars), 
-    ?D(R),
+    %%?D(R),
     R.
 
 replace_path_vars(FileNames, PathVars) ->
@@ -458,12 +479,17 @@ select_external([P | Rest], Mod) ->
 get_erl_from_dirs(undefined) ->
     [];
 get_erl_from_dirs(L) ->
+    ?D({get_erl_from_dirs, L}),
     lists:flatmap(fun(X) -> get_erl_from_dir(X) end,
                   L).
 
 get_erl_from_dir(D) ->
-    {ok, Fs} = file:list_dir(D),
-    [filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"] .
+    case file:list_dir(D) of
+        {ok, Fs} ->
+            [filename:join(D, F) || F<-Fs, filename:extension(F)==".erl"];
+        _ ->
+            []
+    end.
 
 get_source(Mod) ->
     L = Mod:module_info(compile),

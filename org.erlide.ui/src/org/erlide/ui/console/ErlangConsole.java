@@ -21,18 +21,20 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.jinterface.backend.console.BackendShell;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.console.BackendShell;
 
 public class ErlangConsole extends TextConsole {
     private final BackendShell shell;
     protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
+    private final IBackend backend;
 
-    public ErlangConsole(final ErlideBackend backend) {
+    public ErlangConsole(final IBackend backend) {
         super(backend.getName(), null, null, true);
+        this.backend = backend;
+
         shell = backend.getShell("main");
         consoleListeners = new ListenerList(ListenerList.IDENTITY);
 
@@ -46,8 +48,8 @@ public class ErlangConsole extends TextConsole {
         return new ErlangConsolePage(view, this);
     }
 
-    public Backend getBackend() {
-        return shell.getBackend();
+    public IBackend getBackend() {
+        return backend;
     }
 
     public BackendShell getShell() {
@@ -61,8 +63,7 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public String getName() {
-        return "Erlang: " + shell.getBackend().getInfo().toString() + " "
-                + shell.hashCode();
+        return "Erlang: " + backend.getName();
     }
 
     @Override
@@ -88,7 +89,6 @@ public class ErlangConsole extends TextConsole {
             view = (IConsoleView) page.showView(id);
             view.display(this);
         } catch (final PartInitException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

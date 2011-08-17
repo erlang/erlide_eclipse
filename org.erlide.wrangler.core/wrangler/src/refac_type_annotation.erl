@@ -45,31 +45,31 @@
 
 type_ann_ast(FileName, Info, AnnAST, SearchPaths, TabWidth) ->
     case lists:keysearch(module, 1, Info) of
-      false -> AnnAST; %% this should only happen for .hrl files.
-      {value, {module, ModName}} ->
-	  TestFrameWorkUsed = refac_util:test_framework_used(FileName),
-	  Pid = start_type_env_process(),
-	  Fs = refac_syntax:form_list_elements(AnnAST),
-	  Funs = wrangler_callgraph_server:get_sorted_funs(ModName, AnnAST),
-	  Funs1 = lists:map(fun ({{M, F, A}, FunDef}) ->
-				    {{M, F, A}, do_type_ann(FileName, FunDef, TestFrameWorkUsed, SearchPaths, TabWidth, Pid)}
-			    end, Funs),
-	  Fs1 = lists:map(fun (Form) ->
-				  case refac_syntax:type(Form) of
-				    function -> find_fun(Funs1, Form);
-				    _ -> Form
-				  end
-			  end, Fs),
-	  AnnAST1 = refac_misc:rewrite(AnnAST, refac_syntax:form_list(Fs1)),
-	  case get_all_type_info(Pid) of
-	    [] ->
-		stop_type_env_process(Pid),
-		AnnAST1;
-	    TypeInfo ->
-		?debug("Typeinfo:\n~p\n", [TypeInfo]),
-		stop_type_env_process(Pid),
-		prop_type_info(AnnAST1, TypeInfo)
-	  end
+	false -> AnnAST; %% this should only happen for .hrl files.
+	{value, {module, ModName}} ->
+	    TestFrameWorkUsed = refac_util:test_framework_used(FileName),
+	    Pid = start_type_env_process(),
+	    Fs = refac_syntax:form_list_elements(AnnAST),
+	    Funs = wrangler_callgraph_server:get_sorted_funs(ModName, AnnAST),
+	    Funs1 = lists:map(fun ({{M, F, A}, FunDef}) ->
+				      {{M, F, A}, do_type_ann(FileName, FunDef, TestFrameWorkUsed, SearchPaths, TabWidth, Pid)}
+			      end, Funs),
+	    Fs1 = lists:map(fun (Form) ->
+				    case refac_syntax:type(Form) of
+					function -> find_fun(Funs1, Form);
+					_ -> Form
+				    end
+			    end, Fs),
+	    AnnAST1 = refac_util:rewrite(AnnAST, refac_syntax:form_list(Fs1)),
+	    case get_all_type_info(Pid) of
+		[] ->
+		    stop_type_env_process(Pid),
+		    AnnAST1;
+		TypeInfo ->
+		    ?debug("Typeinfo:\n~p\n", [TypeInfo]),
+		    stop_type_env_process(Pid),
+		    prop_type_info(AnnAST1, TypeInfo)
+	    end
     end.
 
 find_fun(Funs, Form) ->
@@ -78,8 +78,6 @@ find_fun(Funs, Form) ->
     {value, {fun_def, {M, F, A, _, _}}} = lists:keysearch(fun_def, 1, Ann),
     {value, {{M, F, A}, FunDef}} = lists:keysearch({M, F, A}, 1, Funs),
     Pos1 = refac_syntax:get_pos(FunDef),   
-    %%This is to handle the case when the same function name/arity is defined multiple time,
-    %%which is illegal but accepted by Wrangler.
     case Pos==Pos1 of  
 	true ->
 	    FunDef;
@@ -87,69 +85,66 @@ find_fun(Funs, Form) ->
 	    Form
     end.
 
-
 do_type_ann(FileName, Form, TestFrameWorkUsed, SearchPaths, TabWidth, Pid) ->
     case refac_syntax:type(Form) of
-      function ->
-	  Ann = refac_syntax:get_ann(Form),
-	  {value, {fun_def, {M, F, A, _, _}}} = lists:keysearch(fun_def, 1, Ann),
-	  Name = refac_syntax:function_name(Form),
-	  Name1 = refac_syntax:add_ann({type, {f_atom, [M, F, A]}}, Name),
-	  Cs = [ast_traverse_api:full_buTP(fun do_type_ann_clause/2, C,
-					   {FileName, refac_syntax:clause_patterns(C),
-					    TestFrameWorkUsed, SearchPaths, TabWidth, Pid})
-		|| C <- refac_syntax:function_clauses(Form)],
-	  CsPats = [refac_syntax:clause_patterns(C) || C <- refac_syntax:function_clauses(Form)],
-	  TypeInfo = get_all_type_info(Pid),
-	  CsPatsTypes = [[get_pat_type(P, TypeInfo) || P <- CPats] || CPats <- CsPats],
-	  ZippedCsPatsTypes = zip_list(CsPatsTypes),
-	  PatTypes = [lists:usort(Ts) || Ts <- ZippedCsPatsTypes],
-	  ?debug("MFA:\n~p\n", [{M, F, A}]),
-	  ?debug("ParTypes:\n~p\n", [[hd(PT) || PT <- PatTypes]]),
-	  case lists:all(fun (T) -> length(T) == 1 end, PatTypes) andalso
-		 lists:any(fun (T) -> T /= [any] end, PatTypes)
-	      of
-	    true ->
-		Ts = {{M, F, A}, {[hd(PT) || PT <- PatTypes], any}},
-		add_to_type_env(Pid, [Ts]);
-	    _ -> ok
-	  end,
-	  refac_misc:rewrite(Form, refac_syntax:function(Name1, Cs));
-      _ ->
-	  Form
+	function ->
+	    Ann = refac_syntax:get_ann(Form),
+	    {value, {fun_def, {M, F, A, _, _}}} = lists:keysearch(fun_def, 1, Ann),
+	    Name = refac_syntax:function_name(Form),
+	    Name1 = refac_syntax:add_ann({type, {f_atom, [M, F, A]}}, Name),
+	    Cs = [ast_traverse_api:full_buTP(fun do_type_ann_clause/2, C,
+					     {FileName, refac_syntax:clause_patterns(C),
+					      TestFrameWorkUsed, SearchPaths, TabWidth, Pid})
+		  || C <- refac_syntax:function_clauses(Form)],
+	    CsPats = [refac_syntax:clause_patterns(C) || C <- refac_syntax:function_clauses(Form)],
+	    TypeInfo = get_all_type_info(Pid),
+	    CsPatsTypes = [[get_pat_type(P, TypeInfo) || P <- CPats] || CPats <- CsPats],
+	    ZippedCsPatsTypes = zip_list(CsPatsTypes),
+	    PatTypes = [lists:usort(Ts) || Ts <- ZippedCsPatsTypes],
+	    case lists:all(fun (T) -> length(T) == 1 end, PatTypes) andalso 
+		   lists:any(fun (T) -> T /= [any] end, PatTypes)
+		of
+		true ->
+		    Ts = {{M, F, A}, {[hd(PT) || PT <- PatTypes], any}},
+		    add_to_type_env(Pid, [Ts]);
+		_ -> ok
+	    end,
+	    refac_util:rewrite(Form, refac_syntax:function(Name1, Cs));
+	_ ->
+	    Form
     end.
- 
+
 do_type_ann_clause(Node, {FileName, Pats, TestFrameWorkUsed, SearchPaths, TabWidth, Pid}) ->
     case refac_syntax:type(Node) of
-      application ->
-	  Op = refac_syntax:application_operator(Node),
-	  Args = refac_syntax:application_arguments(Node),
-	  case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
-	    {value, {fun_def, {M, F, A, _, _}}} when M =/= '_' andalso F =/= '_' ->
-		Args1 = do_type_ann_args({M, F, A}, map_args(Pats, Args), Args, Pid),
-		Node1 = refac_misc:rewrite(Node, refac_syntax:application(Op, Args1)),
-		do_type_ann_op(FileName, Node1, SearchPaths, TabWidth, Pid);
-	    _ -> %% Either module name or function name is not an atom;
-		do_type_ann_op(FileName, Node, SearchPaths, TabWidth, Pid)
-	  end;
-      tuple ->
-	  case refac_syntax:tuple_elements(Node) of
-	    [E1, E2, E3, E4] ->
-		case refac_syntax:type(E1) == atom andalso refac_syntax:atom_value(E1) == call
-		       andalso lists:member(eqc, TestFrameWorkUsed)
-		    of
-		  true ->
-		      NewE2 = add_type_info({type, m_atom}, E2, Pid),
-		      NewE3 = add_type_info({type, {f_atom, [try_eval(FileName, E2, SearchPaths, TabWidth, fun is_atom/1),
-							     try_eval(FileName, E3, SearchPaths, TabWidth, fun is_atom/1),
-							     try_eval_length(E4)]}}, E3, Pid),
-		      refac_misc:rewrite(Node, refac_syntax:tuple([E1, NewE2, NewE3, E4]));
-		  false ->
-		      Node
-		end;
-	    _ -> Node
-	  end;
-      _ -> Node
+	application ->
+	    Op = refac_syntax:application_operator(Node),
+	    Args = refac_syntax:application_arguments(Node),
+	    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Op)) of
+		{value, {fun_def, {M, F, A, _, _}}} when M =/= '_' andalso F =/= '_' ->
+		    Args1 = do_type_ann_args({M, F, A}, map_args(Pats, Args), Args, Pid),
+		    Node1 = refac_util:rewrite(Node, refac_syntax:application(Op, Args1)),
+		    do_type_ann_op(FileName, Node1, SearchPaths, TabWidth, Pid);
+		_ -> %% Either module name or function name is not an atom;
+		    do_type_ann_op(FileName, Node, SearchPaths, TabWidth, Pid)
+	    end;
+	tuple ->
+	    case refac_syntax:tuple_elements(Node) of
+		[E1, E2, E3, E4] ->
+		    case refac_syntax:type(E1) == atom andalso refac_syntax:atom_value(E1) == call
+								  andalso lists:member(eqc, TestFrameWorkUsed)
+			of
+			true ->
+			    NewE2 = add_type_info({type, m_atom}, E2, Pid),
+			    NewE3 = add_type_info({type, {f_atom, [try_eval(FileName, E2, SearchPaths, TabWidth, fun is_atom/1),
+								   try_eval(FileName, E3, SearchPaths, TabWidth, fun is_atom/1),
+								   try_eval_length(E4)]}}, E3, Pid),
+			    refac_util:rewrite(Node, refac_syntax:tuple([E1, NewE2, NewE3, E4]));
+			false ->
+			    Node
+		    end;
+		_ -> Node
+	    end;
+	_ -> Node
     end.
 
 do_type_ann_op(FileName, Node, SearchPaths, TabWidth, Pid) ->
@@ -157,35 +152,35 @@ do_type_ann_op(FileName, Node, SearchPaths, TabWidth, Pid) ->
     Args = refac_syntax:application_arguments(Node),
     Arity = length(Args),
     case refac_syntax:type(Op) of
-      atom ->
-	  As = refac_syntax:get_ann(Op),
-	  {value, {fun_def, {Mod, FunName, Ari, _, _}}} = lists:keysearch(fun_def, 1, As),
-	  Op1 = refac_syntax:add_ann({type, {f_atom, [Mod, FunName, Ari]}}, Op),
-	  refac_misc:rewrite(Node, refac_syntax:application(Op1, Args));
-      variable ->
-	  Op1 = add_type_info({type, {f_atom, ['_', try_eval(FileName, Op, SearchPaths, TabWidth,
-							     fun is_atom/1), Arity]}}, Op, Pid),
-	  refac_misc:rewrite(Node, refac_syntax:application(Op1, Args));
-      module_qualifier ->
-	  M = refac_syntax:module_qualifier_argument(Op),
-	  F = refac_syntax:module_qualifier_body(Op),
-	  M1 = add_type_info({type, m_atom}, M, Pid),
-	  F1 = add_type_info({type, {f_atom, [try_eval(FileName, M, SearchPaths, TabWidth, fun is_atom/1),
-					      try_eval(FileName, F, SearchPaths, TabWidth, fun is_atom/1), Arity]}}, F, Pid),
-	  Op1 = refac_misc:rewrite(Op, refac_syntax:module_qualifier(M1, F1)),
-	  refac_misc:rewrite(Node, refac_syntax:application(Op1, Args));
-      tuple ->
-	  case refac_syntax:tuple_elements(Op) of
-	    [M, F] ->
-		M1 = add_type_info({type, m_atom}, M, Pid),
-		F1 = add_type_info({type, {f_atom, [try_eval(FileName, M, SearchPaths, TabWidth, fun is_atom/1),
-						    try_eval(FileName, M, SearchPaths, TabWidth, fun is_atom/1), Arity]}}, F, Pid),
-		Op1 = refac_misc:rewrite(Op, refac_syntax:tuple([M1, F1])),
-		refac_misc:rewrite(Node, refac_syntax:application(Op1, Args));
-	    _ ->
-		Node
-	  end;
-      _ -> Node
+	atom ->
+	    As = refac_syntax:get_ann(Op),
+	    {value, {fun_def, {Mod, FunName, Ari, _, _}}} = lists:keysearch(fun_def, 1, As),
+	    Op1 = refac_syntax:add_ann({type, {f_atom, [Mod, FunName, Ari]}}, Op),
+	    refac_util:rewrite(Node, refac_syntax:application(Op1, Args));
+	variable ->
+	    Op1 = add_type_info({type, {f_atom, ['_', try_eval(FileName, Op, SearchPaths, TabWidth,
+							       fun is_atom/1), Arity]}}, Op, Pid),
+	    refac_util:rewrite(Node, refac_syntax:application(Op1, Args));
+	module_qualifier ->
+	    M = refac_syntax:module_qualifier_argument(Op),
+	    F = refac_syntax:module_qualifier_body(Op),
+	    M1 = add_type_info({type, m_atom}, M, Pid),
+	    F1 = add_type_info({type, {f_atom, [try_eval(FileName, M, SearchPaths, TabWidth, fun is_atom/1),
+						try_eval(FileName, F, SearchPaths, TabWidth, fun is_atom/1), Arity]}}, F, Pid),
+	    Op1 = refac_util:rewrite(Op, refac_syntax:module_qualifier(M1, F1)),
+	    refac_util:rewrite(Node, refac_syntax:application(Op1, Args));
+	tuple ->
+	    case refac_syntax:tuple_elements(Op) of
+		[M, F] ->
+		    M1 = add_type_info({type, m_atom}, M, Pid),
+		    F1 = add_type_info({type, {f_atom, [try_eval(FileName, M, SearchPaths, TabWidth, fun is_atom/1),
+							try_eval(FileName, M, SearchPaths, TabWidth, fun is_atom/1), Arity]}}, F, Pid),
+		    Op1 = refac_util:rewrite(Op, refac_syntax:tuple([M1, F1])),
+		    refac_util:rewrite(Node, refac_syntax:application(Op1, Args));
+		_ ->
+		    Node
+	    end;
+	_ -> Node
     end.
 
 do_type_ann_args({M, F, A}, MappedArgs, Args, Pid) ->
@@ -209,33 +204,25 @@ do_type_ann_args_1(ParTypes, MappedArgs, Args, Pid) ->
 			any ->
 			    Arg;
 			_ when is_function(ParType) ->
-			    ?debug("MappedArgS:\n~p\n", [MappedArgs]),
-			    ?debug("TMappedArgs:\n~p\n", [ParType(MappedArgs)]),
-			    add_type_info({type, ParType(MappedArgs)}, Arg, Pid);
+			      add_type_info({type, ParType(MappedArgs)}, Arg, Pid);
 			{f_atom, [M, F, Arity]} ->
-			    ?debug("T:\n~p\n", [ParType]),
-			    M1 = case is_function(M) of
-				   true -> M(MappedArgs);
-				   _ -> M
+			      M1 = case is_function(M) of
+				     true -> M(MappedArgs);
+				     _ -> M
 				 end,
-			    F1 = case is_function(F) of
-				   true ->
-				       F(MappedArgs);
-				   _ -> M
+			      F1 = case is_function(F) of
+				     true ->
+					   F(MappedArgs);
+				     _ -> M
 				 end,
-			    Arity1 = case is_function(Arity) of
-				       true ->
+			      Arity1 = case is_function(Arity) of
+					 true ->
 					   Arity(MappedArgs);
-				       _ -> Arity
+					 _ -> Arity
 				     end,
-			    ?debug("M1:\n~p\n", [M1]),
-			    ?debug("F1:\n~p\n", [F1]),
-			    ?debug("Arity1:\n~p\n", [Arity1]),
-			    add_type_info({type, {f_atom, [M1, F1, Arity1]}}, Arg, Pid);
-			_ ->
-			    ?debug("T:\n~p\n", [ParType]),
-			    ?debug("A:\n~p\n", [Arg]),
-			    add_type_info({type, ParType}, Arg, Pid)
+			      add_type_info({type, {f_atom, [M1, F1, Arity1]}}, Arg, Pid);
+			  _ ->
+			      add_type_info({type, ParType}, Arg, Pid)
 		      end
 	      end, ZippedParTypeArgs).
 
@@ -395,23 +382,23 @@ try_eval(Expr, Cond) ->
 try_eval(FileName, E, SearchPaths, TabWidth, Cond) ->
     As = refac_syntax:get_ann(E),
     case lists:keysearch(value, 1, As) of
-      {value, {value, {{_, V}, _DefPos}}} ->
-	  case Cond(V) of
-	    true ->
-		?debug("V:\n~p\n", [V]),
-		V;
-	    _ -> '_'
-	  end;
-      _ ->
-	  case refac_misc:try_eval(FileName, E, SearchPaths, TabWidth) of
-	    {value, V} ->
-		?debug("V:\n~p\n", [V]),
-		case Cond(V) of
-		  true -> V;
-		  _ -> '_'
-		end;
-	    {error, _} -> '_'
-	  end
+	{value, {value, {{_, V}, _DefPos}}} ->
+	    case Cond(V) of
+		true ->
+		    ?debug("V:\n~p\n", [V]),
+		    V;
+		_ -> '_'
+	    end;
+	_ ->
+	    case refac_util:try_eval(FileName, E, SearchPaths, TabWidth) of
+		{value, V} ->
+		    ?debug("V:\n~p\n", [V]),
+		    case Cond(V) of
+			true -> V;
+			_ -> '_'
+		    end;
+		{error, _} -> '_'
+	    end
     end.
 		    
 try_eval_length(Expr) when is_function(Expr) ->

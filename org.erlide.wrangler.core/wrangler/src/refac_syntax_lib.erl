@@ -37,206 +37,27 @@
 
 -module(refac_syntax_lib).
 
--export([ analyze_application/1,
-	 analyze_attribute/1, analyze_export_attribute/1,
-	 analyze_file_attribute/1, analyze_form/1,
-	 analyze_forms/1, analyze_function/1,
-	 analyze_function_name/1, analyze_implicit_fun/1,
-	 analyze_import_attribute/1, analyze_module_attribute/1,
-	 analyze_record_attribute/1, analyze_record_expr/1,
-	 analyze_record_field/1, analyze_rule/1,
-	 analyze_wild_attribute/1, annotate_bindings/1,
-	 annotate_bindings/2, annotate_bindings/3,
-	 fold/3, fold_subtrees/3,
-	 foldl_listlist/3, function_name_expansions/1,
-	 is_fail_expr/1, limit/2, limit/3, map/2, map_subtrees/2,
-	 mapfold/3, mapfold_subtrees/3, mapfoldl_listlist/3,
-	 new_variable_name/1, new_variable_name/2,
-	 new_variable_names/2, new_variable_names/3,
-	 strip_comments/1, to_comment/1, to_comment/2,
-	 to_comment/3, variables/1, var_annotate_clause/4]).
+-export([is_fail_expr/1, analyze_function_name/1,
+	 analyze_implicit_fun/1, analyze_application/1,
+	 analyze_module_attribute/1, analyze_export_attribute/1,
+	 analyze_import_attribute/1, analyze_wild_attribute/1,
+	 analyze_function/1, analyze_rule/1,
+	 analyze_file_attribute/1, analyze_record_attribute/1,
+	 analyze_record_field/1, analyze_record_expr/1,
+	 analyze_forms/1, analyze_form/1, analyze_attribute/1]).
 
-%% =====================================================================
-%% @spec map(Function, Tree::syntaxTree()) -> syntaxTree()
-%%
-%%          Function = (syntaxTree()) -> syntaxTree()
-%%
-%% @doc Applies a function to each node of a syntax tree. The result of
-%% each application replaces the corresponding original node. The order
-%% of traversal is bottom-up.
-%%
-%% @see map_subtrees/2
+-export([new_variable_name/1, new_variable_names/2,
+	 new_variable_name/2, new_variable_names/3,
+	 variables/1]).
 
-map(F, Tree) ->
-    case refac_syntax:subtrees(Tree) of
-      [] -> F(Tree);
-      Gs ->
-	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
-				       [[map(F, T) || T <- G] || G <- Gs]),
-	  F(refac_syntax:copy_attrs(Tree, Tree1))
-    end.
+-export([annotate_bindings/2, annotate_bindings/3,
+	 var_annotate_clause/4, annotate_bindings/1]).
+ 
+-export([to_comment/1, to_comment/2, to_comment/3,strip_comments/1]).
 
-%% =====================================================================
-%% @spec map_subtrees(Function, syntaxTree()) -> syntaxTree()
-%%
-%%          Function = (Tree) -> Tree1
-%%
-%% @doc Applies a function to each immediate subtree of a syntax tree.
-%% The result of each application replaces the corresponding original
-%% node.
-%%
-%% @see map/2
+-export([limit/2, limit/3]).
 
-map_subtrees(F, Tree) ->
-    case refac_syntax:subtrees(Tree) of
-      [] -> Tree;
-      Gs ->
-	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
-				       [[F(T) || T <- G] || G <- Gs]),
-	  refac_syntax:copy_attrs(Tree, Tree1)
-    end.
-
-%% =====================================================================
-%% @spec fold(Function, Start::term(), Tree::syntaxTree()) -> term()
-%%
-%%          Function = (syntaxTree(), term()) -> term()
-%%
-%% @doc Folds a function over all nodes of a syntax tree. The result is
-%% the value of <code>Function(X1, Function(X2, ... Function(Xn, Start)
-%% ... ))</code>, where <code>[X1, X2, ..., Xn]</code> are the nodes of
-%% <code>Tree</code> in a post-order traversal.
-%%
-%% @see fold_subtrees/3
-%% @see foldl_listlist/3
-
-fold(F, S, Tree) ->
-    case refac_syntax:subtrees(Tree) of
-      [] -> F(Tree, S);
-      Gs -> F(Tree, fold_1(F, S, Gs))
-    end.
-
-fold_1(F, S, [L | Ls]) ->
-    fold_1(F, fold_2(F, S, L), Ls);
-fold_1(_, S, []) -> S.
-
-fold_2(F, S, [T | Ts]) -> fold_2(F, fold(F, S, T), Ts);
-fold_2(_, S, []) -> S.
-
-%% =====================================================================
-%% @spec fold_subtrees(Function, Start::term(), Tree::syntaxTree()) ->
-%%           term()
-%%
-%%          Function = (syntaxTree(), term()) -> term()
-%%
-%% @doc Folds a function over the immediate subtrees of a syntax tree.
-%% This is similar to <code>fold/3</code>, but only on the immediate
-%% subtrees of <code>Tree</code>, in left-to-right order; it does not
-%% include the root node of <code>Tree</code>.
-%%
-%% @see fold/3
-
-fold_subtrees(F, S, Tree) ->
-    foldl_listlist(F, S, refac_syntax:subtrees(Tree)).
-
-%% =====================================================================
-%% @spec foldl_listlist(Function, Start::term(), [[term()]]) -> term()
-%%
-%%          Function = (term(), term()) -> term()
-%%
-%% @doc Like <code>lists:foldl/3</code>, but over a list of lists.
-%%
-%% @see fold/3
-%% @see lists:foldl/3
-
-foldl_listlist(F, S, [L | Ls]) ->
-    foldl_listlist(F, foldl(F, S, L), Ls);
-foldl_listlist(_, S, []) -> S.
-
-foldl(F, S, [T | Ts]) -> foldl(F, F(T, S), Ts);
-foldl(_, S, []) -> S.
-
-%% =====================================================================
-%% @spec mapfold(Function, Start::term(), Tree::syntaxTree()) ->
-%%           {syntaxTree(), term()}
-%%
-%%          Function = (syntaxTree(), term()) -> {syntaxTree(), term()}
-%%
-%% @doc Combines map and fold in a single operation. This is similar to
-%% <code>map/2</code>, but also propagates an extra value from each
-%% application of the <code>Function</code> to the next, while doing a
-%% post-order traversal of the tree like <code>fold/3</code>. The value
-%% <code>Start</code> is passed to the first function application, and
-%% the final result is the result of the last application.
-%%
-%% @see map/2
-%% @see fold/3
-
-mapfold(F, S, Tree) ->
-    case refac_syntax:subtrees(Tree) of
-      [] -> F(Tree, S);
-      Gs ->
-	  {Gs1, S1} = mapfold_1(F, S, Gs),
-	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
-				       Gs1),
-	  F(refac_syntax:copy_attrs(Tree, Tree1), S1)
-    end.
-
-mapfold_1(F, S, [L | Ls]) ->
-    {L1, S1} = mapfold_2(F, S, L),
-    {Ls1, S2} = mapfold_1(F, S1, Ls),
-    {[L1 | Ls1], S2};
-mapfold_1(_, S, []) -> {[], S}.
-
-mapfold_2(F, S, [T | Ts]) ->
-    {T1, S1} = mapfold(F, S, T),
-    {Ts1, S2} = mapfold_2(F, S1, Ts),
-    {[T1 | Ts1], S2};
-mapfold_2(_, S, []) -> {[], S}.
-
-%% =====================================================================
-%% @spec mapfold_subtrees(Function, Start::term(),
-%%                        Tree::syntaxTree()) -> {syntaxTree(), term()}
-%%
-%%          Function = (syntaxTree(), term()) -> {syntaxTree(), term()}
-%%
-%% @doc Does a mapfold operation over the immediate subtrees of a syntax
-%% tree. This is similar to <code>mapfold/3</code>, but only on the
-%% immediate subtrees of <code>Tree</code>, in left-to-right order; it
-%% does not include the root node of <code>Tree</code>.
-%%
-%% @see mapfold/3
-
-mapfold_subtrees(F, S, Tree) ->
-    case refac_syntax:subtrees(Tree) of
-      [] -> {Tree, S};
-      Gs ->
-	  {Gs1, S1} = mapfoldl_listlist(F, S, Gs),
-	  Tree1 = refac_syntax:make_tree(refac_syntax:type(Tree),
-				       Gs1),
-	  {refac_syntax:copy_attrs(Tree, Tree1), S1}
-    end.
-
-%% =====================================================================
-%% @spec mapfoldl_listlist(Function, State, [[term()]]) ->
-%%           {[[term()]], term()}
-%%
-%%          Function = (term(), term()) -> {term(), term()}
-%%
-%% @doc Like <code>lists:mapfoldl/3</code>, but over a list of lists.
-%% The list of lists in the result has the same structure as the given
-%% list of lists.
-
-mapfoldl_listlist(F, S, [L | Ls]) ->
-    {L1, S1} = mapfoldl(F, S, L),
-    {Ls1, S2} = mapfoldl_listlist(F, S1, Ls),
-    {[L1 | Ls1], S2};
-mapfoldl_listlist(_, S, []) -> {[], S}.
-
-mapfoldl(F, S, [L | Ls]) ->
-    {L1, S1} = F(L, S),
-    {Ls1, S2} = mapfoldl(F, S1, Ls),
-    {[L1 | Ls1], S2};
-mapfoldl(_, S, []) -> {[], S}.
+-export([function_name_expansions/1, split_lines/1]).
 
 %% =====================================================================
 %% @spec variables(syntaxTree()) -> set(atom())
@@ -248,15 +69,16 @@ mapfoldl(_, S, []) -> {[], S}.
 %%
 %% @see sets
 
+
 variables(Tree) ->
     F = fun (T, S) ->
 		case refac_syntax:type(T) of
-		  variable ->
-		      sets:add_element(refac_syntax:variable_name(T), S);
-		  _ -> S
+		    variable ->
+			sets:add_element(refac_syntax:variable_name(T), S);
+		    _ -> S
 		end
 	end,
-    fold(F, sets:new(), Tree).
+    ast_traverse_api:fold(F, sets:new(), Tree).
 
 -define(MINIMUM_RANGE, 100).
 
@@ -412,13 +234,13 @@ new_variable_names(0, Names, _, _, _) -> Names.
 
 annotate_bindings(Tree, Env) ->
     Pid=start_env_process(),
-    {Tree1, _, _} = vann(Tree, Env, [],[], Pid), 
+    {Tree1, _, _} = vann(Tree, Env, {[],[]},[], Pid), 
     stop_env_process(Pid),
     Tree1.
 
-annotate_bindings(Tree, Env, MDefs) ->
+annotate_bindings(Tree, Env, Ms={_MsDef, _MsUses}) ->
     Pid=start_env_process(),
-    {Tree1, _, _} = vann(Tree, Env, MDefs,[], Pid),
+    {Tree1, _, _} = vann(Tree, Env, Ms, [], Pid),
     stop_env_process(Pid),
     Tree1.
     
@@ -448,79 +270,78 @@ annotate_bindings(Tree) ->
 	_ -> erlang:error(badarg)
     end.
 
-
 %% =====================================================================
 vann(Tree, Env, Ms, VI, Pid) ->
     case refac_syntax:type(Tree) of
-      variable ->
-	  V = refac_syntax:variable_name(Tree),
-	  P = refac_syntax:get_pos(Tree),
-	  case lists:keysearch({V, P}, 1, VI) of
-	    {value, {{V, P}, As}} ->
-		{value, {bound, Bound1}} = lists:keysearch(bound, 1, As),
-		{value, {free, Free1}} = lists:keysearch(free, 1, As),
-		{value, {def, Def1}} = lists:keysearch(def, 1, As),
-		{value, {env, Env1}} = lists:keysearch(env, 1, As),
-		case get_value(Pid, Def1) of
-		  {value, Val} ->
-		      Tree1 = ann_bindings(Tree, Env1, Bound1, Free1, Def1),
-		      Tree2 = update_ann(Tree1, {value, Val}),
-		      {Tree2, Bound1, Free1};
-		  false ->
-		      {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1}
-		end;
-	    _ ->
-		case [V2 || V2 <- Env, vann_1(V2, V)] of
-		  [] ->
-		      Bound = [],
-		      Free = [{V, ?DEFAULT_LOC}],
-		      Def = [?DEFAULT_LOC],
-		      {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
-		  L ->
-		      Bound = [],
-		      Free = L,
-		      Def = [vann_1(V3) || V3 <- L],
-		      case get_value(Pid, Def) of
+	variable ->
+	    V = refac_syntax:variable_name(Tree),
+	    P = refac_syntax:get_pos(Tree),
+	    case lists:keysearch({V, P}, 1, VI) of
+		{value, {{V, P}, As}} ->
+		    {value, {bound, Bound1}} = lists:keysearch(bound, 1, As),
+		    {value, {free, Free1}} = lists:keysearch(free, 1, As),
+		    {value, {def, Def1}} = lists:keysearch(def, 1, As),
+		    {value, {env, Env1}} = lists:keysearch(env, 1, As),
+		    case get_value(Pid, Def1) of
 			{value, Val} ->
-			    Tree1 = ann_bindings(Tree, Env, Bound, Free, Def),
+			    Tree1 = ann_bindings(Tree, Env1, Bound1, Free1, Def1),
 			    Tree2 = update_ann(Tree1, {value, Val}),
-			    {Tree2, Bound, Free};
+			    {Tree2, Bound1, Free1};
 			false ->
-			    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
-		      end
-		end
-	  end;
-      match_expr -> vann_match_expr(Tree, Env, Ms, VI, Pid);
-      case_expr -> vann_case_expr(Tree, Env, Ms, VI, Pid);
-      if_expr -> vann_if_expr(Tree, Env, Ms, VI, Pid);
-      cond_expr -> vann_cond_expr(Tree, Env, Ms, VI, Pid);
-      receive_expr -> vann_receive_expr(Tree, Env, Ms, VI, Pid);
-      try_expr -> vann_try_expr(Tree, Env, Ms, VI, Pid);
-      function -> vann_function(Tree, Env, Ms, VI, Pid);
-      rule -> vann_rule(Tree, Env, Ms, VI, Pid);
-      fun_expr -> vann_fun_expr(Tree, Env, Ms, VI, Pid);
-      list_comp -> vann_list_comp(Tree, Env, Ms, VI, Pid);
-      generator -> vann_generator(Tree, Env, Ms, VI, Pid);
-      block_expr -> vann_block_expr(Tree, Env, Ms, VI, Pid);
-      macro -> vann_macro(Tree, Env, Ms, VI, Pid);
-      %% Added by HL, begin.
-      attribute ->
-	  Toks0 = refac_misc:get_toks(Tree),
-	  Tree1 = adjust_locations(Tree, Toks0),
-	  case refac_syntax:atom_value(refac_syntax:attribute_name(Tree1)) of
-	    define -> vann_define(Tree1, Env, Ms, VI, Pid);
-	    ifdef -> {Tree1, [], []};
-	    inndef -> {Tree1, [], []};
-	    undef -> {Tree1, [], []};
-	    _ -> F = vann_list_join(Env, Ms, VI, Pid),
-		 {Tree2, {Bound, Free}} = mapfold_subtrees(F, {[], []}, Tree1),
-		 {ann_bindings(Tree2, Env, Bound, Free), Bound, Free}
-	  end;
-      %% Added by HL, end.
-      _Type ->
-	  F = vann_list_join(Env, Ms, VI, Pid),
-	  {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []}, Tree),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
+			    {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1}
+		    end;
+		_ ->
+		    case [V2 || V2 <- Env, vann_1(V2, V)] of
+			[] ->
+			    Bound = [],
+			    Free = [{V, ?DEFAULT_LOC}],
+			    Def = [?DEFAULT_LOC],
+			    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
+			L ->
+			    Bound = [],
+			    Free = L,
+			    Def = [vann_1(V3) || V3 <- L],
+			    case get_value(Pid, Def) of
+				{value, Val} ->
+				    Tree1 = ann_bindings(Tree, Env, Bound, Free, Def),
+				    Tree2 = update_ann(Tree1, {value, Val}),
+				    {Tree2, Bound, Free};
+				false ->
+				    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
+			    end
+		    end
+	    end;
+	match_expr -> vann_match_expr(Tree, Env, Ms, VI, Pid);
+	case_expr -> vann_case_expr(Tree, Env, Ms, VI, Pid);
+	if_expr -> vann_if_expr(Tree, Env, Ms, VI, Pid);
+	cond_expr -> vann_cond_expr(Tree, Env, Ms, VI, Pid);
+	receive_expr -> vann_receive_expr(Tree, Env, Ms, VI, Pid);
+	try_expr -> vann_try_expr(Tree, Env, Ms, VI, Pid);
+	function -> vann_function(Tree, Env, Ms, VI, Pid);
+	rule -> vann_rule(Tree, Env, Ms, VI, Pid);
+	fun_expr -> vann_fun_expr(Tree, Env, Ms, VI, Pid);
+	list_comp -> vann_list_comp(Tree, Env, Ms, VI, Pid);
+	generator -> vann_generator(Tree, Env, Ms, VI, Pid);
+	block_expr -> vann_block_expr(Tree, Env, Ms, VI, Pid);
+	macro -> vann_macro(Tree, Env, Ms, VI, Pid);
+	%% Added by HL, begin.
+	attribute ->
+	    Toks0 = refac_util:get_toks(Tree),
+	    Tree1 = adjust_locations(Tree, Toks0),
+	    case refac_syntax:atom_value(refac_syntax:attribute_name(Tree1)) of
+		define -> vann_define(Tree1, Env, Ms, VI, Pid);
+		ifdef -> {Tree1, [], []};
+		inndef -> {Tree1, [], []};
+		undef -> {Tree1, [], []};
+		_ -> F = vann_list_join(Env, Ms, VI, Pid),
+		     {Tree2, {Bound, Free}} = ast_traverse_api:mapfold_subtrees(F, {[], []}, Tree1),
+		     {ann_bindings(Tree2, Env, Bound, Free), Bound, Free}
+	    end;
+	%% Added by HL, end.
+	_Type ->
+	    F = vann_list_join(Env, Ms, VI, Pid),
+	    {Tree1, {Bound, Free}} = ast_traverse_api:mapfold_subtrees(F, {[], []}, Tree),
+	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
 
 vann_1({V1, _L}, V) -> V == V1.
@@ -539,48 +360,49 @@ vann_list(Ts, Env, Ms, VI, Pid) ->
     lists:mapfoldl(vann_list_join(Env, Ms, VI, Pid), {[], []}, Ts).
 
 vann_function(Tree, Env, Ms, _VI, Pid) ->
-    Toks0 = refac_misc:get_toks(Tree),
-    Tree1 = adjust_locations(Tree, Toks0),
+    Toks0 = refac_util:get_toks(Tree),
     F = fun () ->
 		Toks1 = remove_whites(Toks0),
 		Toks2 = refac_epp:expand_macros(Toks1, Ms),
-		case Toks1 of
-		  Toks2 -> [];
-		  _ ->
-		      {ok, Form} = refac_parse:parse_form(Toks2),
-		      [Form1] = refac_syntax:form_list_elements(
-				  refac_recomment:recomment_forms([Form], [])),
-		      {Form2, _, _} = vann_function_1(Form1, Env, Ms, [], Pid),
-		      get_var_info(Form2)
+                case Toks1 of
+		    Toks2 -> [];
+		    _ ->
+			{ok, Form} = refac_parse:parse_form(Toks2),
+			[Form1] = refac_syntax:form_list_elements(
+				    refac_recomment:recomment_forms([Form], [])),
+			{Form2, _, _} = vann_function_1(Form1, Env, Ms, [], Pid),
+			get_var_info(Form2)
 		end
 	end,
-    {Tree2, Bound, Free} = try
-			     F()
+    {Tree1, Bound, Free} = try
+			       F()
 			   of
-			     VI -> vann_function_1(Tree1, Env, Ms, VI, Pid)
+			       VI -> vann_function_1(Tree, Env, Ms, VI, Pid)
 			   catch
-			     _E1:_E2_ -> vann_function_1(Tree1, Env, Ms, [], Pid)
+			       _E1:_E2_ -> vann_function_1(Tree, Env, Ms, [], Pid)
 			   end,
-    {update_var_define_locations(Tree2), Bound, Free}.
+    {update_var_define_locations(Tree1), Bound, Free}.
     
-
+%% The following two functions are clones; but I leave them 
+%% there because refactoring makes the code harder to understand.
 vann_function_1(Tree, Env, Ms, VI, Pid) ->
     Cs = refac_syntax:function_clauses(Tree),
-    {Cs1, {_, Free}} = vann_clauses(Cs, Env, Ms, VI, Pid),
     N = refac_syntax:function_name(Tree),
+    {Cs1, {_, Free}} = vann_clauses(Cs, Env, Ms, VI, Pid),
     {N1, _, _} = vann(N, Env, Ms, VI, Pid),
     Tree1 = rewrite(Tree, refac_syntax:function(N1, Cs1)),
-    Bound = [],
+    Bound=[],
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
 vann_rule(Tree, Env, Ms, VI, Pid) ->
     Cs = refac_syntax:rule_clauses(Tree),
-    {Cs1, {_, Free}} = vann_clauses(Cs, Env, Ms, VI, Pid),
     N = refac_syntax:rule_name(Tree),
+    {Cs1, {_, Free}} = vann_clauses(Cs, Env, Ms, VI, Pid),
     {N1, _, _} = vann(N, Env, Ms, VI, Pid),
     Tree1 = rewrite(Tree, refac_syntax:rule(N1, Cs1)),
-    Bound = [],
+    Bound=[],
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
+
 
 vann_fun_expr(Tree, Env, Ms, VI, Pid) ->
     Cs = refac_syntax:fun_expr_clauses(Tree),
@@ -752,9 +574,60 @@ vann_macro(Tree, Env, Ms, VI, Pid) ->
 			  end,
     Free1 = ordsets:subtract(Free, Bound),
     N = refac_syntax:macro_name(Tree),
+    MacroName = case refac_syntax:type(N) of
+                    variable -> refac_syntax:variable_name(N);
+                    atom -> refac_syntax:atom_value(N)
+                end,
+    {MsDefs0, _MsUses}=Ms,
+    MsDefs =case is_list(MsDefs0) of
+                 true -> dict:from_list(MsDefs0);
+                 _ -> MsDefs0
+             end,
     N1 = ann_bindings(N, Env, [],[]),  
     Tree1 = rewrite(Tree, refac_syntax:macro(N1, As)),
-    {ann_bindings(Tree1, Env, Bound, Free1), Bound, Free1}.
+    Tree2 = case dict:find({atom, MacroName}, MsDefs) of
+                {ok, Def} -> 
+                    case get_macro_def_toks(Def) of
+                        none -> Tree1;
+                        Toks ->
+                            case try_to_get_value(Toks) of
+                                {error, no_value} ->
+                                    Tree1;
+                                {ok, Val}->
+                                    refac_util:update_ann(
+                                      Tree1, 
+                                      {value, {Val,refac_syntax:get_pos(Tree1)}})
+                            end
+                    end;
+                _ ->
+                    Tree1
+            end,
+    {ann_bindings(Tree2, Env, Bound, Free1), Bound, Free1}.
+
+get_macro_def_toks([{none, {none, Toks}}]) ->
+    Toks;
+get_macro_def_toks({none, Toks}) ->
+    Toks;
+get_macro_def_toks(_) ->
+    none.
+
+try_to_get_value(Toks) ->
+    case refac_parse:parse_exprs(Toks++[{dot, {999,0}}]) of
+        {ok, [E]} ->
+            case refac_syntax:type(E) of
+                list ->
+                    {ok, {list, refac_syntax:list_length(E)}};
+                _ ->
+                    case refac_syntax:is_literal(E) of
+                        true ->
+                            {ok, {literal, refac_syntax:concrete(E)}};
+                        false ->
+                            {error, no_value}
+                    end
+            end;
+        _ ->
+            {error, no_value}
+    end.
 
 vann_pattern(Tree, Env, Ms, VI, Pid) ->
     case refac_syntax:type(Tree) of
@@ -763,106 +636,103 @@ vann_pattern(Tree, Env, Ms, VI, Pid) ->
 	    P = refac_syntax:get_pos(Tree),
 	    case lists:keysearch({V, P}, 1, VI) of
 		{value, {{V, P}, As}} ->
-		    {value, {bound, Bound1}} = lists:keysearch(bound, 1,As),
-		    {value, {free, Free1}} = lists:keysearch(free, 1,As),
-		    {value, {def, Def1}} = lists:keysearch(def, 1,As),
-		    {value, {env, Env1}} = lists:keysearch(env, 1,As),
-		    {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1};
+		    {value, {bound, Bound1}} = lists:keysearch(bound, 1, As),
+		    {value, {free, Free1}} = lists:keysearch(free, 1, As),
+		    {value, {def, Def1}} = lists:keysearch(def, 1, As),
+		    {value, {env, Env1}} = lists:keysearch(env, 1, As),
+                    case lists:keysearch(value, 1, As) of 
+                        {value, {value, Val}} ->
+                            Tree1 = refac_util:update_ann(Tree, {value, Val}),
+                            {ann_bindings(Tree1, Env1, Bound1, Free1, Def1), Bound1, Free1};
+                        _ ->
+                            {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1}
+                    end;
 		_ ->
-		    case [V2 || V2<-Env, vann_1(V2, V)] of
+		    case [V2 || V2 <- Env, vann_1(V2, V)] of
 			[] ->
 			    Bound = [{V, P}],
 			    Free = [],
 			    Def = [P],
-			    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};			
+			    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free};
 			L ->
-			    Bound =[],
+			    Bound = [],
 			    Free = L,
-			    Def = [vann_1(V3) || V3 <-L],
-			    case get_value(Pid, Def) of 
+			    Def = [vann_1(V3) || V3 <- L],
+			    case get_value(Pid, Def) of
 				{value, Val} ->
-				    Tree1=ann_bindings(Tree, Env, Bound, Free, Def),
+				    Tree1 = ann_bindings(Tree, Env, Bound, Free, Def),
 				    Tree2 = update_ann(Tree1, {value, Val}),
 				    {Tree2, Bound, Free};
 				false ->
 				    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
-			    end	 
+			    end
 		    end
 	    end;
-      match_expr ->
-	  %% Alias pattern
-	  P = refac_syntax:match_expr_pattern(Tree),
-	  {P1, Bound1, Free1} = vann_pattern(P, Env, Ms, VI, Pid),
-	  E = refac_syntax:match_expr_body(Tree),
-	  {E1, Bound2, Free2} = vann_pattern(E, Env, Ms, VI, Pid),
-	  Bound = ordsets:union(Bound1, Bound2),
-	  Free = ordsets:union(Free1, Free2),
-	  Tree1 = rewrite(Tree, refac_syntax:match_expr(P1, E1)),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
-      macro ->
-	  %% The macro name must be ignored. The arguments are treated
-	  %% as patterns.
-	  {As, {Bound, Free}} = case
-				  refac_syntax:macro_arguments(Tree)
-				    of
-				  none -> {none, {[], []}};
-				  As1 -> vann_patterns(As1, Env, Ms, VI, Pid)
-				end,
-	  N = refac_syntax:macro_name(Tree),
-	  Tree1 = rewrite(Tree, refac_syntax:macro(N, As)),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
-      _Type ->
-	  F = vann_patterns_join(Env, Ms, VI, Pid),
-	  {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},
-						    Tree),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
+	match_expr ->
+	    vann_alias_pattern(Tree, Env, Ms, VI, Pid);
+	macro ->
+	    %% The macro name must be ignored. The arguments are treated
+	    %% as patterns.
+	    {As, {Bound, Free}} = case refac_syntax:macro_arguments(Tree) of
+				      none -> {none, {[], []}};
+				      As1 -> vann_patterns(As1, Env, Ms, VI, Pid)
+				  end,
+	    N = refac_syntax:macro_name(Tree),
+	    Tree1 = rewrite(Tree, refac_syntax:macro(N, As)),
+	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
+	_Type ->
+	    F = vann_patterns_join(Env, Ms, VI, Pid),
+	    {Tree1, {Bound, Free}} = ast_traverse_api:mapfold_subtrees(F, {[], []},
+								       Tree),
+	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
 
-vann_fun_expr_pattern(Tree, Env,Ms, VI, Pid) ->
+vann_fun_expr_pattern(Tree, Env, Ms, VI, Pid) ->
     case refac_syntax:type(Tree) of
-      variable ->
+	variable ->
 	    V = refac_syntax:variable_name(Tree),
 	    P = refac_syntax:get_pos(Tree),
 	    case lists:keysearch({V, P}, 1, VI) of
 		{value, {{V, P}, As}} ->
-		    {value, {bound, Bound1}} = lists:keysearch(bound, 1,As),
-		    {value, {free, Free1}} = lists:keysearch(free, 1,As),
-		    {value, {def, Def1}} = lists:keysearch(def, 1,As),
-		    {value, {env, Env1}} = lists:keysearch(env, 1,As),
+		    {value, {bound, Bound1}} = lists:keysearch(bound, 1, As),
+		    {value, {free, Free1}} = lists:keysearch(free, 1, As),
+		    {value, {def, Def1}} = lists:keysearch(def, 1, As),
+		    {value, {env, Env1}} = lists:keysearch(env, 1, As),
 		    {ann_bindings(Tree, Env1, Bound1, Free1, Def1), Bound1, Free1};
-		_ -> 
+		_ ->
 		    Bound = [{V, P}],
 		    Free = [],
 		    Def = [P],
 		    {ann_bindings(Tree, Env, Bound, Free, Def), Bound, Free}
 	    end;
 	match_expr ->
-	  %% Alias pattern
-	  P = refac_syntax:match_expr_pattern(Tree),
-	  {P1, Bound1, Free1} = vann_pattern(P, Env, Ms, VI, Pid),
-	  E = refac_syntax:match_expr_body(Tree),
-	  {E1, Bound2, Free2} = vann_pattern(E, Env, Ms, VI, Pid),
-	  Bound = ordsets:union(Bound1, Bound2),
-	  Free = ordsets:union(Free1, Free2),
-	  Tree1 = rewrite(Tree, refac_syntax:match_expr(P1, E1)),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
-      macro ->
-	  %% The macro name must be ignored. The arguments are treated
-	  %% as patterns.
-	  {As, {Bound, Free}} = case
-				  refac_syntax:macro_arguments(Tree)
-				    of
-				  none -> {none, {[], []}};
-				  As1 -> vann_patterns(As1, Env, Ms, VI, Pid)
-				end,
-	  N = refac_syntax:macro_name(Tree),
-	  Tree1 = rewrite(Tree, refac_syntax:macro(N, As)),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
-      _Type ->
-	  F = vann_patterns_join(Env, Ms, VI, Pid),
-	    {Tree1, {Bound, Free}} = mapfold_subtrees(F, {[], []},Tree),
-	  {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
+	    vann_alias_pattern(Tree, Env, Ms, VI, Pid);
+	macro ->
+	    %% The macro name must be ignored. The arguments are treated
+	    %% as patterns.
+	    {As, {Bound, Free}} = case refac_syntax:macro_arguments(Tree) of
+				      none -> {none, {[], []}};
+				      As1 -> vann_patterns(As1, Env, Ms, VI, Pid)
+				  end,
+	    N = refac_syntax:macro_name(Tree),
+	    Tree1 = rewrite(Tree, refac_syntax:macro(N, As)),
+	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free};
+	_Type ->
+	    F = vann_patterns_join(Env, Ms, VI, Pid),
+	    {Tree1, {Bound, Free}} = ast_traverse_api:mapfold_subtrees(F, {[], []}, Tree),
+	    {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}
     end.
+
+vann_alias_pattern(Tree, Env, Ms, VI, Pid) ->
+    P = refac_syntax:match_expr_pattern(Tree),
+    {P1,Bound1,Free1} = vann_pattern(P,Env,Ms,VI,Pid),
+    E = refac_syntax:match_expr_body(Tree),
+    {E1,Bound2,Free2} = vann_pattern(E,Env,Ms,VI,Pid),
+    Bound = ordsets:union(Bound1,Bound2),
+    Free = ordsets:union(Free1,Free2),
+    Tree1 = rewrite(Tree,refac_syntax:match_expr(P1,E1)),
+    {ann_bindings(Tree1,Env,Bound,Free),Bound,Free}.
+
 
 vann_patterns_join(Env, Ms, VI, Pid) ->
     fun (T, {Bound, Free}) ->
@@ -908,7 +778,7 @@ vann_define(D, Env, Ms, VI, Pid) ->
     {MacroBody1, {_Bound1, _Free1}} = vann_body(MacroBody, Env1, Ms, VI, Pid),
     MacroBody2 = adjust_define_body(MacroBody1, Env1),
     D1 = rewrite(D, refac_syntax:attribute(Name, [MacroHead1| MacroBody2])),
-    {ann_bindings(D1, Env, [], []), [], []}.   
+    {ann_bindings(D1, Env, [], []), [], []}.
 
 adjust_define_body(Body, Env) ->
     F = fun (Tree1) ->
@@ -920,7 +790,7 @@ adjust_define_body(Body, Env) ->
 				%% apply occurrence
 				Bound = [],
 				Free = [{V, L}],
-				Def =[L],
+				Def = [L],
 				ann_bindings(Tree1, Env, Bound, Free, Def);
 			    false ->
 				%% Free occurrence; 
@@ -929,27 +799,16 @@ adjust_define_body(Body, Env) ->
 				Def = [?DEFAULT_LOC],
 				ann_bindings(Tree1, Env, Bound, Free, Def)
 			end;
-		   _  -> Tree1
+		    _ -> Tree1
 		end
 	end,
-   lists:map(fun(T) ->map(F, T) end, Body).
-	   
+    lists:map(fun (T) -> ast_traverse_api:map(F, T) end, Body).
+
 vann_clause(C, Env, Ms, VI, Pid) ->
     init_env_process(Pid),
     {Ps, {Bound1, Free1}} =
 	vann_patterns(refac_syntax:clause_patterns(C), Env, Ms, VI, Pid),
-    Env1 = ordsets:union(Env, Bound1),
-    %% Guards cannot add bindings
-    {G1, _, Free2} = case refac_syntax:clause_guard(C) of
-		       none -> {none, [], []};
-		       G -> vann(G, Env1, Ms, VI, Pid)
-		     end,
-    {Es, {Bound2, Free3}} =
-	vann_body(refac_syntax:clause_body(C), Env1, Ms, VI, Pid),
-    Bound = ordsets:union(Bound1, Bound2),
-    Free = ordsets:union(Free1,
-			 ordsets:subtract(ordsets:union(Free2, Free3), Bound1)),
-    Tree1 = rewrite(C, refac_syntax:clause(Ps, G1, Es)),
+    {Tree1, Bound, Free} = vann_clause_1(C, Ps, Ms, VI, Pid, Bound1,Free1, Env),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
 
 vann_fun_expr_clause(C, Env, Ms, VI, Pid) ->
@@ -957,19 +816,24 @@ vann_fun_expr_clause(C, Env, Ms, VI, Pid) ->
 	vann_fun_expr_patterns(refac_syntax:clause_patterns(C),
 			       Env, Ms, VI, Pid),
     Env0 = [{V, P} || {V, P} <- Env, lists:keysearch(V, 1, Bound1) == false],
-    Env1 = ordsets:union(Env0, Bound1),
-    %% Guards cannot add bindings
-    {G1, _, Free2} = case refac_syntax:clause_guard(C) of
-		       none -> {none, [], []};
-		       G -> vann(G, Env1, Ms, VI, Pid)
-		     end,
-    {Es, {Bound2, Free3}} =
-	vann_body(refac_syntax:clause_body(C), Env1, Ms, VI, Pid),
-    Bound = ordsets:union(Bound1, Bound2),
-    Free = ordsets:union(Free1,
-			 ordsets:subtract(ordsets:union(Free2, Free3), Bound1)),
-    Tree1 = rewrite(C, refac_syntax:clause(Ps, G1, Es)),
+    {Tree1, Bound, Free} = vann_clause_1(C, Ps, Ms, VI, Pid, Bound1, Free1,Env0),
     {ann_bindings(Tree1, Env, Bound, Free), Bound, Free}.
+
+vann_clause_1(Clause, Pats, Ms, VI, Pid, Bound, Free, Env) ->
+    Env1 = ordsets:union(Env,Bound),
+    %% Guards cannot add bindings
+    {G1,_,Free1} = case refac_syntax:clause_guard(Clause) of
+		       none -> {none,[],[]};
+		       G -> vann(G,Env1,Ms,VI,Pid)
+		   end,
+    {Es,{Bound2,Free2}} =
+	vann_body(refac_syntax:clause_body(Clause),Env1,Ms,VI,Pid),
+    Bound3 = ordsets:union(Bound,Bound2),
+    Free3 = ordsets:union(Free,
+			  ordsets:subtract(ordsets:union(Free1,Free2),Bound)),
+    NewClause = rewrite(Clause,refac_syntax:clause(Pats,G1,Es)),
+    {NewClause, Bound3, Free3}.
+
 
 vann_clauses_join(Env, Ms, VI, Pid) ->
     fun (C, {Bound, Free}) ->
@@ -1036,9 +900,9 @@ get_value(Pid, DefPos) ->
     Pid ! {self(), get, DefPos},
     receive
 	{Pid, V} ->
-	    V;
-	_Other ->
-	    throw({error, "Wrangler error: unexpected message"})    
+            V;
+	_Other -> 
+            false
     end.
 
 add_value(Pid, {DefPos, V}) ->
@@ -1063,8 +927,7 @@ env_loop(Env) ->
 	init ->
 	    env_loop([]);
 	stop ->
-	   %% refac_io:format("process stoped.\n"),
-	    ok
+            ok
     end.
 
 
@@ -1090,48 +953,53 @@ is_bound_var(P) ->
     end.
 
 cons_prop_match_expr(Tree,Pid) ->
-    E = refac_syntax:match_expr_body(Tree),
+    E0 = refac_syntax:match_expr_body(Tree),
+    E = case refac_syntax:type(E0) of
+            match_expr ->
+                cons_prop_match_expr(E0, Pid);
+            _ ->
+                E0
+        end,
     P = refac_syntax:match_expr_pattern(Tree),
-    case refac_syntax:is_literal(E) orelse refac_syntax:type(E)==list of 
-	true ->
+    As =refac_syntax:get_ann(E),
+    case refac_syntax:is_literal(E) orelse refac_syntax:type(E)==list  orelse 
+        lists:keysearch(value,1, As)=/=false of
+      	true ->
 	    case is_bound_var(P) of
 		true ->
 		    case lists:keysearch(def, 1, refac_syntax:get_ann(P)) of
 			{value, {def, DefPos}} ->
 			    Val = literal_value_or_length(E),
 			    add_value(Pid, {DefPos, {Val, refac_syntax:get_pos(E)}}),
-			    P1 = refac_syntax:add_ann({value, {Val, refac_syntax:get_pos(E)}}, P),
-			    rewrite(Tree, refac_syntax:match_expr(P1, E));
-		  false ->
-		      Tree
-		end;
-	    _ -> Tree
-	  end;
-      false ->
-	  case refac_syntax:type(E) of
-	    match_expr ->
-		E1 = cons_prop_match_expr(E, Pid),
-		P1 = refac_syntax:match_expr_pattern(E1),
-		  case lists:keysearch(value, 1, refac_syntax:get_ann(P1)) of
-		      {value, {value, V}} ->
-			  P2 = refac_syntax:add_ann({value, V}, P),
-			  rewrite(Tree, refac_syntax:match_expr(P2, E));
-		      _ -> Tree
-		  end;
-	      _ ->
-		  Tree
-	  end
+                            V ={Val, refac_syntax:get_pos(E)},
+			    P1 = refac_util:update_ann(P,{value, V}),
+                            Tree1=rewrite(Tree,refac_syntax:match_expr(P1, E)),
+			    refac_util:update_ann(Tree1,{value, V});
+                        false ->
+                            Tree
+                    end;
+                _ -> Tree
+            end;
+        false ->
+            Tree
     end.
+     
 	
 
 literal_value_or_length(E) ->
-    case refac_syntax:is_literal(E) of 
-	true ->
-	    {literal, refac_syntax:concrete(E)};
-	false ->
-	    {list, refac_syntax:list_length(E)}
+    case refac_syntax:type(E) of
+        list ->
+            {list, refac_syntax:list_length(E)};
+        _ -> case refac_syntax:is_literal(E) of
+                 true ->
+                     {literal, refac_syntax:concrete(E)};
+                 false ->
+                     As = refac_syntax:get_ann(E),
+                     {value, {value, {V,_}}} = lists:keysearch(value, 1, As),
+                     V
+             end
     end.
-  
+          
 %% =====================================================================
 %% @spec is_fail_expr(Tree::syntaxTree()) -> bool()
 %%
@@ -2151,8 +2019,11 @@ function_name_expansions(A, Name, Ack) ->
 %% @doc Removes all comments from all nodes of a syntax tree. All other
 %% attributes (such as position information) remain unchanged.
 
+
 strip_comments(Tree) ->
-    map(fun (T) -> refac_syntax:remove_comments(T) end, Tree).
+    ast_traverse_api:map(fun
+			     (T) -> refac_syntax:remove_comments(T)
+			 end, Tree).
 
 %% =====================================================================
 %% @spec to_comment(Tree) -> syntaxTree()
@@ -2329,8 +2200,8 @@ module_name_to_atom(M) ->
 %% This splits lines at line terminators and expands tab characters to
 %% spaces. The width of a tab is assumed to be 8.
 
-% split_lines(Cs) ->
-%     split_lines(Cs, "").
+split_lines(Cs) ->
+    split_lines(Cs, "").
 
 split_lines(Cs, Prefix) -> split_lines(Cs, Prefix, 0).
 
@@ -2372,17 +2243,18 @@ remove_whites(Toks) ->
     lists:flatmap(F, Toks).
 
 get_var_info(Tree) ->
-    F = fun(T, S) ->
+    F = fun (T, S) ->
 		case refac_syntax:type(T) of
 		    variable ->
 			V = refac_syntax:variable_name(T),
 			P = refac_syntax:get_pos(T),
 			As = refac_syntax:get_ann(T),
-			ordsets:add_element({{V, P}, As}, S);		    
+			ordsets:add_element({{V, P}, As}, S);
 		    _ -> S
 		end
 	end,
-    fold(F, [], Tree).
+    ast_traverse_api:fold(F, [], Tree).
+
 %% Adjust the locations of F and A in an implicit function application (fun F/A)
 %% to their actual occurrence locations. Originally, both of their locations refer
 %% to that of the keyword 'fun'.
@@ -2391,112 +2263,92 @@ adjust_locations(Form, []) -> Form;
 adjust_locations(Form, Toks) ->
     F = fun (T) ->
 		case refac_syntax:type(T) of
-		  attribute ->
-		      Name = refac_syntax:attribute_name(T),
-		      case refac_syntax:type(Name) == atom andalso refac_syntax:atom_value(Name) == file of
-			true ->
-			    [File, Data] = refac_syntax:attribute_arguments(T),
-			    Pos = refac_syntax:get_pos(File),
-			    Toks1 = lists:dropwhile(fun (B) -> element(2, B) =< Pos orelse element(1, B) =/= string
-						    end, Toks),
-			    StrTok = hd(Toks1),
-			    StrPos = element(2, StrTok),
-			    {_, EndPos} = refac_misc:get_start_end_loc(File),
-			    File1 = refac_syntax:add_ann({toks, [StrTok]},
-							 refac_misc:update_ann(refac_syntax:set_pos(File, StrPos),
-									       {range, {StrPos, EndPos}})),
-			    Toks2 = lists:dropwhile(fun (B) -> element(1, B) =/= integer end, Toks1),
-			    Data1 = refac_syntax:set_pos(Data, element(2, hd(Toks2))),
-			    refac_misc:rewrite(T, refac_syntax:attribute(Name, [File1, Data1]));
-			_ -> T
-		      end;
-		  implicit_fun ->
+                    implicit_fun ->
 			Pos = refac_syntax:get_pos(T),
 			Name = refac_syntax:implicit_fun_name(T),
 			case refac_syntax:type(Name) of
 			    arity_qualifier ->
-			    Fun = refac_syntax:arity_qualifier_body(Name),
-			    A = refac_syntax:arity_qualifier_argument(Name),
-			    case {refac_syntax:type(Fun), refac_syntax:type(A)} of
-			      {atom, integer} ->
-				    Toks1 = lists:dropwhile(fun (B) -> element(2, B) =/= Pos end, Toks),
-				    Fun1 = refac_syntax:atom_value(Fun),
-				    Toks2 = lists:dropwhile(fun (B) ->
-								  case B of
-								    {atom, _, Fun1} -> false;
-								    _ -> true
-								  end
-							  end,
-							  Toks1),
-				  P = element(2, refac_misc:ghead("refac_util: adjust_locations,P", Toks2)),
-				  Fun2 = refac_syntax:set_pos(Fun, P),
-				  Toks3 = lists:dropwhile(fun (B) ->
-								  case B of
-								    {integer, _, _} -> false;
-								    _ -> true
-								  end
-							  end,
-							  Toks2),
-				  A2 = refac_syntax:set_pos(A,
-							    element(2, refac_misc:ghead("refac_util:adjust_locations:A2", Toks3))),
-				  rewrite(T, refac_syntax:implicit_fun(refac_syntax:set_pos(rewrite(Name,
-												    refac_syntax:arity_qualifier(Fun2, A2)), P)));
-			      _ -> T
-			    end;
-			_ -> T
-		      end;
-		  macro -> {L, C} = refac_syntax:get_pos(T),
-			   Toks1 = lists:reverse(lists:takewhile(fun (B) -> element(2, B) =/= {L, C} end, Toks)),
-			   Toks2 = lists:dropwhile(fun (B) -> case B of
-								{whitespace, _, _} -> true;
-								_ -> false
-							      end
-						   end, Toks1),
-			   case Toks2 of
-			     [] -> refac_syntax:add_ann({with_bracket, false}, T);
-			     [H| _] -> case H of
-					 {'(', _} -> refac_syntax:add_ann({with_bracket, true}, T);
-					 _ -> refac_syntax:add_ann({with_bracket, false}, T)
-				       end
-			   end;
-		  _ -> T
+				Fun = refac_syntax:arity_qualifier_body(Name),
+				A = refac_syntax:arity_qualifier_argument(Name),
+				case {refac_syntax:type(Fun), refac_syntax:type(A)} of
+				    {atom, integer} ->
+					Toks1 = lists:dropwhile(fun (B) -> element(2, B) =/= Pos end, Toks),
+					Fun1 = refac_syntax:atom_value(Fun),
+					Toks2 = lists:dropwhile(fun (B) ->
+									case B of
+									    {atom, _, Fun1} -> false;
+									    _ -> true
+									end
+								end,
+								Toks1),
+					{L0,C0} = element(2, refac_util:ghead("refac_util: adjust_locations,P", Toks2)),
+					Fun2 = refac_syntax:set_pos(Fun, {L0,C0}),
+                                        AtomLen= length(refac_syntax:atom_literal(Fun)),
+                                        Fun3 = refac_util:update_ann(Fun2, {range, {{L0,C0}, {L0, C0+AtomLen-1}}}),
+					Toks3 = lists:dropwhile(fun (B) ->
+									case B of
+									    {integer, _, _} -> false;
+									    _ -> true
+									end
+								end,
+								Toks2),
+                                        {L,C} = element(2, refac_util:ghead("refac_util:adjust_locations:A2", Toks3)),
+					A2 = refac_syntax:set_pos(A, {L,C}),
+                                        Len =length(refac_syntax:integer_literal(A)),
+                                        A3=refac_util:update_ann(A2, {range, {{L, C}, {L, C + Len - 1}}}),
+                                        AQ =refac_syntax:set_pos(
+                                              rewrite(Name,
+                                                      refac_syntax:arity_qualifier(Fun3, A3)), {L0, C0}),
+                                        AQ1=refac_util:update_ann(AQ,{range, {{L0,C0}, {L, C+Len-1}}}),
+					T1=rewrite(T, refac_syntax:implicit_fun(AQ1)),
+                                        refac_util:update_ann(T1, {range, {Pos, {L, C+Len-1}}});                                    
+				    _ -> T
+				end;
+			    _ -> T
+			end;
+		    macro ->
+                        refac_syntax:add_ann(
+                          {with_bracket, 
+                           refac_prettypr:has_parentheses(T, Toks)}, T);
+                    _ -> T
 		end
 	end,
-    refac_syntax_lib:map(F, Form).
+    ast_traverse_api:map(F, Form).
 
 %% =====================================================================
 %% @spec update_var_define_locations(Node::syntaxTree()) -> syntaxTree()
 %% @doc  Update the defining locations of those binding occurrences which are
 %% associated with more than one binding occurrence.
 
+
 update_var_define_locations(Node) ->
     F1 = fun (T, S) ->
 		 case refac_syntax:type(T) of
-		   variable ->
-		       R = lists:keysearch(def, 1, refac_syntax:get_ann(T)),
-		       case R of
-			 {value, {def, P}} -> S ++ [P];
-			 _ -> S
-		       end;
-		   _ -> S
+		     variable ->
+			 R = lists:keysearch(def, 1, refac_syntax:get_ann(T)),
+			 case R of
+			     {value, {def, P}} -> S ++ [P];
+			     _ -> S
+			 end;
+		     _ -> S
 		 end
 	 end,
-    DefineLocs = lists:usort(refac_syntax_lib:fold(F1, [], Node)),
+    DefineLocs = lists:usort(ast_traverse_api:fold(F1, [], Node)),
     F = fun (T) ->
 		case refac_syntax:type(T) of
-		  variable ->
-		      case lists:keysearch(def, 1, refac_syntax:get_ann(T)) of
-			{value, {def, Define}} ->
-			    Defs = lists:merge([V1
-						|| V1 <- DefineLocs,
-						   ordsets:intersection(ordsets:from_list(V1), ordsets:from_list(Define)) /= []]),
-			    refac_misc:update_ann(T, {def, lists:usort(Defs)});
-			_ -> T
-		      end;
-		  _ -> T
+		    variable ->
+			case lists:keysearch(def, 1, refac_syntax:get_ann(T)) of
+			    {value, {def, Define}} ->
+				Defs = lists:merge([V1
+						    || V1 <- DefineLocs,
+						       ordsets:intersection(ordsets:from_list(V1), ordsets:from_list(Define)) /= []]),
+				refac_util:update_ann(T, {def, lists:usort(Defs)});
+			    _ -> T
+			end;
+		    _ -> T
 		end
 	end,
-    refac_syntax_lib:map(F, Node).
+    ast_traverse_api:map(F, Node).
 
 update_ann(Tree, {Key, Val}) ->
     As0 = refac_syntax:get_ann(Tree),

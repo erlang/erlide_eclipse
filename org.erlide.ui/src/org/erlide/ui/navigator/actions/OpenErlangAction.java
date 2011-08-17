@@ -14,9 +14,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.OpenResourceAction;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlExternal;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlExternal;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
 import com.google.common.collect.Sets;
@@ -49,11 +49,6 @@ public class OpenErlangAction extends Action {
         openResourceAction = new OpenResourceAction(shellProvider);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#isEnabled()
-     */
     @Override
     public boolean isEnabled() {
         selectedElement = null;
@@ -80,11 +75,6 @@ public class OpenErlangAction extends Action {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
 

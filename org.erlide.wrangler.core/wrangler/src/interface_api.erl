@@ -94,13 +94,13 @@ pos_to_fun_def(Node, Pos) ->
 
 pos_to_fun_def_1(Node, Pos) ->
     case refac_syntax:type(Node) of
-      function ->
-	  {S, E} = refac_misc:get_start_end_loc(Node),
-	  if (S =< Pos) and (Pos =< E) ->
-		 {Node, true};
-	     true -> {[], false}
-	  end;
-      _ -> {[], false}
+	function ->
+	    {S, E} = refac_util:get_start_end_loc(Node),
+	    if (S =< Pos) and (Pos =< E) ->
+		   {Node, true};
+	       true -> {[], false}
+	    end;
+	_ -> {[], false}
     end.
 
 
@@ -139,28 +139,28 @@ pos_to_var_name(Node, UsePos) ->
 pos_to_var_name_1(Node, _Pos = {Ln, Col}) ->
     case refac_syntax:type(Node) of
       variable ->
-	  {Ln1, Col1} = refac_syntax:get_pos(Node),
-	  case (Ln == Ln1) and (Col1 =< Col) and
+            {Ln1, Col1} = refac_syntax:get_pos(Node),
+            case (Ln == Ln1) and (Col1 =< Col) and
 		 (Col =< Col1 + length(atom_to_list(refac_syntax:variable_name(Node))) - 1)
-	      of
-	    true ->
-		case lists:keysearch(def, 1, refac_syntax:get_ann(Node)) of
-		  {value, {def, DefinePos}} ->
-			{value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
+            of
+                true ->
+                    case lists:keysearch(def, 1, refac_syntax:get_ann(Node)) of
+                        {value, {def, DefinePos}} ->
+                            {value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
 			C1 =case C of 
 				{macro_name, _, _} -> macro_name;
 				_ -> C
 			    end,
-			{{refac_syntax:variable_name(Node), DefinePos, C1}, true};
-		    false ->
+                            {{refac_syntax:variable_name(Node), DefinePos, C1}, true};
+                        false ->
 			{value, {category, C}} = lists:keysearch(category, 1, refac_syntax:get_ann(Node)),
-			C1 =case C of 
-				{macro_name, _, _} -> macro_name;
-				_ -> C
-			    end,
-			{{refac_syntax:variable_name(Node), [?DEFAULT_LOC], C1}, true}
-		end;
-	      false -> {[], false}
+                            C1 =case C of 
+                                    {macro_name, _, _} -> macro_name;
+                                    _ -> C
+                                end,
+                            {{refac_syntax:variable_name(Node), [?DEFAULT_LOC], C1}, true}
+                    end;
+                false -> {[], false}
 	  end;
 	_ -> {[], false}
     end.
@@ -216,21 +216,21 @@ pos_to_expr(Tree, Start, End) ->
     end.
 
 pos_to_expr_1(Tree, Start, End) ->
-    {S, E} = refac_misc:get_start_end_loc(Tree),
+    {S, E} = refac_util:get_start_end_loc(Tree),
     if (S >= Start) and (E =< End) ->
-	   case refac_misc:is_expr(Tree) of
-	     true ->
+	   case refac_util:is_expr(Tree) of
+	       true ->
 		   [Tree];
-	     _ ->
-		 Ts = refac_syntax:subtrees(Tree),
-		 R0 = [[pos_to_expr_1(T, Start, End) || T <- G] || G <- Ts],
-		 lists:append(R0)
+	       _ ->
+		   Ts = refac_syntax:subtrees(Tree),
+		   R0 = [[pos_to_expr_1(T, Start, End) || T <- G] || G <- Ts],
+		   lists:append(R0)
 	   end;
        (S > End) or (E < Start) -> [];
        (S < Start) or (E > End) ->
 	   Ts = refac_syntax:subtrees(Tree),
 	   R0 = [[pos_to_expr_1(T, Start, End) || T <- G] || G <- Ts],
-	    lists:append(R0);
+	   lists:append(R0);
        true -> []
     end.
 
@@ -239,23 +239,23 @@ pos_to_expr_1(Tree, Start, End) ->
 %%-spec(pos_to_expr_list(Tree::syntaxTree(), Start::pos(), End::pos()) ->
 %%	     [syntaxTree()]).
 pos_to_expr_list(AnnAST, Start, End) ->
-    Es = pos_to_expr_list_1(AnnAST, Start, End, fun refac_misc:is_expr_or_match/1),
+    Es = pos_to_expr_list_1(AnnAST, Start, End, fun refac_util:is_expr_or_match/1),
     get_expr_list(Es).
 
 pos_to_expr_list_1(Tree, Start, End, F) ->
-    {S, E} = refac_misc:get_start_end_loc(Tree),
+    {S, E} = refac_util:get_start_end_loc(Tree),
     if (S >= Start) and (E =< End) ->
-	    case F(Tree) of
+	   case F(Tree) of
 	       true ->
 		   [Tree];
 	       _ ->
 		   Ts = refac_syntax:subtrees(Tree),
 		   [[lists:append(pos_to_expr_list_1(T, Start, End, F)) || T <- G]
-		  || G <- Ts]
+		    || G <- Ts]
 	   end;
        (S > End) or (E < Start) -> [];
        (S < Start) or (E > End) ->
-	    Ts = refac_syntax:subtrees(Tree),
+	   Ts = refac_syntax:subtrees(Tree),
 	   [[lists:append(pos_to_expr_list_1(T, Start, End, F)) || T <- G]
 	    || G <- Ts]
     end.
@@ -285,10 +285,9 @@ get_expr_list_1(L) ->
 	  get_expr_list(L)
     end.
 
-
 pos_to_expr_or_pat_list(AnnAST, Start, End) ->
     F = fun
-	  (E) -> refac_misc:is_expr_or_match(E) orelse refac_misc:is_pattern(E)
+	    (E) -> refac_util:is_expr_or_match(E) orelse refac_util:is_pattern(E)
 	end,
     Es = pos_to_expr_list_1(AnnAST, Start, End, F),
     get_expr_list(Es).
@@ -305,17 +304,17 @@ expr_to_fun(Tree, Exp) ->
       [H| _T] -> {ok, H};
       _ -> {error, none}
     end.
-    
+
 expr_to_fun_1(Tree, Exp) ->
-    {Start, End} = refac_misc:get_start_end_loc(Exp),
-    {S, E} = refac_misc:get_start_end_loc(Tree),
+    {Start, End} = refac_util:get_start_end_loc(Exp),
+    {S, E} = refac_util:get_start_end_loc(Tree),
     if (S < Start) and (E >= End) ->
 	   case refac_syntax:type(Tree) of
-	     function -> [Tree];
-	     _ ->
-		 Ts = refac_syntax:subtrees(Tree),
-		 R0 = [[expr_to_fun_1(T, Exp) || T <- G] || G <- Ts],
-		 lists:flatten(R0)
+	       function -> [Tree];
+	       _ ->
+		   Ts = refac_syntax:subtrees(Tree),
+		   R0 = [[expr_to_fun_1(T, Exp) || T <- G] || G <- Ts],
+		   lists:flatten(R0)
 	   end;
        true -> []
     end.

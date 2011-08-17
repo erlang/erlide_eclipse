@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.core.erlang.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 
 /**
  * Stores Erlide backends for wrangler , and has interface to access them
@@ -19,30 +19,32 @@ import org.erlide.core.erlang.ErlangCore;
  * @version %I%, %G%
  */
 public class WranglerBackendManager {
-	static WranglerRefactoringBackend refactoringBackend = null;
-	static WranglerSyntaxBackend syntaxBackend = null;
+    static WranglerRefactoringBackend refactoringBackend = null;
+    static WranglerSyntaxBackend syntaxBackend = null;
 
-	/**
-	 * Returns an Erlide backend which is used to run Wrangler refactorings
-	 * 
-	 * @return Erlide backend
-	 */
-	public static WranglerRefactoringBackend getRefactoringBackend() {
-		if (refactoringBackend == null)
-			refactoringBackend = new WranglerRefactoringBackend(ErlangCore
-					.getBackendManager().getIdeBackend());
-		return refactoringBackend;
-	}
+    /**
+     * Returns an Erlide backend which is used to run Wrangler refactorings
+     * 
+     * @return Erlide backend
+     */
+    public static WranglerRefactoringBackend getRefactoringBackend() {
+        if (refactoringBackend == null) {
+            refactoringBackend = new WranglerRefactoringBackend(BackendCore
+                    .getBackendManager().getIdeBackend());
+        }
+        return refactoringBackend;
+    }
 
-	/**
-	 * Returns an Erlide backend which is used for sending syntax RPCs
-	 * 
-	 * @return Erlide backend
-	 */
-	public static WranglerSyntaxBackend getSyntaxBackend() {
-		if (syntaxBackend == null)
-			syntaxBackend = new WranglerSyntaxBackend(ErlangCore
-					.getBackendManager().getIdeBackend());
-		return syntaxBackend;
-	}
+    /**
+     * Returns an Erlide backend which is used for sending syntax RPCs
+     * 
+     * @return Erlide backend
+     */
+    public static WranglerSyntaxBackend getSyntaxBackend() {
+        if (syntaxBackend == null) {
+            syntaxBackend = new WranglerSyntaxBackend(BackendCore
+                    .getBackendManager().getIdeBackend());
+        }
+        return syntaxBackend;
+    }
 }

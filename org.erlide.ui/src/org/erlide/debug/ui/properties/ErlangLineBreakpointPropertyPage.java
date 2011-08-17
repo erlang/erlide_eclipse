@@ -11,10 +11,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.debug.IErlangBreakpoint;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.debug.ui.utils.BreakpointUtils;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.IErlangBreakpoint;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 public class ErlangLineBreakpointPropertyPage extends
@@ -34,13 +34,6 @@ public class ErlangLineBreakpointPropertyPage extends
     // private Button fMethodEntry;
     // private Button fMethodExit;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jdt.internal.debug.ui.propertypages.JavaBreakpointPage#doStore
-     * ()
-     */
     @Override
     protected void doStore() throws CoreException {
         final IErlangBreakpoint breakpoint = getBreakpoint();
@@ -85,12 +78,6 @@ public class ErlangLineBreakpointPropertyPage extends
         // }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @seeorg.eclipse.jdt.internal.debug.ui.propertypages.JavaBreakpointPage#
-     * createTypeSpecificLabels(org.eclipse.swt.widgets.Composite)
-     */
     @Override
     protected void createTypeSpecificLabels(final Composite parent) {
         createLabel(parent, "Module:");
@@ -280,33 +267,16 @@ public class ErlangLineBreakpointPropertyPage extends
         // fConditionHasChanged.setEnabled(enabled);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.DialogPage#convertHeightInCharsToPixels(int)
-     */
     @Override
     public int convertHeightInCharsToPixels(final int chars) {
         return super.convertHeightInCharsToPixels(chars);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.DialogPage#convertWidthInCharsToPixels(int)
-     */
     @Override
     public int convertWidthInCharsToPixels(final int chars) {
         return super.convertWidthInCharsToPixels(chars);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.IDialogPage#dispose()
-     */
     @Override
     public void dispose() {
         if (fConditionEditor != null) {
@@ -315,13 +285,6 @@ public class ErlangLineBreakpointPropertyPage extends
         super.dispose();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.preference.PreferencePage#createControl(org.eclipse
-     * .swt.widgets.Composite)
-     */
     @Override
     public void createControl(final Composite parent) {
         super.createControl(parent);

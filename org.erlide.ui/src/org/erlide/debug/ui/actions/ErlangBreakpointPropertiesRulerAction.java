@@ -2,7 +2,6 @@ package org.erlide.debug.ui.actions;
 
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.ui.actions.RulerBreakpointAction;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -11,7 +10,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.runtime.debug.IErlangBreakpoint;
+import org.erlide.core.debug.IErlangBreakpoint;
 
 /**
  * Presents the standard properties dialog to configure the attibutes of a Java

@@ -29,27 +29,27 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  */
 public class IntroduceMacroRefactoring extends SimpleOneStepWranglerRefactoring {
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		// Guess, no initial condition
-		return new RefactoringStatus();
-	}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        // Guess, no initial condition
+        return new RefactoringStatus();
+    }
 
-	@Override
-	public String getName() {
-		return "Introduce macro";
-	}
+    @Override
+    public String getName() {
+        return "Introduce macro";
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		IErlMemberSelection sel = (IErlMemberSelection) selection;
-		// TODO: extend it
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        // TODO: extend it
 
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"new_macro_eclipse", "sxxsxi", sel.getFilePath(),
-				sel.getSelectionRange().getStartPos(),
-				sel.getSelectionRange().getEndPos(), this.userInput,
-				sel.getSearchPath(), GlobalParameters.getTabWidth());
-	}
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "new_macro_eclipse", "sxxsxi", sel.getFilePath(),
+                sel.getSelectionRange().getStartPos(),
+                sel.getSelectionRange().getEndPos(), userInput,
+                sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
 }

@@ -72,11 +72,11 @@ public class ActionMessages extends NLS {
 
     public static final String ErlangBreakpointPropertiesRulerAction_Breakpoint__Properties_1 = "Breakpoint Properties";
 
-    public static final String ToggleLinkingAction_label = "Toggle linking";
+    public static final String ToggleLinkingAction_label = "Link with Editor";
 
-    public static final String ToggleLinkingAction_description = "Toggle linking";
+    public static final String ToggleLinkingAction_description = "Link with Editor";
 
-    public static final String ToggleLinkingAction_tooltip = "Toggle linking";
+    public static final String ToggleLinkingAction_tooltip = "Link with Editor";
 
     public static final String OpenAction_label = "Open";
 }

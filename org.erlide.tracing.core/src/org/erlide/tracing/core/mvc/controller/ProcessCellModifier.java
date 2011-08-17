@@ -17,26 +17,27 @@ public class ProcessCellModifier implements ICellModifier {
 
     private final TableViewer tableViewer;
 
-    public ProcessCellModifier(TableViewer tableViewer) {
+    public ProcessCellModifier(final TableViewer tableViewer) {
         this.tableViewer = tableViewer;
     }
 
-    public boolean canModify(Object element, String property) {
+    public boolean canModify(final Object element, final String property) {
         // when cell from processes column was clicked
         try {
-            ProcessColumn column = ProcessColumn.valueOf(property);
+            final ProcessColumn column = ProcessColumn.valueOf(property);
             // only column with checkbox can be modified
-            if (!ProcessColumn.SELECTED.equals(column))
+            if (!ProcessColumn.SELECTED.equals(column)) {
                 return false;
-        } catch (Exception e) {
+            }
+        } catch (final Exception e) {
         }
 
         // when cell from flag column was clicked
         return true;
     }
 
-    public Object getValue(Object element, String property) {
-        TracedProcess process = (TracedProcess) element;
+    public Object getValue(final Object element, final String property) {
+        final TracedProcess process = (TracedProcess) element;
 
         try {
             switch (ProcessColumn.valueOf(property)) {
@@ -46,14 +47,17 @@ public class ProcessCellModifier implements ICellModifier {
                 return process.getName();
             case SELECTED:
                 return process.isSelected();
+            default:
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
         return process.hasFlag(ProcessFlag.valueOf(property));
     }
 
-    public void modify(Object element, String property, Object value) {
-        TracedProcess process = (TracedProcess) ((TableItem) element).getData();
+    public void modify(final Object element, final String property,
+            final Object value) {
+        final TracedProcess process = (TracedProcess) ((TableItem) element)
+                .getData();
 
         // processes column
         try {
@@ -62,15 +66,16 @@ public class ProcessCellModifier implements ICellModifier {
                 tableViewer.update(process, null);
             }
             return;
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
 
         // flag column
-        ProcessFlag flag = ProcessFlag.valueOf(property);
-        if ((Boolean) value)
+        final ProcessFlag flag = ProcessFlag.valueOf(property);
+        if ((Boolean) value) {
             process.setFlag(flag);
-        else
+        } else {
             process.unSetFlag(flag);
+        }
         tableViewer.update(process, null);
     }
 }

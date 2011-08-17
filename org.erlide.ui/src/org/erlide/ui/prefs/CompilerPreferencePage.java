@@ -40,17 +40,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.builder.CompilerPreferences;
-import org.erlide.core.builder.CompilerPreferencesConstants;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlModel;
-import org.erlide.core.erlang.IErlProject;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.backend.ErlBackend;
-import org.erlide.jinterface.backend.NoBackendException;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.CoreScope;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendException;
+import org.erlide.core.internal.backend.BackendHelper;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.services.builder.CompilerPreferences;
+import org.erlide.core.services.builder.CompilerPreferencesConstants;
+import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 public class CompilerPreferencePage extends PropertyPage implements
@@ -365,10 +365,10 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = CoreScope.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
-                    final IProject p = ep.getProject();
+                    final IProject p = ep.getWorkspaceProject();
                     if (hasProjectSpecificOptions(p)) {
                         projectsWithSpecifics.add(p);
                     }
@@ -436,19 +436,21 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     enum OptionStatus {
-        OK, ERROR, NO_RUNTIME
+        OK, @SuppressWarnings("hiding")
+        ERROR, NO_RUNTIME
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final ErlideBackend b = ErlangCore.getBackendManager().getIdeBackend();
-        try {
-            ErlBackend.parseTerm(b, string + " .");
-        } catch (final NoBackendException e) {
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        if (b == null) {
             return OptionStatus.NO_RUNTIME;
+        }
+        try {
+            BackendHelper.parseTerm(b, string + " .");
         } catch (final BackendException e) {
             try {
                 final String string2 = "[" + string + "].";
-                ErlBackend.parseTerm(b, string2);
+                BackendHelper.parseTerm(b, string2);
             } catch (final BackendException e1) {
                 return OptionStatus.ERROR;
             }

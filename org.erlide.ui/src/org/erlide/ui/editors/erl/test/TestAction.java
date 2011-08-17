@@ -6,15 +6,14 @@ package org.erlide.ui.editors.erl.test;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.core.erlang.ErlModelException;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.core.text.ErlangToolkit;
-import org.erlide.jinterface.util.ErlLogger;
-
-import erlang.ErlideScanner;
+import org.erlide.core.internal.model.erlang.ErlideScanner;
+import org.erlide.core.model.erlang.ErlangToolkit;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * @author jakob
@@ -30,11 +29,6 @@ public class TestAction extends TextEditorAction {
         this.module = module;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         super.run();
@@ -54,11 +48,11 @@ public class TestAction extends TextEditorAction {
 
         Set<IErlModule> deps;
         try {
-            deps = module.getDirectDependents();
+            deps = module.getDirectDependentModules();
             ErlLogger.debug(deps.toString());
-            deps = module.getAllDependents();
+            deps = module.getAllDependentModules();
             ErlLogger.debug(deps.toString());
-        } catch (final ErlModelException e) {
+        } catch (final CoreException e) {
             e.printStackTrace();
         }
 

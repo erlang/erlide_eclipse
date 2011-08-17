@@ -8,12 +8,12 @@ package org.erlide.wrangler.refactoring.ui.validator;
  */
 public class NormalDoulbeValidator implements IValidator {
 
-	public boolean isValid(String text) {
-		try {
-			Double val = Double.parseDouble(text);
-			return (val <= 1) && (val >= 0.1);
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    public boolean isValid(final String text) {
+        try {
+            final Double val = Double.parseDouble(text);
+            return val <= 1 && val >= 0.1;
+        } catch (final Exception e) {
+            return false;
+        }
+    }
 }

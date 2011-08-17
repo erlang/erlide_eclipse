@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.erlide.jinterface.backend.Backend;
-import org.erlide.runtime.backend.BackendManager;
-import org.erlide.runtime.backend.ErlideBackend;
+import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.tracing.core.TraceBackend;
 
 /**
@@ -31,10 +31,11 @@ public class NodeHelper {
      * @return <code>true</code> if node was started outside erlide,
      *         <code>false</code> otherwise
      */
-    public static boolean isExternal(String nodeName) {
-        for (Backend backend : getBackends(false)) {
-            if (backend.getFullNodeName().equals(nodeName))
+    public static boolean isExternal(final String nodeName) {
+        for (final IBackend backend : getBackends(false)) {
+            if (backend.getFullNodeName().equals(nodeName)) {
                 return false;
+            }
         }
         return true;
     }
@@ -48,22 +49,28 @@ public class NodeHelper {
      *            if nodes should be omitted
      * @return list of backends
      */
-    public static Collection<? extends Backend> getBackends(boolean ignore) {
-        if (!ignore)
-            return BackendManager.getDefault().getAllBackends();
+    public static Collection<? extends IBackend> getBackends(
+            final boolean ignore) {
+        if (!ignore) {
+            return BackendCore.getBackendManager().getAllBackends();
+        }
 
-        List<Backend> backends = new ArrayList<Backend>();
-        BackendManager backendManager = BackendManager.getDefault();
-        Set<Backend> ignored = new HashSet<Backend>();
-        Backend backend;
+        final List<IBackend> backends = new ArrayList<IBackend>();
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        final Set<IBackend> ignored = new HashSet<IBackend>();
+        IBackend backend;
 
-        if ((backend = backendManager.getIdeBackend()) != null)
+        if ((backend = backendManager.getIdeBackend()) != null) {
             ignored.add(backend);
-        if ((backend = TraceBackend.getInstance().getBackend(false)) != null)
+        }
+        if ((backend = TraceBackend.getInstance().getBackend(false)) != null) {
             ignored.add(backend);
-        for (ErlideBackend erlideBackend : BackendManager.getDefault().getAllBackends()) {
-            if (!ignored.contains(erlideBackend))
+        }
+        for (final IBackend erlideBackend : BackendCore.getBackendManager()
+                .getAllBackends()) {
+            if (!ignored.contains(erlideBackend)) {
                 backends.add(erlideBackend);
+            }
         }
         return backends;
     }

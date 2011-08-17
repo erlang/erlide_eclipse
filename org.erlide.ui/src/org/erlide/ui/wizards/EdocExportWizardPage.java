@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
@@ -66,7 +66,7 @@ public class EdocExportWizardPage extends WizardPage {
                 if (p.isAccessible()) {
                     IProjectNature n = null;
                     try {
-                        n = p.getNature(ErlangPlugin.NATURE_ID);
+                        n = p.getNature(ErlangCore.NATURE_ID);
                         if (n != null) {
                             ps.add(p);
                         }

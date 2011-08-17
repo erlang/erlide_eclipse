@@ -8,8 +8,8 @@ import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
-import org.erlide.jinterface.backend.BackendException;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.actions.IndentAction;
 
 public class ErlangTemplateContext extends DocumentTemplateContext {
@@ -59,7 +59,7 @@ public class ErlangTemplateContext extends DocumentTemplateContext {
         try {
             pattern = IndentAction.indentLines(0, 0, pattern, true,
                     whiteSpacePrefix);
-        } catch (final BackendException e) {
+        } catch (final RpcException e) {
             ErlLogger.error(e);
         }
         return new Template(template.getName(), template.getDescription(),

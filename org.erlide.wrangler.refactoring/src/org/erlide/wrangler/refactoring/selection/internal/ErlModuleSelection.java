@@ -11,8 +11,8 @@
 package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.IErlElement;
 
 /**
  * Represents an Erlang module which is selected by the user
@@ -21,31 +21,31 @@ import org.erlide.core.erlang.IErlModule;
  * @version %I%, %G%
  */
 public class ErlModuleSelection extends AbstractErlSelection {
-	protected IErlModule module;
+    protected IErlModule module;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param module
-	 *            Erlang module - Erlide representation
-	 * @param file
-	 *            file, which contains the module
-	 */
-	public ErlModuleSelection(final IErlModule module, final IFile file) {
-		this.module = module;
-		this.file = file;
-	}
+    /**
+     * Constructor
+     * 
+     * @param module
+     *            Erlang module - Erlide representation
+     * @param file
+     *            file, which contains the module
+     */
+    public ErlModuleSelection(final IErlModule module, final IFile file) {
+        this.module = module;
+        this.file = file;
+    }
 
-	public IErlElement getErlElement() {
-		return module;
-	}
+    public IErlElement getErlElement() {
+        return module;
+    }
 
-	public SelectionKind getDetailedKind() {
-		return getKind();
-	}
+    public SelectionKind getDetailedKind() {
+        return getKind();
+    }
 
-	public SelectionKind getKind() {
-		return SelectionKind.MODULE;
-	}
+    public SelectionKind getKind() {
+        return SelectionKind.MODULE;
+    }
 
 }

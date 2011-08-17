@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local-project language="java" version="1.0.1171" flavor="j2se">
+  <property name="hide-externals" value="true" />
+  <property name="show-needs-to-compile" value="false" />
+  <property name="detail-mode" value="true" />
+  <classpath relativeto="C:\Apps\erlide\meta\architecture">
+    <classpathentry kind="lib" path="..\..\org.erlide.core\bin" />
+  </classpath>
+  <transformations>
+    <transformation in="org.erlide.core.*" out="*" />
+  </transformations>
+  <restructuring>
+    <set version="1" name="Sandbox 1" hiview="Codemap" active="true" todo="false">
+      <action type="unwrap" active="true" description="Unwrap services">
+        <params>
+          <container-fqn fqn="services" type="folder">
+            <node name="services" type="folder" />
+          </container-fqn>
+        </params>
+        <composite-set>
+          <action type="move" active="true" description="Move services.text to root">
+            <params>
+              <source-fqn fqn="services.text" type="folder">
+                <node name="services" type="folder" />
+                <node name="text" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move services.builder to root">
+            <params>
+              <source-fqn fqn="services.builder" type="folder">
+                <node name="services" type="folder" />
+                <node name="builder" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move services.search to root">
+            <params>
+              <source-fqn fqn="services.search" type="folder">
+                <node name="services" type="folder" />
+                <node name="search" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move services.codeassist to root">
+            <params>
+              <source-fqn fqn="services.codeassist" type="folder">
+                <node name="services" type="folder" />
+                <node name="codeassist" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="remove-node" active="true" description="Remove services">
+            <params>
+              <source-fqn fqn="services" type="folder">
+                <node name="services" type="folder" />
+              </source-fqn>
+            </params>
+          </action>
+        </composite-set>
+      </action>
+      <action type="unwrap" active="true" description="Unwrap model">
+        <params>
+          <container-fqn fqn="model" type="folder">
+            <node name="model" type="folder" />
+          </container-fqn>
+        </params>
+        <composite-set>
+          <action type="move" active="true" description="Move model.erlang to root">
+            <params>
+              <source-fqn fqn="model.erlang" type="folder">
+                <node name="model" type="folder" />
+                <node name="erlang" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="move" active="true" description="Move model.debug to root">
+            <params>
+              <source-fqn fqn="model.debug" type="folder">
+                <node name="model" type="folder" />
+                <node name="debug" type="folder" />
+              </source-fqn>
+              <to-fqn fqn="root" type="root" isroot="true" />
+            </params>
+          </action>
+          <action type="remove-node" active="true" description="Remove model">
+            <params>
+              <source-fqn fqn="model" type="folder">
+                <node name="model" type="folder" />
+              </source-fqn>
+            </params>
+          </action>
+        </composite-set>
+      </action>
+      <action type="move" active="true" description="Move backend.runtimeinfo to root">
+        <params>
+          <source-fqn fqn="backend.runtimeinfo" type="folder">
+            <node name="backend" type="folder" />
+            <node name="runtimeinfo" type="folder" />
+          </source-fqn>
+          <to-fqn fqn="root" type="root" isroot="true" />
+        </params>
+      </action>
+    </set>
+    <set version="1" name="Flattened to classes" hiview="Codemap" active="false" todo="false">
+      <action type="flatten" active="true" description="Flatten root">
+        <params flattenLeafFolders="true">
+          <container-fqn fqn="root" type="root" path="" isroot="true" />
+        </params>
+        <composite-set />
+      </action>
+    </set>
+    <set version="1" name="Flattened to leaf packages" hiview="Codemap" active="false" todo="false">
+      <action type="flatten" active="true" description="Flatten root">
+        <params flattenLeafFolders="false">
+          <container-fqn fqn="root" type="root" path="" isroot="true" />
+        </params>
+        <composite-set />
+      </action>
+    </set>
+  </restructuring>
+  <sourcepaths>
+    <pathentry type="file" path="C:\Apps\erlide\org.erlide.core\src" />
+  </sourcepaths>
+  <grid-set sep="." version="1.0.1171">
+    <grid name="Diagram 1" enforce="true" strict="false">
+      <row>
+        <cell name="launching" pattern="org.erlide.core.backend.launching.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="ErlangLaunchDelegate" pattern="org.erlide.core.backend.launching.ErlangLaunchDelegate" vexpanded="false" visibility="public" />
+              <cell name="ErlangSourceLookupDirector" pattern="org.erlide.core.backend.launching.ErlangSourceLookupDirector" vexpanded="false" visibility="public" />
+              <cell name="ErlangSourcePathComputerDelegate" pattern="org.erlide.core.backend.launching.ErlangSourcePathComputerDelegate" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlangOtpSourceContainer" pattern="org.erlide.core.backend.launching.ErlangOtpSourceContainer" vexpanded="false" visibility="public" />
+              <cell name="ErlangSourceLookupParticipant" pattern="org.erlide.core.backend.launching.ErlangSourceLookupParticipant" vexpanded="false" visibility="public" />
+              <cell name="ErtsProcess" pattern="org.erlide.core.backend.launching.ErtsProcess" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="build.internal" pattern="org.erlide.core.internal.services.builder.?" vexpanded="false" visibility="private">
+          <grid>
+            <row>
+              <cell name="BuildNotifier" pattern="org.erlide.core.internal.services.builder.BuildNotifier" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BuilderMessages" pattern="org.erlide.core.internal.services.builder.BuilderMessages" vexpanded="false" visibility="public" />
+              <cell name="BuilderVisitor" pattern="org.erlide.core.internal.services.builder.BuilderVisitor" vexpanded="false" visibility="public" />
+              <cell name="ErlangNature" pattern="org.erlide.core.internal.services.builder.ErlangNature" vexpanded="false" visibility="public" />
+              <cell name="ErlideBuilder" pattern="org.erlide.core.internal.services.builder.ErlideBuilder" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+        <cell name="debug" pattern="org.erlide.core.model.debug.?" vexpanded="false" visibility="public" />
+      </row>
+      <row>
+        <cell name="build.api" pattern="org.erlide.core.services.builder.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="DialyzerBuilder" pattern="org.erlide.core.services.builder.DialyzerBuilder" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="DialyzerUtils" pattern="org.erlide.core.services.builder.DialyzerUtils" vexpanded="false" visibility="public" />
+              <cell name="ErlangBuilder2" pattern="org.erlide.core.services.builder.ErlangBuilder2" vexpanded="false" visibility="public" />
+              <cell name="ErlangBuilder" pattern="org.erlide.core.services.builder.ErlangBuilder" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BuilderHelper" pattern="org.erlide.core.services.builder.BuilderHelper" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="DialyzerPreferences" pattern="org.erlide.core.services.builder.DialyzerPreferences" vexpanded="false" visibility="public" />
+              <cell name="MarkerUtils" pattern="org.erlide.core.services.builder.MarkerUtils" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BuildResource" pattern="org.erlide.core.services.builder.BuildResource" vexpanded="false" visibility="public" />
+              <cell name="CompilerPreferences" pattern="org.erlide.core.services.builder.CompilerPreferences" vexpanded="false" visibility="public" />
+              <cell name="CompilerPreferencesConstants" pattern="org.erlide.core.services.builder.CompilerPreferencesConstants" vexpanded="false" visibility="public" />
+              <cell name="DialyzerPreferencesConstants" pattern="org.erlide.core.services.builder.DialyzerPreferencesConstants" vexpanded="false" visibility="public" />
+              <cell name="ErlideDialyze" pattern="org.erlide.core.services.builder.ErlideDialyze" vexpanded="false" visibility="public" />
+              <cell name="IProblem" pattern="org.erlide.core.services.builder.IProblem" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="model.internal" pattern="org.erlide.core.model.erlang.internal.?" vexpanded="false" visibility="private">
+          <grid>
+            <row>
+              <cell name="ErlProject" pattern="org.erlide.core.model.erlang.internal.ErlProject" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlExternalReferenceEntryList" pattern="org.erlide.core.model.erlang.internal.ErlExternalReferenceEntryList" vexpanded="false" visibility="public" />
+              <cell name="ErlOtpExternalReferenceEntryList" pattern="org.erlide.core.model.erlang.internal.ErlOtpExternalReferenceEntryList" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlExternalReferenceEntry" pattern="org.erlide.core.model.erlang.internal.ErlExternalReferenceEntry" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlModule" pattern="org.erlide.core.model.erlang.internal.ErlModule" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlParser" pattern="org.erlide.core.model.erlang.internal.ErlParser" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlExport" pattern="org.erlide.core.model.erlang.internal.ErlExport" vexpanded="false" visibility="public" />
+              <cell name="ErlFunction" pattern="org.erlide.core.model.erlang.internal.ErlFunction" vexpanded="false" visibility="public" />
+              <cell name="ErlImport" pattern="org.erlide.core.model.erlang.internal.ErlImport" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlAttribute" pattern="org.erlide.core.model.erlang.internal.ErlAttribute" vexpanded="false" visibility="public" />
+              <cell name="ErlFunctionClause" pattern="org.erlide.core.model.erlang.internal.ErlFunctionClause" vexpanded="false" visibility="public" />
+              <cell name="ErlImportExport" pattern="org.erlide.core.model.erlang.internal.ErlImportExport" vexpanded="false" visibility="public" />
+              <cell name="ErlMacroDef" pattern="org.erlide.core.model.erlang.internal.ErlMacroDef" vexpanded="false" visibility="public" />
+              <cell name="ErlMessage" pattern="org.erlide.core.model.erlang.internal.ErlMessage" vexpanded="false" visibility="public" />
+              <cell name="ErlRecordDef" pattern="org.erlide.core.model.erlang.internal.ErlRecordDef" vexpanded="false" visibility="public" />
+              <cell name="ErlRecordField" pattern="org.erlide.core.model.erlang.internal.ErlRecordField" vexpanded="false" visibility="public" />
+              <cell name="ErlTypespec" pattern="org.erlide.core.model.erlang.internal.ErlTypespec" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlComment" pattern="org.erlide.core.model.erlang.internal.ErlComment" vexpanded="false" visibility="public" />
+              <cell name="ErlMember" pattern="org.erlide.core.model.erlang.internal.ErlMember" vexpanded="false" visibility="public" />
+              <cell name="ErlModelManager" pattern="org.erlide.core.model.erlang.internal.ErlModelManager" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlFolder" pattern="org.erlide.core.model.erlang.internal.ErlFolder" vexpanded="false" visibility="public" />
+              <cell name="SourceRefElement" pattern="org.erlide.core.model.erlang.internal.SourceRefElement" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlModel" pattern="org.erlide.core.model.erlang.internal.ErlModel" vexpanded="false" visibility="public" />
+              <cell name="OldErlangProjectProperties" pattern="org.erlide.core.model.erlang.internal.OldErlangProjectProperties" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlProjectInfoBuilder" pattern="org.erlide.core.model.erlang.internal.ErlProjectInfoBuilder" vexpanded="false" visibility="public" />
+              <cell name="Openable" pattern="org.erlide.core.model.erlang.internal.Openable" vexpanded="false" visibility="public" />
+              <cell name="PropertiesUtils" pattern="org.erlide.core.model.erlang.internal.PropertiesUtils" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlModelStatus" pattern="org.erlide.core.model.erlang.internal.ErlModelStatus" vexpanded="false" visibility="public" />
+              <cell name="ErlProjectInfo" pattern="org.erlide.core.model.erlang.internal.ErlProjectInfo" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlElement" pattern="org.erlide.core.model.erlang.internal.ErlElement" vexpanded="false" visibility="public" />
+              <cell name="PathEntry" pattern="org.erlide.core.model.erlang.internal.PathEntry" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlElementDelta" pattern="org.erlide.core.model.erlang.internal.ErlElementDelta" vexpanded="false" visibility="public" />
+              <cell name="ErlModelCache" pattern="org.erlide.core.model.erlang.internal.ErlModelCache" vexpanded="false" visibility="public" />
+              <cell name="ErlProjectLayout" pattern="org.erlide.core.model.erlang.internal.ErlProjectLayout" vexpanded="false" visibility="public" />
+              <cell name="PathSerializer" pattern="org.erlide.core.model.erlang.internal.PathSerializer" vexpanded="false" visibility="public" />
+              <cell name="PreferencesHelper" pattern="org.erlide.core.model.erlang.internal.PreferencesHelper" vexpanded="false" visibility="public" />
+              <cell name="ProjectPreferencesConstants" pattern="org.erlide.core.model.erlang.internal.ProjectPreferencesConstants" vexpanded="false" visibility="public" />
+              <cell name="Region" pattern="org.erlide.core.model.erlang.internal.Region" vexpanded="false" visibility="public" />
+              <cell name="SourceRange" pattern="org.erlide.core.model.erlang.internal.SourceRange" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="search" pattern="org.erlide.core.services.search.?" vexpanded="false" visibility="public" />
+      </row>
+      <row>
+        <cell name="backend.internal" pattern="org.erlide.core.internal.backend.?" vexpanded="false" visibility="private">
+          <grid>
+            <row>
+              <cell name="CodeBundleImpl" pattern="org.erlide.core.internal.backend.CodeBundleImpl" vexpanded="false" visibility="public" />
+              <cell name="CodeManager" pattern="org.erlide.core.internal.backend.CodeManager" vexpanded="false" visibility="public" />
+              <cell name="ErlRuntime" pattern="org.erlide.core.internal.backend.ErlRuntime" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BackendUtil" pattern="org.erlide.core.internal.backend.BackendUtil" vexpanded="false" visibility="public" />
+              <cell name="BackendUtils" pattern="org.erlide.core.internal.backend.BackendUtils" vexpanded="false" visibility="public" />
+              <cell name="EpmdWatchJob" pattern="org.erlide.core.internal.backend.EpmdWatchJob" vexpanded="false" visibility="public" />
+              <cell name="ErlangCode" pattern="org.erlide.core.internal.backend.ErlangCode" vexpanded="false" visibility="public" />
+              <cell name="ErtsWatcherRunnable" pattern="org.erlide.core.internal.backend.ErtsWatcherRunnable" vexpanded="false" visibility="public" />
+              <cell name="ExternalBackend" pattern="org.erlide.core.internal.backend.ExternalBackend" vexpanded="false" visibility="public" />
+              <cell name="InternalBackend" pattern="org.erlide.core.internal.backend.InternalBackend" vexpanded="false" visibility="public" />
+              <cell name="OutputStreamMonitor" pattern="org.erlide.core.internal.backend.OutputStreamMonitor" vexpanded="false" visibility="public" />
+              <cell name="RpcFutureImpl" pattern="org.erlide.core.internal.backend.RpcFutureImpl" vexpanded="false" visibility="public" />
+              <cell name="RpcResultImpl" pattern="org.erlide.core.internal.backend.RpcResultImpl" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="cleanup" pattern="org.erlide.core.cleanup.?" vexpanded="false" visibility="public" />
+        <cell name="toolkit" pattern="" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="ErlScanner" pattern="org.erlide.core.services.text.ErlScanner" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlideScanner" pattern="org.erlide.core.services.text.ErlideScanner" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlangToolkit" pattern="org.erlide.core.services.text.ErlangToolkit" vexpanded="false" visibility="public" />
+              <cell name="ErlideNoparse" pattern="org.erlide.core.services.text.ErlideNoparse" vexpanded="false" visibility="public" />
+              <cell name="ErlToken" pattern="org.erlide.core.services.text.ErlToken" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+        <cell name="util" pattern="org.erlide.core.model.erlang.util.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="PluginUtils" pattern="org.erlide.core.model.erlang.util.PluginUtils" vexpanded="false" visibility="public" />
+              <cell name="ResourceUtil" pattern="org.erlide.core.model.erlang.util.ResourceUtil" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ContainerFilterCreator" pattern="org.erlide.core.model.erlang.util.ContainerFilterCreator" vexpanded="false" visibility="public" />
+              <cell name="IElementChangedListener" pattern="org.erlide.core.model.erlang.util.IElementChangedListener" vexpanded="false" visibility="public" />
+              <cell name="ModelUtils" pattern="org.erlide.core.model.erlang.util.ModelUtils" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ContainerFilter" pattern="org.erlide.core.model.erlang.util.ContainerFilter" vexpanded="false" visibility="public" />
+              <cell name="CoreUtil" pattern="org.erlide.core.model.erlang.util.CoreUtil" vexpanded="false" visibility="public" />
+              <cell name="ElementAdapterFactory" pattern="org.erlide.core.model.erlang.util.ElementAdapterFactory" vexpanded="false" visibility="public" />
+              <cell name="ElementChangedEvent" pattern="org.erlide.core.model.erlang.util.ElementChangedEvent" vexpanded="false" visibility="public" />
+              <cell name="ErlangFunction" pattern="org.erlide.core.model.erlang.util.ErlangFunction" vexpanded="false" visibility="public" />
+              <cell name="ErlangIncludeFile" pattern="org.erlide.core.model.erlang.util.ErlangIncludeFile" vexpanded="false" visibility="public" />
+              <cell name="ErlideUtil" pattern="org.erlide.core.model.erlang.util.ErlideUtil" vexpanded="false" visibility="public" />
+              <cell name="ProjectAdapterFactory" pattern="org.erlide.core.model.erlang.util.ProjectAdapterFactory" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="codeassist" pattern="org.erlide.core.services.codeassist.?" vexpanded="false" visibility="public" />
+        <cell name="core" pattern="org.erlide.core.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="ExecutableExtensionsFactory" pattern="org.erlide.core.ExecutableExtensionsFactory" vexpanded="false" visibility="public" />
+              <cell name="ExtensionHelper" pattern="org.erlide.core.ExtensionHelper" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlangPlugin" pattern="org.erlide.core.ErlangPlugin" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlangCore" pattern="org.erlide.core.ErlangCore" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="CoreInjector" pattern="org.erlide.core.CoreInjector" vexpanded="false" visibility="public" />
+              <cell name="ErlangCoreOptions" pattern="org.erlide.core.ErlangCoreOptions" vexpanded="false" visibility="public" />
+              <cell name="ErlangStatus" pattern="org.erlide.core.ErlangStatus" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+        <cell name="rpc" pattern="org.erlide.core.backend.rpc.?" vexpanded="false" visibility="public" />
+        <cell name="text" pattern="org.erlide.core.services.text.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="ErlideIndent" pattern="org.erlide.core.services.text.ErlideIndent" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IndentResult" pattern="org.erlide.core.services.text.IndentResult" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="backend" pattern="org.erlide.core.backend.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="console" pattern="org.erlide.core.backend.console.?" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="events" pattern="org.erlide.core.backend.events.?" vexpanded="false" visibility="public">
+                <grid>
+                  <row>
+                    <cell name="EventDaemon" pattern="org.erlide.core.backend.events.EventDaemon" vexpanded="false" visibility="public" />
+                    <cell name="LogEventHandler" pattern="org.erlide.core.backend.events.LogEventHandler" vexpanded="false" visibility="public" />
+                  </row>
+                  <row>
+                    <cell name="EventHandler" pattern="org.erlide.core.backend.events.EventHandler" vexpanded="false" visibility="public" />
+                  </row>
+                  <row>
+                    <cell name="ErlangEvent" pattern="org.erlide.core.backend.events.ErlangEvent" vexpanded="false" visibility="public" />
+                  </row>
+                </grid>
+              </cell>
+              <cell name="manager" pattern="org.erlide.core.backend.manager.?" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BackendListener" pattern="org.erlide.core.backend.BackendListener" vexpanded="false" visibility="public" />
+              <cell name="ErlideBackendVisitor" pattern="org.erlide.core.backend.ErlideBackendVisitor" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="Backend" pattern="org.erlide.core.backend.Backend" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BackendHelper" pattern="org.erlide.core.backend.BackendHelper" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BackendData" pattern="org.erlide.core.backend.BackendData" vexpanded="false" visibility="public" />
+              <cell name="RpcCallSite" pattern="org.erlide.core.backend.RpcCallSite" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="BackendCore" pattern="org.erlide.core.backend.BackendCore" vexpanded="false" visibility="public" />
+              <cell name="BackendEvalResult" pattern="org.erlide.core.backend.BackendEvalResult" vexpanded="false" visibility="public" />
+              <cell name="BackendException" pattern="org.erlide.core.backend.BackendException" vexpanded="false" visibility="public" />
+              <cell name="BackendOptions" pattern="org.erlide.core.backend.BackendOptions" vexpanded="false" visibility="public" />
+              <cell name="CodeBundle" pattern="org.erlide.core.backend.CodeBundle" vexpanded="false" visibility="public" />
+              <cell name="ErlDebugConstants" pattern="org.erlide.core.backend.ErlDebugConstants" vexpanded="false" visibility="public" />
+              <cell name="ErlLaunchAttributes" pattern="org.erlide.core.backend.ErlLaunchAttributes" vexpanded="false" visibility="public" />
+              <cell name="GenericBackendData" pattern="org.erlide.core.backend.GenericBackendData" vexpanded="false" visibility="public" />
+              <cell name="InitialCall" pattern="org.erlide.core.backend.InitialCall" vexpanded="false" visibility="public" />
+              <cell name="RpcCallback" pattern="org.erlide.core.backend.RpcCallback" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="model.api" pattern="org.erlide.core.model.erlang.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="IErlModelManager" pattern="org.erlide.core.model.erlang.IErlModelManager" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlModel" pattern="org.erlide.core.model.erlang.IErlModel" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlProject" pattern="org.erlide.core.model.erlang.IErlProject" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlangReconcilingListener" pattern="org.erlide.core.model.erlang.IErlangReconcilingListener" vexpanded="false" visibility="public" />
+              <cell name="IErlFolder" pattern="org.erlide.core.model.erlang.IErlFolder" vexpanded="false" visibility="public" />
+              <cell name="IWorkingCopy" pattern="org.erlide.core.model.erlang.IWorkingCopy" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="FunctionRef" pattern="org.erlide.core.model.erlang.FunctionRef" vexpanded="false" visibility="public" />
+              <cell name="IErlModule" pattern="org.erlide.core.model.erlang.IErlModule" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlFunction" pattern="org.erlide.core.model.erlang.IErlFunction" vexpanded="false" visibility="public" />
+              <cell name="IErlMacroDef" pattern="org.erlide.core.model.erlang.IErlMacroDef" vexpanded="false" visibility="public" />
+              <cell name="IErlRecordDef" pattern="org.erlide.core.model.erlang.IErlRecordDef" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlAttribute" pattern="org.erlide.core.model.erlang.IErlAttribute" vexpanded="false" visibility="public" />
+              <cell name="IErlComment" pattern="org.erlide.core.model.erlang.IErlComment" vexpanded="false" visibility="public" />
+              <cell name="IErlExport" pattern="org.erlide.core.model.erlang.IErlExport" vexpanded="false" visibility="public" />
+              <cell name="IErlFunctionClause" pattern="org.erlide.core.model.erlang.IErlFunctionClause" vexpanded="false" visibility="public" />
+              <cell name="IErlImport" pattern="org.erlide.core.model.erlang.IErlImport" vexpanded="false" visibility="public" />
+              <cell name="IErlMessage" pattern="org.erlide.core.model.erlang.IErlMessage" vexpanded="false" visibility="public" />
+              <cell name="IErlPreprocessorDef" pattern="org.erlide.core.model.erlang.IErlPreprocessorDef" vexpanded="false" visibility="public" />
+              <cell name="IErlRecordField" pattern="org.erlide.core.model.erlang.IErlRecordField" vexpanded="false" visibility="public" />
+              <cell name="IErlTypespec" pattern="org.erlide.core.model.erlang.IErlTypespec" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlExternal" pattern="org.erlide.core.model.erlang.IErlExternal" vexpanded="false" visibility="public" />
+              <cell name="IErlMember" pattern="org.erlide.core.model.erlang.IErlMember" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlangFirstThat" pattern="org.erlide.core.model.erlang.IErlangFirstThat" vexpanded="false" visibility="public" />
+              <cell name="IErlElementDelta" pattern="org.erlide.core.model.erlang.IErlElementDelta" vexpanded="false" visibility="public" />
+              <cell name="IErlElementVisitor" pattern="org.erlide.core.model.erlang.IErlElementVisitor" vexpanded="false" visibility="public" />
+              <cell name="IErlModelChangeListener" pattern="org.erlide.core.model.erlang.IErlModelChangeListener" vexpanded="false" visibility="public" />
+              <cell name="IParent" pattern="org.erlide.core.model.erlang.IParent" vexpanded="false" visibility="public" />
+              <cell name="IRegion" pattern="org.erlide.core.model.erlang.IRegion" vexpanded="false" visibility="public" />
+              <cell name="ISourceManipulation" pattern="org.erlide.core.model.erlang.ISourceManipulation" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="IErlElement" pattern="org.erlide.core.model.erlang.IErlElement" vexpanded="false" visibility="public" />
+              <cell name="IOpenable" pattern="org.erlide.core.model.erlang.IOpenable" vexpanded="false" visibility="public" />
+              <cell name="ISourceReference" pattern="org.erlide.core.model.erlang.ISourceReference" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlModelException" pattern="org.erlide.core.model.erlang.ErlModelException" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="ErlModelStatusConstants" pattern="org.erlide.core.model.erlang.ErlModelStatusConstants" vexpanded="false" visibility="public" />
+              <cell name="IErlImportExport" pattern="org.erlide.core.model.erlang.IErlImportExport" vexpanded="false" visibility="public" />
+              <cell name="IErlModelMarker" pattern="org.erlide.core.model.erlang.IErlModelMarker" vexpanded="false" visibility="public" />
+              <cell name="IErlModelStatus" pattern="org.erlide.core.model.erlang.IErlModelStatus" vexpanded="false" visibility="public" />
+              <cell name="IOldErlangProjectProperties" pattern="org.erlide.core.model.erlang.IOldErlangProjectProperties" vexpanded="false" visibility="public" />
+              <cell name="ISourceRange" pattern="org.erlide.core.model.erlang.ISourceRange" vexpanded="false" visibility="public" />
+              <cell name="ModuleKind" pattern="org.erlide.core.model.erlang.ModuleKind" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="runtimeinfo" pattern="org.erlide.core.backend.runtimeinfo.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="RuntimeInfoInitializer" pattern="org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="RuntimeInfoManager" pattern="org.erlide.core.backend.runtimeinfo.RuntimeInfoManager" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="RuntimeInfoLoader" pattern="org.erlide.core.backend.runtimeinfo.RuntimeInfoLoader" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="RuntimeInfo" pattern="org.erlide.core.backend.runtimeinfo.RuntimeInfo" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="RuntimeInfoListener" pattern="org.erlide.core.backend.runtimeinfo.RuntimeInfoListener" vexpanded="false" visibility="public" />
+              <cell name="RuntimeVersion" pattern="org.erlide.core.backend.runtimeinfo.RuntimeVersion" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="utils" pattern="org.erlide.core.common.?" vexpanded="false" visibility="public">
+          <grid>
+            <row>
+              <cell name="LogUtil" pattern="org.erlide.core.common.LogUtil" vexpanded="false" visibility="public" />
+              <cell name="StringUtils" pattern="org.erlide.core.common.StringUtils" vexpanded="false" visibility="public" />
+              <cell name="Util" pattern="org.erlide.core.common.Util" vexpanded="false" visibility="public" />
+            </row>
+            <row>
+              <cell name="Assert" pattern="org.erlide.core.common.Assert" vexpanded="false" visibility="public" />
+              <cell name="Base64" pattern="org.erlide.core.common.Base64" vexpanded="false" visibility="public" />
+              <cell name="BeamUtil" pattern="org.erlide.core.common.BeamUtil" vexpanded="false" visibility="public" />
+              <cell name="CharOperation" pattern="org.erlide.core.common.CharOperation" vexpanded="false" visibility="public" />
+              <cell name="CommonUtils" pattern="org.erlide.core.common.CommonUtils" vexpanded="false" visibility="public" />
+              <cell name="ErlangFunctionCall" pattern="org.erlide.core.common.ErlangFunctionCall" vexpanded="false" visibility="public" />
+              <cell name="ErlProgressMonitor" pattern="org.erlide.core.common.ErlProgressMonitor" vexpanded="false" visibility="public" />
+              <cell name="IDisposable" pattern="org.erlide.core.common.IDisposable" vexpanded="false" visibility="public" />
+              <cell name="MessageReporter" pattern="org.erlide.core.common.MessageReporter" vexpanded="false" visibility="public" />
+              <cell name="PlatformChangeListener" pattern="org.erlide.core.common.PlatformChangeListener" vexpanded="false" visibility="public" />
+              <cell name="PreferencesUtils" pattern="org.erlide.core.common.PreferencesUtils" vexpanded="false" visibility="public" />
+              <cell name="SourcePathProvider" pattern="org.erlide.core.common.SourcePathProvider" vexpanded="false" visibility="public" />
+              <cell name="Tuple3" pattern="org.erlide.core.common.Tuple3" vexpanded="false" visibility="public" />
+              <cell name="Tuple4" pattern="org.erlide.core.common.Tuple4" vexpanded="false" visibility="public" />
+              <cell name="Tuple" pattern="org.erlide.core.common.Tuple" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <description>Top-level breakout</description>
+    </grid>
+    <grid name="Diagram 2" enforce="true" strict="false">
+      <row>
+        <cell name="services" pattern="" vexpanded="true" visibility="public">
+          <grid>
+            <row>
+              <cell name="debug" pattern="" vexpanded="false" visibility="public" />
+              <cell name="search" pattern="" vexpanded="false" visibility="public" />
+            </row>
+          </grid>
+        </cell>
+      </row>
+      <row>
+        <cell name="parser" pattern="" vexpanded="false" visibility="public" />
+      </row>
+      <row>
+        <cell name="backend" pattern="" vexpanded="false" visibility="public" />
+        <cell name="erlang" pattern="" vexpanded="false" visibility="public" />
+      </row>
+      <row>
+        <cell name="rpc" pattern="" vexpanded="false" visibility="public" />
+      </row>
+      <description>&lt;empty&gt;</description>
+    </grid>
+  </grid-set>
+</local-project>
+

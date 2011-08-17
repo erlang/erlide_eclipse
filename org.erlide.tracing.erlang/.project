@@ -3,6 +3,8 @@
 	<name>org.erlide.tracing.erlang</name>
 	<comment></comment>
 	<projects>
+		<project>org.erlide.kernel.common</project>
+		<project>org.erlide.kernel.ide</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -21,7 +23,7 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.erlide.core.builder.DialyzerBuilder</name>
+			<name>org.erlide.core.internal.services.builder.DialyzerBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

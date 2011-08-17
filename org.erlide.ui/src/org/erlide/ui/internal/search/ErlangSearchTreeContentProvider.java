@@ -11,7 +11,7 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.erlang.util.ErlangFunction;
+import org.erlide.core.model.util.ErlangFunction;
 
 public class ErlangSearchTreeContentProvider extends
         ErlangSearchContentProvider implements ITreeContentProvider {

@@ -29,8 +29,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.erlide.jinterface.util.ErlLogger;
-import org.erlide.runtime.debug.IErlangBreakpoint;
+import org.erlide.core.debug.IErlangBreakpoint;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.IErlangPartitions;
 
 /**

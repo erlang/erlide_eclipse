@@ -8,34 +8,42 @@ import org.erlide.tracing.core.Images;
 import org.erlide.tracing.core.ProcessFlag;
 import org.erlide.tracing.core.mvc.model.TracedProcess;
 
-public class ProcessLabelProvider extends LabelProvider implements ITableLabelProvider {
+public class ProcessLabelProvider extends LabelProvider implements
+        ITableLabelProvider {
 
-    public Image getColumnImage(Object element, int columnIndex) {
-        TracedProcess process = (TracedProcess) element;
+    public Image getColumnImage(final Object element, final int columnIndex) {
+        final TracedProcess process = (TracedProcess) element;
 
         if (ProcessColumn.SELECTED.ordinal() == columnIndex) {
             // process columns
-            if (process.isSelected())
-                return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
-            else
-                return Activator.getDefault().getImageRegistry().get(Images.UNCHECKED.toString());
+            if (process.isSelected()) {
+                return Activator.getDefault().getImageRegistry()
+                        .get(Images.CHECKED.toString());
+            } else {
+                return Activator.getDefault().getImageRegistry()
+                        .get(Images.UNCHECKED.toString());
+            }
         } else {
             // flag columns
-            ProcessFlag flag = ProcessFlag.getByIndex(columnIndex - ProcessColumn.values().length);
+            final ProcessFlag flag = ProcessFlag.getByIndex(columnIndex
+                    - ProcessColumn.values().length);
             if (flag != null) {
-                if (process.hasFlag(flag))
-                    return Activator.getDefault().getImageRegistry().get(Images.CHECKED.toString());
-                else
-                    return Activator.getDefault().getImageRegistry().get(Images.UNCHECKED.toString());
+                if (process.hasFlag(flag)) {
+                    return Activator.getDefault().getImageRegistry()
+                            .get(Images.CHECKED.toString());
+                } else {
+                    return Activator.getDefault().getImageRegistry()
+                            .get(Images.UNCHECKED.toString());
+                }
             }
         }
 
         return null;
     }
 
-    public String getColumnText(Object element, int columnIndex) {
+    public String getColumnText(final Object element, final int columnIndex) {
 
-        TracedProcess process = (TracedProcess) element;
+        final TracedProcess process = (TracedProcess) element;
         if (columnIndex < ProcessColumn.values().length) {
             switch (ProcessColumn.getByIndex(columnIndex)) {
             case SELECTED:

@@ -27,39 +27,39 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @version %I%, %G%
  */
 public abstract class ProcessRelatedRefactoring extends
-		SimpleWranglerRefactoring {
+        SimpleWranglerRefactoring {
 
-	protected String undecidables;
+    protected String undecidables;
 
-	@Override
-	public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		IErlSelection sel = GlobalParameters.getWranglerSelection();
+    @Override
+    public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
 
-		ProcessRpcMessage msg = checkUndecidables((IErlMemberSelection) sel);
+        final ProcessRpcMessage msg = checkUndecidables((IErlMemberSelection) sel);
 
-		if (msg.isSuccessful()) {
-			changedFiles = msg.getRefactoringChangeset();
-			return new RefactoringStatus();
-		} else if (msg.hasUndecidables()) {
-			undecidables = msg.getMessageString();
-			IRefactoringRpcMessage message = run(sel);
-			changedFiles = message.getRefactoringChangeset();
+        if (msg.isSuccessful()) {
+            changedFiles = msg.getRefactoringChangeset();
+            return new RefactoringStatus();
+        } else if (msg.hasUndecidables()) {
+            undecidables = msg.getMessageString();
+            final IRefactoringRpcMessage message = run(sel);
+            changedFiles = message.getRefactoringChangeset();
 
-			return RefactoringStatus
-					.createWarningStatus(getUndecidableWarningMessage());
-		} else {
-			return RefactoringStatus.createFatalErrorStatus(msg
-					.getMessageString());
+            return RefactoringStatus
+                    .createWarningStatus(getUndecidableWarningMessage());
+        } else {
+            return RefactoringStatus.createFatalErrorStatus(msg
+                    .getMessageString());
 
-		}
-	}
+        }
+    }
 
-	protected abstract String getUndecidableWarningMessage();
+    protected abstract String getUndecidableWarningMessage();
 
-	/**
-	 * @noreference This method is not intended to be referenced by clients.
-	 */
-	protected abstract ProcessRpcMessage checkUndecidables(
-			IErlMemberSelection sel);
+    /**
+     * @noreference This method is not intended to be referenced by clients.
+     */
+    protected abstract ProcessRpcMessage checkUndecidables(
+            IErlMemberSelection sel);
 }

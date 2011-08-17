@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlang tracing for Erlide (Erlang helper modules)
 Bundle-SymbolicName: org.erlide.tracing.erlang;singleton:=true
-Bundle-Version: 0.2.1.qualifier
+Bundle-Version: 0.2.6.qualifier
 Bundle-Vendor: Erlang Solutions
 Require-Bundle: org.erlide.core;bundle-version="0.8.4",
  org.erlide.tracing.ttbe;bundle-version="0.1.0"

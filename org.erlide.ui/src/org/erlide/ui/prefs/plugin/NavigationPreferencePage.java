@@ -14,6 +14,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class NavigationPreferencePage extends ErlidePreferencePage implements
         IWorkbenchPreferencePage {
 
+    private static Boolean fCachedCheckAllProjects = null;
     private final List<Button> buttons = new ArrayList<Button>();
 
     private void addCheckAllSection(final Composite composite) {
@@ -50,6 +51,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage implements
     @Override
     protected void putPreferences() {
         putPreferences(NAVIGATION_KEY, NAVIGATION_KEYS, buttons);
+        fCachedCheckAllProjects = null;
     }
 
     private void setToPreferences() {
@@ -58,10 +60,13 @@ public class NavigationPreferencePage extends ErlidePreferencePage implements
     }
 
     public static boolean getCheckAllProjects() {
-        final List<String> preferences = getPreferences(NAVIGATION_KEY,
-                NAVIGATION_KEYS, NAVIGATION_DEFAULTS);
-        final List<Boolean> l = getBooleanPreferences(preferences);
-        return l.size() > 0 && l.get(0);
+        if (fCachedCheckAllProjects == null) {
+            final List<String> preferences = getPreferences(NAVIGATION_KEY,
+                    NAVIGATION_KEYS, NAVIGATION_DEFAULTS);
+            final List<Boolean> l = getBooleanPreferences(preferences);
+            fCachedCheckAllProjects = Boolean.valueOf(l.size() > 0 && l.get(0));
+        }
+        return fCachedCheckAllProjects.booleanValue();
     }
 
     public void init(final IWorkbench workbench) {

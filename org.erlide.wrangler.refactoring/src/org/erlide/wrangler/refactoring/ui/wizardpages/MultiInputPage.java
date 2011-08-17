@@ -20,15 +20,15 @@ import org.eclipse.swt.widgets.Composite;
  */
 public abstract class MultiInputPage extends InputPage {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            title
-	 */
-	public MultiInputPage(final String name) {
-		super(name);
-	}
+    /**
+     * Constructor
+     * 
+     * @param name
+     *            title
+     */
+    public MultiInputPage(final String name) {
+        super(name);
+    }
 
-	public abstract void createControl(Composite parent);
+    public abstract void createControl(Composite parent);
 }

@@ -8,3 +8,17 @@ safe_erlide.log
 .metadata
 .escabaseline
 erlide.log
+erlide.log.*
+External_Files
+cover_report
+org.erlide.selfhost*
+*.bak
+refac_proj
+junit-*
+Simple*
+temp
+*tracing*
+ttb_last_config
+*.log.lck
+.nfs*
+

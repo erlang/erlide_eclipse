@@ -203,4 +203,3 @@ read_cache(CacheFileName) ->
     ?D(CacheFileName),
     <<_:5/binary, _:16/integer-big, BinTerm/binary>> = B,
     binary_to_term(BinTerm).
-

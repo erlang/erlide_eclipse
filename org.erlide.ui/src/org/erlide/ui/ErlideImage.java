@@ -18,7 +18,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.jinterface.util.ErlLogger;
+import org.erlide.jinterface.ErlLogger;
 
 public enum ErlideImage {
 
@@ -111,8 +111,7 @@ public enum ErlideImage {
                 final URL url = key.url();
                 descriptor = ImageDescriptor.createFromURL(url);
             } catch (final MalformedURLException e) {
-                descriptor = ImageDescriptor
-                        .getMissingImageDescriptor();
+                descriptor = ImageDescriptor.getMissingImageDescriptor();
             }
             registry.put(key.name(), descriptor);
         }
