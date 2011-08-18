@@ -124,10 +124,17 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             throws CoreException {
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+        if (DEBUG) {
+            ErlLogger.info("### start test builder (full) %s", getProject()
+                    .getName());
+        }
         checkForMakeLinks(project, monitor);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                 project, monitor, false);
         doBuild(project, resourcesToBuild, false, monitor);
+        if (DEBUG) {
+            ErlLogger.info("### done test builder %s", getProject().getName());
+        }
     }
 
     private void doBuild(final IProject project,
@@ -233,9 +240,16 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     protected void incrementalBuild(final IResourceDelta delta,
             final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
+        if (DEBUG) {
+            ErlLogger.info("### start test builder (incr) %s", getProject()
+                    .getName());
+        }
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(delta,
                 monitor);
         doBuild(project, resourcesToBuild, true, monitor);
+        if (DEBUG) {
+            ErlLogger.info("### done test builder %s", getProject().getName());
+        }
     }
 
     private Set<BuildResource> getResourcesToBuild(final IResourceDelta delta,
