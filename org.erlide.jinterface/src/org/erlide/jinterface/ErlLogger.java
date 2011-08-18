@@ -33,7 +33,7 @@ public class ErlLogger {
 
     public static ErlLogger getInstance() {
         if (instance == null) {
-            instance = new ErlLogger(".");
+            instance = new ErlLogger();
         }
         return instance;
     }
@@ -117,12 +117,9 @@ public class ErlLogger {
         getInstance().log(Level.SEVERE, exception);
     }
 
-    private ErlLogger(final String dir) {
+    private ErlLogger() {
         final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
         logger = Logger.getLogger("org.erlide");
-
-        setLogDir(dir);
-
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);
     }
