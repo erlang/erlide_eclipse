@@ -85,7 +85,8 @@ public final class ErlangCore {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "erlide_log_directory";
         final String pluginId = "org.erlide.core";
-        final String s = service.getString(pluginId, key, "", null);
+        final String s = service.getString(pluginId, key,
+                System.getProperty("user.home"), null);
         String dir;
         if (s != null) {
             dir = s;
