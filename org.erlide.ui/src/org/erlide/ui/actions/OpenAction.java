@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
@@ -233,7 +235,7 @@ public class OpenAction extends SelectionDispatchAction {
         if (foundElement != null) {
             return foundElement;
         }
-        // not local imports
+        // imported functions
         OtpErlangObject res2 = null;
         String moduleName = null;
         final IErlImport ei = module.findImport(res.getFunction());
@@ -244,11 +246,22 @@ public class OpenAction extends SelectionDispatchAction {
                     moduleName, erlProject.getExternalModulesString());
         }
         if (res2 instanceof OtpErlangString && moduleName != null) {
+            // imported from otp module
             final OtpErlangString otpErlangString = (OtpErlangString) res2;
             final String modulePath = otpErlangString.stringValue();
             return ModelUtils.findFunction(moduleName, res.getFunction(),
                     modulePath, erlProject, scope, module);
         } else {
+            // functions defined in include files
+            final List<IErlModule> allIncludedFiles = module
+                    .findAllIncludedFiles();
+            for (final IErlModule includedModule : allIncludedFiles) {
+                final IErlFunction function = includedModule.findFunction(res
+                        .getFunction());
+                if (function != null) {
+                    return function;
+                }
+            }
             return null;
         }
     }
