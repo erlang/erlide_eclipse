@@ -114,11 +114,13 @@ public class RefactoringHandler extends AbstractHandler {
 
 		// run rename variable refactoring
 		if (actionId.equals("org.erlide.wrangler.refactoring.renamevariable")) {
-			pages.add(new SimpleInputPage("Rename variable",
+			refactoring = new RenameVariableRefactoring();
+			SimpleInputPage page = new SimpleInputPage("Rename variable",
 					"Please type the new variable name!", "New variable name:",
 					"New name must be a valid Erlang variable name!",
-					new VariableNameValidator()));
-			refactoring = new RenameVariableRefactoring();
+					new VariableNameValidator());
+			page.setInput(refactoring.getDefaultValue());
+			pages.add(page);
 
 			// introduce new variable refactoring
 		} else if (actionId
@@ -132,11 +134,14 @@ public class RefactoringHandler extends AbstractHandler {
 			// run rename function refactoring
 		} else if (actionId
 				.equals("org.erlide.wrangler.refactoring.renamefunction")) {
-			pages.add(new CostumworkFlowInputPage("Rename function",
-					"Please type the new function name!", "New function name:",
-					"New name must be a valid Erlang atom!",
-					new AtomValidator()));
 			refactoring = new RenameFunctionRefactoring();
+			CostumworkFlowInputPage page = new CostumworkFlowInputPage(
+					"Rename function", "Please type the new function name!",
+					"New function name:",
+					"New name must be a valid Erlang atom!",
+					new AtomValidator());
+			page.setInput(refactoring.getDefaultValue());
+			pages.add(page);
 
 			// run extract function refactoring
 		} else if (actionId
@@ -159,11 +164,14 @@ public class RefactoringHandler extends AbstractHandler {
 				return null;
 			}
 
-			pages.add(new CostumworkFlowInputPage("Rename module",
-					"Please type the new module name!", "New module name:",
-					"New module name must be a valid Erlang atom!",
-					new AtomValidator()));
 			refactoring = new RenameModuleRefactoring();
+			CostumworkFlowInputPage page = new CostumworkFlowInputPage(
+					"Rename module", "Please type the new module name!",
+					"New module name:",
+					"New module name must be a valid Erlang atom!",
+					new AtomValidator());
+			page.setInput(refactoring.getDefaultValue());
+			pages.add(page);
 
 			// run move function refactoring
 		} else if (actionId

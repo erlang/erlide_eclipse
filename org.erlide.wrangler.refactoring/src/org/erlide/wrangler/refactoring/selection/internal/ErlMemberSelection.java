@@ -12,7 +12,9 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.util.ErlRange;
@@ -26,78 +28,82 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  * @version %I%, %G%
  */
 public class ErlMemberSelection extends AbstractErlMemberSelection {
-    protected IErlElement element;
+	protected IErlElement element;
 
-    protected IErlMember member;
+	protected IErlMember member;
 
-    /**
-     * Constructor
-     * 
-     * @param element
-     *            Erlang element - Erlide representation
-     * @param file
-     *            the file which contains the selection
-     * @param document
-     *            document which contains the selection
-     */
-    public ErlMemberSelection(final IErlElement element, final IFile file,
-            final IDocument document) {
-        this.document = document;
-        this.file = file;
-        this.element = element;
-        if (element instanceof IErlMember) {
-            member = (IErlMember) element;
-        }
-    }
+	/**
+	 * Constructor
+	 * 
+	 * @param element
+	 *            Erlang element - Erlide representation
+	 * @param file
+	 *            the file which contains the selection
+	 * @param document
+	 *            document which contains the selection
+	 */
+	public ErlMemberSelection(final IErlElement element, final IFile file,
+			final IDocument document) {
+		this.document = document;
+		this.file = file;
+		this.element = element;
+		if (element instanceof IErlMember) {
+			member = (IErlMember) element;
+		}
+	}
 
-    protected int getEndCol() {
-        try {
-            return WranglerUtils.calculateColumnFromOffset(member
-                    .getSourceRange().getOffset()
-                    + member.getSourceRange().getLength(), getEndLine() - 1,
-                    document);
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
+	protected int getEndCol() {
+		try {
+			return WranglerUtils.calculateColumnFromOffset(member
+					.getSourceRange().getOffset()
+					+ member.getSourceRange().getLength(), getEndLine() - 1,
+					document);
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
 
-    protected int getEndLine() {
-        return member.getLineEnd() + 1;
-    }
+	protected int getEndLine() {
+		return member.getLineEnd() + 1;
+	}
 
-    public IErlElement getErlElement() {
-        return element;
-    }
+	public IErlElement getErlElement() {
+		return element;
+	}
 
-    protected int getStartCol() throws ErlModelException {
-        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
-                .getOffset(), getStartLine() - 1, document);
+	protected int getStartCol() throws ErlModelException {
+		return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
+				.getOffset(), getStartLine() - 1, document);
 
-    }
+	}
 
-    protected int getStartLine() {
-        return member.getLineStart() + 1;
-    }
+	protected int getStartLine() {
+		return member.getLineStart() + 1;
+	}
 
-    public IErlRange getMemberRange() {
-        return getSelectionRange();
-    }
+	public IErlRange getMemberRange() {
+		return getSelectionRange();
+	}
 
-    public IErlRange getSelectionRange() {
-        IErlRange range;
-        try {
-            range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
-                    getEndCol(), member.getSourceRange().getOffset(), member
-                            .getSourceRange().getLength());
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return range;
-    }
+	public IErlRange getSelectionRange() {
+		IErlRange range;
+		try {
+			range = new ErlRange(getStartLine(), getStartCol(), getEndLine(),
+					getEndCol(), member.getSourceRange().getOffset(), member
+							.getSourceRange().getLength());
+		} catch (final ErlModelException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return range;
+	}
 
-    public SelectionKind getDetailedKind() {
-        return getKind();
-    }
+	public SelectionKind getDetailedKind() {
+		return getKind();
+	}
+
+	public IErlModule getErlModule() {
+		return (IErlModule) CoreScope.getModel().findElement(file);
+	}
 }

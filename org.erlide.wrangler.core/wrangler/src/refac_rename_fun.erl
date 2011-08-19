@@ -53,13 +53,23 @@
 
 -module(refac_rename_fun).
 
--export([rename_fun/6, rename_fun_1/6,  rename_fun_eclipse/6, rename_fun_1_eclipse/6]).
+-export([rename_fun/6, rename_fun_1/6,  rename_fun_eclipse/6, rename_fun_1_eclipse/6, get_fun_name/5]).
 
 -export([rename_fun_command/5]).
 
 -include("../include/wrangler.hrl").
 
-
+%%-spec(get_fun_name/5::(string(), integer(), integer(), [dir()], integer()) ->
+%%	     string().
+get_fun_name(FileName, Line, Col, SearchPaths, TabWidth) ->
+	{ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    case interface_api:pos_to_fun_name(AnnAST, {Line, Col}) of
+		{ok, {_Mod, Fun, _Arity, _, _DefinePos}} ->
+			atom_to_list(Fun);
+		_	->
+			""
+	end.
+	
 %%-spec(rename_fun/6::(string(), integer(), integer(), string(), [dir()], integer()) ->
 %%	     {error, string()} | {warning, string()} |{ok, [filename()]}).
 
