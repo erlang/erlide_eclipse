@@ -50,7 +50,7 @@
 
 -export([rename_var/6, rename_var_eclipse/6]).
 
--export([rename/3, cond_check/4]).
+-export([rename/3, cond_check/4, get_var_name/5]).
 
 
 -include("../include/wrangler.hrl").
@@ -126,6 +126,16 @@ rename_var(FName, Line, Col, NewName, SearchPaths, TabWidth, Editor) ->
 	   end
     end.
 
+%% =====================================================================
+%%-spec get_var_name/5::(filename(), integer(), integer(), [dir()], integer()) -> string().
+get_var_name(FName, Line, Col, SearchPaths, TabWidth) ->
+	{ok, {AnnAST1, _Info1}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
+    case interface_api:pos_to_var_name(AnnAST1, {Line, Col}) of
+		{ok, {VarName, _DefinePos, _C}} ->
+	    	atom_to_list(VarName);
+		{error, _} ->
+			""
+	end.
 
 %% =====================================================================
 %%-spec cond_check(syntaxTree(), [pos()], atom(),atom())-> term().

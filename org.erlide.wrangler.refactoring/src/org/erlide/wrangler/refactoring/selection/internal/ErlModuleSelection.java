@@ -21,31 +21,35 @@ import org.erlide.core.model.root.IErlElement;
  * @version %I%, %G%
  */
 public class ErlModuleSelection extends AbstractErlSelection {
-    protected IErlModule module;
+	protected IErlModule module;
 
-    /**
-     * Constructor
-     * 
-     * @param module
-     *            Erlang module - Erlide representation
-     * @param file
-     *            file, which contains the module
-     */
-    public ErlModuleSelection(final IErlModule module, final IFile file) {
-        this.module = module;
-        this.file = file;
-    }
+	/**
+	 * Constructor
+	 * 
+	 * @param module
+	 *            Erlang module - Erlide representation
+	 * @param file
+	 *            file, which contains the module
+	 */
+	public ErlModuleSelection(final IErlModule module, final IFile file) {
+		this.module = module;
+		this.file = file;
+	}
 
-    public IErlElement getErlElement() {
-        return module;
-    }
+	public IErlElement getErlElement() {
+		return module;
+	}
 
-    public SelectionKind getDetailedKind() {
-        return getKind();
-    }
+	public SelectionKind getDetailedKind() {
+		return getKind();
+	}
 
-    public SelectionKind getKind() {
-        return SelectionKind.MODULE;
-    }
+	public SelectionKind getKind() {
+		return SelectionKind.MODULE;
+	}
+
+	public IErlModule getErlModule() {
+		return module;
+	}
 
 }
