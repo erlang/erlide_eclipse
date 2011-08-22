@@ -515,7 +515,7 @@ public final class BuilderHelper {
             }
         };
         job.setSystem(true);
-        job.setPriority(Job.BUILD);
+        job.setPriority(Job.DECORATE);
         job.setRule(res);
         job.schedule();
     }
