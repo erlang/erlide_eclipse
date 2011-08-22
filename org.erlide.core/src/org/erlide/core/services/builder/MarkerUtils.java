@@ -460,7 +460,7 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        if ("true".equals(System.getProperty("erlide.skip.tasks"))) {
+        if (ErlangCore.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
         final IErlProject p = CoreScope.getModel().findProject(project);
@@ -519,8 +519,10 @@ public final class MarkerUtils {
                 for (final Tuple<String, Integer> c : cl) {
                     mkTaskMarker(resource, c.o2, c.o1, TODO,
                             IMarker.PRIORITY_NORMAL);
-                    mkTaskMarker(resource, c.o2, c.o1, XXX, IMarker.PRIORITY_NORMAL);
-                    mkTaskMarker(resource, c.o2, c.o1, FIXME, IMarker.PRIORITY_HIGH);
+                    mkTaskMarker(resource, c.o2, c.o1, XXX,
+                            IMarker.PRIORITY_NORMAL);
+                    mkTaskMarker(resource, c.o2, c.o1, FIXME,
+                            IMarker.PRIORITY_HIGH);
                 }
             } finally {
                 reader.close();

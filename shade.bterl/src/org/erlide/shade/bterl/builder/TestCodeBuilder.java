@@ -25,6 +25,10 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.internal.core.StreamsProxy;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -389,15 +393,30 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     dir = dir.getParentFile();
                 }
                 if (DEBUG) {
-                    // ErlLogger.debug("running make_links in "
-                    // + dir.getAbsolutePath());
+                    ErlLogger.debug("running make_links in "
+                            + dir.getAbsolutePath());
                 }
                 final Process makeLinks = DebugPlugin.exec(
                         new String[] { "./make_links" }, dir);
-                // InputStream in = makeLinks.getInputStream();
+                final StreamsProxy proxy = new StreamsProxy(makeLinks,
+                        "ISO-8859-1");
+                final IStreamListener listener = new IStreamListener() {
+                    public void streamAppended(final String text,
+                            final IStreamMonitor streamMonitor) {
+                        final String[] lines = text.split("\n");
+                        for (final String line : lines) {
+                            System.out.println("make_links>> " + line);
+                        }
+                    }
+                };
+                if (ErlangCore.hasFeatureEnabled("erlide.make_links.snoop")) {
+                    proxy.getOutputStreamMonitor().addListener(listener);
+                    proxy.getErrorStreamMonitor().addListener(listener);
+                }
                 while (true) {
                     try {
                         makeLinks.waitFor();
+                        proxy.kill();
                         break;
                     } catch (final InterruptedException e1) {
                     }

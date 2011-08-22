@@ -319,4 +319,8 @@ public final class ErlangCore {
     public IPath getStateLocation() {
         return plugin.getStateLocation();
     }
+
+    public static boolean hasFeatureEnabled(final String feature) {
+        return "true".equals(System.getProperty(feature));
+    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.internal.backend;
 
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -72,7 +73,7 @@ public class BackendFactory implements IBackendFactory {
         if (CommonUtils.isDeveloper()) {
             result.setConsole(true);
         }
-        if ("true".equals(System.getProperty("erlide.monitor.ide"))) {
+        if (ErlangCore.hasFeatureEnabled("erlide.monitor.ide")) {
             result.setMonitored(true);
         }
         return result;
