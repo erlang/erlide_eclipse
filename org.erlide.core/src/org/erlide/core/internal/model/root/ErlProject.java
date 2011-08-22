@@ -142,12 +142,12 @@ public class ErlProject extends Openable implements IErlProject {
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
                     elems.length + 1);
-            ErlLogger.debug(">>adding externals");
+            // ErlLogger.debug(">>adding externals");
             addExternals(children);
-            ErlLogger.debug("childcount %d", children.size());
-            ErlLogger.debug(">>adding otp");
+            // ErlLogger.debug("childcount %d", children.size());
+            // ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
-            ErlLogger.debug("childcount %d", children.size());
+            // ErlLogger.debug("childcount %d", children.size());
             final IErlModel model = getModel();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
@@ -754,7 +754,7 @@ public class ErlProject extends Openable implements IErlProject {
             final String pluginId) {
         final String s = service.getString(pluginId, key, "", null);
         if (s.length() > 0) {
-            ErlLogger.debug("%s: '%s'", key, s);
+            // ErlLogger.debug("%s: '%s'", key, s);
         }
         final String global = s;
         final IOldErlangProjectProperties prefs = getProperties();

@@ -74,15 +74,26 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         if (DISABLED) {
             return null;
         }
+        final IProject project = getProject();
+        if (DEBUG) {
+            ErlLogger.info("##### start test builder (full) %s",
+                    project.getName());
+        }
+        final long time = System.currentTimeMillis();
         if (kind == FULL_BUILD) {
             fullBuild(monitor);
         } else {
-            final IResourceDelta delta = getDelta(getProject());
+            final IResourceDelta delta = getDelta(project);
             if (delta == null) {
                 fullBuild(monitor);
             } else {
                 incrementalBuild(delta, monitor);
             }
+        }
+        if (DEBUG) {
+            ErlLogger.info("##### done test builder %s took %s",
+                    project.getName(),
+                    Long.toString(System.currentTimeMillis() - time));
         }
         return null;
     }
@@ -124,17 +135,10 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             throws CoreException {
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
-        if (DEBUG) {
-            ErlLogger.info("### start test builder (full) %s", getProject()
-                    .getName());
-        }
         checkForMakeLinks(project, monitor);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                 project, monitor, false);
         doBuild(project, resourcesToBuild, false, monitor);
-        if (DEBUG) {
-            ErlLogger.info("### done test builder %s", getProject().getName());
-        }
     }
 
     private void doBuild(final IProject project,
@@ -170,11 +174,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
                 final String outputDir = bres.getResource().getParent()
                         .getProjectRelativePath().toString();
-                if (DEBUG) {
-                    ErlLogger.debug("@@@ >> bterl build :: "
-                            + resource.getFullPath().toString() + " :: "
-                            + outputDir + " -- " + compilerOptions);
-                }
                 final IRpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
@@ -200,16 +199,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     }
                     if (result != null) {
                         final IResource resource = entry.getValue();
-                        if (DEBUG) {
-                            ErlLogger.debug("@@@ >> bterl built :: "
-                                    + resource.getFullPath().toString());
-                        }
                         helper.completeCompile(project, resource, result,
                                 backend, new OtpErlangList());
-                        if (DEBUG) {
-                            ErlLogger.debug("### >> bterl built :: "
-                                    + resource.getFullPath().toString());
-                        }
                         done.add(entry);
                     }
                 }
@@ -240,16 +231,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     protected void incrementalBuild(final IResourceDelta delta,
             final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
-        if (DEBUG) {
-            ErlLogger.info("### start test builder (incr) %s", getProject()
-                    .getName());
-        }
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(delta,
                 monitor);
         doBuild(project, resourcesToBuild, true, monitor);
-        if (DEBUG) {
-            ErlLogger.info("### done test builder %s", getProject().getName());
-        }
     }
 
     private Set<BuildResource> getResourcesToBuild(final IResourceDelta delta,
@@ -405,8 +389,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     dir = dir.getParentFile();
                 }
                 if (DEBUG) {
-                    ErlLogger.debug("running make_links in "
-                            + dir.getAbsolutePath());
+                    // ErlLogger.debug("running make_links in "
+                    // + dir.getAbsolutePath());
                 }
                 final Process makeLinks = DebugPlugin.exec(
                         new String[] { "./make_links" }, dir);
@@ -422,9 +406,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         new NullProgressMonitor());
             } catch (final CoreException e) {
                 // there is no make_links
-                if (DEBUG) {
-                    System.out.println("no make_links???");
-                }
             }
         }
 

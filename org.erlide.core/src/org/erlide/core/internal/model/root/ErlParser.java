@@ -72,7 +72,7 @@ public final class ErlParser implements IErlParser {
         OtpErlangList comments = null;
         OtpErlangTuple res = null;
         if (initialParse) {
-            ErlLogger.debug("initialParse %s", path);
+            // ErlLogger.debug("initialParse %s", path);
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
             res = ErlideNoparse.initialParse(b, scannerName, path, stateDir,

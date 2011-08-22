@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
@@ -96,6 +97,13 @@ public final class ErlangCore {
 
         logger = ErlLogger.getInstance();
         logger.setLogDir(dir);
+
+        try {
+            // ignore result, just setup cache
+            BackendUtils.getSourcePathProviders();
+        } catch (final CoreException e) {
+            // ignore
+        }
     }
 
     public void stop() {

@@ -25,17 +25,22 @@ import com.google.common.collect.Lists;
 
 public class BackendUtils {
 
-    public static Collection<SourcePathProvider> getSourcePathProviders()
+    private static Collection<SourcePathProvider> sourcePathProviders = null;
+
+    public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
             throws CoreException {
-        // TODO should be cached and listening to plugin changes?
-        final List<SourcePathProvider> result = Lists.newArrayList();
+        if (sourcePathProviders != null) {
+            return sourcePathProviders;
+        }
+        // TODO should be listening to plugin changes
+        sourcePathProviders = Lists.newArrayList();
         final IConfigurationElement[] elements = getSourcepathConfigurationElements();
         for (final IConfigurationElement element : elements) {
             final SourcePathProvider provider = (SourcePathProvider) element
                     .createExecutableExtension("class");
-            result.add(provider);
+            sourcePathProviders.add(provider);
         }
-        return result;
+        return sourcePathProviders;
     }
 
     public static String getErlideNodeNameTag() {

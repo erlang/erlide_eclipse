@@ -35,7 +35,7 @@ public class TestSourcePathProvider implements SourcePathProvider,
             ErlLogger.warn(e);
             pathsMap = Maps.newHashMap();
         }
-        // System.out.println("## paths=" + paths);
+
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.addResourceChangeListener(this,
                 IResourceChangeEvent.POST_CHANGE);
@@ -82,38 +82,40 @@ public class TestSourcePathProvider implements SourcePathProvider,
 
     public void resourceChanged(final IResourceChangeEvent event) {
         // TODO keep 'paths' updated
-
         final IResourceDelta delta = event.getDelta();
         if (delta == null) {
             return;
         }
-        // System.out.println("@@ >> BterlSrcPathProvider: resources updated...");
+
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         try {
+            final long time = System.currentTimeMillis();
             delta.accept(new IResourceDeltaVisitor() {
                 public boolean visit(final IResourceDelta theDelta)
                         throws CoreException {
                     final IResource resource = theDelta.getResource();
-                    final IContainer parent = resource.getParent();
-                    if (parent == null) {
-                        return true;
+                    if (!(resource instanceof IContainer)) {
+                        return false;
                     }
+                    final IContainer container = (IContainer) resource;
                     // TODO isintestpath is slow...
-                    final IPath parentLocation = parent.getLocation();
+                    final IPath location = container.getLocation();
                     final Set<IPath> paths = getProjectPaths(resource
                             .getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED
-                            && !paths.contains(parentLocation)
-                            && isTestDir(parent)) {
-                        paths.add(parentLocation);
-
+                            && !paths.contains(location)
+                            && isTestDir(container)) {
+                        paths.add(location);
                     }
                     if (theDelta.getKind() == IResourceDelta.REMOVED
-                            && paths.contains(parentLocation)) {
-                        paths.remove(parentLocation);
+                            && paths.contains(location)) {
+                        paths.remove(location);
                     }
                     return true;
                 }
             });
+            System.out.println("TSPP took "
+                    + (System.currentTimeMillis() - time));
         } catch (final CoreException e) {
             e.printStackTrace();
         }
@@ -123,10 +125,11 @@ public class TestSourcePathProvider implements SourcePathProvider,
         if (!(resource instanceof IContainer)) {
             return false;
         }
-        if (resource.getName().equals("garbage")) {
+        final String name = resource.getName();
+        if (name.equals("garbage")) {
             return false;
         }
-        if (resource.getName().equals("lost+found")) {
+        if (name.equals("lost+found")) {
             return false;
         }
         try {

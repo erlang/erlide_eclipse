@@ -124,10 +124,10 @@ public final class MarkerUtils {
                                 .findIncludeFromProject(erlProject, fileName,
                                         fileName,
                                         IErlModel.Scope.REFERENCED_PROJECTS);
-                        ErlLogger.debug("inc::" + fileName + " "
-                                + resource.getName() + " "
-                                + erlProject.getName());
-                        ErlLogger.debug("    " + entry.getValue());
+                        // ErlLogger.debug("inc::" + fileName + " "
+                        // + resource.getName() + " "
+                        // + erlProject.getName());
+                        // ErlLogger.debug("    " + entry.getValue());
 
                         if (includeFile == null) {
                             res = resource;
