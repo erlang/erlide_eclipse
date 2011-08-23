@@ -239,7 +239,7 @@ public final class ErlParser implements IErlParser {
         ErlFunction f = null;
         final OtpErlangObject commentO = el.elementAt(8);
         final OtpErlangAtom exportedA = (OtpErlangAtom) el.elementAt(9);
-        final boolean exported = "true".equals(exportedA.atomValue());
+        final boolean exported = Boolean.parseBoolean(exportedA.atomValue());
         try {
             String comment = Util.stringValue(commentO);
             if (comment != null) {

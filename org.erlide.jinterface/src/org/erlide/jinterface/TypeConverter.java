@@ -564,7 +564,7 @@ public final class TypeConverter {
 
     public static boolean willCheckConversion() {
         final String dev = System.getProperty("erlide.test_rpc");
-        return dev != null && "true".equals(dev);
+        return Boolean.parseBoolean(dev);
     }
 
     /**

@@ -29,25 +29,25 @@ public class CommonUtils {
 
     public static boolean isDeveloper() {
         final String dev = System.getProperty("erlide.devel");
-        return dev != null && "true".equals(dev);
+        return dev != null && Boolean.parseBoolean(dev);
     }
 
     public static boolean isClearCacheAvailable() {
         final String test = System.getProperty("erlide.clearCacheAvailable");
-        return test != null && "true".equals(test);
+        return test != null && Boolean.parseBoolean(test);
     }
 
     public static boolean isEricssonUser() {
         if (fgCacheIsEricssonUser == null) {
             final String dev = System.getProperty("erlide.ericsson.user");
-            fgCacheIsEricssonUser = Boolean.valueOf("true".equals(dev));
+            fgCacheIsEricssonUser = Boolean.valueOf(dev);
         }
         return fgCacheIsEricssonUser.booleanValue();
     }
 
     public static boolean isTest() {
         final String test = System.getProperty("erlide.test");
-        return test != null && "true".equals(test);
+        return test != null && Boolean.parseBoolean(test);
     }
 
     public static boolean isOnWindows() {

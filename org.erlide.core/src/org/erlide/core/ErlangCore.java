@@ -321,6 +321,6 @@ public final class ErlangCore {
     }
 
     public static boolean hasFeatureEnabled(final String feature) {
-        return "true".equals(System.getProperty(feature));
+        return Boolean.parseBoolean(System.getProperty(feature));
     }
 }
