@@ -82,6 +82,7 @@ import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * Shows a list of resources to the user with a text entry field for a string
@@ -546,7 +547,7 @@ public class FilteredModulesSelectionDialog extends
         private final IProgressMonitor progressMonitor;
         private final List<IResource> projects;
         private final Set<IPath> validPaths = new HashSet<IPath>();
-        private final Set<String> extraLocations = new HashSet<String>();
+        private final Set<IPath> extraLocations = Sets.newHashSet();
 
         /**
          * Creates new ResourceProxyVisitor instance.
@@ -668,9 +669,9 @@ public class FilteredModulesSelectionDialog extends
                 validPaths.addAll(PluginUtils.getFullPaths(project,
                         erlProject.getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
-                for (final String p : BackendUtils
+                for (final IPath p : BackendUtils
                         .getExtraSourcePathsForModel(project)) {
-                    extras.add(new Path(p));
+                    extras.add(p);
                 }
                 validPaths.addAll(PluginUtils.getFullPaths(project, extras));
             }

@@ -511,9 +511,8 @@ public class ErlProject extends Openable implements IErlProject {
         }
         final List<IErlModule> result = new ArrayList<IErlModule>();
         final List<IPath> sourceDirs = Lists.newArrayList(getSourceDirs());
-        for (final String s : BackendUtils
-                .getExtraSourcePathsForModel(fProject)) {
-            sourceDirs.add(new Path(s));
+        for (final IPath s : BackendUtils.getExtraSourcePathsForModel(fProject)) {
+            sourceDirs.add(s);
         }
         result.addAll(getModulesOrIncludes(fProject, getModel(), sourceDirs,
                 true));

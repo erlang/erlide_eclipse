@@ -77,7 +77,7 @@ public class BackendUtils {
         abstract public Collection<IPath> call(IProject project);
     }
 
-    public static Collection<String> getExtraSourcePathsForBuild(
+    public static Collection<IPath> getExtraSourcePathsForBuild(
             final IProject project) {
         return BackendUtils.getExtraSourcePathsGeneric(project,
                 new SPPMethod() {
@@ -88,7 +88,7 @@ public class BackendUtils {
                 });
     }
 
-    public static Collection<String> getExtraSourcePathsForModel(
+    public static Collection<IPath> getExtraSourcePathsForModel(
             final IProject project) {
         return BackendUtils.getExtraSourcePathsGeneric(project,
                 new SPPMethod() {
@@ -99,7 +99,7 @@ public class BackendUtils {
                 });
     }
 
-    public static Collection<String> getExtraSourcePathsForExecution(
+    public static Collection<IPath> getExtraSourcePathsForExecution(
             final IProject project) {
         return BackendUtils.getExtraSourcePathsGeneric(project,
                 new SPPMethod() {
@@ -110,18 +110,16 @@ public class BackendUtils {
                 });
     }
 
-    private static Collection<String> getExtraSourcePathsGeneric(
+    private static Collection<IPath> getExtraSourcePathsGeneric(
             final IProject project, final SPPMethod method) {
-        final List<String> result = Lists.newArrayList();
+        final List<IPath> result = Lists.newArrayList();
         Collection<SourcePathProvider> spps;
         try {
             spps = getSourcePathProviders();
             for (final SourcePathProvider spp : spps) {
                 method.setTarget(spp);
                 final Collection<IPath> paths = method.call(project);
-                for (final IPath p : paths) {
-                    result.add(p.toString());
-                }
+                result.addAll(paths);
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -129,10 +127,10 @@ public class BackendUtils {
         return result;
     }
 
-    public static Collection<String> getExtraSourcePaths() {
+    public static Collection<IPath> getExtraSourcePaths() {
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
                 .getProjects();
-        final List<String> result = Lists.newArrayList();
+        final List<IPath> result = Lists.newArrayList();
         for (final IProject project : projects) {
             result.addAll(getExtraSourcePathsForModel(project));
         }

@@ -75,19 +75,19 @@ public class PluginUtils {
     private static final class SourcePathContainerFilter implements
             ContainerFilter {
         private final Set<IPath> paths;
-        private final Set<String> extra;
+        private final Set<IPath> extra;
 
         SourcePathContainerFilter(final IProject project) {
             final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
             paths = getFullPaths(project, erlProject.getSourceDirs());
-            extra = new HashSet<String>();
+            extra = new HashSet<IPath>();
             extra.addAll(BackendUtils.getExtraSourcePathsForModel(project));
         }
 
         public boolean accept(final IContainer container) {
             return paths.contains(container.getFullPath())
-                    || extra.contains(container.getLocation().toString());
+                    || extra.contains(container.getLocation());
         }
     }
 
