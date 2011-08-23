@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.jinterface.ErlLogger;
 
@@ -114,8 +115,10 @@ public class TestSourcePathProvider implements SourcePathProvider,
                     return true;
                 }
             });
-            System.out.println("TSPP took "
-                    + (System.currentTimeMillis() - time));
+            if (ErlangCore.hasFeatureEnabled("erlide.debug.tspp")) {
+                System.out.println("TSPP took "
+                        + (System.currentTimeMillis() - time));
+            }
         } catch (final CoreException e) {
             e.printStackTrace();
         }
