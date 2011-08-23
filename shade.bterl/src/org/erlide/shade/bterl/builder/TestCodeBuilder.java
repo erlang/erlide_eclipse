@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStreamListener;
@@ -477,10 +476,10 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 return false;
             }
             final IContainer parent = resource.getParent();
-            if (parent.getName().equals("garbage")) {
+            if (parent.getFullPath().toPortableString().contains("garbage")) {
                 return false;
             }
-            if (parent.getName().equals("lost+found")) {
+            if (parent.getFullPath().toPortableString().contains("lost+found")) {
                 return false;
             }
             final IResource[] siblings = parent.members();
@@ -497,12 +496,12 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
-        final Collection<String> srcDirs = BackendUtils
+        final Collection<IPath> srcDirs = BackendUtils
                 .getExtraSourcePathsForBuild(myProject);
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
-        for (final String src : srcDirs) {
-            final IPath srcPath = new Path(src).removeFirstSegments(rpath
-                    .segmentCount() - 1);
+        for (final IPath src : srcDirs) {
+            final IPath srcPath = src
+                    .removeFirstSegments(rpath.segmentCount() - 1);
             if (srcPath.isPrefixOf(rpath)) {
                 return true;
             }
