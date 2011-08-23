@@ -508,5 +508,4 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
         return false;
     }
-
 }
