@@ -128,11 +128,11 @@ public class TestSourcePathProvider implements SourcePathProvider,
         if (!(resource instanceof IContainer)) {
             return false;
         }
-        final String name = resource.getName();
-        if (name.equals("garbage")) {
+        final String path = resource.getFullPath().toPortableString();
+        if (path.contains("garbage")) {
             return false;
         }
-        if (name.equals("lost+found")) {
+        if (path.contains("lost+found")) {
             return false;
         }
         try {
