@@ -1,3 +1,17 @@
+List of user visible changes between 0.13.3 and 0.13.4 (20110823)
+
+1962bf3 899-capture-output-of-make_links-for-debugging enabled with -Derlide.make_links.snoop=true
+ff92f0e 898-add-switch-to-create-task-markers-only-from-menu
+ae55e6e 895-testsourcepathprovider-is-too-slow-
+6f78701 wrangler: Using existing name as default in 'rename' refactorings
+79a6b27 fix default log directory to user's home dir
+183193f 866-navigation--functions-defined-in-hrl-files-are-not-found
+5cf3a13 added option to disable test code builder, -Derlide.test_builder.disabled=true
+60e45d3 839-erlide-log-file---specify-directory
+96be096 874-erlide-nullpointerexception-when-trying-to-compare-to-previous-version
+a1e5087 432-cannot-paste-into-console-window-unless-you-first-type-another-char
+41df4e8 732-navigation--merge-open-and-hover-code
+
 List of user visible changes between 0.13.2 and 0.13.3 (20110701)
 
 5725863 Fix bug with multiple plt-files in dialyzer run.
