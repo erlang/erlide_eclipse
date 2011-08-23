@@ -46,15 +46,16 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+@SuppressWarnings("restriction")
 public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private final BuilderHelper helper = new BuilderHelper();
 
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = "true".equals(System
+    private static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.test_support.debug"));
-    private static final boolean DISABLED = "true".equals(System
+    private static final boolean DISABLED = Boolean.parseBoolean(System
             .getProperty("erlide.test_builder.disabled"));
 
     static void addMarker(final IResource file, final String message,

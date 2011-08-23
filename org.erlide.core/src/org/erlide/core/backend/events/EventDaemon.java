@@ -23,7 +23,7 @@ public class EventDaemon implements IBackendListener {
     final Object handlersLock = new Object();
     final List<ErlangEvent> events = Lists.newArrayList();
 
-    final static boolean DEBUG = "true".equals(System
+    final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
 
     public EventDaemon(final IBackend b) {

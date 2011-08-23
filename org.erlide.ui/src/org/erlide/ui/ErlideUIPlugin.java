@@ -462,7 +462,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
 
     private void startPeriodicDump() {
         final String env = System.getenv("erlide.internal.coredump");
-        if ("true".equals(env)) {
+        if (Boolean.parseBoolean(env)) {
             final Job job = new Job("Erlang node info dump") {
 
                 @Override

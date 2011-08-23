@@ -108,7 +108,7 @@ public class ErlideDebug {
         try {
             final OtpErlangAtom eres = (OtpErlangAtom) backend.call(
                     "erlide_debug", "is_erlide_process", "p", pid);
-            res = "true".equals(eres.atomValue());
+            res = Boolean.parseBoolean(eres.atomValue());
         } catch (final Exception e) {
         }
         return res;
@@ -142,7 +142,7 @@ public class ErlideDebug {
         try {
             final OtpErlangAtom eres = (OtpErlangAtom) backend.call(
                     "pman_process", "is_system_process", "s", pid);
-            res = "true".equals(eres.atomValue());
+            res = Boolean.parseBoolean(eres.atomValue());
         } catch (final Exception e) {
         }
         return res;

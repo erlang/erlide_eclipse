@@ -36,96 +36,97 @@ import com.ericsson.otp.erlang.OtpErlangString;
  */
 public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
 
-	@Override
-	public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
-			throws CoreException, OperationCanceledException {
-		/*
-		 * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
-		 * instanceof IErlMemberSelection) { SelectionKind kind = sel.getKind();
-		 * if (kind == SelectionKind.FUNCTION_CLAUSE || kind ==
-		 * SelectionKind.FUNCTION) return new RefactoringStatus(); } return
-		 * RefactoringStatus
-		 * .createFatalErrorStatus("Please select a function!");
-		 */
-		return new RefactoringStatus();
-	}
+    @Override
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        /*
+         * IErlSelection sel = GlobalParameters.getWranglerSelection(); if (sel
+         * instanceof IErlMemberSelection) { SelectionKind kind = sel.getKind();
+         * if (kind == SelectionKind.FUNCTION_CLAUSE || kind ==
+         * SelectionKind.FUNCTION) return new RefactoringStatus(); } return
+         * RefactoringStatus
+         * .createFatalErrorStatus("Please select a function!");
+         */
+        return new RefactoringStatus();
+    }
 
-	@Override
-	public String getName() {
-		return "Rename function";
-	}
+    @Override
+    public String getName() {
+        return "Rename function";
+    }
 
-	@Override
-	public IRefactoringRpcMessage run(final IErlSelection selection) {
-		final IErlMemberSelection sel = (IErlMemberSelection) selection;
-		final IErlRange memberRange = sel.getSelectionRange();
+    @Override
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        final IErlRange memberRange = sel.getSelectionRange();
 
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"rename_fun_eclipse", "siisxi", sel.getFilePath(),
-				memberRange.getStartLine(), memberRange.getStartCol(),
-				userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
-	}
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "rename_fun_eclipse", "siisxi", sel.getFilePath(),
+                memberRange.getStartLine(), memberRange.getStartCol(),
+                userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
 
-	@Override
-	public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
-		final IErlMemberSelection sel = (IErlMemberSelection) selection;
-		final IErlRange memberRange = sel.getMemberRange();
+    @Override
+    public IRefactoringRpcMessage runAlternative(final IErlSelection selection) {
+        final IErlMemberSelection sel = (IErlMemberSelection) selection;
+        final IErlRange memberRange = sel.getMemberRange();
 
-		return WranglerBackendManager.getRefactoringBackend().call(
-				"rename_fun_1_eclipse", "siisxi", sel.getFilePath(),
-				memberRange.getStartLine(), memberRange.getStartCol(),
-				userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
-	}
+        return WranglerBackendManager.getRefactoringBackend().call(
+                "rename_fun_1_eclipse", "siisxi", sel.getFilePath(),
+                memberRange.getStartLine(), memberRange.getStartCol(),
+                userInput, sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
 
-	@Override
-	public RefactoringWorkflowController getWorkflowController(final Shell shell) {
-		return new RefactoringWorkflowController(shell) {
+    @Override
+    public RefactoringWorkflowController getWorkflowController(final Shell shell) {
+        return new RefactoringWorkflowController(shell) {
 
-			@Override
-			public void doRefactoring() {
-				final IErlSelection sel = GlobalParameters
-						.getWranglerSelection();
-				IRefactoringRpcMessage message = run(sel);
-				if (message.isSuccessful()) {
-					changedFiles = message.getRefactoringChangeset();
-					status = new RefactoringStatus();
-				} else if (message.getRefactoringState() == RefactoringState.WARNING) {
-					if (ask("Warning", message.getMessageString())) {
-						message = runAlternative(sel);
-						if (message.getRefactoringState() == RefactoringState.OK) {
-							status = new RefactoringStatus();
-						} else {
-							status = RefactoringStatus
-									.createFatalErrorStatus(message
-											.getMessageString());
-						}
-					} else {
-						stop();
-					}
-				} else {
-					status = RefactoringStatus.createFatalErrorStatus(message
-							.getMessageString());
-				}
-			}
+            @Override
+            public void doRefactoring() {
+                final IErlSelection sel = GlobalParameters
+                        .getWranglerSelection();
+                IRefactoringRpcMessage message = run(sel);
+                if (message.isSuccessful()) {
+                    changedFiles = message.getRefactoringChangeset();
+                    status = new RefactoringStatus();
+                } else if (message.getRefactoringState() == RefactoringState.WARNING) {
+                    if (ask("Warning", message.getMessageString())) {
+                        message = runAlternative(sel);
+                        if (message.getRefactoringState() == RefactoringState.OK) {
+                            status = new RefactoringStatus();
+                        } else {
+                            status = RefactoringStatus
+                                    .createFatalErrorStatus(message
+                                            .getMessageString());
+                        }
+                    } else {
+                        stop();
+                    }
+                } else {
+                    status = RefactoringStatus.createFatalErrorStatus(message
+                            .getMessageString());
+                }
+            }
 
-		};
-	}
+        };
+    }
 
-	public String getDefaultValue() {
-		final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
-				.getWranglerSelection();
+    @Override
+    public String getDefaultValue() {
+        final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+                .getWranglerSelection();
 
-		IRpcResult res = WranglerBackendManager.getRefactoringBackend()
-				.callWithoutParser("get_fun_name_eclipse", "siixi",
-						sel.getFilePath(),
-						sel.getSelectionRange().getStartLine(),
-						sel.getSelectionRange().getStartCol(),
-						sel.getSearchPath(), GlobalParameters.getTabWidth());
+        IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+                .callWithoutParser("get_fun_name_eclipse", "siixi",
+                        sel.getFilePath(),
+                        sel.getSelectionRange().getStartLine(),
+                        sel.getSelectionRange().getStartCol(),
+                        sel.getSearchPath(), GlobalParameters.getTabWidth());
 
-		if (res.getValue().getClass().equals(OtpErlangString.class)) {
-			return ((OtpErlangString) res.getValue()).stringValue();
-		} else {
-			return "";
-		}
-	}
+        if (res.getValue().getClass().equals(OtpErlangString.class)) {
+            return ((OtpErlangString) res.getValue()).stringValue();
+        } else {
+            return "";
+        }
+    }
 }
