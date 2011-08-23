@@ -10,12 +10,14 @@ public interface ICoverEvent {
 
     /**
      * Get type of event
+     * 
      * @return
      */
     public CoverStatus getType();
 
     /**
      * Get information message
+     * 
      * @return
      */
     public String getInfo();

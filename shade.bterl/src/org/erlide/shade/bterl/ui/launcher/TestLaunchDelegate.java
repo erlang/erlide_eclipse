@@ -245,7 +245,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final File workdir) throws CoreException {
         final ILaunchConfigurationWorkingCopy wc = config.getWorkingCopy();
 
-        final boolean vobBterl = "false".equals(System.getProperty(
+        final boolean vobBterl = !Boolean.parseBoolean(System.getProperty(
                 "shade.bterl.local", "true"));
         System.out.println(".... vobBterl: " + vobBterl);
 

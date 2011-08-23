@@ -65,7 +65,7 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
 
-        IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+        final IRpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("get_var_name_eclipse", "siixi",
                         sel.getFilePath(),
                         sel.getSelectionRange().getStartLine(),

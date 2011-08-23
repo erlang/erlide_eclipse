@@ -10,8 +10,8 @@ public class CoveragePerformerProxy implements ICoveragePerformerProxy {
         return CoveragePerformer.getPerformer();
     }
 
-	public ICoverBackend getBackend() {
-		return CoverBackend.getInstance();
-	}
+    public ICoverBackend getBackend() {
+        return CoverBackend.getInstance();
+    }
 
 }

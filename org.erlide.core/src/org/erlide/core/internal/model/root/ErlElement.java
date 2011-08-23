@@ -101,7 +101,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * This element is being closed. Do any necessary cleanup.
      */
-    protected void closing(Object info) throws ErlModelException {
+    protected void closing(final Object info) throws ErlModelException {
     }
 
     /**

@@ -687,8 +687,8 @@ public class SearchUtil {
             }
             result.add(new ModuleLineFunctionArityRef(modName, offsetL
                     .intValue(), lengthL.intValue(), name, arity, clauseHead,
-                    Boolean.parseBoolean(subClause.atomValue()), Boolean.parseBoolean(isDef
-                            .atomValue())));
+                    Boolean.parseBoolean(subClause.atomValue()), Boolean
+                            .parseBoolean(isDef.atomValue())));
         }
     }
 

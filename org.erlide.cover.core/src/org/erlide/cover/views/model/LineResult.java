@@ -22,6 +22,7 @@ public class LineResult implements Comparable<LineResult>, Serializable {
 
     /**
      * Get line number
+     * 
      * @return
      */
     public int getLineNum() {
@@ -30,6 +31,7 @@ public class LineResult implements Comparable<LineResult>, Serializable {
 
     /**
      * How many times the line was called
+     * 
      * @return
      */
     public int getLineCalls() {
@@ -38,6 +40,7 @@ public class LineResult implements Comparable<LineResult>, Serializable {
 
     /**
      * If the line was called
+     * 
      * @return
      */
     public boolean called() {

@@ -35,6 +35,7 @@ public class StatsTreeModel implements Serializable {
 
     /**
      * Change model if results are restored
+     * 
      * @param mod
      */
     public static void changeInstance(final StatsTreeModel mod) {
@@ -75,6 +76,7 @@ public class StatsTreeModel implements Serializable {
 
     /**
      * add lines for project
+     * 
      * @param allLines
      * @param coveredLines
      */
@@ -99,6 +101,7 @@ public class StatsTreeModel implements Serializable {
 
     /**
      * Searching for specified element in a model
+     * 
      * @param name
      * @return
      */
@@ -110,7 +113,7 @@ public class StatsTreeModel implements Serializable {
         root = new StatsTreeObject("total", 0, 0, ObjectType.PROJECT);
     }
 
-    public void setChanged(boolean changed) {
+    public void setChanged(final boolean changed) {
         this.changed = changed;
     }
 
