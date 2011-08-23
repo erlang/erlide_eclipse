@@ -89,7 +89,6 @@ public class ErlangConsole extends TextConsole {
             view = (IConsoleView) page.showView(id);
             view.display(this);
         } catch (final PartInitException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

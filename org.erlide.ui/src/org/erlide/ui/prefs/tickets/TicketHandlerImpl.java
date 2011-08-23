@@ -55,7 +55,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 
     private String post(final URL url, final String message) throws IOException {
         Proxy proxy = Proxy.NO_PROXY;
-        if ("true".equals(System.getProperty("proxySet"))) {
+        if (Boolean.parseBoolean(System.getProperty("proxySet"))) {
             final String host = System.getProperty("proxyHost");
             final int port = Integer.parseInt(System.getProperty("proxyPort"));
             final InetSocketAddress addr = new InetSocketAddress(host, port);
@@ -86,7 +86,7 @@ public abstract class TicketHandlerImpl implements TicketHandler {
 
     private void login(final URL url) throws IOException {
         Proxy proxy = Proxy.NO_PROXY;
-        if ("true".equals(System.getProperty("proxySet"))) {
+        if (Boolean.parseBoolean(System.getProperty("proxySet"))) {
             final String host = System.getProperty("proxyHost");
             final int port = Integer.parseInt(System.getProperty("proxyPort"));
             final InetSocketAddress addr = new InetSocketAddress(host, port);

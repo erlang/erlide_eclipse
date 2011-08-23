@@ -72,7 +72,7 @@ public final class ErlParser implements IErlParser {
         OtpErlangList comments = null;
         OtpErlangTuple res = null;
         if (initialParse) {
-            ErlLogger.debug("initialParse %s", path);
+            // ErlLogger.debug("initialParse %s", path);
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
             res = ErlideNoparse.initialParse(b, scannerName, path, stateDir,
@@ -239,7 +239,7 @@ public final class ErlParser implements IErlParser {
         ErlFunction f = null;
         final OtpErlangObject commentO = el.elementAt(8);
         final OtpErlangAtom exportedA = (OtpErlangAtom) el.elementAt(9);
-        final boolean exported = "true".equals(exportedA.atomValue());
+        final boolean exported = Boolean.parseBoolean(exportedA.atomValue());
         try {
             String comment = Util.stringValue(commentO);
             if (comment != null) {
@@ -411,7 +411,7 @@ public final class ErlParser implements IErlParser {
                 if (fields != null) {
                     final List<ErlRecordField> children = Lists
                             .newArrayListWithCapacity(fields.arity());
-                    for (final OtpErlangObject o : fields.elements()) {
+                    for (final OtpErlangObject o : fields) {
                         if (o instanceof OtpErlangTuple) {
                             final OtpErlangTuple fieldTuple = (OtpErlangTuple) o;
                             final OtpErlangAtom fieldNameAtom = (OtpErlangAtom) fieldTuple

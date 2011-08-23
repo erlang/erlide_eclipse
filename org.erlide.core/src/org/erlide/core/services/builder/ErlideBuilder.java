@@ -111,10 +111,10 @@ public class ErlideBuilder {
             return new IProject[0];
         }
 
-        if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Starting build " + helper.buildKind(kind) + " of "
-                    + project.getName());
-        }
+        // if (BuilderHelper.isDebugging()) {
+        ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
+                + " of " + project.getName());
+        // }
         final IErlProject erlProject = CoreScope.getModel().getErlangProject(
                 project);
         try {
@@ -134,9 +134,6 @@ public class ErlideBuilder {
 
             final OtpErlangList compilerOptions = CompilerPreferences
                     .get(project);
-
-            ErlLogger.debug("******** building %s: %s", getProject().getName(),
-                    compilerOptions);
 
             final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                     kind, args, project, resourceDelta);
@@ -236,7 +233,8 @@ public class ErlideBuilder {
         } finally {
             cleanup();
             // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Finished build of " + project.getName() + " took "
+            ErlLogger.debug("###** Finished build of " + project.getName()
+                    + " took "
                     + Long.toString(System.currentTimeMillis() - time));
             // }
         }

@@ -142,12 +142,12 @@ public class ErlProject extends Openable implements IErlProject {
             final IResource[] elems = c.members();
             final List<IErlElement> children = new ArrayList<IErlElement>(
                     elems.length + 1);
-            ErlLogger.debug(">>adding externals");
+            // ErlLogger.debug(">>adding externals");
             addExternals(children);
-            ErlLogger.debug("childcount %d", children.size());
-            ErlLogger.debug(">>adding otp");
+            // ErlLogger.debug("childcount %d", children.size());
+            // ErlLogger.debug(">>adding otp");
             addOtpExternals(children);
-            ErlLogger.debug("childcount %d", children.size());
+            // ErlLogger.debug("childcount %d", children.size());
             final IErlModel model = getModel();
             for (final IResource element : elems) {
                 if (element instanceof IFolder) {
@@ -352,7 +352,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
 
         final ErlProject other = (ErlProject) o;
-        return fProject.equals(other.getProject())
+        return fProject.equals(other.getWorkspaceProject())
                 && fOccurrenceCount == other.fOccurrenceCount;
     }
 
@@ -669,12 +669,6 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(nonErlangResources);
     }
 
-    @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
     public boolean isOnSourcePath() {
         return true; // FIXME eller? ska man kolla nature? fast det ar val
         // redan klart... kanske den inte ska arva fran
@@ -760,7 +754,7 @@ public class ErlProject extends Openable implements IErlProject {
             final String pluginId) {
         final String s = service.getString(pluginId, key, "", null);
         if (s.length() > 0) {
-            ErlLogger.debug("%s: '%s'", key, s);
+            // ErlLogger.debug("%s: '%s'", key, s);
         }
         final String global = s;
         final IOldErlangProjectProperties prefs = getProperties();
@@ -864,8 +858,13 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(cachedIncludeDirs);
     }
 
+    @Deprecated
     public IPath getOutputLocation() {
         return getProperties().getOutputDir();
+    }
+
+    public Collection<IPath> getOutputLocations() {
+        return getProperties().getOutputDirs();
     }
 
     public RuntimeInfo getRuntimeInfo() {

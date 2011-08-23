@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
@@ -85,7 +86,8 @@ public final class ErlangCore {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "erlide_log_directory";
         final String pluginId = "org.erlide.core";
-        final String s = service.getString(pluginId, key, "", null);
+        final String s = service.getString(pluginId, key,
+                System.getProperty("user.home"), null);
         String dir;
         if (s != null) {
             dir = s;
@@ -95,6 +97,13 @@ public final class ErlangCore {
 
         logger = ErlLogger.getInstance();
         logger.setLogDir(dir);
+
+        try {
+            // ignore result, just setup cache
+            BackendUtils.getSourcePathProviders();
+        } catch (final CoreException e) {
+            // ignore
+        }
     }
 
     public void stop() {
@@ -309,5 +318,9 @@ public final class ErlangCore {
 
     public IPath getStateLocation() {
         return plugin.getStateLocation();
+    }
+
+    public static boolean hasFeatureEnabled(final String feature) {
+        return Boolean.parseBoolean(System.getProperty(feature));
     }
 }

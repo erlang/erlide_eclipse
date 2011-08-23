@@ -19,7 +19,6 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock;
 public class EmptyErlangFoldingPreferenceBlock implements
         IErlangFoldingPreferenceBlock {
 
-    // TODO fattar ju inget av detta, varf?r skapar de kontroller h?r??
     public Control createControl(final Composite composite) {
         final Composite inner = new Composite(composite, SWT.NONE);
         inner.setLayout(new GridLayout(3, false));

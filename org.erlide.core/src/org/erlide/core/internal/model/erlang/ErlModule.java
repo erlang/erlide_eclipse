@@ -391,12 +391,6 @@ public class ErlModule extends Openable implements IErlModule {
         }
     }
 
-    @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
     public synchronized void initialReconcile() {
         // currently unused
         // Note that the ErlReconciler doesn't send the first full-text

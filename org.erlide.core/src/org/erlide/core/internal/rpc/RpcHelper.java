@@ -37,7 +37,7 @@ public final class RpcHelper implements IRpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
             .getBoolean("erlide.checkrpc");
-    private static IRpcHelper instance;
+    private static volatile IRpcHelper instance;
 
     /**
      * Convenience method to send a remote message.

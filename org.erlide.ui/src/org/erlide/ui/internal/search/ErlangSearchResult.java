@@ -33,7 +33,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
     }
 
     @Override
-    public void removeAll() {
+    public synchronized void removeAll() {
         result = new ArrayList<ErlangSearchElement>();
         super.removeAll();
     }

@@ -462,7 +462,7 @@ public class TraceDataHandler {
         node.addChildren(processNode);
 
         final OtpErlangList list = (OtpErlangList) tuple.elementAt(INDEX_INFO);
-        for (final OtpErlangObject otpErlangObject : list.elements()) {
+        for (final OtpErlangObject otpErlangObject : list) {
             final OtpErlangTuple infoTuple = (OtpErlangTuple) otpErlangObject;
             final OtpErlangObject key = infoTuple.elementAt(0);
             final OtpErlangObject value = infoTuple.elementAt(1);

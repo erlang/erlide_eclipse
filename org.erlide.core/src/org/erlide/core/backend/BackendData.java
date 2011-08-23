@@ -30,6 +30,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -48,7 +49,7 @@ public final class BackendData extends GenericBackendData {
         if (runtimeInfo == null) {
             return;
         }
-        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "") == "") {
+        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
     }
@@ -59,6 +60,10 @@ public final class BackendData extends GenericBackendData {
 
     public BackendData(final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
+        if (info == null) {
+            throw new IllegalArgumentException(
+                    "BackendData can't be created with null RuntimeInfo");
+        }
         setRuntimeName(info.getName());
         setNodeName(info.getNodeName());
         setCookie(info.getCookie());
@@ -159,8 +164,7 @@ public final class BackendData extends GenericBackendData {
                     info.getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            if (System.getProperty("erlide.internal.shortname", "false")
-                    .equals("true")) {
+            if (ErlangCore.hasFeatureEnabled("erlide.internal.shortname")) {
                 workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                         false);
                 info.useLongName(false);

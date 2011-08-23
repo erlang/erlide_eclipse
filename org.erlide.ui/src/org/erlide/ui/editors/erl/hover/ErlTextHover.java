@@ -195,7 +195,7 @@ public class ErlTextHover implements ITextHover,
 
                     @Override
                     public void setSize(int width, int height) {
-                        // TODO default size is too small
+                        // default size is too small
                         final Point bounds = getSizeConstraints();
                         if (bounds != null) {
                             if (bounds.x != SWT.DEFAULT) {

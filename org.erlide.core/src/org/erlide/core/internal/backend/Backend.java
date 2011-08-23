@@ -351,13 +351,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         getNode().registerStatusHandler(handler);
     }
 
-    private void linkToRemoteRex(final OtpErlangPid watchdog) {
-        try {
-            getEventBox().link(watchdog);
-        } catch (final OtpErlangExit e) {
-        }
-    }
-
     public void stop() {
         stopped = true;
     }
@@ -455,7 +448,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean monitor,
             final boolean watch) {
-        final boolean inited = init(getEventPid(), monitor, watch);
+        init(getEventPid(), monitor, watch);
 
         // data.monitor = monitor;
         // data.managed = watch;
@@ -845,7 +838,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public void initialize() {
         shellManager = new BackendShellManager(this);
-        // TODO managed = options.contains(BackendOptions.MANAGED);
         if (isDistributed()) {
             connect();
             final IBackendManager bm = BackendCore.getBackendManager();

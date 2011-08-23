@@ -1698,8 +1698,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     private void updateAnnotationViews(final Annotation annotation) {
-        // TODO Auto-generated method stub
-
     }
 
     // // the window is asymmetric, to allow finding number of arguments
@@ -2138,7 +2136,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      * @author jakob
      * 
      */
-    private class ErlangRef {
+    private static class ErlangRef {
         final private ErlangSearchElement element;
         final private int offset;
         final private int length;

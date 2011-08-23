@@ -21,7 +21,6 @@ import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
-import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
@@ -52,8 +51,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         // TODO some code duplication within this function
-        ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
-                externalName);
+        // ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
+        // externalName);
         final ErlModelCache cache = ErlModel.getErlModelCache();
         List<ExternalTreeEntry> externalModuleTree = cache
                 .getExternalTree(externalModules);
@@ -156,12 +155,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
             path = path.substring(0, path.length() - 8);
         }
         return path;
-    }
-
-    @Override
-    protected void closing(final Object info) throws ErlModelException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

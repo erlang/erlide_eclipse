@@ -25,6 +25,10 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.internal.core.StreamsProxy;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -42,16 +46,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+@SuppressWarnings("restriction")
 public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private final BuilderHelper helper = new BuilderHelper();
 
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = true;
-
-    // "true".equals(System
-    // .getProperty("org.erlide.test_support.debug"));
+    private static final boolean DEBUG = Boolean.parseBoolean(System
+            .getProperty("erlide.test_support.debug"));
+    private static final boolean DISABLED = Boolean.parseBoolean(System
+            .getProperty("erlide.test_builder.disabled"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -71,21 +76,38 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     @Override
     protected IProject[] build(final int kind, final Map args,
             final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return null;
+        }
+        final IProject project = getProject();
+        if (DEBUG) {
+            ErlLogger.info("##### start test builder (full) %s",
+                    project.getName());
+        }
+        final long time = System.currentTimeMillis();
         if (kind == FULL_BUILD) {
             fullBuild(monitor);
         } else {
-            final IResourceDelta delta = getDelta(getProject());
+            final IResourceDelta delta = getDelta(project);
             if (delta == null) {
                 fullBuild(monitor);
             } else {
                 incrementalBuild(delta, monitor);
             }
         }
+        if (DEBUG) {
+            ErlLogger.info("##### done test builder %s took %s",
+                    project.getName(),
+                    Long.toString(System.currentTimeMillis() - time));
+        }
         return null;
     }
 
     @Override
     protected void clean(final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return;
+        }
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
@@ -157,11 +179,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
                 final String outputDir = bres.getResource().getParent()
                         .getProjectRelativePath().toString();
-                if (DEBUG) {
-                    ErlLogger.debug("@@@ >> bterl build :: "
-                            + resource.getFullPath().toString() + " :: "
-                            + outputDir + " -- " + compilerOptions);
-                }
                 final IRpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
@@ -187,16 +204,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     }
                     if (result != null) {
                         final IResource resource = entry.getValue();
-                        if (DEBUG) {
-                            ErlLogger.debug("@@@ >> bterl built :: "
-                                    + resource.getFullPath().toString());
-                        }
                         helper.completeCompile(project, resource, result,
                                 backend, new OtpErlangList());
-                        if (DEBUG) {
-                            ErlLogger.debug("### >> bterl built :: "
-                                    + resource.getFullPath().toString());
-                        }
                         done.add(entry);
                     }
                 }
@@ -390,10 +399,25 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 }
                 final Process makeLinks = DebugPlugin.exec(
                         new String[] { "./make_links" }, dir);
-                // InputStream in = makeLinks.getInputStream();
+                final StreamsProxy proxy = new StreamsProxy(makeLinks,
+                        "ISO-8859-1");
+                final IStreamListener listener = new IStreamListener() {
+                    public void streamAppended(final String text,
+                            final IStreamMonitor streamMonitor) {
+                        final String[] lines = text.split("\n");
+                        for (final String line : lines) {
+                            System.out.println("make_links>> " + line);
+                        }
+                    }
+                };
+                if (ErlangCore.hasFeatureEnabled("erlide.make_links.snoop")) {
+                    proxy.getOutputStreamMonitor().addListener(listener);
+                    proxy.getErrorStreamMonitor().addListener(listener);
+                }
                 while (true) {
                     try {
                         makeLinks.waitFor();
+                        proxy.kill();
                         break;
                     } catch (final InterruptedException e1) {
                     }
@@ -402,9 +426,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         new NullProgressMonitor());
             } catch (final CoreException e) {
                 // there is no make_links
-                if (DEBUG) {
-                    System.out.println("no make_links???");
-                }
             }
         }
 

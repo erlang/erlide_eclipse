@@ -142,4 +142,12 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
     public void doBeforeRefactoring() {
 
     }
+
+    @Override
+    public String getDefaultValue() {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
+
+        return sel.getErlModule().getModuleName();
+    }
+
 }

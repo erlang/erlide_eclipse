@@ -54,7 +54,7 @@ public class ErlangStackFrame extends ErlangDebugElement implements
         this.stackFrameNo = stackFrameNo;
         final List<ErlangVariable> framesReversed = new ArrayList<ErlangVariable>(
                 bindings.arity());
-        for (final OtpErlangObject o : bindings.elements()) {
+        for (final OtpErlangObject o : bindings) {
             if (o instanceof OtpErlangTuple) {
                 final OtpErlangTuple t = (OtpErlangTuple) o;
                 final OtpErlangAtom nameA = (OtpErlangAtom) t.elementAt(0);

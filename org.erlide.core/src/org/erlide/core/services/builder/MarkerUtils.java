@@ -124,10 +124,10 @@ public final class MarkerUtils {
                                 .findIncludeFromProject(erlProject, fileName,
                                         fileName,
                                         IErlModel.Scope.REFERENCED_PROJECTS);
-                        ErlLogger.debug("inc::" + fileName + " "
-                                + resource.getName() + " "
-                                + erlProject.getName());
-                        ErlLogger.debug("    " + entry.getValue());
+                        // ErlLogger.debug("inc::" + fileName + " "
+                        // + resource.getName() + " "
+                        // + erlProject.getName());
+                        // ErlLogger.debug("    " + entry.getValue());
 
                         if (includeFile == null) {
                             res = resource;
@@ -460,6 +460,9 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
+        if (ErlangCore.hasFeatureEnabled("erlide.skip.tasks")) {
+            return;
+        }
         final IErlProject p = CoreScope.getModel().findProject(project);
         if (p != null) {
             try {
@@ -483,9 +486,9 @@ public final class MarkerUtils {
         for (final IErlComment c : cl) {
             final String text = c.getName();
             final int line = c.getLineStart();
-            mkMarker(resource, line, text, TODO, IMarker.PRIORITY_NORMAL);
-            mkMarker(resource, line, text, XXX, IMarker.PRIORITY_NORMAL);
-            mkMarker(resource, line, text, FIXME, IMarker.PRIORITY_HIGH);
+            mkTaskMarker(resource, line, text, TODO, IMarker.PRIORITY_NORMAL);
+            mkTaskMarker(resource, line, text, XXX, IMarker.PRIORITY_NORMAL);
+            mkTaskMarker(resource, line, text, FIXME, IMarker.PRIORITY_HIGH);
         }
         // m.disposeScanner(); FIXME why did we need this?
     }
@@ -514,24 +517,24 @@ public final class MarkerUtils {
                 }
 
                 for (final Tuple<String, Integer> c : cl) {
-                    mkMarker(resource, c.o2, c.o1, TODO,
+                    mkTaskMarker(resource, c.o2, c.o1, TODO,
                             IMarker.PRIORITY_NORMAL);
-                    mkMarker(resource, c.o2, c.o1, XXX, IMarker.PRIORITY_NORMAL);
-                    mkMarker(resource, c.o2, c.o1, FIXME, IMarker.PRIORITY_HIGH);
+                    mkTaskMarker(resource, c.o2, c.o1, XXX,
+                            IMarker.PRIORITY_NORMAL);
+                    mkTaskMarker(resource, c.o2, c.o1, FIXME,
+                            IMarker.PRIORITY_HIGH);
                 }
             } finally {
                 reader.close();
             }
         } catch (final CoreException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    private static void mkMarker(final IResource resource, final int line,
+    private static void mkTaskMarker(final IResource resource, final int line,
             final String text, final String tag, final int prio) {
         if (text.contains(tag)) {
             final int ix = text.indexOf(tag);

@@ -189,7 +189,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     public boolean getTrapExit() {
         final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
                 fBackend, fPid, "trap_exit");
-        return "true".equals(res.atomValue());
+        return Boolean.parseBoolean(res.atomValue());
     }
 
     public void getStackAndBindings(final String module, final int line) {
@@ -420,7 +420,6 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public boolean canTerminate() {
-        // TODO Auto-generated method stub
         return false;
     }
 

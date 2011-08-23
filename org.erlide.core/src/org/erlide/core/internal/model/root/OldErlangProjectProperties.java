@@ -64,7 +64,7 @@ public final class OldErlangProjectProperties implements
             return;
         }
 
-        if ("true".equals(System.getProperty("erlide.newprops"))) {
+        if (ErlangCore.hasFeatureEnabled("erlide.newprops")) {
             try {
                 final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
                 final ErlProjectInfo npp = builder
@@ -121,7 +121,7 @@ public final class OldErlangProjectProperties implements
         }
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode(ErlangCore.PLUGIN_ID);
-        if ("true".equals(System.getProperty("erlide.newprops"))) {
+        if (ErlangCore.hasFeatureEnabled("erlide.newprops")) {
             try {
                 final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
                 final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();

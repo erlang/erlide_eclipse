@@ -41,7 +41,6 @@ public class CoverBackend implements ICoverBackend {
     private ILaunchConfiguration launchConfig;
     private final CoverEventHandler handler;
     private CoverLaunchSettings settings;
-    private String nodeName;
 
     private final Logger log; // logger
 
@@ -231,7 +230,6 @@ public class CoverBackend implements ICoverBackend {
                 .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
 
-        nodeName = myInfo.getNodeName();
         try {
             workingCopy = type.newInstance(null,
                     "internal " + myInfo.getNodeName());

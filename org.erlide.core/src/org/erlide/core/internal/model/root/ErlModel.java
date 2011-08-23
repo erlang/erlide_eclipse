@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -680,7 +679,7 @@ public class ErlModel extends Openable implements IErlModel {
                 false, false, IErlModel.Scope.ALL_PROJECTS);
     }
 
-    private static ErlModel fgErlangModel;
+    private static volatile ErlModel fgErlangModel;
 
     public static final IErlModel getErlangModel() {
         if (fgErlangModel == null) {
@@ -965,7 +964,6 @@ public class ErlModel extends Openable implements IErlModel {
      */
     public void registerModelDelta(final IErlElementDelta delta) {
         erlModelDeltas.add(delta);
-        // TODO
     }
 
     /**
@@ -1318,13 +1316,6 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public void shutdown() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public HashSet<String> getOptionNames() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public IErlParser getParser() {

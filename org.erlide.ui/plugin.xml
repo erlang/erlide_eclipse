@@ -1876,7 +1876,7 @@
    <extension
          point="org.erlide.core.messageReporter">
       <messageReporter
-            class="org.erlide.ui.MessageReporter">
+            class="org.erlide.ui.UIMessageReporter">
       </messageReporter>
    </extension>
    <extension

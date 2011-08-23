@@ -22,7 +22,6 @@ public class ToolbarFilterHandler extends AbstractHandler implements
 
     public ToolbarFilterHandler() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public Object execute(final ExecutionEvent event) throws ExecutionException {

@@ -39,7 +39,6 @@ public class ErlangLinkHelperAction implements ILinkHelper {
         // }
         // // if it is an erlang element, let's first get the actual object for
         // // finding the editor
-        // // TODO
         //
         // // and now, if it is really a file...
         // if (firstElement instanceof IFile) {
