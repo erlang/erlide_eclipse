@@ -416,11 +416,11 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 while (true) {
                     try {
                         makeLinks.waitFor();
-                        proxy.kill();
                         break;
                     } catch (final InterruptedException e1) {
                     }
                 }
+                proxy.kill();
                 container.refreshLocal(IResource.DEPTH_INFINITE,
                         new NullProgressMonitor());
             } catch (final CoreException e) {
