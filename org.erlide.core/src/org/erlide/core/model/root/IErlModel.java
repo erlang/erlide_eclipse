@@ -436,4 +436,8 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
     public IErlModule findIncludeFromModule(final IErlModule module,
             final String includeName, final String includePath,
             final IErlModel.Scope scope) throws ErlModelException;
+
+    IErlModule findModuleFromProject(IErlProject erlProject, String name,
+            String object, boolean b, boolean c, Scope projectOnly)
+            throws ErlModelException;
 }

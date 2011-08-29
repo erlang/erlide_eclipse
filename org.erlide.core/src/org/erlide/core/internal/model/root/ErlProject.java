@@ -680,7 +680,7 @@ public class ErlProject extends Openable implements IErlProject {
 
     public IErlModule getModule(final String name) {
         try {
-            return ErlModel.findModuleFromProject(this, name, null, false,
+            return getModel().findModuleFromProject(this, name, null, false,
                     false, IErlModel.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
             // final boolean hasExtension = CommonUtils.hasExtension(name);

@@ -44,7 +44,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
@@ -537,13 +536,13 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) throws ErlModelException {
-        return ErlModel.findModuleFromProject(null, name, null, false, false,
+        return findModuleFromProject(null, name, null, false, false,
                 IErlModel.Scope.ALL_PROJECTS);
     }
 
     public IErlModule findModuleIgnoreCase(final String name)
             throws ErlModelException {
-        return ErlModel.findModuleFromProject(null, name, null, true, false,
+        return findModuleFromProject(null, name, null, true, false,
                 IErlModel.Scope.ALL_PROJECTS);
     }
 
@@ -669,14 +668,14 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlModule findModule(final String moduleName,
             final String modulePath) throws ErlModelException {
-        return ErlModel.findModuleFromProject(null, moduleName, modulePath,
-                false, true, IErlModel.Scope.ALL_PROJECTS);
+        return findModuleFromProject(null, moduleName, modulePath, false, true,
+                IErlModel.Scope.ALL_PROJECTS);
     }
 
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
-        return ErlModel.findIncludeFromProject(null, includeName, includePath,
-                false, false, IErlModel.Scope.ALL_PROJECTS);
+        return findIncludeFromProject(null, includeName, includePath, false,
+                false, IErlModel.Scope.ALL_PROJECTS);
     }
 
     private static volatile ErlModel fgErlangModel;
@@ -1336,7 +1335,7 @@ public class ErlModel extends Openable implements IErlModel {
         return null;
     }
 
-    static Collection<IErlModule> getAllIncludes(final IErlProject project,
+    private Collection<IErlModule> getAllIncludes(final IErlProject project,
             final boolean checkExternals, final IErlModel.Scope scope)
             throws ErlModelException {
         final List<IErlProject> projects = Lists.newArrayList();
@@ -1349,8 +1348,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (scope == IErlModel.Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            for (final IErlProject project2 : model.getErlangProjects()) {
+            for (final IErlProject project2 : getErlangProjects()) {
                 if (!projects.contains(project2)) {
                     projects.add(project2);
                 }
@@ -1359,7 +1357,7 @@ public class ErlModel extends Openable implements IErlModel {
         for (final IErlProject project2 : projects) {
             getAllModulesAux(project2.getIncludes(), result, paths);
         }
-        if (checkExternals) {
+        if (checkExternals && project != null) {
             getAllModulesAux(project.getExternalIncludes(), result, paths);
         }
         return result;
@@ -1379,7 +1377,7 @@ public class ErlModel extends Openable implements IErlModel {
         }
     }
 
-    static Collection<IErlModule> getAllModules(final IErlProject project,
+    private Collection<IErlModule> getAllModules(final IErlProject project,
             final boolean checkExternals, final IErlModel.Scope scope)
             throws ErlModelException {
         final Set<IErlProject> projects = Sets.newHashSet();
@@ -1394,8 +1392,7 @@ public class ErlModel extends Openable implements IErlModel {
         }
 
         if (scope == IErlModel.Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            projects.addAll(model.getErlangProjects());
+            projects.addAll(getErlangProjects());
         }
 
         for (final IErlProject project2 : projects) {
@@ -1416,7 +1413,7 @@ public class ErlModel extends Openable implements IErlModel {
         return result;
     }
 
-    static IErlModule findIncludeFromProject(final IErlProject project,
+    private IErlModule findIncludeFromProject(final IErlProject project,
             final String includeName, final String includePath,
             final boolean ignoreCase, final boolean checkExternals,
             final IErlModel.Scope scope) throws ErlModelException {
@@ -1471,7 +1468,7 @@ public class ErlModel extends Openable implements IErlModel {
                 true, scope);
     }
 
-    static IErlModule findModuleFromProject(final IErlProject project,
+    public IErlModule findModuleFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
             final boolean ignoreCase, final boolean checkExternals,
             final IErlModel.Scope scope) throws ErlModelException {
