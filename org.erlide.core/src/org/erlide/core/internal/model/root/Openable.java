@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.erlide.core.internal.model.root;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelStatus;
 import org.erlide.core.model.root.ErlModelStatusConstants;
@@ -315,18 +312,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // makeConsistent(pm); // update the element info of this
         // // element
         // }
-    }
-
-    protected void addModules(final List<IErlModule> modules)
-            throws ErlModelException {
-        for (final IErlElement e : getChildren()) {
-            if (e instanceof IErlModule) {
-                modules.add((IErlModule) e);
-            } else if (e instanceof ErlFolder) {
-                final ErlFolder f = (ErlFolder) e;
-                f.addModules(modules);
-            }
-        }
     }
 
 }
