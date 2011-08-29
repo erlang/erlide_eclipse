@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2009 Vlad Dumitrescu and others.
+ * Copyright (c) 2009 * and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * which accompanies this distribution, and is available
+ * at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Vlad Dumitrescu
+ *     *
  *******************************************************************************/
-package org.erlide.core.backend.console;
+package org.erlide.core.backend.events;
 
-public interface BackendShellListener {
+public interface IEventDaemon {
 
-    void changed(IBackendShell erlConsoleModel);
+    void addHandler(final EventHandler handler);
+
+    void removeHandler(final EventHandler handler);
 
 }

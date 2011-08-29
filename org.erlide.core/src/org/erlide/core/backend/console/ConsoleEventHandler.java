@@ -15,10 +15,10 @@ import org.erlide.core.backend.events.EventHandler;
 
 public class ConsoleEventHandler extends EventHandler {
 
-    private final BackendShell shell;
+    private final IBackendShell shell;
     private final String nodeName;
 
-    public ConsoleEventHandler(final BackendShell backendShell,
+    public ConsoleEventHandler(final IBackendShell backendShell,
             final String nodeName) {
         shell = backendShell;
         this.nodeName = nodeName;

@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
-public class EventDaemon implements IBackendListener {
+public class EventDaemon implements IBackendListener, IEventDaemon {
 
     private IBackend runtime;
     volatile boolean stopped = false;

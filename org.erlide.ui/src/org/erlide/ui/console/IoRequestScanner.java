@@ -14,18 +14,18 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.jface.text.rules.IToken;
-import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest;
 
 public class IoRequestScanner implements IPartitionTokenScanner {
 
-    private final BackendShell model;
+    private final IBackendShell model;
     private int docOffset;
     private int docLength;
     private int crtOffset;
     private int crtLength;
 
-    public IoRequestScanner(final BackendShell model) {
+    public IoRequestScanner(final IBackendShell model) {
         Assert.isNotNull(model);
         this.model = model;
     }

@@ -50,8 +50,8 @@ import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeManager;
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.backend.InitialCall;
-import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
+import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
@@ -496,8 +496,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    public BackendShell getShell(final String id) {
-        final BackendShell shell = shellManager.openShell(id);
+    public IBackendShell getShell(final String id) {
+        final IBackendShell shell = shellManager.openShell(id);
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy

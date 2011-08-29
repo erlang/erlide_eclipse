@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.backend.console.BackendShell;
-import org.erlide.core.backend.events.EventDaemon;
+import org.erlide.core.backend.console.IBackendShell;
+import org.erlide.core.backend.events.IEventDaemon;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
 import org.erlide.core.rpc.IRpcCallSite;
@@ -44,7 +44,7 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     void stop();
 
-    EventDaemon getEventDaemon();
+    IEventDaemon getEventDaemon();
 
     OtpMbox createMbox();
 
@@ -64,7 +64,7 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     void setLaunch(final ILaunch launch);
 
-    BackendShell getShell(final String id);
+    IBackendShell getShell(final String id);
 
     boolean isDistributed();
 

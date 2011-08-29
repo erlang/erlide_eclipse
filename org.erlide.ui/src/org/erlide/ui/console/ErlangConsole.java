@@ -22,10 +22,10 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.IBackendShell;
 
 public class ErlangConsole extends TextConsole {
-    private final BackendShell shell;
+    private final IBackendShell shell;
     protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
@@ -52,7 +52,7 @@ public class ErlangConsole extends TextConsole {
         return backend;
     }
 
-    public BackendShell getShell() {
+    public IBackendShell getShell() {
         return shell;
     }
 
