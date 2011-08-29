@@ -24,7 +24,7 @@ public final class ErlangEvent {
         return new ErlangEvent(topic, data, sender);
     }
 
-    ErlangEvent(final String topic, final OtpErlangObject data,
+    public ErlangEvent(final String topic, final OtpErlangObject data,
             final OtpErlangPid sender) {
         if (topic == null) {
             throw new IllegalArgumentException("event topic can't be null");

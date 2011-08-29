@@ -53,7 +53,6 @@ import org.erlide.core.backend.InitialCall;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
-import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
