@@ -8,11 +8,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend.manager;
+package org.erlide.core.internal.backend;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.ILaunchesListener2;
+import org.erlide.core.backend.IBackendManager;
 
 public class BackendManagerLaunchListener implements ILaunchesListener2 {
 

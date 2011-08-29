@@ -24,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.internal.backend.ModelInternalUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
@@ -193,7 +194,7 @@ public class OpenAction extends SelectionDispatchAction {
             found = findExternalCallOrType(module, res, erlProject, element,
                     scope);
         } else if (res.isInclude()) {
-            found = ModelUtils.findInclude(module, erlProject, res, model);
+            found = ModelInternalUtils.findInclude(module, erlProject, res, model);
         } else if (res.isLocalCall()) {
             found = findLocalCall(module, backend, erlProject, res, element,
                     scope);
@@ -202,7 +203,7 @@ public class OpenAction extends SelectionDispatchAction {
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocument().get(
                     range.getOffset(), range.getLength());
-            found = ModelUtils.findVariable(backend, range, res.getName(),
+            found = ModelInternalUtils.findVariable(backend, range, res.getName(),
                     elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;

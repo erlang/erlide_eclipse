@@ -27,7 +27,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.manager.IBackendManager;
+import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.common.CharOperation;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.root.ErlModelException;

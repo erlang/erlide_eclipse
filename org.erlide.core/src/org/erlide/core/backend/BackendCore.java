@@ -1,7 +1,5 @@
 package org.erlide.core.backend;
 
-import org.erlide.core.backend.manager.IBackendFactory;
-import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.internal.backend.BackendFactory;
 import org.erlide.core.internal.backend.BackendManager;

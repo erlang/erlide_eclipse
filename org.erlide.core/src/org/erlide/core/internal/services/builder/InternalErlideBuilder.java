@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.manager.IBackendManager;
+import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.internal.backend.Backend;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.IRpcFuture;

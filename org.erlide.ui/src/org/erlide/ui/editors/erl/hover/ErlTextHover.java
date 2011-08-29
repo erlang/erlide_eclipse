@@ -44,7 +44,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.manager.IBackendManager;
+import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlFunction;
