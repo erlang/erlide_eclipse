@@ -123,7 +123,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final IFile file = (IFile) resource;
             deleteMarkers(file);
             if (DEBUG) {
-                System.out.println(" >>> bterl build ::: " + file.getName());
+                ErlLogger.debug(" >>> bterl build ::: " + file.getName());
             }
         }
     }
@@ -142,6 +142,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         checkForMakeLinks(project, monitor);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                 project, monitor, false);
+        if (DEBUG) {
+            ErlLogger.debug("resources to build: " + resourcesToBuild.size());
+        }
         doBuild(project, resourcesToBuild, false, monitor);
     }
 
