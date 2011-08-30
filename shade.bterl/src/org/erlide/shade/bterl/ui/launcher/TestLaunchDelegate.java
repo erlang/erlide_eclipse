@@ -261,7 +261,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         paths.add(bterlPath);
 
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, runtimeName);
-        // FIXME: unique node name!
         wc.setAttribute(ErlLaunchAttributes.NODE_NAME,
                 "bterl" + System.currentTimeMillis());
         wc.setAttribute(ErlLaunchAttributes.START_ME, true);

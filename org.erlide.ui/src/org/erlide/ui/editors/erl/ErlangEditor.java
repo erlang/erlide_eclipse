@@ -1239,8 +1239,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             // set highlight range
             setSelection(reference, true);
             if (myOutlinePage != null) {
-                // FIXME is this needed or is it handled otherwise?
-                // (SelectionListener-something...)
                 myOutlinePage.select(reference);
             }
         }

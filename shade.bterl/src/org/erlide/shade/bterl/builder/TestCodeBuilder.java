@@ -318,7 +318,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         final ResourceAttributes a = resource
                                 .getResourceAttributes();
                         if (!a.isSymbolicLink()) {
-                            // FIXME BuildResource
                             final BuildResource bres = new BuildResource(
                                     resource, resource.getParent()
                                             .getLocation().toString());
@@ -360,7 +359,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     final ResourceAttributes a = resource
                             .getResourceAttributes();
                     if (!a.isSymbolicLink()) {
-                        // FIXME BuildResource
                         final BuildResource bres = new BuildResource(resource,
                                 resource.getParent().getLocation().toString());
                         result.add(bres);

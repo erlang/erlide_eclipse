@@ -54,8 +54,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IParent) {
                 if (parentElement instanceof IOpenable) {
                     final IOpenable openable = (IOpenable) parentElement;
-                    openable.open(null); // FIXME should this really be
-                                         // necessary?
+                    openable.open(null);
                 }
                 final IParent parent = (IParent) parentElement;
                 final Collection<IErlElement> children = parent
@@ -111,7 +110,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IParent) {
             if (element instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) element;
-                // FIXME should this really be necessary?
                 try {
                     openable.open(null);
                 } catch (final ErlModelException e) {

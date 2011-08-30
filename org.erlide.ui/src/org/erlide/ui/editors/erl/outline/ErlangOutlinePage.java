@@ -217,8 +217,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     @Override
     public void createControl(final Composite parent) {
-        // FIXME we still don't get a popup menu, we should have one...
-
         final Tree tree = new Tree(parent, SWT.MULTI);
         fOutlineViewer = new ErlangOutlineViewer(tree);
         fOutlineViewer.setContentProvider(fEditor
