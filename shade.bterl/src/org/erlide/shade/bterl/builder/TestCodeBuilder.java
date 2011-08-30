@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -80,8 +82,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
         final IProject project = getProject();
         if (DEBUG) {
-            ErlLogger.info("##### start test builder (full) %s",
-                    project.getName());
+            ErlLogger.info("##### start test builder (%s) %s",
+                    helper.buildKind(kind), project.getName());
         }
         final long time = System.currentTimeMillis();
         if (kind == FULL_BUILD) {
@@ -347,12 +349,11 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
         public boolean visit(final IResourceDelta delta) throws CoreException {
             final IResource resource = delta.getResource();
-            final IProject my_project = resource.getProject();
             if (resource.isDerived()) {
                 return true;
             }
+            final IProject my_project = resource.getProject();
             if (resource.getType() == IResource.FILE
-                    && resource.getFileExtension() != null
                     && "erl".equals(resource.getFileExtension())
                     && isInTestPath(resource, my_project)) {
                 try {
@@ -369,8 +370,24 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
+                return false;
             }
-            // return true to continue visiting children.
+            if (resource.getLocation().toString().contains("lost+found")) {
+                return false;
+            }
+            // if (resource.getType() == IResource.FOLDER) {
+            // MPS has a link that creates a loop
+            final ResourceAttributes a = resource.getResourceAttributes();
+            if (a != null && a.isSymbolicLink()) {
+                final File f = new File(resource.getLocation().toString());
+                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
+                        .fromLocalFile(f).fetchInfo();
+                final String target = info
+                        .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
+                return target == null
+                        || !resource.getLocation().toString().contains(target)
+                        && target.contains("/");
+            }
             return true;
         }
 
