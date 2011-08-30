@@ -46,6 +46,7 @@ public class IErlModelTest extends ErlModelTestBase {
         model = project.getModel();
     }
 
+    @SuppressWarnings("deprecation")
     @After
     @Override
     public void tearDown() throws Exception {

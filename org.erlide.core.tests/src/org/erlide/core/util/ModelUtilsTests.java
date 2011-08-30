@@ -517,6 +517,7 @@ public class ModelUtilsTests {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void findPreprocessorDefExternalIncludeOnIncludePathWithPathVariablesTest()
             throws Exception {

@@ -72,6 +72,7 @@ public class ReportFinder {
     private static String getFileContent(final File parent, final String name) {
         final IPath ppath = new Path(parent.getAbsolutePath() + "/" + name);
         final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
+        @SuppressWarnings("deprecation")
         final IFile[] files = wroot.findFilesForLocation(ppath);
         if (files.length > 0) {
             final IFile file = files[0];

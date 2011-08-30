@@ -1634,9 +1634,6 @@
         <configurationType
               id="org.erlide.core.launch.erlangProcess">
         </configurationType>
-        <perspective
-              id="org.erlide.ui.perspectives.ErlangPerspective">
-        </perspective>
     </shortcut>
  </extension>
     <extension

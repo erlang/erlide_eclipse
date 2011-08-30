@@ -850,6 +850,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<IPath> cachedIncludeDirs = Lists
                 .newArrayListWithCapacity(paths.size());
         for (final IPath includeDir : paths) {
+            @SuppressWarnings("deprecation")
             final IPath resolvedPath = pathVariableManager
                     .resolvePath(includeDir);
             cachedIncludeDirs.add(resolvedPath);

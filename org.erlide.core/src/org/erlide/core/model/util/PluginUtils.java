@@ -114,11 +114,13 @@ public class PluginUtils {
         };
     }
 
+    @SuppressWarnings("deprecation")
     public static IPath resolvePVMPath(final IPathVariableManager pvm,
             final IPath path) {
         return pvm.resolvePath(path);
     }
 
+    @SuppressWarnings("deprecation")
     public static IPath getPVMValue(final IPathVariableManager pvm,
             final String name) {
         return pvm.getValue(name);

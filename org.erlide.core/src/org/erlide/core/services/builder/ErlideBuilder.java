@@ -125,7 +125,7 @@ public class ErlideBuilder {
             final IResource outr = project.findMember(out);
             if (outr != null) {
                 try {
-                    outr.setDerived(true);
+                    outr.setDerived(true, null);
                     outr.refreshLocal(IResource.DEPTH_ZERO, null);
                 } catch (final CoreException e) {
                     // ignore it

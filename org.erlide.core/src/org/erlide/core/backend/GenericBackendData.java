@@ -35,8 +35,8 @@ public class GenericBackendData {
                         .getLaunchManager();
                 final ILaunchConfigurationType ltype = manager
                         .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
-                config = ltype.newInstance(null, manager
-                        .generateUniqueLaunchConfigurationNameFrom("erlide"));
+                config = ltype.newInstance(null,
+                        manager.generateLaunchConfigurationName("erlide"));
             }
             launch = null;
         } catch (final CoreException e) {
