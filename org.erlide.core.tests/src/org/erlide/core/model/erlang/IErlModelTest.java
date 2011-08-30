@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
@@ -232,14 +233,13 @@ public class IErlModelTest extends ErlModelTestBase {
                 .getWorkspace().getPathVariableManager();
         final String[] pathVariableNames = pathVariableManager
                 .getPathVariableNames();
-        final IPath path = ErlideTestUtils.getTmpPath("");
-        pathVariableManager.setValue(PV, path);
+        final URI path = ErlideTestUtils.getTmpURIPath("");
+        pathVariableManager.setURIValue(PV, path);
         final OtpErlangList pathVars2 = model.getPathVars();
         final int n = pathVariableNames.length;
         final OtpErlangTuple t = (OtpErlangTuple) pathVars2.elementAt(0);
         final String name = Util.stringValue(t.elementAt(0));
-        final String value = pathVariableManager.getValue(name)
-                .toPortableString();
+        final String value = pathVariableManager.getURIValue(name).getPath();
         final String value2 = Util.stringValue(t.elementAt(1));
         assertEquals(n, pathVars.arity());
         assertEquals(n + 1, pathVars2.arity());
