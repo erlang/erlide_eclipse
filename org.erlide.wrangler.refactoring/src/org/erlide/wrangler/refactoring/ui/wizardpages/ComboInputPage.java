@@ -131,7 +131,6 @@ public class ComboInputPage extends InputPage {
 
     @Override
     protected boolean isInputValid() {
-        // TODO Auto-generated method stub
         return false;
     }
 }
