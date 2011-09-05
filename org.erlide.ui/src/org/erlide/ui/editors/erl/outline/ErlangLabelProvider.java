@@ -178,15 +178,6 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return label;
     }
 
-    // private String range(ISourceReference a)
-    // {
-    // try {
-    // return a.getSourceRange().toString();
-    // } catch (ErlModelException e) {
-    // return "";
-    // }
-    // }
-
     public void dispose() {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {

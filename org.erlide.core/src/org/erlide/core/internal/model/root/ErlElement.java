@@ -225,11 +225,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         }
     }
 
-    /*
-     * (non-Edoc)
-     * 
-     * @see org.erlide.core.model.erlang.IErlElement#getSchedulingRule()
-     */
     public ISchedulingRule getSchedulingRule() {
         final IResource resource = getResource();
         if (resource == null) {
