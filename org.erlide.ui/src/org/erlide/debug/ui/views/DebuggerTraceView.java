@@ -48,7 +48,7 @@ import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlangDebugTarget.TraceChangedEventData;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIPlugin;
@@ -461,7 +461,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
         }
 
         IEditorPart part = null;
-        final IErlModel model = CoreScope.getModel();
+        final IErlElementLocator model = CoreScope.getModel();
         IErlModule module;
         try {
             module = model.findModule(moduleName);

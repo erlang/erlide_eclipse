@@ -15,8 +15,8 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.internal.model.root.SourceRange;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlModel.Scope;
+import org.erlide.core.model.root.IErlElementLocator;
+import org.erlide.core.model.root.IErlElementLocator.Scope;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.rpc.IRpcCallSite;
@@ -46,18 +46,18 @@ public class ModelInternalUtils {
 
     public static IErlElement findInclude(final IErlModule module,
             final IErlProject project, final OpenResult res,
-            final IErlModel model) throws CoreException, BackendException {
+            final IErlElementLocator model) throws CoreException, BackendException {
         if (module != null) {
             final IErlModule include = model.findIncludeFromModule(module,
                     res.getName(), res.getPath(),
-                    IErlModel.Scope.REFERENCED_PROJECTS);
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }
         } else if (project != null) {
             final IErlModule include = model.findIncludeFromProject(project,
                     res.getName(), res.getPath(),
-                    IErlModel.Scope.REFERENCED_PROJECTS);
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             if (include != null) {
                 return include;
             }

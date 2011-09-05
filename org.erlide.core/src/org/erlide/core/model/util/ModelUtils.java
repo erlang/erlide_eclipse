@@ -18,6 +18,7 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
@@ -55,7 +56,7 @@ public class ModelUtils {
     public static String getExternalModulePath(final IErlModule module) {
         final List<String> result = Lists.newArrayList();
         IErlElement element = module;
-        final IErlModel model = CoreScope.getModel();
+        final IErlElementLocator model = CoreScope.getModel();
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
@@ -160,7 +161,7 @@ public class ModelUtils {
 
     public static IErlFunction findFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
-            final IErlProject project, final IErlModel.Scope scope,
+            final IErlProject project, final IErlElementLocator.Scope scope,
             final IErlModule module) throws CoreException {
         if (moduleName != null) {
             moduleName = resolveMacroValue(moduleName, module);
@@ -181,13 +182,13 @@ public class ModelUtils {
 
     public static IErlModule findModule(final IErlProject project,
             final String moduleName, final String modulePath,
-            final IErlModel.Scope scope) throws ErlModelException {
-        final IErlModel model = CoreScope.getModel();
+            final IErlElementLocator.Scope scope) throws ErlModelException {
+        final IErlElementLocator model = CoreScope.getModel();
         if (project != null) {
             return model.findModuleFromProject(project, moduleName, modulePath,
                     scope);
         }
-        if (scope == IErlModel.Scope.ALL_PROJECTS) {
+        if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
         }
         return null;
@@ -195,7 +196,7 @@ public class ModelUtils {
 
     public static IErlElement findTypeDef(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
-            final IErlProject project, final IErlModel.Scope scope)
+            final IErlProject project, final IErlElementLocator.Scope scope)
             throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
         final IErlModule module2 = findModule(project, moduleName, modulePath,

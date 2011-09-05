@@ -19,8 +19,8 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
-import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
@@ -167,7 +167,7 @@ public class DialyzerUtils {
         }
     }
 
-    public static void addModulesFromResource(final IErlModel model,
+    public static void addModulesFromResource(final IErlElementLocator model,
             final IResource resource,
             final Map<IErlProject, Set<IErlModule>> modules)
             throws ErlModelException {

@@ -27,7 +27,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.rpc.IRpcCallSite;
@@ -117,13 +117,13 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlModel model = CoreScope.getModel();
+                    final IErlElementLocator model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model
                                 .findIncludeFromProject(erlProject, fileName,
                                         fileName,
-                                        IErlModel.Scope.REFERENCED_PROJECTS);
+                                        IErlElementLocator.Scope.REFERENCED_PROJECTS);
                         // ErlLogger.debug("inc::" + fileName + " "
                         // + resource.getName() + " "
                         // + erlProject.getName());
@@ -393,7 +393,7 @@ public final class MarkerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            final IErlModel model = CoreScope.getModel();
+            final IErlElementLocator model = CoreScope.getModel();
             addDialyzerWarningMarker(model, filename, line, s);
         }
     }
@@ -439,7 +439,7 @@ public final class MarkerUtils {
         }
     }
 
-    public static void addDialyzerWarningMarker(final IErlModel model,
+    public static void addDialyzerWarningMarker(final IErlElementLocator model,
             final String path, final int line, final String message) {
         IResource file = null;
         IErlModule module = null;

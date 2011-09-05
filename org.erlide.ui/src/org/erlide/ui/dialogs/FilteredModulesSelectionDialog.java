@@ -74,7 +74,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.model.util.ResourceUtil;
@@ -600,7 +600,7 @@ public class FilteredModulesSelectionDialog extends
             // couldn't we just assume all links in external files should be
             // matchable?
             if (project == resource && accessible) {
-                final IErlModel model = CoreScope.getModel();
+                final IErlElementLocator model = CoreScope.getModel();
                 final IErlProject erlProject = model.findProject(project);
                 final String extMods = erlProject.getExternalModulesString();
                 final List<String> files = new ArrayList<String>();

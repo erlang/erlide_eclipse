@@ -51,7 +51,7 @@ import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
@@ -482,8 +482,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 .getCheckAllProjects();
         final IErlModule theModule = ModelUtils.findModule(erlProject,
                 moduleName, null,
-                checkAllProjects ? IErlModel.Scope.ALL_PROJECTS
-                        : IErlModel.Scope.REFERENCED_PROJECTS);
+                checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
+                        : IErlElementLocator.Scope.REFERENCED_PROJECTS);
         if (theModule != null) {
             if (ModelUtils.isOtpModule(theModule)) {
                 final String stateDir = ErlideUIPlugin.getDefault()

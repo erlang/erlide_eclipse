@@ -16,7 +16,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.BuilderMessages;
@@ -46,7 +46,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (!prefs.getDialyzeOnCompile()) {
             return null;
         }
-        final IErlModel model = CoreScope.getModel();
+        final IErlElementLocator model = CoreScope.getModel();
         final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
         DialyzerUtils.addModulesFromResource(model, project, modules);
         if (modules.size() != 0) {

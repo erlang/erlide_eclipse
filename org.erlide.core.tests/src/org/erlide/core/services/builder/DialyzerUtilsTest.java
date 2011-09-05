@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
@@ -105,7 +105,7 @@ public class DialyzerUtilsTest {
             // putting a dialyzer warning on it
             final int lineNumber = 3;
             final String message = "test message";
-            final IErlModel model = erlProject.getModel();
+            final IErlElementLocator model = erlProject.getModel();
             MarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
                     .getLocation().toPortableString(), lineNumber, message);
             // then
@@ -148,7 +148,7 @@ public class DialyzerUtilsTest {
             // putting dialyzer warning markers on the external file
             final String message = "test message";
             final int lineNumber = 2;
-            final IErlModel model = erlProject.getModel();
+            final IErlElementLocator model = erlProject.getModel();
             MarkerUtils.addDialyzerWarningMarker(model,
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then

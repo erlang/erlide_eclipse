@@ -7,7 +7,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
@@ -58,9 +58,9 @@ public class ErlModelCacheTest {
                             "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
                                     + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
             module.open(null);
-            final IErlModel model = project.getModel();
+            final IErlElementLocator model = project.getModel();
             final IErlModule module2 = model.findModuleFromProject(project,
-                    moduleName, null, IErlModel.Scope.PROJECT_ONLY);
+                    moduleName, null, IErlElementLocator.Scope.PROJECT_ONLY);
             // final ErlModelCache cache = ErlModelCache.getDefault();
             // final Set<IErlModule> modulesByName2 = cache
             // .getModulesByName(CommonUtils.withoutExtension(moduleName));
@@ -105,9 +105,9 @@ public class ErlModelCacheTest {
                     "x.erlidex", absolutePath);
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
-            final IErlModel model = project.getModel();
+            final IErlElementLocator model = project.getModel();
             final IErlModule findModule = model.findModuleFromProject(project,
-                    externalName, null, IErlModel.Scope.PROJECT_ONLY);
+                    externalName, null, IErlElementLocator.Scope.PROJECT_ONLY);
             // final ErlModelCache cache = ErlModelCache.getDefault();
             // final Set<IErlModule> modulesByName = cache
             // .getModulesByName(CommonUtils
@@ -122,7 +122,7 @@ public class ErlModelCacheTest {
             final IErlModule module = ErlideTestUtils.createModule(project2,
                     externalName, "-module(xyz).\n");
             final IErlModule findModule2 = model.findModuleFromProject(project,
-                    externalName, null, IErlModel.Scope.ALL_PROJECTS);
+                    externalName, null, IErlElementLocator.Scope.ALL_PROJECTS);
             // final Set<IErlModule> modulesByName2 = cache
             // .getModulesByName(CommonUtils
             // .withoutExtension(externalName));

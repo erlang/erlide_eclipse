@@ -13,12 +13,9 @@ package org.erlide.core.model.root;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.model.erlang.FunctionRef;
-import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
@@ -41,11 +38,7 @@ import com.google.common.base.Predicate;
  * 
  * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
-public interface IErlModel extends IErlElement, IOpenable, IParent {
-
-    enum Scope {
-        PROJECT_ONLY, REFERENCED_PROJECTS, ALL_PROJECTS
-    }
+public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementLocator {
 
     /**
      * Returns the Erlang project with the given name. This is a handle-only
@@ -72,36 +65,10 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     void removeModelChangeListener(IErlModelChangeListener listener);
 
-    IErlElement findElement(IResource resource);
-
-    IErlElement findElement(IResource resource, boolean openElements);
-
-    IErlProject findProject(IProject project);
-
-    IErlModule findModule(IFile file);
-
-    IErlModule findModule(String name) throws ErlModelException;
-
-    IErlModule findModuleIgnoreCase(String name) throws ErlModelException;
-
-    IErlModule findModule(String moduleName, String modulePath)
-            throws ErlModelException;
-
-    IErlModule findInclude(final String includeName, final String includePath)
-            throws ErlModelException;
-
     IErlElement innermostThat(final IErlElement el,
             final Predicate<IErlElement> firstThat);
 
     OtpErlangList getPathVars();
-
-    /**
-     * Locates definitions of functions matching the given signature. Function
-     * name and module can be regexps.
-     * 
-     * @throws ErlModelException
-     */
-    IErlFunction findFunction(FunctionRef r) throws ErlModelException;
 
     IErlProject newProject(final String name, final String path)
             throws ErlModelException;
@@ -201,21 +168,5 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     void accept(final IErlElement element, final IErlElementVisitor visitor,
             final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
-            throws ErlModelException;
-
-    public IErlModule findModuleFromProject(final IErlProject project,
-            final String moduleName, final String modulePath,
-            final IErlModel.Scope scope) throws ErlModelException;
-
-    public IErlModule findIncludeFromProject(final IErlProject project,
-            final String includeName, final String includePath,
-            final IErlModel.Scope scope) throws ErlModelException;
-
-    public IErlModule findIncludeFromModule(final IErlModule module,
-            final String includeName, final String includePath,
-            final IErlModel.Scope scope) throws ErlModelException;
-
-    IErlModule findModuleFromProject(IErlProject erlProject, String name,
-            String object, boolean b, boolean c, Scope projectOnly)
             throws ErlModelException;
 }
