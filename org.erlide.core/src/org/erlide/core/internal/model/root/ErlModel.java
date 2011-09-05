@@ -959,9 +959,10 @@ public class ErlModel extends Openable implements IErlModel {
         return parser;
     }
 
-    static IErlModule getModuleFromCacheByNameOrPath(final ErlProject project,
-            final String moduleName, final String modulePath,
-            final IErlElementLocator.Scope scope) throws ErlModelException {
+    private static IErlModule getModuleFromCacheByNameOrPath(
+            final ErlProject project, final String moduleName,
+            final String modulePath, final IErlElementLocator.Scope scope)
+            throws ErlModelException {
         final ErlModelCache erlModelCache = getErlModelCache();
         if (modulePath != null) {
             final IErlModule module = erlModelCache.getModuleByPath(modulePath);
