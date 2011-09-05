@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.internal.backend;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -22,12 +21,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
@@ -89,9 +85,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
         factory = BackendCore.getBackendFactory();
-
-        // TODO remove this when all users have cleaned up
-        cleanupInternalLCs();
     }
 
     private void addBackend(final IBackend b) {
@@ -323,27 +316,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             }
         }
         return null;
-    }
-
-    private void cleanupInternalLCs() {
-        final ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
-        try {
-            final ILaunchConfiguration[] cfgs = lm.getLaunchConfigurations();
-            int n = 0;
-            for (final ILaunchConfiguration cfg : cfgs) {
-                final String name = cfg.getName();
-                if (name.startsWith("internal")) {
-                    @SuppressWarnings("deprecation")
-                    final IPath path = cfg.getLocation();
-                    final File file = new File(path.toString());
-                    file.delete();
-                    n++;
-                }
-            }
-            ErlLogger.debug("Cleaned up %d old LCs", n);
-        } catch (final Exception e) {
-            // ignore
-        }
     }
 
     public void moduleLoaded(final IBackend b, final IProject project,
