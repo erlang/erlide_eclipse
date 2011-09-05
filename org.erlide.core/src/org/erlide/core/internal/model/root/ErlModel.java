@@ -68,7 +68,6 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -170,45 +169,6 @@ public class ErlModel extends Openable implements IErlModel {
         return ErlModelCache.getDefault();
     }
 
-    /**
-     * @see IErlModel
-     */
-    public void copy(final IErlElement[] elements,
-            final IErlElement[] containers, final IErlElement[] siblings,
-            final String[] renamings, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // runOperation(new CopyResourceElementsOperation(elements, containers,
-        // force),
-        // elements,
-        // siblings, renamings, monitor);
-        // } else
-        // {
-        // runOperation(new CopyElementsOperation(elements, containers, force),
-        // elements,
-        // siblings, renamings, monitor);
-        // }
-    }
-
-    /**
-     * @see IErlModel
-     */
-    public void delete(final IErlElement[] elements, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // new DeleteResourceElementsOperation(elements, force)
-        // .runOperation(monitor);
-        // }
-        // else
-        // {
-        // new DeleteElementsOperation(elements, force).runOperation(monitor);
-        // }
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof ErlModel)) {
@@ -297,68 +257,6 @@ public class ErlModel extends Openable implements IErlModel {
     public IWorkspace getWorkspace() {
         return ResourcesPlugin.getWorkspace();
     }
-
-    /**
-     * @see IErlModel
-     */
-    public void move(final IErlElement[] elements,
-            final IErlElement[] containers, final IErlElement[] siblings,
-            final String[] renamings, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // runOperation(new MoveResourceElementsOperation(elements,
-        // containers, force), elements, siblings, renamings, monitor);
-        // }
-        // else
-        // {
-        // runOperation(
-        // new MoveElementsOperation(elements, containers, force),
-        // elements, siblings, renamings, monitor);
-        // }
-    }
-
-    /**
-     * @see IErlModel
-     */
-    public void rename(final IErlElement[] elements,
-            final IErlElement[] destinations, final String[] renamings,
-            final boolean force, final IProgressMonitor monitor)
-            throws ErlModelException {
-        // MultiOperation op;
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // op = new RenameResourceElementsOperation(elements, destinations,
-        // renamings, force);
-        // }
-        // else
-        // {
-        // op = new RenameElementsOperation(elements, destinations, renamings,
-        // force);
-        // }
-        //
-        // op.runOperation(monitor);
-    }
-
-    // /**
-    // * Configures and runs the <code>MultiOperation</code>.
-    // */
-    // protected void runOperation(MultiOperation op, IErlElement[] elements,
-    // IErlElement[] siblings, String[] renamings,
-    // IProgressMonitor monitor) throws ErlModelException
-    // {
-    // op.setRenamings(renamings);
-    // if (siblings != null)
-    // {
-    // for (int i = 0; i < elements.length; i++)
-    // {
-    // op.setInsertBefore(elements[i], siblings[i]);
-    // }
-    // }
-    // op.runOperation(monitor);
-    // }
 
     /**
      * @private Debugging purposes
@@ -544,36 +442,6 @@ public class ErlModel extends Openable implements IErlModel {
             throws ErlModelException {
         return findModuleFromProject(null, name, null, true, false,
                 IErlModel.Scope.ALL_PROJECTS);
-    }
-
-    public IErlProject createOtpProject(final IProject project)
-            throws CoreException, BackingStoreException {
-        final IPath location = project.getLocation();
-
-        final IErlProject p = getErlangProject(project);
-
-        final IFile file = project.getFile(".");
-        if (!file.isLinked()) {
-            file.createLink(location, IResource.NONE, null);
-        }
-
-        Collection<IPath> dirs;
-        dirs = findOtpSourceDirs(new File(location.toString()));
-        p.setSourceDirs(dirs);
-        dirs = findOtpIncludeDirs(new File(location.toString()));
-        p.setIncludeDirs(dirs);
-        p.open(null);
-        return p;
-    }
-
-    private static Collection<IPath> findOtpSourceDirs(final File file) {
-        final List<IPath> result = Lists.newArrayList();
-        return result;
-    }
-
-    private static Collection<IPath> findOtpIncludeDirs(final File file) {
-        final List<IPath> result = Lists.newArrayList();
-        return result;
     }
 
     public final IErlProject newProject(final String name, final String path)
