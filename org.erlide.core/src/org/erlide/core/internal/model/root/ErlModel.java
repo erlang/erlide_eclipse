@@ -38,7 +38,6 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -185,22 +184,6 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     /**
-     * @see ErlElement#getHandleMemento()
-     */
-    public String getHandleMemento() {
-        return getName();
-    }
-
-    /**
-     * Returns the <code>char</code> that marks the start of this handles
-     * contribution to a memento.
-     */
-    protected char getHandleMementoDelimiter() {
-        Assert.isTrue(false, "Should not be called"); //$NON-NLS-1$
-        return 0;
-    }
-
-    /**
      * @see IErlModel
      */
     public IErlProject getErlangProject(final IProject project) {
@@ -235,27 +218,9 @@ public class ErlModel extends Openable implements IErlModel {
         return result;
     }
 
-    /*
-     * @see IErlElement
-     */
     @Override
     public IResource getResource() {
         return ResourcesPlugin.getWorkspace().getRoot();
-    }
-
-    // /**
-    // * @see IOpenable
-    // */
-    // @Override
-    // public IResource getUnderlyingResource() {
-    // return null;
-    // }
-
-    /**
-     * Returns the workbench associated with this object.
-     */
-    public IWorkspace getWorkspace() {
-        return ResourcesPlugin.getWorkspace();
     }
 
     /**
@@ -1021,14 +986,10 @@ public class ErlModel extends Openable implements IErlModel {
      * <ul>
      * <li>a project - the element returned is the corresponding
      * <code>IErlProject</code></li>
-     * <li>a <code>.Erlang</code> file - the element returned is the
-     * corresponding <code>IErlModule</code></li>
-     * <li>a <code>.class</code> file - the element returned is the
-     * corresponding <code>IClassFile</code></li>
-     * <li>a <code>.jar</code> file - the element returned is the corresponding
-     * <code>IPackageFragmentRoot</code></li>
+     * <li>a <code>.erl</code> file - the element returned is the corresponding
+     * <code>IErlModule</code></li>
      * <li>a folder - the element returned is the corresponding
-     * <code>IPackageFragmentRoot</code> or <code>IPackageFragment</code></li>
+     * <code>IErlFolder</code></li>
      * <li>the workspace root resource - the element returned is the
      * <code>IErlModel</code></li>
      * </ul>

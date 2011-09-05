@@ -16,7 +16,6 @@ import java.util.EnumSet;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -34,10 +33,6 @@ import com.google.common.base.Predicate;
  * can be navigated or manipulated. The Erlang model element has no parent (it
  * is the root of the Erlang element hierarchy). Its children are
  * <code>IErlProject</code>s.
- * <p>
- * This interface provides methods for performing copy, move, rename, and delete
- * operations on multiple Erlang elements.
- * </p>
  * <p>
  * This interface is not intended to be implemented by clients. An instance of
  * one of these handles can be created via
@@ -72,13 +67,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
      *             if this request fails.
      */
     Collection<IErlProject> getErlangProjects() throws ErlModelException;
-
-    /**
-     * Returns the workspace associated with this Erlang model.
-     * 
-     * @return the workspace associated with this Erlang model
-     */
-    IWorkspace getWorkspace();
 
     void addModelChangeListener(IErlModelChangeListener listener);
 
