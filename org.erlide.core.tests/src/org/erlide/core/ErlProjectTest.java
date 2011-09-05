@@ -116,9 +116,11 @@ public class ErlProjectTest {
             project.open(null);
             final IErlElementLocator model = project.getModel();
             final IErlModule module = model.findIncludeFromProject(project,
-                    null, includePath, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+                    null, includePath,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IErlModule module2 = model.findModuleFromProject(project,
-                    includeName, null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
+                    includeName, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // it should be found in the model
             assertNotNull(module);
@@ -196,12 +198,13 @@ public class ErlProjectTest {
         final IErlFunction function = ModelUtils.findFunction(res.getName(),
                 res.getFunction(), res.getPath(), project,
                 IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
-        final IErlElement module = function != null ? model
-                .findModuleFromProject(project, function.getModuleName(),
-                        res.getPath(), IErlElementLocator.Scope.PROJECT_ONLY) : null;
+        assertNotNull(function);
+
+        final IErlElement module = model.findModuleFromProject(project,
+                function.getModuleName(), res.getPath(),
+                IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // the function should be returned and the module, in External Files
-        assertNotNull(function);
         assertNotNull(module);
         assertEquals(function.getParent(), module);
         assertEquals(function.getModule().getProject(), project);

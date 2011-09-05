@@ -6,7 +6,6 @@ import org.eclipse.core.resources.IResource;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlElementLocator.Scope;
 
 public interface IErlElementLocator {
 

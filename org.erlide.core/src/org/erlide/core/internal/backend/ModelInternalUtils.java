@@ -16,7 +16,6 @@ import org.erlide.core.internal.model.root.SourceRange;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
-import org.erlide.core.model.root.IErlElementLocator.Scope;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.rpc.IRpcCallSite;

@@ -42,7 +42,6 @@ public class ErlModelCacheTest {
     public void checkThatCachesAreEmptyWhenProjectIsRemoved()
             throws CoreException {
         IErlProject project = null;
-        final IErlProject project2 = null;
         try {
             // given
             // a project with a module, and some searches that fills the model
@@ -77,9 +76,6 @@ public class ErlModelCacheTest {
         } finally {
             if (project != null && project.exists()) {
                 ErlideTestUtils.deleteProject(project);
-            }
-            if (project2 != null && project2.exists()) {
-                ErlideTestUtils.deleteProject(project2);
             }
         }
     }
