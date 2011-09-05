@@ -12,8 +12,8 @@ package org.erlide.core.internal.model.root;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -519,9 +519,26 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public final void accept(final IErlElementVisitor visitor,
-            final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
             throws ErlModelException {
-        getModel().accept(this, visitor, flags, leafKind);
+        if (getKind() == leafKind) {
+            visitor.visit(this);
+        } else {
+            boolean visitChildren = true;
+            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
+                    && !flags.contains(AcceptFlags.CHILDREN_FIRST)) {
+                visitChildren = visitor.visit(this);
+            }
+            if (visitChildren) {
+                for (final IErlElement child : getChildren()) {
+                    child.accept(visitor, flags, leafKind);
+                }
+            }
+            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
+                    && flags.contains(AcceptFlags.CHILDREN_FIRST)) {
+                visitor.visit(this);
+            }
+        }
     }
 
     /**

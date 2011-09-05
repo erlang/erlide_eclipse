@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,6 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementDelta;
 import org.erlide.core.model.root.IErlElementLocator;
-import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
@@ -411,30 +409,6 @@ public class ErlModel extends Openable implements IErlModel {
             return makeErlangProject(project);
         } catch (final CoreException e) {
             throw new ErlModelException(e);
-        }
-    }
-
-    public final void accept(final IErlElement element,
-            final IErlElementVisitor visitor, final EnumSet<AcceptFlags> flags,
-            final IErlElement.Kind leafKind) throws ErlModelException {
-        if (element.getKind() == leafKind) {
-            visitor.visit(element);
-        } else {
-            boolean visitChildren = true;
-            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
-                    && !flags.contains(AcceptFlags.CHILDREN_FIRST)) {
-                visitChildren = visitor.visit(element);
-            }
-            if (visitChildren && element instanceof IParent) {
-                final IParent parent = (IParent) element;
-                for (final IErlElement child : parent.getChildren()) {
-                    accept(child, visitor, flags, leafKind);
-                }
-            }
-            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
-                    && flags.contains(AcceptFlags.CHILDREN_FIRST)) {
-                visitor.visit(element);
-            }
         }
     }
 

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.erlide.core.model.root;
 
-import java.util.EnumSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -216,14 +216,14 @@ public interface IErlElement extends IAdaptable, IDisposable {
     }
 
     /**
-     * The good ole visitor pattern
+     * The good old visitor pattern
      * 
      * @param visitor
      * @param flags
      * @param leafKind
      * @throws ErlModelException
      */
-    void accept(IErlElementVisitor visitor, EnumSet<AcceptFlags> flags,
+    void accept(IErlElementVisitor visitor, Set<AcceptFlags> flags,
             IErlElement.Kind leafKind) throws ErlModelException;
 
     // TODO StyledString? but this needs jface-stuff, which we don't want in a

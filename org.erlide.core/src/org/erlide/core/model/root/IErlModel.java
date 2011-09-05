@@ -11,7 +11,6 @@
 package org.erlide.core.model.root;
 
 import java.util.Collection;
-import java.util.EnumSet;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -38,7 +37,8 @@ import com.google.common.base.Predicate;
  * 
  * @see ErlangCore#create(org.eclipse.core.resources.IWorkspaceRoot)
  */
-public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementLocator {
+public interface IErlModel extends IErlElement, IOpenable, IParent,
+        IErlElementLocator {
 
     /**
      * Returns the Erlang project with the given name. This is a handle-only
@@ -165,8 +165,4 @@ public interface IErlModel extends IErlElement, IOpenable, IParent, IErlElementL
     void putEdited(String path, IErlModule module);
 
     IErlParser getParser();
-
-    void accept(final IErlElement element, final IErlElementVisitor visitor,
-            final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
-            throws ErlModelException;
 }
