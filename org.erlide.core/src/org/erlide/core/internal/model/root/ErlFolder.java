@@ -72,11 +72,6 @@ public class ErlFolder extends Openable implements IErlFolder {
         return result;
     }
 
-    public Collection<IResource> getNonErlangResources()
-            throws ErlModelException {
-        return null;
-    }
-
     public Kind getKind() {
         return Kind.FOLDER;
     }
