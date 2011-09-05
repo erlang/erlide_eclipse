@@ -99,10 +99,6 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return false;
     }
 
-    public boolean isRoot() {
-        return true;
-    }
-
     public boolean isOTP() {
         return true;
     }
