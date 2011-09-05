@@ -78,8 +78,8 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.model.util.ResourceUtil;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

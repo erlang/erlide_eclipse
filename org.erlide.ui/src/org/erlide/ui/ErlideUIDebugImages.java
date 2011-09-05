@@ -15,6 +15,7 @@ import java.net.URL;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * Bundle of most images used by the Erlang debug plug-in.

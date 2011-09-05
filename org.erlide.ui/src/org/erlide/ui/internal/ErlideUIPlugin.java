@@ -9,7 +9,7 @@
  *     Eric Merritt
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui;
+package org.erlide.ui.internal;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -52,6 +52,8 @@ import org.erlide.core.internal.backend.BackendHelper;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.ui.ErlideImage;
+import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
 import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.editors.erl.completion.ErlangContextType;

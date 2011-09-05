@@ -48,7 +48,7 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
 import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
