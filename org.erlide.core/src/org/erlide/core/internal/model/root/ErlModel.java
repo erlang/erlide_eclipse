@@ -657,10 +657,6 @@ public class ErlModel extends Openable implements IErlModel {
         ErlModel.getErlModelCache().putEdited(path, module);
     }
 
-    public void fire(final int eventType) {
-        fire(null, eventType);
-    }
-
     /**
      * Fire Model deltas, flushing them after the fact. If the firing mode has
      * been turned off, this has no effect.

@@ -199,8 +199,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent {
 
     void registerModelDelta(IErlElementDelta delta);
 
-    void fire(int post_change);
-
     IErlModule getModuleFromFile(IParent parent, String name,
             String initialText, String path, String key);
 
