@@ -8,7 +8,7 @@
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
-package org.erlide.wrangler.refactoring.core;
+package org.erlide.wrangler.refactoring.core.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.wrangler.refactoring.backend.internal.StateDataToRecordRpcMessage;
+import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 

@@ -11,8 +11,8 @@
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
 import org.erlide.core.rpc.IRpcResult;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
-import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;

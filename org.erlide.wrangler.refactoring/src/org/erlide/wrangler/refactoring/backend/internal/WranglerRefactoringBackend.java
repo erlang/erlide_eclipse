@@ -8,13 +8,13 @@
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
-package org.erlide.wrangler.refactoring.backend;
+package org.erlide.wrangler.refactoring.backend.internal;
 
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.wrangler.refactoring.backend.internal.AbstractRefactoringRpcMessage;
-import org.erlide.wrangler.refactoring.backend.internal.RefactoringRpcMessage;
+import org.erlide.wrangler.refactoring.backend.IRpcMessage;
+import org.erlide.wrangler.refactoring.backend.IWranglerBackend;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 

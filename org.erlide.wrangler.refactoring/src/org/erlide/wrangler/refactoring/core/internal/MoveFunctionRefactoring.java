@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;

@@ -20,7 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.wrangler.refactoring.core.QuickCheckStateRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.QuickCheckStateRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 

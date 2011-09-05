@@ -20,7 +20,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;

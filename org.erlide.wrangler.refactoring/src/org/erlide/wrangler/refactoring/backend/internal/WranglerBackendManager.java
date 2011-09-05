@@ -8,9 +8,10 @@
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
-package org.erlide.wrangler.refactoring.backend;
+package org.erlide.wrangler.refactoring.backend.internal;
 
 import org.erlide.core.backend.BackendCore;
+import org.erlide.wrangler.refactoring.backend.WranglerSyntaxBackend;
 
 /**
  * Stores Erlide backends for wrangler , and has interface to access them
