@@ -23,8 +23,6 @@ import org.erlide.jinterface.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
 
-    private BackendData launchData;
-
     public ErtsProcess(final Process process, final BackendData data) {
         super(data.getLaunch(), process, data.getNodeName(), null);
         ErlLogger.debug("# create ErtsProcess: " + data.getNodeName());

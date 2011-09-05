@@ -88,7 +88,6 @@ public class TestSourcePathProvider implements SourcePathProvider,
             return;
         }
 
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         try {
             final long time = System.currentTimeMillis();
             delta.accept(new IResourceDeltaVisitor() {
