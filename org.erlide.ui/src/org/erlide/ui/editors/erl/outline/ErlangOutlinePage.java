@@ -13,7 +13,6 @@ package org.erlide.ui.editors.erl.outline;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -25,10 +24,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.commands.ActionHandler;
-import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -69,8 +66,6 @@ import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
-import org.erlide.ui.util.ProblemsLabelDecorator.ProblemsLabelChangedEvent;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -91,54 +86,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
     private ToggleLinkingAction fToggleLinkingAction;
     private final PatternFilter fPatternFilter = new PatternFilter();
-
-    public class ErlangOutlineViewer extends TreeViewer {
-
-        public ErlangOutlineViewer(final Tree tree) {
-            super(tree);
-            setAutoExpandLevel(0);
-            setUseHashlookup(true);
-        }
-
-        /*
-         * @see
-         * ContentViewer#handleLabelProviderChanged(LabelProviderChangedEvent)
-         */
-        @Override
-        protected void handleLabelProviderChanged(
-                LabelProviderChangedEvent event) {
-            final Object input = getInput();
-            if (event instanceof ProblemsLabelChangedEvent) {
-                final ProblemsLabelChangedEvent e = (ProblemsLabelChangedEvent) event;
-                if (e.isMarkerChange() && input instanceof IErlModule) {
-                    return; // marker changes can be ignored
-                }
-            }
-            // look if the underlying resource changed
-            final Object[] changed = event.getElements();
-            if (changed != null) {
-                final IResource resource = getUnderlyingResource();
-                if (resource != null) {
-                    for (int i = 0; i < changed.length; i++) {
-                        if (changed[i] != null && changed[i].equals(resource)) {
-                            // change event to a full refresh
-                            event = new LabelProviderChangedEvent(
-                                    (IBaseLabelProvider) event.getSource());
-                            break;
-                        }
-                    }
-                }
-            }
-            super.handleLabelProviderChanged(event);
-        }
-
-        private IResource getUnderlyingResource() {
-            if (fModule != null) {
-                return fModule.getResource();
-            }
-            return null;
-        }
-    }
 
     @Override
     public Control getControl() {
@@ -218,7 +165,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     @Override
     public void createControl(final Composite parent) {
         final Tree tree = new Tree(parent, SWT.MULTI);
-        fOutlineViewer = new ErlangOutlineViewer(tree);
+        fOutlineViewer = new TreeViewer(tree);
+        fOutlineViewer.setAutoExpandLevel(0);
+        fOutlineViewer.setUseHashlookup(true);
         fOutlineViewer.setContentProvider(fEditor
                 .createOutlineContentProvider());
         fOutlineViewer.setLabelProvider(fEditor.createOutlineLabelProvider());
