@@ -1218,7 +1218,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     markInNavigationHistory();
                 }
 
-            } catch (final ErlModelException x) {
             } catch (final IllegalArgumentException x) {
             }
 

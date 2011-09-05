@@ -114,7 +114,7 @@ public abstract class SourceRefElement extends ErlElement implements
     /**
      * @see ISourceReference
      */
-    public ISourceRange getSourceRange() throws ErlModelException {
+    public ISourceRange getSourceRange() {
         return new SourceRange(fSourceRangeOffset, fSourceRangeLength);
     }
 
@@ -178,5 +178,9 @@ public abstract class SourceRefElement extends ErlElement implements
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), fSourceRangeOffset,
                 fSourceRangeLength);
+    }
+
+    public String getSource() throws ErlModelException {
+        throw new UnsupportedOperationException();
     }
 }

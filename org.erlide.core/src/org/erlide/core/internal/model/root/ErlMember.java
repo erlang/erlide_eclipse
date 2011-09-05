@@ -3,11 +3,9 @@ package org.erlide.core.internal.model.root;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.root.ISourceRange;
-import org.erlide.jinterface.ErlLogger;
 
 /**
  * 
@@ -50,11 +48,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
     public ISourceRange getNameRange() {
         if (fNameRangeOffset == 0 && fNameRangeLength == 0) {
-            try {
-                return getSourceRange();
-            } catch (final ErlModelException e) {
-                ErlLogger.error(e); // will never happen
-            }
+            return getSourceRange();
         }
         return new SourceRange(fNameRangeOffset, fNameRangeLength);
     }

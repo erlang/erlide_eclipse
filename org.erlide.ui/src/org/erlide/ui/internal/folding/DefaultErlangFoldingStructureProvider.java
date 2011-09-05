@@ -706,17 +706,11 @@ public class DefaultErlangFoldingStructureProvider implements
      * @return the regions to be folded, or <code>null</code> if there are none
      */
     private IRegion computeProjectionRanges(final IErlElement element) {
-
-        try {
-            if (element instanceof ISourceReference) {
-                final ISourceReference reference = (ISourceReference) element;
-                final ISourceRange range = reference.getSourceRange();
-                return new Region(range.getOffset(), range.getLength());
-            }
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
+        if (element instanceof ISourceReference) {
+            final ISourceReference reference = (ISourceReference) element;
+            final ISourceRange range = reference.getSourceRange();
+            return new Region(range.getOffset(), range.getLength());
         }
-
         return null;
     }
 

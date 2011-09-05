@@ -152,17 +152,13 @@ public class ErlModule extends Openable implements IErlModule {
             throws ErlModelException {
         return getModel().innermostThat(this, new Predicate<IErlElement>() {
             public boolean apply(final IErlElement e) {
-                try {
-                    if (e instanceof ISourceReference) {
-                        final ISourceReference ch = (ISourceReference) e;
-                        ISourceRange r;
-                        r = ch.getSourceRange();
-                        if (r != null && r.hasPosition(position)) {
-                            return true;
-                        }
+                if (e instanceof ISourceReference) {
+                    final ISourceReference ch = (ISourceReference) e;
+                    ISourceRange r;
+                    r = ch.getSourceRange();
+                    if (r != null && r.hasPosition(position)) {
+                        return true;
                     }
-                } catch (final ErlModelException e1) {
-                    ErlLogger.error(e1);
                 }
                 return false;
             }

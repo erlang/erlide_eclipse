@@ -27,14 +27,6 @@ package org.erlide.core.model.root;
 public interface ISourceReference {
 
     /**
-     * Returns whether this element exists in the model.
-     * 
-     * @return <code>true</code> if this element exists in the Erlang model
-     * 
-     */
-    boolean exists();
-
-    /**
      * Returns the source code associated with this element. This extracts the
      * substring from the source buffer containing this source element. This
      * corresponds to the source range that would be returned by
@@ -50,7 +42,8 @@ public interface ISourceReference {
      *                if an exception occurs while accessing its corresponding
      *                resource
      */
-    // String getSource() throws ErlModelException;
+    String getSource() throws ErlModelException;
+
     /**
      * Returns the source range associated with this element.
      * <p>
@@ -61,7 +54,7 @@ public interface ISourceReference {
      * @return the source range, or <code>null</code> if this element has no
      *         associated source code
      */
-    ISourceRange getSourceRange() throws ErlModelException;
+    ISourceRange getSourceRange();
 
     public int getLineStart();
 

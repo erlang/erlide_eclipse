@@ -98,28 +98,22 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     public IErlRange getMemberRange() {
-        try {
-            if (getErlElement() instanceof IErlMember) {
-                IErlRange range = null;
-                final IErlMember member = (IErlMember) getErlElement();
-                int sL, sC, eL, eC;
-                sL = member.getLineStart() + 1;
-                eL = member.getLineEnd() + 1;
+        if (getErlElement() instanceof IErlMember) {
+            IErlRange range = null;
+            final IErlMember member = (IErlMember) getErlElement();
+            int sL, sC, eL, eC;
+            sL = member.getLineStart() + 1;
+            eL = member.getLineEnd() + 1;
 
-                sC = WranglerUtils.calculateColumnFromOffset(member
-                        .getSourceRange().getOffset(), sL - 1, document);
-                eC = WranglerUtils
-                        .calculateColumnFromOffset(member.getSourceRange()
-                                .getOffset()
-                                + member.getSourceRange().getLength(), eL - 1,
-                                document);
-                range = new ErlRange(sL, sC, eL, eC, member.getSourceRange()
-                        .getOffset(), member.getSourceRange().getLength());
+            sC = WranglerUtils.calculateColumnFromOffset(member
+                    .getSourceRange().getOffset(), sL - 1, document);
+            eC = WranglerUtils.calculateColumnFromOffset(member
+                    .getSourceRange().getOffset()
+                    + member.getSourceRange().getLength(), eL - 1, document);
+            range = new ErlRange(sL, sC, eL, eC, member.getSourceRange()
+                    .getOffset(), member.getSourceRange().getLength());
 
-                return range;
-            }
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
+            return range;
         }
         return getSelectionRange();
     }

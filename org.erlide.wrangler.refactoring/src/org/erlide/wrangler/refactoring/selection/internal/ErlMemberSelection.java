@@ -53,15 +53,9 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        try {
-            return WranglerUtils.calculateColumnFromOffset(member
-                    .getSourceRange().getOffset()
-                    + member.getSourceRange().getLength(), getEndLine() - 1,
-                    document);
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
-            return -1;
-        }
+        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
+                .getOffset() + member.getSourceRange().getLength(),
+                getEndLine() - 1, document);
     }
 
     protected int getEndLine() {
