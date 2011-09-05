@@ -22,6 +22,7 @@ import org.erlide.core.common.Util;
  */
 
 public class ErlModelStatus extends Status implements IErlModelStatus {
+    public static final IErlElement[] NO_ELEMENTS = new IErlElement[0];
 
     /**
      * The elements related to the failure, or <code>null</code> if no elements
@@ -67,7 +68,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code) {
         super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = IErlElement.NO_ELEMENTS;
+        fElements = NO_ELEMENTS;
     }
 
     /**
@@ -92,7 +93,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     public ErlModelStatus(final int severity, final int code,
             final String string) {
         super(severity, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = IErlElement.NO_ELEMENTS;
+        fElements = NO_ELEMENTS;
         fPath = null;
         fString = string;
     }
@@ -102,7 +103,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code, final Throwable throwable) {
         super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
-        fElements = IErlElement.NO_ELEMENTS;
+        fElements = NO_ELEMENTS;
     }
 
     /**
@@ -110,7 +111,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int code, final IPath path) {
         super(ERROR, ErlangCore.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
-        fElements = IErlElement.NO_ELEMENTS;
+        fElements = NO_ELEMENTS;
         fPath = path;
     }
 
@@ -159,7 +160,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
         super(ERROR, ErlangCore.PLUGIN_ID,
                 ErlModelStatusConstants.CORE_EXCEPTION,
                 "ErlModelStatus", coreException); //$NON-NLS-1$
-        fElements = IErlElement.NO_ELEMENTS;
+        fElements = NO_ELEMENTS;
     }
 
     protected int getBits() {
