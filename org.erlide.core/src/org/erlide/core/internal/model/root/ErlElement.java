@@ -47,15 +47,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         IParent, Cloneable {
 
     /**
-     * A count to uniquely identify this element in the case that a duplicate
-     * named element exists. For example, if there are two fields in a
-     * compilation unit with the same name, the occurrence count is used to
-     * distinguish them. The occurrence count starts at 1 (thus the first
-     * occurrence is occurrence 1, not occurrence 0).
-     */
-    public int fOccurrenceCount = 1;
-
-    /**
      * This element's parent, or <code>null</code> if this element does not have
      * a parent.
      */
@@ -134,9 +125,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
             // bug (jc)
             // assume instanceof check is done in subclass
             final ErlElement other = (ErlElement) o;
-            return fOccurrenceCount == other.fOccurrenceCount
-                    && fName.equals(other.fName)
-                    && fParent.equals(other.fParent);
+            return fName.equals(other.fName) && fParent.equals(other.fParent);
         }
         return false;
     }
@@ -400,28 +389,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected void toStringInfo(final int tab, final StringBuilder buffer,
             final Object info) {
         buffer.append(tabString(tab));
-        toStringName(buffer);
+        buffer.append(getName());
         if (info == null) {
             buffer.append(" (not open)"); //$NON-NLS-1$
         }
     }
-
-    /**
-     * Debugging purposes
-     */
-    protected void toStringName(final StringBuilder buffer) {
-        buffer.append(getName());
-        if (fOccurrenceCount > 1) {
-            buffer.append("#"); //$NON-NLS-1$
-            buffer.append(fOccurrenceCount);
-        }
-    }
-
-    // /**
-    // * Collection of handles of immediate children of this object. This is an
-    // * empty array if this element has no children.
-    // */
-    // private final List<IErlElement> fChildren = new ArrayList<IErlElement>();
 
     /**
      * Is the structure of this element known

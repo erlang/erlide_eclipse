@@ -353,8 +353,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
 
         final ErlProject other = (ErlProject) o;
-        return fProject.equals(other.getWorkspaceProject())
-                && fOccurrenceCount == other.fOccurrenceCount;
+        return fProject.equals(other.getWorkspaceProject());
     }
 
     @Override
