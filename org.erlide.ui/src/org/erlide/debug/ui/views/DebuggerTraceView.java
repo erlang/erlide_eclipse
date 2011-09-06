@@ -597,8 +597,6 @@ public class DebuggerTraceView extends AbstractDebugView implements
 
     @Override
     public void setFocus() {
-        // TODO Auto-generated method stub
-
     }
 
     public void handleDebugEvents(final DebugEvent[] events) {

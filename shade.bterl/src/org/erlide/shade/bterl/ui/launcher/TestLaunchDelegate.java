@@ -308,10 +308,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     cmd, trace, cb, workdirPath).toString();
             wc.setAttribute(ErlLaunchAttributes.ARGUMENTS, args2);
         } catch (final TermParserException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final SignatureException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

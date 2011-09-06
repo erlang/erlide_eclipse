@@ -17,8 +17,7 @@ public class ProjectTreeContentProvider implements ITreeContentProvider {
     private Collection<IErlProject> projects;
 
     public void dispose() {
-        // TODO Auto-generated method stub
-
+        projects = null;
     }
 
     @SuppressWarnings("unchecked")

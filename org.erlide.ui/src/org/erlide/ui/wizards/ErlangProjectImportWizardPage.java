@@ -983,11 +983,6 @@ public class ErlangProjectImportWizardPage extends
         return projectName;
     }
 
-    public IPath getLocationPath() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public boolean isCopyFiles() {
         return copyFiles;
     }

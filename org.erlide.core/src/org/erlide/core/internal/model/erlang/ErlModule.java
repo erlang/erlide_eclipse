@@ -199,32 +199,6 @@ public class ErlModule extends Openable implements IErlModule {
         return new SourceRange(0, 0);
     }
 
-    public void copy(final IErlElement container, final IErlElement sibling,
-            final String rename, final boolean replace,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void delete(final boolean force, final IProgressMonitor monitor)
-            throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void move(final IErlElement container, final IErlElement sibling,
-            final String rename, final boolean replace,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void rename(final String aname, final boolean replace,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
     @Override
     protected boolean hasBuffer() {
         return true;

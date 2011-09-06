@@ -668,16 +668,6 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(nonErlangResources);
     }
 
-    public boolean isOnSourcePath() {
-        return true; // FIXME eller? ska man kolla nature? fast det ar val
-        // redan klart... kanske den inte ska arva fran
-        // IErlFolder? jaja....
-    }
-
-    public boolean isOnIncludePath() {
-        return true; // FIXME
-    }
-
     public IErlModule getModule(final String name) {
         try {
             return getModel().findModuleFromProject(this, name, null, false,
@@ -686,10 +676,6 @@ public class ErlProject extends Openable implements IErlProject {
             // final boolean hasExtension = CommonUtils.hasExtension(name);
             return null;
         }
-    }
-
-    public boolean isSourcePathParent() {
-        return true;
     }
 
     private IOldErlangProjectProperties getProperties() {
