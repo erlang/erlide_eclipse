@@ -51,6 +51,9 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
 
     private boolean visit(final IResource resource, final int kind,
             final boolean fullBuild) {
+        if (resource.getLocation().toString().contains("lost+found")) {
+            return false;
+        }
         if (resource.getType() == IResource.PROJECT) {
             erlProject = CoreScope.getModel().getErlangProject(
                     (IProject) resource);
