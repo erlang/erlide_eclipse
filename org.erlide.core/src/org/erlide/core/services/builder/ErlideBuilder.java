@@ -139,8 +139,7 @@ public class ErlideBuilder {
                     kind, args, project, resourceDelta);
             final int n = resourcesToBuild.size();
             // if (BuilderHelper.isDebugging()) {
-            ErlLogger.debug("Will compile %d resource(s): %s",
-                    Integer.valueOf(n), resourcesToBuild.toString());
+            ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
             // }
             if (n > 0) {
                 final IBackend backend = BackendCore.getBackendManager()
