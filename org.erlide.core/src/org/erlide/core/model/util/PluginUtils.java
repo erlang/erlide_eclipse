@@ -13,16 +13,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.model.root.IErlProject;
 
 /**
  * Simple utility functions
@@ -55,63 +51,6 @@ public class PluginUtils {
             }
         }
         return result;
-    }
-
-    private static ContainerFilter getIncludePathFilter(final IProject project,
-            final IContainer current) {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
-        return new ContainerFilter() {
-            private final Set<IPath> paths = getFullPaths(project,
-                    erlProject.getIncludeDirs());
-
-            public boolean accept(final IContainer container) {
-                return container.equals(current)
-                        || paths.contains(container.getFullPath());
-            }
-        };
-    }
-
-    private static final class SourcePathContainerFilter implements
-            ContainerFilter {
-        private final Set<IPath> paths;
-        private final Set<IPath> extra;
-
-        SourcePathContainerFilter(final IProject project) {
-            final IErlProject erlProject = CoreScope.getModel()
-                    .getErlangProject(project);
-            paths = getFullPaths(project, erlProject.getSourceDirs());
-            extra = new HashSet<IPath>();
-            extra.addAll(BackendUtils.getExtraSourcePathsForModel(project));
-        }
-
-        public boolean accept(final IContainer container) {
-            return paths.contains(container.getFullPath())
-                    || extra.contains(container.getLocation());
-        }
-    }
-
-    public static ContainerFilter getSourcePathFilter(final IProject project) {
-        return new SourcePathContainerFilter(project);
-    }
-
-    public static ContainerFilterCreator getSourcePathFilterCreator() {
-        return new ContainerFilterCreator() {
-
-            public ContainerFilter createFilterForProject(final IProject project) {
-                return getSourcePathFilter(project);
-            }
-        };
-    }
-
-    public static ContainerFilterCreator getIncludePathFilterCreator(
-            final IContainer current) {
-        return new ContainerFilterCreator() {
-
-            public ContainerFilter createFilterForProject(final IProject project) {
-                return getIncludePathFilter(project, current);
-            }
-        };
     }
 
     @SuppressWarnings("deprecation")
