@@ -664,18 +664,33 @@ public class FilteredModulesSelectionDialog extends
             final IErlProject erlProject = CoreScope.getModel()
                     .getErlangProject(project);
             if (erlProject != null) {
-                validPaths.addAll(PluginUtils.getFullPaths(project,
+                validPaths.addAll(getFullPaths(project,
                         erlProject.getIncludeDirs()));
-                validPaths.addAll(PluginUtils.getFullPaths(project,
+                validPaths.addAll(getFullPaths(project,
                         erlProject.getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
                 for (final IPath p : BackendUtils
                         .getExtraSourcePathsForModel(project)) {
                     extras.add(p);
                 }
-                validPaths.addAll(PluginUtils.getFullPaths(project, extras));
+                validPaths.addAll(getFullPaths(project, extras));
             }
         }
+
+        private Set<IPath> getFullPaths(final IProject project,
+                final Collection<IPath> sourcePaths) {
+            final HashSet<IPath> result = new HashSet<IPath>();
+            for (final IPath path : sourcePaths) {
+                final String path_string = path.toString();
+                if (path_string.equals(".")) {
+                    result.add(project.getFullPath());
+                } else {
+                    result.add(project.getFolder(path).getFullPath());
+                }
+            }
+            return result;
+        }
+
     }
 
     protected static class MatchAnySearchPattern extends SearchPattern {

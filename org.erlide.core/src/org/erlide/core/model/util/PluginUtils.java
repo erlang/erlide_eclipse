@@ -9,12 +9,7 @@
  *******************************************************************************/
 package org.erlide.core.model.util;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.core.resources.IPathVariableManager;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,20 +32,6 @@ public class PluginUtils {
     public static IStatus makeStatus(final Exception x) {
         return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID, 0,
                 x.getMessage(), x);
-    }
-
-    public static Set<IPath> getFullPaths(final IProject project,
-            final Collection<IPath> sourcePaths) {
-        final HashSet<IPath> result = new HashSet<IPath>();
-        for (final IPath path : sourcePaths) {
-            final String path_string = path.toString();
-            if (path_string.equals(".")) {
-                result.add(project.getFullPath());
-            } else {
-                result.add(project.getFolder(path).getFullPath());
-            }
-        }
-        return result;
     }
 
     @SuppressWarnings("deprecation")
