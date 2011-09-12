@@ -43,9 +43,19 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private State state;
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
+    private final String cookie;
 
     public ErlRuntime(final String name, final String cookie) {
         state = State.DISCONNECTED;
+        peerName = name;
+        this.cookie = cookie;
+        startLocalNode();
+        // if (epmdWatcher.isRunningNode(name)) {
+        // connect();
+        // }
+    }
+
+    public void startLocalNode() {
         boolean nodeCreated = false;
         synchronized (localNodeLock) {
             int i = 0;
@@ -67,10 +77,6 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             } while (!nodeCreated && i < 10);
 
         }
-        peerName = name;
-        // if (epmdWatcher.isRunningNode(name)) {
-        // connect();
-        // }
     }
 
     public String getNodeName() {
@@ -112,7 +118,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String m, final String f, final String signature,
             final Object[] args) throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        rpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
+        rpcHelper.rpcCastWithProgress(cb, getNode(), peerName, false, gleader,
                 m, f, signature, args);
     }
 
@@ -203,6 +209,10 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
 
     public OtpNode getNode() {
         synchronized (localNodeLock) {
+            if (localNode == null) {
+                // TODO what do we do if it's still not starting?
+                startLocalNode();
+            }
             return localNode;
         }
     }

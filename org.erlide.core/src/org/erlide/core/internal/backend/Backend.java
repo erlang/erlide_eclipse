@@ -256,6 +256,9 @@ public abstract class Backend implements IStreamListener, IBackend {
         } catch (final BackendException e) {
             ErlLogger.error(e);
             ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+        } catch (final Exception e) {
+            ErlLogger.error(e);
+            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
         }
     }
 

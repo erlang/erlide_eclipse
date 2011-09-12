@@ -67,6 +67,8 @@ import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
 import org.osgi.framework.BundleContext;
 
+import com.swtdesigner.SWTResourceManager;
+
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -178,6 +180,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         if (ErlideImage.isInstalled()) {
             ErlideImage.dispose();
         }
+        SWTResourceManager.dispose();
         plugin = null;
     }
 
