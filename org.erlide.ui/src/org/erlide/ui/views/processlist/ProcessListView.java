@@ -46,11 +46,11 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IErlideBackendVisitor;
-import org.erlide.core.backend.events.ErlangEvent;
-import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
+import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -81,7 +81,8 @@ public class ProcessListView extends ViewPart {
      */
     class ViewContentProvider implements IStructuredContentProvider {
 
-        private final ProcessEventHandler handler = new ProcessEventHandler();
+        private final ProcessEventHandler handler = new ProcessEventHandler(
+                getBackend());
 
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
@@ -89,19 +90,16 @@ public class ProcessListView extends ViewPart {
 
         public void dispose() {
             final IBackend backend = getBackend();
-            if (backend != null) {
-                backend.getEventDaemon().removeHandler(handler);
-            }
         }
 
         public Object[] getElements(final Object parent) {
-            final IBackend bk = getBackend();
-            if (bk == null) {
+            final IBackend backend = getBackend();
+            if (backend == null) {
                 return new OtpErlangObject[] {};
             }
-            bk.getEventDaemon().addHandler(handler);
+            handler.register();
 
-            final OtpErlangList r = ErlideProclist.getProcessList(bk);
+            final OtpErlangList r = ErlideProclist.getProcessList(backend);
             if (r.arity() == 0) {
                 return new OtpErlangObject[] {};
             }
@@ -115,14 +113,13 @@ public class ProcessListView extends ViewPart {
             return ss;
         }
 
-        class ProcessEventHandler extends EventHandler {
+        class ProcessEventHandler extends ErlangEventHandler {
 
-            @Override
-            protected void doHandleEvent(final ErlangEvent event)
-                    throws Exception {
-                if (!event.hasTopic("processlist")) {
-                    return;
-                }
+            public ProcessEventHandler(final IBackend backend) {
+                super("processlist", backend);
+            }
+
+            public void handleEvent(final Event event) {
                 Display.getDefault().asyncExec(new Runnable() {
                     public void run() {
                         if (!viewer.getControl().isDisposed()) {
@@ -132,7 +129,6 @@ public class ProcessListView extends ViewPart {
                 });
             }
         }
-
     }
 
     static class ViewLabelProvider extends LabelProvider implements

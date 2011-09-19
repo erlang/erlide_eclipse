@@ -39,7 +39,7 @@ public class CoverBackend implements ICoverBackend {
     private IBackend backend;
     private RuntimeInfo info;
     private ILaunchConfiguration launchConfig;
-    private final CoverEventHandler handler;
+    private CoverEventHandler handler;
     private CoverLaunchSettings settings;
 
     private final Logger log; // logger
@@ -52,7 +52,6 @@ public class CoverBackend implements ICoverBackend {
     }
 
     private CoverBackend() {
-        handler = new CoverEventHandler();
         log = Activator.getDefault();
     }
 
@@ -82,7 +81,8 @@ public class CoverBackend implements ICoverBackend {
 
         try {
             backend = createBackend();
-            backend.getEventDaemon().addHandler(handler);
+            handler = new CoverEventHandler(backend);
+            handler.register();
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
         }

@@ -15,7 +15,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.collect.Lists;
 
 /**
- * This daemon is almost a copy of EventDaemon, but accepts generic messages
+ * This daemon is almost a copy of ErlangEventPublisher, but accepts generic messages
  * because the debugger can't be convinced to send erlide_jrpc events. The
  * handler is also hardcoded.
  */

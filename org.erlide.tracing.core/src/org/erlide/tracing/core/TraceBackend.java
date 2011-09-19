@@ -20,8 +20,7 @@ import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEvent;
-import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.rpc.RpcException;
@@ -34,6 +33,7 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 import org.erlide.tracing.core.mvc.model.treenodes.TracingResultsNode;
 import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.utils.TraceDataHandler;
+import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
@@ -90,17 +90,18 @@ public class TraceBackend {
         return INSTANCE;
     }
 
-    private class TraceEventHandler extends EventHandler {
+    private class TraceEventHandler extends ErlangEventHandler {
+
+        public TraceEventHandler(final IBackend backend) {
+            super(EVENT_NAME, backend);
+        }
 
         private final TraceDataHandler dataHandler = new TraceDataHandler();
         private boolean firstTrace = true;
 
-        @Override
-        protected void doHandleEvent(final ErlangEvent event) throws Exception {
-            if (!event.hasTopic(EVENT_NAME)) {
-                return;
-            }
-            final OtpErlangObject message = event.data;
+        public void handleEvent(final Event event) {
+            final OtpErlangObject message = (OtpErlangObject) event
+                    .getProperty("DATA");
             if (message != null) {
                 OtpErlangObject errorReason = null;
                 // System.out.println("data: " + data);
@@ -158,8 +159,8 @@ public class TraceBackend {
                         tracing = true;
                         getBackend(true);
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler();
-                        tracerBackend.getEventDaemon().addHandler(handler);
+                        handler = new TraceEventHandler(tracerBackend);
+                        handler.register();
 
                         // list of nodes being traced
                         final List<OtpErlangObject> erlangObjects = new ArrayList<OtpErlangObject>();
@@ -335,9 +336,9 @@ public class TraceBackend {
                     try {
                         loading = true;
                         loadingFileInfo = true;
-                        handler = new TraceEventHandler();
+                        handler = new TraceEventHandler(tracerBackend);
                         getBackend(true);
-                        tracerBackend.getEventDaemon().addHandler(handler);
+                        handler.register();
                         tracerBackend.call(Constants.ERLANG_HELPER_MODULE,
                                 FUN_FILE_INFO, "s", new OtpErlangString(path));
                     } catch (final RpcException e) {
@@ -368,10 +369,10 @@ public class TraceBackend {
                         loading = true;
                         loadingFileInfo = false;
                         startIndex = theStartIndex;
-                        handler = new TraceEventHandler();
+                        handler = new TraceEventHandler(tracerBackend);
                         getBackend(true);
                         TraceCollections.getTracesList().clear();
-                        tracerBackend.getEventDaemon().addHandler(handler);
+                        handler.register();
                         final OtpErlangLong start = new OtpErlangLong(
                                 theStartIndex);
                         final OtpErlangLong stop = new OtpErlangLong(endIndex);
@@ -447,7 +448,6 @@ public class TraceBackend {
      *            status
      */
     private void finishLoading(final TracingStatus status) {
-        tracerBackend.getEventDaemon().removeHandler(handler);
         for (final ITraceNodeObserver listener : listeners) {
             try {
                 if (loadingFileInfo) {

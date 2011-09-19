@@ -1,24 +1,23 @@
 package org.erlide.test_support.ui.suites;
 
-import org.erlide.core.backend.events.ErlangEvent;
-import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.events.ErlangEventHandler;
+import org.osgi.service.event.Event;
 
-public class TestEventHandler extends EventHandler {
+import com.ericsson.otp.erlang.OtpErlangObject;
+
+public class TestEventHandler extends ErlangEventHandler {
 
     private final TestResultsView view;
 
-    public TestEventHandler(final TestResultsView view) {
+    public TestEventHandler(final IBackend backend, final TestResultsView view) {
+        super("bterl", backend);
         this.view = view;
     }
 
-    @Override
-    protected void doHandleEvent(final ErlangEvent event) throws Exception {
-        if (!event.hasTopic("bterl")) {
-            return;
-        }
+    public void handleEvent(final Event event) {
         if (view != null) {
-            view.notifyEvent(event.data);
+            view.notifyEvent((OtpErlangObject) event.getProperty("DATA"));
         }
     }
-
 }
