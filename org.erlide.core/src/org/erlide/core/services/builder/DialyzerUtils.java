@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.Util;
@@ -23,11 +24,15 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcResultCallback;
+import org.erlide.core.rpc.RpcException;
+import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
@@ -40,6 +45,70 @@ public class DialyzerUtils {
 
     public static void setHelper(final BuilderHelper h) {
         helper = h;
+    }
+
+    private static final class dialyzerCallback implements IRpcResultCallback {
+        IRpcCallSite backend;
+        private final SubMonitor monitor;
+        private final String projectName;
+        private final Object locker;
+
+        dialyzerCallback(final IRpcCallSite backend, final SubMonitor monitor,
+                final String projectName, final Object locker) {
+            this.backend = backend;
+            this.monitor = monitor;
+            this.projectName = projectName;
+            this.locker = locker;
+        }
+
+        public void stop(final OtpErlangObject msg) {
+            monitor.done();
+            synchronized (locker) {
+                locker.notifyAll();
+            }
+        }
+
+        public void start(final OtpErlangObject msg) {
+            final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
+            int progressMax;
+            try {
+                progressMax = progressMaxL.intValue();
+            } catch (final OtpErlangRangeException e) {
+                progressMax = 10;
+            }
+            final SubMonitor child = monitor.newChild(progressMax);
+            child.setTaskName("Dialyzing " + projectName);
+        }
+
+        public void progress(final OtpErlangObject msg) {
+            final OtpErlangTuple t = (OtpErlangTuple) msg;
+            final OtpErlangPid dialyzerPid = (OtpErlangPid) t.elementAt(0);
+            final OtpErlangLong progressL = (OtpErlangLong) t.elementAt(1);
+            OtpErlangObject result = t.elementAt(2);
+            int progress = 1;
+            try {
+                progress = progressL.intValue();
+                checkDialyzeError(result);
+                if (result instanceof OtpErlangTuple) {
+                    final OtpErlangTuple t2 = (OtpErlangTuple) result;
+                    result = t2.elementAt(1);
+                }
+                MarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
+                        (OtpErlangList) result);
+            } catch (final OtpErlangRangeException e) {
+            } catch (final DialyzerErrorException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            monitor.worked(progress);
+            if (monitor.isCanceled()) {
+                try {
+                    ErlideSearchServer.cancelSearch(BackendCore
+                            .getBackendManager().getIdeBackend(), dialyzerPid);
+                } catch (final RpcException e) {
+                }
+            }
+        }
     }
 
     public static class DialyzerErrorException extends Exception {
@@ -58,6 +127,7 @@ public class DialyzerUtils {
     public static void doDialyze(final IProgressMonitor monitor,
             final Map<IErlProject, Set<IErlModule>> modules)
             throws InvocationTargetException {
+        final Object locker = new Object();
         final Set<IErlProject> keySet = modules.keySet();
         for (final IErlProject p : keySet) {
             final IProject project = p.getWorkspaceProject();
@@ -76,15 +146,22 @@ public class DialyzerUtils {
                 collectFilesAndIncludeDirs(p, modules, project, files, names,
                         includeDirs, fromSource);
                 monitor.subTask("Dialyzing " + getFileNames(names));
-                OtpErlangObject result = ErlideDialyze.dialyze(backend, files,
-                        pltPaths, includeDirs, fromSource, noCheckPLT);
-                checkDialyzeError(result);
-                if (result instanceof OtpErlangTuple) {
-                    final OtpErlangTuple t = (OtpErlangTuple) result;
-                    result = t.elementAt(1);
+                final IRpcResultCallback callback = new dialyzerCallback(
+                        backend, SubMonitor.convert(monitor),
+                        project.getName(), locker);
+                try {
+                    ErlideDialyze.startDialyzer(backend, files, pltPaths,
+                            includeDirs, fromSource, noCheckPLT, callback);
+                } catch (final RpcException e) {
+                    throw new InvocationTargetException(e);
                 }
-                MarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
-                        (OtpErlangList) result);
+                synchronized (locker) {
+                    try {
+                        locker.wait();
+                    } catch (final InterruptedException e) {
+                    }
+                }
+
             } catch (final Exception e) {
                 throw new InvocationTargetException(e);
             }
