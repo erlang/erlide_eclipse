@@ -510,8 +510,9 @@ get_refs_in_code([#token{kind='#', offset=Offset},
                   #token{kind=atom, value=Record, offset=Offset2, length=Length2} | Rest],
                  Acc) ->
     R = {Offset, Length2+Offset2-Offset, #record_ref{record=Record}},
-    {NewRest, Fields} = erlide_np_records:check_fields(Rest, Record),
-    get_refs_in_code(NewRest, Fields ++ [R | Acc]);
+    {NewRest, Fields, RightSides} = erlide_np_records:check_fields(Rest, Record),
+    NewAcc = get_refs_in_code(RightSides, Acc),
+    get_refs_in_code(NewRest, Fields ++ [R | NewAcc]);
 get_refs_in_code([#token{kind=var, value=V, offset=Offset, length=Length} | Rest],
                  Acc) ->
     R = {Offset, Length, make_var_def_ref(Acc, V)},
@@ -629,3 +630,6 @@ unquote(L) ->
 unquote_first([$" | Rest]) ->
     Rest.
 
+remove_rest([], _) -> [];
+remove_rest(Rest, Rest) -> [];
+remove_rest([Hd | Tl], Rest) -> [Hd | remove_rest(Tl, Rest)].

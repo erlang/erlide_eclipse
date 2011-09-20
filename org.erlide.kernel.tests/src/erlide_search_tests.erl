@@ -44,6 +44,12 @@ external_call_after_record_dot_field_test_() ->
     Value = test_refs(S, {external_call, a, f, 0}),
     [?_assertEqual(Expected, Value)].
 
+local_call_in_record_test_() ->
+    S = "a() ->\n    y(),\n    A#b{x = y()}.\n",
+    Expected = {ok, [{"xxx", a, 0, [], false, 28, 1, false},
+                     {"xxx", a, 0, [], false, 11, 1, false}]},
+    Value = test_refs(S, {external_call, xxx, y, 0}),
+    [?_assertEqual(Expected, Value)].
 
 %%
 %% Local Functions
