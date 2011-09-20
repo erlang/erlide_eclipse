@@ -44,13 +44,13 @@ import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlExternal;
-import org.erlide.core.model.root.api.IParent;
-import org.erlide.core.model.root.api.ISourceRange;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlExternal;
+import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.root.ISourceRange;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * A number of routines for working with JavaElements in editors.

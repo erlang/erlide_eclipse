@@ -17,6 +17,9 @@ public interface Bindings {
 
     public abstract String getAtom(final String name) throws OtpErlangException;
 
+    public abstract String getQuotedAtom(final String name)
+            throws OtpErlangException;
+
     public abstract String getString(final String name)
             throws OtpErlangException;
 

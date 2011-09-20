@@ -46,17 +46,17 @@ import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangLaunchDelegate;
+import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntry;
+import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
+import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntry;
-import org.erlide.core.model.erlang.internal.ErlExternalReferenceEntryList;
-import org.erlide.core.model.erlang.internal.ErlOtpExternalReferenceEntryList;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlFolder;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IOpenable;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlFolder;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
 
@@ -275,13 +275,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse
-     * .swt.widgets.Composite)
-     */
     /**
      * @wbp.parser.entryPoint
      */
@@ -396,13 +389,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.
-     * debug.core.ILaunchConfigurationWorkingCopy)
-     */
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
                 new ArrayList<String>());
@@ -450,13 +436,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#initializeFrom(org.eclipse
-     * .debug.core.ILaunchConfiguration)
-     */
     @SuppressWarnings("unchecked")
     public void initializeFrom(final ILaunchConfiguration config) {
         List<String> interpret;
@@ -506,13 +485,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse
-     * .debug.core.ILaunchConfigurationWorkingCopy)
-     */
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
                 getFlagCheckboxes());

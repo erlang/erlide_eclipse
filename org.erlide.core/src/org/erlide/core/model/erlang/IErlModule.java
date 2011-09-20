@@ -19,12 +19,12 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.ErlToken;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IOpenable;
-import org.erlide.core.model.root.api.IParent;
-import org.erlide.core.model.root.api.ISourceUnit;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlToken;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.root.ISourceUnit;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 
@@ -140,5 +140,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
     boolean isOnSourcePath();
 
     boolean isOnIncludePath();
+
+    boolean exportsAllFunctions();
 
 }

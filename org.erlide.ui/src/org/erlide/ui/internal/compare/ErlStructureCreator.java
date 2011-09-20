@@ -44,13 +44,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IOpenable;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlStructureCreator extends StructureCreator {
 
@@ -95,25 +95,11 @@ public class ErlStructureCreator extends StructureCreator {
             fInput = input;
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#nodeChanged
-         * (org.eclipse.compare.structuremergeviewer.DocumentRangeNode)
-         */
         @Override
         protected void nodeChanged(final DocumentRangeNode node) {
             save(this, fInput);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#isReadOnly
-         * ()
-         */
         @Override
         public boolean isReadOnly() {
             if (fInput instanceof IEditableContentExtension) {
@@ -123,13 +109,6 @@ public class ErlStructureCreator extends StructureCreator {
             return super.isReadOnly();
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.compare.structuremergeviewer.DocumentRangeNode#validateEdit
-         * (org.eclipse.swt.widgets.Shell)
-         */
         @Override
         public IStatus validateEdit(final Shell shell) {
             if (fInput instanceof IEditableContentExtension) {

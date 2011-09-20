@@ -9,20 +9,18 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.erlang.internal.PreferencesHelper;
+import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
 
 public class DialyzerPreferences {
 
-    private static final String QUALIFIER = ErlangPlugin.PLUGIN_ID
-            + "/dialyzer";
+    private static final String QUALIFIER = ErlangCore.PLUGIN_ID + "/dialyzer";
 
     private final PreferencesHelper helper;
 
@@ -49,9 +47,9 @@ public class DialyzerPreferences {
             }
         } catch (final BackingStoreException e1) {
             e1.printStackTrace();
-            throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangPlugin.PLUGIN_ID,
-                    "could not retrieve dialyzer options"));
+            throw new CoreException(
+                    new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
+                            "could not retrieve dialyzer options"));
         }
     }
 
@@ -79,18 +77,23 @@ public class DialyzerPreferences {
         helper.flush();
     }
 
-    private Collection<String> getPLTPathsFromPreferences() throws RpcException {
-
+    private static Collection<String> getPLTPathsFromPreferences()
+            throws RpcException {
         final IPreferencesService service = Platform.getPreferencesService();
         final String key = "default_plt_files";
         final String pluginId = "org.erlide.ui";
         final String pltFilesString = service
                 .getString(pluginId, key, "", null);
-        if (pltFilesString.length() > 0) {
-            ErlLogger.debug("%s: '%s'", key, pltFilesString);
-        }
         return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
                 .getIdeBackend(), pltFilesString);
+    }
+
+    public static String getAlternatePLTFileDirectoryFromPreferences()
+            throws RpcException {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "alternate_plt_file_directory";
+        final String pluginId = "org.erlide.ui";
+        return service.getString(pluginId, key, "", null);
     }
 
     public void load() throws BackingStoreException, RpcException {

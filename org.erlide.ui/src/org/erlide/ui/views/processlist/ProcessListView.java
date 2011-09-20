@@ -43,12 +43,12 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.ErlideBackendVisitor;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 
@@ -88,14 +88,14 @@ public class ProcessListView extends ViewPart {
         }
 
         public void dispose() {
-            final Backend backend = getBackend();
+            final IBackend backend = getBackend();
             if (backend != null) {
                 backend.getEventDaemon().removeHandler(handler);
             }
         }
 
         public Object[] getElements(final Object parent) {
-            final Backend bk = getBackend();
+            final IBackend bk = getBackend();
             if (bk == null) {
                 return new OtpErlangObject[] {};
             }
@@ -226,14 +226,14 @@ public class ProcessListView extends ViewPart {
         t.setHeaderVisible(true);
 
         // TODO this is wrong - all backends should be inited
-        final RpcCallSite ideBackend = BackendCore.getBackendManager()
+        final IRpcCallSite ideBackend = BackendCore.getBackendManager()
                 .getIdeBackend();
         if (ideBackend != null) {
             ErlideProclist.processListInit(ideBackend);
         }
         BackendCore.getBackendManager().forEachBackend(
-                new ErlideBackendVisitor() {
-                    public void visit(final Backend b) {
+                new IErlideBackendVisitor() {
+                    public void visit(final IBackend b) {
                         ErlideProclist.processListInit(b);
                     }
                 });
@@ -346,14 +346,14 @@ public class ProcessListView extends ViewPart {
         viewer.getControl().setFocus();
     }
 
-    public Backend getBackend() {
+    public IBackend getBackend() {
         final IStructuredSelection sel = (IStructuredSelection) backends
                 .getSelection();
         if (sel.getFirstElement() != null) {
-            final Backend b = (Backend) sel.getFirstElement();
+            final IBackend b = (IBackend) sel.getFirstElement();
             return b;
         }
-        final Backend b = BackendCore.getBackendManager().getIdeBackend();
+        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
         if (b != null) {
             backends.setSelection(new StructuredSelection(b));
             return b;

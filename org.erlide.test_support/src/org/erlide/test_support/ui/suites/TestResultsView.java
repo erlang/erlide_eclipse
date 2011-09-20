@@ -1,5 +1,6 @@
 package org.erlide.test_support.ui.suites;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -19,8 +20,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.jinterface.Bindings;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
+import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
+import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.ErlModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -68,7 +72,16 @@ public class TestResultsView extends ViewPart {
                 final Object data = tree.getSelection()[0].getData();
                 if (data instanceof TestCaseData) {
                     final TestCaseData testData = (TestCaseData) data;
-                    openTestInEditor(testData);
+                    openMF(testData.getModule(), testData.getFunction());
+                } else if (data instanceof FailStackItem) {
+                    final FailStackItem item = (FailStackItem) data;
+                    openMF(item.getModule(), item.getFunction());
+                } else if (data instanceof FailReason) {
+                    final FailReason reason = (FailReason) data;
+                    final FailStackItem item = reason.getFirstStackItem();
+                    if (item != null) {
+                        openMF(item.getModule(), item.getFunction());
+                    }
                 }
             }
         });
@@ -81,12 +94,11 @@ public class TestResultsView extends ViewPart {
         initToolbar();
     }
 
-    protected void openTestInEditor(final TestCaseData testData) {
+    private void openMF(final String module, final String function) {
         try {
-            // TODO these utilities don't know about test code paths!!!
-            ErlModelUtils.openMF(testData.getModule(), testData.getFunction());
+            ErlModelUtils.openMF(module, function);
         } catch (final CoreException e) {
-            e.printStackTrace();
+            ErlLogger.warn(e);
         }
     }
 
@@ -95,7 +107,7 @@ public class TestResultsView extends ViewPart {
         final IMenuManager dropDownMenu = actionBars.getMenuManager();
         final IToolBarManager toolBar = actionBars.getToolBarManager();
 
-        final Action action = new ClearResultsAction(treeViewer, events);
+        final Action action = new ClearTestResultsAction(treeViewer, events);
         dropDownMenu.add(action);
         toolBar.add(action);
     }
@@ -172,7 +184,7 @@ public class TestResultsView extends ViewPart {
             final Bindings bindings = ErlUtils.match("{{M:a,F:a},L,R}", value);
             final String mod = bindings.getAtom("M");
             final String fun = bindings.getAtom("F");
-            final OtpErlangObject locations = bindings.get("L");
+            final Collection<OtpErlangObject> locations = bindings.getList("L");
             final OtpErlangObject reason = bindings.get("R");
             test = findCase(mod, fun);
             test.setFailed(reason, locations);
@@ -195,6 +207,7 @@ public class TestResultsView extends ViewPart {
                     + successful + ", Failed: " + failed + ", Skipped: "
                     + skipped);
         }
+        control.redraw();
     }
 
     private String formatTitle(final OtpErlangObject value) {

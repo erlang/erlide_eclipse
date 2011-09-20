@@ -15,16 +15,16 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangStatus;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.ISourceReference;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.root.ISourceReference;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.jinterface.ErlLogger;
@@ -160,7 +160,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
         final String newText = Util.stringValue(r1);
         if (newText == null) {
             final Status status = new Status(IStatus.ERROR,
-                    ErlangPlugin.PLUGIN_ID,
+                    ErlangCore.PLUGIN_ID,
                     ErlangStatus.INTERNAL_ERROR.getValue(), "indent returned "
                             + r1 + " instead of a string", null);
             ErlLogger.error("INTERNAL ERROR: indent returned " + r1
@@ -221,7 +221,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws RpcException {
-        final RpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
         final OtpErlangObject r1 = ErlideIndent.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

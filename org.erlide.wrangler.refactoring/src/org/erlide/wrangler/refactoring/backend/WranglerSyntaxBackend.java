@@ -11,8 +11,8 @@
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo.Type;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
@@ -31,7 +31,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @version %I%, %G%
  */
 public class WranglerSyntaxBackend implements IWranglerBackend {
-    protected RpcCallSite backend;
+    protected IRpcCallSite backend;
     protected static final String MODULE = "refac_util";
     protected static final String PARSE_FUNCTION = "parse_annotate_file";
     protected static final String VAR_FUNCTION = "pos_to_var_name";
@@ -40,13 +40,13 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
      * @param backend
      *            Backend object
      */
-    public WranglerSyntaxBackend(final RpcCallSite backend) {
+    public WranglerSyntaxBackend(final IRpcCallSite backend) {
         this.backend = backend;
     }
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final RpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION,
+        final IRpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION,
                 "sax", filePath, "true", GlobalParameters
                         .getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
@@ -70,7 +70,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
         final OtpErlangInt[] position = new OtpErlangInt[2];
         position[0] = new OtpErlangInt(line);
         position[1] = new OtpErlangInt(col);
-        final RpcResult res = backend.call_noexception(MODULE, VAR_FUNCTION,
+        final IRpcResult res = backend.call_noexception(MODULE, VAR_FUNCTION,
                 "xx", syntaxTree, new OtpErlangTuple(position));
         return parseVarInfo(res.getValue());
     }

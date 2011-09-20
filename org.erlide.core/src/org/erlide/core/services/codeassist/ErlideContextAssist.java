@@ -7,7 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.erlide.core.common.Util;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -19,7 +19,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideContextAssist {
 
-    public static Collection<String> getVariables(final RpcCallSite b,
+    public static Collection<String> getVariables(final IRpcCallSite b,
             final String src, final String prefix) {
         final SortedSet<String> result = new TreeSet<String>();
         try {
@@ -28,7 +28,7 @@ public class ErlideContextAssist {
             if (Util.isOk(res)) {
                 final OtpErlangTuple t = (OtpErlangTuple) res;
                 final OtpErlangList l = (OtpErlangList) t.elementAt(1);
-                for (final OtpErlangObject i : l.elements()) {
+                for (final OtpErlangObject i : l) {
                     result.add(Util.stringValue(i));
                 }
             }
@@ -94,7 +94,7 @@ public class ErlideContextAssist {
 
     }
 
-    public static RecordCompletion checkRecordCompletion(final RpcCallSite b,
+    public static RecordCompletion checkRecordCompletion(final IRpcCallSite b,
             final String substring) {
         try {
             final OtpErlangObject res = b.call("erlide_content_assist",
@@ -113,7 +113,7 @@ public class ErlideContextAssist {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangList getFunctionHead(final RpcCallSite b,
+    public static OtpErlangList getFunctionHead(final IRpcCallSite b,
             final String name, final int arity) {
         try {
             final OtpErlangObject res = b.call("erlide_content_assist",

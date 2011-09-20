@@ -5,10 +5,10 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.console.ErlangConsolePage;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class SendToConsoleAction extends SelectionDispatchAction {
 

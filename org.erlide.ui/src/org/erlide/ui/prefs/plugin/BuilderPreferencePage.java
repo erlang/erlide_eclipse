@@ -69,21 +69,11 @@ public class BuilderPreferencePage extends FieldEditorPreferencePage implements
         super.performDefaults();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.preference.IPreferencePage#performOk()
-     */
     @Override
     public boolean performOk() {
         return super.performOk();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
-     */
     @Override
     protected void initialize() {
         super.initialize();

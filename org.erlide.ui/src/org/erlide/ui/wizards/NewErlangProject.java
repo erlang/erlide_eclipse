@@ -36,14 +36,14 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IOldErlangProjectProperties;
-import org.erlide.core.model.root.internal.OldErlangProjectProperties;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOldErlangProjectProperties;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIConstants;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -154,16 +154,14 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @return
      */
     private boolean validateFinish() {
-        ErlLogger.debug("validating |" + buildPage.getPrefs().getOutputDir()
-                + "|");
         final IOldErlangProjectProperties prefs = buildPage.getPrefs();
-        if (prefs.getOutputDir().isEmpty()) {
+        if (prefs.getOutputDirs().isEmpty()) {
             reportError(ErlideUIPlugin
                     .getResourceString("wizard.errors.buildpath"));
             return false;
         }
 
-        if (prefs.getSourceDirs().size() == 0) {
+        if (prefs.getSourceDirs().isEmpty()) {
             reportError(ErlideUIPlugin
                     .getResourceString("wizards.errors.sourcepath"));
             return false;
@@ -198,7 +196,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             description = project.getDescription();
 
-            description.setNatureIds(new String[] { ErlangPlugin.NATURE_ID });
+            description.setNatureIds(new String[] { ErlangCore.NATURE_ID });
             project.setDescription(description, new SubProgressMonitor(monitor,
                     10));
 
@@ -210,7 +208,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
 
             buildPaths(monitor, root, project, new ArrayList<IPath>() {
                 {
-                    add(bprefs.getOutputDir());
+                    addAll(bprefs.getOutputDirs());
                 }
             });
             buildPaths(monitor, root, project, bprefs.getSourceDirs());

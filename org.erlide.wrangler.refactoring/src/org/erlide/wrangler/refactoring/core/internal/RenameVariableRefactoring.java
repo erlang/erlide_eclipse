@@ -14,12 +14,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
+
+import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
  * Rename variable refactoring integration
@@ -55,6 +58,25 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
                 sel.getSelectionRange().getStartLine(),
                 sel.getSelectionRange().getStartCol(), userInput,
                 sel.getSearchPath(), GlobalParameters.getTabWidth());
+    }
+
+    @Override
+    public String getDefaultValue() {
+        final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
+                .getWranglerSelection();
+
+        final IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+                .callWithoutParser("get_var_name_eclipse", "siixi",
+                        sel.getFilePath(),
+                        sel.getSelectionRange().getStartLine(),
+                        sel.getSelectionRange().getStartCol(),
+                        sel.getSearchPath(), GlobalParameters.getTabWidth());
+
+        if (res.getValue().getClass().equals(OtpErlangString.class)) {
+            return ((OtpErlangString) res.getValue()).stringValue();
+        } else {
+            return "";
+        }
     }
 
 }

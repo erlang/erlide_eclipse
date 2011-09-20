@@ -15,9 +15,9 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.rpc.RpcResult;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
-import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
+import org.erlide.core.rpc.IRpcResult;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.SimilarSearchInputDialog;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
@@ -47,7 +47,7 @@ public class SimilarSearchAction extends AbstractDuplicatesSearcherAction {
                 .getWranglerSelection();
         final WranglerRefactoringBackend backend = WranglerBackendManager
                 .getRefactoringBackend();
-        RpcResult result = null;
+        IRpcResult result = null;
         String functionName;
         if (onlyInFile) {
             functionName = "simi_expr_search_in_buffer_eclipse";

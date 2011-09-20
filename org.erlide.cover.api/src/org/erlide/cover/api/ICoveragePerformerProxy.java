@@ -9,6 +9,6 @@ public interface ICoveragePerformerProxy {
     String ID = "org.erlide.cover.analysis";
 
     ICoveragePerformer getPerformer();
-    
+
     ICoverBackend getBackend();
 }

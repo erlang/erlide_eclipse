@@ -1,8 +1,9 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Common Public License v1.0
- * which accompanies this distribution.
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Vlad Dumitrescu
@@ -29,6 +30,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -36,7 +38,7 @@ import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 
-public class BackendData extends GenericBackendData {
+public final class BackendData extends GenericBackendData {
 
     public static final String PROJECT_NAME_SEPARATOR = ";";
 
@@ -47,7 +49,7 @@ public class BackendData extends GenericBackendData {
         if (runtimeInfo == null) {
             return;
         }
-        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "") == "") {
+        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
     }
@@ -58,6 +60,10 @@ public class BackendData extends GenericBackendData {
 
     public BackendData(final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
+        if (info == null) {
+            throw new IllegalArgumentException(
+                    "BackendData can't be created with null RuntimeInfo");
+        }
         setRuntimeName(info.getName());
         setNodeName(info.getNodeName());
         setCookie(info.getCookie());
@@ -158,8 +164,7 @@ public class BackendData extends GenericBackendData {
                     info.getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            if (System.getProperty("erlide.internal.shortname", "false")
-                    .equals("true")) {
+            if (ErlangCore.hasFeatureEnabled("erlide.internal.shortname")) {
                 workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                         false);
                 info.useLongName(false);
@@ -290,7 +295,6 @@ public class BackendData extends GenericBackendData {
     }
 
     public Collection<IProject> getProjects() {
-        // TODO cache this?
         String prjs;
         prjs = getStringAttribute(ErlLaunchAttributes.PROJECTS, "");
         final String[] projectNames = prjs.length() == 0 ? new String[] {}

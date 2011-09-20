@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
@@ -176,7 +176,7 @@ public class GeneraliseFunctionRefactoring extends
             final HashMap<IErlRange, OtpErlangTuple> ret = new HashMap<IErlRange, OtpErlangTuple>();
             final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                     .getWranglerSelection();
-            for (final OtpErlangObject o : thePositions.elements()) {
+            for (final OtpErlangObject o : thePositions) {
                 // {{sl, sc}, {el,ec}}
                 final OtpErlangTuple pos = (OtpErlangTuple) o;
                 ret.put(new ErlRange(new Range(pos), sel.getDocument()), pos);

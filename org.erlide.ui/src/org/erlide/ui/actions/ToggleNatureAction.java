@@ -20,17 +20,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 
 public class ToggleNatureAction implements IObjectActionDelegate {
 
     private ISelection fSelection;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
     public void run(final IAction action) {
         if (fSelection instanceof IStructuredSelection) {
             for (final Iterator<?> it = ((IStructuredSelection) fSelection)
@@ -50,25 +45,11 @@ public class ToggleNatureAction implements IObjectActionDelegate {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action
-     * .IAction, org.eclipse.jface.viewers.ISelection)
-     */
     public void selectionChanged(final IAction action,
             final ISelection selection) {
         fSelection = selection;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
-     * action.IAction, org.eclipse.ui.IWorkbenchPart)
-     */
     public void setActivePart(final IAction action,
             final IWorkbenchPart targetPart) {
     }
@@ -84,7 +65,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
             final IProjectDescription description = project.getDescription();
             final String[] natures = description.getNatureIds();
             for (int i = 0; i < natures.length; ++i) {
-                if (ErlangPlugin.NATURE_ID.equals(natures[i])) {
+                if (ErlangCore.NATURE_ID.equals(natures[i])) {
                     // Remove the nature
                     final String[] newNatures = new String[natures.length - 1];
                     System.arraycopy(natures, 0, newNatures, 0, i);
@@ -100,7 +81,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
             // Add the nature, it will be put first
             final String[] newNatures = new String[natures.length + 1];
             System.arraycopy(natures, 0, newNatures, 1, natures.length);
-            newNatures[0] = ErlangPlugin.NATURE_ID;
+            newNatures[0] = ErlangCore.NATURE_ID;
             description.setNatureIds(newNatures);
             project.setDescription(description, null);
 

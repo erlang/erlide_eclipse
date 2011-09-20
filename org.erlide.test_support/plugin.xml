@@ -14,6 +14,13 @@
          name="Test results"
          restorable="true">
    </view>
+   <view
+         category="erlide.test.views"
+         class="org.erlide.test_support.ui.suites.RegressionResultsView"
+         id="org.erlide.test_support.views.regressionresults"
+         name="Regression results"
+         restorable="true">
+   </view>
 </extension>
 <extension
       id="bterlProblem"
@@ -55,15 +62,6 @@
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
-</extension>
-<extension
-      point="org.eclipse.ui.editors">
-   <editor
-         class="shade.bterl.browser.BterlWebBrowserEditor"
-         contributorClass="org.eclipse.ui.internal.browser.WebBrowserEditorActionBarContributor"
-         id="org.erlide.test_support.browser"
-         name="Bterl Web Browser">
-   </editor>
 </extension>
 <extension
       point="org.eclipse.core.contenttype.contentTypes">

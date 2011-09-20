@@ -22,14 +22,13 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlMember;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.core.services.text.IndentResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
 
 /**
@@ -65,13 +64,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final IErlElement element = fEditor.getElementAt(offset, false);
         final IErlMember member = (IErlMember) element;
         if (member != null) {
-            int start;
-            try {
-                start = member.getSourceRange().getOffset();
-                txt = d.get(start, offset - start);
-            } catch (final ErlModelException e) {
-                ErlLogger.warn(e);
-            }
+            final int start = member.getSourceRange().getOffset();
+            txt = d.get(start, offset - start);
         }
         if (txt == null) {
             txt = d.get(0, offset);
@@ -81,7 +75,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final RpcCallSite b = BackendCore.getBackendManager()
+            final IRpcCallSite b = BackendCore.getBackendManager()
                     .getIdeBackend();
             final int tabw = getTabWidthFromPreferences();
 

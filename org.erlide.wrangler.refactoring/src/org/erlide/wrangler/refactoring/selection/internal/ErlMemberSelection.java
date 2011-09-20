@@ -12,9 +12,11 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
+import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlMember;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -51,15 +53,9 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
     }
 
     protected int getEndCol() {
-        try {
-            return WranglerUtils.calculateColumnFromOffset(member
-                    .getSourceRange().getOffset()
-                    + member.getSourceRange().getLength(), getEndLine() - 1,
-                    document);
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
-            return -1;
-        }
+        return WranglerUtils.calculateColumnFromOffset(member.getSourceRange()
+                .getOffset() + member.getSourceRange().getLength(),
+                getEndLine() - 1, document);
     }
 
     protected int getEndLine() {
@@ -99,5 +95,9 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
     public SelectionKind getDetailedKind() {
         return getKind();
+    }
+
+    public IErlModule getErlModule() {
+        return (IErlModule) CoreScope.getModel().findElement(file);
     }
 }

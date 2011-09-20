@@ -912,13 +912,6 @@ public class ListDialogField<Element> extends DialogField {
             doListSelected(event);
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see
-         * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse
-         * .jface.viewers.DoubleClickEvent)
-         */
         public void doubleClick(final DoubleClickEvent event) {
             doDoubleClick(event);
         }

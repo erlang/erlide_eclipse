@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.duplicatedcode.core;
 
-import org.erlide.core.rpc.RpcResult;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
-import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
+import org.erlide.core.rpc.IRpcResult;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
@@ -32,7 +32,7 @@ public class ExpressionSearchAction extends AbstractDuplicatesSearcherAction {
                 .getWranglerSelection();
         final WranglerRefactoringBackend backend = WranglerBackendManager
                 .getRefactoringBackend();
-        final RpcResult result = backend.callWithoutParser(
+        final IRpcResult result = backend.callWithoutParser(
                 WranglerRefactoringBackend.UNLIMITED_TIMEOUT,
                 "expr_search_eclipse", "sxxi", sel.getFilePath(), sel
                         .getSelectionRange().getStartPos(), sel

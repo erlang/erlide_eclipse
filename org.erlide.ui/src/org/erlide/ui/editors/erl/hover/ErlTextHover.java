@@ -11,6 +11,9 @@
 package org.erlide.ui.editors.erl.hover;
 
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -39,26 +42,26 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.core.CoreScope;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.manager.BackendManager;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.root.api.ErlToken;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.ErlToken;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
@@ -192,7 +195,7 @@ public class ErlTextHover implements ITextHover,
 
                     @Override
                     public void setSize(int width, int height) {
-                        // TODO default size is too small
+                        // default size is too small
                         final Point bounds = getSizeConstraints();
                         if (bounds != null) {
                             if (bounds.x != SWT.DEFAULT) {
@@ -269,12 +272,12 @@ public class ErlTextHover implements ITextHover,
                 .toString();
         final IErlProject erlProject = module.getProject();
 
-        final BackendManager backendManager = BackendCore.getBackendManager();
-        final Backend ide = backendManager.getIdeBackend();
+        final IBackendManager backendManager = BackendCore.getBackendManager();
+        final IBackend ide = backendManager.getIdeBackend();
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final RpcCallSite b = erlProject == null ? ide : backendManager
+            final IRpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
             final IErlModel model = CoreScope.getModel();
@@ -296,10 +299,11 @@ public class ErlTextHover implements ITextHover,
                         b, erlProject, or, offset);
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    final String comment = function.getComment();
+                    String comment = function.getComment();
                     if (comment == null) {
                         return null;
                     }
+                    comment = fixEncoding(comment);
                     result.append(comment);
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
@@ -318,4 +322,16 @@ public class ErlTextHover implements ITextHover,
                 result.toString(), 20);
     }
 
+    private static String fixEncoding(final String comment) {
+        try {
+            final byte[] bytes = comment.getBytes("ISO8859-1");
+            final ByteBuffer bb = ByteBuffer.wrap(bytes);
+            final CharBuffer cb = Charset.forName("UTF-8").newDecoder()
+                    .decode(bb);
+            return cb.toString();
+        } catch (final Exception e) {
+            // it was Latin-1
+        }
+        return comment;
+    }
 }

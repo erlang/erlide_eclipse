@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,13 +26,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IOldErlangProjectProperties;
-import org.erlide.core.model.root.internal.OldErlangProjectProperties;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOldErlangProjectProperties;
 
 import com.google.common.collect.Lists;
 
@@ -240,6 +241,10 @@ public class ErlideTestUtils {
     public static IPath getTmpPath(final String fileName) {
         final String tmpdir = System.getProperty("java.io.tmpdir");
         return new Path(tmpdir).append(fileName);
+    }
+
+    public static URI getTmpURIPath(final String fileName) {
+        return URI.create(getTmpPath(fileName).toPortableString());
     }
 
     public static File createTmpFile(final String fileName,

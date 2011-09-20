@@ -39,7 +39,7 @@ public class BrowserDialog extends Dialog {
     private ICoverageObject object;
 
     private String url;
-    private Logger log; // logger
+    private final Logger log; // logger
 
     public BrowserDialog(final Shell parent) {
         this(parent, SWT.NULL);
@@ -55,8 +55,9 @@ public class BrowserDialog extends Dialog {
         dialogShell.open();
         Display display = dialogShell.getDisplay();
         while (!dialogShell.isDisposed()) {
-            if (!display.readAndDispatch())
+            if (!display.readAndDispatch()) {
                 display.sleep();
+            }
         }
     }
 
@@ -120,10 +121,12 @@ public class BrowserDialog extends Dialog {
         next.setImage(Activator.getImageDescriptor(Images.NEXT).createImage());
 
         if (object.getParent() != null) {
-            if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
+            if (object.getParent().getNextSiblingTo(object.getLabel()) == null) {
                 next.setEnabled(false);
-            if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
+            }
+            if (object.getParent().getPrevSiblingTo(object.getLabel()) == null) {
                 prev.setEnabled(false);
+            }
         } else {
             next.setEnabled(false);
             prev.setEnabled(false);
@@ -145,7 +148,7 @@ public class BrowserDialog extends Dialog {
 
     }
 
-    private SelectionListener prevListener = new SelectionListener() {
+    private final SelectionListener prevListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
             if (object.getParent() != null) {
@@ -158,8 +161,9 @@ public class BrowserDialog extends Dialog {
                 browser.setUrl(url);
                 // disable buttons
                 next.setEnabled(true);
-                if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
+                if (object.getParent().getPrevSiblingTo(object.getLabel()) == null) {
                     prev.setEnabled(false);
+                }
             }
         }
 
@@ -168,7 +172,7 @@ public class BrowserDialog extends Dialog {
 
     };
 
-    private SelectionListener nextListener = new SelectionListener() {
+    private final SelectionListener nextListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
             if (object.getParent() != null) {
@@ -180,8 +184,9 @@ public class BrowserDialog extends Dialog {
                 setObject(sib);
                 browser.setUrl(url);
                 prev.setEnabled(true);
-                if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
+                if (object.getParent().getNextSiblingTo(object.getLabel()) == null) {
                     next.setEnabled(false);
+                }
             }
         }
 
@@ -190,17 +195,19 @@ public class BrowserDialog extends Dialog {
 
     };
 
-    private SelectionListener upListener = new SelectionListener() {
+    private final SelectionListener upListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
             if (object.getParent() != null) {
                 setObject(object.getParent());
                 browser.setUrl(url);
 
-                if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
+                if (object.getParent().getNextSiblingTo(object.getLabel()) == null) {
                     next.setEnabled(false);
-                if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
+                }
+                if (object.getParent().getPrevSiblingTo(object.getLabel()) == null) {
                     prev.setEnabled(false);
+                }
 
             }
         }
@@ -210,7 +217,7 @@ public class BrowserDialog extends Dialog {
 
     };
 
-    private SelectionListener homeListener = new SelectionListener() {
+    private final SelectionListener homeListener = new SelectionListener() {
 
         public void widgetSelected(SelectionEvent e) {
             setObject(StatsTreeModel.getInstance().getRoot());
@@ -224,26 +231,29 @@ public class BrowserDialog extends Dialog {
 
     };
 
-    private LocationListener locationListener = new LocationListener() {
+    private final LocationListener locationListener = new LocationListener() {
 
         public void changing(LocationEvent event) {
 
         }
 
         public void changed(LocationEvent event) {
-            if (object == null)
+            if (object == null) {
                 return;
+            }
             log.info(event.getSource());
             String newUrl = browser.getUrl();
-            String name = newUrl.substring(newUrl.lastIndexOf(File.separator) + 1,
-                    newUrl.length() - 5);
+            String name = newUrl
+                    .substring(newUrl.lastIndexOf(File.separator) + 1,
+                            newUrl.length() - 5);
             log.info(name);
-            if (name.startsWith("mod_"))
+            if (name.startsWith("mod_")) {
                 name = name.substring(4);
+            }
 
             ICoverageObject newObj;
-            if ((newObj = object.treeSearch(name)) != null) { // TODO ->
-                                                              // findChild
+            if ((newObj = object.treeSearch(name)) != null) {
+                // TODO -> findChild
                 setObject(newObj);
                 if (object.getParent() == null) {
                     up.setEnabled(false);
@@ -251,14 +261,16 @@ public class BrowserDialog extends Dialog {
                     prev.setEnabled(false);
                 } else {
                     up.setEnabled(true);
-                    if (object.getParent().getNextSiblingTo(object.getLabel()) == null)
+                    if (object.getParent().getNextSiblingTo(object.getLabel()) == null) {
                         next.setEnabled(false);
-                    else
+                    } else {
                         next.setEnabled(true);
-                    if (object.getParent().getPrevSiblingTo(object.getLabel()) == null)
+                    }
+                    if (object.getParent().getPrevSiblingTo(object.getLabel()) == null) {
                         prev.setEnabled(false);
-                    else
+                    } else {
                         prev.setEnabled(true);
+                    }
                 }
             }
 

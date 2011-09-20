@@ -14,6 +14,10 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 
+/**
+ * @noextend This class is not intended to be subclassed by clients.
+ * @noinstantiate This class is not intended to be instantiated by clients.
+ */
 public class GenericBackendData {
 
     protected ILaunch launch;
@@ -31,8 +35,8 @@ public class GenericBackendData {
                         .getLaunchManager();
                 final ILaunchConfigurationType ltype = manager
                         .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
-                config = ltype.newInstance(null, manager
-                        .generateUniqueLaunchConfigurationNameFrom("erlide"));
+                config = ltype.newInstance(null,
+                        manager.generateLaunchConfigurationName("erlide"));
             }
             launch = null;
         } catch (final CoreException e) {

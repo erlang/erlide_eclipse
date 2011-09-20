@@ -10,6 +10,7 @@ public interface ICoverObserver {
 
     /**
      * Method called when some coverage event occured
+     * 
      * @param e
      */
     public void eventOccured(ICoverEvent e);

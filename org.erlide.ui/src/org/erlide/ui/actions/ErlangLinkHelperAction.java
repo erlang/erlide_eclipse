@@ -9,7 +9,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.navigator.ILinkHelper;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -39,7 +39,6 @@ public class ErlangLinkHelperAction implements ILinkHelper {
         // }
         // // if it is an erlang element, let's first get the actual object for
         // // finding the editor
-        // // TODO
         //
         // // and now, if it is really a file...
         // if (firstElement instanceof IFile) {

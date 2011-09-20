@@ -1,3 +1,64 @@
+List of user visible changes between 0.13.3 and 0.13.4 (20110823)
+
+1962bf3 899-capture-output-of-make_links-for-debugging enabled with -Derlide.make_links.snoop=true
+ff92f0e 898-add-switch-to-create-task-markers-only-from-menu
+ae55e6e 895-testsourcepathprovider-is-too-slow-
+6f78701 wrangler: Using existing name as default in 'rename' refactorings
+79a6b27 fix default log directory to user's home dir
+183193f 866-navigation--functions-defined-in-hrl-files-are-not-found
+5cf3a13 added option to disable test code builder, -Derlide.test_builder.disabled=true
+60e45d3 839-erlide-log-file---specify-directory
+96be096 874-erlide-nullpointerexception-when-trying-to-compare-to-previous-version
+a1e5087 432-cannot-paste-into-console-window-unless-you-first-type-another-char
+41df4e8 732-navigation--merge-open-and-hover-code
+
+List of user visible changes between 0.13.2 and 0.13.3 (20110701)
+
+5725863 Fix bug with multiple plt-files in dialyzer run.
+8af1934 check for null project when cleaning backend
+0539c21 Update PLT with new paths Updating even when original beam files are missing.
+        838-implement-plt-copy-feature
+385cb68 sometimes the runtime is accessed before being initialized
+
+List of user visible changes between 0.13.1 and 0.13.2 (20110613)
+
+1f7887d Update PLT with new paths
+b922bf1 better fix for huge dialyzer error handling
+2ce849b Made sure warnings shows up on resources
+881fd11 608-dialyzer---navigate-to-external-includes-from-markers
+3f6b1ab 864-clean-project-does-not-remove-files-in-ebin-directory
+f9c9661 https://redmine.shade.psgbg.se/issues/2100 (Wasn't this fixed once before?)
+168740e 830-completion--show-message-when-no-completions-are-available
+43cc05e 852-unicode-content-is-mangled-in-documentation-hover
+7fc1b0d 828-new-project-wizard---runtime-combo-is-empty
+bff1305 862-new-project-wizard-sets-output-dir-to--[ebin]
+cce70b8 sometimes epmd starts too slowly; retrying connection
+88a5dae Runs from own copy of dialyzer_cl to prevent check of plt and beams
+3905ca6 upgraded minimum erlang requirements to R13B
+
+List of user visible changes between 0.13.0 and 0.13.1 (20110527)
+
+4ad5c4f Update dialyzer plt with .beam files in ebin directories.
+2f997f1 Avoid too long error messages (> 30K) breaking down eclipse
+325b13e dont display symlinks in OpenModule
+21d6926 Outline disappeared from modules not in project (again)
+58adcaa made outputDirs a list (prepare for #847); current API is deprecated
+bb9dbb5 845-test_support--test-modules-are-not-shown-in--open-module-
+315c2ad 844-regression--f3-doesn-t-work-in-0-13-0
+d0273d1 http://www.assembla.com/spaces/erlide/tickets/844-regression--f3-doesn-t-work-in-0-13-0
+8c362f4 http://www.assembla.com/spaces/erlide/tickets/839-erlide-log-file---specify-directory
+
+List of user visible changes between 0.12.0 and 0.13.0 (20110517)
+
+* There are again some large refactorings of the API code, and we're not yet close to something stable. 
+
+943bb65 http://www.assembla.com/spaces/erlide/tickets/838-dialyzer---implement-plt-copy-feature
+fe3244b 814-npe-in--open-module--dialog
+98c50be 722-completion--nothing-is-shown-for-modules-using-export_all
+82d6b8c 752-test_support--improve-results-view-ui
+5f46626 750-test_support--links-to-source-from-results-view
+49397b8 549-open-module-dialog---too-slow The reading of resource attributes slowed down the searching a lot... removed
+
 List of user visible changes between 0.11.1 and 0.12.0 (20110503)
 
 2510907 826-launch---quick-launch-does-not-work-on-windows-some-times

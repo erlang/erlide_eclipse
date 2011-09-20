@@ -12,6 +12,7 @@ package org.erlide.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,13 +35,15 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.backend.BackendCore;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
-import org.erlide.core.model.root.internal.OldErlangProjectProperties;
-import org.erlide.core.model.root.internal.PathSerializer;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
+import org.erlide.core.internal.model.root.PathSerializer;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
+import com.google.common.collect.Lists;
 import com.swtdesigner.SWTResourceManager;
 
 /**
@@ -184,13 +187,29 @@ public class ProjectPreferencesWizardPage extends WizardPage {
                 true, false);
         gd_backendName.widthHint = 62;
         runtimeVersion.setLayoutData(gd_backendName);
-        runtimeVersion.setText(prefs.getRuntimeVersion().toString());
+        final String[] runtimeNames = getAllRuntimeNames();
+        runtimeVersion.setItems(runtimeNames);
+        runtimeVersion.setText(prefs.getRuntimeVersion().asMinor().toString());
+        runtimeVersion.addListener(SWT.Modify, nameModifyListener);
+
         new Label(composite, SWT.NONE);
         if (CommonUtils.isTest()) {
             createExternalModuleEditor(composite);
             createExternalIncludeEditor(composite);
         }
 
+    }
+
+    private String[] getAllRuntimeNames() {
+        final String[][] runtimes = RuntimeInfoManager.getAllRuntimesVersions();
+        final List<String> runtimeNames = Lists.newArrayList();
+        for (int i = 0; i < runtimes.length; i++) {
+            if (!runtimeNames.contains(runtimes[i][0])) {
+                runtimeNames.add(runtimes[i][0]);
+            }
+        }
+        Collections.sort(runtimeNames);
+        return runtimeNames.toArray(new String[runtimeNames.size()]);
     }
 
     protected void discoverPaths() {

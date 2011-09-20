@@ -71,7 +71,7 @@ public class StatsTreeObject implements ICoverageObject {
         return bf.toString();
     }
 
-    public Object getAdapter(final Class key) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
         return null;
     }
 

@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.internal.OldErlangProjectProperties;
-import org.erlide.core.model.root.internal.ProjectPreferencesConstants;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
+import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -40,7 +40,7 @@ public class ProjectPropertiesTest {
 
         final IProject project = erlProject.getWorkspaceProject();
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
+                .getNode(ErlangCore.PLUGIN_ID);
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
         final OldErlangProjectProperties pp = new OldErlangProjectProperties(
@@ -56,7 +56,7 @@ public class ProjectPropertiesTest {
 
         final IProject project = erlProject.getWorkspaceProject();
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
+                .getNode(ErlangCore.PLUGIN_ID);
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
         final OldErlangProjectProperties pp = new OldErlangProjectProperties(
@@ -77,7 +77,7 @@ public class ProjectPropertiesTest {
 
         final IProject project = erlProject.getWorkspaceProject();
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(ErlangPlugin.PLUGIN_ID);
+                .getNode(ErlangCore.PLUGIN_ID);
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
         final OldErlangProjectProperties pp = new OldErlangProjectProperties(

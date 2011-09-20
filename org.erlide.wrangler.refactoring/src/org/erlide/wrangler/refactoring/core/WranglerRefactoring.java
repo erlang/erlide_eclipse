@@ -109,4 +109,13 @@ public abstract class WranglerRefactoring extends Refactoring {
 
     }
 
+    /**
+     * Obtains default value of refactored element
+     * 
+     * @return default (previous) value of refactored element
+     */
+    public String getDefaultValue() {
+        return "";
+    }
+
 }

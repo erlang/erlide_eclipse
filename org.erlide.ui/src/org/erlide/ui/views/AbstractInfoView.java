@@ -33,8 +33,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.SelectionDispatchAction;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * Abstract class for views which show information for a given element.

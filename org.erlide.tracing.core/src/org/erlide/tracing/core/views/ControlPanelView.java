@@ -40,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.IBackend;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.ITraceNodeObserver;
 import org.erlide.tracing.core.ProcessFlag;
@@ -670,7 +670,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                for (final Backend backend : NodeHelper.getBackends(true)) {
+                for (final IBackend backend : NodeHelper.getBackends(true)) {
                     final TracedNode node = new TracedNode();
                     node.setNodeName(backend.getFullNodeName());
                     TraceBackend.getInstance().addTracedNode(node);

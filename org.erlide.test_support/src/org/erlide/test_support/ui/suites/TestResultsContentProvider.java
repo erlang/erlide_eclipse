@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.erlide.test_support.ui.suites.TestCaseData.FailLocations;
+import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.TestState;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.collect.Lists;
 
 class TestResultsContentProvider implements ITreeContentProvider {
     private static final String[] NO_RESULTS_MSG = new String[] { "No test results available." };
@@ -37,9 +40,19 @@ class TestResultsContentProvider implements ITreeContentProvider {
         if (parentElement instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) parentElement;
             if (data.getState() == TestState.FAILED) {
-                return new String[] { data.getFailLocations(),
-                        data.getFailReason() };
+                final List<Object> result = Lists.newArrayList();
+                result.add(data.getFailStack());
+                if (!data.getFailLocations().isEmpty()) {
+                    result.add(data.getFailLocations());
+                }
+                return result.toArray();
             }
+        } else if (parentElement instanceof FailLocations) {
+            final FailLocations locs = (FailLocations) parentElement;
+            return locs.getLocations().toArray();
+        } else if (parentElement instanceof FailReason) {
+            final FailReason stack = (FailReason) parentElement;
+            return stack.getStackItems().toArray();
         }
         return NO_CHILDREN;
     }

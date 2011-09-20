@@ -39,7 +39,7 @@ public class ErlProjectImport {
 
     private static Collection<String> erlangStringList2Collection(
             final OtpErlangList l, final Collection<String> c) {
-        for (final OtpErlangObject o : l.elements()) {
+        for (final OtpErlangObject o : l) {
             c.add(Util.stringValue(o));
         }
         return c;

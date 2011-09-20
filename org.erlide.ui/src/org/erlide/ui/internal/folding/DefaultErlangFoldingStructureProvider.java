@@ -33,26 +33,26 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.CoreScope;
+import org.erlide.core.internal.model.root.ErlElementDelta;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlElementDelta;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IParent;
-import org.erlide.core.model.root.api.ISourceRange;
-import org.erlide.core.model.root.api.ISourceReference;
-import org.erlide.core.model.root.internal.ErlElementDelta;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementDelta;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.root.ISourceRange;
+import org.erlide.core.model.root.ISourceReference;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.internal.DocumentCharacterIterator;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -706,17 +706,11 @@ public class DefaultErlangFoldingStructureProvider implements
      * @return the regions to be folded, or <code>null</code> if there are none
      */
     private IRegion computeProjectionRanges(final IErlElement element) {
-
-        try {
-            if (element instanceof ISourceReference) {
-                final ISourceReference reference = (ISourceReference) element;
-                final ISourceRange range = reference.getSourceRange();
-                return new Region(range.getOffset(), range.getLength());
-            }
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
+        if (element instanceof ISourceReference) {
+            final ISourceReference reference = (ISourceReference) element;
+            final ISourceRange range = reference.getSourceRange();
+            return new Region(range.getOffset(), range.getLength());
         }
-
         return null;
     }
 
@@ -1001,55 +995,24 @@ public class DefaultErlangFoldingStructureProvider implements
         return map;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
-     * #collapseFunctions()
-     */
     public void collapseFunctions() {
         modifyFiltered(fCollapseFunctionsFilter, false);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
-     * #collapseComments()
-     */
     public void collapseComments() {
         modifyFiltered(fCollapseCommentsFilter, false);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension
-     * #expandAll()
-     */
     public void expandAll() {
         modifyFiltered(fExpandAllFilter, true);
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
-     * #collapseElements(org.eclipse.jdt.core.IErlElement[])
-     */
     public void collapseElements(final IErlElement[] elements) {
         final Set<IErlElement> set = new HashSet<IErlElement>(
                 Arrays.asList(elements));
         modifyFiltered(new ErlangElementSetFilter(set, false), false);
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.ui.text.folding.IErlangFoldingStructureProviderExtension
-     * #expandElements(org.eclipse.jdt.core.IErlElement[])
-     */
     public void expandElements(final IErlElement[] elements) {
         final Set<IErlElement> set = new HashSet<IErlElement>(
                 Arrays.asList(elements));
@@ -1100,13 +1063,6 @@ public class DefaultErlangFoldingStructureProvider implements
                 modified.toArray(new Annotation[modified.size()]));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.erlide.core.model.erlang.IErlModelChangeListener#elementChanged(org
-     * .erlide .core.erlang.IErlElement)
-     */
     public void elementChanged(final IErlElement element) {
         // TODO fixa elementchangelistener n?n g?ng
         if (fEditor == null) {

@@ -5,7 +5,7 @@ package org.erlide.ui.wizards;
 
 import java.util.List;
 
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -26,7 +26,7 @@ public class ErlideImport {
      * 
      * @return
      */
-    public static ErlProjectImport importProject(final RpcCallSite b,
+    public static ErlProjectImport importProject(final IRpcCallSite b,
             final String prefix, final List<String> importSources) {
         OtpErlangObject res = null;
         try {

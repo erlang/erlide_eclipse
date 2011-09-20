@@ -15,7 +15,7 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -122,7 +122,7 @@ public class FilterDescriptor implements Comparable<Object>,
 
             final ViewerFilter[] result = new ViewerFilter[1];
             final String message = String
-                    .format(" The org.erlide.ui.erlangElementFilters plug-in extension \"{0}\" specifies a viewer filter class which does not exist.",
+                    .format("The org.erlide.ui.erlangElementFilters plug-in extension \"%s\" specifies a viewer filter class which does not exist.",
                             getId());
             final ISafeRunnable code = new SafeRunnable(message) {
                 /*
@@ -247,6 +247,16 @@ public class FilterDescriptor implements Comparable<Object>,
         } else {
             return Integer.MIN_VALUE;
         }
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return compareTo(obj) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
     }
 
     // ---- initialization ---------------------------------------------------

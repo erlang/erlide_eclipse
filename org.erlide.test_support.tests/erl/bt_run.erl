@@ -37,7 +37,7 @@ do_tests(Dir, Suite, Arg, Cb, N) ->
 	end,
 	do_tests(Dir, Suite, Arg, Cb, N-1).
 
-stop(Dir, Suite, Arg, Cb) ->
+stop(Dir, Suite, _Arg, Cb) ->
 	notify(Cb, done, {Dir, Suite, {3,4,5}, []}),
 	ok.
 	

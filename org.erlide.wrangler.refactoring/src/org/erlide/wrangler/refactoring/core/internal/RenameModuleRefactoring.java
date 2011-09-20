@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoring;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
@@ -142,4 +142,12 @@ public class RenameModuleRefactoring extends CostumWorkflowRefactoring {
     public void doBeforeRefactoring() {
 
     }
+
+    @Override
+    public String getDefaultValue() {
+        final IErlSelection sel = GlobalParameters.getWranglerSelection();
+
+        return sel.getErlModule().getModuleName();
+    }
+
 }

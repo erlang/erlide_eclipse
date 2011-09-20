@@ -34,14 +34,6 @@ public class ModuleVariableResolver extends TemplateVariableResolver {
         return fInstances.get(0);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.templates.TemplateVariableResolver#resolve(org
-     * .eclipse.jface.text.templates.TemplateVariable,
-     * org.eclipse.jface.text.templates.TemplateContext)
-     */
     @Override
     public void resolve(final TemplateVariable variable,
             final TemplateContext theContext) {

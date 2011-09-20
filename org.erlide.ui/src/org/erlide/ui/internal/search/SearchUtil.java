@@ -41,15 +41,15 @@ import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.AcceptFlags;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlElementVisitor;
-import org.erlide.core.model.root.api.IErlExternal;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.AcceptFlags;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementVisitor;
+import org.erlide.core.model.root.IErlExternal;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
@@ -65,7 +65,7 @@ import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -700,8 +700,8 @@ public class SearchUtil {
             }
             result.add(new ModuleLineFunctionArityRef(modName, offsetL
                     .intValue(), lengthL.intValue(), name, arity, clauseHead,
-                    "true".equals(subClause.atomValue()), "true".equals(isDef
-                            .atomValue())));
+                    Boolean.parseBoolean(subClause.atomValue()), Boolean
+                            .parseBoolean(isDef.atomValue())));
         }
     }
 

@@ -13,13 +13,12 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.internal.OldErlangProjectProperties;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -358,8 +357,8 @@ public class IErlProjectTests extends ErlModelTestBase {
     public void getRuntimeInfo() throws Exception {
         final IErlProject aProject = projects[0];
         final RuntimeInfo info = aProject.getRuntimeInfo();
-        final String expected = ResourcesPlugin.getWorkspace().getRoot()
-                .getLocation().toString();
+        // final String expected = ResourcesPlugin.getWorkspace().getRoot()
+        // .getLocation().toString();
         assertNotNull(info);
         // The working dir might be relative to the project and can also be "."
         // We need to convert it to a canonical absolute path in order to be
@@ -396,7 +395,7 @@ public class IErlProjectTests extends ErlModelTestBase {
 
     // TODO check more properties than source dirs property
     /**
-     * @see org.erlide.core.model.root.api.IErlProject#setAllProperties()
+     * @see org.erlide.core.model.root.IErlProject#setAllProperties()
      */
     @Test
     public void setAllProperties() throws Exception {
@@ -417,7 +416,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     }
 
     /**
-     * @see org.erlide.core.model.root.api.IErlProject#getReferencedProjects()
+     * @see org.erlide.core.model.root.IErlProject#getReferencedProjects()
      */
     @Test
     public void getReferencedProjects() throws Exception {

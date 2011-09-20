@@ -3,7 +3,6 @@ package org.erlide.ui.editors.erl.outline.filters;
 import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -23,11 +22,10 @@ public class ToolbarFilterHandler extends AbstractHandler implements
 
     public ToolbarFilterHandler() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public Object execute(final ExecutionEvent event) throws ExecutionException {
-        final Command command = event.getCommand();
+        // final Command command = event.getCommand();
         // final boolean oldValue = HandlerUtil.toggleCommandState(command);
         final String filterId = event.getParameter("org.erlide.ui.filterId");
         final FilterDescriptor desc = FilterDescriptor

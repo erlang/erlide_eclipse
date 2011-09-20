@@ -8,12 +8,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlElement.Kind;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.model.root.api.IOpenable;
-import org.erlide.core.model.root.api.IParent;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.root.IOpenable;
+import org.erlide.core.model.root.IParent;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider
@@ -22,7 +22,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
 
     public ErlangExternalsContentProvider() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     private static final Object[] NO_CHILDREN = new Object[0];
@@ -55,8 +54,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IParent) {
                 if (parentElement instanceof IOpenable) {
                     final IOpenable openable = (IOpenable) parentElement;
-                    openable.open(null); // FIXME should this really be
-                                         // necessary?
+                    openable.open(null);
                 }
                 final IParent parent = (IParent) parentElement;
                 final Collection<IErlElement> children = parent
@@ -112,7 +110,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IParent) {
             if (element instanceof IOpenable) {
                 final IOpenable openable = (IOpenable) element;
-                // FIXME should this really be necessary?
                 try {
                     openable.open(null);
                 } catch (final ErlModelException e) {

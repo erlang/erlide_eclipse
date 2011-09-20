@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.rpc.RpcResult;
+import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
-import org.erlide.wrangler.refactoring.backend.WranglerRefactoringBackend;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerRefactoringBackend;
 import org.erlide.wrangler.refactoring.core.exception.WranglerWarningException;
 import org.erlide.wrangler.refactoring.duplicatedcode.ui.DuplicateCodeDetectionInputDialog;
 import org.erlide.wrangler.refactoring.exception.WranglerRpcParsingException;
@@ -51,7 +51,7 @@ public class DuplicateDetectionAction extends AbstractDuplicatesSearcherAction {
             throws WranglerRpcParsingException, CoreException, IOException,
             WranglerWarningException {
         String functionName;
-        RpcResult result;
+        IRpcResult result;
 
         // getting the path of the fragment
 

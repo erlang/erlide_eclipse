@@ -12,7 +12,8 @@ package org.erlide.wrangler.refactoring.selection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.IErlElement;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 
@@ -67,6 +68,13 @@ public interface IErlSelection extends ISelection {
      * @return Ifile object
      */
     public IFile getFile();
+
+    /**
+     * Get the actual selection's module.
+     * 
+     * @return
+     */
+    public IErlModule getErlModule();
 
     /**
      * Get the actual's selections project's search path.

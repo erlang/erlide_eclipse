@@ -12,8 +12,8 @@ package org.erlide.core.cleanup;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
 
 /**
  * <p>
@@ -55,13 +55,13 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
 
     public void cleanUp() throws Exception {
         // lookup a backend to run erl_tidy with
-        final RpcCallSite Backend = BackendCore.getBackendManager()
+        final IRpcCallSite Backend = BackendCore.getBackendManager()
                 .getIdeBackend();
 
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation()
                 .toString();
-        final RpcFuture erlTidyFuture = Backend.async_call("erl_tidy", "file",
+        final IRpcFuture erlTidyFuture = Backend.async_call("erl_tidy", "file",
                 "s", absolutePathToErlangModule);
 
         // wait as long as reasonable for erl_tidy to finish

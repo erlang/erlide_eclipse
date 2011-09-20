@@ -100,6 +100,40 @@ function select_change {
   fi
 }
 
+function update_feature {
+  FEATURE=$1
+  CMD=$2
+  
+  OLD=$(git show $BASE:$FEATURE/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
+  NEW=$(cat $FEATURE/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
+  CH=$(which_changed $OLD $NEW)
+  CHG=$(select_change $CH $CHANGED)
+  if [ "$CHG" != "$CH" ]
+  then
+	  VER=$(inc_version $NEW $CHG)
+	  echo "-> $VER"
+	  
+	  if [ "$CMD" != "" ]
+	  then
+		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < $FEATURE/feature.xml > $FEATURE/feature.xml1
+		mv $FEATURE/feature.xml1 $FEATURE/feature.xml
+	  fi
+
+	if [ "$FEATURE" == "org.erlide" ]	  
+	then
+  		NEW_=$(echo $NEW | sed 's/.qualifier//')
+		VER_=$(echo $VER | sed 's/.qualifier//')
+		mv CHANGES CHANGES.old		
+		echo "List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))" > CHANGES
+		echo "" >> CHANGES
+		git log v$NEW_..$CRT --oneline >> CHANGES
+		echo "" >> CHANGES
+		cat CHANGES.old >> CHANGES
+		rm CHANGES.old
+	fi
+  fi
+}
+
 CHANGED="none"
 for PRJ in $PROJECTS
 do
@@ -136,32 +170,9 @@ done
 echo "final changed: $CHANGED..."
 if [ "$CHANGED" != "none" ]
 then
-  OLD=$(git show $BASE:org.erlide/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
-  NEW=$(cat org.erlide/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
-  CH=$(which_changed $OLD $NEW)
-  CHG=$(select_change $CH $CHANGED)
-  if [ "$CHG" != "$CH" ]
-  then
-	  VER=$(inc_version $NEW $CHG)
-	  echo "-> $VER"
-	  
-	  if [ "$CMD" != "" ]
-	  then
-		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < org.erlide/feature.xml > org.erlide/feature.xml1
-		mv org.erlide/feature.xml1 org.erlide/feature.xml
-
-		NEW_=$(echo $NEW | sed 's/.qualifier//')
-		VER_=$(echo $VER | sed 's/.qualifier//')
-		mv CHANGES CHANGES.old		
-		echo "List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))" > CHANGES
-		echo "" >> CHANGES
-		git log v$NEW_..$CRT --oneline >> CHANGES
-		echo "" >> CHANGES
-		cat CHANGES.old >> CHANGES
-		rm CHANGES.old
-
-	fi
-  fi
+	update_feature "org.erlide" $CMD
+	update_feature "org.erlide.headless" $CMD
+	update_feature "org.erlide.sdk" $CMD
 fi
 
 if [ "$CMD" = "commit" ] 

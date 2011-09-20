@@ -10,9 +10,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
+import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.internal.ErlideScanner;
 import org.erlide.jinterface.ErlLogger;
 
 /**
@@ -29,11 +29,6 @@ public class TestAction extends TextEditorAction {
         this.module = module;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         super.run();

@@ -30,11 +30,6 @@ public class ClearCacheAction extends TextEditorAction {
         this.erlangEditor = erlangEditor;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
     public void run() {
         final IErlModule module = erlangEditor.getModule();

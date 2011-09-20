@@ -44,10 +44,10 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
@@ -56,9 +56,9 @@ import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.google.common.collect.Lists;
 
@@ -342,13 +342,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     // ---- Widget creation ------------------------------------------------
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
-     * .Composite)
-     */
     public void createControl(final Composite parent) {
         initializeDialogUnits(parent);
         readConfiguration();
@@ -459,11 +452,6 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.DialogPage#dispose()
-     */
     @Override
     public void dispose() {
         writeConfiguration();
@@ -623,7 +611,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final ErlangEditor erlangEditor = (ErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
-            final RpcCallSite backend = BackendCore.getBackendManager()
+            final IRpcCallSite backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();

@@ -99,6 +99,8 @@ public class SimpleInputPage extends InputPage {
         });
 
         inputText.setText(defaultInput);
+        inputText.setFocus();
+        inputText.setSelection(0, defaultInput.length());
         ((SimpleWranglerRefactoring) getRefactoring()).setUserInput(inputText
                 .getText());
     }

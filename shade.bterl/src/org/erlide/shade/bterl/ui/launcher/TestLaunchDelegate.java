@@ -24,10 +24,11 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.backend.Backend;
+import org.eclipse.ui.PlatformUI;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.common.PreferencesUtils;
@@ -38,6 +39,7 @@ import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
+import org.erlide.test_support.ui.suites.RegressionResultsView;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -91,14 +93,17 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         workdir = new File(wdir);
         if ("regression".equals(mode)) {
-            RegressionLauncher.getInstance().launch(wdir, monitor);
+            final RegressionResultsView rview = (RegressionResultsView) PlatformUI
+                    .getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .showView(RegressionResultsView.VIEW_ID);
+            RegressionLauncher.getInstance().launch(wdir, monitor, rview);
             return false;
         }
         return true;
     }
 
     @Override
-    protected Backend doLaunch(final ILaunchConfiguration config,
+    protected IBackend doLaunch(final ILaunchConfiguration config,
             final String amode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
 
@@ -126,7 +131,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @Override
-    protected void postLaunch(final String amode, final Backend backend,
+    protected void postLaunch(final String amode, final IBackend backend,
             final IProgressMonitor monitor) {
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
@@ -167,7 +172,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     private void initDebugger(final IProgressMonitor monitor,
-            final Backend backend) {
+            final IBackend backend) {
 
         // TODO do we do this like this?
 
@@ -191,7 +196,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     getDebugHelper()
                             .interpret(backend, project, pm, true, true);
                 }
-                backend.getDebugTarget().installDeferredBreakpoints();
+                backend.installDeferredBreakpoints();
 
                 final OtpErlangPid pid = (OtpErlangPid) event.data;
                 backend.send(pid, new OtpErlangAtom("ok"));
@@ -202,7 +207,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     private void startMonitorJob(final IProgressMonitor monitor,
-            final Backend backend) {
+            final IBackend backend) {
 
         // TODO do this in a job
 
@@ -240,7 +245,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final File workdir) throws CoreException {
         final ILaunchConfigurationWorkingCopy wc = config.getWorkingCopy();
 
-        final boolean vobBterl = "false".equals(System.getProperty(
+        final boolean vobBterl = !Boolean.parseBoolean(System.getProperty(
                 "shade.bterl.local", "true"));
         System.out.println(".... vobBterl: " + vobBterl);
 
@@ -256,7 +261,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         paths.add(bterlPath);
 
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, runtimeName);
-        // FIXME: unique node name!
         wc.setAttribute(ErlLaunchAttributes.NODE_NAME,
                 "bterl" + System.currentTimeMillis());
         wc.setAttribute(ErlLaunchAttributes.START_ME, true);
@@ -304,10 +308,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     cmd, trace, cb, workdirPath).toString();
             wc.setAttribute(ErlLaunchAttributes.ARGUMENTS, args2);
         } catch (final TermParserException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final SignatureException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

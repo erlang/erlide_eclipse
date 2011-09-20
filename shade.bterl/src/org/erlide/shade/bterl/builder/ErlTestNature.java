@@ -12,11 +12,6 @@ public class ErlTestNature implements IProjectNature {
 
     private IProject project;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.resources.IProjectNature#configure()
-     */
     public void configure() throws CoreException {
         final IProjectDescription desc = project.getDescription();
         final ICommand[] commands = desc.getBuildSpec();

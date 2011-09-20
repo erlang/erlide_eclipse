@@ -10,12 +10,12 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.cover.api.AbstractCoverRunner;
@@ -36,12 +36,11 @@ public class CoverBackend implements ICoverBackend {
 
     public static CoverBackend instance;
 
-    private Backend backend;
+    private IBackend backend;
     private RuntimeInfo info;
     private ILaunchConfiguration launchConfig;
     private final CoverEventHandler handler;
     private CoverLaunchSettings settings;
-    private String nodeName;
 
     private final Logger log; // logger
 
@@ -56,7 +55,7 @@ public class CoverBackend implements ICoverBackend {
         handler = new CoverEventHandler();
         log = Activator.getDefault();
     }
-    
+
     public void startBackend() {
         if (backend != null && !backend.isStopped()) {
             log.info("is started");
@@ -114,12 +113,14 @@ public class CoverBackend implements ICoverBackend {
     /**
      * Run coverage analisys
      */
-    public synchronized void runCoverageAnalisys(AbstractCoverRunner runner) {
+    public synchronized void runCoverageAnalisys(
+            final AbstractCoverRunner runner) {
         runner.start();
     }
 
     /**
      * Get event handler that handles Erlang events
+     * 
      * @return
      */
     public CoverEventHandler getHandler() {
@@ -128,14 +129,16 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get access to cover node
+     * 
      * @return
      */
-    public Backend getBackend() {
+    public IBackend getBackend() {
         return backend;
     }
 
     /**
      * Add listener for coverage events
+     * 
      * @param listener
      */
     public void addListener(final ICoverObserver listener) {
@@ -144,6 +147,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get all listeners
+     * 
      * @return
      */
     public List<ICoverObserver> getListeners() {
@@ -152,6 +156,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Set annotation marker for marking coverage in the editor
+     * 
      * @param am
      */
     public void addAnnotationMaker(final ICoverAnnotationMarker am) {
@@ -160,6 +165,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Get annotation marker
+     * 
      * @return
      */
     public ICoverAnnotationMarker getAnnotationMaker() {
@@ -168,6 +174,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Handle all errors, provides graphical representation for final user.
+     * 
      * @param msg
      */
     public void handleError(final String msg) {
@@ -178,6 +185,7 @@ public class CoverBackend implements ICoverBackend {
 
     /**
      * Check coverage settings
+     * 
      * @return
      */
     public CoverLaunchSettings getSettings() {
@@ -185,12 +193,12 @@ public class CoverBackend implements ICoverBackend {
     }
 
     // creates erlang backend
-    private Backend createBackend() throws BackendException {
+    private IBackend createBackend() throws BackendException {
         if (info != null) {
             try {
                 info.setStartShell(true);
 
-                final Backend b = BackendCore.getBackendFactory()
+                final IBackend b = BackendCore.getBackendFactory()
                         .createBackend(
                                 new BackendData(launchConfig,
                                         ILaunchManager.RUN_MODE));
@@ -214,15 +222,14 @@ public class CoverBackend implements ICoverBackend {
         return rt;
     }
 
-    private ILaunchConfiguration getLaunchConfiguration(final RuntimeInfo myInfo,
-            final Set<BackendOptions> options) {
+    private ILaunchConfiguration getLaunchConfiguration(
+            final RuntimeInfo myInfo, final Set<BackendOptions> options) {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final ILaunchConfigurationType type = manager
                 .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
         ILaunchConfigurationWorkingCopy workingCopy;
 
-        nodeName = myInfo.getNodeName();
         try {
             workingCopy = type.newInstance(null,
                     "internal " + myInfo.getNodeName());

@@ -36,17 +36,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.internal.services.builder.BuilderVisitor;
+import org.erlide.core.internal.services.builder.InternalErlideBuilder;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.PluginUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcFuture;
-import org.erlide.core.services.builder.internal.BuilderVisitor;
-import org.erlide.core.services.builder.internal.ErlideBuilder;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -62,9 +62,6 @@ public final class BuilderHelper {
     }
 
     public static boolean isDebugging() {
-        if (ErlangPlugin.getDefault() == null) {
-            return false;
-        }
         return ErlangPlugin.getDefault().isDebugging()
                 && Platform.getDebugOption("org.erlide.core/debug/builder")
                         .equals("true");
@@ -171,11 +168,12 @@ public final class BuilderHelper {
         return result;
     }
 
-    public void checkForClashes(final RpcCallSite backend,
+    public void checkForClashes(final IRpcCallSite backend,
             final IProject project) {
         try {
-            final OtpErlangList res = ErlideBuilder.getCodeClashes(backend);
-            for (final OtpErlangObject elem : res.elements()) {
+            final OtpErlangList res = InternalErlideBuilder
+                    .getCodeClashes(backend);
+            for (final OtpErlangObject elem : res) {
                 final OtpErlangTuple t = (OtpErlangTuple) elem;
                 final String f1 = ((OtpErlangString) t.elementAt(0))
                         .stringValue();
@@ -204,8 +202,8 @@ public final class BuilderHelper {
                 dirList[j++] = project.getLocation().toPortableString() + "/"
                         + sp;
             }
-            final OtpErlangList res = ErlideBuilder.getSourceClashes(backend,
-                    dirList);
+            final OtpErlangList res = InternalErlideBuilder.getSourceClashes(
+                    backend, dirList);
             for (int i = 0; i < res.arity(); i++) {
                 final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(i);
                 final String f1 = ((OtpErlangString) t.elementAt(0))
@@ -363,8 +361,8 @@ public final class BuilderHelper {
     }
 
     public void completeCompile(final IProject project, final IResource source,
-            final OtpErlangObject compilationResult, final RpcCallSite backend,
-            final OtpErlangList compilerOptions) {
+            final OtpErlangObject compilationResult,
+            final IRpcCallSite backend, final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
             MarkerUtils.addProblemMarker(source, null, null,
                     "Could not compile file", 0, IMarker.SEVERITY_ERROR);
@@ -376,7 +374,7 @@ public final class BuilderHelper {
         if ("ok".equals(((OtpErlangAtom) t.elementAt(0)).atomValue())) {
             final String beamf = source.getFullPath().removeFileExtension()
                     .lastSegment();
-            ErlideBuilder.loadModule(project, beamf);
+            InternalErlideBuilder.loadModule(project, beamf);
             refreshDirs(project, t.elementAt(2));
         } else {
             // ErlLogger.debug(">>>> compile error... %s\n   %s",
@@ -397,7 +395,7 @@ public final class BuilderHelper {
     private void refreshDirs(final IProject project,
             final OtpErlangObject element) {
         final OtpErlangList list = (OtpErlangList) element;
-        for (final OtpErlangObject ebeam : list.elements()) {
+        for (final OtpErlangObject ebeam : list) {
             final OtpErlangString beam = (OtpErlangString) ebeam;
             IPath p = new Path(beam.stringValue());
             p = p.removeLastSegments(1);
@@ -420,7 +418,7 @@ public final class BuilderHelper {
     }
 
     private void completeCompileForYrl(final IProject project,
-            final IResource source, final RpcCallSite backend,
+            final IResource source, final IRpcCallSite backend,
             final OtpErlangList compilerOptions) {
         final IPath erl = getErlForYrl(source);
         if (erl != null) {
@@ -428,7 +426,7 @@ public final class BuilderHelper {
                 source.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                 final IResource br = project.findMember(erl);
                 if (br != null) {
-                    br.setDerived(true);
+                    br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
                     final IErlProject erlProject = CoreScope.getModel()
@@ -442,9 +440,9 @@ public final class BuilderHelper {
         }
     }
 
-    public RpcFuture startCompileErl(final IProject project,
+    public IRpcFuture startCompileErl(final IProject project,
             final BuildResource bres, final String outputDir0,
-            final RpcCallSite backend, final OtpErlangList compilerOptions,
+            final IRpcCallSite backend, final OtpErlangList compilerOptions,
             final boolean force) {
         final IPath projectPath = project.getLocation();
         final IResource res = bres.getResource();
@@ -481,8 +479,9 @@ public final class BuilderHelper {
                 }
 
                 createTaskMarkers(project, res);
-                return ErlideBuilder.compileErl(backend, res.getLocation(),
-                        outputDir, includeDirs, compilerOptions);
+                return InternalErlideBuilder.compileErl(backend,
+                        res.getLocation(), outputDir, includeDirs,
+                        compilerOptions);
 
             } else {
                 return null;
@@ -516,7 +515,7 @@ public final class BuilderHelper {
             }
         };
         job.setSystem(true);
-        job.setPriority(Job.BUILD);
+        job.setPriority(Job.DECORATE);
         job.setRule(res);
         job.schedule();
     }
@@ -534,8 +533,8 @@ public final class BuilderHelper {
         return beamPath;
     }
 
-    public RpcFuture startCompileYrl(final IProject project,
-            final IResource resource, final RpcCallSite backend,
+    public IRpcFuture startCompileYrl(final IProject project,
+            final IResource resource, final IRpcCallSite backend,
             final OtpErlangList compilerOptions) {
         // final IPath projectPath = project.getLocation();
         // final OldErlangProjectProperties prefs = new
@@ -566,7 +565,7 @@ public final class BuilderHelper {
             final String input = resource.getLocation().toString();
             final String output = resource.getLocation().removeFileExtension()
                     .toString();
-            return ErlideBuilder.compileYrl(backend, input, output);
+            return InternalErlideBuilder.compileYrl(backend, input, output);
         } catch (final Exception e) {
             e.printStackTrace();
             return null;
@@ -586,8 +585,8 @@ public final class BuilderHelper {
 
     public void compileErl(final IProject project,
             final BuildResource resource, final String outputDir,
-            final RpcCallSite b, final OtpErlangList compilerOptions) {
-        final RpcFuture res = startCompileErl(project, resource, outputDir, b,
+            final IRpcCallSite b, final OtpErlangList compilerOptions) {
+        final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
         if (res == null) {
             ErlLogger.warn("error compiling erl file: "
@@ -603,9 +602,9 @@ public final class BuilderHelper {
     }
 
     public void compileYrl(final IProject project,
-            final BuildResource resource, final RpcCallSite b,
+            final BuildResource resource, final IRpcCallSite b,
             final OtpErlangList compilerOptions) {
-        final RpcFuture res = startCompileYrl(project, resource.getResource(),
+        final IRpcFuture res = startCompileYrl(project, resource.getResource(),
                 b, compilerOptions);
         if (res == null) {
             ErlLogger.warn("error compiling yrl file: "

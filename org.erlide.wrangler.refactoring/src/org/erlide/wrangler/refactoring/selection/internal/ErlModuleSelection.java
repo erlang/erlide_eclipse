@@ -12,7 +12,7 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.IErlElement;
 
 /**
  * Represents an Erlang module which is selected by the user
@@ -46,6 +46,10 @@ public class ErlModuleSelection extends AbstractErlSelection {
 
     public SelectionKind getKind() {
         return SelectionKind.MODULE;
+    }
+
+    public IErlModule getErlModule() {
+        return module;
     }
 
 }

@@ -3,9 +3,9 @@ package org.erlide.core.debug;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.BackendListener;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
@@ -19,20 +19,20 @@ import com.google.common.collect.Lists;
  * because the debugger can't be convinced to send erlide_jrpc events. The
  * handler is also hardcoded.
  */
-public class DebuggerEventDaemon implements BackendListener {
+public class DebuggerEventDaemon implements IBackendListener {
 
-    private Backend runtime;
+    private IBackend runtime;
     volatile boolean stopped = false;
     private final DebugEventHandler handler;
     private OtpMbox mbox;
 
-    final static boolean DEBUG = "true".equals(System
+    final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
 
     private final class HandlerJob implements Runnable {
-        private final Backend backend;
+        private final IBackend backend;
 
-        public HandlerJob(final Backend backend) {
+        public HandlerJob(final IBackend backend) {
             this.backend = backend;
         }
 
@@ -78,7 +78,7 @@ public class DebuggerEventDaemon implements BackendListener {
         }
     }
 
-    public DebuggerEventDaemon(final Backend b, final ErlangDebugTarget target) {
+    public DebuggerEventDaemon(final IBackend b, final ErlangDebugTarget target) {
         runtime = b;
         handler = new DebugEventHandler(target);
     }
@@ -93,18 +93,18 @@ public class DebuggerEventDaemon implements BackendListener {
         stopped = true;
     }
 
-    public void runtimeAdded(final Backend b) {
+    public void runtimeAdded(final IBackend b) {
     }
 
-    public void runtimeRemoved(final Backend b) {
+    public void runtimeRemoved(final IBackend b) {
         if (b == runtime) {
             stop();
             runtime = null;
         }
     }
 
-    public void moduleLoaded(final RpcCallSite backend, final IProject project,
-            final String moduleName) {
+    public void moduleLoaded(final IRpcCallSite backend,
+            final IProject project, final String moduleName) {
     }
 
     public OtpErlangPid getMBox() {

@@ -23,10 +23,10 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.core.model.util.ErlangFunction;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -52,7 +52,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     private OtpErlangPid fCachedMetaPid = null;
 
-    private final RpcCallSite fBackend;
+    private final IRpcCallSite fBackend;
 
     private String fStatus;
 
@@ -64,7 +64,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     private ErlangFunctionCall fInitialCall;
     private boolean fTracing;
 
-    public ErlangProcess(final IDebugTarget target, final RpcCallSite backend,
+    public ErlangProcess(final IDebugTarget target, final IRpcCallSite backend,
             final OtpErlangPid pid) {
         super(target);
         fPid = pid;
@@ -189,7 +189,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     public boolean getTrapExit() {
         final OtpErlangAtom res = (OtpErlangAtom) ErlideDebug.getProcessInfo(
                 fBackend, fPid, "trap_exit");
-        return "true".equals(res.atomValue());
+        return Boolean.parseBoolean(res.atomValue());
     }
 
     public void getStackAndBindings(final String module, final int line) {
@@ -420,7 +420,6 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public boolean canTerminate() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -463,7 +462,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     public void dropToFrame(final int stackFrameNo) throws DebugException {
         if (!ErlideDebug.dropToFrame(fBackend, getMeta(), stackFrameNo)) {
-            final IStatus s = new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            final IStatus s = new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     DebugException.REQUEST_FAILED, "frame not found", null);
             throw new DebugException(s);
         }

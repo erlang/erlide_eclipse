@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.backend.Backend;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -24,14 +24,14 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class BackendShell {
+public class BackendShell implements IBackendShell {
 
-    private final Backend backend;
+    private final IBackend backend;
     private OtpErlangPid server;
     private final String fId;
     private final ConsoleEventHandler handler;
 
-    public BackendShell(final Backend backend, final String id,
+    public BackendShell(final IBackend backend, final String id,
             final OtpErlangPid server) {
         this.backend = backend;
         fId = id;
@@ -185,9 +185,8 @@ public class BackendShell {
     }
 
     public void dispose() {
-        final ConsoleEventHandler handler2 = getHandler();
-        if (handler2 != null) {
-            backend.getEventDaemon().removeHandler(handler2);
+        if (handler != null) {
+            backend.getEventDaemon().removeHandler(handler);
         }
         listeners.clear();
     }
@@ -212,10 +211,6 @@ public class BackendShell {
                 listener.changed(this);
             }
         }
-    }
-
-    public ConsoleEventHandler getHandler() {
-        return handler;
     }
 
     public int getTextLength() {

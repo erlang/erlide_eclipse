@@ -15,11 +15,11 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.backend.Backend;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendOptions;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEvent;
 import org.erlide.core.backend.events.EventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
@@ -67,7 +67,7 @@ public class TraceBackend {
     private final Set<ProcessFlag> processFlags = new HashSet<ProcessFlag>();
     private TracedProcess[] processes;
     private ProcessMode processMode;
-    private Backend tracerBackend;
+    private IBackend tracerBackend;
     private boolean tracing;
     private boolean loading;
 
@@ -233,7 +233,7 @@ public class TraceBackend {
         } else {
             final OtpErlangList nodeNames = (OtpErlangList) tuple.elementAt(1);
             activatedNodes = new ArrayList<String>();
-            for (final OtpErlangObject nodeName : nodeNames.elements()) {
+            for (final OtpErlangObject nodeName : nodeNames) {
                 final String nodeNameString = ((OtpErlangAtom) nodeName)
                         .atomValue();
                 activatedNodes.add(nodeNameString);
@@ -433,7 +433,7 @@ public class TraceBackend {
      *            if backend should be created when it does not exist
      * @return backend
      */
-    public Backend getBackend(final boolean create) {
+    public IBackend getBackend(final boolean create) {
         if (tracerBackend == null && create) {
             tracerBackend = createBackend();
         }
@@ -605,7 +605,7 @@ public class TraceBackend {
         return startIndex;
     }
 
-    private Backend createBackend() {
+    private IBackend createBackend() {
         final RuntimeInfo info = RuntimeInfo.copy(BackendCore
                 .getRuntimeInfoManager().getErlideRuntime(), false);
         final String nodeName = Activator.getDefault().getPreferenceStore()
@@ -620,7 +620,7 @@ public class TraceBackend {
                 final ILaunchConfiguration launchConfig = getLaunchConfiguration(
                         info, options);
 
-                final Backend b = BackendCore.getBackendFactory()
+                final IBackend b = BackendCore.getBackendFactory()
                         .createBackend(
                                 new BackendData(launchConfig,
                                         ILaunchManager.RUN_MODE));

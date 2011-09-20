@@ -25,7 +25,9 @@
 -export([init/1,
 		 handle_call/3,
 		 handle_cast/2,
-		 terminate/2]).
+		 terminate/2,
+         code_change/3,
+         handle_info/2]).
 
 %%----------------------------------------------
 %% API Functions
@@ -171,6 +173,11 @@ terminate(normal, _State) ->
 terminate(_Reason, _State) ->
 	init:stop(1).
 
+handle_info(_Info, State) ->
+    {noreply, State}.
+
+code_change(_OldVsn, State, _Extra) ->
+    {ok, State}.
 
 %%----------------------------------------------
 %% Helpers

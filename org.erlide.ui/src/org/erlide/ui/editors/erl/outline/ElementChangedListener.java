@@ -11,7 +11,7 @@
 package org.erlide.ui.editors.erl.outline;
 
 import org.eclipse.swt.widgets.Display;
-import org.erlide.core.model.root.api.IErlElementDelta;
+import org.erlide.core.model.root.IErlElementDelta;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 

@@ -46,12 +46,12 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.part.ShowInContext;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.console.actions.ConsoleRemoveAllTerminatedAction;
 import org.erlide.ui.console.actions.ConsoleRemoveLaunchAction;
 import org.erlide.ui.console.actions.ConsoleTerminateAction;
 import org.erlide.ui.console.actions.ShowStandardOutAction;
 import org.erlide.ui.console.actions.ShowWhenContentChangesAction;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * Creates and manages process console specific actions
@@ -96,13 +96,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.ui.console.IConsolePageParticipant#init(IPageBookViewPage,
-     * IConsole)
-     */
     public void init(final IPageBookViewPage page, final IConsole console) {
         fPage = page;
         fConsole = (ErlangConsole) console;
@@ -134,11 +127,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.console.IConsolePageParticipant#dispose()
-     */
     public void dispose() {
         DebugUITools.getDebugContextManager()
                 .getContextService(fPage.getSite().getWorkbenchWindow())
@@ -176,11 +164,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP, fStdOut);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
     public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IShowInSource.class.equals(required)) {
             return this;
@@ -199,11 +182,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.IShowInSource#getShowInContext()
-     */
     public ShowInContext getShowInContext() {
         final IProcess process = getProcess();
         if (process == null) {
@@ -224,22 +202,10 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         return new ShowInContext(null, selection);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.part.IShowInTargetList#getShowInTargetIds()
-     */
     public String[] getShowInTargetIds() {
         return new String[] { IDebugUIConstants.ID_DEBUG_VIEW };
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.core.IDebugEventSetListener#handleDebugEvents(org.eclipse
-     * .debug.core.DebugEvent[])
-     */
     public void handleDebugEvents(final DebugEvent[] events) {
         for (int i = 0; i < events.length; i++) {
             final DebugEvent event = events[i];
@@ -261,11 +227,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         // return fConsole != null ? fConsole.getProcess() : null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.console.IConsolePageParticipant#activated()
-     */
     public void activated() {
         // add EOF submissions
         final IPageSite site = fPage.getSite();
@@ -279,11 +240,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.console.IConsolePageParticipant#deactivated()
-     */
     public void deactivated() {
         // remove EOF submissions
         final IPageSite site = fPage.getSite();
@@ -295,14 +251,6 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         contextService.deactivateContext(fActivatedContext);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.debug.internal.ui.contexts.provisional.IDebugContextListener
-     * #contextEvent
-     * (org.eclipse.debug.internal.ui.contexts.provisional.DebugContextEvent)
-     */
     public void debugContextChanged(final DebugContextEvent event) {
         if ((event.getFlags() & DebugContextEvent.ACTIVATED) > 0) {
             final IProcess process = getProcess();

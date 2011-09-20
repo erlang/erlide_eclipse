@@ -12,17 +12,12 @@
 package org.erlide.core.model.util;
 
 import java.io.File;
-import java.util.Collection;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -33,7 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlideUtil {
 
-    public static boolean isAccessible(final RpcCallSite backend,
+    public static boolean isAccessible(final IRpcCallSite backend,
             final String localDir) {
         File f = null;
         try {
@@ -63,28 +58,12 @@ public final class ErlideUtil {
 
     private static Boolean fgCacheNoModelCache = null;
 
-    public static boolean isNoModelCache() {
+    public static boolean isCacheDisabled() {
         if (fgCacheNoModelCache == null) {
             final String test = System.getProperty("erlide.noModelCache");
-            fgCacheNoModelCache = Boolean.valueOf("true".equals(test));
+            fgCacheNoModelCache = Boolean.valueOf(test);
         }
         return fgCacheNoModelCache.booleanValue();
-    }
-
-    public static boolean isOnSourcePathOrParentToFolderOnSourcePath(
-            final IFolder folder) {
-        final IProject project = folder.getProject();
-        final IPath folderPath = folder.getFullPath();
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
-        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
-        for (final IPath p : sourcePaths) {
-            final IPath path = project.getFolder(p).getFullPath();
-            if (folderPath.isPrefixOf(path)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -98,7 +77,7 @@ public final class ErlideUtil {
     public static boolean hasErlangNature(final IProject project) {
         if (project != null) {
             try {
-                return project.hasNature(ErlangPlugin.NATURE_ID);
+                return project.hasNature(ErlangCore.NATURE_ID);
             } catch (final CoreException e) {
                 // project does not exist or is not open
             }

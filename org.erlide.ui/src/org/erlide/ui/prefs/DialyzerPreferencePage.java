@@ -11,6 +11,7 @@
 package org.erlide.ui.prefs;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,8 +21,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
@@ -32,6 +35,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -55,13 +59,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.CoreScope;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.manager.BackendManager;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.CoreUtil;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
@@ -72,6 +77,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 
 public class DialyzerPreferencePage extends PropertyPage implements
         IWorkbenchPreferencePage {
@@ -91,7 +97,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     }
 
-    private class LabelProvider implements ILabelProvider {
+    private static class LabelProvider implements ILabelProvider {
 
         public void addListener(final ILabelProviderListener listener) {
         }
@@ -470,11 +476,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             } else {
                 if (fPLTTableViewer != null) {
                     prefs.setPltPaths(shownPLTFiles);
-                    final List<String> l = Lists.newArrayList();
-                    for (final Object o : fPLTTableViewer.getCheckedElements()) {
-                        l.add((String) o);
-                    }
-                    prefs.setEnabledPltPaths(l);
+                    prefs.setEnabledPltPaths(getCheckedPltFiles());
                 }
                 prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
                 prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
@@ -581,12 +583,20 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     protected void checkSelectedPltFiles() {
         final Job job = new UpdateDialyzerPLTFileOperation("Checking PLT file",
-                getSelectedPltFiles());
+                getSelectedPltFiles(), getCheckedPltFiles());
         final ISchedulingRule rule = fProject;
         job.setRule(rule);
         job.setUser(true);
         job.setSystem(false);
         job.schedule();
+    }
+
+    private List<String> getCheckedPltFiles() {
+        final List<String> l = Lists.newArrayList();
+        for (final Object o : fPLTTableViewer.getCheckedElements()) {
+            l.add((String) o);
+        }
+        return l;
     }
 
     private List<String> getSelectedPltFiles() {
@@ -603,32 +613,32 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     private final class UpdateDialyzerPLTFileOperation extends Job {
 
-        private final List<String> selectedPLTPaths;
+        private final List<String> selectedPLTPaths, checkedPltPaths;
 
         public UpdateDialyzerPLTFileOperation(final String name,
-                final List<String> selectedPLTPaths) {
+                final List<String> selectedPLTPaths,
+                final List<String> checkedPltPaths) {
             super(name);
             this.selectedPLTPaths = selectedPLTPaths;
+            this.checkedPltPaths = checkedPltPaths;
         }
 
         IStatus newErrorStatus(final Throwable throwable) {
-            return new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
+            return new Status(IStatus.ERROR, ErlangCore.PLUGIN_ID,
                     throwable.getMessage());
         }
 
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
-            final BackendManager backendManager = BackendCore
-                    .getBackendManager();
             try {
-                RpcCallSite backend;
-                if (fProject != null) {
-                    backend = backendManager.getBuildBackend(fProject);
-                } else {
-                    backend = backendManager.getIdeBackend();
-                }
+                final String alternatePltFileDirectory = DialyzerPreferences
+                        .getAlternatePLTFileDirectoryFromPreferences();
+                checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
+                final IRpcCallSite backend = CoreUtil
+                        .getBuildOrIdeBackend(fProject);
                 for (final String pltPath : selectedPLTPaths) {
-                    checkPlt(pltPath, monitor, backend);
+                    checkPlt(pltPath, alternatePltFileDirectory, monitor,
+                            backend);
                 }
             } catch (final Exception e) {
                 return newErrorStatus(e);
@@ -638,13 +648,77 @@ public class DialyzerPreferencePage extends PropertyPage implements
             return Status.OK_STATUS;
         }
 
+        private void checkIfPltFilesShouldBeCopied(
+                final String alternatePltFileDirectory) throws RpcException,
+                IOException {
+            if (alternatePltFileDirectory == null) {
+                return;
+            }
+            final List<String> selected = Lists.newArrayList(selectedPLTPaths);
+            boolean changed = false;
+            for (final String pltPath : selected) {
+                final File f = new File(pltPath);
+                if (!f.canWrite()) {
+                    final String newPath = copyPltFile(pltPath,
+                            alternatePltFileDirectory);
+                    selectedPLTPaths.remove(pltPath);
+                    selectedPLTPaths.remove(newPath);
+                    shownPLTFiles.remove(newPath);
+                    shownPLTFiles.add(newPath);
+                    selectedPLTPaths.add(newPath);
+                    checkedPltPaths.remove(newPath);
+                    if (checkedPltPaths.remove(pltPath)) {
+                        checkedPltPaths.add(newPath);
+                    }
+                    changed = true;
+                }
+            }
+            if (changed) {
+                getControl().getDisplay().asyncExec(new Runnable() {
+                    public void run() {
+                        if (!fPLTTableViewer.getControl().isDisposed()) {
+                            fPLTTableViewer.refresh();
+                            fPLTTableViewer
+                                    .setSelection(new StructuredSelection(
+                                            selectedPLTPaths));
+                            fPLTTableViewer.setCheckedElements(checkedPltPaths
+                                    .toArray());
+                        }
+                    }
+                });
+            }
+        }
+
+        private String copyPltFile(final String pltPath,
+                final String alternatePltFileDirectory) throws IOException {
+            IPath path = new Path(pltPath);
+            final String name = path.lastSegment();
+            path = new Path(alternatePltFileDirectory).append(name);
+            Files.copy(new File(pltPath), new File(path.toOSString()));
+            return path.toPortableString();
+        }
+
         private void checkPlt(final String pltPath,
-                final IProgressMonitor monitor, final RpcCallSite backend)
-                throws DialyzerErrorException, BackingStoreException {
+                final String alternatePltFileDirectory,
+                final IProgressMonitor monitor, final IRpcCallSite backend)
+                throws DialyzerErrorException, BackingStoreException,
+                ErlModelException, RpcException {
             try {
                 monitor.subTask("Checking PLT file " + pltPath);
+                List<String> ebinDirs = null;
+                if (alternatePltFileDirectory != null) {
+                    ebinDirs = Lists.newArrayList();
+                    for (final IErlElement i : CoreScope.getModel()
+                            .getChildrenOfKind(Kind.PROJECT)) {
+                        final IErlProject project = (IErlProject) i;
+                        final String ebinDir = project.getWorkspaceProject()
+                                .getFolder(project.getOutputLocation())
+                                .getLocation().toString();
+                        ebinDirs.add(ebinDir);
+                    }
+                }
                 final OtpErlangObject result = ErlideDialyze.checkPlt(backend,
-                        pltPath);
+                        pltPath, ebinDirs);
                 DialyzerUtils.checkDialyzeError(result);
             } finally {
                 monitor.worked(1);

@@ -119,6 +119,7 @@ public class ChangedFile {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IWorkspaceRoot root = workspace.getRoot();
         final Path p = new Path(anOldPath);
+        @SuppressWarnings("deprecation")
         final IFile[] files = root.findFilesForLocation(p);
         if (files == null || files.length != 1) {
             throw new IOException("File not found");

@@ -47,6 +47,8 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
@@ -76,9 +78,9 @@ import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendHelper;
-import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest;
+import org.erlide.core.internal.backend.BackendHelper;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -123,7 +125,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     StyledText consoleInput;
     SourceViewer consoleOutputViewer;
     private SourceViewer consoleInputViewer;
-    private BackendShell shell;
+    private IBackendShell shell;
     protected Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
     protected ArrayList<String> fSelectionActions = new ArrayList<String>();
     // protected ClearOutputAction fClearOutputAction;
@@ -168,7 +170,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     void createInputField(final KeyEvent first, final boolean isPaste) {
-        if (first.character == SWT.ESC) {
+        if (!isPaste && first.character == SWT.ESC) {
             return;
         }
         try {
@@ -200,7 +202,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
                 @Override
                 public void keyPressed(final KeyEvent e) {
-                    final boolean historyMode = (e.stateMask & SWT.CTRL) == SWT.CTRL;
+                    final boolean ctrlPressed = (e.stateMask & SWT.CTRL) == SWT.CTRL;
                     if (e.keyCode == 13
                             && isInputComplete()
                             && consoleInput.getSelection().x == consoleInput
@@ -223,14 +225,14 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                             consoleInput.setTopIndex(lineCount - visibleLines
                                     + 1);
                         }
-                    } else if (historyMode && e.keyCode == SWT.ARROW_UP) {
+                    } else if (ctrlPressed && e.keyCode == SWT.ARROW_UP) {
                         history.prev();
                         final String s = history.get();
                         consoleInput.setText(s);
                         consoleInput.setSelection(consoleInput.getText()
                                 .length());
                         fixPosition(container);
-                    } else if (historyMode && e.keyCode == SWT.ARROW_DOWN) {
+                    } else if (ctrlPressed && e.keyCode == SWT.ARROW_DOWN) {
                         history.next();
                         final String s = history.get();
                         consoleInput.setText(s);
@@ -384,13 +386,17 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     @Override
     public void createControl(final Composite parent) {
         consoleOutputViewer = new SourceViewer(parent, null, SWT.V_SCROLL
-                | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
+                | SWT.H_SCROLL | SWT.MULTI);
         consoleText = (StyledText) consoleOutputViewer.getControl();
         consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
                 2, 1));
 
         consoleText.setFont(JFaceResources.getTextFont());
-        consoleText.setEditable(false);
+        consoleText.addVerifyListener(new VerifyListener() {
+            public void verifyText(final VerifyEvent e) {
+                e.doit = false;
+            }
+        });
         consoleText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
@@ -540,7 +546,12 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
 
         action = new TextViewerAction(consoleOutputViewer,
-                ITextOperationTarget.PASTE);
+                ITextOperationTarget.PASTE) {
+            @Override
+            public void run() {
+                createInputField(null, true);
+            }
+        };
         action.configureAction(ConsoleMessages.TextConsolePage_PasteText,
                 ConsoleMessages.TextConsolePage_PasteDescrip,
                 ConsoleMessages.TextConsolePage_PasteDescrip);

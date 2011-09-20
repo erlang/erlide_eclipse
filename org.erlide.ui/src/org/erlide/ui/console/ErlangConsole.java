@@ -21,18 +21,17 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.TextConsole;
 import org.eclipse.ui.part.IPageBookViewPage;
-import org.erlide.core.backend.Backend;
-import org.erlide.core.backend.console.BackendShell;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.console.IBackendShell;
 
 public class ErlangConsole extends TextConsole {
-    private final BackendShell shell;
+    private final IBackendShell shell;
     protected ListenerList consoleListeners;
     protected ErlangConsolePartitioner partitioner;
     private boolean stopped = false;
-    private final Backend backend;
+    private final IBackend backend;
 
-    public ErlangConsole(final Backend backend) {
+    public ErlangConsole(final IBackend backend) {
         super(backend.getName(), null, null, true);
         this.backend = backend;
 
@@ -49,11 +48,11 @@ public class ErlangConsole extends TextConsole {
         return new ErlangConsolePage(view, this);
     }
 
-    public RpcCallSite getBackend() {
+    public IBackend getBackend() {
         return backend;
     }
 
-    public BackendShell getShell() {
+    public IBackendShell getShell() {
         return shell;
     }
 
@@ -90,7 +89,6 @@ public class ErlangConsole extends TextConsole {
             view = (IConsoleView) page.showView(id);
             view.display(this);
         } catch (final PartInitException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

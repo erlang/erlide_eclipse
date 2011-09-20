@@ -40,7 +40,7 @@ import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.debug.IErlangDebugNode;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -175,14 +175,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
     @Override
     protected void configureToolBar(final IToolBarManager tbm) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     protected void createActions() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -239,31 +235,19 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
     @Override
     protected void fillContextMenu(final IMenuManager menu) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     protected String getHelpContextId() {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.debug.ui.AbstractDebugView#becomesHidden()
-     */
     @Override
     protected void becomesHidden() {
         setViewerInput(null);
         super.becomesHidden();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.debug.ui.AbstractDebugView#becomesVisible()
-     */
     @Override
     protected void becomesVisible() {
         super.becomesVisible();
@@ -280,7 +264,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final IProject project = dti.getItem().getProject()
                 .getWorkspaceProject();
         final boolean interpret = checked;
-        final RpcCallSite backend = erlangDebugTarget.getBackend();
+        final IRpcCallSite backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {

@@ -41,14 +41,13 @@ public class ExecutableExtensionsFactory implements
     }
 
     public Object create() throws CoreException {
-        Class<?> class1;
+        // Class<?> class1;
         try {
-            class1 = bundle.loadClass(className);
+            bundle.loadClass(className);
             return null; // ErlangPlugin.getDefault().getInjector().getInstance(class1);
         } catch (final ClassNotFoundException e) {
-            throw new CoreException(
-                    new Status(IStatus.ERROR, ErlangPlugin.PLUGIN_ID,
-                            "Could not load class " + className));
+            throw new CoreException(new Status(IStatus.ERROR,
+                    ErlangCore.PLUGIN_ID, "Could not load class " + className));
         }
     }
 

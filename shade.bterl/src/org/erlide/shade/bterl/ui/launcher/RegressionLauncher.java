@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.test_support.popup.actions.OpenResultsJob;
+import org.erlide.test_support.ui.suites.RegressionResultsView;
 
 public class RegressionLauncher {
     private static RegressionLauncher instance;
@@ -27,6 +28,8 @@ public class RegressionLauncher {
 
     private volatile Thread watcherThread = null;
     private final Object watcherLock = new Object();
+
+    private RegressionResultsView review;
 
     public static RegressionLauncher getInstance() {
         if (instance == null) {
@@ -38,7 +41,11 @@ public class RegressionLauncher {
     private RegressionLauncher() {
     }
 
-    public void launch(final String dir, final IProgressMonitor monitor) {
+    public void launch(final String dir, final IProgressMonitor monitor,
+            final RegressionResultsView rview) {
+        review = rview;
+        initResultsView(dir, rview);
+
         // TODO queue requests for different directories? we need a manager...
         if (isAlreadyRunning()) {
             // TODO feedback to user!
@@ -58,7 +65,8 @@ public class RegressionLauncher {
             final BufferedReader is = new BufferedReader(new InputStreamReader(
                     in));
 
-            final Thread thread = new Thread(new ListenerRunnable(is, monitor));
+            final Thread thread = new Thread(new ListenerRunnable(is, monitor,
+                    rview));
             thread.setDaemon(true);
             thread.setName("bterl regression listener");
             thread.start();
@@ -78,6 +86,14 @@ public class RegressionLauncher {
         } catch (final URISyntaxException e) {
             // should not happen
             e.printStackTrace();
+        }
+    }
+
+    private void initResultsView(final String dir,
+            final RegressionResultsView rview) {
+        if (rview != null) {
+            rview.clear();
+            rview.setMessage("Launching regression for: " + dir);
         }
     }
 
@@ -125,10 +141,14 @@ public class RegressionLauncher {
     private static final class ListenerRunnable implements Runnable {
         private final BufferedReader is;
         private final IProgressMonitor monitor;
+        private final RegressionResultsView rview;
 
-        ListenerRunnable(final BufferedReader is, final IProgressMonitor monitor) {
+        ListenerRunnable(final BufferedReader is,
+                final IProgressMonitor monitor,
+                final RegressionResultsView rview) {
             this.is = is;
             this.monitor = monitor;
+            this.rview = rview;
         }
 
         public void run() {
@@ -138,8 +158,7 @@ public class RegressionLauncher {
                     if (monitor != null) {
                         monitor.worked(1);
                     }
-                    // TODO what to do with the output?
-                    System.out.println(" >>>> " + line);
+                    rview.addLine(line);
                 }
             } catch (final IOException e) {
                 e.printStackTrace();

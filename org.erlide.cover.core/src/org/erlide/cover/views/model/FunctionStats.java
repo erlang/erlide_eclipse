@@ -7,7 +7,7 @@ import java.util.List;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
+import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.util.ErlangFunction;
 
 /**
@@ -38,6 +38,7 @@ public class FunctionStats extends StatsTreeObject {
 
     /**
      * First line of the function
+     * 
      * @return
      */
     public int getLineStart() {
@@ -64,6 +65,7 @@ public class FunctionStats extends StatsTreeObject {
 
     /**
      * Last line of the function
+     * 
      * @return
      */
     public int getLineEnd() {

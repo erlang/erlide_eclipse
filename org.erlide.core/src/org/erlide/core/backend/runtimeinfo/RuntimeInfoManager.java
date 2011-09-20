@@ -25,7 +25,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.core.ErlangCore;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
@@ -83,7 +84,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         loadDefaultPrefs();
 
         IEclipsePreferences root = new DefaultScope()
-                .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
+                .getNode(ErlangCore.PLUGIN_ID + "/runtimes");
         loadPrefs(root);
         root = getRootPreferenceNode();
         loadPrefs(root);
@@ -148,8 +149,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     }
 
     protected IEclipsePreferences getRootPreferenceNode() {
-        return new InstanceScope()
-                .getNode(ErlangPlugin.PLUGIN_ID + "/runtimes");
+        return new InstanceScope().getNode(ErlangCore.PLUGIN_ID + "/runtimes");
     }
 
     public synchronized void setRuntimes(final Collection<RuntimeInfo> elements) {
@@ -171,7 +171,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         return fRuntimes.keySet();
     }
 
-    public boolean isDuplicateName(final String name) {
+    public boolean hasRuntimeWithName(final String name) {
         for (final RuntimeInfo vm : fRuntimes.values()) {
             if (vm.getName().equals(name)) {
                 return true;
@@ -304,6 +304,18 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             }
             return vsns.get(0);
         }
+    }
+
+    public static String[][] getAllRuntimesVersions() {
+        final Collection<RuntimeInfo> rs = BackendCore.getRuntimeInfoManager()
+                .getRuntimes();
+        final String[][] runtimes = new String[rs.size()][2];
+        final Iterator<RuntimeInfo> it = rs.iterator();
+        for (int i = 0; i < rs.size(); i++) {
+            runtimes[i][0] = it.next().getVersion().asMinor().toString();
+            runtimes[i][1] = runtimes[i][0];
+        }
+        return runtimes;
     }
 
 }

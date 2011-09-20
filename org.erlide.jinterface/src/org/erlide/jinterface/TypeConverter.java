@@ -250,9 +250,8 @@ public final class TypeConverter {
             return new String(((OtpErlangBinary) obj).binaryValue());
         }
         if (obj instanceof OtpErlangList) {
-            final OtpErlangObject[] els = ((OtpErlangList) obj).elements();
             final StringBuilder res = new StringBuilder();
-            for (final OtpErlangObject el : els) {
+            for (final OtpErlangObject el : (OtpErlangList) obj) {
                 if (el instanceof OtpErlangLong) {
                     final long l = ((OtpErlangLong) el).longValue();
                     res.append((char) (l & 0xFFFF));
@@ -472,7 +471,6 @@ public final class TypeConverter {
 
     /**
      * Old style java->erlang conversion, used when "x" is given as an argument.
-     * TODO Could be polished a little.
      * 
      * @param obj
      * @return
@@ -565,7 +563,7 @@ public final class TypeConverter {
 
     public static boolean willCheckConversion() {
         final String dev = System.getProperty("erlide.test_rpc");
-        return dev != null && "true".equals(dev);
+        return Boolean.parseBoolean(dev);
     }
 
     /**

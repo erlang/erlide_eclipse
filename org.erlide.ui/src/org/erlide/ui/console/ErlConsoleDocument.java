@@ -17,8 +17,8 @@ import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellListener;
+import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
 
 public final class ErlConsoleDocument extends Document implements
@@ -26,9 +26,9 @@ public final class ErlConsoleDocument extends Document implements
 
     private static String[] LEGAL_CONTENT_TYPES = null;
 
-    private final BackendShell shell;
+    private final IBackendShell shell;
 
-    public ErlConsoleDocument(final BackendShell shell) {
+    public ErlConsoleDocument(final IBackendShell shell) {
         super();
 
         if (LEGAL_CONTENT_TYPES == null) {
@@ -55,7 +55,7 @@ public final class ErlConsoleDocument extends Document implements
         return new IoRequestScanner(shell);
     }
 
-    public void changed(final BackendShell aShell) {
+    public void changed(final IBackendShell aShell) {
         if (aShell != shell) {
             return;
         }
@@ -72,7 +72,7 @@ public final class ErlConsoleDocument extends Document implements
         });
     }
 
-    public BackendShell getShell() {
+    public IBackendShell getShell() {
         return shell;
     }
 }

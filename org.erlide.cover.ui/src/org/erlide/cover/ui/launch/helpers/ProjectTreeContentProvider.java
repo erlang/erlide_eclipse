@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlProject;
 
 /**
  * Content provider for projects
@@ -17,8 +17,7 @@ public class ProjectTreeContentProvider implements ITreeContentProvider {
     private Collection<IErlProject> projects;
 
     public void dispose() {
-        // TODO Auto-generated method stub
-
+        projects = null;
     }
 
     @SuppressWarnings("unchecked")

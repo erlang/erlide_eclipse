@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.IProblemChangedListener;
 
 /**
@@ -35,11 +35,6 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         ErlideUIPlugin.getDefault().getProblemMarkerManager().addListener(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see IProblemChangedListener#problemsChanged(IResource[], boolean)
-     */
     public void problemsChanged(final IResource[] changedResources,
             final boolean isMarkerChange) {
         if (isMarkerChange) {

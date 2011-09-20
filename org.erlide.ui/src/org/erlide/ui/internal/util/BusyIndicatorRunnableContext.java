@@ -133,9 +133,6 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
         }
     }
 
-    /*
-     * (non-Javadoc) Method declared on IRunnableContext.
-     */
     public void run(final boolean fork, final boolean cancelable,
             final IRunnableWithProgress runnable)
             throws InvocationTargetException, InterruptedException {

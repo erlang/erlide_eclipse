@@ -19,6 +19,7 @@ import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public enum ErlideImage {
 

@@ -245,8 +245,8 @@ public class BrowserInformationControl extends AbstractInformationControl
 
             public void keyPressed(final KeyEvent e) {
                 if (e.character == 0x1B) {
-                    dispose(); // XXX: Just hide? Would avoid constant
-                    // recreations.
+                    dispose();
+                    // XXX: Just hide? Would avoid constant recreations.
                 }
             }
 

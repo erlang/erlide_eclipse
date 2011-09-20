@@ -1,9 +1,11 @@
 package org.erlide.test_support;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -14,80 +16,108 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.SourcePathProvider;
 import org.erlide.jinterface.ErlLogger;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 public class TestSourcePathProvider implements SourcePathProvider,
         IResourceChangeListener {
 
-    Set<IPath> paths;
+    Map<IProject, Set<IPath>> pathsMap;
 
     public TestSourcePathProvider() {
+        pathsMap = Maps.newHashMap();
         try {
-            paths = computeSourcePaths();
+            computeSourcePaths();
         } catch (final CoreException e) {
             ErlLogger.warn(e);
-            paths = Sets.newHashSet();
+            pathsMap = Maps.newHashMap();
         }
-        // System.out.println("## paths=" + paths);
+
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.addResourceChangeListener(this,
                 IResourceChangeEvent.POST_CHANGE);
     }
 
-    public Collection<IPath> getSourcePaths() {
-        return paths;
+    public Collection<IPath> getSourcePathsForModel(final IProject project) {
+        return getProjectPaths(project);
     }
 
-    private Set<IPath> computeSourcePaths() throws CoreException {
-        final Set<IPath> result = Sets.newHashSet();
+    public Collection<IPath> getSourcePathsForBuild(final IProject project) {
+        return getProjectPaths(project);
+    }
+
+    public Collection<IPath> getSourcePathsForExecution(final IProject project) {
+        return getProjectPaths(project);
+    }
+
+    public Collection<IPath> getIncludePaths(final IProject project) {
+        return getProjectPaths(project);
+    }
+
+    private void computeSourcePaths() throws CoreException {
         ResourcesPlugin.getWorkspace().getRoot().accept(new IResourceVisitor() {
 
             public boolean visit(final IResource resource) throws CoreException {
-                if (isTestDir(resource)) {
-                    result.add(resource.getLocation());
+                final IProject project = resource.getProject();
+                if (project != null && isTestDir(resource)) {
+                    final Set<IPath> ps = getProjectPaths(project);
+                    ps.add(resource.getProjectRelativePath());
+                    pathsMap.put(project, ps);
                 }
                 return true;
             }
-
         });
-        return result;
+    }
+
+    private Set<IPath> getProjectPaths(final IProject project) {
+        Set<IPath> ps = pathsMap.get(project);
+        if (ps == null) {
+            ps = Sets.newHashSet();
+        }
+        return ps;
     }
 
     public void resourceChanged(final IResourceChangeEvent event) {
         // TODO keep 'paths' updated
-
         final IResourceDelta delta = event.getDelta();
         if (delta == null) {
             return;
         }
-        // System.out.println("@@ >> BterlSrcPathProvider: resources updated...");
+
         try {
+            final long time = System.currentTimeMillis();
             delta.accept(new IResourceDeltaVisitor() {
                 public boolean visit(final IResourceDelta theDelta)
                         throws CoreException {
                     final IResource resource = theDelta.getResource();
-                    final IContainer parent = resource.getParent();
-                    if (parent == null) {
-                        return true;
+                    if (!(resource instanceof IContainer)) {
+                        return false;
                     }
+                    final IContainer container = (IContainer) resource;
                     // TODO isintestpath is slow...
-                    final IPath parentLocation = parent.getLocation();
+                    final IPath location = container.getLocation();
+                    final Set<IPath> paths = getProjectPaths(resource
+                            .getProject());
                     if (theDelta.getKind() == IResourceDelta.ADDED
-                            && !paths.contains(parentLocation)
-                            && isTestDir(parent)) {
-                        paths.add(parentLocation);
-
+                            && !paths.contains(location)
+                            && isTestDir(container)) {
+                        paths.add(location);
                     }
                     if (theDelta.getKind() == IResourceDelta.REMOVED
-                            && paths.contains(parentLocation)) {
-                        paths.remove(parentLocation);
+                            && paths.contains(location)) {
+                        paths.remove(location);
                     }
                     return true;
                 }
             });
+            if (ErlangCore.hasFeatureEnabled("erlide.debug.tspp")) {
+                System.out.println("TSPP took "
+                        + (System.currentTimeMillis() - time));
+            }
         } catch (final CoreException e) {
             e.printStackTrace();
         }
@@ -97,10 +127,11 @@ public class TestSourcePathProvider implements SourcePathProvider,
         if (!(resource instanceof IContainer)) {
             return false;
         }
-        if (resource.getName().equals("garbage")) {
+        final String path = resource.getFullPath().toPortableString();
+        if (path.contains("garbage")) {
             return false;
         }
-        if (resource.getName().equals("lost+found")) {
+        if (path.contains("lost+found")) {
             return false;
         }
         try {

@@ -17,10 +17,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.ErlModelException;
-import org.erlide.core.model.root.api.IErlElement;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -82,6 +82,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     public IErlElement getErlElement() {
         final IErlModule module = (IErlModule) CoreScope.getModel()
                 .findElement(file);
+
         try {
             final IErlElement element = module.getElementAt(textSelection
                     .getOffset());
@@ -97,28 +98,22 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
     }
 
     public IErlRange getMemberRange() {
-        try {
-            if (getErlElement() instanceof IErlMember) {
-                IErlRange range = null;
-                final IErlMember member = (IErlMember) getErlElement();
-                int sL, sC, eL, eC;
-                sL = member.getLineStart() + 1;
-                eL = member.getLineEnd() + 1;
+        if (getErlElement() instanceof IErlMember) {
+            IErlRange range = null;
+            final IErlMember member = (IErlMember) getErlElement();
+            int sL, sC, eL, eC;
+            sL = member.getLineStart() + 1;
+            eL = member.getLineEnd() + 1;
 
-                sC = WranglerUtils.calculateColumnFromOffset(member
-                        .getSourceRange().getOffset(), sL - 1, document);
-                eC = WranglerUtils
-                        .calculateColumnFromOffset(member.getSourceRange()
-                                .getOffset()
-                                + member.getSourceRange().getLength(), eL - 1,
-                                document);
-                range = new ErlRange(sL, sC, eL, eC, member.getSourceRange()
-                        .getOffset(), member.getSourceRange().getLength());
+            sC = WranglerUtils.calculateColumnFromOffset(member
+                    .getSourceRange().getOffset(), sL - 1, document);
+            eC = WranglerUtils.calculateColumnFromOffset(member
+                    .getSourceRange().getOffset()
+                    + member.getSourceRange().getLength(), eL - 1, document);
+            range = new ErlRange(sL, sC, eL, eC, member.getSourceRange()
+                    .getOffset(), member.getSourceRange().getLength());
 
-                return range;
-            }
-        } catch (final ErlModelException e) {
-            e.printStackTrace();
+            return range;
         }
         return getSelectionRange();
     }
@@ -143,5 +138,9 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
         } else {
             return getKind();
         }
+    }
+
+    public IErlModule getErlModule() {
+        return (IErlModule) CoreScope.getModel().findElement(file);
     }
 }

@@ -64,7 +64,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage implements
             final List<String> preferences = getPreferences(NAVIGATION_KEY,
                     NAVIGATION_KEYS, NAVIGATION_DEFAULTS);
             final List<Boolean> l = getBooleanPreferences(preferences);
-            fCachedCheckAllProjects = new Boolean(l.size() > 0 && l.get(0));
+            fCachedCheckAllProjects = Boolean.valueOf(l.size() > 0 && l.get(0));
         }
         return fCachedCheckAllProjects.booleanValue();
     }

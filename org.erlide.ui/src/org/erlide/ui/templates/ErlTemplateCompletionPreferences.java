@@ -1,6 +1,6 @@
 package org.erlide.ui.templates;
 
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlTemplateCompletionPreferences {
 

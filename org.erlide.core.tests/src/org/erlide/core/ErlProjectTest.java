@@ -12,11 +12,12 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.api.IErlElement;
-import org.erlide.core.model.root.api.IErlModel;
-import org.erlide.core.model.root.api.IErlProject;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElementLocator;
+import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.test.support.ErlideTestUtils;
@@ -79,13 +80,13 @@ public class ErlProjectTest {
                         "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
-        final IErlModel model = project.getModel();
+        final IErlElementLocator model = project.getModel();
         // when
         // looking for the include
         final IErlModule include1 = model.findIncludeFromModule(module,
-                includeName, null, IErlModel.Scope.PROJECT_ONLY);
+                includeName, null, IErlElementLocator.Scope.PROJECT_ONLY);
         final IErlModule include2 = model.findIncludeFromProject(project,
-                "file.hrl", null, IErlModel.Scope.PROJECT_ONLY);
+                "file.hrl", null, IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be found
         assertEquals(include, include1);
@@ -113,11 +114,13 @@ public class ErlProjectTest {
             // String includeFile = ModelUtils.findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
-            final IErlModel model = project.getModel();
+            final IErlElementLocator model = project.getModel();
             final IErlModule module = model.findIncludeFromProject(project,
-                    null, includePath, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, includePath,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IErlModule module2 = model.findModuleFromProject(project,
-                    includeName, null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    includeName, null,
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // it should be found in the model
             assertNotNull(module);
@@ -156,9 +159,9 @@ public class ErlProjectTest {
             // when
             // looking for the include file
             project.open(null);
-            final IErlModel model = project.getModel();
+            final IErlElementLocator model = project.getModel();
             final IErlModule module = model.findIncludeFromProject(project,
-                    includeName, null, IErlModel.Scope.ALL_PROJECTS);
+                    includeName, null, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
             // it should be found in the project defining it
             assertNotNull(module);
@@ -186,7 +189,7 @@ public class ErlProjectTest {
         moduleE.open(null);
         // when
         // looking for lists:reverse/2 and lists:reverse/1
-        final RpcCallSite backend = BackendCore.getBackendManager()
+        final IRpcCallSite backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         final IErlModel model = project.getModel();
         final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
@@ -194,13 +197,14 @@ public class ErlProjectTest {
                 project.getExternalModulesString(), model.getPathVars());
         final IErlFunction function = ModelUtils.findFunction(res.getName(),
                 res.getFunction(), res.getPath(), project,
-                IErlModel.Scope.PROJECT_ONLY, moduleE);
-        final IErlElement module = function != null ? model
-                .findModuleFromProject(project, function.getModuleName(),
-                        res.getPath(), IErlModel.Scope.PROJECT_ONLY) : null;
+                IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
+        assertNotNull(function);
+
+        final IErlElement module = model.findModuleFromProject(project,
+                function.getModuleName(), res.getPath(),
+                IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // the function should be returned and the module, in External Files
-        assertNotNull(function);
         assertNotNull(module);
         assertEquals(function.getParent(), module);
         assertEquals(function.getModule().getProject(), project);
@@ -225,12 +229,12 @@ public class ErlProjectTest {
                     externalsFileName, absolutePath);
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
-            final IErlModel model = project.getModel();
+            final IErlElementLocator model = project.getModel();
             // when
             // looking for it
             final IErlModule externalModule = model.findModuleFromProject(
                     project, externalFileName, null,
-                    IErlModel.Scope.PROJECT_ONLY);
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             // then
             // we should find it
             assertNotNull(externalModule);

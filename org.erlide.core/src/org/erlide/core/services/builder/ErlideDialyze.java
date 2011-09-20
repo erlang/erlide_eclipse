@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.common.Util;
-import org.erlide.core.rpc.RpcCallSite;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcResultCallback;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 
@@ -16,11 +17,12 @@ import com.google.common.collect.Lists;
 
 public class ErlideDialyze {
 
-    private static final int LONG_TIMEOUT = 20000;
+    private static final int LONG_TIMEOUT = 60000;
     private static final int FILE_TIMEOUT = 20000;
-    private static final int INCLUDE_TIMEOUT = 4000;
+    private static final int INCLUDE_TIMEOUT = 40000;
+    private static final int UPDATE_TIMEOUT = LONG_TIMEOUT * 10;
 
-    public static OtpErlangObject dialyze(final RpcCallSite backend,
+    public static OtpErlangObject dialyze(final IRpcCallSite backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
             final Object noCheckPLT) {
@@ -34,7 +36,7 @@ public class ErlideDialyze {
             final OtpErlangObject result = backend.call(timeout,
                     "erlide_dialyze", "dialyze", "lslslsoo", files, pltPaths,
                     incs, fromSource, noCheckPLT);
-            ErlLogger.debug("result %s", result.toString());
+            // ErlLogger.debug("result %s", result.toString());
             return result;
         } catch (final Exception e) {
             ErlLogger.debug(e);
@@ -42,7 +44,21 @@ public class ErlideDialyze {
         return null;
     }
 
-    public static String formatWarning(final RpcCallSite backend,
+    public static void startDialyzer(final IRpcCallSite backend,
+            final Collection<String> files, final Collection<String> pltPaths,
+            final Collection<IPath> includeDirs, final boolean fromSource,
+            final Object noCheckPLT, final IRpcResultCallback callback)
+            throws RpcException {
+        final List<String> incs = Lists.newArrayList();
+        for (final IPath p : includeDirs) {
+            incs.add(p.toString());
+        }
+        backend.async_call_result(callback, "erlide_dialyze", "dialyze",
+                "lslslsoo", files, pltPaths, incs, fromSource, noCheckPLT);
+        // ErlLogger.debug("result %s", result.toString());
+    }
+
+    public static String formatWarning(final IRpcCallSite backend,
             final OtpErlangObject warning) {
         try {
             final OtpErlangObject result = backend.call("erlide_dialyze",
@@ -54,17 +70,18 @@ public class ErlideDialyze {
         return warning.toString();
     }
 
-    public static OtpErlangObject checkPlt(final RpcCallSite backend,
-            final String plt) {
-        try {
-            return backend.call("erlide_dialyze", "check_plt", "s", plt);
-        } catch (final RpcException e) {
-            ErlLogger.debug(e);
+    public static OtpErlangObject checkPlt(final IRpcCallSite backend,
+            final String plt, final List<String> ebinDirs) throws RpcException {
+        if (ebinDirs == null) {
+            return backend.call(UPDATE_TIMEOUT, "erlide_dialyze", "check_plt",
+                    "s", plt);
+        } else {
+            return backend.call(UPDATE_TIMEOUT, "erlide_dialyze",
+                    "update_plt_with_additional_paths", "sls", plt, ebinDirs);
         }
-        return null;
     }
 
-    public static List<String> getPltFiles(final RpcCallSite backend,
+    public static List<String> getPltFiles(final IRpcCallSite backend,
             final String pltFiles) throws RpcException {
         final OtpErlangObject o = backend.call("erlide_dialyze",
                 "get_plt_files", "s", pltFiles);
@@ -82,5 +99,12 @@ public class ErlideDialyze {
             }
         }
         return null;
+    }
+
+    public static void startCheckPlt(final IRpcCallSite backend,
+            final String plt, final List<String> ebinDirs,
+            final IRpcResultCallback callback) throws RpcException {
+        backend.async_call_result(callback, "erlide_dialyze",
+                "start_update_plt_with_additional_paths", "sls", plt, ebinDirs);
     }
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -24,16 +26,17 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.osgi.util.NLS;
-import org.erlide.core.CoreScope;
+import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IStreamMonitor;
+import org.eclipse.debug.internal.core.StreamsProxy;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.model.root.api.IErlProject;
-import org.erlide.core.rpc.RpcCallSite;
-import org.erlide.core.rpc.RpcFuture;
+import org.erlide.core.backend.BackendUtils;
+import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.core.services.builder.internal.BuilderMessages;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
@@ -44,16 +47,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+@SuppressWarnings("restriction")
 public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private final BuilderHelper helper = new BuilderHelper();
 
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
-    private static final boolean DEBUG = true;
-
-    // "true".equals(System
-    // .getProperty("org.erlide.test_support.debug"));
+    private static final boolean DEBUG = Boolean.parseBoolean(System
+            .getProperty("erlide.test_support.debug"));
+    private static final boolean DISABLED = Boolean.parseBoolean(System
+            .getProperty("erlide.test_builder.disabled"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -69,31 +73,42 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-     * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
-     */
     @SuppressWarnings("rawtypes")
     @Override
     protected IProject[] build(final int kind, final Map args,
             final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return null;
+        }
+        final IProject project = getProject();
+        if (DEBUG) {
+            ErlLogger.info("##### start test builder (%s) %s",
+                    helper.buildKind(kind), project.getName());
+        }
+        final long time = System.currentTimeMillis();
         if (kind == FULL_BUILD) {
             fullBuild(monitor);
         } else {
-            final IResourceDelta delta = getDelta(getProject());
+            final IResourceDelta delta = getDelta(project);
             if (delta == null) {
                 fullBuild(monitor);
             } else {
                 incrementalBuild(delta, monitor);
             }
         }
+        if (DEBUG) {
+            ErlLogger.info("##### done test builder %s took %s",
+                    project.getName(),
+                    Long.toString(System.currentTimeMillis() - time));
+        }
         return null;
     }
 
     @Override
     protected void clean(final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return;
+        }
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
@@ -110,7 +125,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final IFile file = (IFile) resource;
             deleteMarkers(file);
             if (DEBUG) {
-                System.out.println(" >>> bterl build ::: " + file.getName());
+                ErlLogger.debug(" >>> bterl build ::: " + file.getName());
             }
         }
     }
@@ -129,6 +144,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         checkForMakeLinks(project, monitor);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                 project, monitor, false);
+        if (DEBUG) {
+            ErlLogger.debug("resources to build: " + resourcesToBuild.size());
+        }
         doBuild(project, resourcesToBuild, false, monitor);
     }
 
@@ -136,8 +154,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Set<BuildResource> resourcesToBuild,
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
-            final Map<RpcFuture, IResource> results = Maps.newHashMap();
-            RpcCallSite backend;
+            final Map<IRpcFuture, IResource> results = Maps.newHashMap();
+            IRpcCallSite backend;
             try {
                 backend = BackendCore.getBackendManager().getBuildBackend(
                         project);
@@ -165,24 +183,20 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
                 final String outputDir = bres.getResource().getParent()
                         .getProjectRelativePath().toString();
-                if (DEBUG) {
-                    ErlLogger.debug("@@@ >> bterl build :: "
-                            + resource.getFullPath().toString() + " :: "
-                            + outputDir + " -- " + compilerOptions);
-                }
-                final RpcFuture f = helper.startCompileErl(project, bres,
+                final IRpcFuture f = helper.startCompileErl(project, bres,
                         outputDir, backend, compilerOptions, false);
                 if (f != null) {
                     results.put(f, resource);
                 }
             }
-            final List<Entry<RpcFuture, IResource>> done = Lists.newArrayList();
-            final List<Entry<RpcFuture, IResource>> waiting = Lists
+            final List<Entry<IRpcFuture, IResource>> done = Lists
+                    .newArrayList();
+            final List<Entry<IRpcFuture, IResource>> waiting = Lists
                     .newArrayList(results.entrySet());
 
             // TODO should use some kind of notification!
             while (waiting.size() > 0) {
-                for (final Entry<RpcFuture, IResource> entry : waiting) {
+                for (final Entry<IRpcFuture, IResource> entry : waiting) {
                     if (monitor.isCanceled()) {
                         return;
                     }
@@ -194,16 +208,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     }
                     if (result != null) {
                         final IResource resource = entry.getValue();
-                        if (DEBUG) {
-                            ErlLogger.debug("@@@ >> bterl built :: "
-                                    + resource.getFullPath().toString());
-                        }
                         helper.completeCompile(project, resource, result,
                                 backend, new OtpErlangList());
-                        if (DEBUG) {
-                            ErlLogger.debug("### >> bterl built :: "
-                                    + resource.getFullPath().toString());
-                        }
                         done.add(entry);
                     }
                 }
@@ -218,9 +224,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             }
         } catch (final Exception e) {
             ErlLogger.error(e);
-            final String msg = NLS.bind(
-                    BuilderMessages.build_inconsistentProject,
-                    e.getLocalizedMessage());
+            // final String msg = NLS.bind(
+            // BuilderMessages.build_inconsistentProject,
+            // e.getLocalizedMessage());
             // MarkerHelper.addProblemMarker(project, null, msg, 0,
             // IMarker.SEVERITY_ERROR);
         }
@@ -312,7 +318,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         final ResourceAttributes a = resource
                                 .getResourceAttributes();
                         if (!a.isSymbolicLink()) {
-                            // FIXME BuildResource
                             final BuildResource bres = new BuildResource(
                                     resource, resource.getParent()
                                             .getLocation().toString());
@@ -343,19 +348,17 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
         public boolean visit(final IResourceDelta delta) throws CoreException {
             final IResource resource = delta.getResource();
-            final IProject my_project = resource.getProject();
             if (resource.isDerived()) {
                 return true;
             }
+            final IProject my_project = resource.getProject();
             if (resource.getType() == IResource.FILE
-                    && resource.getFileExtension() != null
                     && "erl".equals(resource.getFileExtension())
                     && isInTestPath(resource, my_project)) {
                 try {
                     final ResourceAttributes a = resource
                             .getResourceAttributes();
                     if (!a.isSymbolicLink()) {
-                        // FIXME BuildResource
                         final BuildResource bres = new BuildResource(resource,
                                 resource.getParent().getLocation().toString());
                         result.add(bres);
@@ -365,8 +368,24 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
+                return false;
             }
-            // return true to continue visiting children.
+            if (resource.getLocation().toString().contains("lost+found")) {
+                return false;
+            }
+            // if (resource.getType() == IResource.FOLDER) {
+            // MPS has a link that creates a loop
+            final ResourceAttributes a = resource.getResourceAttributes();
+            if (a != null && a.isSymbolicLink()) {
+                final File f = new File(resource.getLocation().toString());
+                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
+                        .fromLocalFile(f).fetchInfo();
+                final String target = info
+                        .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
+                return target == null
+                        || !resource.getLocation().toString().contains(target)
+                        && target.contains("/");
+            }
             return true;
         }
 
@@ -397,7 +416,21 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 }
                 final Process makeLinks = DebugPlugin.exec(
                         new String[] { "./make_links" }, dir);
-                // InputStream in = makeLinks.getInputStream();
+                final StreamsProxy proxy = new StreamsProxy(makeLinks,
+                        "ISO-8859-1");
+                final IStreamListener listener = new IStreamListener() {
+                    public void streamAppended(final String text,
+                            final IStreamMonitor streamMonitor) {
+                        final String[] lines = text.split("\n");
+                        for (final String line : lines) {
+                            System.out.println("make_links>> " + line);
+                        }
+                    }
+                };
+                if (ErlangCore.hasFeatureEnabled("erlide.make_links.snoop")) {
+                    proxy.getOutputStreamMonitor().addListener(listener);
+                    proxy.getErrorStreamMonitor().addListener(listener);
+                }
                 while (true) {
                     try {
                         makeLinks.waitFor();
@@ -405,13 +438,11 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                     } catch (final InterruptedException e1) {
                     }
                 }
+                proxy.kill();
                 container.refreshLocal(IResource.DEPTH_INFINITE,
                         new NullProgressMonitor());
             } catch (final CoreException e) {
                 // there is no make_links
-                if (DEBUG) {
-                    System.out.println("no make_links???");
-                }
             }
         }
 
@@ -463,10 +494,10 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 return false;
             }
             final IContainer parent = resource.getParent();
-            if (parent.getName().equals("garbage")) {
+            if (parent.getFullPath().toPortableString().contains("garbage")) {
                 return false;
             }
-            if (parent.getName().equals("lost+found")) {
+            if (parent.getFullPath().toPortableString().contains("lost+found")) {
                 return false;
             }
             final IResource[] siblings = parent.members();
@@ -483,15 +514,16 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
-        final IErlProject erlprj = CoreScope.getModel().findProject(myProject);
-        final Collection<IPath> srcDirs = erlprj.getSourceDirs();
+        final Collection<IPath> srcDirs = BackendUtils
+                .getExtraSourcePathsForBuild(myProject);
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
         for (final IPath src : srcDirs) {
-            if (src.isPrefixOf(rpath)) {
+            final IPath srcPath = src
+                    .removeFirstSegments(rpath.segmentCount() - 1);
+            if (srcPath.isPrefixOf(rpath)) {
                 return true;
             }
         }
         return false;
     }
-
 }

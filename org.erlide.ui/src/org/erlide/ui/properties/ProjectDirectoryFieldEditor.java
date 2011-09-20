@@ -28,12 +28,14 @@ import org.erlide.ui.util.TypedViewerFilter;
 public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
     private final IProject project;
     private String fOutputLocation;
+    private final boolean mustExist;
 
     public ProjectDirectoryFieldEditor(final String name,
             final String labelText, final Composite parent,
-            final IProject project) {
+            final IProject project, final boolean mustExist) {
         super(name, labelText, parent);
         this.project = project;
+        this.mustExist = mustExist;
     }
 
     @Override
@@ -56,8 +58,11 @@ public class ProjectDirectoryFieldEditor extends DirectoryFieldEditor {
             final String prjLoc = project.getLocation().toString();
             fileName = prjLoc + "/" + fileName;
         }
-        final File file = new File(fileName);
-        return file.isDirectory();
+        if (mustExist) {
+            final File file = new File(fileName);
+            return file.isDirectory();
+        }
+        return true;
     }
 
     private IContainer chooseLocation() {
