@@ -27,6 +27,7 @@ public class ModuleStats extends StatsTreeObject {
 
     /**
      * Coverage per line
+     * 
      * @return
      */
     public List<LineResult> getLineResults() {

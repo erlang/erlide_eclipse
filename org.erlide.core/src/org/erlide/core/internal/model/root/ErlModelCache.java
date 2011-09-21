@@ -41,7 +41,7 @@ public class ErlModelCache implements IDisposable {
     private final LRUCache<IErlProject, String> projectExternalIncludesStringCache;
     private final LRUCache<IErlProject, Collection<IPath>> projectSourceDirsCache;
     private final LRUCache<IErlProject, Collection<IPath>> projectIncludeDirsCache;
-    private boolean noModelCache;
+    private final boolean disabled;
 
     public static ErlModelCache getDefault() {
         if (fgInstance == null) {
@@ -51,7 +51,6 @@ public class ErlModelCache implements IDisposable {
     }
 
     private class ModelChangeListener implements IErlModelChangeListener {
-
         // TODO should we handle changes of projects and includes too?
         // Which is hard, since the IOldErlangProjectProperties doesn't have
         // listeners
@@ -61,7 +60,6 @@ public class ErlModelCache implements IDisposable {
                 moduleIncludeCache.remove(module);
             }
         }
-
     }
 
     private ErlModelCache() {
@@ -87,11 +85,11 @@ public class ErlModelCache implements IDisposable {
                 CACHE_SIZE);
         modelChangeListener = new ModelChangeListener();
         CoreScope.getModel().addModelChangeListener(modelChangeListener);
-        noModelCache = ErlideUtil.isNoModelCache();
+        disabled = ErlideUtil.isCacheDisabled();
     }
 
     public void putModule(final IErlModule module) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         // final String moduleName = module.getModuleName();
@@ -130,7 +128,7 @@ public class ErlModelCache implements IDisposable {
     // }
 
     public void putEdited(final String path, final IErlModule module) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (module == null) {
@@ -150,7 +148,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putIncludedFilesForModule(final IErlModule module,
             final List<IErlModule> result) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (result == null) {
@@ -175,7 +173,7 @@ public class ErlModelCache implements IDisposable {
     public void putExternalTree(final String externalPath,
             final IErlProject project,
             final List<ExternalTreeEntry> externalTree) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (externalTree == null) {
@@ -218,7 +216,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putModulesForProject(final IErlProject project,
             final List<IErlModule> modules) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         final List<String> moduleNames = Lists.newArrayList();
@@ -232,7 +230,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putIncludesForProject(final IErlProject project,
             final List<IErlModule> includes) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         final List<String> moduleNames = Lists.newArrayList();
@@ -287,7 +285,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putExternalModulesString(final IErlProject project,
             final String externalModulesString) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (externalModulesString == null) {
@@ -304,7 +302,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putExternalIncludesString(final IErlProject project,
             final String externalModulesString) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (externalModulesString == null) {
@@ -317,7 +315,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putSourceDirs(final IErlProject project,
             final Collection<IPath> dirs) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (dirs == null) {
@@ -333,7 +331,7 @@ public class ErlModelCache implements IDisposable {
 
     public void putIncludeDirs(final IErlProject project,
             final Collection<IPath> dirs) {
-        if (noModelCache) {
+        if (disabled) {
             return;
         }
         if (dirs == null) {
@@ -356,14 +354,6 @@ public class ErlModelCache implements IDisposable {
         for (final IErlModule module : modules) {
             putModule(module);
         }
-    }
-
-    public boolean isNoModelCache() {
-        return noModelCache;
-    }
-
-    public void setNoModelCache(final boolean noModelCache) {
-        this.noModelCache = noModelCache;
     }
 
     public void clearModelCache() {

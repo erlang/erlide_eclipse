@@ -19,10 +19,10 @@ public class OtpErlang {
         return new OtpErlangTuple(args);
     }
 
-    public static OtpErlangList mkStringList(final Collection<String> args) {
+    public static OtpErlangList mkStringList(final Collection<?> args) {
         final List<OtpErlangObject> result = Lists.newArrayList();
-        for (final String s : args) {
-            result.add(new OtpErlangString(s));
+        for (final Object s : args) {
+            result.add(new OtpErlangString(s.toString()));
         }
         return mkList(result);
     }

@@ -131,7 +131,6 @@ import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
@@ -155,6 +154,7 @@ import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
 import org.erlide.ui.editors.erl.test.TestAction;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -1218,7 +1218,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     markInNavigationHistory();
                 }
 
-            } catch (final ErlModelException x) {
             } catch (final IllegalArgumentException x) {
             }
 
@@ -1239,8 +1238,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             // set highlight range
             setSelection(reference, true);
             if (myOutlinePage != null) {
-                // FIXME is this needed or is it handled otherwise?
-                // (SelectionListener-something...)
                 myOutlinePage.select(reference);
             }
         }
@@ -1566,6 +1563,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
      *            the position of the found annotation
      * @return the found annotation
      */
+    @SuppressWarnings("null")
     private Annotation getNextAnnotation(final int offset, final int length,
             final boolean forward, final Position annotationPosition) {
 

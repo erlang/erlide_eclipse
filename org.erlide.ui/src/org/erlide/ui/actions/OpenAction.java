@@ -24,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.internal.backend.ModelInternalUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
@@ -31,6 +32,7 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
@@ -184,16 +186,16 @@ public class OpenAction extends SelectionDispatchAction {
             throws CoreException, RpcException, BackendException,
             ErlModelException, BadLocationException, OtpErlangRangeException {
         final IErlElement element = editor.getElementAt(offset, true);
-        final IErlModel.Scope scope = NavigationPreferencePage
-                .getCheckAllProjects() ? IErlModel.Scope.ALL_PROJECTS
-                : IErlModel.Scope.REFERENCED_PROJECTS;
-        final IErlModel model = CoreScope.getModel();
+        final IErlElementLocator.Scope scope = NavigationPreferencePage
+                .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
+                : IErlElementLocator.Scope.REFERENCED_PROJECTS;
+        final IErlElementLocator model = CoreScope.getModel();
         Object found = null;
         if (res.isExternalCall()) {
             found = findExternalCallOrType(module, res, erlProject, element,
                     scope);
         } else if (res.isInclude()) {
-            found = ModelUtils.findInclude(module, erlProject, res, model);
+            found = ModelInternalUtils.findInclude(module, erlProject, res, model);
         } else if (res.isLocalCall()) {
             found = findLocalCall(module, backend, erlProject, res, element,
                     scope);
@@ -202,7 +204,7 @@ public class OpenAction extends SelectionDispatchAction {
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocument().get(
                     range.getOffset(), range.getLength());
-            found = ModelUtils.findVariable(backend, range, res.getName(),
+            found = ModelInternalUtils.findVariable(backend, range, res.getName(),
                     elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
@@ -226,7 +228,7 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findLocalCall(final IErlModule module,
             final IRpcCallSite backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
-            final IErlModel.Scope scope) throws RpcException, CoreException {
+            final IErlElementLocator.Scope scope) throws RpcException, CoreException {
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }
@@ -268,7 +270,7 @@ public class OpenAction extends SelectionDispatchAction {
 
     private static IErlElement findExternalCallOrType(final IErlModule module,
             final OpenResult res, final IErlProject project,
-            final IErlElement element, final IErlModel.Scope scope)
+            final IErlElement element, final IErlElementLocator.Scope scope)
             throws CoreException {
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypeDef(module, res.getName(), res.getFun(),

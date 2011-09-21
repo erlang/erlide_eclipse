@@ -235,12 +235,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
     @Override
     protected void fillContextMenu(final IMenuManager menu) {
-        // TODO Auto-generated method stub
     }
 
     @Override
     protected String getHelpContextId() {
-        // TODO Auto-generated method stub
         return null;
     }
 

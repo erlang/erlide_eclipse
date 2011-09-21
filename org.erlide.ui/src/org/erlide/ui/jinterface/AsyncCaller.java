@@ -18,7 +18,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.rpc.RpcException;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public abstract class AsyncCaller<T> implements Runnable {
     long interval;

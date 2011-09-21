@@ -22,7 +22,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * Implementation of coverage analysis operations
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- *
+ * 
  */
 public class CoveragePerformer implements ICoveragePerformer {
 
@@ -96,7 +96,6 @@ public class CoveragePerformer implements ICoveragePerformer {
                         .call(CoverConstants.COVER_ERL_BACKEND,
                                 CoverConstants.FUN_START, "x", nodesList);
 
-
             } catch (final RpcException e) {
                 e.printStackTrace();
                 throw new CoverException(e.getMessage());
@@ -141,7 +140,7 @@ public class CoveragePerformer implements ICoveragePerformer {
         recompileModules();
     }
 
-    // cover compilation of chosem modules 
+    // cover compilation of chosem modules
     private void recompileModules() throws CoverException {
         final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
                 config.getModules().size());

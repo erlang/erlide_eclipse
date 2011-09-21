@@ -24,10 +24,10 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
-import org.erlide.core.model.root.IErlModel;
 import org.erlide.ui.ErlideImage;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 
 /**
@@ -112,7 +112,7 @@ public class ErlangElementImageProvider {
             }
             return getWorkbenchImageDescriptor(file, flags);
         } else if (element instanceof IFolder) {
-            final IErlModel model = CoreScope.getModel();
+            final IErlElementLocator model = CoreScope.getModel();
             final IErlFolder ef = (IErlFolder) model
                     .findElement((IResource) element);
             if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {

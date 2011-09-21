@@ -53,7 +53,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         final Composite fieldEditorParent = getFieldEditorParent();
         final ProjectDirectoryFieldEditor out = new ProjectDirectoryFieldEditor(
                 ProjectPreferencesConstants.OUTPUT_DIR, "Output directory:",
-                fieldEditorParent, prj);
+                fieldEditorParent, prj, false);
         addField(out);
 
         final ProjectPathEditor src = new ProjectPathEditor(

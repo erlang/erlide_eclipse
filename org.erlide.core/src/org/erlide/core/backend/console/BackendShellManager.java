@@ -34,7 +34,7 @@ public class BackendShellManager implements IDisposable {
         return shell;
     }
 
-    public synchronized BackendShell openShell(final String id) {
+    public synchronized IBackendShell openShell(final String id) {
         BackendShell shell = getShell(id);
         if (shell == null) {
             OtpErlangPid server = null;
@@ -52,7 +52,7 @@ public class BackendShellManager implements IDisposable {
     }
 
     public synchronized void closeShell(final String id) {
-        final BackendShell shell = getShell(id);
+        final IBackendShell shell = getShell(id);
         if (shell != null) {
             fShells.remove(id);
             shell.close();
@@ -61,7 +61,7 @@ public class BackendShellManager implements IDisposable {
 
     public void dispose() {
         final Collection<BackendShell> c = fShells.values();
-        for (final BackendShell backendShell : c) {
+        for (final IBackendShell backendShell : c) {
             backendShell.close();
         }
         fShells.clear();

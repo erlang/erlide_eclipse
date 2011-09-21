@@ -72,11 +72,6 @@ public class ErlFolder extends Openable implements IErlFolder {
         return result;
     }
 
-    public Collection<IResource> getNonErlangResources()
-            throws ErlModelException {
-        return null;
-    }
-
     public Kind getKind() {
         return Kind.FOLDER;
     }
@@ -186,5 +181,17 @@ public class ErlFolder extends Openable implements IErlFolder {
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
         return findModuleOrInclude(includeName, includePath, true);
+    }
+
+    private void addModules(final List<IErlModule> modules)
+            throws ErlModelException {
+        for (final IErlElement e : getChildren()) {
+            if (e instanceof IErlModule) {
+                modules.add((IErlModule) e);
+            } else if (e instanceof ErlFolder) {
+                final ErlFolder f = (ErlFolder) e;
+                f.addModules(modules);
+            }
+        }
     }
 }

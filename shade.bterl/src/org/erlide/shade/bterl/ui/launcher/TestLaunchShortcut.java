@@ -161,6 +161,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         return result;
     }
 
+    @SuppressWarnings("deprecation")
     protected String getResolvedPath(final IResource dir) {
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
                 .getPathVariableManager();

@@ -11,9 +11,8 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.StateDataToRecordRpcMessage;
-import org.erlide.wrangler.refactoring.core.QuickCheckStateRefactoring;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;

@@ -315,20 +315,32 @@
           </enabledWhen>
       </page>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            objectClass="org.eclipse.core.resources.IProject"
-            nameFilter="*"
-            id="org.erlide.ui.actions.togglenature">
+ <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution adaptable="true"
+            id="org.erlide.ui.addNature"
+            objectClass="org.eclipse.core.resources.IProject">
          <action
                class="org.erlide.ui.actions.ToggleNatureAction"
-               enablesFor="1"
-               id="org.erlide.ui.addRemoveNatureAction"
-               label="Toggle Erlang nature"
-               menubarPath="additions">
+               id="org.erlide.ui.AddNatureAction"
+               label="Add Erlang nature"
+               menubarPath="org.eclipse.ui.projectConfigure/additions">
          </action>
+         <visibility>
+            <not><objectState name="nature" value="org.erlide.core.erlnature" /></not>
+         </visibility>
+      </objectContribution>
+      <objectContribution adaptable="true"
+            id="org.erlide.ui.removeNature"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="org.erlide.ui.actions.ToggleNatureAction"
+               id="org.erlide.ui.AddNatureAction"
+               label="Remove Erlang nature"
+               menubarPath="org.eclipse.ui.projectConfigure/additions">
+         </action>
+         <visibility>
+            <objectState name="nature" value="org.erlide.core.erlnature" />
+         </visibility>
       </objectContribution>
       <objectContribution
             adaptable="false"
@@ -1634,9 +1646,6 @@
         <configurationType
               id="org.erlide.core.launch.erlangProcess">
         </configurationType>
-        <perspective
-              id="org.erlide.ui.perspectives.ErlangPerspective">
-        </perspective>
     </shortcut>
  </extension>
     <extension

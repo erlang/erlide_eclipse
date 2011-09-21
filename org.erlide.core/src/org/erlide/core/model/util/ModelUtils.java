@@ -10,7 +10,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.StringUtils;
-import org.erlide.core.internal.model.root.SourceRange;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
@@ -19,22 +18,17 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -62,7 +56,7 @@ public class ModelUtils {
     public static String getExternalModulePath(final IErlModule module) {
         final List<String> result = Lists.newArrayList();
         IErlElement element = module;
-        final IErlModel model = CoreScope.getModel();
+        final IErlElementLocator model = CoreScope.getModel();
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
@@ -167,7 +161,7 @@ public class ModelUtils {
 
     public static IErlFunction findFunction(String moduleName,
             final ErlangFunction erlangFunction, final String modulePath,
-            final IErlProject project, final IErlModel.Scope scope,
+            final IErlProject project, final IErlElementLocator.Scope scope,
             final IErlModule module) throws CoreException {
         if (moduleName != null) {
             moduleName = resolveMacroValue(moduleName, module);
@@ -188,13 +182,13 @@ public class ModelUtils {
 
     public static IErlModule findModule(final IErlProject project,
             final String moduleName, final String modulePath,
-            final IErlModel.Scope scope) throws ErlModelException {
-        final IErlModel model = CoreScope.getModel();
+            final IErlElementLocator.Scope scope) throws ErlModelException {
+        final IErlElementLocator model = CoreScope.getModel();
         if (project != null) {
             return model.findModuleFromProject(project, moduleName, modulePath,
                     scope);
         }
-        if (scope == IErlModel.Scope.ALL_PROJECTS) {
+        if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
             return model.findModule(moduleName, modulePath);
         }
         return null;
@@ -202,7 +196,7 @@ public class ModelUtils {
 
     public static IErlElement findTypeDef(final IErlModule module,
             String moduleName, final String typeName, final String modulePath,
-            final IErlProject project, final IErlModel.Scope scope)
+            final IErlProject project, final IErlElementLocator.Scope scope)
             throws CoreException {
         moduleName = resolveMacroValue(moduleName, module);
         final IErlModule module2 = findModule(project, moduleName, modulePath,
@@ -323,21 +317,6 @@ public class ModelUtils {
         return new String[] { "MODULE", "LINE", "FILE" };
     }
 
-    public static ISourceRange findVariable(final IRpcCallSite backend,
-            final ISourceRange range, final String variableName,
-            final String elementText) throws OtpErlangRangeException {
-        final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,
-                variableName, elementText);
-        if (res2 != null) {
-            final int relativePos = ((OtpErlangLong) res2.elementAt(0))
-                    .intValue() - 1;
-            final int length = ((OtpErlangLong) res2.elementAt(1)).intValue();
-            final int start = relativePos + range.getOffset();
-            return new SourceRange(start, length);
-        }
-        return range;
-    }
-
     public static boolean isOtpModule(final IErlModule module) {
         IParent parent = module.getParent();
         while (parent instanceof IErlExternal) {
@@ -348,27 +327,6 @@ public class ModelUtils {
             parent = external.getParent();
         }
         return false;
-    }
-
-    public static IErlElement findInclude(final IErlModule module,
-            final IErlProject project, final OpenResult res,
-            final IErlModel model) throws CoreException, BackendException {
-        if (module != null) {
-            final IErlModule include = model.findIncludeFromModule(module,
-                    res.getName(), res.getPath(),
-                    IErlModel.Scope.REFERENCED_PROJECTS);
-            if (include != null) {
-                return include;
-            }
-        } else if (project != null) {
-            final IErlModule include = model.findIncludeFromProject(project,
-                    res.getName(), res.getPath(),
-                    IErlModel.Scope.REFERENCED_PROJECTS);
-            if (include != null) {
-                return include;
-            }
-        }
-        return null;
     }
 
 }

@@ -21,12 +21,15 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.ErlangCore;
-import org.erlide.core.erlang.IErlElement;
-import org.erlide.core.erlang.IErlFunctionClause;
-import org.erlide.core.erlang.IErlModule;
-import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.FunctionRef;
+import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.rpc.IRpcResult;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.codeinspection.ui.InputDialogWithCheckbox;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
@@ -39,8 +42,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
-
-import erlang.FunctionRef;
 
 /**
  * Handles commands, which needs only a listing UI, and inspects the code.
@@ -135,7 +136,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			if (InputDialogWithCheckbox.OK == dialog.open()) {
 				int linesVal = Integer.parseInt(dialog.getValue());
 				boolean inProject = dialog.isCheckBoxChecked();
-				RpcResult res = null;
+				IRpcResult res = null;
 				if (inProject) {
 					res = WranglerBackendManager.getRefactoringBackend()
 							.callInspection("long_functions_in_dirs_eclipse",
@@ -183,7 +184,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			if (InputDialogWithCheckbox.OK == dialog.open()) {
 				int nestedVal = Integer.parseInt(dialog.getValue());
 				boolean inProject = dialog.isCheckBoxChecked();
-				RpcResult res = null;
+				IRpcResult res = null;
 				if (inProject) {
 					res = WranglerBackendManager.getRefactoringBackend()
 							.callInspection("nested_exprs_in_dirs_eclipse",
@@ -232,7 +233,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 				"Find incomplete receive patterns",
 				"Would you like to run the scan in the whole project?");
 		try {
-			RpcResult result = null;
+			IRpcResult result = null;
 			String function = "";
 			if (answer) {
 				function = inProject;
@@ -268,7 +269,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 	}
 
 	private ArrayList<IErlElement> processFunctionResult(Shell shell,
-			RpcResult result) throws OtpErlangRangeException {
+			IRpcResult result) throws OtpErlangRangeException {
 		ArrayList<IErlElement> elements = new ArrayList<IErlElement>();
 		OtpErlangObject obj = result.getValue();
 		OtpErlangTuple restuple = (OtpErlangTuple) obj;
@@ -279,8 +280,12 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			for (int i = 0; i < erlangFunctionList.arity(); ++i) {
 				OtpErlangTuple fTuple = (OtpErlangTuple) erlangFunctionList
 						.elementAt(i);
-				IErlFunctionClause f = extractFunction(fTuple);
-				elements.add(f);
+				IErlFunctionClause f;
+                try {
+                    f = extractFunction(fTuple);
+                    elements.add(f);
+                } catch (ErlModelException e) {
+                }
 			}
 		} else {
 			OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
@@ -301,7 +306,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 					"Find non tail recursive servers",
 					"Would you like to run the scan in the whole project?");
 			String function = "";
-			RpcResult res = null;
+			IRpcResult res = null;
 			if (!answer) {
 				function = inFile;
 				res = WranglerBackendManager.getRefactoringBackend()
@@ -336,7 +341,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 	}
 
 	private IErlFunctionClause extractFunction(OtpErlangTuple fTuple)
-			throws OtpErlangRangeException {
+			throws OtpErlangRangeException, ErlModelException {
 		IErlModule mod = extractModule(fTuple.elementAt(0));
 		String function = ((OtpErlangAtom) fTuple.elementAt(1)).atomValue();
 		int arity = ((OtpErlangLong) fTuple.elementAt(2)).intValue();
@@ -357,7 +362,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 
 		// run the rpc
 		try {
-			RpcResult res = WranglerBackendManager.getRefactoringBackend()
+			IRpcResult res = WranglerBackendManager.getRefactoringBackend()
 					.callInspection("dependencies_of_a_module_eclipse", "sx",
 							wranglerSelection.getFilePath(),
 							wranglerSelection.getSearchPath());
@@ -373,8 +378,8 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 						.elementAt(1);
 				OtpErlangList modList1 = (OtpErlangList) listtuple.elementAt(0);
 				OtpErlangList modList2 = (OtpErlangList) listtuple.elementAt(1);
-				modules1 = createErlMOduleList(modList1);
-				modules2 = createErlMOduleList(modList2);
+				modules1 = createErlModuleList(modList1);
+				modules2 = createErlModuleList(modList2);
 			} else {
 				OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
 				MessageDialog.openError(shell, "Error", s.stringValue());
@@ -384,12 +389,12 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			if (!modules1.isEmpty())
 				CodeInspectionViewsManager.showErlElements(
 						"Modules which depends on "
-								+ wranglerSelection.getErlElement().getModule()
+								+ wranglerSelection.getErlElement().getAncestorOfKind(Kind.MODULE)
 										.getName(), modules1,
 						DEPENECIES_1_VIEW_ID);
 			if (!modules2.isEmpty())
 				CodeInspectionViewsManager.showErlElements("Modules, on which "
-						+ wranglerSelection.getErlElement().getModule()
+						+ wranglerSelection.getErlElement().getAncestorOfKind(Kind.MODULE)
 								.getName() + " depends", modules2,
 						DEPENECIES_2_VIEW_ID);
 			else
@@ -401,16 +406,20 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		}
 	}
 
-	private ArrayList<IErlElement> createErlMOduleList(OtpErlangList modList) {
+	private ArrayList<IErlElement> createErlModuleList(OtpErlangList modList) {
 		ArrayList<IErlElement> modules = new ArrayList<IErlElement>();
 		for (int i = 0; i < modList.arity(); ++i) {
-			IErlModule m = extractModule(modList.elementAt(i));
-			modules.add(m);
+			IErlModule m;
+            try {
+                m = extractModule(modList.elementAt(i));
+                modules.add(m);
+            } catch (ErlModelException e) {
+            }
 		}
 		return modules;
 	}
 
-	private IErlModule extractModule(OtpErlangObject m) {
+	private IErlModule extractModule(OtpErlangObject m) throws ErlModelException {
 		String name = "";
 		if (m instanceof OtpErlangString) {
 			OtpErlangString element = (OtpErlangString) m;
@@ -420,7 +429,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			name = atom.atomValue();
 		}
 		String[] modNameParts = name.split("/");
-		IErlModule mod = ErlangCore.getModel().findModule(
+		IErlModule mod = CoreScope.getModel().findModule(
 				modNameParts[modNameParts.length - 1]);
 		return mod;
 	}
@@ -437,7 +446,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		if (ret == InputDialog.CANCEL)
 			return;
 		int lines = Integer.parseInt(dialog.getValue());
-		RpcResult res = WranglerBackendManager.getRefactoringBackend()
+		IRpcResult res = WranglerBackendManager.getRefactoringBackend()
 				.callInspection("large_modules_eclipse", "ixi", lines,
 						wranglerSelection.getSearchPath(),
 						GlobalParameters.getTabWidth());
@@ -450,7 +459,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			if (resindicator.atomValue().equals("ok")) {
 
 				OtpErlangList modList = (OtpErlangList) restuple.elementAt(1);
-				modules = createErlMOduleList(modList);
+				modules = createErlModuleList(modList);
 			} else {
 				OtpErlangString s = (OtpErlangString) restuple.elementAt(1);
 				MessageDialog.openError(shell, "Error", s.stringValue());

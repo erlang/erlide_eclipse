@@ -65,7 +65,7 @@ import org.erlide.core.internal.backend.BackendHelper;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
 

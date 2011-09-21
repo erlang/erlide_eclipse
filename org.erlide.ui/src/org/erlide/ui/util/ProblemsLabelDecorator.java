@@ -19,8 +19,8 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
 import org.erlide.ui.ErlideImage;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageDescriptor;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ProblemsLabelDecorator implements ILabelDecorator,
         ILightweightLabelDecorator {

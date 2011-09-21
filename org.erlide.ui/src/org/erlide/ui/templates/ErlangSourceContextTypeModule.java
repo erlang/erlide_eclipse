@@ -13,7 +13,7 @@ package org.erlide.ui.templates;
 import org.eclipse.jface.text.templates.GlobalTemplateVariables;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContextType;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlangSourceContextTypeModule extends TemplateContextType {
 

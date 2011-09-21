@@ -65,7 +65,7 @@ import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -223,12 +223,14 @@ public class SearchUtil {
         final Set<String> externalModulePaths = new HashSet<String>();
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection ss = (IStructuredSelection) selection;
-            for (final Object i : ss.toArray()) {
+            for (final Object i : ss.toList()) {
                 if (i instanceof IResource) {
                     final IResource r = (IResource) i;
                     addResourceToScope(result, r);
-                }
-                if (i instanceof IParent) {
+                } else if (i instanceof IErlModule) {
+                    final IErlModule module = (IErlModule) i;
+                    result.addModule(module);
+                } else if (i instanceof IParent) {
                     final IParent parent = (IParent) i;
                     addExternalModules(parent, result, externalModulePaths,
                             addExternals, addOtp);
@@ -526,14 +528,25 @@ public class SearchUtil {
             final StringBuilder sb = new StringBuilder();
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             int i = 0;
-            for (final Object o : structuredSelection.toList()) {
+            final List<?> list = structuredSelection.toList();
+            if (list.isEmpty()) {
+                return "";
+            }
+            for (final Object o : list) {
+                String name;
                 if (o instanceof IResource) {
                     final IResource resource = (IResource) o;
-                    sb.append('\'').append(resource.getName()).append("', ");
-                    i++;
-                    if (i == 2) {
-                        break;
-                    }
+                    name = resource.getName();
+                } else if (o instanceof IErlElement) {
+                    final IErlElement element = (IErlElement) o;
+                    name = element.getName();
+                } else {
+                    continue;
+                }
+                sb.append('\'').append(name).append("', ");
+                i++;
+                if (i == 2) {
+                    break;
                 }
             }
             if (structuredSelection.size() > 2) {
@@ -687,8 +700,8 @@ public class SearchUtil {
             }
             result.add(new ModuleLineFunctionArityRef(modName, offsetL
                     .intValue(), lengthL.intValue(), name, arity, clauseHead,
-                    Boolean.parseBoolean(subClause.atomValue()), Boolean.parseBoolean(isDef
-                            .atomValue())));
+                    Boolean.parseBoolean(subClause.atomValue()), Boolean
+                            .parseBoolean(isDef.atomValue())));
         }
     }
 

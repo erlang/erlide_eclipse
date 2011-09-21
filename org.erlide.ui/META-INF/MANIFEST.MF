@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.11.7.qualifier
+Bundle-Version: 0.11.8.qualifier
 Bundle-ClassPath: .
-Bundle-Activator: org.erlide.ui.ErlideUIPlugin
+Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: com.bdaum.overlayPages;x-internal:=true,

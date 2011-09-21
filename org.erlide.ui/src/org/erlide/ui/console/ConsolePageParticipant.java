@@ -46,12 +46,12 @@ import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.IShowInSource;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.part.ShowInContext;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.console.actions.ConsoleRemoveAllTerminatedAction;
 import org.erlide.ui.console.actions.ConsoleRemoveLaunchAction;
 import org.erlide.ui.console.actions.ConsoleTerminateAction;
 import org.erlide.ui.console.actions.ShowStandardOutAction;
 import org.erlide.ui.console.actions.ShowWhenContentChangesAction;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * Creates and manages process console specific actions

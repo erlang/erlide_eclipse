@@ -24,7 +24,7 @@ public class CoverageAnalysis {
     public static boolean isAvailable() {
         try {
             return getCoveragePerformer() != null;
-        } catch (CoreException e) {
+        } catch (final CoreException e) {
             e.printStackTrace();
             return false;
         }
@@ -61,7 +61,7 @@ public class CoverageAnalysis {
             final ICoveragePerformer performer = getCoveragePerformerOrThrow();
             performer.startCover(additionalNodes);
             performer.setCoverageConfiguration(configuration);
-        } catch (CoreException e) {
+        } catch (final CoreException e) {
             throw new CoverException(e);
         }
     }
@@ -78,7 +78,7 @@ public class CoverageAnalysis {
     public static void performAnalysis() throws CoverException {
         try {
             getCoveragePerformerOrThrow().analyse();
-        } catch (CoreException e) {
+        } catch (final CoreException e) {
             throw new CoverException(e);
         }
     }
@@ -103,7 +103,7 @@ public class CoverageAnalysis {
             try {
                 proxy = (ICoveragePerformerProxy) ce
                         .createExecutableExtension("class");
-            } catch (CoreException e) {
+            } catch (final CoreException e) {
                 e.printStackTrace();
                 throw new CoverException(e);
             }

@@ -125,7 +125,7 @@ public class ErlideBuilder {
             final IResource outr = project.findMember(out);
             if (outr != null) {
                 try {
-                    outr.setDerived(true);
+                    outr.setDerived(true, null);
                     outr.refreshLocal(IResource.DEPTH_ZERO, null);
                 } catch (final CoreException e) {
                     // ignore it
@@ -138,10 +138,9 @@ public class ErlideBuilder {
             final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                     kind, args, project, resourceDelta);
             final int n = resourcesToBuild.size();
-            if (BuilderHelper.isDebugging()) {
-                ErlLogger.debug("Will compile %d resource(s): %s",
-                        Integer.valueOf(n), resourcesToBuild.toString());
-            }
+            // if (BuilderHelper.isDebugging()) {
+            ErlLogger.debug("Will compile %d resource(s)", Integer.valueOf(n));
+            // }
             if (n > 0) {
                 final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);

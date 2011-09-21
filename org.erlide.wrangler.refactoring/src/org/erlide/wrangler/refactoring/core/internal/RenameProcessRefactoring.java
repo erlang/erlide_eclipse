@@ -15,9 +15,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.backend.internal.ProcessRpcMessage;
-import org.erlide.wrangler.refactoring.core.ProcessRelatedRefactoring;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection.SelectionKind;
@@ -30,8 +29,6 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  * @version %I%, %G%
  */
 public class RenameProcessRefactoring extends ProcessRelatedRefactoring {
-
-    protected String undecidables;
 
     @Override
     public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)

@@ -1,4 +1,4 @@
-package org.erlide.core.backend.events;
+package org.erlide.core.internal.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,9 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
+import org.erlide.core.backend.events.ErlangEvent;
+import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.events.IEventDaemon;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 
@@ -15,7 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
-public class EventDaemon implements IBackendListener {
+public class EventDaemon implements IBackendListener, IEventDaemon {
 
     private IBackend runtime;
     volatile boolean stopped = false;

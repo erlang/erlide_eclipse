@@ -15,7 +15,7 @@ import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.IPluginContribution;
 import org.eclipse.ui.activities.WorkbenchActivityHelper;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

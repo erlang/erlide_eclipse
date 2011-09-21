@@ -3,6 +3,7 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.ErlangToolkit;
@@ -47,7 +48,7 @@ public class ErlideOpen {
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
-        final Collection<String> extra = BackendUtils.getExtraSourcePaths();
+        final Collection<IPath> extra = BackendUtils.getExtraSourcePaths();
         final String scanner = ErlangToolkit.createScannerModuleName(module);
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
                 scanner, offset,
@@ -58,7 +59,7 @@ public class ErlideOpen {
 
     public static OtpErlangTuple mkContext(final String externalModules,
             final String externalIncludes, final OtpErlangList pathVars,
-            final Collection<String> extraSourcePaths,
+            final Collection<IPath> extraSourcePaths,
             final Collection<OtpErlangObject> imports) {
         final OtpErlangAtom tag = new OtpErlangAtom("open_context");
         final OtpErlangAtom UNDEFINED = new OtpErlangAtom("undefined");

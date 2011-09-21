@@ -295,7 +295,6 @@ public final class BackendData extends GenericBackendData {
     }
 
     public Collection<IProject> getProjects() {
-        // TODO cache this?
         String prjs;
         prjs = getStringAttribute(ErlLaunchAttributes.PROJECTS, "");
         final String[] projectNames = prjs.length() == 0 ? new String[] {}

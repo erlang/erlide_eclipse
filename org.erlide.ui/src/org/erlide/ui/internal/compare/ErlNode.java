@@ -18,14 +18,13 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.swt.graphics.Image;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * 
@@ -58,14 +57,9 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
             name = m.getModuleName();
         } else if (element instanceof ISourceReference) {
             final ISourceReference sourceReference = (ISourceReference) element;
-            ISourceRange sr;
-            try {
-                sr = sourceReference.getSourceRange();
-                start = sr.getOffset();
-                length = sr.getLength();
-            } catch (final ErlModelException e) {
-                e.printStackTrace();
-            }
+            final ISourceRange sr = sourceReference.getSourceRange();
+            start = sr.getOffset();
+            length = sr.getLength();
         }
         return new ErlNode(parent, element.getKind(), name,
                 ErlangCompareUtilities.getErlElementID(element), doc, start,

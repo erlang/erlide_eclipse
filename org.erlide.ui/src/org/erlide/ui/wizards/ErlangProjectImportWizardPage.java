@@ -918,7 +918,7 @@ public class ErlangProjectImportWizardPage extends
      * @param map
      *            Map - key tree elements, values Lists of list elements
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected void updateSelections(final Map map) {
         super.updateSelections(map);
@@ -981,11 +981,6 @@ public class ErlangProjectImportWizardPage extends
         // .getFileSystemObject());
         // }
         return projectName;
-    }
-
-    public IPath getLocationPath() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public boolean isCopyFiles() {

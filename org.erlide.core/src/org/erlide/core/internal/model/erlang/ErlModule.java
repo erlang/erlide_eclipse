@@ -152,17 +152,13 @@ public class ErlModule extends Openable implements IErlModule {
             throws ErlModelException {
         return getModel().innermostThat(this, new Predicate<IErlElement>() {
             public boolean apply(final IErlElement e) {
-                try {
-                    if (e instanceof ISourceReference) {
-                        final ISourceReference ch = (ISourceReference) e;
-                        ISourceRange r;
-                        r = ch.getSourceRange();
-                        if (r != null && r.hasPosition(position)) {
-                            return true;
-                        }
+                if (e instanceof ISourceReference) {
+                    final ISourceReference ch = (ISourceReference) e;
+                    ISourceRange r;
+                    r = ch.getSourceRange();
+                    if (r != null && r.hasPosition(position)) {
+                        return true;
                     }
-                } catch (final ErlModelException e1) {
-                    ErlLogger.error(e1);
                 }
                 return false;
             }
@@ -201,32 +197,6 @@ public class ErlModule extends Openable implements IErlModule {
 
     public ISourceRange getSourceRange() throws ErlModelException {
         return new SourceRange(0, 0);
-    }
-
-    public void copy(final IErlElement container, final IErlElement sibling,
-            final String rename, final boolean replace,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void delete(final boolean force, final IProgressMonitor monitor)
-            throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void move(final IErlElement container, final IErlElement sibling,
-            final String rename, final boolean replace,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void rename(final String aname, final boolean replace,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

@@ -471,7 +471,6 @@ public final class TypeConverter {
 
     /**
      * Old style java->erlang conversion, used when "x" is given as an argument.
-     * TODO Could be polished a little.
      * 
      * @param obj
      * @return

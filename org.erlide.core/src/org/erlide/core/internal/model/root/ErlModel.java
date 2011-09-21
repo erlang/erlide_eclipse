@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,13 +36,11 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
@@ -54,7 +50,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementDelta;
-import org.erlide.core.model.root.IErlElementVisitor;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
@@ -62,14 +58,12 @@ import org.erlide.core.model.root.IErlParser;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.root.IWorkingCopy;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -97,29 +91,11 @@ public class ErlModel extends Openable implements IErlModel {
     private final IPathVariableChangeListener fPathVariableChangeListener;
 
     /**
-     * Turns delta firing on/off. By default it is on.
-     */
-    protected boolean fFire = true;
-
-    /**
-     * Queue of reconcile deltas on working copies that have yet to be fired.
-     * This is a table form IWorkingCopy to IErlElementDelta
-     */
-    private final HashMap<IWorkingCopy, IErlElementDelta> reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
-
-    /**
      * Listeners for element changes
      */
-    protected List<IElementChangedListener> elementChangedListeners = new ArrayList<IElementChangedListener>();
+    final List<IElementChangedListener> elementChangedListeners = new ArrayList<IElementChangedListener>();
 
-    /**
-     * Queue of deltas created explicitly by the model that have yet to be
-     * fired.
-     */
-    private final List<IErlElementDelta> erlModelDeltas = Collections
-            .synchronizedList(new ArrayList<IErlElementDelta>());
-
-    public static final int DEFAULT_CHANGE_EVENT = 0; // must not collide with
+    private final ErlModelDeltaManager deltaManager;
 
     public static boolean verbose = Boolean.getBoolean("erlide.model.verbose");
 
@@ -148,6 +124,7 @@ public class ErlModel extends Openable implements IErlModel {
         pvm.addChangeListener(fPathVariableChangeListener);
         final IResourceChangeListener listener = new ResourceChangeListener();
         workspace.addResourceChangeListener(listener);
+        deltaManager = new ErlModelDeltaManager(this);
     }
 
     @Override
@@ -171,45 +148,6 @@ public class ErlModel extends Openable implements IErlModel {
         return ErlModelCache.getDefault();
     }
 
-    /**
-     * @see IErlModel
-     */
-    public void copy(final IErlElement[] elements,
-            final IErlElement[] containers, final IErlElement[] siblings,
-            final String[] renamings, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // runOperation(new CopyResourceElementsOperation(elements, containers,
-        // force),
-        // elements,
-        // siblings, renamings, monitor);
-        // } else
-        // {
-        // runOperation(new CopyElementsOperation(elements, containers, force),
-        // elements,
-        // siblings, renamings, monitor);
-        // }
-    }
-
-    /**
-     * @see IErlModel
-     */
-    public void delete(final IErlElement[] elements, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // new DeleteResourceElementsOperation(elements, force)
-        // .runOperation(monitor);
-        // }
-        // else
-        // {
-        // new DeleteElementsOperation(elements, force).runOperation(monitor);
-        // }
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (!(o instanceof ErlModel)) {
@@ -223,22 +161,6 @@ public class ErlModel extends Openable implements IErlModel {
      */
     public Kind getKind() {
         return Kind.MODEL;
-    }
-
-    /**
-     * @see ErlElement#getHandleMemento()
-     */
-    public String getHandleMemento() {
-        return getName();
-    }
-
-    /**
-     * Returns the <code>char</code> that marks the start of this handles
-     * contribution to a memento.
-     */
-    protected char getHandleMementoDelimiter() {
-        Assert.isTrue(false, "Should not be called"); //$NON-NLS-1$
-        return 0;
     }
 
     /**
@@ -276,90 +198,10 @@ public class ErlModel extends Openable implements IErlModel {
         return result;
     }
 
-    /*
-     * @see IErlElement
-     */
     @Override
     public IResource getResource() {
         return ResourcesPlugin.getWorkspace().getRoot();
     }
-
-    // /**
-    // * @see IOpenable
-    // */
-    // @Override
-    // public IResource getUnderlyingResource() {
-    // return null;
-    // }
-
-    /**
-     * Returns the workbench associated with this object.
-     */
-    public IWorkspace getWorkspace() {
-        return ResourcesPlugin.getWorkspace();
-    }
-
-    /**
-     * @see IErlModel
-     */
-    public void move(final IErlElement[] elements,
-            final IErlElement[] containers, final IErlElement[] siblings,
-            final String[] renamings, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // runOperation(new MoveResourceElementsOperation(elements,
-        // containers, force), elements, siblings, renamings, monitor);
-        // }
-        // else
-        // {
-        // runOperation(
-        // new MoveElementsOperation(elements, containers, force),
-        // elements, siblings, renamings, monitor);
-        // }
-    }
-
-    /**
-     * @see IErlModel
-     */
-    public void rename(final IErlElement[] elements,
-            final IErlElement[] destinations, final String[] renamings,
-            final boolean force, final IProgressMonitor monitor)
-            throws ErlModelException {
-        // MultiOperation op;
-        // if (elements != null && elements.length > 0 && elements[0] != null
-        // && elements[0].getElementType() < IErlElement.TYPE)
-        // {
-        // op = new RenameResourceElementsOperation(elements, destinations,
-        // renamings, force);
-        // }
-        // else
-        // {
-        // op = new RenameElementsOperation(elements, destinations, renamings,
-        // force);
-        // }
-        //
-        // op.runOperation(monitor);
-    }
-
-    // /**
-    // * Configures and runs the <code>MultiOperation</code>.
-    // */
-    // protected void runOperation(MultiOperation op, IErlElement[] elements,
-    // IErlElement[] siblings, String[] renamings,
-    // IProgressMonitor monitor) throws ErlModelException
-    // {
-    // op.setRenamings(renamings);
-    // if (siblings != null)
-    // {
-    // for (int i = 0; i < elements.length; i++)
-    // {
-    // op.setInsertBefore(elements[i], siblings[i]);
-    // }
-    // }
-    // op.runOperation(monitor);
-    // }
 
     /**
      * @private Debugging purposes
@@ -537,44 +379,14 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     public IErlModule findModule(final String name) throws ErlModelException {
-        return ErlModel.findModuleFromProject(null, name, null, false, false,
-                IErlModel.Scope.ALL_PROJECTS);
+        return findModuleFromProject(null, name, null, false, false,
+                IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
     public IErlModule findModuleIgnoreCase(final String name)
             throws ErlModelException {
-        return ErlModel.findModuleFromProject(null, name, null, true, false,
-                IErlModel.Scope.ALL_PROJECTS);
-    }
-
-    public IErlProject createOtpProject(final IProject project)
-            throws CoreException, BackingStoreException {
-        final IPath location = project.getLocation();
-
-        final IErlProject p = getErlangProject(project);
-
-        final IFile file = project.getFile(".");
-        if (!file.isLinked()) {
-            file.createLink(location, IResource.NONE, null);
-        }
-
-        Collection<IPath> dirs;
-        dirs = findOtpSourceDirs(new File(location.toString()));
-        p.setSourceDirs(dirs);
-        dirs = findOtpIncludeDirs(new File(location.toString()));
-        p.setIncludeDirs(dirs);
-        p.open(null);
-        return p;
-    }
-
-    private static Collection<IPath> findOtpSourceDirs(final File file) {
-        final List<IPath> result = Lists.newArrayList();
-        return result;
-    }
-
-    private static Collection<IPath> findOtpIncludeDirs(final File file) {
-        final List<IPath> result = Lists.newArrayList();
-        return result;
+        return findModuleFromProject(null, name, null, true, false,
+                IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
     public final IErlProject newProject(final String name, final String path)
@@ -597,30 +409,6 @@ public class ErlModel extends Openable implements IErlModel {
             return makeErlangProject(project);
         } catch (final CoreException e) {
             throw new ErlModelException(e);
-        }
-    }
-
-    public final void accept(final IErlElement element,
-            final IErlElementVisitor visitor, final EnumSet<AcceptFlags> flags,
-            final IErlElement.Kind leafKind) throws ErlModelException {
-        if (element.getKind() == leafKind) {
-            visitor.visit(element);
-        } else {
-            boolean visitChildren = true;
-            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
-                    && !flags.contains(AcceptFlags.CHILDREN_FIRST)) {
-                visitChildren = visitor.visit(element);
-            }
-            if (visitChildren && element instanceof IParent) {
-                final IParent parent = (IParent) element;
-                for (final IErlElement child : parent.getChildren()) {
-                    accept(child, visitor, flags, leafKind);
-                }
-            }
-            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
-                    && flags.contains(AcceptFlags.CHILDREN_FIRST)) {
-                visitor.visit(element);
-            }
         }
     }
 
@@ -669,14 +457,14 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlModule findModule(final String moduleName,
             final String modulePath) throws ErlModelException {
-        return ErlModel.findModuleFromProject(null, moduleName, modulePath,
-                false, true, IErlModel.Scope.ALL_PROJECTS);
+        return findModuleFromProject(null, moduleName, modulePath, false, true,
+                IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
-        return ErlModel.findIncludeFromProject(null, includeName, includePath,
-                false, false, IErlModel.Scope.ALL_PROJECTS);
+        return findIncludeFromProject(null, includeName, includePath, false,
+                false, IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
     private static volatile ErlModel fgErlangModel;
@@ -790,187 +578,14 @@ public class ErlModel extends Openable implements IErlModel {
         ErlModel.getErlModelCache().putEdited(path, module);
     }
 
-    public void fire(final int eventType) {
-        fire(null, eventType);
-    }
-
-    /**
-     * Fire Model deltas, flushing them after the fact. If the firing mode has
-     * been turned off, this has no effect.
-     */
-    private void fire(final IErlElementDelta customDeltas, final int eventType) {
-        if (fFire) {
-            IErlElementDelta deltaToNotify;
-            if (customDeltas == null) {
-                deltaToNotify = mergeDeltas(erlModelDeltas);
-            } else {
-                deltaToNotify = customDeltas;
-            }
-
-            final IElementChangedListener[] listeners;
-            final int listenerCount;
-            final int[] listenerMask;
-            // Notification
-            synchronized (elementChangedListeners) {
-                listeners = new IElementChangedListener[elementChangedListeners
-                        .size()];
-                elementChangedListeners.toArray(listeners);
-                listenerCount = listeners.length;
-                listenerMask = null;
-            }
-
-            switch (eventType) {
-            case DEFAULT_CHANGE_EVENT:
-                // firePreAutoBuildDelta(deltaToNotify, listeners, listenerMask,
-                // listenerCount);
-                firePostChangeDelta(deltaToNotify, listeners, listenerMask,
-                        listenerCount);
-                fireReconcileDelta(listeners, listenerMask, listenerCount);
-                break;
-            // case ElementChangedEvent.PRE_AUTO_BUILD :
-            // firePreAutoBuildDelta(deltaToNotify, listeners, listenerMask,
-            // listenerCount);
-            // break;
-            case ElementChangedEvent.POST_CHANGE:
-                firePostChangeDelta(deltaToNotify, listeners, listenerMask,
-                        listenerCount);
-                fireReconcileDelta(listeners, listenerMask, listenerCount);
-                break;
-            case ElementChangedEvent.POST_RECONCILE:
-                fireReconcileDelta(listeners, listenerMask, listenerCount);
-                break;
-            case ElementChangedEvent.POST_SHIFT:
-                fireShiftEvent(deltaToNotify, listeners, listenerMask,
-                        listenerCount);
-                return;
-            }
-        }
-    }
-
-    private void firePostChangeDelta(final IErlElementDelta deltaToNotify,
-            final IElementChangedListener[] listeners,
-            final int[] listenerMask, final int listenerCount) {
-
-        // post change deltas
-        if (verbose) {
-            System.out
-                    .println("FIRING POST_CHANGE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
-            System.out
-                    .println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
-        }
-        if (deltaToNotify != null) {
-            // flush now so as to keep listener reactions to post their own
-            // deltas for
-            // subsequent iteration
-            flush();
-            notifyListeners(deltaToNotify, ElementChangedEvent.POST_CHANGE,
-                    listeners, listenerMask, listenerCount);
-        }
-    }
-
-    private void fireReconcileDelta(final IElementChangedListener[] listeners,
-            final int[] listenerMask, final int listenerCount) {
-        final IErlElementDelta deltaToNotify = mergeDeltas(reconcileDeltas
-                .values());
-        if (verbose) {
-            System.out
-                    .println("FIRING POST_RECONCILE Delta [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
-            System.out
-                    .println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
-        }
-        if (deltaToNotify != null) {
-            // flush now so as to keep listener reactions to post their own
-            // deltas for
-            // subsequent iteration
-            reconcileDeltas.clear();
-            notifyListeners(deltaToNotify, ElementChangedEvent.POST_RECONCILE,
-                    listeners, listenerMask, listenerCount);
-        }
-    }
-
-    private void fireShiftEvent(final IErlElementDelta deltaToNotify,
-            final IElementChangedListener[] listeners,
-            final int[] listenerMask, final int listenerCount) {
-
-        // post change deltas
-        if (verbose) {
-            System.out
-                    .println("FIRING POST_SHIFT event [" + Thread.currentThread() + "]:"); //$NON-NLS-1$//$NON-NLS-2$
-            System.out
-                    .println(deltaToNotify == null ? "<NONE>" : deltaToNotify.toString()); //$NON-NLS-1$
-        }
-        if (deltaToNotify != null) {
-            flush();
-            notifyListeners(deltaToNotify, ElementChangedEvent.POST_SHIFT,
-                    listeners, listenerMask, listenerCount);
-        }
-    }
-
-    private IErlElementDelta mergeDeltas(
-            final Collection<IErlElementDelta> deltas) {
-
-        synchronized (deltas) {
-            if (deltas.size() == 0) {
-                return null;
-            }
-            if (deltas.size() == 1) {
-                return deltas.iterator().next();
-            }
-            if (deltas.size() <= 1) {
-                return null;
-            }
-
-            final Iterator<IErlElementDelta> iterator = deltas.iterator();
-            final IErlElement cRoot = getErlangModel();
-            final ErlElementDelta rootDelta = new ErlElementDelta(0, 0, cRoot);
-            boolean insertedTree = false;
-            while (iterator.hasNext()) {
-                final ErlElementDelta delta = (ErlElementDelta) iterator.next();
-                final IErlElement element = delta.getElement();
-                if (cRoot.equals(element)) {
-                    final IErlElementDelta[] children = delta
-                            .getChildren(IErlElementDelta.ALL);
-                    for (final IErlElementDelta element0 : children) {
-                        final ErlElementDelta projectDelta = (ErlElementDelta) element0;
-                        rootDelta.insertDeltaTree(projectDelta.getElement(),
-                                projectDelta);
-                        insertedTree = true;
-                    }
-                    final IResourceDelta[] resourceDeltas = delta
-                            .getResourceDeltas();
-                    if (resourceDeltas != null) {
-                        for (final IResourceDelta element0 : resourceDeltas) {
-                            rootDelta.addResourceDelta(element0);
-                            insertedTree = true;
-                        }
-                    }
-                } else {
-                    rootDelta.insertDeltaTree(element, delta);
-                    insertedTree = true;
-                }
-            }
-            if (insertedTree) {
-                return rootDelta;
-            }
-            return null;
-        }
-    }
-
     /**
      * Registers the given delta with this manager. This API is to be used to
-     * registered deltas that are created explicitly by the C Model. Deltas
+     * registered deltas that are created explicitly by the Erlang Model. Deltas
      * created as translations of <code>IResourceDeltas</code> are to be
      * registered with <code>#registerResourceDelta</code>.
      */
     public void registerModelDelta(final IErlElementDelta delta) {
-        erlModelDeltas.add(delta);
-    }
-
-    /**
-     * Flushes all deltas without firing them.
-     */
-    protected void flush() {
-        erlModelDeltas.clear();
+        deltaManager.erlModelDeltas.add(delta);
     }
 
     public void notifyListeners(final IErlElementDelta deltaToNotify,
@@ -1158,14 +773,10 @@ public class ErlModel extends Openable implements IErlModel {
      * <ul>
      * <li>a project - the element returned is the corresponding
      * <code>IErlProject</code></li>
-     * <li>a <code>.Erlang</code> file - the element returned is the
-     * corresponding <code>IErlModule</code></li>
-     * <li>a <code>.class</code> file - the element returned is the
-     * corresponding <code>IClassFile</code></li>
-     * <li>a <code>.jar</code> file - the element returned is the corresponding
-     * <code>IPackageFragmentRoot</code></li>
+     * <li>a <code>.erl</code> file - the element returned is the corresponding
+     * <code>IErlModule</code></li>
      * <li>a folder - the element returned is the corresponding
-     * <code>IPackageFragmentRoot</code> or <code>IPackageFragment</code></li>
+     * <code>IErlFolder</code></li>
      * <li>the workspace root resource - the element returned is the
      * <code>IErlModel</code></li>
      * </ul>
@@ -1322,9 +933,10 @@ public class ErlModel extends Openable implements IErlModel {
         return parser;
     }
 
-    static IErlModule getModuleFromCacheByNameOrPath(final ErlProject project,
-            final String moduleName, final String modulePath,
-            final IErlModel.Scope scope) throws ErlModelException {
+    private static IErlModule getModuleFromCacheByNameOrPath(
+            final ErlProject project, final String moduleName,
+            final String modulePath, final IErlElementLocator.Scope scope)
+            throws ErlModelException {
         final ErlModelCache erlModelCache = getErlModelCache();
         if (modulePath != null) {
             final IErlModule module = erlModelCache.getModuleByPath(modulePath);
@@ -1336,21 +948,20 @@ public class ErlModel extends Openable implements IErlModel {
         return null;
     }
 
-    static Collection<IErlModule> getAllIncludes(final IErlProject project,
-            final boolean checkExternals, final IErlModel.Scope scope)
+    private Collection<IErlModule> getAllIncludes(final IErlProject project,
+            final boolean checkExternals, final IErlElementLocator.Scope scope)
             throws ErlModelException {
         final List<IErlProject> projects = Lists.newArrayList();
         final List<IErlModule> result = Lists.newArrayList();
         final Set<String> paths = Sets.newHashSet();
         if (project != null) {
             projects.add(project);
-            if (scope == IErlModel.Scope.REFERENCED_PROJECTS) {
+            if (scope == IErlElementLocator.Scope.REFERENCED_PROJECTS) {
                 projects.addAll(project.getReferencedProjects());
             }
         }
-        if (scope == IErlModel.Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            for (final IErlProject project2 : model.getErlangProjects()) {
+        if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
+            for (final IErlProject project2 : getErlangProjects()) {
                 if (!projects.contains(project2)) {
                     projects.add(project2);
                 }
@@ -1359,7 +970,7 @@ public class ErlModel extends Openable implements IErlModel {
         for (final IErlProject project2 : projects) {
             getAllModulesAux(project2.getIncludes(), result, paths);
         }
-        if (checkExternals) {
+        if (checkExternals && project != null) {
             getAllModulesAux(project.getExternalIncludes(), result, paths);
         }
         return result;
@@ -1379,8 +990,8 @@ public class ErlModel extends Openable implements IErlModel {
         }
     }
 
-    static Collection<IErlModule> getAllModules(final IErlProject project,
-            final boolean checkExternals, final IErlModel.Scope scope)
+    private Collection<IErlModule> getAllModules(final IErlProject project,
+            final boolean checkExternals, final IErlElementLocator.Scope scope)
             throws ErlModelException {
         final Set<IErlProject> projects = Sets.newHashSet();
         final List<IErlModule> result = Lists.newArrayList();
@@ -1388,14 +999,13 @@ public class ErlModel extends Openable implements IErlModel {
 
         if (project != null) {
             projects.add(project);
-            if (scope == IErlModel.Scope.REFERENCED_PROJECTS) {
+            if (scope == IErlElementLocator.Scope.REFERENCED_PROJECTS) {
                 projects.addAll(project.getReferencedProjects());
             }
         }
 
-        if (scope == IErlModel.Scope.ALL_PROJECTS) {
-            final IErlModel model = CoreScope.getModel();
-            projects.addAll(model.getErlangProjects());
+        if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
+            projects.addAll(getErlangProjects());
         }
 
         for (final IErlProject project2 : projects) {
@@ -1406,7 +1016,7 @@ public class ErlModel extends Openable implements IErlModel {
                 ErlModel.getAllModulesAux(project.getExternalModules(), result,
                         paths);
             }
-            if (scope == IErlModel.Scope.ALL_PROJECTS) {
+            if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
                 for (final IErlProject project2 : projects) {
                     ErlModel.getAllModulesAux(project2.getExternalModules(),
                             result, paths);
@@ -1416,10 +1026,10 @@ public class ErlModel extends Openable implements IErlModel {
         return result;
     }
 
-    static IErlModule findIncludeFromProject(final IErlProject project,
+    private IErlModule findIncludeFromProject(final IErlProject project,
             final String includeName, final String includePath,
             final boolean ignoreCase, final boolean checkExternals,
-            final IErlModel.Scope scope) throws ErlModelException {
+            final IErlElementLocator.Scope scope) throws ErlModelException {
         if (project != null) {
             final IErlModule module = getModuleFromCacheByNameOrPath(
                     (ErlProject) project, includeName, includePath, scope);
@@ -1459,22 +1069,22 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlModule findModuleFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
-            final IErlModel.Scope scope) throws ErlModelException {
+            final IErlElementLocator.Scope scope) throws ErlModelException {
         return findModuleFromProject(project, moduleName, modulePath, false,
                 true, scope);
     }
 
     public IErlModule findIncludeFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
-            final IErlModel.Scope scope) throws ErlModelException {
+            final IErlElementLocator.Scope scope) throws ErlModelException {
         return findIncludeFromProject(project, moduleName, modulePath, false,
                 true, scope);
     }
 
-    static IErlModule findModuleFromProject(final IErlProject project,
+    public IErlModule findModuleFromProject(final IErlProject project,
             final String moduleName, final String modulePath,
             final boolean ignoreCase, final boolean checkExternals,
-            final IErlModel.Scope scope) throws ErlModelException {
+            final IErlElementLocator.Scope scope) throws ErlModelException {
         if (project != null) {
             final IErlModule module = getModuleFromCacheByNameOrPath(
                     (ErlProject) project, moduleName, modulePath, scope);
@@ -1514,7 +1124,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     public IErlModule findIncludeFromModule(final IErlModule module,
             final String includeName, final String includePath,
-            final IErlModel.Scope scope) throws ErlModelException {
+            final IErlElementLocator.Scope scope) throws ErlModelException {
         final IParent parent = module.getParent();
         if (parent instanceof IErlFolder) {
             final IErlFolder folder = (IErlFolder) parent;

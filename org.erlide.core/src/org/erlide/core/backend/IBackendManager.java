@@ -1,4 +1,4 @@
-package org.erlide.core.backend.manager;
+package org.erlide.core.backend;
 
 import java.util.Collection;
 import java.util.Map;
@@ -6,13 +6,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
-import org.erlide.core.backend.BackendData;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.IBackendListener;
-import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeBundle.CodeContext;
-import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.epmd.EpmdWatcher;

@@ -58,7 +58,7 @@ public final class ErlideUtil {
 
     private static Boolean fgCacheNoModelCache = null;
 
-    public static boolean isNoModelCache() {
+    public static boolean isCacheDisabled() {
         if (fgCacheNoModelCache == null) {
             final String test = System.getProperty("erlide.noModelCache");
             fgCacheNoModelCache = Boolean.valueOf(test);

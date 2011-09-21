@@ -16,7 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.ui.ErlideImage;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
  * An ErlangImageDescriptor consists of a base image and several adornments. The

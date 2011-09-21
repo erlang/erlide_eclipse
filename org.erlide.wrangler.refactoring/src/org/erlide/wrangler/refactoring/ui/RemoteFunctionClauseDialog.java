@@ -43,165 +43,165 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  */
 public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
-	IErlMemberSelection initianlSelection = (IErlMemberSelection) GlobalParameters
-			.getWranglerSelection();
+    IErlMemberSelection initianlSelection = (IErlMemberSelection) GlobalParameters
+            .getWranglerSelection();
 
-	/**
-	 * Sets back the initial Erlide selection
-	 */
-	public void resetSelection() {
-		WranglerUtils.highlightSelection(initianlSelection.getSelectionRange()
-				.getOffset(),
-				initianlSelection.getSelectionRange().getLength(),
-				initianlSelection);
-	}
+    /**
+     * Sets back the initial Erlide selection
+     */
+    public void resetSelection() {
+        WranglerUtils.highlightSelection(initianlSelection.getSelectionRange()
+                .getOffset(),
+                initianlSelection.getSelectionRange().getLength(),
+                initianlSelection);
+    }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param parentShell
-	 *            shell
-	 * @param title
-	 *            Dialog title
-	 */
-	public RemoteFunctionClauseDialog(final Shell parentShell,
-			final String title) {
-		super(parentShell, title);
-	}
+    /**
+     * Constructor
+     * 
+     * @param parentShell
+     *            shell
+     * @param title
+     *            Dialog title
+     */
+    public RemoteFunctionClauseDialog(final Shell parentShell,
+            final String title) {
+        super(parentShell, title);
+    }
 
-	private IErlFunctionClause functionClause = null;
+    private IErlFunctionClause functionClause = null;
 
-	@Override
-	protected Control createDialogArea(final Composite parent) {
+    @Override
+    protected Control createDialogArea(final Composite parent) {
 
-		final Composite composite = (Composite) super.createDialogArea(parent);
-		final Tree functionClausesTree;
+        final Composite composite = (Composite) super.createDialogArea(parent);
+        final Tree functionClausesTree;
 
-		final Label label = new Label(composite, SWT.WRAP);
-		label.setText("Please select the function clause which against should fold!");
-		final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_CENTER);
-		minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		label.setLayoutData(minToksData);
-		label.setFont(parent.getFont());
+        final Label label = new Label(composite, SWT.WRAP);
+        label.setText("Please select the function clause which against should fold!");
+        final GridData minToksData = new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_CENTER);
+        minToksData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        label.setLayoutData(minToksData);
+        label.setFont(parent.getFont());
 
-		functionClausesTree = new Tree(composite, SWT.BORDER);
-		final GridData treeData = new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_CENTER);
-		treeData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		functionClausesTree.setLayoutData(treeData);
+        functionClausesTree = new Tree(composite, SWT.BORDER);
+        final GridData treeData = new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_CENTER);
+        treeData.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        functionClausesTree.setLayoutData(treeData);
 
-		try {
-			final Collection<IErlModule> erlmodules = GlobalParameters
-					.getWranglerSelection().getErlElement().getProject()
-					.getModules();
+        try {
+            final Collection<IErlModule> erlmodules = GlobalParameters
+                    .getWranglerSelection().getErlElement().getProject()
+                    .getModules();
 
-			for (final IErlModule m : erlmodules) {
-				// must refresh the scanner!
-				if (/* !m.isStructureKnown() */true) {
-					// FIXME: not permitted operation
-					m.open(null);
-				}
+            for (final IErlModule m : erlmodules) {
+                // must refresh the scanner!
+                if (/* !m.isStructureKnown() */true) {
+                    // FIXME: not permitted operation
+                    m.open(null);
+                }
 
-				final TreeItem moduleName = new TreeItem(functionClausesTree, 0);
-				moduleName.setText(m.getModuleName());
-				moduleName.setData(m);
-				final List<IErlFunction> functions = filterFunctions(m
-						.getChildren());
-				for (final IErlFunction f : functions) {
-					final TreeItem functionName = new TreeItem(moduleName, 0);
-					functionName.setText(f.getNameWithArity());
-					final List<IErlFunctionClause> clauses = filterClauses(f
-							.getChildren());
-					functionName.setData(f);
-					for (final IErlFunctionClause c : clauses) {
-						final TreeItem clauseName = new TreeItem(functionName,
-								0);
-						clauseName.setText(String.valueOf(c.getName()));
-						clauseName.setData(c);
-					}
-				}
-			}
+                final TreeItem moduleName = new TreeItem(functionClausesTree, 0);
+                moduleName.setText(m.getModuleName());
+                moduleName.setData(m);
+                final List<IErlFunction> functions = filterFunctions(m
+                        .getChildren());
+                for (final IErlFunction f : functions) {
+                    final TreeItem functionName = new TreeItem(moduleName, 0);
+                    functionName.setText(f.getNameWithArity());
+                    final List<IErlFunctionClause> clauses = filterClauses(f
+                            .getChildren());
+                    functionName.setData(f);
+                    for (final IErlFunctionClause c : clauses) {
+                        final TreeItem clauseName = new TreeItem(functionName,
+                                0);
+                        clauseName.setText(String.valueOf(c.getName()));
+                        clauseName.setData(c);
+                    }
+                }
+            }
 
-			// listen to treeitem selection
-			functionClausesTree.addSelectionListener(new SelectionListener() {
+            // listen to treeitem selection
+            functionClausesTree.addSelectionListener(new SelectionListener() {
 
-				public void widgetDefaultSelected(final SelectionEvent e) {
-				}
+                public void widgetDefaultSelected(final SelectionEvent e) {
+                }
 
-				// if a function or a function clause is selected, then
-				// highlight it
-				// and store the selection
-				public void widgetSelected(final SelectionEvent e) {
+                // if a function or a function clause is selected, then
+                // highlight it
+                // and store the selection
+                public void widgetSelected(final SelectionEvent e) {
 
-					final TreeItem[] selectedItems = functionClausesTree
-							.getSelection();
+                    final TreeItem[] selectedItems = functionClausesTree
+                            .getSelection();
 
-					if (selectedItems.length > 0) {
-						final TreeItem treeItem = selectedItems[0];
-						final Object data = treeItem.getData();
-						if (data instanceof IErlFunctionClause) {
-							// enable the ok button
-							okButton.setEnabled(true);
+                    if (selectedItems.length > 0) {
+                        final TreeItem treeItem = selectedItems[0];
+                        final Object data = treeItem.getData();
+                        if (data instanceof IErlFunctionClause) {
+                            // enable the ok button
+                            okButton.setEnabled(true);
 
-							// highlight
-							WranglerUtils
-									.highlightSelection(((IErlFunctionClause) data));
+                            // highlight
+                            WranglerUtils
+                                    .highlightSelection(((IErlFunctionClause) data));
 
-							// store
-							functionClause = (IErlFunctionClause) data;
-						} else {
-							okButton.setEnabled(false);
-						}
-					}
+                            // store
+                            functionClause = (IErlFunctionClause) data;
+                        } else {
+                            okButton.setEnabled(false);
+                        }
+                    }
 
-				}
+                }
 
-			});
-		} catch (final ErlModelException e) {
-			e.printStackTrace();
-		}
+            });
+        } catch (final ErlModelException e) {
+            e.printStackTrace();
+        }
 
-		applyDialogFont(composite);
-		return composite;
-	}
+        applyDialogFont(composite);
+        return composite;
+    }
 
-	protected List<IErlFunctionClause> filterClauses(
-			final Collection<IErlElement> children) {
-		final ArrayList<IErlFunctionClause> clauses = new ArrayList<IErlFunctionClause>();
-		for (final IErlElement e : children) {
-			if (e instanceof IErlFunctionClause) {
-				clauses.add((IErlFunctionClause) e);
-			}
-		}
-		return clauses;
-	}
+    protected List<IErlFunctionClause> filterClauses(
+            final Collection<IErlElement> children) {
+        final ArrayList<IErlFunctionClause> clauses = new ArrayList<IErlFunctionClause>();
+        for (final IErlElement e : children) {
+            if (e instanceof IErlFunctionClause) {
+                clauses.add((IErlFunctionClause) e);
+            }
+        }
+        return clauses;
+    }
 
-	protected List<IErlFunction> filterFunctions(
-			final Collection<IErlElement> elements) {
-		final ArrayList<IErlFunction> functions = new ArrayList<IErlFunction>();
-		for (final IErlElement e : elements) {
-			if (e instanceof IErlFunction) {
-				functions.add((IErlFunction) e);
-			}
-		}
+    protected List<IErlFunction> filterFunctions(
+            final Collection<IErlElement> elements) {
+        final ArrayList<IErlFunction> functions = new ArrayList<IErlFunction>();
+        for (final IErlElement e : elements) {
+            if (e instanceof IErlFunction) {
+                functions.add((IErlFunction) e);
+            }
+        }
 
-		return functions;
-	}
+        return functions;
+    }
 
-	@Override
-	protected void validateInput() {
-	}
+    @Override
+    protected void validateInput() {
+    }
 
-	/**
-	 * Returns the selected functionClause if there is.
-	 * 
-	 * @return selected function clause
-	 */
-	public IErlFunctionClause getFunctionClause() {
-		return functionClause;
-	}
+    /**
+     * Returns the selected functionClause if there is.
+     * 
+     * @return selected function clause
+     */
+    public IErlFunctionClause getFunctionClause() {
+        return functionClause;
+    }
 
 }

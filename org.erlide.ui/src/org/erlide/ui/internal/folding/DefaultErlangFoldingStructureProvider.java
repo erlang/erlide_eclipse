@@ -48,11 +48,11 @@ import org.erlide.core.model.root.ISourceReference;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.internal.DocumentCharacterIterator;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 
@@ -706,17 +706,11 @@ public class DefaultErlangFoldingStructureProvider implements
      * @return the regions to be folded, or <code>null</code> if there are none
      */
     private IRegion computeProjectionRanges(final IErlElement element) {
-
-        try {
-            if (element instanceof ISourceReference) {
-                final ISourceReference reference = (ISourceReference) element;
-                final ISourceRange range = reference.getSourceRange();
-                return new Region(range.getOffset(), range.getLength());
-            }
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
+        if (element instanceof ISourceReference) {
+            final ISourceReference reference = (ISourceReference) element;
+            final ISourceRange range = reference.getSourceRange();
+            return new Region(range.getOffset(), range.getLength());
         }
-
         return null;
     }
 

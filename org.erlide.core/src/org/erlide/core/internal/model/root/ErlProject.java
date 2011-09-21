@@ -49,6 +49,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlFolder;
@@ -352,8 +353,7 @@ public class ErlProject extends Openable implements IErlProject {
         }
 
         final ErlProject other = (ErlProject) o;
-        return fProject.equals(other.getWorkspaceProject())
-                && fOccurrenceCount == other.fOccurrenceCount;
+        return fProject.equals(other.getWorkspaceProject());
     }
 
     @Override
@@ -511,9 +511,8 @@ public class ErlProject extends Openable implements IErlProject {
         }
         final List<IErlModule> result = new ArrayList<IErlModule>();
         final List<IPath> sourceDirs = Lists.newArrayList(getSourceDirs());
-        for (final String s : BackendUtils
-                .getExtraSourcePathsForModel(fProject)) {
-            sourceDirs.add(new Path(s));
+        for (final IPath s : BackendUtils.getExtraSourcePathsForModel(fProject)) {
+            sourceDirs.add(s);
         }
         result.addAll(getModulesOrIncludes(fProject, getModel(), sourceDirs,
                 true));
@@ -522,7 +521,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private static List<IErlModule> getModulesOrIncludes(
-            final IProject project, final IErlModel model,
+            final IProject project, final IErlElementLocator model,
             final Collection<IPath> dirs, final boolean getModules)
             throws ErlModelException {
         final List<IErlModule> result = Lists.newArrayList();
@@ -562,7 +561,7 @@ public class ErlProject extends Openable implements IErlProject {
         } else {
             final List<IErlModule> cached = erlModelCache
                     .getModulesForProject(this);
-            final IErlModel model = getModel();
+            final IErlElementLocator model = getModel();
             if (cached != null) {
                 result.addAll(cached);
             } else {
@@ -669,28 +668,14 @@ public class ErlProject extends Openable implements IErlProject {
         return Collections.unmodifiableCollection(nonErlangResources);
     }
 
-    public boolean isOnSourcePath() {
-        return true; // FIXME eller? ska man kolla nature? fast det ar val
-        // redan klart... kanske den inte ska arva fran
-        // IErlFolder? jaja....
-    }
-
-    public boolean isOnIncludePath() {
-        return true; // FIXME
-    }
-
     public IErlModule getModule(final String name) {
         try {
-            return ErlModel.findModuleFromProject(this, name, null, false,
-                    false, IErlModel.Scope.PROJECT_ONLY);
+            return getModel().findModuleFromProject(this, name, null, false,
+                    false, IErlElementLocator.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
             // final boolean hasExtension = CommonUtils.hasExtension(name);
             return null;
         }
-    }
-
-    public boolean isSourcePathParent() {
-        return true;
     }
 
     private IOldErlangProjectProperties getProperties() {
@@ -851,6 +836,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<IPath> cachedIncludeDirs = Lists
                 .newArrayListWithCapacity(paths.size());
         for (final IPath includeDir : paths) {
+            @SuppressWarnings("deprecation")
             final IPath resolvedPath = pathVariableManager
                     .resolvePath(includeDir);
             cachedIncludeDirs.add(resolvedPath);

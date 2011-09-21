@@ -12,12 +12,10 @@ package org.erlide.core.internal.model.root;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.root.ISourceManipulation;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
 
@@ -42,39 +40,6 @@ public abstract class SourceRefElement extends ErlElement implements
      */
     protected Object createElementInfo() {
         return null; // not used for source ref elements
-    }
-
-    /**
-     * @see ISourceManipulation
-     */
-    public void copy(final IErlElement container, final IErlElement sibling,
-            final String rename, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        if (container == null) {
-            throw new IllegalArgumentException(
-                    Util.bind("operation.nullContainer")); //$NON-NLS-1$
-        }
-        final IErlElement[] elements = new IErlElement[] { this };
-        final IErlElement[] containers = new IErlElement[] { container };
-        IErlElement[] siblings = null;
-        if (sibling != null) {
-            siblings = new IErlElement[] { sibling };
-        }
-        String[] renamings = null;
-        if (rename != null) {
-            renamings = new String[] { rename };
-        }
-        getModel().copy(elements, containers, siblings, renamings, force,
-                monitor);
-    }
-
-    /**
-     * @see ISourceManipulation
-     */
-    public void delete(final boolean force, final IProgressMonitor monitor)
-            throws ErlModelException {
-        final IErlElement[] elements = new IErlElement[] { this };
-        getModel().delete(elements, force, monitor);
     }
 
     /*
@@ -149,7 +114,7 @@ public abstract class SourceRefElement extends ErlElement implements
     /**
      * @see ISourceReference
      */
-    public ISourceRange getSourceRange() throws ErlModelException {
+    public ISourceRange getSourceRange() {
         return new SourceRange(fSourceRangeOffset, fSourceRangeLength);
     }
 
@@ -173,44 +138,6 @@ public abstract class SourceRefElement extends ErlElement implements
         } catch (final ErlModelException e) {
         }
         return false;
-    }
-
-    /**
-     * @see ISourceManipulation
-     */
-    public void move(final IErlElement container, final IErlElement sibling,
-            final String rename, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        if (container == null) {
-            throw new IllegalArgumentException(
-                    Util.bind("operation.nullContainer")); //$NON-NLS-1$
-        }
-        final IErlElement[] elements = new IErlElement[] { this };
-        final IErlElement[] containers = new IErlElement[] { container };
-        IErlElement[] siblings = null;
-        if (sibling != null) {
-            siblings = new IErlElement[] { sibling };
-        }
-        String[] renamings = null;
-        if (rename != null) {
-            renamings = new String[] { rename };
-        }
-        getModel().move(elements, containers, siblings, renamings, force,
-                monitor);
-    }
-
-    /**
-     * @see ISourceManipulation
-     */
-    public void rename(final String newName, final boolean force,
-            final IProgressMonitor monitor) throws ErlModelException {
-        if (newName == null) {
-            throw new IllegalArgumentException(Util.bind("element.nullName")); //$NON-NLS-1$
-        }
-        final IErlElement[] elements = new IErlElement[] { this };
-        final IErlElement[] dests = new IErlElement[] { (IErlElement) getParent() };
-        final String[] renamings = new String[] { newName };
-        getModel().rename(elements, dests, renamings, force, monitor);
     }
 
     public void setSourceRangeOffset(final int offset) {
@@ -251,5 +178,9 @@ public abstract class SourceRefElement extends ErlElement implements
     public int hashCode() {
         return Objects.hashCode(super.hashCode(), fSourceRangeOffset,
                 fSourceRangeLength);
+    }
+
+    public String getSource() throws ErlModelException {
+        throw new UnsupportedOperationException();
     }
 }

@@ -12,6 +12,6 @@ package org.erlide.core.backend.console;
 
 public interface BackendShellListener {
 
-    void changed(BackendShell erlConsoleModel);
+    void changed(IBackendShell erlConsoleModel);
 
 }

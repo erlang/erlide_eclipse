@@ -22,7 +22,6 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIMessages;
-import org.erlide.ui.ErlideUIPlugin;
 
 /**
  * The default exception handler shows an error dialog when one of its handle

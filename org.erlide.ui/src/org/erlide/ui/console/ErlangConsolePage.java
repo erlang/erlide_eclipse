@@ -78,7 +78,7 @@ import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.console.BackendShell;
+import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest;
 import org.erlide.core.internal.backend.BackendHelper;
 
@@ -125,7 +125,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     StyledText consoleInput;
     SourceViewer consoleOutputViewer;
     private SourceViewer consoleInputViewer;
-    private BackendShell shell;
+    private IBackendShell shell;
     protected Map<String, IAction> fGlobalActions = new HashMap<String, IAction>();
     protected ArrayList<String> fSelectionActions = new ArrayList<String>();
     // protected ClearOutputAction fClearOutputAction;

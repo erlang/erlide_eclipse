@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -27,7 +26,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.rpc.IRpcCallSite;
@@ -117,13 +116,15 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlModel model = CoreScope.getModel();
+                    final IErlElementLocator model = CoreScope.getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model
-                                .findIncludeFromProject(erlProject, fileName,
+                                .findIncludeFromProject(
+                                        erlProject,
                                         fileName,
-                                        IErlModel.Scope.REFERENCED_PROJECTS);
+                                        fileName,
+                                        IErlElementLocator.Scope.REFERENCED_PROJECTS);
                         // ErlLogger.debug("inc::" + fileName + " "
                         // + resource.getName() + " "
                         // + erlProject.getName());
@@ -176,12 +177,14 @@ public final class MarkerUtils {
         if (msg.length() > 1000) {
             msg = msg.substring(0, 1000) + "...";
         }
-        if (res != null) {
-            addMarker(res, fileName, resource, msg, line, sev, "");
-        } else {
-            addMarker(resource.getProject(), null, null, "can't find "
-                    + fileName, 0, IMarker.SEVERITY_ERROR, "");
-            addMarker(resource, null, null, "?? " + msg, line, sev, "");
+        final IMarker marker = addMarker(res, resource.getProject(), fileName,
+                msg, line, sev, PROBLEM_MARKER);
+        if (marker != null) {
+            try {
+                marker.setAttribute(IMarker.SOURCE_ID, resource.getLocation()
+                        .toString());
+            } catch (final CoreException e) {
+            }
         }
     }
 
@@ -393,7 +396,7 @@ public final class MarkerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            final IErlModel model = CoreScope.getModel();
+            final IErlElementLocator model = CoreScope.getModel();
             addDialyzerWarningMarker(model, filename, line, s);
         }
     }
@@ -416,32 +419,36 @@ public final class MarkerUtils {
         return marker;
     }
 
-    public static void addDialyzerWarningMarker(final IResource file,
-            final String path, final String message, int lineNumber,
-            final int severity) {
+    public static IMarker addMarker(final IResource file,
+            final IProject project, final String path, final String message,
+            int lineNumber, final int severity, final String markerKind) {
         try {
-            final IMarker marker;
+            IResource resource;
             if (file != null) {
-                marker = file.createMarker(DIALYZE_WARNING_MARKER);
+                resource = file;
+            } else if (project != null) {
+                resource = project;
             } else {
-                final IWorkspaceRoot workspaceRoot = ResourcesPlugin
-                        .getWorkspace().getRoot();
-                marker = workspaceRoot.createMarker(DIALYZE_WARNING_MARKER);
-                marker.setAttribute(PATH_ATTRIBUTE, path);
+                resource = ResourcesPlugin.getWorkspace().getRoot();
             }
+            final IMarker marker = resource.createMarker(markerKind);
             marker.setAttribute(IMarker.MESSAGE, message);
             marker.setAttribute(IMarker.SEVERITY, severity);
             if (lineNumber == -1) {
                 lineNumber = 1;
             }
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(PATH_ATTRIBUTE, path);
+            return marker;
         } catch (final CoreException e) {
         }
+        return null;
     }
 
-    public static void addDialyzerWarningMarker(final IErlModel model,
+    public static void addDialyzerWarningMarker(final IErlElementLocator model,
             final String path, final int line, final String message) {
         IResource file = null;
+        IProject project = null;
         IErlModule module = null;
         try {
             if (ModuleKind.hasHrlExtension(path)) {
@@ -453,9 +460,13 @@ public final class MarkerUtils {
         }
         if (module != null) {
             file = module.getResource();
+            final IErlProject erlProject = module.getProject();
+            if (erlProject != null) {
+                project = erlProject.getWorkspaceProject();
+            }
         }
-        MarkerUtils.addDialyzerWarningMarker(file, path, message, line,
-                IMarker.SEVERITY_WARNING);
+        addMarker(file, project, path, message, line, IMarker.SEVERITY_WARNING,
+                DIALYZE_WARNING_MARKER);
     }
 
     public static void createTaskMarkers(final IProject project,

@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.IPreferenceConfigurationBlock;
 import org.erlide.ui.util.OverlayPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;

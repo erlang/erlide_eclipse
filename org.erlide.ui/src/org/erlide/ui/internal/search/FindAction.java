@@ -78,8 +78,7 @@ public abstract class FindAction extends SelectionDispatchAction {
     FindAction(final ErlangEditor editor) {
         this(editor.getEditorSite());
         fEditor = editor;
-        setEnabled(true); // FIXME kolla selection, sno grejer fr�n open
-        // kanske...
+        setEnabled(true); // FIXME check selection, steal stuff from 'open'
     }
 
     /**

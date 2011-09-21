@@ -1,3 +1,13 @@
+List of user visible changes between 0.13.4 and 0.13.5 (20110913)
+
+46011a3 901-exclude lost+found from build
+7c2a12f 910-test_builder--directory-links-make-it-confused
+73436f9 906-test_support--npe-if-failure-cause-is-not-an-atom
+0302e6e 905-test builder doesn't run properly
+5260901 912-epmd-can-start-too-slowly--backend-crashes
+        834-searching--still-problems-with-search-on-function-call
+        909-build-error-(in-ups-project)
+
 List of user visible changes between 0.13.3 and 0.13.4 (20110823)
 
 1962bf3 899-capture-output-of-make_links-for-debugging enabled with -Derlide.make_links.snoop=true

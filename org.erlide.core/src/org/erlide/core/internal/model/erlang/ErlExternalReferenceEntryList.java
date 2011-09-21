@@ -53,14 +53,15 @@ public class ErlExternalReferenceEntryList extends Openable implements
         // TODO some code duplication within this function
         // ErlLogger.debug("ErlExternalReferenceEntryList.buildStructure %s",
         // externalName);
+        final IErlProject project = getProject();
         final ErlModelCache cache = ErlModel.getErlModelCache();
         List<ExternalTreeEntry> externalModuleTree = cache
                 .getExternalTree(externalModules);
         List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final IRpcCallSite backend = CoreUtil
-                    .getBuildOrIdeBackend(getProject().getWorkspaceProject());
+            final IRpcCallSite backend = CoreUtil.getBuildOrIdeBackend(project
+                    .getWorkspaceProject());
             final OtpErlangList pathVars = CoreScope.getModel().getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
@@ -78,7 +79,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
             }
         }
         setChildren(null);
-        final IErlProject project = (IErlProject) getAncestorOfKind(Kind.PROJECT);
         final IErlModel model = getModel();
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
             addExternalEntries(pm, externalModuleTree, model, "modules",

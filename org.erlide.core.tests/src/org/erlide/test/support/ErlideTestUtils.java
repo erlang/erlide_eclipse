@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -240,6 +241,10 @@ public class ErlideTestUtils {
     public static IPath getTmpPath(final String fileName) {
         final String tmpdir = System.getProperty("java.io.tmpdir");
         return new Path(tmpdir).append(fileName);
+    }
+
+    public static URI getTmpURIPath(final String fileName) {
+        return URI.create(getTmpPath(fileName).toPortableString());
     }
 
     public static File createTmpFile(final String fileName,

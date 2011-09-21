@@ -294,8 +294,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
                     + breakpoint.getMarker().toString()
                     + breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER));
         } catch (final CoreException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
         if (supportsBreakpoint(breakpoint)) {
             final ErlangLineBreakpoint erlangLineBreakpoint = (ErlangLineBreakpoint) breakpoint;

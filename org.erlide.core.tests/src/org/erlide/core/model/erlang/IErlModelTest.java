@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
 import org.erlide.core.model.root.IErlProject;
@@ -45,6 +47,7 @@ public class IErlModelTest extends ErlModelTestBase {
         model = project.getModel();
     }
 
+    @SuppressWarnings("deprecation")
     @After
     @Override
     public void tearDown() throws Exception {
@@ -232,14 +235,13 @@ public class IErlModelTest extends ErlModelTestBase {
                 .getWorkspace().getPathVariableManager();
         final String[] pathVariableNames = pathVariableManager
                 .getPathVariableNames();
-        final IPath path = ErlideTestUtils.getTmpPath("");
-        pathVariableManager.setValue(PV, path);
+        final URI path = ErlideTestUtils.getTmpURIPath("");
+        pathVariableManager.setURIValue(PV, path);
         final OtpErlangList pathVars2 = model.getPathVars();
         final int n = pathVariableNames.length;
         final OtpErlangTuple t = (OtpErlangTuple) pathVars2.elementAt(0);
         final String name = Util.stringValue(t.elementAt(0));
-        final String value = pathVariableManager.getValue(name)
-                .toPortableString();
+        final String value = pathVariableManager.getURIValue(name).getPath();
         final String value2 = Util.stringValue(t.elementAt(1));
         assertEquals(n, pathVars.arity());
         assertEquals(n + 1, pathVars2.arity());
@@ -297,25 +299,25 @@ public class IErlModelTest extends ErlModelTestBase {
             // looking for includes
             final String xx = "xx";
             final IErlModule x1 = model.findIncludeFromModule(module, xx, null,
-                    IErlModel.Scope.PROJECT_ONLY);
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule x2 = model.findIncludeFromModule(module, xx, null,
-                    IErlModel.Scope.ALL_PROJECTS);
+                    IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule x3 = model.findIncludeFromModule(module, xx, null,
-                    IErlModel.Scope.REFERENCED_PROJECTS);
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String yy = "yy";
             final IErlModule y1 = model.findIncludeFromModule(module, yy, null,
-                    IErlModel.Scope.PROJECT_ONLY);
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule y2 = model.findIncludeFromModule(module, yy, null,
-                    IErlModel.Scope.ALL_PROJECTS);
+                    IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule y3 = model.findIncludeFromModule(module, yy, null,
-                    IErlModel.Scope.REFERENCED_PROJECTS);
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String zz = "zz";
             final IErlModule z1 = model.findIncludeFromModule(module, zz, null,
-                    IErlModel.Scope.PROJECT_ONLY);
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule z2 = model.findIncludeFromModule(module, zz, null,
-                    IErlModel.Scope.ALL_PROJECTS);
+                    IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z3 = model.findIncludeFromModule(module, zz, null,
-                    IErlModel.Scope.REFERENCED_PROJECTS);
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(new IProject[] { project1
@@ -323,17 +325,17 @@ public class IErlModelTest extends ErlModelTestBase {
             workspaceProject.setDescription(description, null);
             myProject.open(null);
             final IErlModule z4 = model.findIncludeFromModule(module, zz, null,
-                    IErlModel.Scope.PROJECT_ONLY);
+                    IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule z5 = model.findIncludeFromModule(module, zz, null,
-                    IErlModel.Scope.ALL_PROJECTS);
+                    IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z6 = model.findIncludeFromModule(module, zz, null,
-                    IErlModel.Scope.REFERENCED_PROJECTS);
+                    IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String ww = "ww";
             final IErlModule w1 = model.findIncludeFromModule(module, ww, null,
-                    IErlModel.Scope.PROJECT_ONLY);
-            final IErlModel mymodel = myProject.getModel();
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            final IErlElementLocator mymodel = myProject.getModel();
             final IErlModule w2 = mymodel.findIncludeFromProject(myProject, ww,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             // then
             // scope should be respected
             assertNotNull(x1);
@@ -402,31 +404,31 @@ public class IErlModelTest extends ErlModelTestBase {
             // looking for modules
             final String xx = "xx";
             final IErlModule x1 = model.findModuleFromProject(aProject, xx,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule x2 = model.findModuleFromProject(aProject, xx,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule x3 = model.findModuleFromProject(aProject, xx,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String yy = "yy";
             final IErlModule y1 = model.findModuleFromProject(aProject, yy,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule y2 = model.findModuleFromProject(aProject, yy,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule y3 = model.findModuleFromProject(aProject, yy,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IErlModule y4 = model.findModuleFromProject(project1, yy,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule y5 = model.findModuleFromProject(project1, yy,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule y6 = model.findModuleFromProject(project1, yy,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String zz = "zz";
             final IErlModule z1 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule z2 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z3 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(new IProject[] { project1
@@ -434,11 +436,11 @@ public class IErlModelTest extends ErlModelTestBase {
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule z4 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule z5 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z6 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // scope should be respected
             assertNotNull(x1);
@@ -505,11 +507,11 @@ public class IErlModelTest extends ErlModelTestBase {
             // looking for module
             final String zz = "zz";
             final IErlModule zz1 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule zz2 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule zz3 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(new IProject[] { project1
@@ -517,11 +519,11 @@ public class IErlModelTest extends ErlModelTestBase {
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule zz4 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule zz5 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule zz6 = model.findModuleFromProject(aProject, zz,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // the non-external should be preferred
             assertNotNull(zz1);
@@ -583,31 +585,31 @@ public class IErlModelTest extends ErlModelTestBase {
             // looking for includes
             final String xx = "xx";
             final IErlModule x1 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule x2 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule x3 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String yy = "yy";
             final IErlModule y1 = model.findIncludeFromProject(aProject, yy,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule y2 = model.findIncludeFromProject(aProject, yy,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule y3 = model.findIncludeFromProject(aProject, yy,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IErlModule y4 = model.findIncludeFromProject(project1, yy,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule y5 = model.findIncludeFromProject(project1, yy,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule y6 = model.findIncludeFromProject(project1, yy,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final String zz = "zz";
             final IErlModule z1 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule z2 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z3 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(new IProject[] { project1
@@ -615,11 +617,11 @@ public class IErlModelTest extends ErlModelTestBase {
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule z4 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule z5 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule z6 = model.findIncludeFromProject(aProject, zz,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // scope should be respected
             assertNotNull(x1);
@@ -681,11 +683,11 @@ public class IErlModelTest extends ErlModelTestBase {
             // looking for includes
             final String xx = "xx";
             final IErlModule x1 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule x2 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule x3 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             final IProjectDescription description = workspaceProject
                     .getDescription();
             description.setReferencedProjects(new IProject[] { project1
@@ -693,11 +695,11 @@ public class IErlModelTest extends ErlModelTestBase {
             workspaceProject.setDescription(description, null);
             aProject.open(null);
             final IErlModule x4 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.PROJECT_ONLY);
+                    null, IErlElementLocator.Scope.PROJECT_ONLY);
             final IErlModule x5 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.ALL_PROJECTS);
+                    null, IErlElementLocator.Scope.ALL_PROJECTS);
             final IErlModule x6 = model.findIncludeFromProject(aProject, xx,
-                    null, IErlModel.Scope.REFERENCED_PROJECTS);
+                    null, IErlElementLocator.Scope.REFERENCED_PROJECTS);
             // then
             // the non-external should be preferred
             assertNotNull(x1);

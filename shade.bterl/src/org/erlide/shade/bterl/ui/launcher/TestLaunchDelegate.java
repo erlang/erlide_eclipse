@@ -245,7 +245,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final File workdir) throws CoreException {
         final ILaunchConfigurationWorkingCopy wc = config.getWorkingCopy();
 
-        final boolean vobBterl = "false".equals(System.getProperty(
+        final boolean vobBterl = !Boolean.parseBoolean(System.getProperty(
                 "shade.bterl.local", "true"));
         System.out.println(".... vobBterl: " + vobBterl);
 
@@ -261,7 +261,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         paths.add(bterlPath);
 
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, runtimeName);
-        // FIXME: unique node name!
         wc.setAttribute(ErlLaunchAttributes.NODE_NAME,
                 "bterl" + System.currentTimeMillis());
         wc.setAttribute(ErlLaunchAttributes.START_ME, true);
@@ -309,10 +308,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     cmd, trace, cb, workdirPath).toString();
             wc.setAttribute(ErlLaunchAttributes.ARGUMENTS, args2);
         } catch (final TermParserException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final SignatureException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

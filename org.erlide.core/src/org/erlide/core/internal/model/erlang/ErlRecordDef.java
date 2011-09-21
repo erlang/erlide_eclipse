@@ -53,9 +53,8 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
             return false;
         }
 
-        // Erlang model parent is null
-        // FIXME this should never happen!
         if (getParent() == null) {
+            // this should never happen!
             return super.equals(o);
         }
 

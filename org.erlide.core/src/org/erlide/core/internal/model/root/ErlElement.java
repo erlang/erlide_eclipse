@@ -12,8 +12,8 @@ package org.erlide.core.internal.model.root;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -45,15 +45,6 @@ import com.google.common.collect.Lists;
  */
 public abstract class ErlElement extends PlatformObject implements IErlElement,
         IParent, Cloneable {
-
-    /**
-     * A count to uniquely identify this element in the case that a duplicate
-     * named element exists. For example, if there are two fields in a
-     * compilation unit with the same name, the occurrence count is used to
-     * distinguish them. The occurrence count starts at 1 (thus the first
-     * occurrence is occurrence 1, not occurrence 0).
-     */
-    public int fOccurrenceCount = 1;
 
     /**
      * This element's parent, or <code>null</code> if this element does not have
@@ -101,7 +92,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     /**
      * This element is being closed. Do any necessary cleanup.
      */
-    protected void closing(Object info) throws ErlModelException {
+    protected void closing(final Object info) throws ErlModelException {
     }
 
     /**
@@ -134,9 +125,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
             // bug (jc)
             // assume instanceof check is done in subclass
             final ErlElement other = (ErlElement) o;
-            return fOccurrenceCount == other.fOccurrenceCount
-                    && fName.equals(other.fName)
-                    && fParent.equals(other.fParent);
+            return fName.equals(other.fName) && fParent.equals(other.fParent);
         }
         return false;
     }
@@ -236,11 +225,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         }
     }
 
-    /*
-     * (non-Edoc)
-     * 
-     * @see org.erlide.core.model.erlang.IErlElement#getSchedulingRule()
-     */
     public ISchedulingRule getSchedulingRule() {
         final IResource resource = getResource();
         if (resource == null) {
@@ -400,28 +384,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected void toStringInfo(final int tab, final StringBuilder buffer,
             final Object info) {
         buffer.append(tabString(tab));
-        toStringName(buffer);
+        buffer.append(getName());
         if (info == null) {
             buffer.append(" (not open)"); //$NON-NLS-1$
         }
     }
-
-    /**
-     * Debugging purposes
-     */
-    protected void toStringName(final StringBuilder buffer) {
-        buffer.append(getName());
-        if (fOccurrenceCount > 1) {
-            buffer.append("#"); //$NON-NLS-1$
-            buffer.append(fOccurrenceCount);
-        }
-    }
-
-    // /**
-    // * Collection of handles of immediate children of this object. This is an
-    // * empty array if this element has no children.
-    // */
-    // private final List<IErlElement> fChildren = new ArrayList<IErlElement>();
 
     /**
      * Is the structure of this element known
@@ -552,9 +519,26 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public final void accept(final IErlElementVisitor visitor,
-            final EnumSet<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
             throws ErlModelException {
-        getModel().accept(this, visitor, flags, leafKind);
+        if (getKind() == leafKind) {
+            visitor.visit(this);
+        } else {
+            boolean visitChildren = true;
+            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
+                    && !flags.contains(AcceptFlags.CHILDREN_FIRST)) {
+                visitChildren = visitor.visit(this);
+            }
+            if (visitChildren) {
+                for (final IErlElement child : getChildren()) {
+                    child.accept(visitor, flags, leafKind);
+                }
+            }
+            if (!flags.contains(AcceptFlags.LEAFS_ONLY)
+                    && flags.contains(AcceptFlags.CHILDREN_FIRST)) {
+                visitor.visit(this);
+            }
+        }
     }
 
     /**

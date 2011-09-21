@@ -21,9 +21,9 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.AcceptFlags;
 import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IErlExternal;
-import org.erlide.core.model.root.IErlModel;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -90,9 +90,9 @@ public class IErlElementTest extends ErlModelTestBase {
         final IProject workspaceProject = project.getWorkspaceProject();
         final IFolder srcFolder = workspaceProject.getFolder("src");
         final IFile file = srcFolder.getFile("xx.erl");
-        final IErlModel model = project.getModel();
+        final IErlElementLocator model = project.getModel();
         final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlModel.Scope.PROJECT_ONLY);
+                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         assertEquals(file, module.getCorrespondingResource());
@@ -130,7 +130,7 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getModel() throws Exception {
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        final IErlModel model = CoreScope.getModel();
+        final IErlElementLocator model = CoreScope.getModel();
         assertEquals(model, project.getModel());
         assertEquals(model, module.getModel());
         assertEquals(model, element.getModel());
@@ -155,9 +155,9 @@ public class IErlElementTest extends ErlModelTestBase {
         final IProject workspaceProject = project.getWorkspaceProject();
         final IFolder srcFolder = workspaceProject.getFolder("src");
         final IFile file = srcFolder.getFile("xx.erl");
-        final IErlModel model = project.getModel();
+        final IErlElementLocator model = project.getModel();
         final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlModel.Scope.PROJECT_ONLY);
+                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         assertEquals(file, module.getResource());
@@ -169,9 +169,9 @@ public class IErlElementTest extends ErlModelTestBase {
     @Test
     public void getSchedulingRule() throws Exception {
         project.open(null);
-        final IErlModel model = project.getModel();
+        final IErlElementLocator model = project.getModel();
         final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlModel.Scope.PROJECT_ONLY);
+                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
         // TODO more testing here
@@ -199,9 +199,9 @@ public class IErlElementTest extends ErlModelTestBase {
         final boolean structureKnown3 = module.isStructureKnown();
         module.open(null);
         final boolean structureKnown4 = module.isStructureKnown();
-        final IErlModel model = project.getModel();
+        final IErlElementLocator model = project.getModel();
         final IErlModule otpFile = model.findModuleFromProject(project,
-                "file.erl", null, IErlModel.Scope.PROJECT_ONLY);
+                "file.erl", null, IErlElementLocator.Scope.PROJECT_ONLY);
         final IErlExternal external = (IErlExternal) otpFile.getParent();
         final boolean structureKnown5 = external.isStructureKnown();
         final IErlModule module2 = ErlideTestUtils

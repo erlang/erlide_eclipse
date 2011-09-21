@@ -1,10 +1,12 @@
 package org.erlide.test_support.ui.suites;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -16,11 +18,7 @@ public class TestCaseData {
 
     enum TestState {
         // order is important!
-        NOT_RUN,
-        SUCCESS,
-        SKIPPED,
-        RUNNING,
-        FAILED
+        NOT_RUN, SUCCESS, SKIPPED, RUNNING, FAILED
     }
 
     public class FailLocations {
@@ -83,7 +81,14 @@ public class TestCaseData {
         }
 
         public FailStackItem getFirstStackItem() {
-            // assume there's always some item
+            if (items.size() == 0) {
+                try {
+                    return new FailStackItem(TermParser.getParser().parse(
+                            "{unknown,unknown,0}"));
+                } catch (final TermParserException e) {
+                    // ignored
+                }
+            }
             return items.iterator().next();
         }
     }
@@ -162,12 +167,18 @@ public class TestCaseData {
         failLocations = new FailLocations(locations);
     }
 
+    static final ArrayList<OtpErlangObject> NO_STACK = new ArrayList<OtpErlangObject>();
+
     private FailReason parseReason(final OtpErlangObject reason) {
         Bindings b;
         try {
-            b = ErlUtils.match("{Cause:a, Stack}", reason);
+            b = ErlUtils.match("{Cause, Stack}", reason);
+            if (b == null) {
+                return new FailReason("internal error: " + reason.toString(),
+                        NO_STACK);
+            }
             final Collection<OtpErlangObject> stack = b.getList("Stack");
-            return new FailReason(b.getAtom("Cause"), stack);
+            return new FailReason(b.get("Cause").toString(), stack);
         } catch (final TermParserException e) {
             ErlLogger.warn(e);
         } catch (final OtpErlangException e) {

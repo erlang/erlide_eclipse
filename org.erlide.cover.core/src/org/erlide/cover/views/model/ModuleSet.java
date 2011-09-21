@@ -29,6 +29,7 @@ public class ModuleSet {
 
     /**
      * All analysed module names
+     * 
      * @return
      */
     public static Set<String> getNames() {

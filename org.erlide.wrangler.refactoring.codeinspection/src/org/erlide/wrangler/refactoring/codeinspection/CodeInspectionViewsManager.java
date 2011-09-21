@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.erlang.IErlElement;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView;
 import org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView;
 

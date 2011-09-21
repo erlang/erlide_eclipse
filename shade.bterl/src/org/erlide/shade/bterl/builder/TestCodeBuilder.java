@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -22,7 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStreamListener;
@@ -81,8 +82,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
         final IProject project = getProject();
         if (DEBUG) {
-            ErlLogger.info("##### start test builder (full) %s",
-                    project.getName());
+            ErlLogger.info("##### start test builder (%s) %s",
+                    helper.buildKind(kind), project.getName());
         }
         final long time = System.currentTimeMillis();
         if (kind == FULL_BUILD) {
@@ -124,7 +125,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final IFile file = (IFile) resource;
             deleteMarkers(file);
             if (DEBUG) {
-                System.out.println(" >>> bterl build ::: " + file.getName());
+                ErlLogger.debug(" >>> bterl build ::: " + file.getName());
             }
         }
     }
@@ -143,6 +144,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         checkForMakeLinks(project, monitor);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                 project, monitor, false);
+        if (DEBUG) {
+            ErlLogger.debug("resources to build: " + resourcesToBuild.size());
+        }
         doBuild(project, resourcesToBuild, false, monitor);
     }
 
@@ -314,7 +318,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         final ResourceAttributes a = resource
                                 .getResourceAttributes();
                         if (!a.isSymbolicLink()) {
-                            // FIXME BuildResource
                             final BuildResource bres = new BuildResource(
                                     resource, resource.getParent()
                                             .getLocation().toString());
@@ -345,19 +348,17 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
         public boolean visit(final IResourceDelta delta) throws CoreException {
             final IResource resource = delta.getResource();
-            final IProject my_project = resource.getProject();
             if (resource.isDerived()) {
                 return true;
             }
+            final IProject my_project = resource.getProject();
             if (resource.getType() == IResource.FILE
-                    && resource.getFileExtension() != null
                     && "erl".equals(resource.getFileExtension())
                     && isInTestPath(resource, my_project)) {
                 try {
                     final ResourceAttributes a = resource
                             .getResourceAttributes();
                     if (!a.isSymbolicLink()) {
-                        // FIXME BuildResource
                         final BuildResource bres = new BuildResource(resource,
                                 resource.getParent().getLocation().toString());
                         result.add(bres);
@@ -367,8 +368,24 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
+                return false;
             }
-            // return true to continue visiting children.
+            if (resource.getLocation().toString().contains("lost+found")) {
+                return false;
+            }
+            // if (resource.getType() == IResource.FOLDER) {
+            // MPS has a link that creates a loop
+            final ResourceAttributes a = resource.getResourceAttributes();
+            if (a != null && a.isSymbolicLink()) {
+                final File f = new File(resource.getLocation().toString());
+                final IFileInfo info = EFS.getFileSystem(EFS.SCHEME_FILE)
+                        .fromLocalFile(f).fetchInfo();
+                final String target = info
+                        .getStringAttribute(EFS.ATTRIBUTE_LINK_TARGET);
+                return target == null
+                        || !resource.getLocation().toString().contains(target)
+                        && target.contains("/");
+            }
             return true;
         }
 
@@ -417,11 +434,11 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 while (true) {
                     try {
                         makeLinks.waitFor();
-                        proxy.kill();
                         break;
                     } catch (final InterruptedException e1) {
                     }
                 }
+                proxy.kill();
                 container.refreshLocal(IResource.DEPTH_INFINITE,
                         new NullProgressMonitor());
             } catch (final CoreException e) {
@@ -497,12 +514,12 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     private static boolean underSourcePath(final IResource resource,
             final IProject myProject) {
-        final Collection<String> srcDirs = BackendUtils
+        final Collection<IPath> srcDirs = BackendUtils
                 .getExtraSourcePathsForBuild(myProject);
         final IPath rpath = resource.getFullPath().removeFirstSegments(1);
-        for (final String src : srcDirs) {
-            final IPath srcPath = new Path(src).removeFirstSegments(rpath
-                    .segmentCount() - 1);
+        for (final IPath src : srcDirs) {
+            final IPath srcPath = src
+                    .removeFirstSegments(rpath.segmentCount() - 1);
             if (srcPath.isPrefixOf(rpath)) {
                 return true;
             }

@@ -38,6 +38,7 @@ public class FunctionStats extends StatsTreeObject {
 
     /**
      * First line of the function
+     * 
      * @return
      */
     public int getLineStart() {
@@ -64,6 +65,7 @@ public class FunctionStats extends StatsTreeObject {
 
     /**
      * Last line of the function
+     * 
      * @return
      */
     public int getLineEnd() {

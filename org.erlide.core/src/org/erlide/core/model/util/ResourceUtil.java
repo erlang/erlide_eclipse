@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -89,30 +88,6 @@ public class ResourceUtil {
                 if (r != null) {
                     return r;
                 }
-            }
-        }
-        return null;
-    }
-
-    // FIXME can't we use erlang model instead?
-    public static IResource recursiveFindNamedModuleResourceWithReferences(
-            final IContainer container, final String fileName,
-            final ContainerFilterCreator filterCreator) throws CoreException {
-        final IProject project = container.getProject();
-        final ContainerFilter filter = filterCreator
-                .createFilterForProject(project);
-        final IResource r = recursiveFindNamedResource(container, fileName,
-                filter);
-        if (r != null) {
-            return r;
-        }
-        for (final IProject p : project.getReferencedProjects()) {
-            final ContainerFilter pFilter = filterCreator
-                    .createFilterForProject(p);
-            final IResource r1 = recursiveFindNamedResource(p, fileName,
-                    pFilter);
-            if (r1 != null) {
-                return r1;
             }
         }
         return null;

@@ -46,16 +46,15 @@ import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeManager;
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.backend.InitialCall;
-import org.erlide.core.backend.console.BackendShell;
 import org.erlide.core.backend.console.BackendShellManager;
+import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
-import org.erlide.core.backend.events.EventDaemon;
 import org.erlide.core.backend.events.LogEventHandler;
-import org.erlide.core.backend.manager.IBackendManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
@@ -255,6 +254,9 @@ public abstract class Backend implements IStreamListener, IBackend {
             }
 
         } catch (final BackendException e) {
+            ErlLogger.error(e);
+            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+        } catch (final Exception e) {
             ErlLogger.error(e);
             ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
         }
@@ -496,8 +498,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    public BackendShell getShell(final String id) {
-        final BackendShell shell = shellManager.openShell(id);
+    public IBackendShell getShell(final String id) {
+        final IBackendShell shell = shellManager.openShell(id);
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy

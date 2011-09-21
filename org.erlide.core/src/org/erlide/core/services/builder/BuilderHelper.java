@@ -426,7 +426,7 @@ public final class BuilderHelper {
                 source.getParent().refreshLocal(IResource.DEPTH_ONE, null);
                 final IResource br = project.findMember(erl);
                 if (br != null) {
-                    br.setDerived(true);
+                    br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
                     final IErlProject erlProject = CoreScope.getModel()

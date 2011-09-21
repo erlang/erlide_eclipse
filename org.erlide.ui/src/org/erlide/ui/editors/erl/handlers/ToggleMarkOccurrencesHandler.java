@@ -6,7 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ToggleMarkOccurrencesHandler extends AbstractHandler implements
         IHandler {

@@ -48,7 +48,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;
 
 public class ErlangProjectImportWizard extends Wizard implements IImportWizard {

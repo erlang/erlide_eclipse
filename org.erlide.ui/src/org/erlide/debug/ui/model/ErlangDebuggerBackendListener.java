@@ -23,7 +23,7 @@ import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
 import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.ErlideUIPlugin;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 

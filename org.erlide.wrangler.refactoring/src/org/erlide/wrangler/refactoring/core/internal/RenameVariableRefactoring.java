@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
-import org.erlide.wrangler.refactoring.backend.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
@@ -65,7 +65,7 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
 
-        IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+        final IRpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("get_var_name_eclipse", "siixi",
                         sel.getFilePath(),
                         sel.getSelectionRange().getStartLine(),

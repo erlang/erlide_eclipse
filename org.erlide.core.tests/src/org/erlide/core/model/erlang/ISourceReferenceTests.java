@@ -9,9 +9,6 @@ import org.junit.Test;
 
 public class ISourceReferenceTests extends ErlModelTestBase {
 
-    // boolean exists();
-    // FIXME is this used at all?
-
     // ISourceRange getSourceRange() throws ErlModelException;
     @Test
     public void getSourceRange() throws Exception {

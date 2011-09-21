@@ -24,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class BackendShell {
+public class BackendShell implements IBackendShell {
 
     private final IBackend backend;
     private OtpErlangPid server;
@@ -185,9 +185,8 @@ public class BackendShell {
     }
 
     public void dispose() {
-        final ConsoleEventHandler handler2 = getHandler();
-        if (handler2 != null) {
-            backend.getEventDaemon().removeHandler(handler2);
+        if (handler != null) {
+            backend.getEventDaemon().removeHandler(handler);
         }
         listeners.clear();
     }
@@ -212,10 +211,6 @@ public class BackendShell {
                 listener.changed(this);
             }
         }
-    }
-
-    public ConsoleEventHandler getHandler() {
-        return handler;
     }
 
     public int getTextLength() {
