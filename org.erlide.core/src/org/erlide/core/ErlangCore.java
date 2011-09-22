@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -35,7 +34,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;

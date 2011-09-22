@@ -16,43 +16,44 @@ import org.erlide.cover.views.model.StatsTreeObject;
  * Abstract class for the action of showing and hiding annotations
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
- *
+ * 
  */
 public abstract class CoverageAction extends Action {
-    
-    protected EditorTracker marker;
-    private TreeViewer viewer;
-    
-    private Logger log;     //logger
 
-    public CoverageAction(TreeViewer viewer) {
+    protected EditorTracker marker;
+    private final TreeViewer viewer;
+
+    private final Logger log; // logger
+
+    public CoverageAction(final TreeViewer viewer) {
         log = Activator.getDefault();
         this.viewer = viewer;
         marker = EditorTracker.getInstance();
     }
-    
+
     @Override
     public void run() {
-        
+
         log.info("show coverage!");
-        
-        ISelection selection = viewer.getSelection();
-        
+
+        final ISelection selection = viewer.getSelection();
+
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
-                    Activator.PLUGIN_ID, "Internall error occured: bad sellection type", null);
+                    Activator.PLUGIN_ID,
+                    "Internall error occured: bad sellection type", null);
             StatusManager.getManager().handle(executionStatus,
                     StatusManager.SHOW);
             return;
         }
 
-        ITreeSelection treeSelection = (ITreeSelection) selection;
-        
+        final ITreeSelection treeSelection = (ITreeSelection) selection;
+
         log.info(treeSelection.getFirstElement().getClass());
-        
-        perform((StatsTreeObject)treeSelection.getFirstElement());
+
+        perform((StatsTreeObject) treeSelection.getFirstElement());
     }
-    
+
     protected abstract void perform(StatsTreeObject selection);
-    
+
 }

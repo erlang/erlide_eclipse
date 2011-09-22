@@ -999,7 +999,7 @@ public final class CharOperation {
         while (--index >= 0) {
             length = array[index].length;
             if (length > 0) {
-                System.arraycopy(array[index], 0, result, (size -= length),
+                System.arraycopy(array[index], 0, result, size -= length,
                         length);
                 if (--size >= 0) {
                     result[size] = separator;

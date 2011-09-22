@@ -36,7 +36,6 @@ public class ItemBrowser {
         text = new Text(comp, style | SWT.RESIZE);
         text.setLayoutData(gd);
         text.setEditable(false);
-        
 
         button = new Button(comp, SWT.CENTER | SWT.PUSH);
         button.setText("Browse");

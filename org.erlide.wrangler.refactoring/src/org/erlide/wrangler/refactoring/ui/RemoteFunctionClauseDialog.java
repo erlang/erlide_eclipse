@@ -148,7 +148,7 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
 
                             // highlight
                             WranglerUtils
-                                    .highlightSelection(((IErlFunctionClause) data));
+                                    .highlightSelection((IErlFunctionClause) data);
 
                             // store
                             functionClause = (IErlFunctionClause) data;

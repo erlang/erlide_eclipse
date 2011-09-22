@@ -34,7 +34,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
         switch (columnIndex) {
         case 0:
-            ObjectType type = statsEl.getType();
+            final ObjectType type = statsEl.getType();
 
             switch (type) {
             case FUNCTION:
@@ -48,7 +48,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
                 IErlModule m;
                 try {
                     m = CoreScope.getModel().findModule(statsEl.getLabel());
-                } catch (ErlModelException e) {
+                } catch (final ErlModelException e) {
                     e.printStackTrace();
                     return null;
                 }

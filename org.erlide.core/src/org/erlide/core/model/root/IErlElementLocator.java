@@ -52,7 +52,7 @@ public interface IErlElementLocator {
             final IErlElementLocator.Scope scope) throws ErlModelException;
 
     IErlModule findModuleFromProject(IErlProject erlProject, String name,
-            String object, boolean b, boolean c, IErlElementLocator.Scope projectOnly)
-            throws ErlModelException;
+            String object, boolean b, boolean c,
+            IErlElementLocator.Scope projectOnly) throws ErlModelException;
 
 }

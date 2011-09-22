@@ -9,15 +9,15 @@ import org.apache.velocity.app.Velocity;
 
 public class VMDemo {
 
-  public static void main(String[] args) throws Exception {
-    Velocity.init();
-    Template t = Velocity.getTemplate("./templates/poc.vm");
+    public static void main(final String[] args) throws Exception {
+        Velocity.init();
+        final Template t = Velocity.getTemplate("./templates/poc.vm");
 
-    VelocityContext ctx = new VelocityContext();
+        final VelocityContext ctx = new VelocityContext();
 
-    Writer writer = new StringWriter();
-    t.merge(ctx, writer);
+        final Writer writer = new StringWriter();
+        t.merge(ctx, writer);
 
-    System.out.println(writer);
-  }
+        System.out.println(writer);
+    }
 }
