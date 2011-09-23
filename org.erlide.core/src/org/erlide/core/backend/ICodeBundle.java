@@ -29,6 +29,6 @@ public interface ICodeBundle {
 
     Collection<Tuple<String, CodeContext>> getPaths();
 
-    Tuple<String, String> getInit();
+    Collection<Tuple<String, String>> getInits();
 
 }

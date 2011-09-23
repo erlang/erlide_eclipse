@@ -27,14 +27,14 @@ public class CodeBundleImpl implements ICodeBundle {
 
     private final Bundle bundle;
     private final Collection<Tuple<String, CodeContext>> paths;
-    private final Tuple<String, String> init;
+    private final Collection<Tuple<String, String>> inits;
 
     public CodeBundleImpl(final Bundle b,
             final Collection<Tuple<String, CodeContext>> paths,
-            final Tuple<String, String> init) {
+            final Collection<Tuple<String, String>> inits) {
         bundle = b;
         this.paths = Lists.newArrayList(paths);
-        this.init = init;
+        this.inits = inits;
     }
 
     public Bundle getBundle() {
@@ -72,11 +72,8 @@ public class CodeBundleImpl implements ICodeBundle {
         return Collections.unmodifiableCollection(paths);
     }
 
-    public Tuple<String, String> getInit() {
-        if (init == null) {
-            return null;
-        }
-        return new Tuple<String, String>(init);
+    public Collection<Tuple<String, String>> getInits() {
+        return Collections.unmodifiableCollection(inits);
     }
 
 }
