@@ -60,16 +60,16 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 if (view != null) {
                     view.clearEvents();
                     view.setMessage("Launching: " + getTargetName(target));
-                }
-                final ILaunch launch = launchConfig.launch(mode, Job
-                        .getJobManager().createProgressGroup(), false, true);
-                final IBackend backend = BackendCore.getBackendManager()
-                        .getBackendForLaunch(launch);
-                if (backend == null) {
-                    System.out.println("NULL backend for bterl");
-                    return;
-                }
-                if (view != null) {
+
+                    final ILaunch launch = launchConfig
+                            .launch(mode, Job.getJobManager()
+                                    .createProgressGroup(), false, true);
+                    final IBackend backend = BackendCore.getBackendManager()
+                            .getBackendForLaunch(launch);
+                    if (backend == null) {
+                        System.out.println("NULL backend for bterl");
+                        return;
+                    }
                     backend.getEventDaemon().addHandler(view.getEventHandler());
                 }
             }
