@@ -166,7 +166,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             }
 
         } catch (final CoreException e) {
-            e.printStackTrace();
             // there is no make_links, ignore
         }
     }
@@ -253,7 +252,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         System.out.println("... internal path = " + bterlPath);
 
         final String runtimeName = BackendCore.getRuntimeInfoManager()
-                .getRuntime(new RuntimeVersion("R13B"), "").getName();
+                .getRuntime(new RuntimeVersion("R14B"), "").getName();
+        // TODO how do we keep this updated?
 
         final List<String> paths = Lists.newArrayList();
         final String workdirPath = getOSIndependentPath(workdir);
