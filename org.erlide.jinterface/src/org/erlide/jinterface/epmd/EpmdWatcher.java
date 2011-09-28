@@ -182,7 +182,8 @@ public final class EpmdWatcher {
      * @param node
      * @param monitor
      */
-    public void removeNodeMonitor(final String node, final IErlNodeMonitor monitor) {
+    public void removeNodeMonitor(final String node,
+            final IErlNodeMonitor monitor) {
         final List<IErlNodeMonitor> mons = monitors.get(node);
         if (mons == null) {
             return;
@@ -197,14 +198,10 @@ public final class EpmdWatcher {
         try {
             final String[] names = OtpEpmd.lookupNames();
             final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));
-            for (final String name : labels) {
-                if (name.equals(nodeName)) {
-                    return true;
-                }
-            }
+            return labels.contains(nodeName);
         } catch (final IOException e) {
+            return false;
         }
-        return false;
     }
 
 }
