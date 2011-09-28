@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.epmd;
 
-public interface IEpmdMonitor {
+public interface IErlNodeMonitor {
     void nodeUp(String name);
 
     void nodeDown(String name);
