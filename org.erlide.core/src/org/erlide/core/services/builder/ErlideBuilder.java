@@ -75,7 +75,7 @@ public class ErlideBuilder {
                 final IResource[] beams = bf.members();
                 monitor.beginTask("Cleaning Erlang files", beams.length);
                 if (beams.length > 0) {
-                    final float delta = 1.0f / beams.length;
+                    final float delta = 100.0f / beams.length;
                     for (final IResource element : beams) {
                         if ("beam".equals(element.getFileExtension())) {
                             element.delete(true, monitor);
