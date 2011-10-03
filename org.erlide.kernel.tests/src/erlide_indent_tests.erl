@@ -140,6 +140,19 @@ macros_in_predicates_test_() ->
     ?Test_indent(SIndent, S).
 
 %%
+type_test_() ->
+    S = "" ++
+            "-type mod_deps() :: dict().\n"++
+            "a() ->\n"++
+            "ok.\n",
+    SIndent = "" ++
+            "-type mod_deps() :: dict().\n"++
+            "a() ->\n"++
+            "    ok.\n",
+    ?Test_indent(SIndent, S).
+
+
+%%
 %% Local Functions
 %%
 

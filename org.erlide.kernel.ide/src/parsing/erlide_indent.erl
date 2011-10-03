@@ -727,14 +727,21 @@ i_form(R0, I) ->
 i_declaration(R0, I) ->
     i_check(R0, I),
     R1 = i_kind('-', R0, I),
-    case i_sniff(R1) of
-        'spec' ->
+    case skip_comments(R1) of
+        [#token{kind='spec'} | _] ->
             R2 = i_kind('spec', R1, I),
             i_form(R2, I);
+        [#token{kind=atom, value='type'} | _] ->
+            R2 = i_kind(atom, R1, I),
+            i_type(R2, I);
         _ ->
             {R2, _A} = i_expr(R1, I, none),
             i_kind(dot, R2, I)
     end.
+
+i_type(R0, I0) ->
+    {R1, A1} = i_expr(R0, I0, none),
+    i_kind(dot, R1, I0).
 
 i_fun_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
@@ -865,10 +872,10 @@ i_catch_clause_list(R, I) ->
 
 i_sniff(L) ->
     case skip_comments(L) of
-	[] ->
-	    eof;
-	[#token{kind=Kind} | _] ->
-	    Kind
+        [] ->
+            eof;
+        [#token{kind=Kind} | _] ->
+            Kind
     end.
 
 scan(S) ->
