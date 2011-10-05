@@ -26,9 +26,9 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
@@ -256,8 +256,8 @@ public class ErlideBuilder {
             final IProject currentProject, final IResourceDelta resourceDelta)
             throws CoreException {
         Set<BuildResource> resourcesToBuild = Sets.newHashSet();
-        final IProgressMonitor submon = new NullProgressMonitor();
-        // new SubProgressMonitor(monitor, 10);
+        final IProgressMonitor submon = new SubProgressMonitor(
+                notifier.fMonitor, 10);
         submon.beginTask("retrieving resources to build",
                 IProgressMonitor.UNKNOWN);
         if (kind == IncrementalProjectBuilder.FULL_BUILD) {
