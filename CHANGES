@@ -1,3 +1,10 @@
+List of user visible changes between 0.13.5 and 0.13.6 (20111005)
+
+833b979 http://www.assembla.com/spaces/erlide/tickets/613-dialyzer--progress-indicator
+e419ef7 913-concurrentmodificationexception-while-editing-large-files
+        613 dialyzer - progress indicator
+        707 document "toggle erlang nature" command
+
 List of user visible changes between 0.13.4 and 0.13.5 (20110913)
 
 46011a3 901-exclude lost+found from build
