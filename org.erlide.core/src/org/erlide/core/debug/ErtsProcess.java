@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.erlide.core.debug;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.debug.core.DebugException;
@@ -28,8 +27,7 @@ public class ErtsProcess extends RuntimeProcess {
         ErlLogger.debug("# create ErtsProcess: " + data.getNodeName());
 
         final RuntimeInfo info = data.getRuntimeInfo();
-        final File workingDirectory = new File(info.getWorkingDir());
-        startWatcher(info, workingDirectory, process);
+        startWatcher(info, process);
     }
 
     /**
@@ -99,10 +97,9 @@ public class ErtsProcess extends RuntimeProcess {
         super.terminate();
     }
 
-    private void startWatcher(final RuntimeInfo info,
-            final File workingDirectory, final Process process) {
-        final Runnable watcher = new ErtsWatcherRunnable(info,
-                workingDirectory, process);
+    private void startWatcher(final RuntimeInfo info, final Process process) {
+        final Runnable watcher = new ErtsWatcherRunnable(info.getNodeName(),
+                info.getWorkingDir(), process);
         final Thread thread = new Thread(null, watcher, "ErtsProcess watcher");
         thread.setDaemon(true);
         thread.setPriority(Thread.MIN_PRIORITY);

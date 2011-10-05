@@ -29,7 +29,8 @@ public class CoverageMap {
      * @param lr
      * @param ann
      */
-    public void addAnnotation(String name, LineResult lr, Annotation ann) {
+    public void addAnnotation(final String name, final LineResult lr,
+            final Annotation ann) {
         if (!coverage.containsKey(name)) {
             coverage.put(name, new HashMap<LineResult, Annotation>());
         }
@@ -44,7 +45,7 @@ public class CoverageMap {
      * @param lr
      * @return
      */
-    public Annotation getAnnotation(String name, LineResult lr) {
+    public Annotation getAnnotation(final String name, final LineResult lr) {
         if (!coverage.containsKey(name)) {
             return null;
         }
@@ -58,12 +59,12 @@ public class CoverageMap {
      * @param lr
      * @return
      */
-    public boolean containsAnnotation(String name, LineResult lr) {
+    public boolean containsAnnotation(final String name, final LineResult lr) {
         return coverage.containsKey(name) && coverage.get(name).containsKey(lr)
                 && coverage.get(name).get(lr) != null;
     }
 
-    public boolean containsFile(String name) {
+    public boolean containsFile(final String name) {
         return coverage.containsKey(name);
     }
 
@@ -75,7 +76,8 @@ public class CoverageMap {
      * @param type
      * @return
      */
-    public boolean checkType(String name, LineResult lr, String type) {
+    public boolean checkType(final String name, final LineResult lr,
+            final String type) {
         return containsAnnotation(name, lr)
                 && coverage.get(name).get(lr).getType().equals(type);
     }
@@ -86,7 +88,7 @@ public class CoverageMap {
      * @param name
      * @param lr
      */
-    public void removeAnnotation(String name, LineResult lr) {
+    public void removeAnnotation(final String name, final LineResult lr) {
         if (containsAnnotation(name, lr)) {
             coverage.get(name).remove(lr);
         }
@@ -97,7 +99,7 @@ public class CoverageMap {
      * 
      * @param name
      */
-    public void removeAll(String name) {
+    public void removeAll(final String name) {
         coverage.get(name).clear();
     }
 
@@ -105,7 +107,7 @@ public class CoverageMap {
         coverage.clear();
     }
 
-    public Set<LineResult> getLineSet(String name) {
+    public Set<LineResult> getLineSet(final String name) {
         return new HashSet<LineResult>(coverage.get(name).keySet());
     }
 

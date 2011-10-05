@@ -15,8 +15,9 @@
 %%
 %% Exported Functions
 %%
--export([dialyze/5, format_warning/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2]).
-         
+-export([dialyze/5, format_warning/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2,
+         start_dialyze/6, start_update_plt_with_additional_paths/3]).
+
 
 %%
 %% API Functions
@@ -24,9 +25,9 @@
 
 dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
     From = case FromSource of
-	       true -> src_code;
-	       false -> byte_code
-	   end,
+               true -> src_code;
+               false -> byte_code
+           end,
     Plt = case PltFiles of
               [] ->
                   dialyzer_plt:new();
@@ -38,7 +39,31 @@ dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
                   dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, Plts)
           end,
     ?D(before),
-    R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From)),
+    R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From, none)),
+    case R of
+        {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= error ->
+            {error, flat(E)};
+        Result ->
+            Result
+    end.
+
+start_dialyze(JPid, Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
+    From = case FromSource of
+               true -> src_code;
+               false -> byte_code
+           end,
+    Plt = case PltFiles of
+              [] ->
+                  dialyzer_plt:new();
+              [Plt1] ->
+                  ?D(Plt1),
+                  dialyzer_plt:from_file(Plt1);
+              _ ->
+                  Plts = [dialyzer_plt:from_file(F) || F <- PltFiles],
+                  dialyzer_plt:merge_plts_or_report_conflicts(PltFiles, Plts)
+          end,
+    ?D(before),
+    R = (catch do_analysis(Files, none, Plt, none, succ_typings, Includes, NoCheckPLT, From, JPid)),
     case R of
         {ErrorOrExit, E} when ErrorOrExit =:= 'EXIT'; ErrorOrExit =:= error ->
             {error, flat(E)};
@@ -49,9 +74,9 @@ dialyze(Files, PltFiles, Includes, FromSource, NoCheckPLT) ->
 
 dialyze(Files, Plts, Includes, FromSource, NoCheckPLT, x) ->
     From = case FromSource of
-           true -> src_code;
-           false -> byte_code
-       end,
+               true -> src_code;
+               false -> byte_code
+           end,
     PltOption = case Plts of
                     [Plt] ->
                         {init_plt, Plt};
@@ -63,10 +88,10 @@ dialyze(Files, Plts, Includes, FromSource, NoCheckPLT, x) ->
                              {from, From},
                              {include_dirs, Includes},
                              {check_plt, not NoCheckPLT}]) of
-    {_ErrorOrExit, E} ->
-        {error, flat(E)};
-    Result ->
-        Result
+        {_ErrorOrExit, E} ->
+            {error, flat(E)};
+        Result ->
+            Result
     end.
 
 format_warning(Msg) ->
@@ -74,7 +99,7 @@ format_warning(Msg) ->
 
 check_plt(Plt) ->
     dialyzer:run([{analysis_type, plt_check},
-		  {init_plt, Plt}]).
+                  {init_plt, Plt}]).
 
 % stolen from dialyzer.h
 
@@ -103,7 +128,7 @@ update_plt_with_additional_paths(FileName, Paths) ->
                 %%                     {?RET_NOTHING_SUSPICIOUS, []};
                 false ->
                     ?D({AnalFiles, FileName, ModDeps1}),
-                    do_analysis(AnalFiles, FileName, Plt, {Md5, ModDeps1}, plt_build)
+                    do_analysis(AnalFiles, FileName, Plt, {Md5, ModDeps1}, plt_build, false)
             end;
         ok ->
             %%             case Opts#options.output_plt of
@@ -121,7 +146,51 @@ update_plt_with_additional_paths(FileName, Paths) ->
         {old_version, Md5} ->
             PltInfo = {Md5, dict:new()},
             Files = [F || {F, _} <- Md5],
-            do_analysis(Files, FileName, dialyzer_plt:new(), PltInfo, plt_build);
+            do_analysis(Files, FileName, dialyzer_plt:new(), PltInfo, plt_build, false);
+        {error, no_such_file} ->
+            Msg = io_lib:format("Could not find the PLT: ~s\n~s",
+                                [FileName, default_plt_error_msg()]),
+            error(Msg);
+        {error, not_valid} ->
+            Msg = io_lib:format("The file: ~s is not a valid PLT file\n~s",
+                                [FileName, default_plt_error_msg()]),
+            error(Msg);
+        {error, read_error} ->
+            Msg = io_lib:format("Could not read the PLT: ~s\n~s",
+                                [FileName, default_plt_error_msg()]),
+            error(Msg);
+        {error, {no_file_to_remove, F}} ->
+            Msg = io_lib:format("Could not remove the file ~s from the PLT: ~s\n",
+                                [F, FileName]),
+            error(Msg)
+    end.
+
+start_update_plt_with_additional_paths(JPid, FileName, Paths) ->
+    ?D(Paths),
+    case update_plt(FileName, Paths, [], []) of
+        {differ, Md5, DiffMd5, ModDeps} ->
+            ?D({differ, Md5, DiffMd5, ModDeps}),
+            %%             report_failed_plt_check(Opts, DiffMd5),
+            {AnalFiles, _RemovedMods, ModDeps1} = 
+                expand_dependent_modules(Md5, DiffMd5, ModDeps, Paths),
+            Plt = clean_plt(FileName, sets:from_list([])),
+            case AnalFiles =:= [] of
+                true ->
+                    %% Only removed stuff. Just write the PLT.
+                    dialyzer_plt:to_file(FileName, Plt, ModDeps, 
+                                         {Md5, ModDeps}),
+                    [];
+                %%                     {?RET_NOTHING_SUSPICIOUS, []};
+                false ->
+                    ?D({AnalFiles, FileName, ModDeps1}),
+                    do_analysis(AnalFiles, FileName, Plt, {Md5, ModDeps1}, plt_build, JPid)
+            end;
+        ok ->
+            [];
+        {old_version, Md5} ->
+            PltInfo = {Md5, dict:new()},
+            Files = [F || {F, _} <- Md5],
+            do_analysis(Files, FileName, dialyzer_plt:new(), PltInfo, plt_build, JPid);
         {error, no_such_file} ->
             Msg = io_lib:format("Could not find the PLT: ~s\n~s",
                                 [FileName, default_plt_error_msg()]),
@@ -143,11 +212,11 @@ update_plt_with_additional_paths(FileName, Paths) ->
 get_plt_files(PltFiles) ->
     Files = string:tokens(PltFiles, ","),
     case get_plt_files(Files, []) of
-		[L | _]=R when is_list(L) ->
-			{ok, R};
-		_ ->
-			no_files_found
-	end.
+        [L | _]=R when is_list(L) ->
+            {ok, R};
+        _ ->
+            no_files_found
+    end.
 
 %%
 %% Local Functions
@@ -209,14 +278,14 @@ get_plt_files([File | Rest], Acc) ->
 %%   2. It is also the set of tags for warnings that will be returned.
 %%
 -type dial_warn_tag() :: ?WARN_RETURN_NO_RETURN | ?WARN_RETURN_ONLY_EXIT
-                       | ?WARN_NOT_CALLED | ?WARN_NON_PROPER_LIST
-                       | ?WARN_MATCHING | ?WARN_OPAQUE | ?WARN_FUN_APP
-                       | ?WARN_FAILING_CALL | ?WARN_BIN_CONSTRUCTION
-                       | ?WARN_CONTRACT_TYPES | ?WARN_CONTRACT_SYNTAX
-                       | ?WARN_CONTRACT_NOT_EQUAL | ?WARN_CONTRACT_SUBTYPE
-                       | ?WARN_CONTRACT_SUPERTYPE | ?WARN_CALLGRAPH
-                       | ?WARN_UNMATCHED_RETURN | ?WARN_RACE_CONDITION
-                       | ?WARN_BEHAVIOUR | ?WARN_CONTRACT_RANGE.
+| ?WARN_NOT_CALLED | ?WARN_NON_PROPER_LIST
+| ?WARN_MATCHING | ?WARN_OPAQUE | ?WARN_FUN_APP
+| ?WARN_FAILING_CALL | ?WARN_BIN_CONSTRUCTION
+| ?WARN_CONTRACT_TYPES | ?WARN_CONTRACT_SYNTAX
+| ?WARN_CONTRACT_NOT_EQUAL | ?WARN_CONTRACT_SUBTYPE
+| ?WARN_CONTRACT_SUPERTYPE | ?WARN_CALLGRAPH
+| ?WARN_UNMATCHED_RETURN | ?WARN_RACE_CONDITION
+| ?WARN_BEHAVIOUR | ?WARN_CONTRACT_RANGE.
 
 %%
 %% This is the representation of each warning as they will be returned
@@ -224,25 +293,25 @@ get_plt_files([File | Rest], Acc) ->
 %%
 -type file_line()    :: {file:filename(), non_neg_integer()}.
 -type dial_warning() :: {dial_warn_tag(), file_line(), {atom(), [term()]}}.
-        
+
 -record(analysis, {analysis_pid            :: pid(),
-                   type       = succ_typings, %  :: anal_type(),
-                   defines    = [],        % :: [dial_define()],
-                   doc_plt                         :: dialyzer_plt:plt(),
-                   files          = []         :: [file:filename()],
-                   include_dirs   = []         :: [file:filename()],
-                   start_from     = byte_code,  %    :: start_from(),
-                   plt                             :: dialyzer_plt:plt(),
-                   use_contracts  = true           :: boolean(),
-                   race_detection = false      :: boolean(),
-                   behaviours_chk = false          :: boolean(),
-                   callgraph_file = ""             :: file:filename()}).
+type       = succ_typings, %  :: anal_type(),
+defines    = [],        % :: [dial_define()],
+doc_plt                         :: dialyzer_plt:plt(),
+files          = []         :: [file:filename()],
+include_dirs   = []         :: [file:filename()],
+start_from     = byte_code,  %    :: start_from(),
+plt                             :: dialyzer_plt:plt(),
+use_contracts  = true           :: boolean(),
+race_detection = false      :: boolean(),
+behaviours_chk = false          :: boolean(),
+callgraph_file = ""             :: file:filename()}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% stolen from dialyzer_plt
 
 -type file_md5() :: {file:filename(), binary()}.
--type plt_info() :: {[file_md5()], dict()}.
+%%-type plt_info() :: {[file_md5()], dict()}.
 
 -record(file_plt, {version = ""                :: string(),
                    file_md5_list = []          :: [file_md5()],
@@ -470,42 +539,53 @@ expand_dependent_modules_1([], Included, _ModDeps) ->
     Included.
 
 -record(cl_state,
-    {backend_pid                      :: pid(),
-     erlang_mode     = false          :: boolean(),
-     external_calls  = []             :: [mfa()],
+        {backend_pid                      :: pid(),
+         erlang_mode     = false          :: boolean(),
+         external_calls  = []             :: [mfa()],
          external_types  = []             :: [mfa()],
-     legal_warnings  = ordsets:new()  :: [dial_warn_tag()],
-     mod_deps        = dict:new()     :: dict(),
-     output          = standard_io    :: io:device(),
-     output_format   = formatted,%      :: format(),
-     filename_opt    = basename,%       :: fopt(),
-     output_plt      = none           :: 'none' | file:filename(),
-     plt_info        = none           :: 'none' | dialyzer_plt:plt_info(),
-     report_mode     = normal,%         :: rep_mode(),
-     return_status= ?RET_NOTHING_SUSPICIOUS,% :: dial_ret(),
-     stored_warnings = []             :: [dial_warning()],
-     unknown_behaviours = []          :: [dialyzer_behaviours:behaviour()]
-    }).
+         legal_warnings  = ordsets:new()  :: [dial_warn_tag()],
+         mod_deps        = dict:new()     :: dict(),
+         output          = standard_io    :: io:device(),
+         output_format   = formatted,%      :: format(),
+         filename_opt    = basename,%       :: fopt(),
+         output_plt      = none           :: 'none' | file:filename(),
+         plt_info        = none           :: 'none' | dialyzer_plt:plt_info(),
+         report_mode     = normal,%         :: rep_mode(),
+         return_status= ?RET_NOTHING_SUSPICIOUS,% :: dial_ret(),
+         stored_warnings = []             :: [dial_warning()],
+         unknown_behaviours = []          :: [dialyzer_behaviours:behaviour()],
+         progress_fun = fun(_, _) -> ok end
+        }).
 
-do_analysis(Files, FileName, Plt, PltInfo, AnalysisType) ->
-    do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, [], true, byte_code).
+get_progress_fun(false) ->
+    fun(_, _) ->
+            ok
+    end;
+get_progress_fun(JPid) when is_pid(JPid) ->
+    fun(W, M) ->
+            JPid ! {W, M},
+            ok
+    end.
 
-do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPLT, From) ->
+do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, JPid) ->
+    do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, [], true, byte_code, JPid).
+
+do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPLT, From, JPid) ->
     assert_writable(FileName),
     hipe_compile(Files, true),
-%%     report_analysis_start(Options),
+    %%     report_analysis_start(Options),
     State0 = new_state(),
     State1 = init_output(State0),
     DefaultWarns =
-%%         [?WARN_RETURN_NO_RETURN, ?WARN_RETURN_ONLY_EXIT
-%%                       , ?WARN_NOT_CALLED, ?WARN_NON_PROPER_LIST
-%%                       , ?WARN_MATCHING, ?WARN_OPAQUE, ?WARN_FUN_APP
-%%                       , ?WARN_FAILING_CALL, ?WARN_BIN_CONSTRUCTION
-%%                       , ?WARN_CONTRACT_TYPES, ?WARN_CONTRACT_SYNTAX
-%%                       , ?WARN_CONTRACT_NOT_EQUAL, ?WARN_CONTRACT_SUBTYPE
-%%                       , ?WARN_CONTRACT_SUPERTYPE, ?WARN_CALLGRAPH
-%%                       , ?WARN_UNMATCHED_RETURN, ?WARN_RACE_CONDITION
-%%                       , ?WARN_BEHAVIOUR, ?WARN_CONTRACT_RANGE], 
+        %%         [?WARN_RETURN_NO_RETURN, ?WARN_RETURN_ONLY_EXIT
+        %%                       , ?WARN_NOT_CALLED, ?WARN_NON_PROPER_LIST
+        %%                       , ?WARN_MATCHING, ?WARN_OPAQUE, ?WARN_FUN_APP
+        %%                       , ?WARN_FAILING_CALL, ?WARN_BIN_CONSTRUCTION
+        %%                       , ?WARN_CONTRACT_TYPES, ?WARN_CONTRACT_SYNTAX
+        %%                       , ?WARN_CONTRACT_NOT_EQUAL, ?WARN_CONTRACT_SUBTYPE
+        %%                       , ?WARN_CONTRACT_SUPERTYPE, ?WARN_CALLGRAPH
+        %%                       , ?WARN_UNMATCHED_RETURN, ?WARN_RACE_CONDITION
+        %%                       , ?WARN_BEHAVIOUR, ?WARN_CONTRACT_RANGE], 
         [?WARN_RETURN_NO_RETURN,
          ?WARN_NOT_CALLED,
          ?WARN_NON_PROPER_LIST,
@@ -524,7 +604,8 @@ do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPL
                              output_plt = FileName,
                              plt_info = PltInfo,
                              erlang_mode = true,
-                             report_mode = normal},
+                             report_mode = normal,
+                             progress_fun = get_progress_fun(JPid)},
     InitAnalysis = #analysis{type = AnalysisType,
                              defines = [],
                              include_dirs = IncludeDirs,
@@ -534,21 +615,32 @@ do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPL
                              use_contracts = true,
                              callgraph_file = ""},
     State3 = start_analysis(State2, InitAnalysis),
-%%     {T1, _} = statistics(wall_clock),
+    %%     {T1, _} = statistics(wall_clock),
+    case JPid of
+        false -> ok;
+        _ ->
+            JPid ! {start, self()}
+    end,
     Return = cl_loop(State3),
-%%     {T2, _} = statistics(wall_clock),
-%%     report_elapsed_time(T1, T2, Options),
-    Return.
+    %%     {T2, _} = statistics(wall_clock),
+    %%     report_elapsed_time(T1, T2, Options),
+    case JPid of
+        false ->
+            Return;
+        _ ->
+            JPid ! {stop, Return},
+            ok
+    end.
 
 assert_writable(none) ->
-  ok;
+    ok;
 assert_writable(PltFile) ->
-  case check_if_writable(PltFile) of
-    true -> ok;
-    false ->
-      Msg = io_lib:format("    The PLT file ~s is not writable", [PltFile]),
-      error(Msg)
-  end.
+    case check_if_writable(PltFile) of
+        true -> ok;
+        false ->
+            Msg = io_lib:format("    The PLT file ~s is not writable", [PltFile]),
+            error(Msg)
+    end.
 
 -define(MIN_FILES_FOR_NATIVE_COMPILE, 20).
 
@@ -577,49 +669,52 @@ hipe_compile(Files, ErlangMode) ->
     end.
 
 native_compile(Mods) ->
-  case erlang:system_info(schedulers) of
-    %% N when N > 1 ->
-    %%   Parent = self(),
-    %%   Pids = [spawn(fun () -> Parent ! {self(), hc(M)} end) || M <- Mods],
-    %%   lists:foreach(fun (Pid) -> receive {Pid, Res} -> Res end end, Pids);
-    _ -> % 1 ->
-      lists:foreach(fun (Mod) -> hc(Mod) end, Mods)
-  end.
+    case erlang:system_info(schedulers) of
+        %% N when N > 1 ->
+        %%   Parent = self(),
+        %%   Pids = [spawn(fun () -> Parent ! {self(), hc(M)} end) || M <- Mods],
+        %%   lists:foreach(fun (Pid) -> receive {Pid, Res} -> Res end end, Pids);
+        _ -> % 1 ->
+            lists:foreach(fun (Mod) -> hc(Mod) end, Mods)
+    end.
 
 hc(Mod) ->
-  case code:ensure_loaded(Mod) of
-    {module, Mod} -> ok;
-    {error, sticky_directory} -> ok
-  end,
-  case code:is_module_native(Mod) of
-    true -> ok;
-    false ->
-      {ok, Mod} = hipe:c(Mod),
-      ok
-  end.
+    case code:ensure_loaded(Mod) of
+        {module, Mod} -> ok;
+        {error, sticky_directory} -> ok
+    end,
+    case code:is_module_native(Mod) of
+        true -> ok;
+        false ->
+            {ok, Mod} = hipe:c(Mod),
+            ok
+    end.
 
 new_state() ->
-  #cl_state{}.
+    #cl_state{}.
 
 check_if_writable(PltFile) ->
-  case filelib:is_regular(PltFile) of
-    true -> is_writable_file_or_dir(PltFile);
-    false ->
-      case filelib:is_dir(PltFile) of
-    true -> false;
-    false ->
-      DirName = filename:dirname(PltFile),
-      filelib:is_dir(DirName) andalso is_writable_file_or_dir(DirName)
-      end
-  end.
+    case filelib:is_regular(PltFile) of
+        true -> is_writable_file_or_dir(PltFile);
+        false ->
+            case filelib:is_dir(PltFile) of
+                true -> false;
+                false ->
+                    DirName = filename:dirname(PltFile),
+                    filelib:is_dir(DirName) andalso is_writable_file_or_dir(DirName)
+            end
+    end.
 
 is_writable_file_or_dir(PltFile) ->
-  case file:read_file_info(PltFile) of
-    {ok, #file_info{access = A}} ->
-      (A =:= write) orelse (A =:= read_write);
-    {error, _} ->
-      false
-  end.
+    case file:read_file_info(PltFile) of
+        {ok, #file_info{access = A}} ->
+            (A =:= write) orelse (A =:= read_write);
+        {error, _} ->
+            false
+    end.
+
+progress(What, Msg, #cl_state{progress_fun=Fun}) ->
+    Fun(progress, {self(), What, Msg}).
 
 -define(LOG_CACHE_SIZE, 10).
 
@@ -632,40 +727,50 @@ cl_loop(State, LogCache) ->
     receive
         {BackendPid, log, LogMsg} ->
             ?D({log, LogMsg}),
+            progress(log, LogMsg, State),
             %%io:format(State#cl_state.output ,"Log: ~s\n", [LogMsg]),
             cl_loop(State, lists:sublist([LogMsg|LogCache], ?LOG_CACHE_SIZE));
         {BackendPid, warnings, Warnings} ->
             ?D({warnings, Warnings}),
+            progress(warnings, Warnings, State),
             NewState = store_warnings(State, Warnings),
             cl_loop(NewState, LogCache);
         {BackendPid, unknown_behaviours, Behaviours} ->
             ?D({unknown_behaviours, Behaviours}),
+            progress(unknown_behaviours, Behaviours, State),
             NewState = store_unknown_behaviours(State, Behaviours),
             cl_loop(NewState, LogCache);
         {BackendPid, done, NewPlt, _NewDocPlt} ->
             ?D(done),
+            progress(done, NewPlt, State),
             return_value(State, NewPlt);
         {BackendPid, ext_calls, ExtCalls} ->
             ?D({ext_calls}), %% , ExtCalls}),
+            progress(ext_calls, ExtCalls, State),
             cl_loop(State#cl_state{external_calls = ExtCalls}, LogCache);
         {BackendPid, ext_types, ExtTypes} ->
             ?D({ext_types}), %% , ExtTypes}),
+            progress(ext_types, ExtTypes, State),
             cl_loop(State#cl_state{external_types = ExtTypes}, LogCache);
         {BackendPid, mod_deps, ModDeps} ->
-            ?D(mod_deps), % ?D({mod_deps, ModDeps}),
+            % ?D({mod_deps, ModDeps}),
+            progress(mod_deps, dict:size(ModDeps), State),
             NewState = State#cl_state{mod_deps = ModDeps},
             cl_loop(NewState, LogCache);
         {'EXIT', BackendPid, {error, Reason}} ->
             ?D({Reason}),
             Msg = failed_anal_msg(Reason, LogCache),
+            progress('EXIT', Msg, State),
             error(State, Msg);
         {'EXIT', BackendPid, Reason} when Reason =/= 'normal' ->
             ?D({Reason}),
             Msg = failed_anal_msg(io_lib:format("~P", [Reason, 12]), LogCache),
+            progress('EXIT', Msg, State),
             error(State, Msg);
         _Other ->
             ?D({'_Other'}),
             %% io:format("Received ~p\n", [_Other]),
+            progress(other, _Other, State),
             cl_loop(State, LogCache)
     end.
 
@@ -720,7 +825,7 @@ return_value(State = #cl_state{erlang_mode = ErlangMode,
             print_ext_calls(State),
             print_ext_types(State),
             print_unknown_behaviours(State),
-%%             maybe_close_output_file(State),
+            %%             maybe_close_output_file(State),
             {RetValue, []};
         true -> 
             {RetValue, process_warnings(StoredWarnings)}
@@ -781,7 +886,7 @@ print_warnings(#cl_state{output = Output,
     end.
 
 -spec process_warnings([dial_warning()]) -> [dial_warning()].
-  
+
 process_warnings(Warnings) ->
     Warnings1 = lists:keysort(2, Warnings), %% Sort on file/line
     remove_duplicate_warnings(Warnings1, []).
@@ -868,7 +973,7 @@ error(State, Msg) ->
         standard_io -> ok;
         Outfile -> io:format(Outfile, "\n~s\n", [Msg])
     end,
-%%     maybe_close_output_file(State),
+    %%     maybe_close_output_file(State),
     throw({dialyzer_error, Msg}).
 
 
@@ -885,15 +990,15 @@ start_analysis(State, Analysis) ->
     State#cl_state{backend_pid = BackendPid}.
 
 default_plt_error_msg() ->
-  "Use the options:\n"
-    "   --build_plt   to build a new PLT; or\n"
-    "   --add_to_plt  to add to an existing PLT\n"
-    "\n"
-    "For example, use a command like the following:\n"
-    "   dialyzer --build_plt --apps erts kernel stdlib mnesia\n"
-    "Note that building a PLT such as the above may take 20 mins or so\n"
-    "\n"
-    "If you later need information about other applications, say crypto,\n"
-    "you can extend the PLT by the command:\n"
-    "  dialyzer --add_to_plt --apps crypto\n"
-    "For applications that are not in Erlang/OTP use an absolute file name.\n".
+    "Use the options:\n"++
+        "   --build_plt   to build a new PLT; or\n"++
+        "   --add_to_plt  to add to an existing PLT\n"++
+        "\n"++
+        "For example, use a command like the following:\n"++
+        "   dialyzer --build_plt --apps erts kernel stdlib mnesia\n"++
+        "Note that building a PLT such as the above may take 20 mins or so\n"++
+        "\n"++
+        "If you later need information about other applications, say crypto,\n"++
+        "you can extend the PLT by the command:\n"++
+        "  dialyzer --add_to_plt --apps crypto\n"++
+        "For applications that are not in Erlang/OTP use an absolute file name.\n".

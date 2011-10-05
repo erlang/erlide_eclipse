@@ -36,9 +36,9 @@ public class ErlModelDeltaManager {
 
     public ErlModelDeltaManager(final ErlModel model) {
         this.model = model;
-        this.fFire = true;
-        this.reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
-        this.erlModelDeltas = Collections
+        fFire = true;
+        reconcileDeltas = new HashMap<IWorkingCopy, IErlElementDelta>();
+        erlModelDeltas = Collections
                 .synchronizedList(new ArrayList<IErlElementDelta>());
     }
 

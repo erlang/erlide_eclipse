@@ -53,7 +53,7 @@ public class BrowserDialog extends Dialog {
     public void open() {
         createContent();
         dialogShell.open();
-        Display display = dialogShell.getDisplay();
+        final Display display = dialogShell.getDisplay();
         while (!dialogShell.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -77,10 +77,10 @@ public class BrowserDialog extends Dialog {
 
     private void createContent() {
 
-        Shell parent = getParent();
+        final Shell parent = getParent();
         dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 
-        GridLayout dialogShellLayout = new GridLayout();
+        final GridLayout dialogShellLayout = new GridLayout();
         dialogShellLayout.makeColumnsEqualWidth = true;
         dialogShell.setText("Html Report browser");
         dialogShell.setLayout(dialogShellLayout);
@@ -89,7 +89,7 @@ public class BrowserDialog extends Dialog {
         dialogShell.setSize(800, 600);
 
         browser = new Browser(dialogShell, SWT.NONE | SWT.BORDER);
-        GridData browserLData = new GridData();
+        final GridData browserLData = new GridData();
         browserLData.widthHint = 784;
         browserLData.heightHint = 500;
         browser.setLayoutData(browserLData);
@@ -97,25 +97,25 @@ public class BrowserDialog extends Dialog {
         browser.addLocationListener(locationListener);
 
         comp = new Composite(dialogShell, SWT.NONE);
-        GridLayout compLayout = new GridLayout();
+        final GridLayout compLayout = new GridLayout();
         compLayout.makeColumnsEqualWidth = true;
         compLayout.numColumns = 4;
         compLayout.marginLeft = 330;
         compLayout.marginRight = 330;
-        GridData compLData = new GridData();
+        final GridData compLData = new GridData();
         compLData.widthHint = 521;
         compLData.heightHint = 33;
         comp.setLayoutData(compLData);
         comp.setLayout(compLayout);
 
         prev = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
-        GridData prevLData = new GridData();
+        final GridData prevLData = new GridData();
         prev.setLayoutData(prevLData);
         prev.addSelectionListener(prevListener);
         prev.setImage(Activator.getImageDescriptor(Images.PREV).createImage());
 
         next = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
-        GridData nextLData = new GridData();
+        final GridData nextLData = new GridData();
         next.setLayoutData(nextLData);
         next.addSelectionListener(nextListener);
         next.setImage(Activator.getImageDescriptor(Images.NEXT).createImage());
@@ -133,13 +133,13 @@ public class BrowserDialog extends Dialog {
         }
 
         home = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
-        GridData homeLData = new GridData();
+        final GridData homeLData = new GridData();
         home.setLayoutData(homeLData);
         home.addSelectionListener(homeListener);
         home.setImage(Activator.getImageDescriptor(Images.HOME).createImage());
 
         up = new Button(comp, SWT.PUSH | SWT.CENTER | SWT.FILL);
-        GridData upLData = new GridData();
+        final GridData upLData = new GridData();
         up.setLayoutData(upLData);
         up.addSelectionListener(upListener);
         up.setImage(Activator.getImageDescriptor(Images.UP).createImage());
@@ -150,10 +150,10 @@ public class BrowserDialog extends Dialog {
 
     private final SelectionListener prevListener = new SelectionListener() {
 
-        public void widgetSelected(SelectionEvent e) {
+        public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
-                ICoverageObject sib = object.getParent().getPrevSiblingTo(
-                        object.getLabel());
+                final ICoverageObject sib = object.getParent()
+                        .getPrevSiblingTo(object.getLabel());
                 if (sib == null) {
                     return;
                 }
@@ -167,17 +167,17 @@ public class BrowserDialog extends Dialog {
             }
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) {
+        public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
     };
 
     private final SelectionListener nextListener = new SelectionListener() {
 
-        public void widgetSelected(SelectionEvent e) {
+        public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
-                ICoverageObject sib = object.getParent().getNextSiblingTo(
-                        object.getLabel());
+                final ICoverageObject sib = object.getParent()
+                        .getNextSiblingTo(object.getLabel());
                 if (sib == null) {
                     return;
                 }
@@ -190,14 +190,14 @@ public class BrowserDialog extends Dialog {
             }
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) {
+        public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
     };
 
     private final SelectionListener upListener = new SelectionListener() {
 
-        public void widgetSelected(SelectionEvent e) {
+        public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
                 setObject(object.getParent());
                 browser.setUrl(url);
@@ -212,37 +212,37 @@ public class BrowserDialog extends Dialog {
             }
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) {
+        public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
     };
 
     private final SelectionListener homeListener = new SelectionListener() {
 
-        public void widgetSelected(SelectionEvent e) {
+        public void widgetSelected(final SelectionEvent e) {
             setObject(StatsTreeModel.getInstance().getRoot());
             browser.setUrl(url);
             next.setEnabled(false);
             prev.setEnabled(false);
         }
 
-        public void widgetDefaultSelected(SelectionEvent e) {
+        public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
     };
 
     private final LocationListener locationListener = new LocationListener() {
 
-        public void changing(LocationEvent event) {
+        public void changing(final LocationEvent event) {
 
         }
 
-        public void changed(LocationEvent event) {
+        public void changed(final LocationEvent event) {
             if (object == null) {
                 return;
             }
             log.info(event.getSource());
-            String newUrl = browser.getUrl();
+            final String newUrl = browser.getUrl();
             String name = newUrl
                     .substring(newUrl.lastIndexOf(File.separator) + 1,
                             newUrl.length() - 5);

@@ -22,27 +22,27 @@ import org.erlide.cover.views.model.StatsTreeObject;
  */
 public class ShowCoverageAction extends CoverageAction {
 
-    private Logger log;
+    private final Logger log;
 
-    public ShowCoverageAction(TreeViewer viewer) {
+    public ShowCoverageAction(final TreeViewer viewer) {
         super(viewer);
         log = Activator.getDefault();
     }
 
     @Override
-    protected void perform(StatsTreeObject selection) {
+    protected void perform(final StatsTreeObject selection) {
 
         if (selection instanceof ModuleStats) {
-            ModuleStats module = (ModuleStats) selection;
-            String name = module.getLabel() + ".erl";
+            final ModuleStats module = (ModuleStats) selection;
+            final String name = module.getLabel() + ".erl";
             if (ifMarkAnnotations(module)) {
                 module.couldBeMarked = true;
                 marker.addAnnotationsToFile(name);
             }
         } else if (selection instanceof FunctionStats) {
-            FunctionStats fs = (FunctionStats) selection;
-            ModuleStats module = (ModuleStats) fs.getParent();
-            String name = module.getLabel() + ".erl";
+            final FunctionStats fs = (FunctionStats) selection;
+            final ModuleStats module = (ModuleStats) fs.getParent();
+            final String name = module.getLabel() + ".erl";
 
             if (ifMarkAnnotations(module)) {
                 log.info(fs.getLineStart());
@@ -52,23 +52,23 @@ public class ShowCoverageAction extends CoverageAction {
                         fs.getLineEnd());
             }
 
-        } else if( selection.equals(StatsTreeModel.getInstance().getRoot())){
-            //TODO: check annotation tree, only if root mark all annotations
-            Collection<ICoverageObject> col = selection.getModules();
-            for(ICoverageObject module : col) {
-                if(ifMarkAnnotations((ModuleStats)module)) {
-                    ((ModuleStats)module).couldBeMarked = true;
+        } else if (selection.equals(StatsTreeModel.getInstance().getRoot())) {
+            // TODO: check annotation tree, only if root mark all annotations
+            final Collection<ICoverageObject> col = selection.getModules();
+            for (final ICoverageObject module : col) {
+                if (ifMarkAnnotations((ModuleStats) module)) {
+                    ((ModuleStats) module).couldBeMarked = true;
                 } else {
-                    ((ModuleStats)module).couldBeMarked = false;
+                    ((ModuleStats) module).couldBeMarked = false;
                 }
             }
             marker.addAnnotations();
         } else {
-            Collection<ICoverageObject> col = selection.getModules();
-            for(ICoverageObject module : col) {
-                if(ifMarkAnnotations((ModuleStats) module)) {
-                    String name = module.getLabel() + ".erl";
-                    ((ModuleStats)module).couldBeMarked = true;
+            final Collection<ICoverageObject> col = selection.getModules();
+            for (final ICoverageObject module : col) {
+                if (ifMarkAnnotations((ModuleStats) module)) {
+                    final String name = module.getLabel() + ".erl";
+                    ((ModuleStats) module).couldBeMarked = true;
                     marker.addAnnotationsToFile(name);
                 }
             }
@@ -77,14 +77,15 @@ public class ShowCoverageAction extends CoverageAction {
     }
 
     // calculate md5
-    private boolean ifMarkAnnotations(ModuleStats module) {
+    private boolean ifMarkAnnotations(final ModuleStats module) {
         try {
-            File file = new File(CoreScope.getModel()
+            final File file = new File(CoreScope.getModel()
                     .findModule(module.getLabel()).getFilePath());
 
-            if (module.getMd5().equals(MD5Checksum.getMD5(file)))
+            if (module.getMd5().equals(MD5Checksum.getMD5(file))) {
                 return true;
-        } catch (Exception e) {
+            }
+        } catch (final Exception e) {
             // TODO
             e.printStackTrace();
         }

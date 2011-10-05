@@ -38,13 +38,13 @@ import org.erlide.cover.views.model.StatsTreeModel;
  */
 public class RestoreAction extends Action {
 
-    private Shell shell;
-    private TreeViewer viewer;
+    private final Shell shell;
+    private final TreeViewer viewer;
 
-    private Logger log; // logger
+    private final Logger log; // logger
 
-    public RestoreAction(TreeViewer viewer) {
-        this.shell = viewer.getControl().getShell();
+    public RestoreAction(final TreeViewer viewer) {
+        shell = viewer.getControl().getShell();
         this.viewer = viewer;
         log = Activator.getDefault();
     }
@@ -52,84 +52,90 @@ public class RestoreAction extends Action {
     @Override
     public void run() {
 
-        IPath location = Activator.getDefault().getStateLocation()
+        final IPath location = Activator.getDefault().getStateLocation()
                 .append(SaveAction.DIR_NAME);
         final File dir = location.toFile();
-        
+
         if (!dir.exists() && !dir.mkdir()) {
             CoverageHelper.reportError("Can not save results!");
             return;
         }
 
-     // open dialog
-        ElementListSelectionDialog resDialog = new ElementListSelectionDialog(
+        // open dialog
+        final ElementListSelectionDialog resDialog = new ElementListSelectionDialog(
                 shell, labelProvider);
-        
+
         resDialog.setElements(dir.listFiles());
         resDialog.setTitle("Restoring results");
         resDialog.setMessage("Select results to restore");
-        
+
         resDialog.open();
 
-        if (resDialog.getReturnCode() != Window.OK)
+        if (resDialog.getReturnCode() != Window.OK) {
             return;
-     //  
-        File f = (File)resDialog.getFirstResult();
-        
+        }
+        //
+        final File f = (File) resDialog.getFirstResult();
+
         try {
-            ObjectInputStream objStream = new ObjectInputStream(new FileInputStream(f));
-            
-            Object obj = objStream.readObject();
-            
-            StatsTreeModel.changeInstance((StatsTreeModel)obj);
+            final ObjectInputStream objStream = new ObjectInputStream(
+                    new FileInputStream(f));
+
+            final Object obj = objStream.readObject();
+
+            StatsTreeModel.changeInstance((StatsTreeModel) obj);
             StatsTreeModel.getInstance().setChanged(true);
-            
+
             viewer.setInput(StatsTreeModel.getInstance());
-            
-            ICoverageObject root = StatsTreeModel.getInstance().getRoot();
-            ModuleSet mSet = new ModuleSet();
+
+            final ICoverageObject root = StatsTreeModel.getInstance().getRoot();
+            final ModuleSet mSet = new ModuleSet();
             createModuleSet(mSet, root);
-            
-            Collection<ICoverageObject> col = root.getModules();
-            for(ICoverageObject module : col) {
-                if(ifMarkAnnotations((ModuleStats)module)) {
-                    ((ModuleStats)module).couldBeMarked = true;
+
+            final Collection<ICoverageObject> col = root.getModules();
+            for (final ICoverageObject module : col) {
+                if (ifMarkAnnotations((ModuleStats) module)) {
+                    ((ModuleStats) module).couldBeMarked = true;
                 } else {
-                    ((ModuleStats)module).couldBeMarked = false;
+                    ((ModuleStats) module).couldBeMarked = false;
                 }
             }
             EditorTracker.getInstance().addAnnotations();
-            
-        } catch (FileNotFoundException e) {
+
+        } catch (final FileNotFoundException e) {
             log.error("No such file");
             e.printStackTrace();
             CoverageHelper.reportError("Error while reading file");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             log.error("Error while reading file");
             e.printStackTrace();
             CoverageHelper.reportError("Error while reading file");
-        } 
-        
+        }
+
     }
 
     // creates module set used to prepare annotations map
-    private void createModuleSet(ModuleSet mSet, ICoverageObject object) {
-        if(object.getType().equals(ObjectType.MODULE))
-            ModuleSet.add((ModuleStats)object);
-        ICoverageObject[] children = object.getChildren();
-        for(ICoverageObject child : children)
+    private void createModuleSet(final ModuleSet mSet,
+            final ICoverageObject object) {
+        if (object.getType().equals(ObjectType.MODULE)) {
+            ModuleSet.add((ModuleStats) object);
+        }
+        final ICoverageObject[] children = object.getChildren();
+        for (final ICoverageObject child : children) {
             createModuleSet(mSet, child);
+        }
     }
-    
+
     // calculate md5
-    private boolean ifMarkAnnotations(ModuleStats module) {
+    private boolean ifMarkAnnotations(final ModuleStats module) {
         try {
-            File file = new File(CoreScope.getModel()
+            final File file = new File(CoreScope.getModel()
                     .findModule(module.getLabel()).getFilePath());
 
-            if (module.getMd5().equals(MD5Checksum.getMD5(file)))
+            if (module.getMd5().equals(MD5Checksum.getMD5(file))) {
                 return true;
-        } catch (Exception e) {
+            }
+        } catch (final Exception e) {
             // TODO
             e.printStackTrace();
         }
@@ -137,33 +143,36 @@ public class RestoreAction extends Action {
     }
 
     // label provider for choosing files
-    private ILabelProvider labelProvider = new LabelProvider() {
+    private final ILabelProvider labelProvider = new LabelProvider() {
 
         @Override
-        public Image getImage(Object element) {
+        public Image getImage(final Object element) {
 
-            Image img = Activator.getImageDescriptor(Images.RAW_FILE).createImage();
+            final Image img = Activator.getImageDescriptor(Images.RAW_FILE)
+                    .createImage();
             return img;
         }
 
         @Override
-        public String getText(Object element) {
-            if (!(element instanceof File))
+        public String getText(final Object element) {
+            if (!(element instanceof File)) {
                 return null;
-            File f = (File) element;
+            }
+            final File f = (File) element;
 
-            SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-            Date d = new Date();
+            final SimpleDateFormat df = new SimpleDateFormat(
+                    "yyyy.MM.dd HH:mm:ss");
+            final Date d = new Date();
             d.setTime(f.lastModified());
 
             log.info(df.format(d));
 
-            StringBuffer buf = new StringBuffer();
+            final StringBuffer buf = new StringBuffer();
             buf.append(f.getName()).append(" (").append(df.format(d))
                     .append(")");
             return buf.toString();
         }
 
     };
-    
+
 }

@@ -195,7 +195,8 @@ public class OpenAction extends SelectionDispatchAction {
             found = findExternalCallOrType(module, res, erlProject, element,
                     scope);
         } else if (res.isInclude()) {
-            found = ModelInternalUtils.findInclude(module, erlProject, res, model);
+            found = ModelInternalUtils.findInclude(module, erlProject, res,
+                    model);
         } else if (res.isLocalCall()) {
             found = findLocalCall(module, backend, erlProject, res, element,
                     scope);
@@ -204,8 +205,8 @@ public class OpenAction extends SelectionDispatchAction {
             final ISourceRange range = sref.getSourceRange();
             final String elementText = editor.getDocument().get(
                     range.getOffset(), range.getLength());
-            found = ModelInternalUtils.findVariable(backend, range, res.getName(),
-                    elementText);
+            found = ModelInternalUtils.findVariable(backend, range,
+                    res.getName(), elementText);
         } else if (res.isRecord() || res.isMacro()) {
             final Kind kind = res.isMacro() ? Kind.MACRO_DEF : Kind.RECORD_DEF;
             found = ModelUtils.findPreprocessorDef(module, res.getName(), kind);
@@ -228,7 +229,8 @@ public class OpenAction extends SelectionDispatchAction {
     private static IErlElement findLocalCall(final IErlModule module,
             final IRpcCallSite backend, final IErlProject erlProject,
             final OpenResult res, final IErlElement element,
-            final IErlElementLocator.Scope scope) throws RpcException, CoreException {
+            final IErlElementLocator.Scope scope) throws RpcException,
+            CoreException {
         if (isTypeDefOrRecordDef(element)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }

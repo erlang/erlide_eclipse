@@ -12,6 +12,7 @@ public class CoverageAnnotationFactory {
 
     /**
      * Create new coverage annotation
+     * 
      * @param type
      * @return
      */

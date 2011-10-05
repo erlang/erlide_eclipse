@@ -53,8 +53,8 @@ public class ErlideDialyze {
         for (final IPath p : includeDirs) {
             incs.add(p.toString());
         }
-        backend.async_call_result(callback, "erlide_dialyze", "dialyze",
-                "lslslsoo", files, pltPaths, incs, fromSource, noCheckPLT);
+        backend.async_call_result(callback, "erlide_dialyze", "start_dialyze",
+                "xlslslsoo", files, pltPaths, incs, fromSource, noCheckPLT);
         // ErlLogger.debug("result %s", result.toString());
     }
 
@@ -105,6 +105,6 @@ public class ErlideDialyze {
             final String plt, final List<String> ebinDirs,
             final IRpcResultCallback callback) throws RpcException {
         backend.async_call_result(callback, "erlide_dialyze",
-                "start_update_plt_with_additional_paths", "sls", plt, ebinDirs);
+                "start_update_plt_with_additional_paths", "xsls", plt, ebinDirs);
     }
 }

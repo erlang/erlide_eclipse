@@ -96,18 +96,18 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     private void createAnnotationMap() {
 
-        Iterator<ModuleStats> it = ModuleSet.iterator();
+        final Iterator<ModuleStats> it = ModuleSet.iterator();
 
         while (it.hasNext()) {
-            ModuleStats module = it.next();
+            final ModuleStats module = it.next();
             if (!module.couldBeMarked) {
                 continue;
             }
 
-            List<LineResult> list = module.getLineResults();
-            String modName = module.getLabel() + ".erl";
+            final List<LineResult> list = module.getLineResults();
+            final String modName = module.getLabel() + ".erl";
 
-            for (LineResult lr : list) {
+            for (final LineResult lr : list) {
 
                 coverage.addAnnotation(modName, lr, null);
 
@@ -120,21 +120,22 @@ public class EditorTracker implements ICoverAnnotationMarker {
      * 
      * @param fileName
      */
-    public void addAnnotationsToFile(String fileName) {
+    public void addAnnotationsToFile(final String fileName) {
 
-        IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
+        final IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
                 .getActivePage().getActiveEditor();
 
         if (currentEditor.getTitle().equals(fileName)
                 && !currentEditor.isDirty()) {
 
-            ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
+            final ModuleStats module = ModuleSet.get(fileName.replace(".erl",
+                    ""));
 
             if (module == null || !module.couldBeMarked) {
                 return;
             }
 
-            List<LineResult> list = module.getLineResults();
+            final List<LineResult> list = module.getLineResults();
 
             for (final LineResult lr : list) {
                 coverage.addAnnotation(fileName, lr, null);
@@ -145,8 +146,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     }
 
-    public void removeAnnotationsFromFile(String fileName) {
-        IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
+    public void removeAnnotationsFromFile(final String fileName) {
+        final IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
                 .getActivePage().getActiveEditor();
 
         if (currentEditor.getTitle().equals(fileName)) {
@@ -164,30 +165,32 @@ public class EditorTracker implements ICoverAnnotationMarker {
      * @param start
      * @param end
      */
-    public void addAnnotationsFragment(String fileName, int start, int end) {
-        IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
+    public void addAnnotationsFragment(final String fileName, final int start,
+            final int end) {
+        final IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
                 .getActivePage().getActiveEditor();
 
         if (currentEditor.getTitle().equals(fileName)
                 && currentEditor instanceof ITextEditor
                 && !currentEditor.isDirty()) {
 
-            ModuleStats module = ModuleSet.get(fileName.replace(".erl", ""));
+            final ModuleStats module = ModuleSet.get(fileName.replace(".erl",
+                    ""));
 
             if (module == null || !module.couldBeMarked) {
                 return;
             }
 
-            List<LineResult> list = module.getLineResults();
+            final List<LineResult> list = module.getLineResults();
 
-            ITextEditor editor = (ITextEditor) currentEditor;
+            final ITextEditor editor = (ITextEditor) currentEditor;
 
             log.info(fileName);
 
             for (final LineResult lr : list) {
 
-                if (lr.getLineNum() < start
-                        || (end != -1 && lr.getLineNum() > end)) {
+                if (lr.getLineNum() < start || end != -1
+                        && lr.getLineNum() > end) {
                     continue;
                 }
 
@@ -210,31 +213,32 @@ public class EditorTracker implements ICoverAnnotationMarker {
      * @param start
      * @param end
      */
-    public void removeAnnotationsFragment(String fileName, int start, int end) {
+    public void removeAnnotationsFragment(final String fileName,
+            final int start, final int end) {
 
-        IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
+        final IEditorPart currentEditor = workbench.getActiveWorkbenchWindow()
                 .getActivePage().getActiveEditor();
 
         if (currentEditor.getTitle().equals(fileName)
                 && currentEditor instanceof ITextEditor) {
 
-            ITextEditor editor = (ITextEditor) currentEditor;
-            IAnnotationModel annMod = editor.getDocumentProvider()
+            final ITextEditor editor = (ITextEditor) currentEditor;
+            final IAnnotationModel annMod = editor.getDocumentProvider()
                     .getAnnotationModel(editor.getEditorInput());
 
             final Set<LineResult> list = coverage.getLineSet(editor.getTitle());
 
             for (final LineResult lr : list) {
 
-                if (lr.getLineNum() < start
-                        || (end != -1 && lr.getLineNum() > end)) {
+                if (lr.getLineNum() < start || end != -1
+                        && lr.getLineNum() > end) {
                     continue;
                 }
 
                 log.info(lr.getLineNum());
                 if (coverage.containsAnnotation(editor.getTitle(), lr)) {
-                    Annotation ann = coverage.getAnnotation(editor.getTitle(),
-                            lr);
+                    final Annotation ann = coverage.getAnnotation(
+                            editor.getTitle(), lr);
                     annMod.removeAnnotation(ann);
                     coverage.removeAnnotation(editor.getTitle(), lr);
                 }
@@ -272,7 +276,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     }
 
-    private void markLine(final ITextEditor editor, LineResult lr) {
+    private void markLine(final ITextEditor editor, final LineResult lr) {
 
         final IDocument doc = editor.getDocumentProvider().getDocument(
                 editor.getEditorInput());
@@ -298,7 +302,8 @@ public class EditorTracker implements ICoverAnnotationMarker {
                         .create(CoverageTypes.NO_COVERAGE);
             }
 
-            Annotation lastAnn = coverage.getAnnotation(editor.getTitle(), lr);
+            final Annotation lastAnn = coverage.getAnnotation(
+                    editor.getTitle(), lr);
 
             log.info(lastAnn);
 

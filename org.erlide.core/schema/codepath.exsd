@@ -19,7 +19,7 @@
       <complexType>
          <sequence>
             <element ref="beam_dir" minOccurs="1" maxOccurs="unbounded"/>
-            <element ref="init" minOccurs="0" maxOccurs="1"/>
+            <element ref="init" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>

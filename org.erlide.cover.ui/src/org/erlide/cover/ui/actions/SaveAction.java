@@ -27,22 +27,22 @@ public class SaveAction extends Action {
 
     public static final String DIR_NAME = "cover_stats";
 
-    private Shell shell;
+    private final Shell shell;
 
-    private Logger log = Activator.getDefault();
+    private final Logger log = Activator.getDefault();
 
-    public SaveAction(Shell shell) {
+    public SaveAction(final Shell shell) {
         this.shell = shell;
     }
 
     @Override
     public void run() {
 
-        StringBuilder statName = new StringBuilder();
+        final StringBuilder statName = new StringBuilder();
         statName.append("cov_").append(
                 StatsTreeModel.getInstance().getTimestamp());
 
-        IPath location = Activator.getDefault().getStateLocation()
+        final IPath location = Activator.getDefault().getStateLocation()
                 .append(DIR_NAME);
         final File dir = location.toFile();
 
@@ -50,24 +50,26 @@ public class SaveAction extends Action {
             CoverageHelper.reportError("Can not save results!");
             return;
         }
-        
+
         // open input dialog
 
-        InputDialog nameDialog = new InputDialog(shell,
+        final InputDialog nameDialog = new InputDialog(shell,
                 "Saving coverage results",
                 "Enter the name for saving coverage results",
                 statName.toString(), new IInputValidator() {
 
-                    public String isValid(String newText) {
+                    public String isValid(final String newText) {
 
-                        String[] names = dir.list();
+                        final String[] names = dir.list();
 
-                        if (newText == null || newText.length() < 1)
+                        if (newText == null || newText.length() < 1) {
                             return "Name too short";
+                        }
 
-                        for (String name : names) {
-                            if (name.equals(newText))
+                        for (final String name : names) {
+                            if (name.equals(newText)) {
                                 return "Results file with the same name already exists";
+                            }
                         }
 
                         return null;
@@ -78,10 +80,11 @@ public class SaveAction extends Action {
         nameDialog.open();
 
         String name = "";
-        if (nameDialog.getReturnCode() == Window.OK)
+        if (nameDialog.getReturnCode() == Window.OK) {
             name = nameDialog.getValue();
-        else
+        } else {
             return;
+        }
 
         //
 
@@ -95,11 +98,11 @@ public class SaveAction extends Action {
 
             objOutStream.writeObject(StatsTreeModel.getInstance());
 
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             log.error("Error while openning stream");
             e.printStackTrace();
             CoverageHelper.reportError("Cannot save results");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             log.error("Error while writing to a file");
             e.printStackTrace();
             CoverageHelper.reportError("Cannot save results");

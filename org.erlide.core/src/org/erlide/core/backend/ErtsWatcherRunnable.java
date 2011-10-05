@@ -17,15 +17,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.LogUtil;
 import org.erlide.jinterface.ErlLogger;
 
 final public class ErtsWatcherRunnable implements Runnable {
-    private final RuntimeInfo info;
-    private final File workingDirectory;
     private final Process process;
+    private final String workingDir;
+    private final String nodeName;
 
     FilenameFilter filter = new FilenameFilter() {
         public boolean accept(final File dir, final String name) {
@@ -33,10 +32,10 @@ final public class ErtsWatcherRunnable implements Runnable {
         }
     };
 
-    public ErtsWatcherRunnable(final RuntimeInfo info,
-            final File workingDirectory, final Process process) {
-        this.info = info;
-        this.workingDirectory = workingDirectory;
+    public ErtsWatcherRunnable(final String nodeName, final String workingDir,
+            final Process process) {
+        this.nodeName = nodeName;
+        this.workingDir = workingDir;
         this.process = process;
     }
 
@@ -45,14 +44,14 @@ final public class ErtsWatcherRunnable implements Runnable {
         try {
             final int v = process.waitFor();
             final String msg = "Backend '%s' terminated with exit code %d.";
-            ErlLogger.error(msg, info.getNodeName(), v);
+            ErlLogger.error(msg, nodeName, v);
 
             // 129 = SIGHUP (probably logout, ignore)
             // 143 = SIGTERM (probably logout, ignore)
             // 137 = SIGKILL (probably killed by user)
             if (v > 1 && v != 143 && v != 129 && v != 137
                     && CommonUtils.isEricssonUser()) {
-                createReport(info, workingDirectory, v, msg);
+                createReport(v, msg);
             }
             // FIXME backend.setExitStatus(v);
         } catch (final InterruptedException e) {
@@ -60,12 +59,11 @@ final public class ErtsWatcherRunnable implements Runnable {
         }
     }
 
-    private void createReport(final RuntimeInfo ainfo,
-            final File aworkingDirectory, final int v, final String msg) {
+    private void createReport(final int v, final String msg) {
         final String plog = LogUtil.fetchPlatformLog();
         final String elog = LogUtil.fetchErlideLog();
-        final String slog = LogUtil.fetchStraceLog(ainfo.getWorkingDir() + "/"
-                + ainfo.getNodeName() + ".strace");
+        final String slog = LogUtil.fetchStraceLog(workingDir + "/" + nodeName
+                + ".strace");
         final String delim = "\n==================================\n";
         final File report = new File(LogUtil.getReportFile());
         try {
@@ -73,7 +71,7 @@ final public class ErtsWatcherRunnable implements Runnable {
             final OutputStream out = new FileOutputStream(report);
             final PrintWriter pw = new PrintWriter(out);
             try {
-                pw.println(String.format(msg, ainfo.getNodeName(), v));
+                pw.println(String.format(msg, nodeName, v));
                 pw.println(System.getProperty("user.name"));
                 pw.println(delim);
                 pw.println(plog);
