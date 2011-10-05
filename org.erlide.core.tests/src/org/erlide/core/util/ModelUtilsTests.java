@@ -136,13 +136,13 @@ public class ModelUtilsTests {
                         .toPortableString(), projects[1],
                 IErlElementLocator.Scope.PROJECT_ONLY);
         // in other project no path given, search all projects true
-        final IErlElement element3 = ModelUtils
-                .findTypeDef(moduleB, "bx", "concat_thing", null, projects[1],
-                        IErlElementLocator.Scope.ALL_PROJECTS);
+        final IErlElement element3 = ModelUtils.findTypeDef(moduleB, "bx",
+                "concat_thing", null, projects[1],
+                IErlElementLocator.Scope.ALL_PROJECTS);
         // in other project no path given, search all projects false, -> null
-        final IErlElement element4 = ModelUtils
-                .findTypeDef(moduleB, "bx", "concat_thing", null, projects[1],
-                        IErlElementLocator.Scope.PROJECT_ONLY);
+        final IErlElement element4 = ModelUtils.findTypeDef(moduleB, "bx",
+                "concat_thing", null, projects[1],
+                IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be returned if found
         assertTrue(element1 instanceof IErlTypespec);

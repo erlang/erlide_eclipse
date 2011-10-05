@@ -8,7 +8,7 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
  lambdaj-2.3.2-with-dependencies.jar,
- guava-r08.jar
+ guava-10.0.jar
 Export-Package: ch.lambdaj,
  ch.lambdaj.collection,
  ch.lambdaj.function.aggregate,

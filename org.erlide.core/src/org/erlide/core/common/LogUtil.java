@@ -23,10 +23,10 @@ public class LogUtil {
     }
 
     public static String getReportLocation() {
-        String s = System.getProperty("erlide.projectDirectory");
+        String s = System.getProperty("erlide.logDirectory");
         if (s == null) {
             if (CommonUtils.isOnWindows()) {
-                s = "\\\\projhost\\tecsas\\shade\\erlide\\reports";
+                s = "\\\\vhub\\tecsas\\shade\\erlide\\reports";
             } else {
                 s = "/proj/tecsas/SHADE/erlide/reports";
             }

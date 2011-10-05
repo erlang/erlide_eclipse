@@ -253,26 +253,34 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        for (final IErlElement fun : internalGetChildren()) {
-            if (fun instanceof IErlFunction) {
-                final IErlFunction f = (IErlFunction) fun;
-                if (f.getName().equals(function.name)
-                        && (function.arity < 0 || f.getArity() == function.arity)) {
-                    return f;
+        try {
+            for (final IErlElement fun : getChildren()) {
+                if (fun instanceof IErlFunction) {
+                    final IErlFunction f = (IErlFunction) fun;
+                    if (f.getName().equals(function.name)
+                            && (function.arity < 0 || f.getArity() == function.arity)) {
+                        return f;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
+            // ignore
         }
         return null;
     }
 
     public IErlTypespec findTypespec(final String typeName) {
-        for (final IErlElement child : internalGetChildren()) {
-            if (child instanceof IErlTypespec) {
-                final IErlTypespec typespec = (IErlTypespec) child;
-                if (typespec.getName().equals(typeName)) {
-                    return typespec;
+        try {
+            for (final IErlElement child : getChildren()) {
+                if (child instanceof IErlTypespec) {
+                    final IErlTypespec typespec = (IErlTypespec) child;
+                    if (typespec.getName().equals(typeName)) {
+                        return typespec;
+                    }
                 }
             }
+        } catch (final ErlModelException e) {
+            // ignore
         }
         return null;
     }
@@ -652,16 +660,20 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public boolean exportsAllFunctions() {
-        for (final IErlElement e : internalGetChildren()) {
-            if (e instanceof IErlAttribute) {
-                final IErlAttribute attr = (IErlAttribute) e;
-                if (attr.getName().equals("compile")) {
-                    final OtpErlangObject value = attr.getValue();
-                    if (value != null && value.equals(EXPORT_ALL)) {
-                        return true;
+        try {
+            for (final IErlElement e : getChildren()) {
+                if (e instanceof IErlAttribute) {
+                    final IErlAttribute attr = (IErlAttribute) e;
+                    if (attr.getName().equals("compile")) {
+                        final OtpErlangObject value = attr.getValue();
+                        if (value != null && value.equals(EXPORT_ALL)) {
+                            return true;
+                        }
                     }
                 }
             }
+        } catch (final ErlModelException e) {
+            // ignore
         }
         return false;
     }

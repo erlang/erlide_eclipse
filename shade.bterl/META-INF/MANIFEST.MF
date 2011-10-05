@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bterl
 Bundle-SymbolicName: shade.bterl;singleton:=true
-Bundle-Version: 0.11.5.qualifier
+Bundle-Version: 0.11.6.qualifier
 Bundle-Activator: org.erlide.shade.bterl.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.ui,

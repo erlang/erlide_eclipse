@@ -244,7 +244,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final Bundle plugin = Platform.getBundle(pluginId);
 
         final List<Tuple<String, CodeContext>> paths = Lists.newArrayList();
-        Tuple<String, String> init = null;
+        final List<Tuple<String, String>> inits = Lists.newArrayList();
         for (final IConfigurationElement el : extension
                 .getConfigurationElements()) {
             if ("beam_dir".equals(el.getName())) {
@@ -255,23 +255,23 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");
                 final String function = el.getAttribute("function");
-                init = new Tuple<String, String>(module, function);
+                inits.add(new Tuple<String, String>(module, function));
             } else {
                 ErlLogger
                         .error("Unknown code bundle element: %s", el.getName());
             }
         }
-        addBundle(plugin, paths, init);
+        addBundle(plugin, paths, inits);
     }
 
     public void addBundle(final Bundle b,
             final Collection<Tuple<String, CodeContext>> paths,
-            final Tuple<String, String> init) {
+            final Collection<Tuple<String, String>> inits) {
         final ICodeBundle p = findBundle(b);
         if (p != null) {
             return;
         }
-        final CodeBundleImpl pp = new CodeBundleImpl(b, paths, init);
+        final CodeBundleImpl pp = new CodeBundleImpl(b, paths, inits);
         getCodeBundles().put(b, pp);
         forEachBackend(new IErlideBackendVisitor() {
             public void visit(final IBackend bb) {

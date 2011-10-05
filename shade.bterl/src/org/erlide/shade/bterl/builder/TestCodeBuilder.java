@@ -358,7 +358,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 try {
                     final ResourceAttributes a = resource
                             .getResourceAttributes();
-                    if (!a.isSymbolicLink()) {
+                    if (a != null && !a.isSymbolicLink()) {
                         final BuildResource bres = new BuildResource(resource,
                                 resource.getParent().getLocation().toString());
                         result.add(bres);

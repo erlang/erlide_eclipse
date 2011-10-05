@@ -81,13 +81,13 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private TreeColumn colCovered;
     private TreeColumn colPercentage;
 
-    private Logger log; // logger
+    private final Logger log; // logger
 
-    private ISelectionChangedListener viewerSelectionChanged = new ISelectionChangedListener() {
+    private final ISelectionChangedListener viewerSelectionChanged = new ISelectionChangedListener() {
 
-        public void selectionChanged(SelectionChangedEvent event) {
+        public void selectionChanged(final SelectionChangedEvent event) {
             event.getSelection();
-            ISelection selection = viewer.getSelection();
+            final ISelection selection = viewer.getSelection();
 
             if (!(selection instanceof ITreeSelection)) {
                 final IStatus executionStatus = new Status(IStatus.ERROR,
@@ -98,13 +98,13 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 return;
             }
 
-            ITreeSelection treeSelection = (ITreeSelection) selection;
-            ICoverageObject obj = (ICoverageObject) treeSelection
+            final ITreeSelection treeSelection = (ITreeSelection) selection;
+            final ICoverageObject obj = (ICoverageObject) treeSelection
                     .getFirstElement();
-            
 
-            if (obj == null)
+            if (obj == null) {
                 return;
+            }
 
             switch (obj.getType()) {
             case FUNCTION:
@@ -133,8 +133,9 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
                 break;
             }
 
-            if(StatsTreeModel.getInstance().isChanged())
+            if (StatsTreeModel.getInstance().isChanged()) {
                 showHtml.setEnabled(false);
+            }
         }
 
     };
@@ -334,7 +335,8 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
     private void makeRefreshAction() {
         eksportHTML = new EksportReports(viewer.getControl().getShell());
         // TODO change image
-        eksportHTML.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
+        eksportHTML.setImageDescriptor(PlatformUI.getWorkbench()
+                .getSharedImages()
                 .getImageDescriptor(ISharedImages.IMG_TOOL_UP));
         eksportHTML.setToolTipText("Eksport coverage reports in HTML format.");
     }

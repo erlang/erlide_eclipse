@@ -34,10 +34,10 @@ import org.erlide.cover.views.model.StatsTreeObject;
  */
 public class HtmlReportAction extends Action {
 
-    private Shell shell;
-    private TreeViewer viewer;
+    private final Shell shell;
+    private final TreeViewer viewer;
 
-    private Logger log; // logger
+    private final Logger log; // logger
 
     public HtmlReportAction(final TreeViewer viewer) {
         shell = viewer.getControl().getShell();
@@ -52,7 +52,7 @@ public class HtmlReportAction extends Action {
         // viewer jest selection providerem
 
         if (StatsTreeModel.getInstance().getRoot().getHtmlPath() == null) {
-            IPath location = Activator.getDefault().getStateLocation()
+            final IPath location = Activator.getDefault().getStateLocation()
                     .append(CoverConstants.REPORT_DIR);
             final File dir = location.toFile();
 
@@ -99,37 +99,43 @@ public class HtmlReportAction extends Action {
 
     /**
      * Generates html reports
+     * 
      * @param obj
      * @param path
      */
-    private void generateReportTree(ICoverageObject obj, String path) {
-        if (obj.getType().equals(ObjectType.MODULE))
+    private void generateReportTree(final ICoverageObject obj, final String path) {
+        if (obj.getType().equals(ObjectType.MODULE)) {
             return;
-        String reportPath = new StringBuilder(path).append(File.separator)
-                .append(obj.getLabel()).append(".html").toString();
+        }
+        final String reportPath = new StringBuilder(path)
+                .append(File.separator).append(obj.getLabel()).append(".html")
+                .toString();
         log.info(reportPath);
 
-        String dirPath = new StringBuilder(path).append(File.separator)
+        final String dirPath = new StringBuilder(path).append(File.separator)
                 .append(obj.getLabel()).toString();
-        File dir = new File(dirPath);
+        final File dir = new File(dirPath);
         dir.mkdir();
 
-        for (ICoverageObject child : obj.getChildren())
+        for (final ICoverageObject child : obj.getChildren()) {
             generateReportTree(child, dirPath);
+        }
 
         try {
-            String report = ReportGenerator.getInstance().getHTMLreport(obj, false);
+            final String report = ReportGenerator.getInstance().getHTMLreport(
+                    obj, false);
             log.info(report);
-            FileWriter writer = new FileWriter(reportPath);
+            final FileWriter writer = new FileWriter(reportPath);
             writer.write(report);
             writer.close();
             obj.setHtmlPath(reportPath);
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
-        for (ICoverageObject child : obj.getChildren())
+        for (final ICoverageObject child : obj.getChildren()) {
             generateReportTree(child, dirPath);
+        }
     }
 }

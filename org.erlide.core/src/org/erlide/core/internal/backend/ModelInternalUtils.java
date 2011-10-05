@@ -45,7 +45,8 @@ public class ModelInternalUtils {
 
     public static IErlElement findInclude(final IErlModule module,
             final IErlProject project, final OpenResult res,
-            final IErlElementLocator model) throws CoreException, BackendException {
+            final IErlElementLocator model) throws CoreException,
+            BackendException {
         if (module != null) {
             final IErlModule include = model.findIncludeFromModule(module,
                     res.getName(), res.getPath(),

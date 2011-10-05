@@ -63,8 +63,8 @@ public final class BuilderHelper {
 
     public static boolean isDebugging() {
         return ErlangPlugin.getDefault().isDebugging()
-                && Platform.getDebugOption("org.erlide.core/debug/builder")
-                        .equals("true");
+                && "true".equalsIgnoreCase(Platform
+                        .getDebugOption("org.erlide.core/debug/builder"));
     }
 
     public Collection<IPath> getAllIncludeDirs(final IProject project) {

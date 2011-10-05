@@ -91,7 +91,7 @@ public class ErlangPlugin extends Plugin {
 
     private String findErlideFeatureVersion(
             final IBundleGroupProvider[] providers) {
-        String version = null;
+        String version = "?";
         for (final IBundleGroupProvider provider : providers) {
             final IBundleGroup[] bundleGroups = provider.getBundleGroups();
             for (final IBundleGroup group : bundleGroups) {

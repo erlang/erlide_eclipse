@@ -36,11 +36,11 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  */
 public class OpenItemAction extends Action {
 
-    private TreeViewer viewer;
+    private final TreeViewer viewer;
 
-    private Logger log; // logger
+    private final Logger log; // logger
 
-    public OpenItemAction(TreeViewer viewer) {
+    public OpenItemAction(final TreeViewer viewer) {
         log = Activator.getDefault();
         this.viewer = viewer;
     }
@@ -50,7 +50,7 @@ public class OpenItemAction extends Action {
 
         log.info("Open item!");
 
-        ISelection selection = viewer.getSelection();
+        final ISelection selection = viewer.getSelection();
 
         if (!(selection instanceof ITreeSelection)) {
             final IStatus executionStatus = new Status(IStatus.ERROR,
@@ -61,74 +61,76 @@ public class OpenItemAction extends Action {
             return;
         }
 
-        ITreeSelection treeSelection = (ITreeSelection) selection;
+        final ITreeSelection treeSelection = (ITreeSelection) selection;
 
-        StatsTreeObject obj = (StatsTreeObject) treeSelection.getFirstElement();
+        final StatsTreeObject obj = (StatsTreeObject) treeSelection
+                .getFirstElement();
 
         if (obj.getClass().equals(ModuleStats.class)) {
-        	
+
             openInEditor(obj.getLabel() + ".erl");
-            
+
         } else if (obj.getClass().equals(FunctionStats.class)) {
 
-        	FunctionStats fs = (FunctionStats)obj;
-        	
-        	String moduleName = ((StatsTreeObject)fs.getParent()).getLabel();
-            IEditorPart p = openInEditor(moduleName + ".erl");
-            
-            if(p == null || !(p instanceof ErlangEditor))
-            	return;
-            
-            ErlangEditor editor = (ErlangEditor)p;
-            
+            final FunctionStats fs = (FunctionStats) obj;
+
+            final String moduleName = ((StatsTreeObject) fs.getParent())
+                    .getLabel();
+            final IEditorPart p = openInEditor(moduleName + ".erl");
+
+            if (p == null || !(p instanceof ErlangEditor)) {
+                return;
+            }
+
+            final ErlangEditor editor = (ErlangEditor) p;
+
             IErlModule module;
             try {
                 module = CoreScope.getModel().findModule(moduleName);
-                
-                IErlFunction f = module.findFunction(
-                        new ErlangFunction(fs.getLabel(), fs.getArity()));
-                
+
+                final IErlFunction f = module.findFunction(new ErlangFunction(
+                        fs.getLabel(), fs.getArity()));
+
                 editor.setSelection(f);
-                
-            } catch (ErlModelException e) {
+
+            } catch (final ErlModelException e) {
                 e.printStackTrace();
             }
-            
+
         } else {
             // disabled
         }
     }
 
-    private IEditorPart openInEditor(String name) {
+    private IEditorPart openInEditor(final String name) {
 
         // search
-    	
-    	IErlModule module;
+
+        IErlModule module;
         try {
             module = CoreScope.getModel().findModule(name);
-        } catch (ErlModelException e1) {
+        } catch (final ErlModelException e1) {
             e1.printStackTrace();
             return null;
         }
-    	
-    	log.info(module.getFilePath());
-    	
-    	
-    	File fileToOpen = new File(module.getFilePath());
-    	
-        IFileStore fileStore = EFS.getLocalFileSystem().getStore(
+
+        log.info(module.getFilePath());
+
+        final File fileToOpen = new File(module.getFilePath());
+
+        final IFileStore fileStore = EFS.getLocalFileSystem().getStore(
                 fileToOpen.toURI());
-        IWorkbenchPage page = PlatformUI.getWorkbench()
+        final IWorkbenchPage page = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage();
 
         try {
-            IEditorPart p = IDE.openEditorOnFileStore(page, fileStore);
-            
+            final IEditorPart p = IDE.openEditorOnFileStore(page, fileStore);
+
             log.info(p.getClass());
-            
+
             return p;
-            
-        } catch (PartInitException e) {
+
+        } catch (final PartInitException e) {
             e.printStackTrace();
             return null;
         }

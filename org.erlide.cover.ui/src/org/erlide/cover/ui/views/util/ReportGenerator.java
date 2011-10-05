@@ -28,13 +28,13 @@ public class ReportGenerator {
 
     private static ReportGenerator instance;
 
-    private VelocityEngine ve;
-    private Logger log; // logger
+    private final VelocityEngine ve;
+    private final Logger log; // logger
 
     private ReportGenerator() {
         ve = new VelocityEngine();
 
-        Properties props = new Properties();
+        final Properties props = new Properties();
 
         props.setProperty("resource.loader", "string");
         props.setProperty("string.resource.loader.class",
@@ -45,37 +45,39 @@ public class ReportGenerator {
     }
 
     public static synchronized ReportGenerator getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new ReportGenerator();
+        }
         return instance;
     }
 
-    public String getHTMLreport(ICoverageObject obj, boolean relative) {
+    public String getHTMLreport(final ICoverageObject obj,
+            final boolean relative) {
         // organize data
 
-        String date = Calendar.getInstance().getTime().toString();
-        String type = "file"; 
+        final String date = Calendar.getInstance().getTime().toString();
+        final String type = "file";
         String cssCode = "";
         try {
-            URL bundleRoot = Platform.getBundle(
+            final URL bundleRoot = Platform.getBundle(
                     org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
                     "/templates/reports.css");
-            BufferedReader stream = new BufferedReader(new InputStreamReader(
-                    bundleRoot.openStream()));
-            StringBuilder sb = new StringBuilder();
+            final BufferedReader stream = new BufferedReader(
+                    new InputStreamReader(bundleRoot.openStream()));
+            final StringBuilder sb = new StringBuilder();
             String line;
             while ((line = stream.readLine()) != null) {
                 sb.append(line).append("\n");
             }
 
             cssCode = sb.toString();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             log.error(e);
         }
 
         // add data to a context
-        VelocityContext context = new VelocityContext();
+        final VelocityContext context = new VelocityContext();
         context.put("obj", obj);
         context.put("children", obj.getChildren());
         context.put("date", date);
@@ -83,16 +85,16 @@ public class ReportGenerator {
         context.put("css", cssCode);
 
         try {
-            String templText = getTemplateFromJar(relative);
+            final String templText = getTemplateFromJar(relative);
             StringResourceLoader.getRepository().putStringResource(
                     "my_template", templText);
-            Template t = ve.getTemplate("my_template");
+            final Template t = ve.getTemplate("my_template");
 
-            StringWriter writer = new StringWriter();
+            final StringWriter writer = new StringWriter();
             t.merge(context, writer);
 
             return writer.toString();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -100,21 +102,22 @@ public class ReportGenerator {
     }
 
     // obtain templates
-    private String getTemplateFromJar(boolean relative) throws IOException,
-            URISyntaxException {
+    private String getTemplateFromJar(final boolean relative)
+            throws IOException, URISyntaxException {
         URL bundleRoot;
-        if (relative)
+        if (relative) {
             bundleRoot = Platform.getBundle(
                     org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
                     "/templates/reportRel.vm");
-        else
+        } else {
             bundleRoot = Platform.getBundle(
                     org.erlide.cover.ui.Activator.PLUGIN_ID).getEntry(
                     "/templates/report.vm");
+        }
 
-        BufferedReader stream = new BufferedReader(new InputStreamReader(
+        final BufferedReader stream = new BufferedReader(new InputStreamReader(
                 bundleRoot.openStream()));
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         String line;
         while ((line = stream.readLine()) != null) {
             sb.append(line).append("\n");

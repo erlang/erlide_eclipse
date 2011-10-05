@@ -7,12 +7,9 @@ package org.erlide.tracing.core.mvc.view;
  * 
  */
 public enum TracePatternColumn {
-    ENABLED("Enabled", 60),
-    LOCAL("Local", 60),
-    MODULE_NAME("Module name", 150),
-    FUNCTION_NAME("Function name", 150),
-    ARITY("Arity", 40),
-    MATCH_SPEC("Match spec", 90);
+    ENABLED("Enabled", 60), LOCAL("Local", 60), MODULE_NAME("Module name", 150), FUNCTION_NAME(
+            "Function name", 150), ARITY("Arity", 40), MATCH_SPEC("Match spec",
+            90);
 
     private final String name;
     private final int width;
