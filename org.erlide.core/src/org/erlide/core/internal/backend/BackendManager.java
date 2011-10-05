@@ -77,7 +77,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         listeners = Lists.newArrayList();
         codeBundles = Maps.newHashMap();
 
-        startEpmdProcess();
+        tryStartEpmdProcess();
         startEpmdWatcher();
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
@@ -85,16 +85,20 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         factory = BackendCore.getBackendFactory();
     }
 
-    private void startEpmdProcess() {
+    private void tryStartEpmdProcess() {
         final RuntimeInfo info = BackendCore.getRuntimeInfoManager()
                 .getErlideRuntime();
+        // FIXME the location of epmd is OS dependent... look for it!
+        // Win: $OTP/erts-$VSN/bin/epmd
+        // Lin: $OTP/bin/$TARGET/epmd
+        // Others: ?
         final String[] cmdline = new String[] {
                 info.getOtpHome() + "/bin/epmd", "-daemon" };
         try {
             Runtime.getRuntime().exec(cmdline);
             ErlLogger.info("Epmd started.");
         } catch (final IOException e) {
-            ErlLogger.error("Could not start epmd! " + e.getMessage());
+            // ErlLogger.info("Could not start epmd! " + e.getMessage());
         }
     }
 
