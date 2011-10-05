@@ -88,6 +88,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     private void tryStartEpmdProcess() {
         final RuntimeInfo info = BackendCore.getRuntimeInfoManager()
                 .getErlideRuntime();
+        if (info == null || info.getOtpHome() == null) {
+            ErlLogger.error("Trying to start with a null runtime info");
+            return;
+        }
         // FIXME the location of epmd is OS dependent... look for it!
         // Win: $OTP/erts-$VSN/bin/epmd
         // Lin: $OTP/bin/$TARGET/epmd
