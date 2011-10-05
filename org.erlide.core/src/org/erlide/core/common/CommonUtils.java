@@ -66,8 +66,8 @@ public class CommonUtils {
         final String value = Platform
                 .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION + "/"
                         + traceOption);
-        if (null != globalTraceValue && globalTraceValue.equals("true")
-                && null != value && value.equals("true")) {
+        if ("true".equalsIgnoreCase(globalTraceValue)
+                && "true".equalsIgnoreCase(value)) {
             return true;
         }
         return false;
