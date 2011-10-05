@@ -29,6 +29,7 @@ import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.jinterface.ErlLogger;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -83,24 +84,32 @@ public class DialyzerUtils {
         public void progress(final OtpErlangObject msg) {
             final OtpErlangTuple t = (OtpErlangTuple) msg;
             final OtpErlangPid dialyzerPid = (OtpErlangPid) t.elementAt(0);
-            final OtpErlangLong progressL = (OtpErlangLong) t.elementAt(1);
-            OtpErlangObject result = t.elementAt(2);
-            int progress = 1;
-            try {
-                progress = progressL.intValue();
-                checkDialyzeError(result);
-                if (result instanceof OtpErlangTuple) {
-                    final OtpErlangTuple t2 = (OtpErlangTuple) result;
-                    result = t2.elementAt(1);
-                }
+            final OtpErlangAtom whatA = (OtpErlangAtom) t.elementAt(1);
+            final String what = whatA.toString();
+            // ErlLogger.debug("Dialyzer %s", what);
+            final OtpErlangObject result = t.elementAt(2);
+            if (what.equals("warnings")) {
                 MarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
                         (OtpErlangList) result);
-            } catch (final OtpErlangRangeException e) {
-            } catch (final DialyzerErrorException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } else if (what.equals("mod_deps")) {
+                int remaining = 100;
+                if (result instanceof OtpErlangLong) {
+                    final OtpErlangLong l = (OtpErlangLong) result;
+                    try {
+                        remaining = l.intValue() * 5;
+                    } catch (final OtpErlangRangeException e) {
+                    }
+                }
+                monitor.setWorkRemaining(remaining);
+            } else if (what.equals("log")) {
+                monitor.worked(1);
+            } else if (what.equals("EXIT")) {
+                try {
+                    checkDialyzeError(result);
+                } catch (final DialyzerErrorException e) {
+                    e.printStackTrace();
+                }
             }
-            monitor.worked(progress);
             if (monitor.isCanceled()) {
                 try {
                     ErlideSearchServer.cancelSearch(BackendCore
@@ -199,11 +208,13 @@ public class DialyzerUtils {
                     final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());
                 } else {
-                    final String beamName = CommonUtils.withoutExtension(name)
-                            + ".beam";
+                    final String moduleName = CommonUtils
+                            .withoutExtension(name);
+                    final String beamName = moduleName + ".beam";
                     final IResource beam = ebin.findMember(beamName);
                     if (beam != null) {
                         files.add(beam.getLocation().toPortableString());
+                        names.add(moduleName);
                     }
                 }
             }
