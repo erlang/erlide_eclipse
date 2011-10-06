@@ -109,7 +109,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.ExtensionHelper;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -204,7 +203,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     private CleanUpAction cleanUpAction;
     private ClearCacheAction clearCacheAction;
     private CallHierarchyAction callhierarchy;
-    private volatile List<IErlangEditorListener> editListeners = new ArrayList<IErlangEditorListener>();
     // private final boolean initFinished = false;
     private SendToConsoleAction sendToConsole;
     private IErlModule fModule = null;
@@ -272,20 +270,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     public ErlangEditor() {
         super();
         fErlangEditorErrorTickUpdater = new ErlangEditorErrorTickUpdater(this);
-        registerListeners();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void registerListeners() {
-        try {
-            // initialize the 'save' listeners of editor
-            if (editListeners == null) {
-                editListeners = (List<IErlangEditorListener>) ExtensionHelper
-                        .getParticipants(ExtensionHelper.EDITOR_LISTENER);
-            }
-        } catch (final Throwable e) {
-            ErlideUIPlugin.log(e);
-        }
     }
 
     /**
@@ -1948,38 +1932,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         } finally {
             super.handlePreferenceStoreChanged(event);
         }
-    }
-
-    public void addEditorListener(final IErlangEditorListener listener) {
-        synchronized (editListeners) {
-            editListeners.add(listener);
-        }
-    }
-
-    public void removeEditorListener(final IErlangEditorListener listener) {
-        synchronized (editListeners) {
-            editListeners.remove(listener);
-        }
-    }
-
-    public List<IErlangEditorListener> getAllEditorListeners() {
-        // while (initFinished == false) {
-        // synchronized (getLock()) {
-        // try {
-        // if (initFinished == false) {
-        // getLock().wait();
-        // }
-        // } catch (Exception e) {
-        // // ignore
-        // e.printStackTrace();
-        // }
-        // }
-        // }
-        final List<IErlangEditorListener> listeners = new ArrayList<IErlangEditorListener>();
-        synchronized (editListeners) {
-            listeners.addAll(editListeners);
-        }
-        return listeners;
     }
 
     public void expandCollapseFunctionsOrComments(final boolean collapse,
