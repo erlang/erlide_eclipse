@@ -8,7 +8,7 @@
  * Contributors:
  *     Alain O'Dea
  *******************************************************************************/
-package org.erlide.core.cleanup;
+package org.erlide.core.services.cleanup;
 
 import org.eclipse.core.resources.IResource;
 

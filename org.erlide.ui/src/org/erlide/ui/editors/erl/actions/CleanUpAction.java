@@ -12,7 +12,7 @@ package org.erlide.ui.editors.erl.actions;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
-import org.erlide.core.cleanup.CleanUpProviders;
+import org.erlide.core.services.cleanup.CleanUpProviders;
 import org.erlide.jinterface.ErlLogger;
 
 /*******************************************************************************
