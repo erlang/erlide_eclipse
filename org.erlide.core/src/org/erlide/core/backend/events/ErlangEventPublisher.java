@@ -150,9 +150,7 @@ public class ErlangEventPublisher implements IBackendListener {
             final ServiceReference ref = ctx
                     .getServiceReference(EventAdmin.class.getName());
             if (ref == null) {
-                // ErlangCore.log(Level.SEVERE, "No event admin ???");
-                System.out
-                        .println("(ErlangEventPublisher.java:160) : No event admin ???");
+                ErlLogger.error("No event admin ???");
             } else {
                 eventAdmin = (EventAdmin) ctx.getService(ref);
             }

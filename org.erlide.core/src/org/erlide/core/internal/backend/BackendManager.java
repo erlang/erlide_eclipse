@@ -120,14 +120,14 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     private void registerGlobalEventhandlers() {
-        if (ErlangCore.hasFeatureEnabled("erlide.eventhandler.debug")) {
-            new ErlangEventHandler("*", null) {
-                public void handleEvent(final Event event) {
-                    System.out.println("@@@ : "
+        new ErlangEventHandler("*", null) {
+            public void handleEvent(final Event event) {
+                if (ErlangCore.hasFeatureEnabled("erlide.eventhandler.debug")) {
+                    ErlLogger.info("erlang event : "
                             + ErlangEventPublisher.dumpEvent(event));
                 }
-            }.register();
-        }
+            }
+        }.register();
     }
 
     public IBackend createExecutionBackend(final BackendData data) {
