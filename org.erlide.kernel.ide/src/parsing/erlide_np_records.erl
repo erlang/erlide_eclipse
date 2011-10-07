@@ -34,6 +34,8 @@ check_fields(_State, [], _RecordName, Fields, _PrevRecordName, RightSides) ->
     {[], Fields, lists:reverse(RightSides)};
 check_fields(_State, [#token{kind='}'} | Rest], _RecordName, Fields, _PrevRecordName, RightSides) ->
     {Rest, Fields, lists:reverse(RightSides)};
+check_fields(_State, [#token{kind=','} | Rest], _RecordName, Fields, '', RightSides) ->
+    {Rest, Fields, lists:reverse(RightSides)};
 check_fields(_State, [#token{kind='#'} | Rest], RecordName, Fields, PrevRecordName, RightSides) -> % 1
     check_fields(record_want_name, Rest, RecordName, Fields, PrevRecordName, RightSides);
 check_fields(record_want_name, [#token{kind=atom, value=NewRecordName} | Rest], RecordName, Fields, _PrevRecordName, RightSides) -> % 2
