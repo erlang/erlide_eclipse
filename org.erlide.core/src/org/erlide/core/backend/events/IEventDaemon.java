@@ -12,8 +12,8 @@ package org.erlide.core.backend.events;
 
 public interface IEventDaemon {
 
-    void addHandler(final EventHandler handler);
+    void addHandler(final ErlangEventHandler handler);
 
-    void removeHandler(final EventHandler handler);
+    void removeHandler(final ErlangEventHandler handler);
 
 }

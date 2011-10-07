@@ -10,6 +10,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.navigator.CommonDropAdapter;
 import org.eclipse.ui.navigator.CommonDropAdapterAssistant;
+import org.erlide.jinterface.ErlLogger;
 
 public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
 
@@ -37,7 +38,7 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                     final ISafeRunnable runnable = new ISafeRunnable() {
 
                         public void handleException(final Throwable exception) {
-                            System.out.println("Exception in client");
+                            ErlLogger.error(exception);
                         }
 
                         public void run() throws Exception {

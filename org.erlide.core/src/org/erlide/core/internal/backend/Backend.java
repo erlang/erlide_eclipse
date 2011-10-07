@@ -54,6 +54,8 @@ import org.erlide.core.backend.InitialCall;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
+import org.erlide.core.backend.events.ErlangEventPublisher;
+import org.erlide.core.backend.events.ErlangLogEventHandler;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangDebugHelper;
@@ -104,7 +106,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private String erlangVersion;
     private OtpMbox eventBox;
     private boolean stopped = false;
-    private EventDaemon eventDaemon;
+    private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
     protected ILaunch launch;
@@ -415,10 +417,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    public EventDaemon getEventDaemon() {
-        return eventDaemon;
-    }
-
     public OtpMbox createMbox() {
         return getNode().createMbox();
     }
@@ -455,11 +453,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         // data.monitor = monitor;
         // data.managed = watch;
 
-        eventDaemon = new EventDaemon(this);
+        eventDaemon = new ErlangEventPublisher(this);
         eventDaemon.start();
-        eventDaemon.addHandler(new LogEventHandler());
+        new LogEventHandler(this).register();
+        new ErlangLogEventHandler(this).register();
 
-        BackendCore.getBackendManager().addBackendListener(getEventDaemon());
+        BackendCore.getBackendManager().addBackendListener(eventDaemon);
     }
 
     public void register(final ICodeBundle bundle) {

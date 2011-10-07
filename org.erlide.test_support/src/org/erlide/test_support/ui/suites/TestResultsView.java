@@ -45,7 +45,8 @@ public class TestResultsView extends ViewPart {
     private Label label;
 
     public TestResultsView() {
-        eventHandler = new TestEventHandler(this);
+        // FIXME which backend?
+        eventHandler = new TestEventHandler(null, this);
         events = Lists.newArrayList();
     }
 

@@ -113,7 +113,7 @@ public final class ErlangCore {
     }
 
     public void log(final IStatus status) {
-        final Level lvl = getLevelFromStatus(status);
+        final Level lvl = getLevelFromSeverity(status.getSeverity());
         logger.log(lvl, status.getMessage());
         final Throwable exception = status.getException();
         if (exception != null) {
@@ -122,9 +122,15 @@ public final class ErlangCore {
         plugin.getLog().log(status);
     }
 
-    private Level getLevelFromStatus(final IStatus status) {
+    public void log(final Level lvl, final String status) {
+        logger.log(lvl, status);
+        plugin.getLog().log(
+                new Status(getSeverityFromLevel(lvl), PLUGIN_ID, status));
+    }
+
+    private static Level getLevelFromSeverity(final int severity) {
         Level lvl;
-        switch (status.getSeverity()) {
+        switch (severity) {
         case IStatus.ERROR:
             lvl = Level.SEVERE;
             break;
@@ -138,6 +144,20 @@ public final class ErlangCore {
             lvl = Level.FINEST;
         }
         return lvl;
+    }
+
+    private static int getSeverityFromLevel(final Level lvl) {
+        final int sev;
+        if (lvl == Level.SEVERE) {
+            sev = IStatus.ERROR;
+        } else if (lvl == Level.WARNING) {
+            sev = IStatus.WARNING;
+        } else if (lvl == Level.INFO) {
+            sev = IStatus.INFO;
+        } else {
+            sev = IStatus.OK;
+        }
+        return sev;
     }
 
     public void logErrorMessage(final String message) {

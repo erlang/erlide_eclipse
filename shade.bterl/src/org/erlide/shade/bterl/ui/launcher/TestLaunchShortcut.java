@@ -70,7 +70,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                         System.out.println("NULL backend for bterl");
                         return;
                     }
-                    backend.getEventDaemon().addHandler(view.getEventHandler());
+                    view.getEventHandler().register();
                 }
             }
         } catch (final CoreException e) {
