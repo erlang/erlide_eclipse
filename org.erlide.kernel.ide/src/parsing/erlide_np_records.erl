@@ -34,6 +34,8 @@ check_fields(_State, [], _RecordName, Fields, _PrevRecordName) ->
     {[], Fields};
 check_fields(_State, [#token{kind='}'} | Rest], _RecordName, Fields, _PrevRecordName) ->
     {Rest, Fields};
+check_fields(_State, [#token{kind=','} | Rest], _RecordName, Fields, '') ->
+    {Rest, Fields};
 check_fields(_State, [#token{kind='#'} | Rest], RecordName, Fields, PrevRecordName) -> % 1
     check_fields(record_want_name, Rest, RecordName, Fields, PrevRecordName);
 check_fields(record_want_name, [#token{kind=atom, value=NewRecordName} | Rest], RecordName, Fields, _PrevRecordName) -> % 2
