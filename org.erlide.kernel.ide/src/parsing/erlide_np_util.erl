@@ -32,12 +32,52 @@
 extract_comments(Tokens) ->
     extract_comments(Tokens, -1, [], []).
 
-get_function_comments(Forms, Comments) ->
+get_function_comments(Forms, Comments0) ->
+    Comments = get_top_level_comments(Forms, Comments0),
     lists:map(fun(#function{} = F) ->
 		      get_function_comment(F, Comments);
 		 (Other) ->
 		      Other
 	      end, Forms).
+
+get_top_level_comments(Forms, Comments) ->
+    get_top_level_comments(Forms, Comments, []).
+
+get_top_level_comments(_Forms, [], Acc) ->
+    lists:reverse(Acc);
+get_top_level_comments([], _Comments, Acc) ->
+    lists:reverse(Acc);
+get_top_level_comments([Form | FormRest] = Forms,
+                       [#token{offset=CommentOffset, length=CommentLength}=Comment | CommentRest] = Comments,
+                       Acc) ->
+    {{_Line, _LastLine, FormOffset}, FormLength} = get_form_pos(Form),
+    case relative_pos(CommentOffset, CommentLength, FormOffset, FormLength) of
+        within ->
+            get_top_level_comments(FormRest, CommentRest, Acc);
+        before ->
+            get_top_level_comments(Forms, CommentRest, [Comment | Acc]);
+        'after' ->
+            get_top_level_comments(FormRest, Comments, Acc);
+        overlapping ->
+            get_top_level_comments(FormRest, CommentRest, Acc)
+    end.
+
+get_form_pos(#function{pos=Pos}) -> Pos;
+get_form_pos(#attribute{pos=Pos}) -> Pos;
+get_form_pos(#clause{pos=Pos}) -> Pos;
+get_form_pos(#other{pos=Pos}) -> Pos.
+
+relative_pos(Offset1, Length1, Offset2, Length2)
+  when Offset1 >= Offset2, Offset1 + Length1 =< Offset2 + Length2 ->
+    within;
+relative_pos(Offset1, Length1, Offset2, _Length2)
+  when Offset1+Length1 =< Offset2 ->
+    before;
+relative_pos(Offset1, _Length1, Offset2, Length2)
+  when Offset1 >= Offset2+Length2 ->
+    'after';
+relative_pos(_, _, _, _) ->
+    overlapping.
 
 split_after_dots(D) ->
     split_after_dots(D, [], []).
