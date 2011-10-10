@@ -23,19 +23,13 @@ public abstract class ErlangEventHandler implements EventHandler {
     }
 
     public void register() {
-        final String optBackend = getFullTopic();
+        final String fullTopic = ErlangEventPublisher.getFullTopic(topic,
+                backend);
         final Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put(EventConstants.EVENT_TOPIC, "erlideEvent/"
-                + getErlangTopic() + optBackend);
+        properties.put(EventConstants.EVENT_TOPIC, fullTopic);
         final BundleContext context = ErlangPlugin.getDefault().getBundle()
                 .getBundleContext();
         context.registerService(EventHandler.class.getName(), this, properties);
-    }
-
-    public String getFullTopic() {
-        return "*".equals(getErlangTopic()) ? "" : "/"
-                + (backend == null ? "*" : backend.getName().replaceAll("@",
-                        "__"));
     }
 
     public IBackend getBackend() {

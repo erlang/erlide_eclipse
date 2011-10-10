@@ -136,11 +136,16 @@ public class ErlangEventPublisher implements IBackendListener {
         properties.put("DATA", event);
         properties.put("SENDER", sender);
 
-        final String optBackend = backend == null ? "" : "/"
-                + backend.getName().replaceAll("@", "__");
-        final Event osgiEvent = new Event("erlideEvent/" + topic + optBackend,
+        final Event osgiEvent = new Event(getFullTopic(topic, backend),
                 properties);
         getEventAdmin().postEvent(osgiEvent);
+    }
+
+    public static String getFullTopic(final String topic, final IBackend backend) {
+        final String subtopic = "*".equals(topic) ? "" : "/"
+                + (backend == null ? "*" : backend.getName()
+                        .replaceAll("@", "__").replaceAll(".", "_"));
+        return "erlideEvent/" + topic + subtopic;
     }
 
     private EventAdmin getEventAdmin() {

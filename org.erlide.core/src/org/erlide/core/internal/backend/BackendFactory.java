@@ -51,8 +51,12 @@ public class BackendFactory implements IBackendFactory {
         final IBackend b;
         try {
             final RuntimeInfo info = data.getRuntimeInfo();
-            final IErlRuntime runtime = new ErlRuntime(info.getNodeName() + "@"
-                    + RuntimeInfo.getHost(), info.getCookie());
+            String nodeName = info.getNodeName();
+            final boolean hasHost = nodeName.contains("@");
+            nodeName = hasHost ? nodeName : nodeName + "@"
+                    + RuntimeInfo.getHost();
+            final IErlRuntime runtime = new ErlRuntime(nodeName,
+                    info.getCookie());
             b = data.getLaunch() == null ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.launchRuntime();
