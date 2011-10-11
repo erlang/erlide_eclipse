@@ -9,6 +9,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.cover.api.IConfiguration;
+import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.LineResult;
@@ -37,31 +38,14 @@ public class CoverEventHandler extends ErlangEventHandler {
     private static final String COVER_ERROR = "cover_error";
     private static final String COVER_RES = "module_res";
 
-    private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
-    private ICoverAnnotationMarker annotationMarker;
+    
+    private final Logger log;                   // log
+    private final CoverBackend coverBackend;   // cover backend
 
-    private final Logger log; // log
-
-    public CoverEventHandler(final IBackend backend) {
+    public CoverEventHandler(final IBackend backend, final CoverBackend coverBackend) {
         super(EVENT_NAME, backend);
+        this.coverBackend = coverBackend;
         log = Activator.getDefault();
-    }
-
-    public void addListener(final ICoverObserver listener) {
-        log.info("adding listener");
-        listeners.add(listener);
-    }
-
-    public List<ICoverObserver> getListeners() {
-        return listeners;
-    }
-
-    public void addAnnotationMaker(final ICoverAnnotationMarker am) {
-        annotationMarker = am;
-    }
-
-    public ICoverAnnotationMarker getAnnotationMaker() {
-        return annotationMarker;
     }
 
     public void handleEvent(final Event event) {
@@ -70,7 +54,7 @@ public class CoverEventHandler extends ErlangEventHandler {
         final OtpErlangObject data = (OtpErlangObject) event
                 .getProperty("DATA");
         if (gotResults(data)) {
-            for (final ICoverObserver obs : listeners) {
+            for (final ICoverObserver obs : coverBackend.getListeners()) {
                 obs.eventOccured(new CoverEvent(CoverStatus.UPDATE));
             }
         } else if ((tuple = getErrorReason(data)) != null) {
@@ -78,14 +62,14 @@ public class CoverEventHandler extends ErlangEventHandler {
             final String type = tuple.elementAt(2).toString();
             final String info = tuple.elementAt(3).toString();
 
-            for (final ICoverObserver obs : listeners) {
+            for (final ICoverObserver obs : coverBackend.getListeners()) {
                 obs.eventOccured(new CoverEvent(CoverStatus.ERROR,
                         String.format("Error at %s while %s: %s\n", place,
                                 type, info)));
             }
         } else if (data.toString().equals(COVER_FIN)
-                && annotationMarker != null) {
-            getAnnotationMaker().addAnnotations();
+                && coverBackend.getAnnotationMaker() != null) {
+            coverBackend.getAnnotationMaker().addAnnotations();
         }
 
     }

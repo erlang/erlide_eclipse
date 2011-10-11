@@ -1,6 +1,7 @@
 package org.erlide.cover.core;
 
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +42,10 @@ public class CoverBackend implements ICoverBackend {
     private ILaunchConfiguration launchConfig;
     private CoverEventHandler handler;
     private CoverLaunchSettings settings;
+    
+    private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
+    private ICoverAnnotationMarker annotationMarker;
+
 
     private final Logger log; // logger
 
@@ -81,7 +86,7 @@ public class CoverBackend implements ICoverBackend {
 
         try {
             backend = createBackend();
-            handler = new CoverEventHandler(backend);
+            handler = new CoverEventHandler(backend, this);
             handler.register();
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
@@ -142,7 +147,8 @@ public class CoverBackend implements ICoverBackend {
      * @param listener
      */
     public void addListener(final ICoverObserver listener) {
-        handler.addListener(listener);
+        log.info("adding listener");
+        listeners.add(listener);
     }
 
     /**
@@ -151,7 +157,7 @@ public class CoverBackend implements ICoverBackend {
      * @return
      */
     public List<ICoverObserver> getListeners() {
-        return handler.getListeners();
+        return listeners;
     }
 
     /**
@@ -160,7 +166,7 @@ public class CoverBackend implements ICoverBackend {
      * @param am
      */
     public void addAnnotationMaker(final ICoverAnnotationMarker am) {
-        handler.addAnnotationMaker(am);
+        annotationMarker = am;
     }
 
     /**
@@ -169,7 +175,7 @@ public class CoverBackend implements ICoverBackend {
      * @return
      */
     public ICoverAnnotationMarker getAnnotationMaker() {
-        return handler.getAnnotationMaker();
+        return annotationMarker;
     }
 
     /**
@@ -178,7 +184,7 @@ public class CoverBackend implements ICoverBackend {
      * @param msg
      */
     public void handleError(final String msg) {
-        for (final ICoverObserver obs : handler.getListeners()) {
+        for (final ICoverObserver obs : getListeners()) {
             obs.eventOccured(new CoverEvent(CoverStatus.ERROR, msg));
         }
     }
