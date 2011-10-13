@@ -508,7 +508,7 @@ i_macro_rest(R0, I) ->
 	    R3 = i_end_paren(R2, I),
 	    i_macro_rest(R3, I);
 	K when K=:=':'; K=:=','; K=:=';'; K=:=')'; K=:='}'; K=:=']'; K=:='>>'; K=:='of';
-	       K=:='end'; K=:='->' ->
+	       K=:='end'; K=:='->'; K =:= '||' ->
 	    R0;
         K ->
             case erlide_scan:reserved_word(K) of
@@ -740,7 +740,7 @@ i_declaration(R0, I) ->
     end.
 
 i_type(R0, I0) ->
-    {R1, A1} = i_expr(R0, I0, none),
+    {R1, _A1} = i_expr(R0, I0, none),
     i_kind(dot, R1, I0).
 
 i_fun_clause(R0, I0) ->
