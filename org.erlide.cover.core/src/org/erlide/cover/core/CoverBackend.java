@@ -39,13 +39,11 @@ public class CoverBackend implements ICoverBackend {
 
     private IBackend backend;
     private RuntimeInfo info;
-    private ILaunchConfiguration launchConfig;
     private CoverEventHandler handler;
     private CoverLaunchSettings settings;
-    
+
     private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
     private ICoverAnnotationMarker annotationMarker;
-
 
     private final Logger log; // logger
 
@@ -80,10 +78,6 @@ public class CoverBackend implements ICoverBackend {
         log.info("create backend");
 
         info = buildRuntimeInfo(rt0);
-        final EnumSet<BackendOptions> options = EnumSet
-                .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
-        launchConfig = getLaunchConfiguration(info, options);
-
         try {
             backend = createBackend();
             handler = new CoverEventHandler(backend, this);
@@ -204,8 +198,12 @@ public class CoverBackend implements ICoverBackend {
             try {
                 info.setStartShell(true);
 
-                final IBackend b = BackendCore.getBackendFactory()
-                        .createBackend(
+                final EnumSet<BackendOptions> options = EnumSet
+                        .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
+                final ILaunchConfiguration launchConfig = getLaunchConfiguration(
+                        info, options);
+                final IBackend b = BackendCore.getBackendManager()
+                        .createExecutionBackend(
                                 new BackendData(launchConfig,
                                         ILaunchManager.RUN_MODE));
                 return b;

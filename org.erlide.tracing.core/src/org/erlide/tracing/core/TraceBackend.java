@@ -620,8 +620,8 @@ public class TraceBackend {
                 final ILaunchConfiguration launchConfig = getLaunchConfiguration(
                         info, options);
 
-                final IBackend b = BackendCore.getBackendFactory()
-                        .createBackend(
+                final IBackend b = BackendCore.getBackendManager()
+                        .createExecutionBackend(
                                 new BackendData(launchConfig,
                                         ILaunchManager.RUN_MODE));
                 return b;
