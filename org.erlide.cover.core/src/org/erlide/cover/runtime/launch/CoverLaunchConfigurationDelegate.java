@@ -29,7 +29,7 @@ public class CoverLaunchConfigurationDelegate extends ErlangLaunchDelegate {
 
             final CoverBackend coverBackend = CoverBackend.getInstance();
             coverBackend.initialize(coverData);
-            coverBackend.runCoverageAnalisys(new CoverRunner());
+            coverBackend.runCoverageAnalysis(new CoverRunner());
             return coverBackend.getBackend();
         } catch (final CoreException e) {
             e.printStackTrace();

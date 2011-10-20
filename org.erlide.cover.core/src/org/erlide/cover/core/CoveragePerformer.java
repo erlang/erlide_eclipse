@@ -140,7 +140,7 @@ public class CoveragePerformer implements ICoveragePerformer {
         recompileModules();
     }
 
-    // cover compilation of chosem modules
+    // cover compilation of chosen modules
     private void recompileModules() throws CoverException {
         final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
                 config.getModules().size());
