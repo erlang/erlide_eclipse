@@ -1295,7 +1295,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
         if (filterIt) {
             return new IllegalArgumentException(
-                    "Erlang tools do not support source files encoded in UTF-8",
+                    "UTF-8 encoded source files are only supported if encoding for erlang content type is set to UTF-8",
                     e);
         } else {
             return e;
