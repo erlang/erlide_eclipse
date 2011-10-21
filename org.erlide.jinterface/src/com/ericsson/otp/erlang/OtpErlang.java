@@ -27,4 +27,10 @@ public class OtpErlang {
         return mkList(result);
     }
 
+    // for debugging purposes
+    public static long sizeOf(final OtpErlangObject obj) {
+        final OtpOutputStream buf = new OtpOutputStream(obj);
+        return buf.size();
+    }
+
 }

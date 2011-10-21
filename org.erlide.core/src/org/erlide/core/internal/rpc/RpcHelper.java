@@ -27,6 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
@@ -171,12 +172,17 @@ public final class RpcHelper implements IRpcHelper {
         if (logCalls) {
             debugLogCallArgs("call -> %s:%s(%s)", module, fun, argString(args));
         }
+        //
+        final OtpErlangRef ref = RpcMonitor.recordRequest(node, peer, module,
+                fun, args, OtpErlang.sizeOf(res));
+        //
+        final long time = System.currentTimeMillis();
         mbox.send("rex", peer, res);
         if (CHECK_RPC) {
             debug("RPC " + mbox.hashCode() + "=> " + res);
         }
-        return new RpcFutureImpl(mbox, module + ":" + fun + "/" + args0.length,
-                logCalls, this);
+        return new RpcFutureImpl(ref, mbox, module + ":" + fun + "/"
+                + args0.length, logCalls, this);
     }
 
     final static String SEP = ", ";
