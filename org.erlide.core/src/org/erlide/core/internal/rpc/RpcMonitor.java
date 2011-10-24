@@ -85,12 +85,12 @@ public class RpcMonitor {
     private static final Map<OtpErlangRef, RpcData> ongoing = Maps.newHashMap();
     private static Comparator<RpcInfo> timeComparator = new Comparator<RpcInfo>() {
         public int compare(final RpcInfo o1, final RpcInfo o2) {
-            return (int) ((o2.answerTime - o2.callTime) - (o1.answerTime - o1.callTime));
+            return (int) (o2.answerTime - o2.callTime - (o1.answerTime - o1.callTime));
         }
     };
     private static Comparator<RpcInfo> sizeComparator = new Comparator<RpcInfo>() {
         public int compare(final RpcInfo o1, final RpcInfo o2) {
-            return (int) ((o2.callSize + o2.answerSize) - (o1.callSize + o1.answerSize));
+            return (int) (o2.callSize + o2.answerSize - (o1.callSize + o1.answerSize));
         }
     };
     private static final List<RpcInfo> slowest = Lists.newLinkedList();
@@ -110,16 +110,15 @@ public class RpcMonitor {
 
     private static void add(final List<RpcInfo> list,
             final Comparator<RpcInfo> comparator, final RpcInfo info) {
-        if (list.size() == COUNT) {
-            list.remove(list.size() - 1);
-        }
         final int index = Collections.binarySearch(list, info, comparator);
-
-        // Add the non-existent item to the list
         if (index < 0) {
+            // Add the non-existent item to the list
             list.add(-index - 1, info);
         } else {
             list.add(index, info);
+        }
+        if (list.size() == COUNT) {
+            list.remove(list.size() - 1);
         }
     }
 
