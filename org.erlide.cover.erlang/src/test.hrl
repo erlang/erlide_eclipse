@@ -3,7 +3,17 @@
 %% Description: definitions and constants for testing helper 
 %%-------------------------------------------------------------
 
+-define(TEVENT, eunit_event).
+
+
 %state
 -record(test_state, {type,
 					 output = ""}).
+
+-record(result, {pass,
+				 fail,
+				 skip,
+				 cancel}).
+
+
 
