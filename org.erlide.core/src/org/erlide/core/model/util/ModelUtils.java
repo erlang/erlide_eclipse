@@ -119,21 +119,26 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<String> findModulesWithPrefix(final String prefix,
-            final IErlProject project, final boolean checkExternals)
-            throws ErlModelException {
+    public static List<String> findUnitsWithPrefix(final String prefix,
+            final IErlProject project, final boolean checkExternals,
+            final boolean includes) throws ErlModelException {
         final List<String> result = Lists.newArrayList();
         final Set<String> names = Sets.newHashSet();
-        addModuleNamesWithPrefix(prefix, result, names, project.getModules());
+        final Collection<IErlModule> units = includes ? project.getIncludes()
+                : project.getModules();
+        addUnitNamesWithPrefix(prefix, result, names, units, includes);
         for (final IErlProject p : project.getReferencedProjects()) {
             if (p != null) {
                 p.open(null);
-                addModuleNamesWithPrefix(prefix, result, names, p.getModules());
+                addUnitNamesWithPrefix(prefix, result, names, p.getModules(),
+                        includes);
             }
         }
         if (checkExternals) {
-            addModuleNamesWithPrefix(prefix, result, names,
-                    project.getExternalModules());
+            final Collection<IErlModule> externalUnits = includes ? project
+                    .getExternalIncludes() : project.getExternalModules();
+            addUnitNamesWithPrefix(prefix, result, names, externalUnits,
+                    includes);
         }
         return result;
     }
@@ -299,11 +304,12 @@ public class ModelUtils {
     public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
-    private static void addModuleNamesWithPrefix(final String prefix,
+    private static void addUnitNamesWithPrefix(final String prefix,
             final List<String> result, final Set<String> names,
-            final Collection<IErlModule> modules) {
+            final Collection<IErlModule> modules, final boolean includes) {
         for (final IErlModule module : modules) {
-            final String moduleName = module.getModuleName();
+            final String moduleName = includes ? module.getName() : module
+                    .getModuleName();
             if (moduleName.startsWith(prefix)) {
                 if (!names.contains(moduleName)) {
                     result.add(moduleName);

@@ -1,5 +1,6 @@
 package org.erlide.core.services.search;
 
+import org.erlide.core.common.Util;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.jinterface.ErlLogger;
 
@@ -48,9 +49,7 @@ public class OpenResult {
                 }
             } else if (kind.equals("include")) {
                 include = true;
-                final OtpErlangString s = (OtpErlangString) openTuple
-                        .elementAt(1);
-                name = s.stringValue();
+                name = Util.stringValue(openTuple.elementAt(1));
             } else if (kind.equals("local")) { // local call
                 localCall = true;
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple

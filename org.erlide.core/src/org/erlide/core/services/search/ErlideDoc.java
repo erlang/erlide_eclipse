@@ -24,11 +24,13 @@ public class ErlideDoc {
     }
 
     public static OtpErlangObject getModules(final IRpcCallSite b,
-            final String prefix, final List<String> projectModules) {
+            final String prefix, final List<String> projectModules,
+            final boolean includes) {
         OtpErlangObject res = null;
         try {
-            res = b.call("erlide_otp_doc", "get_modules", "sls", prefix,
-                    projectModules);
+            final String what = includes ? "includes" : "modules";
+            res = b.call("erlide_otp_doc", "get_modules", "slsa", prefix,
+                    projectModules, what);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }

@@ -306,7 +306,10 @@ public class SearchUtil {
             return null;
         }
         String name = res.getName();
-        final String unquoted = name != null ? StringUtils.unquote(name) : null;
+        if (name == null) {
+            return null;
+        }
+        final String unquoted = StringUtils.unquote(name);
         if (res.isExternalCall()) {
             if (module != null && offset != -1) {
                 final IErlElement e = module.getElementAt(offset);
@@ -334,7 +337,7 @@ public class SearchUtil {
                     }
                 }
             } else {
-                name = null;
+                name = res.getName();
             }
             return new FunctionPattern(name, res.getFun(), res.getArity(),
                     limitTo, matchAnyFunctionDefinition);
