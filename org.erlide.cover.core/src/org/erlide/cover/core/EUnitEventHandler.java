@@ -1,0 +1,242 @@
+package org.erlide.cover.core;
+
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.events.ErlangEventHandler;
+import org.erlide.cover.views.model.TestTreeModel;
+import org.erlide.cover.views.model.TestTreeObject;
+import org.osgi.service.event.Event;
+
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
+
+/**
+ * Handler for eunit events
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang.solutions.com>
+ * 
+ */
+public class EUnitEventHandler extends ErlangEventHandler {
+
+	private static final String EVENT_NAME = "eunit_event";
+	private static final String GROUP_BEGIN = "gbegin";
+	private static final String GROUP_END = "gend";
+	private static final String TEST_BEGIN = "tbegin";
+	private static final String TEST_END = "tend";
+	private static final String GROUP_CANCELED = "gcanceled";
+	private static final String TEST_CANCELED = "tcanceled";
+	private static final String SUMMARY = "result";
+	private static final String SKIPPED = "skipped";
+	private static final String ERROR = "error";
+	private static final String MODULE_NOT_FOUND = "module_not_found";
+	private static final String NO_SUCH_FUNCTION = "no_such_finction";
+
+	private final Logger log; // log
+	private final CoverBackend coverBackend; // cover backend (if needed)
+	private final TestTreeModel model;
+
+	public EUnitEventHandler(final IBackend backend, final TestTreeModel model,
+			final CoverBackend coverBackend) {
+		super(EVENT_NAME, backend);
+		this.coverBackend = coverBackend;
+		this.model = model;
+		log = Activator.getDefault();
+	}
+
+	public void handleEvent(final Event event) {
+		final OtpErlangObject data = (OtpErlangObject) event
+				.getProperty("DATA");
+
+		if (!(data instanceof OtpErlangTuple && ((OtpErlangTuple) data)
+				.elementAt(0) instanceof OtpErlangAtom))
+			return;
+
+		OtpErlangTuple msg = (OtpErlangTuple) data;
+		OtpErlangAtom resType = (OtpErlangAtom) msg.elementAt(0);
+
+		if (resType.atomValue().equals(GROUP_BEGIN)) {
+			handle_group_begin(msg);
+		} else if (resType.atomValue().equals(TEST_END)) {
+			handle_test(msg);
+		} else if (resType.atomValue().equals(GROUP_END)) {
+			handle_group(msg);
+		} else if (resType.atomValue().equals(SUMMARY)) {
+			handle_summary(msg);
+			for(IEUnitObserver obs: coverBackend.getEUnitListeners())
+				obs.labelChanged();
+		} else if (resType.atomValue().equals(ERROR)) {
+			handle_error(msg);
+		} else if (resType.atomValue().equals(SKIPPED)) {
+			handle_skipped(msg);
+		} else if (resType.atomValue().equals(TEST_CANCELED)) {
+			handle_test_canceled(msg);
+		} else if (resType.atomValue().equals(GROUP_CANCELED)) {
+			handle_group_canceled(msg);
+		}
+
+		for(IEUnitObserver obs: coverBackend.getEUnitListeners())
+			obs.treeChanged();
+	}
+
+	// on group begining
+	private void handle_group_begin(OtpErlangTuple msg) {
+
+		final String description = msg.elementAt(1).toString();
+		model.addChildren(new TestTreeObject(description));
+
+	}
+
+	// on group cancel
+	private void handle_group_canceled(OtpErlangTuple msg) {
+
+		final String description = msg.elementAt(1).toString();
+		final String reason = msg.elementAt(2).toString();
+
+		model.findNode(description).setDescription(
+				String.format("%s ... canceled: %s", description, reason));
+
+	}
+
+	// on test cancel
+	private void handle_test_canceled(OtpErlangTuple msg) {
+
+		final String group = msg.elementAt(1).toString();
+		final String description = msg.elementAt(2).toString();
+		final int line = Integer.parseInt(msg.elementAt(3).toString());
+		final String reason = msg.elementAt(4).toString();
+
+		OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(5);
+		final String module = source.elementAt(0).toString();
+		final String function = source.elementAt(1).toString();
+		final int arity = Integer.parseInt(source.elementAt(2).toString());
+
+		TestTreeObject node = new TestTreeObject(makeTestShortDescription(
+				module, function, arity));
+
+		node.setDescription(makeTestFullDescription(module, function, arity,
+				description, String.format("canceled: %s", reason)));
+
+		model.findNode(group).addChild(node);
+
+	}
+
+	// on skipped test
+	private void handle_skipped(OtpErlangTuple msg) {
+
+		final String group = msg.elementAt(2).toString();
+		final String description = msg.elementAt(3).toString();
+		final int line = Integer.parseInt(msg.elementAt(4).toString());
+
+		OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(5);
+		final String module = source.elementAt(0).toString();
+		final String function = source.elementAt(1).toString();
+		final int arity = Integer.parseInt(source.elementAt(2).toString());
+
+		String reason = "";
+
+		if (msg.elementAt(1).equals(MODULE_NOT_FOUND)) {
+
+			reason = String.format("Module not found: %s", msg.elementAt(5));
+
+		} else if (msg.elementAt(1).equals(NO_SUCH_FUNCTION)) {
+
+			OtpErlangTuple func = (OtpErlangTuple) msg.elementAt(5);
+
+			reason = String.format("No such function: %s:%s/%s", func
+					.elementAt(1).toString(), func.elementAt(2).toString(),
+					func.elementAt(3).toString());
+		}
+
+		TestTreeObject node = new TestTreeObject(makeTestShortDescription(
+				module, function, arity));
+
+		node.setDescription(makeTestFullDescription(module, function, arity,
+				description, String.format("skipped: %s", reason)));
+
+		model.findNode(group).addChild(node);
+
+	}
+
+	// on failed test
+	private void handle_error(OtpErlangTuple msg) {
+
+		final String group = msg.elementAt(1).toString();
+		final String description = msg.elementAt(2).toString();
+		final int line = Integer.parseInt(msg.elementAt(3).toString());
+
+		OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(4);
+		final String module = source.elementAt(0).toString();
+		final String function = source.elementAt(1).toString();
+		final int arity = Integer.parseInt(source.elementAt(2).toString());
+
+		final String exception = source.elementAt(5).toString();
+
+		TestTreeObject node = new TestTreeObject(makeTestShortDescription(
+				module, function, arity));
+
+		node.setDescription(makeTestFullDescription(module, function, arity,
+				description, "error"));
+		node.addChild(new TestTreeObject(exception));
+
+		model.findNode(group).addChild(node);
+
+	}
+
+	// at the end of testing
+	private void handle_summary(OtpErlangTuple msg) {
+
+		model.setPass(Integer.parseInt(msg.elementAt(1).toString()));
+		model.setFail(Integer.parseInt(msg.elementAt(2).toString()));
+		model.setSkip(Integer.parseInt(msg.elementAt(3).toString()));
+		model.setCancel(Integer.parseInt(msg.elementAt(4).toString()));
+
+	}
+
+	// on group ending
+	private void handle_group(OtpErlangTuple msg) {
+
+		final String description = msg.elementAt(1).toString();
+		final int time = Integer.parseInt(msg.elementAt(4).toString());
+
+		model.findNode(description).setTime(time);
+
+	}
+
+	// on test success
+	private void handle_test(OtpErlangTuple msg) {
+
+		final String group = msg.elementAt(1).toString();
+		final String description = msg.elementAt(2).toString();
+		final int line = Integer.parseInt(msg.elementAt(3).toString());
+		final int time = Integer.parseInt(msg.elementAt(5).toString());
+
+		OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(4);
+		final String module = source.elementAt(0).toString();
+		final String function = source.elementAt(1).toString();
+		final int arity = Integer.parseInt(source.elementAt(2).toString());
+
+		TestTreeObject node = new TestTreeObject(makeTestShortDescription(
+				module, function, arity));
+
+		node.setDescription(makeTestFullDescription(module, function, arity,
+				description, "ok"));
+		node.setTime(time);
+
+		model.findNode(group).addChild(node);
+
+	}
+	
+	// test name
+	private String makeTestShortDescription(String module, String function,
+			int arity) {
+		return String.format("%s:%s/%d", module, function, arity);
+	}
+
+	// test full description
+	private String makeTestFullDescription(String module, String function,
+			int arity, String description, String status) {
+		return String.format("%s:%s/%d (%s) - %s", module, function, arity,
+				description, status);
+	}
+
+}

@@ -37,6 +37,7 @@ import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
+import org.erlide.core.internal.rpc.RpcMonitor;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
@@ -110,6 +111,9 @@ public final class ErlangCore {
         CoreScope.getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         logger.dispose();
+        final String location = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toPortableString();
+        RpcMonitor.dump(location + "/rpc_monitor.dump");
     }
 
     public void log(final IStatus status) {

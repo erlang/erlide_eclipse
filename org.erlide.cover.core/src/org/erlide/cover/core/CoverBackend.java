@@ -1,29 +1,19 @@
 package org.erlide.cover.core;
 
-import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.BackendOptions;
-import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
+import org.erlide.cover.views.model.TestTreeModel;
 
 /**
  * Core backend for Cover-plugin
@@ -38,8 +28,6 @@ public class CoverBackend implements ICoverBackend {
     public static CoverBackend instance;
 
     private IBackend backend;
-    private RuntimeInfo info;
-    private ILaunchConfiguration launchConfig;
     private CoverEventHandler handler;
     private CoverLaunchSettings settings;
     
@@ -48,6 +36,9 @@ public class CoverBackend implements ICoverBackend {
 
 
     private final Logger log; // logger
+    
+    private EUnitEventHandler testHandler;
+    private final List<IEUnitObserver> testListeners = new LinkedList<IEUnitObserver>();
 
     public static synchronized CoverBackend getInstance() {
         if (instance == null) {
@@ -68,26 +59,13 @@ public class CoverBackend implements ICoverBackend {
             backend.stop();
         }
 
-        final RuntimeInfo rt0 = RuntimeInfo.copy(BackendCore
-                .getRuntimeInfoManager().getErlideRuntime(), false);
-
-        if (rt0 == null) {
-            log.error(String.format("Could not find runtime %s", BackendCore
-                    .getRuntimeInfoManager().getErlideRuntime().getVersion()));
-            handleError("Could not find runtime");
-        }
-
-        log.info("create backend");
-
-        info = buildRuntimeInfo(rt0);
-        final EnumSet<BackendOptions> options = EnumSet
-                .of(BackendOptions.AUTOSTART/* BackendOptions.NO_CONSOLE */);
-        launchConfig = getLaunchConfiguration(info, options);
-
         try {
             backend = createBackend();
             handler = new CoverEventHandler(backend, this);
             handler.register();
+            testHandler = new EUnitEventHandler(backend, 
+            		TestTreeModel.getInstance(), this);
+            testHandler.register();
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
         }
@@ -116,9 +94,9 @@ public class CoverBackend implements ICoverBackend {
     }
 
     /**
-     * Run coverage analisys
+     * Run coverage analysis
      */
-    public synchronized void runCoverageAnalisys(
+    public synchronized void runCoverageAnalysis(
             final AbstractCoverRunner runner) {
         runner.start();
     }
@@ -158,6 +136,25 @@ public class CoverBackend implements ICoverBackend {
      */
     public List<ICoverObserver> getListeners() {
         return listeners;
+    }
+    
+    /**
+     * Add listener for coverage events
+     * 
+     * @param listener
+     */
+    public void addEUnitListener(final IEUnitObserver listener) {
+        log.info("adding eunit listener");
+        testListeners.add(listener);
+    }
+
+    /**
+     * Get all eunit listeners
+     * 
+     * @return
+     */
+    public List<IEUnitObserver> getEUnitListeners() {
+        return testListeners;
     }
 
     /**
@@ -200,14 +197,25 @@ public class CoverBackend implements ICoverBackend {
 
     // creates erlang backend
     private IBackend createBackend() throws BackendException {
+        final RuntimeInfo rt0 = RuntimeInfo.copy(BackendCore
+                .getRuntimeInfoManager().getErlideRuntime(), false);
+
+        if (rt0 == null) {
+            log.error(String.format("Could not find runtime %s", BackendCore
+                    .getRuntimeInfoManager().getErlideRuntime().getVersion()));
+            handleError("Could not find runtime");
+        }
+
+        log.info("create backend");
+
+        final RuntimeInfo info = buildRuntimeInfo(rt0);
         if (info != null) {
             try {
                 info.setStartShell(true);
 
-                final IBackend b = BackendCore.getBackendFactory()
-                        .createBackend(
-                                new BackendData(launchConfig,
-                                        ILaunchManager.RUN_MODE));
+                final BackendData data = getBackendData(info);
+                final IBackend b = BackendCore.getBackendManager()
+                        .createExecutionBackend(data);
                 return b;
             } catch (final Exception e) {
                 log.error(e);
@@ -218,47 +226,19 @@ public class CoverBackend implements ICoverBackend {
         throw new BackendException();
     }
 
+    private BackendData getBackendData(final RuntimeInfo rinfo) {
+        final BackendData backendData = new BackendData(rinfo);
+        backendData.setConsole(true);
+        backendData.setLongName(false);
+        return backendData;
+    }
+
     // creates runtime info
     private RuntimeInfo buildRuntimeInfo(final RuntimeInfo rt0) {
         final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
         rt.setNodeName(NODE_NAME);
-
         rt.setStartShell(false);
-
         return rt;
-    }
-
-    private ILaunchConfiguration getLaunchConfiguration(
-            final RuntimeInfo myInfo, final Set<BackendOptions> options) {
-        final ILaunchManager manager = DebugPlugin.getDefault()
-                .getLaunchManager();
-        final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
-        ILaunchConfigurationWorkingCopy workingCopy;
-
-        try {
-            workingCopy = type.newInstance(null,
-                    "internal " + myInfo.getNodeName());
-            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-                    "ISO-8859-1");
-            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
-                    myInfo.getNodeName());
-            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                    myInfo.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
-                    myInfo.getCookie());
-            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
-                    !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL,
-                    options.contains(BackendOptions.INTERNAL));
-            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
-            return workingCopy.doSave();
-        } catch (final CoreException e) {
-            e.printStackTrace();
-            handleError("Error while launching backend: " + e);
-
-            return null;
-        }
     }
 
 }

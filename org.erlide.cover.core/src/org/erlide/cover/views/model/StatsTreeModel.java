@@ -26,7 +26,7 @@ public class StatsTreeModel implements Serializable {
         setChanged(false);
     }
 
-    public static StatsTreeModel getInstance() {
+    public static synchronized StatsTreeModel getInstance() {
         if (model == null) {
             model = new StatsTreeModel();
         }

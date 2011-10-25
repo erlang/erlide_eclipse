@@ -2,27 +2,17 @@ package org.erlide.tracing.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
-import org.erlide.core.backend.BackendOptions;
-import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.mvc.model.TraceCollections;
@@ -608,55 +598,26 @@ public class TraceBackend {
     private IBackend createBackend() {
         final RuntimeInfo info = RuntimeInfo.copy(BackendCore
                 .getRuntimeInfoManager().getErlideRuntime(), false);
-        final String nodeName = Activator.getDefault().getPreferenceStore()
-                .getString(PreferenceNames.NODE_NAME);
+        try {
+            info.setStartShell(true);
 
-        if (info != null) {
-            try {
-                info.setNodeName(nodeName);
-                info.setStartShell(false);
-                final EnumSet<BackendOptions> options = EnumSet.of(
-                        BackendOptions.AUTOSTART, BackendOptions.NO_CONSOLE);
-                final ILaunchConfiguration launchConfig = getLaunchConfiguration(
-                        info, options);
-
-                final IBackend b = BackendCore.getBackendFactory()
-                        .createBackend(
-                                new BackendData(launchConfig,
-                                        ILaunchManager.RUN_MODE));
-                return b;
-            } catch (final Exception e) {
-                ErlLogger.error(e);
-            }
+            final BackendData data = getBackendData(info);
+            final IBackend b = BackendCore.getBackendManager()
+                    .createExecutionBackend(data);
+            return b;
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-    private ILaunchConfiguration getLaunchConfiguration(final RuntimeInfo info,
-            final Set<BackendOptions> options) {
-        final ILaunchManager manager = DebugPlugin.getDefault()
-                .getLaunchManager();
-        final ILaunchConfigurationType type = manager
-                .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
-        ILaunchConfigurationWorkingCopy workingCopy;
-        try {
-            workingCopy = type.newInstance(null,
-                    "internal " + info.getNodeName());
-            workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-                    "ISO-8859-1");
-            workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
-                    info.getNodeName());
-            workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                    info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
-                    info.getCookie());
-            workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
-                    !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
-            return workingCopy;
-        } catch (final CoreException e) {
-            e.printStackTrace();
-            return null;
-        }
+    private BackendData getBackendData(final RuntimeInfo rinfo) {
+        final BackendData backendData = new BackendData(rinfo);
+        final String nodeName = Activator.getDefault().getPreferenceStore()
+                .getString(PreferenceNames.NODE_NAME);
+        backendData.setNodeName(nodeName);
+        backendData.setConsole(false);
+        return backendData;
     }
+
 }

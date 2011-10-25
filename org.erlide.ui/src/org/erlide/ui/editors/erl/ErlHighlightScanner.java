@@ -221,7 +221,8 @@ public class ErlHighlightScanner implements ITokenScanner,
             }
 
             // ErlLogger.debug("setRange %s %d:%d (%d:%d)", document,
-            // rangeOffset, rangeLength, offset, length);
+            // rangeOffset,
+            // rangeLength, offset, length);
 
             final String str = document.get(rangeOffset, rangeLength);
             setText(str);

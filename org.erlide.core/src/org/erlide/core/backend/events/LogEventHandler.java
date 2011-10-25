@@ -16,7 +16,8 @@ public class LogEventHandler extends ErlangEventHandler {
     }
 
     public void handleEvent(final Event event) {
-        final String data = (String) event.getProperty("DATA");
+        final OtpErlangObject data = (OtpErlangObject) event
+                .getProperty("DATA");
         try {
             final Bindings b = ErlUtils.match("{K:a,M}", data);
             final String kind = ((OtpErlangAtom) b.get("K")).atomValue();
