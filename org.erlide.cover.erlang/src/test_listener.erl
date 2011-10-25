@@ -46,17 +46,20 @@ init(_Options) ->
     end.
 
 terminate({ok, Data}, _St) ->
+	io:format("blab"),
     Pass = proplists:get_value(pass, Data, 0),
     Fail = proplists:get_value(fail, Data, 0),
     Skip = proplists:get_value(skip, Data, 0),
     Cancel = proplists:get_value(cancel, Data, 0),
+	io:format("test terminate: ~p ~p ~p ~p ~n", [Pass, Fail, Skip, Cancel]),
     erlide_jrpc:event(?TEVENT, #result{pass = Pass,
 									  fail = Fail,
 									  skip = Skip,
 									  cancel = Cancel}),
     sync_end(ok);
 terminate({error, Reason}, _St) ->
-    io:fwrite("Internal error: ~P.\n", [Reason, 25]),
+	io:format("terminate with error ~p~n", [Reason]),
+	erlide_jrpc:event(?TEVENT, {end_with_error, blab}),
     sync_end(error).
 
 sync_end(Result) ->
@@ -69,8 +72,13 @@ sync_end(Result) ->
 handle_begin(group, Data, St) ->
 	io:format("group begin: ~p~n", [Data]),
     Desc = proplists:get_value(desc, Data),
+	Group = case St of
+				[H | _T] -> make_list(H);
+				_ ->
+					""
+			end,
 	if Desc =/= "", Desc =/= undefined  ->
-		   	erlide_jrpc:event(?TEVENT, {gbegin, make_list(Desc)}),
+		   	erlide_jrpc:event(?TEVENT, {gbegin, Group, make_list(Desc)}),
 			[Desc | St];
 	   true ->
 		   St
@@ -94,7 +102,7 @@ handle_end(group, Data, St) ->
 	if Desc =/= "", Desc =/= undefined ->
     		Time = proplists:get_value(time, Data),
 			erlide_jrpc:event(?TEVENT, {gend, make_list(Desc), Time}),
-    		lists:delete(St, Desc);
+    		lists:delete(Desc, St);
 		true -> 
 			St
     end;
@@ -129,9 +137,13 @@ handle_end(test, Data, St) ->
 handle_cancel(group, Data, St) ->
 	io:format("group canceled ~p~n", [Data]),
 	Desc = proplists:get_value(desc, Data),
-    Res = cancel_info(Data),
-	erlide_jrpc:event(?TEVENT, {gcanceled, make_list(Desc), Res}),
-	lists:delete(St, Desc);
+	if Desc =/= "", Desc =/= undefined ->
+    		Res = cancel_info(Data),
+			erlide_jrpc:event(?TEVENT, {gcanceled, make_list(Desc), Res}),
+			lists:delete(Desc, St);
+	   true ->
+		   St
+	end;
 handle_cancel(test, Data, St) ->
 	io:format("test canceled ~p~n", [Data]),
 	Desc = proplists:get_value(desc, Data),

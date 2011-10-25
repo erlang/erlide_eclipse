@@ -34,7 +34,7 @@ public class TestTreeObject {
 	 * @param time
 	 */
 	public void setTime(int time) {
-		description = String.format("%s     [%3.f]", description, time/1000.0);
+		description = String.format("%s     [%.3f]", description, time/1000.0);
 	}
 	
 	public void addChild(TestTreeObject child) {

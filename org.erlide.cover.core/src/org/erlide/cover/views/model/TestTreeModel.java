@@ -72,32 +72,32 @@ public class TestTreeModel {
 		return null;
 	}
 
-	public void setPass(int pass) {
-		this.pass = pass;
+	public void updatePass(int p) {
+		this.pass += p;
 	}
 
 	public int getPass() {
 		return pass;
 	}
 
-	public void setFail(int fail) {
-		this.fail = fail;
+	public void updateFail(int f) {
+		this.fail += f;
 	}
 
 	public int getFail() {
 		return fail;
 	}
 
-	public void setSkip(int skip) {
-		this.skip = skip;
+	public void updateSkip(int s) {
+		this.skip += s;
 	}
 
 	public int getSkip() {
 		return skip;
 	}
 
-	public void setCancel(int cancel) {
-		this.cancel = cancel;
+	public void updateCancel(int c) {
+		this.cancel += c;
 	}
 
 	public int getCancel() {

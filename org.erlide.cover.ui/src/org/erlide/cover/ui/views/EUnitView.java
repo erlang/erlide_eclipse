@@ -2,6 +2,8 @@ package org.erlide.cover.ui.views;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -52,11 +54,15 @@ public class EUnitView extends ViewPart implements IEUnitObserver {
 		viewer.setLabelProvider(new TestViewLabelProvider());
 		viewer.getTree().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		viewer.getTree().setLinesVisible(true);
 
 		viewer.setInput(TestTreeModel.getInstance());
 		
 		resultsLabel = new Label(parent, SWT.SINGLE);
 		resultsLabel.setText("Passed: 0    Failed: 0   Skipped: 0   Canceled: 0");
+		FontData font = new FontData();
+		font.setStyle(SWT.BOLD);
+		resultsLabel.setFont(new Font(Display.getCurrent(), font));
 		
 	}
 
