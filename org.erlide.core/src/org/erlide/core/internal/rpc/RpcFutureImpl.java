@@ -37,17 +37,14 @@ public class RpcFutureImpl implements IRpcFuture {
     }
 
     public OtpErlangObject get() throws RpcException {
-        if (isDone()) {
-            if (logCalls) {
-                helper.debugLogCallArgs("call <- %s", result);
-            }
-            return result;
-        }
         return get(IRpcHelper.INFINITY);
     }
 
     public OtpErlangObject get(final long timeout) throws RpcException {
         if (isDone()) {
+            if (logCalls) {
+                helper.debugLogCallArgs("call <- %s", result);
+            }
             return result;
         }
         result = helper.getRpcResult(mbox, timeout, env);
