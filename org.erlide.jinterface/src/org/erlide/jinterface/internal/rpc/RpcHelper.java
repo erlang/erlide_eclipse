@@ -17,6 +17,7 @@ import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcMonitor;
 import org.erlide.jinterface.rpc.RpcResultReceiver;
 import org.erlide.jinterface.rpc.RpcTimeoutException;
 
