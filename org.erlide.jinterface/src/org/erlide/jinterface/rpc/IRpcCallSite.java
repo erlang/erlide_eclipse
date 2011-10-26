@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
+
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
@@ -19,7 +20,7 @@ public interface IRpcCallSite {
      * typed RPC
      * 
      */
-    IRpcResult call_noexception(final String m, final String f,
+    RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a);
 
     /**
@@ -27,7 +28,7 @@ public interface IRpcCallSite {
      * 
      * @throws ConversionException
      */
-    IRpcResult call_noexception(final int timeout, final String m,
+    RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args);
 
     IRpcFuture async_call(final String m, final String f,

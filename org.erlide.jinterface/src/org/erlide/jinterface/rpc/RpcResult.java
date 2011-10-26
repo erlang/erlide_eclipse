@@ -8,27 +8,25 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.internal.rpc;
-
-import org.erlide.jinterface.rpc.IRpcResult;
+package org.erlide.jinterface.rpc;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class RpcResultImpl implements IRpcResult {
+public class RpcResult {
 
     private OtpErlangObject fValue;
 
     private boolean fOk = true;
 
-    private RpcResultImpl(final boolean ok) {
+    private RpcResult(final boolean ok) {
         fOk = ok;
         fValue = new OtpErlangAtom("undefined");
     }
 
-    public RpcResultImpl(final OtpErlangObject res) {
+    public RpcResult(final OtpErlangObject res) {
         if (res instanceof OtpErlangTuple
                 && ((OtpErlangTuple) res).elementAt(0) instanceof OtpErlangAtom
                 && ("badrpc".equals(((OtpErlangAtom) ((OtpErlangTuple) res)
@@ -57,8 +55,8 @@ public class RpcResultImpl implements IRpcResult {
         return "RPC:" + fOk + "=" + fValue.toString();
     }
 
-    public static IRpcResult error(final String msg) {
-        final RpcResultImpl r = new RpcResultImpl(false);
+    public static RpcResult error(final String msg) {
+        final RpcResult r = new RpcResult(false);
         r.fValue = OtpErlang.mkTuple(new OtpErlangAtom("error"),
                 new OtpErlangAtom(msg));
         return r;

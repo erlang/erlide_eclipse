@@ -66,14 +66,13 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.internal.rpc.RpcResultImpl;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcHelper;
-import org.erlide.jinterface.rpc.IRpcResult;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -131,21 +130,21 @@ public abstract class Backend implements IStreamListener, IBackend {
         return this;
     }
 
-    public IRpcResult call_noexception(final String m, final String f,
+    public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
         return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
-    public IRpcResult call_noexception(final int timeout, final String m,
+    public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
             final OtpErlangObject result = runtime.makeCall(timeout, m, f,
                     signature, args);
-            return new RpcResultImpl(result);
+            return new RpcResult(result);
         } catch (final RpcException e) {
-            return RpcResultImpl.error(e.getMessage());
+            return RpcResult.error(e.getMessage());
         } catch (final SignatureException e) {
-            return RpcResultImpl.error(e.getMessage());
+            return RpcResult.error(e.getMessage());
         }
     }
 
