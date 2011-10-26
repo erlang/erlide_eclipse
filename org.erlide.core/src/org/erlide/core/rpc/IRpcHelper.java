@@ -121,8 +121,6 @@ public interface IRpcHelper {
             final String fun, final String signature, final Object... args0)
             throws SignatureException;
 
-    void debugLogCallArgs(final String fmt, final Object... args0);
-
     void makeAsyncCbCall(final OtpNode node, final String peer,
             final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,

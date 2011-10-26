@@ -24,12 +24,19 @@ public class RpcFutureImpl implements IRpcFuture {
     private OtpErlangObject result = null;
     private final String env;
     private final boolean logCalls;
-    private final IRpcHelper helper;
+
+    private final RpcHelper helper;
     private final OtpErlangRef ref;
 
     public RpcFutureImpl(final OtpErlangRef ref, final OtpMbox mbox,
-            final String env, final boolean logCalls, final IRpcHelper helper) {
+            final String env, final boolean logCalls, final RpcHelper helper) {
         this.ref = ref;
+
+
+
+
+
+
         this.mbox = mbox;
         this.env = env;
         this.logCalls = logCalls;
