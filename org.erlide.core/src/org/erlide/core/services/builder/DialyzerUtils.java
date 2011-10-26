@@ -23,11 +23,11 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

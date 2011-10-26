@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.rpc;
+package org.erlide.jinterface.rpc;
 
 public class RpcTimeoutException extends RpcException {
     private static final long serialVersionUID = 1229604283654671393L;

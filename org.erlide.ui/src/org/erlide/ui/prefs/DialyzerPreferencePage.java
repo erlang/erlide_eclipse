@@ -66,13 +66,13 @@ import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.CoreUtil;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
 import org.erlide.core.services.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.core.services.builder.ErlideDialyze;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcException;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

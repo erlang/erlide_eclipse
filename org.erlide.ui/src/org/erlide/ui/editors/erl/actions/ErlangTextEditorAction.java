@@ -24,10 +24,10 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 

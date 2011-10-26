@@ -9,10 +9,10 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.internal.backend.Backend;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

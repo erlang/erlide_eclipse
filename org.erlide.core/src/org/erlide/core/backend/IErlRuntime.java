@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.erlide.core.backend;
 
-import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcException;
+import org.erlide.jinterface.rpc.IRpcCallback;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

@@ -1,4 +1,4 @@
-package org.erlide.core.internal.rpc;
+package org.erlide.jinterface.internal.rpc;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;

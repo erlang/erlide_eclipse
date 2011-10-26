@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverageAnalysis;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 

@@ -12,8 +12,8 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.CoreUtil;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.google.common.collect.Lists;
 

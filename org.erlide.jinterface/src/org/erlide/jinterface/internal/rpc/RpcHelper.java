@@ -8,17 +8,17 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.rpc;
+package org.erlide.jinterface.internal.rpc;
 
-import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.IRpcHelper;
-import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcException;
-import org.erlide.core.rpc.RpcResultReceiver;
-import org.erlide.core.rpc.RpcTimeoutException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.TypeConverter;
+import org.erlide.jinterface.rpc.IRpcCallback;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcHelper;
+import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcResultReceiver;
+import org.erlide.jinterface.rpc.RpcTimeoutException;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -176,7 +176,6 @@ public final class RpcHelper implements IRpcHelper {
         final OtpErlangRef ref = RpcMonitor.recordRequest(node, peer, module,
                 fun, args, OtpErlang.sizeOf(res));
         //
-        final long time = System.currentTimeMillis();
         mbox.send("rex", peer, res);
         if (CHECK_RPC) {
             debug("RPC " + mbox.hashCode() + "=> " + res);

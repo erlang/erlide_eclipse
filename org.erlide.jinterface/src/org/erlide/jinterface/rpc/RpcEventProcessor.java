@@ -1,4 +1,4 @@
-package org.erlide.core.rpc;
+package org.erlide.jinterface.rpc;
 
 import org.erlide.jinterface.ErlLogger;
 

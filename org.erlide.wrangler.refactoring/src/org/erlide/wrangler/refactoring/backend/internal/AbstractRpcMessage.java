@@ -10,8 +10,8 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.exception.WranglerException;

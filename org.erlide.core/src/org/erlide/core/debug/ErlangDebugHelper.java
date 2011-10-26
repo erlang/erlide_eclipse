@@ -9,8 +9,8 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 public class ErlangDebugHelper {
 

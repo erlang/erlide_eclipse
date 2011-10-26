@@ -33,11 +33,11 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 

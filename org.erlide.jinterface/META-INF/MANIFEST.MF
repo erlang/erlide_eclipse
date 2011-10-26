@@ -10,6 +10,8 @@ Export-Package: com.ericsson.otp.erlang,
  org.erlide.jinterface,
  org.erlide.jinterface.epmd,
  org.erlide.jinterface.internal;x-internal:=true,
+ org.erlide.jinterface.internal.rpc;x-internal:=true,
+ org.erlide.jinterface.rpc,
  org.erlide.jinterface.util
 Require-Bundle: org.erlide.libs
 Bundle-ActivationPolicy: lazy

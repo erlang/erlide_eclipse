@@ -37,9 +37,9 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlParser;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
 

@@ -18,12 +18,12 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.builder.BuilderMessages;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
 import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcException;
 
 public class DialyzerBuilder extends IncrementalProjectBuilder {
 

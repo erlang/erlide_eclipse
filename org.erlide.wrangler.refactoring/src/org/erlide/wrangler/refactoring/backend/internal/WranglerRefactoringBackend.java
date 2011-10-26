@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend.internal;
 
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.IRpcMessage;
 import org.erlide.wrangler.refactoring.backend.IWranglerBackend;
 

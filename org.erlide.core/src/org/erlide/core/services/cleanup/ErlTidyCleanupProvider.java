@@ -12,8 +12,8 @@ package org.erlide.core.services.cleanup;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcFuture;
 
 /**
  * <p>

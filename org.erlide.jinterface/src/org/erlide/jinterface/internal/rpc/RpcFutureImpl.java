@@ -8,11 +8,11 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.internal.rpc;
+package org.erlide.jinterface.internal.rpc;
 
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.IRpcHelper;
-import org.erlide.core.rpc.RpcException;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcHelper;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;

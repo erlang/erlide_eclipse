@@ -6,10 +6,10 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcFuture;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.util.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;

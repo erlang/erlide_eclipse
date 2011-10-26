@@ -37,8 +37,8 @@ import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
-import org.erlide.core.internal.rpc.RpcMonitor;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.internal.rpc.RpcMonitor;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
