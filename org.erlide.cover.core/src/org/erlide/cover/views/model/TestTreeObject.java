@@ -11,14 +11,22 @@ import java.util.List;
  */
 public class TestTreeObject {
 	
+    public static final int GROUP = 0;
+    public static final int SUCCESS = 1;
+    public static final int FAILOURE = 2;
+    public static final int DESCR = 3;
+    
 	private String name;
 	private String description = "";
 	private List<TestTreeObject> children = new LinkedList<TestTreeObject>();
 	private TestTreeObject parent = null;
+	private int type;          // type of node
 	
-	public TestTreeObject(String name) {
+	
+	public TestTreeObject(String name, int type) {
 		this.name = name;
 		this.description = name;
+		this.type = type;
 	}
 	
 	public void setDescription(String description) {
@@ -72,5 +80,9 @@ public class TestTreeObject {
 		}
 		return null;
 	}
+
+    public int getType() {
+        return type;
+    }
 
 }

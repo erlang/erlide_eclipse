@@ -48,7 +48,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
                 .getProperty("DATA");
 
         System.out.println(data.toString());
-        
+
         if (!(data instanceof OtpErlangTuple && ((OtpErlangTuple) data)
                 .elementAt(0) instanceof OtpErlangAtom))
             return;
@@ -89,9 +89,11 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String description = msg.elementAt(2).toString();
 
         if (group != null && !group.equals("[]") && !group.equals("undefined")) {
-            model.findNode(group).addChild(new TestTreeObject(description));
+            model.findNode(group).addChild(
+                    new TestTreeObject(description, TestTreeObject.GROUP));
         } else {
-            model.addChildren(new TestTreeObject(description));
+            model.addChildren(new TestTreeObject(description,
+                    TestTreeObject.GROUP));
         }
     }
 
@@ -120,7 +122,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
         TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity));
+                module, function, arity), TestTreeObject.FAILOURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, String.format("canceled: %s", reason)));
@@ -157,7 +159,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         }
 
         TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity));
+                module, function, arity), TestTreeObject.FAILOURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, String.format("skipped: %s", reason)));
@@ -181,11 +183,11 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String exception = msg.elementAt(5).toString();
 
         TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity));
+                module, function, arity), TestTreeObject.FAILOURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, "error"));
-        node.addChild(new TestTreeObject(exception));
+        node.addChild(new TestTreeObject(exception, TestTreeObject.DESCR));
 
         model.findNode(group).addChild(node);
 
@@ -225,7 +227,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
         TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity));
+                module, function, arity), TestTreeObject.SUCCESS);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, "ok"));
