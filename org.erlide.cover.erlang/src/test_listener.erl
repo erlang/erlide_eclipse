@@ -73,12 +73,12 @@ handle_begin(group, Data, St) ->
 	io:format("group begin: ~p~n", [Data]),
     Desc = proplists:get_value(desc, Data),
 	Group = case St of
-				[H | _T] -> make_list(H);
+				[H | _T] -> make_atom(H);
 				_ ->
 					""
 			end,
 	if Desc =/= "", Desc =/= undefined  ->
-		   	erlide_jrpc:event(?TEVENT, {gbegin, Group, make_list(Desc)}),
+		   	erlide_jrpc:event(?TEVENT, {gbegin, Group, make_atom(Desc)}),
 			[Desc | St];
 	   true ->
 		   St
@@ -86,10 +86,10 @@ handle_begin(group, Data, St) ->
 handle_begin(test, Data, St) ->	
 	io:format("test begin: ~p~n", [Data]),
 	io:format("test state: ~p~n", [St]),
-	Desc = proplists:get_value(desc, Data),
+	Desc = make_atom(proplists:get_value(desc, Data)),
     Line = proplists:get_value(line, Data, 0),
 	Group = case St of
-				[H | _T] -> make_list(H);
+				[H | _T] -> make_atom(H);
 				_ ->
 					""
 			end,
@@ -101,14 +101,14 @@ handle_end(group, Data, St) ->
     Desc = proplists:get_value(desc, Data),
 	if Desc =/= "", Desc =/= undefined ->
     		Time = proplists:get_value(time, Data),
-			erlide_jrpc:event(?TEVENT, {gend, make_list(Desc), Time}),
+			erlide_jrpc:event(?TEVENT, {gend, make_atom(Desc), Time}),
     		lists:delete(Desc, St);
 		true -> 
 			St
     end;
 handle_end(test, Data, St) ->
 	io:format("test end ~p~n", [Data]),
-	Desc = proplists:get_value(desc, Data),
+	Desc = make_atom(proplists:get_value(desc, Data)),
    	Line = proplists:get_value(line, Data, 0),
 	Source = case proplists:get_value(source, Data) of 
 				 {SM, SF, SA} ->
@@ -117,7 +117,7 @@ handle_end(test, Data, St) ->
 					 {[], [], 0}
 			 end,
 	Group = case St of
-				[H | _T] -> make_list(H);
+				[H | _T] -> make_atom(H);
 				_ ->
 					""
 			end,
@@ -137,16 +137,17 @@ handle_end(test, Data, St) ->
 handle_cancel(group, Data, St) ->
 	io:format("group canceled ~p~n", [Data]),
 	Desc = proplists:get_value(desc, Data),
+	Res = cancel_info(Data),
+	erlide_jrpc:event(?TEVENT, {gcanceled, make_atom(Desc), Res}),
 	if Desc =/= "", Desc =/= undefined ->
-    		Res = cancel_info(Data),
-			erlide_jrpc:event(?TEVENT, {gcanceled, make_list(Desc), Res}),
 			lists:delete(Desc, St);
 	   true ->
 		   St
 	end;
 handle_cancel(test, Data, St) ->
 	io:format("test canceled ~p~n", [Data]),
-	Desc = proplists:get_value(desc, Data),
+	erlide_jrpc:event(?TEVENT, canceled),
+	Desc = make_atom(proplists:get_value(desc, Data)),
    	Line = proplists:get_value(line, Data, 0),
 	Res = cancel_info(Data),
 	Source = case proplists:get_value(source, Data) of 
@@ -156,7 +157,7 @@ handle_cancel(test, Data, St) ->
 					 {[], [], 0}
 			 end,
 	Group = case St of
-				[H | _T] -> make_list(H);
+				[H | _T] -> make_atom(H);
 				_ ->
 					""
 			end,
@@ -171,24 +172,26 @@ handle_cancel(test, Data, St) ->
 cancel_info(Data) ->
 	case proplists:get_value(reason, Data) of
     	undefined ->
-			"skipped";
+			'skipped';
     	timeout ->
-        	"timed out";
+        	'timeout';
         {startup, Reason} ->
-			io_lib:format("could not start test process\n::~P\n\n",
-          [Reason, 15]);
+			list_to_atom(io_lib:format("could not start test process\n::~P\n\n",
+          [Reason, 15]));
 		{blame, _SubId} ->
-			"cancelled because of subtask";
+			'cancelled because of subtask';
 		{exit, Reason} ->
-			io_lib:format("unexpected termination of test process\n::~P\n\n",
-          [Reason, 15]);
-		{abort, _Reason} ->
-			"aborted"		%%!!! 
+			list_to_atom(io_lib:format("unexpected termination of test process\n::~P\n\n",
+          [Reason, 15]));
+		{abort, Reason} ->
+			Reason
     end.
 
-make_list(H) when is_binary(H) ->
-	binary_to_list(H);
-make_list(H) ->
+make_atom(H) when is_binary(H) ->
+	list_to_atom(binary_to_list(H));
+make_atom(H) when is_list(H) ->
+	list_to_atom(H);
+make_atom(H) ->
 	H.
 
 

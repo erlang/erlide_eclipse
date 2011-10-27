@@ -56,7 +56,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         OtpErlangTuple msg = (OtpErlangTuple) data;
         OtpErlangAtom resType = (OtpErlangAtom) msg.elementAt(0);
         log.info(resType);
-        System.out.println(resType.toString());
+        System.out.println(msg.toString());
 
         if (resType.atomValue().equals(GROUP_BEGIN)) {
             handle_group_begin(msg);
@@ -89,9 +89,16 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String description = msg.elementAt(2).toString();
 
         if (group != null && !group.equals("[]") && !group.equals("undefined")) {
+            TestTreeObject parent = model.findNode(group);
+            if(parent == null){
+                model.addChildren(new TestTreeObject(group,
+                        TestTreeObject.GROUP));
+            }
+            
             model.findNode(group).addChild(
                     new TestTreeObject(description, TestTreeObject.GROUP));
         } else {
+            //TODO check if
             model.addChildren(new TestTreeObject(description,
                     TestTreeObject.GROUP));
         }
@@ -103,8 +110,14 @@ public class EUnitEventHandler extends ErlangEventHandler {
         final String description = msg.elementAt(1).toString();
         final String reason = msg.elementAt(2).toString();
 
-        model.findNode(description).setDescription(
-                String.format("%s ... canceled: %s", description, reason));
+        if (description != null && !description.equals("[]")
+                && !description.equals("undefined")) {
+            model.findNode(description).setDescription(
+                    String.format("%s ... canceled: %s", description, reason));
+        } else {
+            model.addChildren(new TestTreeObject(reason,
+                    TestTreeObject.FAILOURE));
+        }
 
     }
 
