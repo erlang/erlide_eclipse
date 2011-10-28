@@ -34,14 +34,9 @@ start(Options) ->
     eunit_listener:start(?MODULE, Options).
 
 init(_Options) ->
-	io:format("inite"),
-    %St = #state{verbose = proplists:get_bool(verbose, Options)},
 	St = [],
     receive
     {start, _Reference} ->
-        %if St#state.verbose -> print_header();
-        %   true -> ok
-        %end,
         St
     end.
 
@@ -51,14 +46,12 @@ terminate({ok, Data}, _St) ->
     Fail = proplists:get_value(fail, Data, 0),
     Skip = proplists:get_value(skip, Data, 0),
     Cancel = proplists:get_value(cancel, Data, 0),
-	io:format("test terminate: ~p ~p ~p ~p ~n", [Pass, Fail, Skip, Cancel]),
     erlide_jrpc:event(?TEVENT, #result{pass = Pass,
 									  fail = Fail,
 									  skip = Skip,
 									  cancel = Cancel}),
     sync_end(ok);
 terminate({error, Reason}, _St) ->
-	io:format("terminate with error ~p~n", [Reason]),
 	erlide_jrpc:event(?TEVENT, {end_with_error, blab}),
     sync_end(error).
 
@@ -70,26 +63,23 @@ sync_end(Result) ->
     end.
 
 handle_begin(group, Data, St) ->
-	io:format("group begin: ~p~n", [Data]),
     Desc = proplists:get_value(desc, Data),
 	Group = case St of
-				[H | _T] -> make_atom(H);
+				[H | _T] -> make_list(H);
 				_ ->
 					""
 			end,
 	if Desc =/= "", Desc =/= undefined  ->
-		   	erlide_jrpc:event(?TEVENT, {gbegin, Group, make_atom(Desc)}),
+		   	erlide_jrpc:event(?TEVENT, {gbegin, Group, make_list(Desc)}),
 			[Desc | St];
 	   true ->
 		   St
 	end;
 handle_begin(test, Data, St) ->	
-	io:format("test begin: ~p~n", [Data]),
-	io:format("test state: ~p~n", [St]),
-	Desc = make_atom(proplists:get_value(desc, Data)),
+	Desc = make_list(proplists:get_value(desc, Data)),
     Line = proplists:get_value(line, Data, 0),
 	Group = case St of
-				[H | _T] -> make_atom(H);
+				[H | _T] -> make_list(H);
 				_ ->
 					""
 			end,
@@ -97,18 +87,16 @@ handle_begin(test, Data, St) ->
     St.
 
 handle_end(group, Data, St) ->
-	io:format("group end: ~p~n", [Data]),
     Desc = proplists:get_value(desc, Data),
 	if Desc =/= "", Desc =/= undefined ->
     		Time = proplists:get_value(time, Data),
-			erlide_jrpc:event(?TEVENT, {gend, make_atom(Desc), Time}),
+			erlide_jrpc:event(?TEVENT, {gend, make_list(Desc), Time}),
     		lists:delete(Desc, St);
 		true -> 
 			St
     end;
 handle_end(test, Data, St) ->
-	io:format("test end ~p~n", [Data]),
-	Desc = make_atom(proplists:get_value(desc, Data)),
+	Desc = make_list(proplists:get_value(desc, Data)),
    	Line = proplists:get_value(line, Data, 0),
 	Source = case proplists:get_value(source, Data) of 
 				 {SM, SF, SA} ->
@@ -117,7 +105,7 @@ handle_end(test, Data, St) ->
 					 {[], [], 0}
 			 end,
 	Group = case St of
-				[H | _T] -> make_atom(H);
+				[H | _T] -> make_list(H);
 				_ ->
 					""
 			end,
@@ -135,19 +123,16 @@ handle_end(test, Data, St) ->
 	St.
 
 handle_cancel(group, Data, St) ->
-	io:format("group canceled ~p~n", [Data]),
 	Desc = proplists:get_value(desc, Data),
 	Res = cancel_info(Data),
-	erlide_jrpc:event(?TEVENT, {gcanceled, make_atom(Desc), Res}),
+	erlide_jrpc:event(?TEVENT, {gcanceled, make_list(Desc), Res}),
 	if Desc =/= "", Desc =/= undefined ->
 			lists:delete(Desc, St);
 	   true ->
 		   St
 	end;
 handle_cancel(test, Data, St) ->
-	io:format("test canceled ~p~n", [Data]),
-	erlide_jrpc:event(?TEVENT, canceled),
-	Desc = make_atom(proplists:get_value(desc, Data)),
+	Desc = make_list(proplists:get_value(desc, Data)),
    	Line = proplists:get_value(line, Data, 0),
 	Res = cancel_info(Data),
 	Source = case proplists:get_value(source, Data) of 
@@ -157,7 +142,7 @@ handle_cancel(test, Data, St) ->
 					 {[], [], 0}
 			 end,
 	Group = case St of
-				[H | _T] -> make_atom(H);
+				[H | _T] -> make_list(H);
 				_ ->
 					""
 			end,
@@ -183,16 +168,17 @@ cancel_info(Data) ->
 		{exit, Reason} ->
 			list_to_atom(io_lib:format("unexpected termination of test process\n::~P\n\n",
           [Reason, 15]));
-		{abort, Reason} ->
+		{abort, {Reason, _}} ->
 			Reason
     end.
 
-make_atom(H) when is_binary(H) ->
+make_list(H) when is_binary(H) ->
 	list_to_atom(binary_to_list(H));
-make_atom(H) when is_list(H) ->
-	list_to_atom(H);
-make_atom(H) ->
+make_list(H) ->
 	H.
+
+
+
 
 
 

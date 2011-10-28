@@ -39,8 +39,8 @@ public class TestViewLabelProvider extends LabelProvider {
         
         Color color;
         switch(type) {
-        case TestTreeObject.GROUP: 
-            color = new Color(Display.getCurrent(), 255, 255, 170);
+        case TestTreeObject.WARN: 
+            color = new Color(Display.getCurrent(), 255, 255, 100);
             break;
         case TestTreeObject.SUCCESS: 
             color = new Color(Display.getCurrent(), 60, 140, 10);

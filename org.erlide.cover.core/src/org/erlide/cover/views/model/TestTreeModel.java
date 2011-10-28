@@ -104,4 +104,8 @@ public class TestTreeModel {
 		return cancel;
 	}
 
+    public void removeChild(TestTreeObject node) {
+        rootLevel.remove(node);
+    }
+
 }
