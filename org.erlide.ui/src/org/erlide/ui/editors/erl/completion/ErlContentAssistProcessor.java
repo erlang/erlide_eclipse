@@ -113,7 +113,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         AUTO_IMPORTED_FUNCTIONS,
         ARITY_ONLY,
         UNEXPORTED_ONLY,
-        INCLUDES
+        INCLUDES,
+        INCLUDE_LIBS
     }
 
     private static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
@@ -222,7 +223,11 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                         }
                         break;
                     case ATTRIBUTE:
-                        flags = EnumSet.of(Kinds.INCLUDES);
+                        if (element.getName().equals("include")) {
+                            flags = EnumSet.of(Kinds.INCLUDES);
+                        } else if (element.getName().equals("include_lib")) {
+                            flags = EnumSet.of(Kinds.INCLUDE_LIBS);
+                        }
                         break;
                     }
                 }
@@ -278,6 +283,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         if (flags.contains(Kinds.INCLUDES)) {
             addSorted(result,
                     getModules(backend, offset, prefix, Kinds.INCLUDES));
+        }
+        if (flags.contains(Kinds.INCLUDE_LIBS)) {
+            addSorted(result,
+                    getModules(backend, offset, prefix, Kinds.INCLUDE_LIBS));
         }
         if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
@@ -358,10 +367,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         final List<ICompletionProposal> result = Lists.newArrayList();
         if (module != null) {
             final IErlProject project = module.getProject();
-            final boolean includes = kind == Kinds.INCLUDES;
-            // TODO improve include file handling!
+            final boolean includes = kind == Kinds.INCLUDES
+                    || kind == Kinds.INCLUDE_LIBS;
             final List<String> names = ModelUtils.findUnitsWithPrefix(prefix,
-                    project, true, includes);
+                    project, kind != Kinds.INCLUDES, includes);
             final OtpErlangObject res = ErlideDoc.getModules(backend, prefix,
                     names, includes);
             if (res instanceof OtpErlangList) {

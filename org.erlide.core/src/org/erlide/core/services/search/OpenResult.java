@@ -50,6 +50,10 @@ public class OpenResult {
             } else if (kind.equals("include")) {
                 include = true;
                 name = Util.stringValue(openTuple.elementAt(1));
+            } else if (kind.equals("include_lib")) {
+                include = true;
+                name = Util.stringValue(openTuple.elementAt(1));
+                path = Util.stringValue(openTuple.elementAt(2));
             } else if (kind.equals("local")) { // local call
                 localCall = true;
                 final OtpErlangAtom element = (OtpErlangAtom) openTuple

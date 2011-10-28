@@ -124,23 +124,37 @@ public class ModelUtils {
             final boolean includes) throws ErlModelException {
         final List<String> result = Lists.newArrayList();
         final Set<String> names = Sets.newHashSet();
-        final Collection<IErlModule> units = includes ? project.getIncludes()
-                : project.getModules();
-        addUnitNamesWithPrefix(prefix, result, names, units, includes);
+        final Collection<IErlModule> units = getUnits(project, checkExternals,
+                includes);
+        addUnitNamesWithPrefix(prefix, result, names, units, false, includes);
         for (final IErlProject p : project.getReferencedProjects()) {
             if (p != null) {
                 p.open(null);
-                addUnitNamesWithPrefix(prefix, result, names, p.getModules(),
-                        includes);
+                addUnitNamesWithPrefix(prefix, result, names,
+                        getUnits(p, checkExternals, includes), false, includes);
             }
         }
         if (checkExternals) {
             final Collection<IErlModule> externalUnits = includes ? project
                     .getExternalIncludes() : project.getExternalModules();
-            addUnitNamesWithPrefix(prefix, result, names, externalUnits,
+            addUnitNamesWithPrefix(prefix, result, names, externalUnits, true,
                     includes);
         }
         return result;
+    }
+
+    private static Collection<IErlModule> getUnits(final IErlProject project,
+            final boolean checkExternals, final boolean includes)
+            throws ErlModelException {
+        final Collection<IErlModule> units;
+        if (!includes) {
+            units = project.getModules();
+        } else if (!checkExternals) {
+            units = project.getIncludes();
+        } else {
+            units = Sets.newHashSet();
+        }
+        return units;
     }
 
     public static String resolveMacroValue(final String definedName,
@@ -306,10 +320,14 @@ public class ModelUtils {
 
     private static void addUnitNamesWithPrefix(final String prefix,
             final List<String> result, final Set<String> names,
-            final Collection<IErlModule> modules, final boolean includes) {
+            final Collection<IErlModule> modules, final boolean external,
+            final boolean includes) {
         for (final IErlModule module : modules) {
-            final String moduleName = includes ? module.getName() : module
+            String moduleName = includes ? module.getName() : module
                     .getModuleName();
+            if (external && includes) {
+                moduleName = getIncludeLibPath(module);
+            }
             if (moduleName.startsWith(prefix)) {
                 if (!names.contains(moduleName)) {
                     result.add(moduleName);
@@ -317,6 +335,22 @@ public class ModelUtils {
                 }
             }
         }
+    }
+
+    private static String getIncludeLibPath(final IErlModule module) {
+        String s = module.getName();
+        String prevS = s;
+        IErlElement e = module;
+        for (;;) {
+            final IParent p = e.getParent();
+            if (p instanceof IErlProject) {
+                break;
+            }
+            e = (IErlElement) p;
+            prevS = s;
+            s = e.getName() + "/" + s;
+        }
+        return prevS;
     }
 
     public static String[] getPredefinedMacroNames() {
