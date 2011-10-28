@@ -12,12 +12,13 @@ public enum TokenHighlight {
     ARROW(new RGB(0x00, 0x00, 0xff), SWT.NORMAL),
     CHAR(new RGB(0xBc, 0x8f, 0x8F), SWT.NORMAL),
     VARIABLE(new RGB(0xB8, 0x86, 0x0B), SWT.NORMAL),
-    STRING(new RGB(0xBc, 0x8f, 0x8F), SWT.NORMAL),
     INTEGER(new RGB(90, 90, 180), SWT.NORMAL),
     FLOAT(Color.NAVY.getColor(), SWT.NORMAL),
     COMMENT(new RGB(0xB2, 0x22, 0x22), SWT.NORMAL),
     EDOC_TAG(new RGB(0x82, 0x22, 0x22), SWT.BOLD),
-    HTML_TAG(new RGB(0xB3, 0x6A, 0x6A), SWT.NORMAL);
+    HTML_TAG(new RGB(0xB3, 0x6A, 0x6A), SWT.NORMAL),
+    STRING(new RGB(0xBc, 0x8f, 0x8F), SWT.NORMAL),
+    TILDE_TAG(new RGB(0xBc, 0x8f, 0x8F), SWT.BOLD);
 
     private final HighlightStyle defaultData;
 
@@ -30,6 +31,6 @@ public enum TokenHighlight {
     }
 
     public String getName() {
-        return toString().toLowerCase();
+        return toString().toLowerCase().replaceAll("_", " ");
     }
 }
