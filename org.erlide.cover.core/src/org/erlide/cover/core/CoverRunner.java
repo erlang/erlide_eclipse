@@ -9,6 +9,7 @@ import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverageAnalysis;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
+import org.erlide.cover.views.model.TestTreeModel;
 import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -49,6 +50,16 @@ public class CoverRunner extends AbstractCoverRunner {
 
     // performs tests
     private void runTests(final IConfiguration config) throws RpcException {
+
+        // clear viewer
+        TestTreeModel.getInstance().clear();
+        for (final IEUnitObserver obs : CoverBackend.getInstance()
+                .getEUnitListeners()) {
+            obs.treeChanged();
+            obs.labelChanged();
+        }
+
+        // test
         CoverBackend
                 .getInstance()
                 .getBackend()
