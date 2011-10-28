@@ -24,13 +24,12 @@ import org.erlide.ui.util.IColorManager;
 
 public class SyntaxColorPreviewEditorConfiguration extends EditorConfiguration {
 
-    private final Map<TokenHighlight, HighlightStyle> styles;
-
     public SyntaxColorPreviewEditorConfiguration(final IPreferenceStore store,
             final IColorManager lcolorManager,
             final Map<TokenHighlight, HighlightStyle> styles) {
         super(store, null, lcolorManager);
-        this.styles = styles;
+        codeScanner = new SyntaxColorPreviewHighlightScanner(colorManager,
+                styles);
     }
 
     /**
@@ -60,16 +59,6 @@ public class SyntaxColorPreviewEditorConfiguration extends EditorConfiguration {
     public ITextHover getTextHover(final ISourceViewer sourceViewer,
             final String contentType) {
         return null;
-    }
-
-    @Override
-    protected ErlHighlightScanner getHighlightScanner(
-            final ISourceViewer sourceViewer) {
-        if (fHighlightScanner == null) {
-            fHighlightScanner = new SyntaxColorPreviewHighlightScanner(
-                    colorManager, sourceViewer, styles);
-        }
-        return fHighlightScanner;
     }
 
 }

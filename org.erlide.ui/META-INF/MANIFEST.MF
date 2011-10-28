@@ -127,6 +127,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.swt.widgets,
    org.eclipse.jface.dialogs",
  org.erlide.ui.editors.erl.outline.filters,
+ org.erlide.ui.editors.erl.scanner;x-internal:=true,
  org.erlide.ui.editors.erl.test;x-internal:=true,
  org.erlide.ui.editors.internal.reconciling;x-internal:=true,
  org.erlide.ui.editors.util;x-friends:="org.erlide.test_support";

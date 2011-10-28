@@ -117,7 +117,7 @@ public class RpcMonitor {
         } else {
             list.add(index, info);
         }
-        if (list.size() == COUNT) {
+        if (list.size() > COUNT) {
             list.remove(list.size() - 1);
         }
     }

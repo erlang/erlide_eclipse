@@ -152,6 +152,7 @@ import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.editors.erl.outline.IOutlineContentCreator;
 import org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler;
 import org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage;
+import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.editors.erl.test.TestAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
@@ -333,19 +334,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         final ErlangSourceViewerConfiguration cfg = new EditorConfiguration(
                 getPreferenceStore(), this, colorManager);
         setSourceViewerConfiguration(cfg);
-
-        // Runnable runnable = new Runnable() {
-        // public void run() {
-        // initFinished = true;
-        // synchronized (getLock()) {
-        // getLock().notifyAll();
-        // }
-        // }
-        // };
-        // Thread thread = new Thread(runnable);
-        // thread.setPriority(Thread.MIN_PRIORITY);
-        // thread.setName("ErlangEditor initializer");
-        // thread.start();
     }
 
     public static ChainedPreferenceStore getErlangEditorPreferenceStore() {
@@ -373,39 +361,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         setKeyBindingScopes(new String[] { "org.erlide.ui.erlangEditorScope" }); //$NON-NLS-1$
     }
 
-    // private final class ScannerListener implements IDocumentListener {
-    // private final IErlModule module;
-    // private final String scannerName;
-    //
-    // public ScannerListener() {
-    // module = getModule();
-    // if (module == null) {
-    // scannerName = null;
-    // return;
-    // }
-    // scannerName = ErlangToolkit.createScannerModuleName(module);
-    // }
-    //
-    // public void documentAboutToBeChanged(final DocumentEvent event) {
-    // }
-    //
-    // public void documentChanged(final DocumentEvent event) {
-    // if (module == null) {
-    // return;
-    // }
-    // ErlideScanner.notifyChange(scannerName, event.getOffset(), event
-    // .getLength(), event.getText());
-    // }
-    //
-    // public void documentOpened() {
-    // if (module == null) {
-    // return;
-    // }
-    // ErlideScanner.notifyNew(scannerName);
-    // }
-    //
-    // }
-
     class PreferenceChangeListener implements IPreferenceChangeListener {
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
@@ -429,10 +384,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
     }
 
-    /**
-     * 
-     * @return
-     */
     protected final boolean isActiveEditor() {
         final IWorkbenchWindow window = getSite().getWorkbenchWindow();
         final IWorkbenchPage page = window.getActivePage();
@@ -1681,18 +1632,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     private void updateAnnotationViews(final Annotation annotation) {
     }
-
-    // // the window is asymmetric, to allow finding number of arguments
-    // public TokenWindow getTokenWindow(int window) {
-    // final IErlScanner scanner = getScanner();
-    //
-    // final ISelection sel = getSelectionProvider().getSelection();
-    // final ITextSelection s = (ITextSelection) sel;
-    //
-    // final TokenWindow tokenWindow = scanner.getTokenWindow(s.getOffset(),
-    // window);
-    // return tokenWindow;
-    // }
 
     public final ISourceViewer getViewer() {
         return getSourceViewer();

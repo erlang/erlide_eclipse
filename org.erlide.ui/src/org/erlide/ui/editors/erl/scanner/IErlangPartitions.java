@@ -8,14 +8,17 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui.editors.erl;
-
-import org.eclipse.jface.text.IDocument;
+package org.erlide.ui.editors.erl.scanner;
 
 public interface IErlangPartitions {
 
     String ERLANG_PARTITIONING = "___erlang_partitioning"; //$NON-NLS-1$
 
-    String[] LEGAL_PARTITIONS = new String[] { IDocument.DEFAULT_CONTENT_TYPE };
+    String ERLANG_COMMENT = "__erlang_comment";
+    String ERLANG_STRING = "__erlang_string";
+    String ERLANG_QATOM = "__erlang_qatom";
+
+    String[] LEGAL_PARTITIONS = new String[] { ERLANG_COMMENT, ERLANG_QATOM,
+            ERLANG_STRING };
 
 }
