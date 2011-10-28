@@ -112,21 +112,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         IMPORTED_FUNCTIONS,
         AUTO_IMPORTED_FUNCTIONS,
         ARITY_ONLY,
-        UNEXPORTED_ONLY
+        UNEXPORTED_ONLY,
+        INCLUDES,
+        INCLUDE_LIBS
     }
-
-    // private static final int DECLARED_FUNCTIONS = 1;
-    // private static final int EXTERNAL_FUNCTIONS = 2;
-    // private static final int VARIABLES = 4;
-    // private static final int RECORD_FIELDS = 8;
-    // private static final int RECORD_DEFS = 0x10;
-    // private static final int MODULES = 0x20;
-    // private static final int MACRO_DEFS = 0x40;
-    // private static final int IMPORTED_FUNCTIONS = 0x80;
-    // private static final int AUTO_IMPORTED_FUNCTIONS = 0x100;
-    //
-    // private static final int ARITY_ONLY = 0x1000;
-    // private static final int UNEXPORTED_ONLY = 0x2000;
 
     private static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();
 
@@ -166,7 +155,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final String prefix = getPrefix(before);
             List<String> fieldsSoFar = null;
             List<ICompletionProposal> result;
-            Set<Kinds> flags;
+            Set<Kinds> flags = EnumSet.noneOf(Kinds.class);
             int pos;
             String moduleOrRecord = null;
             final IErlProject erlProject = module.getProject();
@@ -211,16 +200,19 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                 pos = colonPos;
                 before = prefix;
                 if (element != null) {
-                    if (element.getKind() == IErlElement.Kind.EXPORT) {
+                    switch (element.getKind()) {
+                    case EXPORT:
                         flags = EnumSet.of(Kinds.DECLARED_FUNCTIONS,
                                 Kinds.ARITY_ONLY, Kinds.UNEXPORTED_ONLY);
-                    } else if (element.getKind() == IErlElement.Kind.IMPORT) {
+                        break;
+                    case IMPORT:
                         final IErlImport i = (IErlImport) element;
                         moduleOrRecord = i.getImportModule();
                         flags = EnumSet.of(Kinds.EXTERNAL_FUNCTIONS,
                                 Kinds.ARITY_ONLY);
-                    } else if (element.getKind() == IErlElement.Kind.FUNCTION
-                            || element.getKind() == IErlElement.Kind.CLAUSE) {
+                        break;
+                    case FUNCTION:
+                    case CLAUSE:
                         flags = EnumSet.of(Kinds.MODULES);
                         if (module != null) {
                             flags = Sets.union(flags, EnumSet.of(
@@ -229,11 +221,15 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                                     Kinds.AUTO_IMPORTED_FUNCTIONS));
 
                         }
-                    } else {
-                        flags = EnumSet.noneOf(Kinds.class);
+                        break;
+                    case ATTRIBUTE:
+                        if (element.getName().equals("include")) {
+                            flags = EnumSet.of(Kinds.INCLUDES);
+                        } else if (element.getName().equals("include_lib")) {
+                            flags = EnumSet.of(Kinds.INCLUDE_LIBS);
+                        }
+                        break;
                     }
-                } else {
-                    flags = EnumSet.noneOf(Kinds.class);
                 }
             }
             result = addCompletions(flags, offset, before, moduleOrRecord, pos,
@@ -281,7 +277,16 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             addSorted(result, getAutoImportedFunctions(backend, offset, prefix));
         }
         if (flags.contains(Kinds.MODULES)) {
-            addSorted(result, getModules(backend, offset, prefix));
+            addSorted(result,
+                    getModules(backend, offset, prefix, Kinds.MODULES));
+        }
+        if (flags.contains(Kinds.INCLUDES)) {
+            addSorted(result,
+                    getModules(backend, offset, prefix, Kinds.INCLUDES));
+        }
+        if (flags.contains(Kinds.INCLUDE_LIBS)) {
+            addSorted(result,
+                    getModules(backend, offset, prefix, Kinds.INCLUDE_LIBS));
         }
         if (flags.contains(Kinds.RECORD_DEFS)) {
             addSorted(
@@ -357,20 +362,24 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private List<ICompletionProposal> getModules(final IRpcCallSite backend,
-            final int offset, final String prefix) throws ErlModelException {
+            final int offset, final String prefix, final Kinds kind)
+            throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
         if (module != null) {
             final IErlProject project = module.getProject();
-            final List<String> names = ModelUtils.findModulesWithPrefix(prefix,
-                    project, true);
+            final boolean includes = kind == Kinds.INCLUDES
+                    || kind == Kinds.INCLUDE_LIBS;
+            final List<String> names = ModelUtils.findUnitsWithPrefix(prefix,
+                    project, kind != Kinds.INCLUDES, includes);
             final OtpErlangObject res = ErlideDoc.getModules(backend, prefix,
-                    names);
+                    names, includes);
             if (res instanceof OtpErlangList) {
                 final OtpErlangList resList = (OtpErlangList) res;
                 for (final OtpErlangObject o : resList) {
                     if (o instanceof OtpErlangString) {
                         final OtpErlangString s = (OtpErlangString) o;
-                        final String cpl = s.stringValue() + ":";
+                        final String suffix = includes ? "" : ":";
+                        final String cpl = s.stringValue() + suffix;
                         final int prefixLength = prefix.length();
                         result.add(new CompletionProposal(cpl, offset
                                 - prefixLength, prefixLength, cpl.length()));

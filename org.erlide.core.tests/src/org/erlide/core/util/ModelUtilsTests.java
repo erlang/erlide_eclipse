@@ -271,12 +271,12 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking via prefix
-            final List<String> moduleNames0 = ModelUtils.findModulesWithPrefix(
-                    "ex", project, false);
-            final List<String> modules1 = ModelUtils.findModulesWithPrefix(
-                    "ex", project, true);
-            final List<String> listModules = ModelUtils.findModulesWithPrefix(
-                    "list", project, true);
+            final List<String> moduleNames0 = ModelUtils.findUnitsWithPrefix(
+                    "ex", project, false, false);
+            final List<String> modules1 = ModelUtils.findUnitsWithPrefix("ex",
+                    project, true, false);
+            final List<String> listModules = ModelUtils.findUnitsWithPrefix(
+                    "list", project, true, false);
             // then
             // we should find it iff we check externals
             assertEquals(0, moduleNames0.size());
@@ -350,8 +350,8 @@ public class ModelUtilsTests {
                 "-module(bbc).\n-export(f/0)\nf() ->\n   {abc, ok}.\n");
         // when
         // looking for module with prefix, it should be found
-        final List<String> moduleNames = ModelUtils.findModulesWithPrefix("a",
-                projects[0], false);
+        final List<String> moduleNames = ModelUtils.findUnitsWithPrefix("a",
+                projects[0], false, false);
         // then
         // we should find it
         assertNotNull(moduleNames);
