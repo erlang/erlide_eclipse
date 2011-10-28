@@ -8,7 +8,7 @@
  *     Eric Merritt
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui.editors.erl;
+package org.erlide.ui.editors.erl.scanner;
 
 import java.util.List;
 
@@ -22,7 +22,6 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.erlide.core.backend.BackendException;
@@ -35,60 +34,40 @@ import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
 import org.osgi.service.prefs.Preferences;
 
-/**
- * Erlang syntax scanner
- * 
- * @author Eric Merritt
- */
-public class ErlHighlightScanner implements ITokenScanner,
-        IPreferenceChangeListener {
+public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener {
 
-    private Token t_default;
-    private Token t_atom;
-    private Token t_string;
-    private Token t_keyword;
-    private Token t_var;
-    private Token t_char;
-    private Token t_arrow;
-    private Token t_macro;
-    private Token t_integer;
-    private Token t_float;
-    private Token t_comment;
+    private static Token t_default;
+    private static Token t_atom;
+    private static Token t_string;
+    private static Token t_keyword;
+    private static Token t_var;
+    private static Token t_char;
+    private static Token t_arrow;
+    private static Token t_macro;
+    private static Token t_integer;
+    private static Token t_float;
+    private static Token t_comment;
+    private static Token t_edocTag;
+    private static Token t_htmlTag;
 
     protected final IColorManager fColorManager;
     protected List<ErlToken> fTokens;
     protected int fCrtToken;
     private int rangeLength;
     private int rangeOffset;
-    private final ISourceViewer fSourceViewer;
-    private boolean wholeLines = true;
     private Color bg = null;
 
-    /**
-     * Constructs the rules that define syntax highlighting.
-     * 
-     * @param colorManager
-     *            the color fColorManager
-     * @param sourceViewer
-     * @param fScanner
-     */
-    public ErlHighlightScanner(final IColorManager colorManager,
-            final ISourceViewer sourceViewer, final boolean wholeLines) {
-        this(colorManager, sourceViewer, 0, wholeLines, null);
+    public ErlCodeScanner(final IColorManager colorManager) {
+        this(colorManager, 0, null);
     }
 
-    public ErlHighlightScanner(final IColorManager colorManager,
-            final ISourceViewer sourceViewer, final boolean wholeLines,
+    public ErlCodeScanner(final IColorManager colorManager, final RGB back) {
+        this(colorManager, 0, back);
+    }
+
+    protected ErlCodeScanner(final IColorManager colorManager, final int x,
             final RGB back) {
-        this(colorManager, sourceViewer, 0, wholeLines, back);
-    }
-
-    protected ErlHighlightScanner(final IColorManager colorManager,
-            final ISourceViewer sourceViewer, final int x,
-            final boolean wholeLines, final RGB back) {
         fColorManager = colorManager;
-        fSourceViewer = sourceViewer;
-        this.wholeLines = wholeLines;
         bg = fColorManager.getColor(back);
         setTokens();
     }
@@ -105,6 +84,8 @@ public class ErlHighlightScanner implements ITokenScanner,
         t_integer = new Token(getTextAttribute(TokenHighlight.INTEGER));
         t_float = new Token(getTextAttribute(TokenHighlight.FLOAT));
         t_comment = new Token(getTextAttribute(TokenHighlight.COMMENT));
+        t_edocTag = new Token(getTextAttribute(TokenHighlight.EDOC_TAG));
+        t_htmlTag = new Token(getTextAttribute(TokenHighlight.HTML_TAG));
     }
 
     protected TextAttribute getTextAttribute(final TokenHighlight th) {
@@ -155,31 +136,19 @@ public class ErlHighlightScanner implements ITokenScanner,
         }
     }
 
-    /**
-     * Handle a color change
-     * 
-     * @param id
-     *            the color id
-     * @param newValue
-     *            the new value of the color
-     */
     public void handleColorChange(final String id, final RGB newValue,
             final int style) {
         final Token token = getToken(id);
         fixTokenData(token, newValue, style);
     }
 
-    private Token getToken(final String id) {
-        if (TokenHighlight.DEFAULT.getName().equals(id)) {
-            return t_default;
-        } else if (TokenHighlight.KEYWORD.getName().equals(id)) {
+    protected static Token getToken(final String id) {
+        if (TokenHighlight.KEYWORD.getName().equals(id)) {
             return t_keyword;
         } else if (TokenHighlight.STRING.getName().equals(id)) {
             return t_string;
         } else if (TokenHighlight.VARIABLE.getName().equals(id)) {
             return t_var;
-        } else if (TokenHighlight.COMMENT.getName().equals(id)) {
-            return t_comment;
         } else if (TokenHighlight.CHAR.getName().equals(id)) {
             return t_char;
         } else if (TokenHighlight.ATOM.getName().equals(id)) {
@@ -192,8 +161,14 @@ public class ErlHighlightScanner implements ITokenScanner,
             return t_integer;
         } else if (TokenHighlight.MACRO.getName().equals(id)) {
             return t_macro;
+        } else if (TokenHighlight.COMMENT.getName().equals(id)) {
+            return t_comment;
+        } else if (TokenHighlight.EDOC_TAG.getName().equals(id)) {
+            return t_edocTag;
+        } else if (TokenHighlight.HTML_TAG.getName().equals(id)) {
+            return t_htmlTag;
         }
-        return null;
+        return t_default;
     }
 
     private void fixTokenData(final Token token, final RGB newValue,
@@ -209,16 +184,8 @@ public class ErlHighlightScanner implements ITokenScanner,
             return;
         }
         try {
-            if (wholeLines) {
-                final int line1 = document.getLineOfOffset(offset);
-                final int line2 = document.getLineOfOffset(offset + length);
-                rangeOffset = document.getLineOffset(line1);
-                rangeLength = document.getLineOffset(line2) - rangeOffset
-                        + document.getLineLength(line2);
-            } else {
-                rangeOffset = offset;
-                rangeLength = length;
-            }
+            rangeOffset = offset;
+            rangeLength = length;
 
             // ErlLogger.debug("setRange %s %d:%d (%d:%d)", document,
             // rangeOffset,
@@ -306,8 +273,9 @@ public class ErlHighlightScanner implements ITokenScanner,
             if (newValue == null) {
                 // color = dflt.color;
             } else {
-                attr = new TextAttribute(fColorManager.getColor(StringConverter
-                        .asRGB(newValue)), attr.getBackground(),
+                final Color color = fColorManager.getColor(StringConverter
+                        .asRGB(newValue));
+                attr = new TextAttribute(color, attr.getBackground(),
                         attr.getStyle());
             }
         } else if (HighlightStyle.STYLE_KEY.equals(key)) {
@@ -319,7 +287,6 @@ public class ErlHighlightScanner implements ITokenScanner,
             }
         }
         tk.setData(attr);
-        fSourceViewer.invalidateTextPresentation();
     }
 
 }
