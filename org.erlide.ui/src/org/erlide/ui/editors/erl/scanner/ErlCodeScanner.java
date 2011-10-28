@@ -55,24 +55,16 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
     protected int fCrtToken;
     private int rangeLength;
     private int rangeOffset;
-    private Color bg = null;
 
     public ErlCodeScanner(final IColorManager colorManager) {
-        this(colorManager, 0, null);
-    }
-
-    public ErlCodeScanner(final IColorManager colorManager, final RGB back) {
-        this(colorManager, 0, back);
-    }
-
-    protected ErlCodeScanner(final IColorManager colorManager, final int x,
-            final RGB back) {
         fColorManager = colorManager;
-        bg = fColorManager.getColor(back);
         setTokens();
     }
 
-    public void setTokens() {
+    private void setTokens() {
+        if (t_string != null) {
+            return;
+        }
         t_string = new Token(getTextAttribute(TokenHighlight.STRING));
         t_keyword = new Token(getTextAttribute(TokenHighlight.KEYWORD));
         t_var = new Token(getTextAttribute(TokenHighlight.VARIABLE));
@@ -95,7 +87,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         data.load(qualifier, th.getDefaultData());
         new InstanceScope().getNode(qualifier)
                 .addPreferenceChangeListener(this);
-        return new TextAttribute(fColorManager.getColor(data.getColor()), bg,
+        return new TextAttribute(fColorManager.getColor(data.getColor()), null,
                 data.getStyle());
     }
 

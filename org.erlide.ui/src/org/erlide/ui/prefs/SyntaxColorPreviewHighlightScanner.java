@@ -35,9 +35,8 @@ public class SyntaxColorPreviewHighlightScanner extends ErlCodeScanner {
 
     public SyntaxColorPreviewHighlightScanner(final IColorManager lmanager,
             final Map<TokenHighlight, HighlightStyle> styles) {
-        super(lmanager, 0, null);
+        super(lmanager);
         this.styles = styles;
-        setTokens();
     }
 
     @Override
