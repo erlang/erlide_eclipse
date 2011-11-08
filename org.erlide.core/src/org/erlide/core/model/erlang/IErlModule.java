@@ -13,7 +13,6 @@
 package org.erlide.core.model.erlang;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -135,7 +134,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     void addComment(IErlComment c);
 
-    List<IErlModule> findAllIncludedFiles() throws CoreException;
+    Collection<IErlModule> findAllIncludedFiles() throws CoreException;
 
     boolean isOnSourcePath();
 

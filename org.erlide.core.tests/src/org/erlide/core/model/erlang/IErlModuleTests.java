@@ -22,6 +22,8 @@ import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 public class IErlModuleTests extends ErlModelTestBase {
 
     // IErlElement getElementAt(int position) throws ErlModelException;
@@ -358,18 +360,33 @@ public class IErlModuleTests extends ErlModelTestBase {
     @Test
     public void findAllIncludedFiles() throws Exception {
         module.open(null);
-        final List<IErlModule> includedFiles = module.findAllIncludedFiles();
+        final Collection<IErlModule> includedFiles = module
+                .findAllIncludedFiles();
         final String yyHrl = "yy.hrl";
         final IErlModule include = ErlideTestUtils.createInclude(project,
                 yyHrl, "-include(\"zz.hrl\").\n-define(A, hej).\n");
         final IErlModule include2 = ErlideTestUtils.createInclude(project,
                 "zz.hrl", "-define(B(X), lists:reverse(X)).\n");
         module.open(null);
-        final List<IErlModule> includedFiles2 = module.findAllIncludedFiles();
+        final List<IErlModule> includedFiles2 = Lists.newArrayList(module
+                .findAllIncludedFiles());
         assertEquals(0, includedFiles.size());
         assertEquals(2, includedFiles2.size());
         assertEquals(include, includedFiles2.get(0));
         assertEquals(include2, includedFiles2.get(1));
+    }
+
+    @Test
+    @SuppressWarnings("unused")
+    public void findAllIncludedFiles_infinite_recursion() throws Exception {
+        module.open(null);
+        final IErlModule include = ErlideTestUtils.createInclude(project,
+                "yy.hrl", "-include(\"zz.hrl\").\n-define(A, hej).\n");
+        final IErlModule include2 = ErlideTestUtils.createInclude(project,
+                "zz.hrl", "-include(\"yy.hrl\").\n-define(A, hej).\n");
+        module.open(null);
+        final Collection<IErlModule> includedFiles2 = module
+                .findAllIncludedFiles();
     }
 
     // boolean isOnSourcePath();

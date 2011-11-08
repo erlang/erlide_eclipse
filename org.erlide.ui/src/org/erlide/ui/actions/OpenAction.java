@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
@@ -257,7 +257,7 @@ public class OpenAction extends SelectionDispatchAction {
                     modulePath, erlProject, scope, module);
         } else {
             // functions defined in include files
-            final List<IErlModule> allIncludedFiles = module
+            final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
             for (final IErlModule includedModule : allIncludedFiles) {
                 final IErlFunction function = includedModule.findFunction(res
