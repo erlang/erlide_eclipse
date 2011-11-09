@@ -55,7 +55,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     public static final String BUILDER_ID = "shade.bterl.builder";
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
     private static final boolean DEBUG = Boolean.parseBoolean(System
-            .getProperty("erlide.test_support.debug"));
+            .getProperty("erlide.test_builder.debug"));
     private static final boolean DISABLED = Boolean.parseBoolean(System
             .getProperty("erlide.test_builder.disabled"));
 
