@@ -61,15 +61,17 @@ public class ErlContentViewer extends Viewer {
 
     @Override
     public ISelection getSelection() {
-        return null;
+        return fSourceViewer.getSelection();
     }
 
     @Override
     public void setSelection(final ISelection s, final boolean reveal) {
+        fSourceViewer.setSelection(s, reveal);
     }
 
     @Override
     public void refresh() {
+        fSourceViewer.refresh();
     }
 
     /**
