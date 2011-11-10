@@ -51,7 +51,7 @@ terminate({ok, Data}, _St) ->
 									  skip = Skip,
 									  cancel = Cancel}),
     sync_end(ok);
-terminate({error, Reason}, _St) ->
+terminate({error, _Reason}, _St) ->
 	erlide_jrpc:event(?TEVENT, {end_with_error, blab}),
     sync_end(error).
 
