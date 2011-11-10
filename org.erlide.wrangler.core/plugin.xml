@@ -13,7 +13,7 @@
       </beam_dir>
       <init
             function="init_eclipse"
-            module="wrangler">
+            module="wrangler_refacs">
       </init>
    </extension>
 
