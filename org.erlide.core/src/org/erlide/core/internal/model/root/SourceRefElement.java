@@ -133,7 +133,9 @@ public abstract class SourceRefElement extends ErlElement implements
      */
     @Override
     public boolean hasChildren() {
-        return internalGetChildren().size() > 0;
+        synchronized (getModelLock()) {
+            return internalGetChildren().size() > 0;
+        }
     }
 
     public void setSourceRangeOffset(final int offset) {

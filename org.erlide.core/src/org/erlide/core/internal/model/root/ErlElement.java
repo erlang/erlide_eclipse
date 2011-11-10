@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.CoreScope;
 import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelStatus;
 import org.erlide.core.model.root.ErlModelStatusConstants;
@@ -52,7 +51,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * a parent.
      */
     private final IParent fParent;
-    private final IErlModule fModule;
 
     private final List<IErlElement> fChildren = Lists.newArrayList();
 
@@ -81,7 +79,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
         fName = name;
-        fModule = getModule();
         Assert.isNotNull(fName);
     }
 
@@ -184,14 +181,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
-    public IErlModule getModule() {
-        final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
-        if (ancestor instanceof IErlModule) {
-            return (IErlModule) ancestor;
-        }
-        return null;
-    }
-
     /**
      * Return the first instance of IOpenable in the parent hierarchy of this
      * element.
@@ -248,13 +237,17 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * @see IParent
      */
     public boolean hasChildren() {
-        return !internalGetChildren().isEmpty();
+        synchronized (getModelLock()) {
+            return !internalGetChildren().isEmpty();
+        }
     }
 
     public boolean hasChildrenOfKind(final Kind kind) {
-        for (final IErlElement child : internalGetChildren()) {
-            if (child.getKind() == kind) {
-                return true;
+        synchronized (getModelLock()) {
+            for (final IErlElement child : internalGetChildren()) {
+                if (child.getKind() == kind) {
+                    return true;
+                }
             }
         }
         return false;
@@ -368,13 +361,16 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         if (getChildCount() > 0) {
             buffer.append("{");
             int i = 0;
-            for (final IErlElement element : internalGetChildren()) {
-                ((ErlElement) element).toString(tab + 1, buffer);
-                buffer.append(","); //$NON-NLS-1$
-                if (++i > 3) {
-                    buffer.append("...");
-                    break;
+            try {
+                for (final IErlElement element : getChildren()) {
+                    ((ErlElement) element).toString(tab + 1, buffer);
+                    buffer.append(","); //$NON-NLS-1$
+                    if (++i > 3) {
+                        buffer.append("...");
+                        break;
+                    }
                 }
+            } catch (final ErlModelException e) {
             }
             buffer.deleteCharAt(buffer.length() - 1);
             buffer.append("}");
@@ -421,18 +417,20 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     public List<IErlElement> getChildren() throws ErlModelException {
-        return Collections.unmodifiableList(Lists
-                .newArrayList(internalGetChildren()));
-    }
-
-    protected List<IErlElement> internalGetChildren() {
         synchronized (getModelLock()) {
-            return fChildren;
+            return Collections.unmodifiableList(Lists
+                    .newArrayList(internalGetChildren()));
         }
     }
 
+    protected List<IErlElement> internalGetChildren() {
+        return fChildren;
+    }
+
     public int getChildCount() {
-        return internalGetChildren().size();
+        synchronized (getModelLock()) {
+            return internalGetChildren().size();
+        }
     }
 
     /**
@@ -445,9 +443,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     public List<IErlElement> getChildrenOfKind(final Kind kind)
             throws ErlModelException {
         final List<IErlElement> result = Lists.newArrayList();
-        for (final IErlElement element : internalGetChildren()) {
-            if (element.getKind() == kind) {
-                result.add(element);
+        synchronized (getModelLock()) {
+            for (final IErlElement element : internalGetChildren()) {
+                if (element.getKind() == kind) {
+                    result.add(element);
+                }
             }
         }
         return result;
@@ -465,7 +465,9 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * Returns <code>true</code> if this child is in my children collection
      */
     protected boolean includesChild(final IErlElement child) {
-        return internalGetChildren().contains(child);
+        synchronized (getModelLock()) {
+            return internalGetChildren().contains(child);
+        }
     }
 
     /**
@@ -513,9 +515,11 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     private static IErlElement getChildNamed(final ErlElement parent,
             final String name) {
-        for (final IErlElement child : parent.internalGetChildren()) {
-            if (child.getName().equals(name)) {
-                return child;
+        synchronized (parent.getModelLock()) {
+            for (final IErlElement child : parent.internalGetChildren()) {
+                if (child.getName().equals(name)) {
+                    return child;
+                }
             }
         }
         return null;
@@ -523,15 +527,25 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     private static IErlElement getChildWithResource(final ErlElement parent,
             final IResource rsrc) {
-        for (final IErlElement child : parent.internalGetChildren()) {
-            if (rsrc.equals(child.getResource())) {
-                return child;
+        synchronized (parent.getModelLock()) {
+            for (final IErlElement child : parent.internalGetChildren()) {
+                if (rsrc.equals(child.getResource())) {
+                    return child;
+                }
             }
         }
         return null;
     }
 
     public final void accept(final IErlElementVisitor visitor,
+            final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
+            throws ErlModelException {
+        synchronized (getModelLock()) {
+            internalAccept(visitor, flags, leafKind);
+        }
+    }
+
+    private final void internalAccept(final IErlElementVisitor visitor,
             final Set<AcceptFlags> flags, final IErlElement.Kind leafKind)
             throws ErlModelException {
         if (getKind() == leafKind) {
