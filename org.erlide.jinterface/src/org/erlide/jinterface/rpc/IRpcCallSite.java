@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.jinterface.rpc;
 
-
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 

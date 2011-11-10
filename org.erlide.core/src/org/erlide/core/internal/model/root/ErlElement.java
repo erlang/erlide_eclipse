@@ -52,7 +52,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      * a parent.
      */
     private final IParent fParent;
-    private final IErlModule fModule;
 
     private final List<IErlElement> fChildren = Lists.newArrayList();
 
@@ -81,7 +80,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     protected ErlElement(final IParent parent, final String name) {
         fParent = parent;
         fName = name;
-        fModule = getModule();
         Assert.isNotNull(fName);
     }
 
