@@ -132,7 +132,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     void setResource(IFile file);
 
-    void addComment(IErlComment c);
+    void setComments(Collection<? extends IErlComment> comments);
 
     Collection<IErlModule> findAllIncludedFiles() throws CoreException;
 
@@ -141,5 +141,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
     boolean isOnIncludePath();
 
     boolean exportsAllFunctions();
+
+    Object getModelLock();
 
 }

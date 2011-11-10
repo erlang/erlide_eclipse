@@ -205,18 +205,23 @@ public class ErlModule extends Openable implements IErlModule {
         return true;
     }
 
-    public void addComment(final IErlComment c) {
-        comments.add(c);
+    // public void addComment(final IErlComment c) {
+    // comments.add(c);
+    // }
+
+    public void setComments(final Collection<? extends IErlComment> comments) {
+        synchronized (getModelLock()) {
+            this.comments.clear();
+            if (comments != null) {
+                this.comments.addAll(comments);
+            }
+        }
     }
 
     public Collection<IErlComment> getComments() {
-        return Collections.unmodifiableCollection(comments);
-    }
-
-    @Override
-    public void setChildren(final Collection<? extends IErlElement> children) {
-        comments.clear();
-        super.setChildren(children);
+        synchronized (getModelLock()) {
+            return Collections.unmodifiableCollection(comments);
+        }
     }
 
     public synchronized long getTimestamp() {
@@ -254,51 +259,40 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        try {
-            for (final IErlElement fun : getChildren()) {
-                if (fun instanceof IErlFunction) {
-                    final IErlFunction f = (IErlFunction) fun;
-                    if (f.getName().equals(function.name)
-                            && (function.arity < 0 || f.getArity() == function.arity)) {
-                        return f;
-                    }
+        for (final IErlElement fun : internalGetChildren()) {
+            if (fun instanceof IErlFunction) {
+                final IErlFunction f = (IErlFunction) fun;
+                if (f.getName().equals(function.name)
+                        && (function.arity < 0 || f.getArity() == function.arity)) {
+                    return f;
                 }
             }
-        } catch (final ErlModelException e) {
-            // ignore
         }
         return null;
     }
 
     public IErlTypespec findTypespec(final String typeName) {
-        try {
-            for (final IErlElement child : getChildren()) {
-                if (child instanceof IErlTypespec) {
-                    final IErlTypespec typespec = (IErlTypespec) child;
-                    if (typespec.getName().equals(typeName)) {
-                        return typespec;
-                    }
+        for (final IErlElement child : internalGetChildren()) {
+            if (child instanceof IErlTypespec) {
+                final IErlTypespec typespec = (IErlTypespec) child;
+                if (typespec.getName().equals(typeName)) {
+                    return typespec;
                 }
             }
-        } catch (final ErlModelException e) {
-            // ignore
         }
         return null;
     }
 
     public IErlPreprocessorDef findPreprocessorDef(final String definedName,
             final Kind kind) {
-        try {
-            for (final IErlElement m : getChildren()) {
-                if (m instanceof IErlPreprocessorDef) {
-                    final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
-                    if (pd.getKind() == kind
-                            && pd.getDefinedName().equals(definedName)) {
-                        return pd;
-                    }
+        for (final IErlElement m : internalGetChildren()) {
+            if (m instanceof IErlPreprocessorDef) {
+                final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
+                if (pd.getKind() == kind
+                        && pd.getDefinedName().equals(definedName)) {
+                    return pd;
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }
@@ -309,7 +303,7 @@ public class ErlModule extends Openable implements IErlModule {
             open(null);
         }
         final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
-        for (final IErlElement m : getChildren()) {
+        for (final IErlElement m : internalGetChildren()) {
             if (m instanceof IErlAttribute) {
                 final IErlAttribute a = (IErlAttribute) m;
                 final OtpErlangObject v = a.getValue();
@@ -328,14 +322,11 @@ public class ErlModule extends Openable implements IErlModule {
 
     public Collection<IErlImport> getImports() {
         final List<IErlImport> result = new ArrayList<IErlImport>();
-        try {
-            for (final IErlElement e : getChildren()) {
-                if (e instanceof IErlImport) {
-                    final IErlImport ei = (IErlImport) e;
-                    result.add(ei);
-                }
+        for (final IErlElement e : internalGetChildren()) {
+            if (e instanceof IErlImport) {
+                final IErlImport ei = (IErlImport) e;
+                result.add(ei);
             }
-        } catch (final ErlModelException e) {
         }
         return result;
     }
@@ -497,16 +488,13 @@ public class ErlModule extends Openable implements IErlModule {
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        try {
-            for (final IErlElement e : getChildren()) {
-                if (e instanceof IErlPreprocessorDef) {
-                    final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
-                    if (pd.getKind() == kind || kind == Kind.ERROR) {
-                        result.add(pd);
-                    }
+        for (final IErlElement e : internalGetChildren()) {
+            if (e instanceof IErlPreprocessorDef) {
+                final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
+                if (pd.getKind() == kind || kind == Kind.ERROR) {
+                    result.add(pd);
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return result;
     }
@@ -666,20 +654,16 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public boolean exportsAllFunctions() {
-        try {
-            for (final IErlElement e : getChildren()) {
-                if (e instanceof IErlAttribute) {
-                    final IErlAttribute attr = (IErlAttribute) e;
-                    if (attr.getName().equals("compile")) {
-                        final OtpErlangObject value = attr.getValue();
-                        if (value != null && value.equals(EXPORT_ALL)) {
-                            return true;
-                        }
+        for (final IErlElement e : internalGetChildren()) {
+            if (e instanceof IErlAttribute) {
+                final IErlAttribute attr = (IErlAttribute) e;
+                if (attr.getName().equals("compile")) {
+                    final OtpErlangObject value = attr.getValue();
+                    if (value != null && value.equals(EXPORT_ALL)) {
+                        return true;
                     }
                 }
             }
-        } catch (final ErlModelException e) {
-            // ignore
         }
         return false;
     }

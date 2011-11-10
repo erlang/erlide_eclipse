@@ -1139,4 +1139,10 @@ public class ErlModel extends Openable implements IErlModel {
                 includePath, false, true, scope);
     }
 
+    private final Object fModelLock = new Object();
+
+    @Override
+    public Object getModelLock() {
+        return fModelLock;
+    }
 }

@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.common.IDisposable;
+import org.erlide.core.model.erlang.IErlModule;
 
 /**
  * Common protocol for all elements provided by the Erlang model. Erlang model
@@ -94,6 +95,11 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * Returns the enclosing IErlProject if there is one
      */
     IErlProject getProject();
+
+    /**
+     * Returns the enclosing IErlModule if there is one
+     */
+    IErlModule getModule();
 
     /**
      * Returns the resource that corresponds directly to this element, or
@@ -240,5 +246,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
     void clearCaches();
 
     String toStringWithAncestors();
+
+    Object getModelLock();
 
 }
