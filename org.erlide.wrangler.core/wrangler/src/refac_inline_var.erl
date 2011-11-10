@@ -39,42 +39,43 @@
 %% </p>
 %% @end
 
+%% @private
 -module(refac_inline_var).
 
--export([inline_var/5, inline_var_eclipse/5,
-	 inline_var_1/7, inline_var_eclipse_1/6]).
+-export([inline_var/6, inline_var_eclipse/5,
+	 inline_var_1/8, inline_var_eclipse_1/6]).
 
--include("../include/wrangler.hrl").
+-include("../include/wrangler_internal.hrl").
 
-%%-spec (inline_var/5::(filename(), integer(), integer(),[dir()], integer()) ->
+%%-spec (inline_var/5::(filename(), integer(), integer(),[dir()], atom(), integer()) ->
 %%			   {ok, string()}|
 %%			   {ok,[{pos(), pos()}], string()}).
-inline_var(FName, Line, Col, SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:inline_var(~p, ~p, ~p, ~p, ~p).\n",
-		 [?MODULE, FName, Line, Col, SearchPaths, TabWidth]),
-    inline_var(FName, Line, Col, SearchPaths, TabWidth, emacs).
+inline_var(FName, Line, Col, SearchPaths, Editor, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:inline_var(~p, ~p, ~p, ~p, ~p, ~p).\n",
+		 [?MODULE, FName, Line, Col, SearchPaths, Editor, TabWidth]),
+    inline_var_1(FName, Line, Col, SearchPaths, Editor, TabWidth).
 
 %%-spec (inline_var_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) ->
 %%				   {ok, [{filename(), filename(), string()}]} |
 %%				   {ok, [{pos(), pos()}]}).
 inline_var_eclipse(FName, Line, Col, SearchPaths, TabWidth) ->
-    inline_var(FName, Line, Col, SearchPaths, TabWidth, eclipse).
+    inline_var_1(FName, Line, Col, SearchPaths, eclipse, TabWidth).
 
-inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
-    Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":inline_var(" ++ "\"" ++ 
-	     FName ++ "\", " ++ integer_to_list(Line) ++ 
-	       ", " ++ integer_to_list(Col) ++ ", " ++ "[" ++ refac_util:format_search_paths(SearchPaths)
-								 ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+inline_var_1(FName, Line, Col, SearchPaths, Editor, TabWidth) ->
+     Cmd1 = "CMD: " ++ atom_to_list(?MODULE) ++ ":inline_var(" ++ "\"" ++
+	      FName ++ "\", " ++ integer_to_list(Line) ++
+	        ", " ++ integer_to_list(Col) ++ ", " ++ "[" ++ wrangler_misc:format_search_paths(SearchPaths)
+							       ++ "]," ++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     Form = pos_to_form(AnnAST, {Line, Col}),
-    case interface_api:pos_to_var(Form, {Line, Col}) of
+    case api_interface:pos_to_var(Form, {Line, Col}) of
 	{ok, VarNode} ->
 	    {ok, MatchExpr} = get_var_define_match_expr(Form, VarNode),
 	    cond_check(MatchExpr, VarNode),
 	    case is_use_instance(VarNode) of
 		true ->
-		    AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, [refac_util:get_range(VarNode)]),
-		    refac_write_file:write_refactored_files([{{FName,FName},AnnAST1}], Editor, TabWidth, Cmd1);
+		    AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, [wrangler_misc:start_end_loc(VarNode)]),
+		    wrangler_write_file:write_refactored_files([{{FName,FName},AnnAST1}], Editor, TabWidth, Cmd1);
 		false ->
 		    Cands = search_for_unfold_candidates(Form, MatchExpr, VarNode),
 		    case Cands of
@@ -82,7 +83,7 @@ inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
 			    throw({error, "No unfoldable use instances of this variable were found."});
 			[C] ->
 			    AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, [C]),
-			    refac_write_file:write_refactored_files([{{FName,FName},AnnAST1}], Editor, TabWidth, Cmd1);
+			    wrangler_write_file:write_refactored_files([{{FName,FName},AnnAST1}], Editor, TabWidth, Cmd1);
 			_ ->
 			    case Editor of
 				emacs ->
@@ -99,13 +100,6 @@ inline_var(FName, Line, Col, SearchPaths, TabWidth, Editor) ->
     end.
 
 
-%%-spec (inline_var_1/7::(filename(), integer(), integer(), [{pos(), pos()}], [dir()], integer(), string()) ->
-%%				     {ok, [{filename(), filename(), string()}]}).
-inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, Cmd) ->
-    ?wrangler_io("\nCMD: ~p:inline_var_1(~p, ~p, ~p, ~p, ~p, ~p, ~p).\n",
-		 [?MODULE, FileName, Line, Col, Candidates, SearchPaths, TabWidth, ""]),
-    inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, Cmd, emacs).
-
 %%-spec (inline_var_eclipse_1/6::(filename(), integer(), integer(), [{pos(), pos()}], [dir()], integer()) ->
 %%				     {ok, [{filename(), filename(), string()}]}).				   
 inline_var_eclipse_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth) ->
@@ -114,27 +108,27 @@ inline_var_eclipse_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth) ->
 inline_var_1(FileName, Line, Col, Candidates, SearchPaths, TabWidth, Cmd, Editor) ->
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     Form = pos_to_form(AnnAST, {Line, Col}),
-    {ok, VarNode} = interface_api:pos_to_var(Form, {Line, Col}),
+    {ok, VarNode} = api_interface:pos_to_var(Form, {Line, Col}),
     {ok, MatchExpr} = get_var_define_match_expr(Form, VarNode),
     AnnAST1 = inline(AnnAST, Form, MatchExpr, VarNode, Candidates),
-    refac_write_file:write_refactored_files([{{FileName,FileName}, AnnAST1}], Editor, TabWidth, Cmd).
+    wrangler_write_file:write_refactored_files([{{FileName,FileName}, AnnAST1}], Editor, TabWidth, Cmd).
 
 %% inline_var_1(FileName, Line, Cols, Cands, SearchPaths, TabWidth, Cmd)
 is_use_instance(VarNode) ->
-    {value, {def, DefinePos}} = lists:keysearch(def, 1, refac_syntax:get_ann(VarNode)),
-    Pos = refac_syntax:get_pos(VarNode),
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(VarNode)),
+    Pos = wrangler_syntax:get_pos(VarNode),
     not lists:member(Pos, DefinePos).
 	     
 pos_to_form(Node, Pos) ->
-    case ast_traverse_api:once_tdTU(fun pos_to_form_1/2, Node, Pos) of
+    case api_ast_traverse:once_tdTU(fun pos_to_form_1/2, Node, Pos) of
 	{_, false} -> throw({error, "You have not selected a variable in a syntactically well-formed function."});
 	{R, true} -> R
     end.
 
 pos_to_form_1(Node, Pos) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	function ->
-	    {S, E} = refac_util:get_start_end_loc(Node),
+	    {S, E} = wrangler_misc:start_end_loc(Node),
 	    if (S =< Pos) and (Pos =< E) ->
 		   {Node, true};
 	       true -> {[], false}
@@ -143,7 +137,7 @@ pos_to_form_1(Node, Pos) ->
     end.
 
 cond_check(MatchExpr, VarNode) ->
-    {value, {def, DefinePos}} = lists:keysearch(def, 1, refac_syntax:get_ann(VarNode)),
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(VarNode)),
     case length(DefinePos)>1 of 
 	true ->
 	    throw({error, "Wrangler does not support unfolding of "
@@ -151,7 +145,7 @@ cond_check(MatchExpr, VarNode) ->
 	false ->
 	    ok
     end,
-    MatchExprBody = refac_syntax:match_expr_body(MatchExpr),
+    MatchExprBody = wrangler_syntax:match_expr_body(MatchExpr),
     case cond_check_1(MatchExprBody, VarNode) of 
 	ok ->
 	    ok;
@@ -160,15 +154,15 @@ cond_check(MatchExpr, VarNode) ->
     end.
 
 search_for_unfold_candidates(Form, MatchExprBody, VarNode) ->
-    {value, {def, DefinePos}} = lists:keysearch(def, 1, refac_syntax:get_ann(VarNode)),
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(VarNode)),
     F = fun (Node, Acc) ->
-		case refac_syntax:type(Node) of
+		case wrangler_syntax:type(Node) of
 		    variable when Node/=VarNode ->
-			case lists:keysearch(def, 1, refac_syntax:get_ann(Node)) of
+			case lists:keysearch(def, 1, wrangler_syntax:get_ann(Node)) of
 			    {value, {def, DefinePos}} ->
 				case cond_check_1(MatchExprBody, Node) of
 				    ok ->
-					[refac_util:get_range(Node)| Acc];
+					[wrangler_misc:start_end_loc(Node)| Acc];
 				    _ -> Acc
 				end;
 			    _ -> Acc
@@ -177,19 +171,19 @@ search_for_unfold_candidates(Form, MatchExprBody, VarNode) ->
 			Acc
 		end
 	end,
-    lists:sort(ast_traverse_api:fold(F, [], Form)).
+    lists:sort(api_ast_traverse:fold(F, [], Form)).
 
 collect_all_uses(Form, VarNode) ->
-    {value, {def, DefinePos}} = lists:keysearch(def, 1, refac_syntax:get_ann(VarNode)),
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(VarNode)),
     F = fun (Node, Acc) ->
-		case refac_syntax:type(Node) of
+		case wrangler_syntax:type(Node) of
 		    variable ->
-			case lists:keysearch(def, 1, refac_syntax:get_ann(Node)) of
+			case lists:keysearch(def, 1, wrangler_syntax:get_ann(Node)) of
 			    {value, {def, DefinePos}} ->
-				Pos = refac_syntax:get_pos(Node),
+				Pos = wrangler_syntax:get_pos(Node),
 				case  not  lists:member(Pos, DefinePos) of
 				    true ->
-					[refac_util:get_range(Node)| Acc];
+					[wrangler_misc:start_end_loc(Node)| Acc];
 				    false ->
 					[]
 				end;
@@ -199,12 +193,12 @@ collect_all_uses(Form, VarNode) ->
 			Acc
 		end
 	end,
-    lists:sort(ast_traverse_api:fold(F, [], Form)).
+    lists:sort(api_ast_traverse:fold(F, [], Form)).
 
 cond_check_1(MatchExprBody, VarNode) ->
-    MatchExprFreeVars = refac_util:get_free_vars(MatchExprBody),
+    MatchExprFreeVars = api_refac:free_vars(MatchExprBody),
     MatchExprBoundVars = get_bound_vars(MatchExprBody),
-    VarEnvs = refac_util:get_env_vars(VarNode),
+    VarEnvs = api_refac:env_vars(VarNode),
     case MatchExprFreeVars--VarEnvs of
 	[] ->
 	    VarEnvs1 = VarEnvs -- MatchExprBoundVars,
@@ -232,18 +226,18 @@ cond_check_1(MatchExprBody, VarNode) ->
 
 get_bound_vars(Tree) ->
     F = fun (T, B) ->
-		As = refac_syntax:get_ann(T),
+		As = wrangler_syntax:get_ann(T),
 		case lists:keysearch(bound, 1, As) of
 		    {value, {bound, BdVars1}} -> BdVars1++B;
 		    _ -> B
 		end
 	end,
-    lists:usort(ast_traverse_api:fold(F, [], Tree)).
+    lists:usort(api_ast_traverse:fold(F, [], Tree)).
     
 
 get_var_define_match_expr(Form, VarNode)->
-    {value, {def, DefinePos}} = lists:keysearch(def, 1, refac_syntax:get_ann(VarNode)),
-    case ast_traverse_api:once_tdTU(fun pos_to_match_expr_1/2, Form, DefinePos) of
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(VarNode)),
+    case api_ast_traverse:once_tdTU(fun pos_to_match_expr_1/2, Form, DefinePos) of
 	{MatchExpr, true} ->
 	    {ok, MatchExpr};
 	{_, false} ->
@@ -252,18 +246,18 @@ get_var_define_match_expr(Form, VarNode)->
     end.
 
 pos_to_match_expr_1(Node, DefinePos) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	match_expr ->
-	    Pattern = refac_syntax:match_expr_pattern(Node),
-	    case refac_syntax:type(Pattern) of
+	    Pattern = wrangler_syntax:match_expr_pattern(Node),
+	    case wrangler_syntax:type(Pattern) of
 		variable ->
-		    case lists:keysearch(def, 1, refac_syntax:get_ann(Pattern)) of
+		    case lists:keysearch(def, 1, wrangler_syntax:get_ann(Pattern)) of
 			{value, {def, DefinePos}} ->
-                            Body = refac_syntax:match_expr_body(Node),
-                            case refac_syntax:type(Body) of 
+                            Body = wrangler_syntax:match_expr_body(Node),
+                            case wrangler_syntax:type(Body) of
                                 match_expr ->
                                     Body1 = get_match_expr_body(Node),
-                                    {refac_syntax:match_expr(Pattern, Body1), true};
+                                    {wrangler_syntax:match_expr(Pattern, Body1), true};
                                 _ ->
                                     {Node, true}
                             end;
@@ -278,27 +272,27 @@ pos_to_match_expr_1(Node, DefinePos) ->
     end.
 
 get_match_expr_body(Node) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
         match_expr ->
-            get_match_expr_body(refac_syntax:match_expr_body(Node));
+            get_match_expr_body(wrangler_syntax:match_expr_body(Node));
         _ ->
             Node
     end.
 inline(AnnAST, Form, MatchExpr, VarNode, Ps) ->
-    FormPos = refac_syntax:get_pos(Form),
-    Forms = refac_syntax:form_list_elements(AnnAST),
-    NewForms = [case refac_syntax:get_pos(F) of
+    FormPos = wrangler_syntax:get_pos(Form),
+    Forms = wrangler_syntax:form_list_elements(AnnAST),
+    NewForms = [case wrangler_syntax:get_pos(F) of
 		    FormPos ->
                         do_inline_in_form(F, MatchExpr, VarNode, Ps);
 		    _ -> F
 		end || F <- Forms],
-    refac_util:rewrite(AnnAST, refac_syntax:form_list(NewForms)).
+    wrangler_misc:rewrite(AnnAST, wrangler_syntax:form_list(NewForms)).
 
    
 do_inline_in_form(Form, MatchExpr, VarNode, Ps) ->
-    MatchExprBody = refac_syntax:match_expr_body(MatchExpr),
+    MatchExprBody = wrangler_syntax:match_expr_body(MatchExpr),
     AllUseInstances = collect_all_uses(Form, VarNode),
-    {Form2, _} = ast_traverse_api:stop_tdTP(fun do_inline/2, Form, {MatchExprBody, Ps}),
+    {Form2, _} = api_ast_traverse:stop_tdTP(fun do_inline/2, Form, {MatchExprBody, Ps}),
     case lists:usort(AllUseInstances) == lists:usort(Ps) of 
         true ->
             remove_match_expr(Form2, MatchExpr);
@@ -307,52 +301,52 @@ do_inline_in_form(Form, MatchExpr, VarNode, Ps) ->
     end.
  
 remove_match_expr(Form, MatchExpr) ->
-    {NewForm, _} = ast_traverse_api:stop_tdTP(
+    {NewForm, _} = api_ast_traverse:stop_tdTP(
 		     fun do_remove_match_expr/2, Form, MatchExpr),
     NewForm.
 
 do_remove_match_expr(Node,MatchExpr) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	clause ->
-	    Pat = refac_syntax:clause_patterns(Node),
-	    Guard = refac_syntax:clause_guard(Node),
-	    Body = refac_syntax:clause_body(Node),
+	    Pat = wrangler_syntax:clause_patterns(Node),
+	    Guard = wrangler_syntax:clause_guard(Node),
+	    Body = wrangler_syntax:clause_body(Node),
 	    NewBody = remove_match_expr_from_body(MatchExpr,Body),
 	    case NewBody == Body of
 		true ->
 		    {Node, false};
 		false ->
-		    Node1 = refac_syntax:clause(Pat,Guard,NewBody),
-		    {refac_util:rewrite(Node,Node1),true}
+		    Node1 = wrangler_syntax:clause(Pat,Guard,NewBody),
+		    {wrangler_misc:rewrite(Node,Node1),true}
 	    end;
 	block_expr ->
-	    Body = refac_syntax:block_expr_body(Node),
+	    Body = wrangler_syntax:block_expr_body(Node),
 	    NewBody = remove_match_expr_from_body(MatchExpr,Body),
             case NewBody==Body of
 		true ->
 		    {Node,false};
 		false ->
-		    Node1 = refac_syntax:block_expr(NewBody),
-		    {refac_util:rewrite(Node,Node1),true}
+		    Node1 = wrangler_syntax:block_expr(NewBody),
+		    {wrangler_misc:rewrite(Node,Node1),true}
 	    end;
 	try_expr ->
-	    C = refac_syntax:try_expr_clauses(Node),
-	    H = refac_syntax:try_expr_handlers(Node),
-	    A = refac_syntax:try_expr_after(Node),
-	    Body = refac_syntax:try_expr_body(Node),
+	    C = wrangler_syntax:try_expr_clauses(Node),
+	    H = wrangler_syntax:try_expr_handlers(Node),
+	    A = wrangler_syntax:try_expr_after(Node),
+	    Body = wrangler_syntax:try_expr_body(Node),
 	    NewBody = remove_match_expr_from_body(MatchExpr,Body),
 	    case NewBody==Body of
 		true ->
 		    {Node,false};
 		false ->
-		    Node1 = refac_syntax:try_expr(NewBody,C,H,A),
-		    {refac_util:rewrite(Node,Node1),true}
+		    Node1 = wrangler_syntax:try_expr(NewBody,C,H,A),
+		    {wrangler_misc:rewrite(Node,Node1),true}
 	    end;
 	_ -> {Node,false}
     end.
 
 remove_match_expr_from_body(MatchExpr,Body) ->
-    {Start,_End} = refac_util:get_range(MatchExpr),
+    {Start,_End} = wrangler_misc:start_end_loc(MatchExpr),
     {B1,B2} = lists:splitwith(fun (B) ->
 				      B/=MatchExpr
 			      end,Body),
@@ -362,17 +356,17 @@ remove_match_expr_from_body(MatchExpr,Body) ->
 	[_| B3] ->
 	    B3Hd = hd(B3),
 	    B3Tl = tl(B3),
-	    {_,End} = refac_util:get_range(B3Hd),
-	    B3Hd1 = refac_util:update_ann(B3Hd,{range,{Start,End}}),
+	    {_,End} = wrangler_misc:start_end_loc(B3Hd),
+	    B3Hd1 = wrangler_misc:update_ann(B3Hd,{range,{Start,End}}),
 	    B1++[B3Hd1| B3Tl]
     end.
 
 do_inline(Node, {MatchExprBody, Ranges}) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	variable ->
-	    case lists:member(refac_util:get_range(Node), Ranges) of
+	    case lists:member(wrangler_misc:start_end_loc(Node), Ranges) of
 		true ->
-                    {refac_util:rewrite_with_wrapper(Node, MatchExprBody), true};
+                    {wrangler_misc:rewrite_with_wrapper(Node, MatchExprBody), true};
                 false ->
 		    {Node, false}
 	    end;

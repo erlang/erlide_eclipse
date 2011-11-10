@@ -28,14 +28,15 @@
 %%
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
+%% @private
 -module(refac_sim_expr_search).
 
--export([sim_expr_search_in_buffer/6,sim_expr_search_in_dirs/6, normalise_record_expr/5]).
+-export([sim_expr_search_in_buffer/6,sim_expr_search_in_dirs/6, normalise_record_expr/6]).
 
 -export([sim_expr_search_in_buffer_eclipse/6, sim_expr_search_in_dirs_eclipse/6, 
 	 normalise_record_expr_eclipse/5]).
 
--include("../include/wrangler.hrl").
+-include("../include/wrangler_internal.hrl").
 
 -define(DefaultSimiScore, 0.8).
 
@@ -50,7 +51,7 @@
 %% <p> In the case that code selected contains multiple, but non-continuous, sequence of expressions, the first
 %% continuous sequence of expressions is taken as the expression selected by the user. A continuous sequence of
 %% expressions is a sequence of expressions separated by ','.
-%% <p>
+%% </p>
 
 %%-spec(sim_expr_search_in_buffer/6::(filename(), pos(), pos(), string(),[dir()],integer())
 %%      -> {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).    
@@ -60,19 +61,19 @@ sim_expr_search_in_buffer(FName, Start = {_Line, _Col}, End = {_Line1, _Col1}, S
     SimiScore = get_simi_score(SimiScore0),
     {FunDef, Exprs, SE} = get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth),
     {Ranges, AntiUnifier} = search_and_gen_anti_unifier([FName], {FName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth),
-    refac_code_search_utils:display_search_results(Ranges, AntiUnifier, "similar").
+    wrangler_code_search_utils:display_search_results(Ranges, AntiUnifier, "similar").
 
 %%-spec(sim_expr_search_in_dirs/6::(filename(), pos(), pos(), string(),[dir()],integer())
 %%      ->{ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}).     
 sim_expr_search_in_dirs(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SimiScore0, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:sim_expr_search_in_dirs(~p, {~p,~p},{~p,~p}, ~p, ~p, ~p).\n",
 		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SimiScore0, SearchPaths, TabWidth]),
-    FileName1 = refac_util:expand_files([FileName], ".erl"),
-    Files = FileName1++ (refac_util:expand_files(SearchPaths, ".erl") -- FileName1),
+    FileName1 = wrangler_misc:expand_files([FileName], ".erl"),
+    Files = FileName1 ++ (wrangler_misc:expand_files(SearchPaths, ".erl") -- FileName1),
     SimiScore = get_simi_score(SimiScore0),
     {FunDef, Exprs, SE} = get_fundef_and_expr(FileName, Start, End, SearchPaths, TabWidth),
     {Ranges, AntiUnifier} = search_and_gen_anti_unifier(Files, {FileName, FunDef, Exprs, SE}, SimiScore, SearchPaths, TabWidth),
-    refac_code_search_utils:display_search_results(lists:usort(Ranges), AntiUnifier, "similar").
+    wrangler_code_search_utils:display_search_results(lists:usort(Ranges), AntiUnifier, "similar").
 
 
 %%-spec(sim_expr_search_in_buffer_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
@@ -83,7 +84,7 @@ sim_expr_search_in_buffer_eclipse(FName, Start, End, SimiScore0, SearchPaths, Ta
 %%-spec(sim_expr_search_in_dirs_eclipse/6::(filename(), pos(), pos(), float(),[dir()],integer())
 %%    ->{ok,  {[{{filename(), integer(), integer()}, {filename(), integer(), integer()}}], string()}}).
 sim_expr_search_in_dirs_eclipse(FileName, Start, End, SimiScore0, SearchPaths, TabWidth) ->
-    Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
+    Files = [FileName| wrangler_misc:expand_files(SearchPaths, ".erl") -- [FileName]],
     sim_expr_search_eclipse(FileName, Start, End, Files, SimiScore0, SearchPaths, TabWidth).
     
 
@@ -108,13 +109,13 @@ search_and_gen_anti_unifier(Files, {FName, FunDef, Exprs, SE}, SimiScore, Search
     {Ranges, ExportVars, SubSt} = lists:unzip3(Res),
     ExportVars1 = {element(1, lists:unzip(vars_to_export(FunDef, End, Exprs))),
 		   lists:usort(lists:append(ExportVars))},
-    AntiUnifier = anti_unification:generate_anti_unifier(Exprs, SubSt, ExportVars1),
+    AntiUnifier = wrangler_anti_unification:generate_anti_unifier(Exprs, SubSt, ExportVars1),
     {[{FName, SE}| Ranges -- [{FName, SE}]], AntiUnifier}.
 
 search_similar_expr_1(FName, Exprs, SimiScore, SearchPaths, TabWidth) ->
     try wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth) of
 	{ok, {AnnAST, _}} ->
-	    RecordInfo = get_module_record_info(FName, SearchPaths, TabWidth),
+            RecordInfo = get_module_record_info(FName, SearchPaths, TabWidth),
 	    do_search_similar_expr(FName, AnnAST, RecordInfo, Exprs, SimiScore)
     catch
 	_E1:_E2 ->
@@ -129,42 +130,42 @@ do_search_similar_expr(FileName, AnnAST, RecordInfo, Exprs, SimiScore) when is_l
 				     Exprs1 = get_expr_seqs(T),
 				     do_search_similar_expr_1(FileName, Exprs, Exprs1, RecordInfo, SimiScore, FunNode) ++ Acc1
 			     end,
-			 ast_traverse_api:fold(F, Acc, FunNode)
+			 api_ast_traverse:fold(F, Acc, FunNode)
 		 end,
 	    do_search_similar_expr_1(AnnAST, F0);
 	false ->
 	    Expr = hd(Exprs),
-	    F0 = fun (FunNode, Acc) ->
+            F0 = fun (FunNode, Acc) ->
 			 F = fun (T, Acc1) ->
-				     case refac_util:is_expr_or_match(T) of
+				     case api_refac:is_expr(T) of
 					 true ->
 					     do_search_similar_expr_1(FileName, Expr, T, RecordInfo, SimiScore, FunNode) ++ Acc1;
 					 _ -> Acc1
 				     end
 			     end,
-			 ast_traverse_api:fold(F, Acc, FunNode)
+			 api_ast_traverse:fold(F, Acc, FunNode)
 		 end,
 	    do_search_similar_expr_1(AnnAST, F0)
     end.
 
 do_search_similar_expr_1(AnnAST, Fun) ->
     F1 = fun (Node, Acc) ->
-		 case refac_syntax:type(Node) of
+		 case wrangler_syntax:type(Node) of
 		     function -> Fun(Node, Acc);
 		     _ -> Acc
 		 end
 	 end,
-    lists:reverse(ast_traverse_api:fold(F1, [], AnnAST)).
+    lists:reverse(api_ast_traverse:fold(F1, [], AnnAST)).
 
 
 get_expr_seqs(T) ->
-    case refac_syntax:type(T) of
+    case wrangler_syntax:type(T) of
 	clause ->
-	    refac_syntax:clause_body(T);
+	    wrangler_syntax:clause_body(T);
 	block_expr ->
-	    refac_syntax:block_expr_body(T);
+	    wrangler_syntax:block_expr_body(T);
 	try_expr ->
-	    refac_syntax:try_expr_body(T);
+	    wrangler_syntax:try_expr_body(T);
 	_ -> []
     end.
 
@@ -178,19 +179,19 @@ do_search_similar_expr_1(FileName, Exprs1, Exprs2, RecordInfo, SimiScore, FunNod
     case Len1 =< Len2 of
 	true ->
 	    Exprs21 = lists:sublist(Exprs2, Len1),
-	    {S1, E1} = refac_util:get_start_end_loc(Exprs1),
-	    {S2, E2} = refac_util:get_start_end_loc(Exprs21),
+	    {S1, E1} = wrangler_misc:start_end_loc(Exprs1),
+	    {S2, E2} = wrangler_misc:start_end_loc(Exprs21),
 	    case overlapped_locs({S1, E1}, {S2, E2}) of
 		true -> [];
 		_ ->
 		    NormalisedExprs21 = normalise_expr(Exprs21, RecordInfo),
 		    ExportedVars = vars_to_export(FunNode, E2, Exprs21),
-		    case anti_unification:anti_unification_with_score(Exprs1, NormalisedExprs21, SimiScore) of
+		    case wrangler_anti_unification:anti_unification_with_score(Exprs1, NormalisedExprs21, SimiScore) of
 			none ->
 			    do_search_similar_expr_1(FileName, Exprs1, tl(Exprs2), RecordInfo, SimiScore, FunNode);
 			SubSt ->
-			    EVs = [SE1 || {SE1, SE2} <- SubSt, refac_syntax:type(SE2) == variable,
-					  lists:member({refac_syntax:variable_name(SE2), get_var_define_pos(SE2)}, ExportedVars)],
+			    EVs = [SE1 || {SE1, SE2} <- SubSt, wrangler_syntax:type(SE2) == variable,
+					  lists:member({wrangler_syntax:variable_name(SE2), get_var_define_pos(SE2)}, ExportedVars)],
 			    [{{FileName, {S2, E2}}, EVs, SubSt}]++ 
 			      do_search_similar_expr_1(FileName, Exprs1, tl(Exprs2), RecordInfo, SimiScore, FunNode)
 		    end
@@ -198,27 +199,28 @@ do_search_similar_expr_1(FileName, Exprs1, Exprs2, RecordInfo, SimiScore, FunNod
 	_ -> []
     end;
 do_search_similar_expr_1(FileName, Expr1, Expr2, RecordInfo, SimiScore, FunNode) ->
-    {S1, E1} = refac_util:get_start_end_loc(Expr1),
-    {S2, E2} = refac_util:get_start_end_loc(Expr2),
+    {S1, E1} = wrangler_misc:start_end_loc(Expr1),
+    {S2, E2} = wrangler_misc:start_end_loc(Expr2),
     case overlapped_locs({S1, E1}, {S2, E2}) of
-	true -> [];
+	true -> 
+            [];
 	_ ->
 	    NormalisedExpr21 = normalise_expr(Expr2, RecordInfo),
 	    ExportedVars = vars_to_export(FunNode, E2, Expr2),
-	    Res = anti_unification:anti_unification_with_score(Expr1, NormalisedExpr21, SimiScore),
+            Res = wrangler_anti_unification:anti_unification_with_score(Expr1, NormalisedExpr21, SimiScore),
 	    case Res of
 		none ->
 		    [];
 		SubSt ->
-		    EVs = [SE1 || {SE1, SE2} <- SubSt, refac_syntax:type(SE2) == variable,
-				  lists:member({refac_syntax:variable_name(SE2), get_var_define_pos(SE2)}, ExportedVars)],
+                    EVs = [SE1 || {SE1, SE2} <- SubSt, wrangler_syntax:type(SE2) == variable,
+				  lists:member({wrangler_syntax:variable_name(SE2), get_var_define_pos(SE2)}, ExportedVars)],
 		    [{{FileName, {S2, E2}}, EVs, SubSt}]
 	    end
     end.
 
     
 get_var_define_pos(V) ->
-    {value, {def, DefinePos}} = lists:keysearch(def,1, refac_syntax:get_ann(V)),
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(V)),
     DefinePos.
 
 normalise_expr(Exprs, RecordInfo) ->
@@ -230,7 +232,7 @@ normalise_expr(Exprs, RecordInfo) ->
 	    Exprs
     end.
 normalise_record_expr(Exprs, RecordInfo) ->
-    [ast_traverse_api:full_buTP(fun do_normalise_record_expr_1/2, E, {RecordInfo, true}) || E <- Exprs].
+    [api_ast_traverse:full_buTP(fun do_normalise_record_expr_1/2, E, {RecordInfo, true}) || E <- Exprs].
     
 get_simi_score(SimiScore0) ->
     try  case SimiScore0 of
@@ -253,13 +255,13 @@ get_simi_score_eclipse(SimiScore) ->
 
 get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
-    case interface_api:pos_to_fun_def(AnnAST, Start) of
+    case api_interface:pos_to_fun_def(AnnAST, Start) of
 	{ok, FunDef} ->
-	    Exprs = interface_api:pos_to_expr_list(FunDef, Start, End),
+	    Exprs = api_interface:pos_to_expr_list(FunDef, Start, End),
 	    case Exprs of
 		[] -> throw({error, "You have not selected an expression!"});
 		_ ->
-		    SE = refac_util:get_start_end_loc(Exprs),
+		    SE = wrangler_misc:start_end_loc(Exprs),
 		    RecordInfo = get_module_record_info(FName, SearchPaths, TabWidth),
 		    Exprs1 = normalise_expr(Exprs, RecordInfo),
 		    {FunDef, Exprs1, SE}
@@ -272,15 +274,15 @@ get_fundef_and_expr(FName, Start, End, SearchPaths, TabWidth) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%%-spec(normalise_record_expr/5::(filename(), pos(), boolean(), [dir()], integer()) -> {ok, [filename()]}).
-normalise_record_expr(FName, Pos = {Line, Col}, ShowDefault, SearchPaths, TabWidth) ->
-    ?wrangler_io("\nCMD: ~p:normalise_record_expr(~p, {~p,~p},~p, ~p, ~p).\n",
-		 [?MODULE, FName, Line, Col, ShowDefault, SearchPaths, TabWidth]),
+%%-spec(normalise_record_expr/6::(filename(), pos(), boolean(), [dir()], atom(), integer()) -> {ok, [filename()]}).
+normalise_record_expr(FName, Pos = {Line, Col}, ShowDefault, SearchPaths, Editor, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:normalise_record_expr(~p, {~p,~p},~p, ~p, ~p, ~p).\n",
+		 [?MODULE, FName, Line, Col, ShowDefault, SearchPaths, Editor, TabWidth]),
     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":normalise_record_expr(" ++ "\"" ++ 
 	    FName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "},"
-        ++ atom_to_list(ShowDefault) ++ " [" ++ refac_util:format_search_paths(SearchPaths)
-        ++ "]," ++ integer_to_list(TabWidth) ++ ").",
-    normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, emacs, Cmd).
+      ++ atom_to_list(ShowDefault) ++ " [" ++ wrangler_misc:format_search_paths(SearchPaths)
+    ++ "], " ++ atom_to_list(Editor) ++ ", "++ integer_to_list(TabWidth) ++ ").",
+    normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, Editor, Cmd).
    
 
 %%-spec normalise_record_expr_eclipse/5::(filename(), pos(), boolean(), [dir()], integer()) ->
@@ -291,25 +293,25 @@ normalise_record_expr_eclipse(FName, Pos, ShowDefault, SearchPaths, TabWidth) ->
 normalise_record_expr_0(FName, Pos, ShowDefault, SearchPaths, TabWidth, Editor, Cmd) ->
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FName, true, [], TabWidth),
     RecordExpr = pos_to_record_expr(AnnAST, Pos),
-    case refac_syntax:type(refac_syntax:record_expr_type(RecordExpr)) of
+    case wrangler_syntax:type(wrangler_syntax:record_expr_type(RecordExpr)) of
 	atom -> ok;
 	_ -> throw({error, "Wrangler can only normalise a record expression with an atom as the record name."})
     end,
     {AnnAST1, _Changed} = normalise_record_expr_1(FName, AnnAST, Pos, ShowDefault, SearchPaths, TabWidth),
-    refac_write_file:write_refactored_files([{{FName,FName}, AnnAST1}], Editor, TabWidth, Cmd).
+    wrangler_write_file:write_refactored_files([{{FName,FName}, AnnAST1}], Editor, TabWidth, Cmd).
 
 
 normalise_record_expr_1(FName, AnnAST, Pos, ShowDefault, SearchPaths, TabWidth) ->
     RecordInfo = get_module_record_info(FName, SearchPaths, TabWidth),
-    ast_traverse_api:stop_tdTP(fun do_normalise_record_expr/2, AnnAST, {Pos, RecordInfo, ShowDefault}).
+    api_ast_traverse:stop_tdTP(fun do_normalise_record_expr/2, AnnAST, {Pos, RecordInfo, ShowDefault}).
 
 do_normalise_record_expr(Node, {Pos, RecordInfo, ShowDefault}) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	record_expr ->
-	    {S, E} = refac_util:get_start_end_loc(Node),
+	    {S, E} = wrangler_misc:start_end_loc(Node),
 	    case S =< Pos andalso Pos =< E of
 		true ->
-		    {ast_traverse_api:full_buTP(fun do_normalise_record_expr_1/2,
+		    {api_ast_traverse:full_buTP(fun do_normalise_record_expr_1/2,
 						Node, {RecordInfo, ShowDefault}), true};
 		_ -> {Node, false}
 	    end;
@@ -318,43 +320,43 @@ do_normalise_record_expr(Node, {Pos, RecordInfo, ShowDefault}) ->
 
 do_normalise_record_expr_1(Node, {RecordInfo, ShowDefault}) ->
     Fun = fun ({FName, FVal}, Fields) ->
-		  R = [F || F <- Fields, refac_syntax:type(refac_syntax:record_field_name(F)) == atom,
-			    refac_syntax:concrete(refac_syntax:record_field_name(F)) == FName],
+		  R = [F || F <- Fields, wrangler_syntax:type(wrangler_syntax:record_field_name(F)) == atom,
+			    wrangler_syntax:concrete(wrangler_syntax:record_field_name(F)) == FName],
 		  case R of
 		      [F] when ShowDefault -> [F];
-		      [F] -> V = refac_syntax:record_field_value(F),
-			     Cond = refac_syntax:type(V) == atom andalso refac_syntax:concrete(V) == undefined orelse 
+		      [F] -> V = wrangler_syntax:record_field_value(F),
+			     Cond = wrangler_syntax:type(V) == atom andalso wrangler_syntax:concrete(V) == undefined orelse
 				      FVal =/= none andalso format(V) == format(FVal),
 			     case Cond of
 				 true -> [];
 				 false -> [F]
 			     end;
 		      [] ->
-			  Fs = [F || F <- Fields, refac_syntax:type(refac_syntax:record_field_name(F)) == underscore],
+			  Fs = [F || F <- Fields, wrangler_syntax:type(wrangler_syntax:record_field_name(F)) == underscore],
 			  case Fs of
 			      [F] ->
-				  [refac_syntax:record_field(refac_syntax:atom(FName), refac_syntax:record_field_value(F))];
+				  [wrangler_syntax:record_field(wrangler_syntax:atom(FName), wrangler_syntax:record_field_value(F))];
 			      [] when ShowDefault ->
 				  case FVal of
-				      none -> [refac_syntax:record_field(
-						 refac_syntax:atom(FName), set_random_pos(refac_syntax:atom(undefined)))];
-				      _ -> [refac_syntax:record_field(refac_syntax:atom(FName), set_random_pos(FVal))]
+				      none -> [wrangler_syntax:record_field(
+						    wrangler_syntax:atom(FName), set_random_pos(wrangler_syntax:atom(undefined)))];
+				      _ -> [wrangler_syntax:record_field(wrangler_syntax:atom(FName), set_random_pos(FVal))]
 				  end;
 			      _ -> []
 			  end
 		  end
 	  end,
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	record_expr ->
-	    Arg = refac_syntax:record_expr_argument(Node),
-	    Type = refac_syntax:record_expr_type(Node),
-	    Fields = refac_syntax:record_expr_fields(Node),
-	    case refac_syntax:type(Type) of
+	    Arg = wrangler_syntax:record_expr_argument(Node),
+	    Type = wrangler_syntax:record_expr_type(Node),
+	    Fields = wrangler_syntax:record_expr_fields(Node),
+	    case wrangler_syntax:type(Type) of
 		atom ->
-		    case lists:keysearch(refac_syntax:concrete(Type), 1, RecordInfo) of
+		    case lists:keysearch(wrangler_syntax:concrete(Type), 1, RecordInfo) of
 			{value, {_, Fields1}} ->
 			    Fields2 = lists:append([Fun(F, Fields) || F <- Fields1]),
-			    refac_util:rewrite(Node, refac_syntax:record_expr(Arg, Type, Fields2));
+			    wrangler_misc:rewrite(Node, wrangler_syntax:record_expr(Arg, Type, Fields2));
 			_ ->
 			    Node
 		    end;
@@ -364,11 +366,11 @@ do_normalise_record_expr_1(Node, {RecordInfo, ShowDefault}) ->
     end.
 
 set_random_pos(Node) ->
-    refac_syntax:set_pos(Node, {-random:uniform(200), -random:uniform(200)}).
+    wrangler_syntax:set_pos(Node, {-random:uniform(200), -random:uniform(200)}).
  
 pos_to_record_expr(Tree, Pos) ->
     case
-      ast_traverse_api:once_tdTU(fun pos_to_record_expr_1/2, Tree, Pos)
+      api_ast_traverse:once_tdTU(fun pos_to_record_expr_1/2, Tree, Pos)
 	of
       {_, false} ->
 	  throw({error, "You have not selected a record expression, "
@@ -378,9 +380,9 @@ pos_to_record_expr(Tree, Pos) ->
     end.
 
 pos_to_record_expr_1(Node, Pos) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	record_expr ->
-	    {S, E} = refac_util:get_start_end_loc(Node),
+	    {S, E} = wrangler_misc:start_end_loc(Node),
 	    case S =< Pos andalso Pos =< E of
 		true -> {Node, true};
 		_ -> {[], false}
@@ -390,16 +392,16 @@ pos_to_record_expr_1(Node, Pos) ->
 
 get_module_record_info(FName, SearchPaths, TabWidth) ->
     Dir = filename:dirname(FName),
-    DefaultIncl = [filename:join(Dir, X) || X <- refac_util:default_incls()],
+    DefaultIncl = [filename:join(Dir, X) || X <- wrangler_misc:default_incls()],
     Includes = SearchPaths ++ DefaultIncl,
-    case refac_epp:parse_file(FName, Includes, [], TabWidth, refac_util:file_format(FName)) of
+    case wrangler_epp:parse_file(FName, Includes, [], TabWidth, wrangler_misc:file_format(FName)) of
 	{ok, Forms, _} -> Forms1 = [F || F <- Forms, case F of
 							 {attribute, _, file, _} -> false;
 							 {attribute, _, type, {{record, _}, _, _}} -> false;
 							 _ -> true
 						     end],
-			  SyntaxTree = refac_recomment:recomment_forms(Forms1, []),
-			  Info = refac_syntax_lib:analyze_forms(SyntaxTree),
+			  SyntaxTree = wrangler_recomment:recomment_forms(Forms1, []),
+			  Info = wrangler_syntax_lib:analyze_forms(SyntaxTree),
 			  case lists:keysearch(records, 1, Info) of
 			      {value, {records, Records}} -> Records;
 			      _ -> []
@@ -408,12 +410,12 @@ get_module_record_info(FName, SearchPaths, TabWidth) ->
     end.
 
 vars_to_export(Fun, ExprEndPos, Expr) ->
-    AllVars = refac_util:collect_var_source_def_pos_info(Fun),
-    ExprBdVarsPos = [Pos || {_Var, Pos} <- refac_util:get_bound_vars(Expr)],
+    AllVars = wrangler_misc:collect_var_source_def_pos_info(Fun),
+    ExprBdVarsPos = [Pos || {_Var, Pos} <- api_refac:bound_vars(Expr)],
     [{V, DefPos} || {V, SourcePos, DefPos} <- AllVars,
 		    SourcePos > ExprEndPos,
 		    lists:subtract(DefPos, ExprBdVarsPos) == []].
 
 
 format(Node) ->
-    refac_prettypr:format(refac_util:reset_ann_and_pos(Node)).
+    wrangler_prettypr:format(wrangler_misc:reset_ann_and_pos(Node)).

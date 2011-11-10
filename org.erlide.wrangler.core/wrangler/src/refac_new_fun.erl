@@ -31,77 +31,69 @@
 %% =============================================================================================
 
 %% =============================================================================================
+%% @private
 -module(refac_new_fun).
 
--export([fun_extraction/5, fun_extraction_1/5, fun_extraction_eclipse/5, fun_extraction_1_eclipse/5]).
+-export([fun_extraction/6, fun_extraction_1/6, fun_extraction_eclipse/5, fun_extraction_1_eclipse/5]).
 
 
--include("../include/wrangler.hrl").
-
-%% =============================================================================================
-%%-spec(fun_extraction/5::(filename(), pos(), pos(), string(), integer()) ->
-%% 	     {'ok', [filename()]}).
-fun_extraction(FName, Start, End, NewFunName, TabWidth) ->
-    fun_extraction(FName, Start, End, NewFunName, TabWidth, emacs).
-
-fun_extraction_1(FName, Start, End, NewFunName, TabWidth) ->
-    fun_extraction_1(FName, Start, End, NewFunName, TabWidth, emacs).
+-include("../include/wrangler_internal.hrl").
 
 %%-spec(fun_extraction_eclipse/5::(filename(), pos(), pos(), string(),integer()) ->
 %% 	      {ok, [{filename(), filename(), string()}]}).
 fun_extraction_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
-    fun_extraction(FileName, Start, End, NewFunName, TabWidth, eclipse).
+    fun_extraction(FileName, Start, End, NewFunName, eclipse, TabWidth).
 
 fun_extraction_1_eclipse(FileName, Start, End, NewFunName, TabWidth) ->
-    fun_extraction_1(FileName, Start, End, NewFunName, TabWidth, eclipse).
+    fun_extraction_1(FileName, Start, End, NewFunName, eclipse, TabWidth).
 
-fun_extraction_1(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, TabWidth, Editor) ->
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++ 
-	    FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++ 
-	      "{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewFunName ++ "\","
-        ++ integer_to_list(TabWidth) ++ ").",
+fun_extraction_1(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, Editor, TabWidth) ->
+     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++
+	     FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++
+	       "{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewFunName ++ "\", "
+        ++ atom_to_list(Editor) ++ ", "++ integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, [], TabWidth),
-    ExpList = interface_api:pos_to_expr_list(AnnAST, Start, End),
-    {ok, Fun} = interface_api:expr_to_fun(AnnAST, hd(ExpList)),
+    ExpList = api_interface:pos_to_expr_list(AnnAST, Start, End),
+    {ok, Fun} = api_interface:expr_to_fun(AnnAST, hd(ExpList)),
     fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, TabWidth, Cmd).
 
-fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:fun_extraction(~p, {~p,~p}, {~p,~p}, ~p, ~p).\n",
-		 [?MODULE, FileName, Line, Col, Line1, Col1, NewFunName, TabWidth]),
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++ 
-	    FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++ 
-	      "{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewFunName ++ "\","
-        ++ integer_to_list(TabWidth) ++ ").",
-    case refac_util:is_fun_name(NewFunName) of
+fun_extraction(FileName, Start = {Line, Col}, End = {Line1, Col1}, NewFunName, Editor, TabWidth) ->
+     ?wrangler_io("\nCMD: ~p:fun_extraction(~p, {~p,~p}, {~p,~p}, ~p, ~p, ~p).\n",
+		  [?MODULE, FileName, Line, Col, Line1, Col1, NewFunName, Editor, TabWidth]),
+     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":fun_extraction(" ++ "\"" ++
+	     FileName ++ "\", {" ++ integer_to_list(Line) ++ ", " ++ integer_to_list(Col) ++ "}," ++
+	       "{" ++ integer_to_list(Line1) ++ ", " ++ integer_to_list(Col1) ++ "}," ++ "\"" ++ NewFunName ++ "\", "
+        ++ atom_to_list(Editor) ++ ", "++integer_to_list(TabWidth) ++ ").",
+    case api_refac:is_fun_name(NewFunName) of
 	true -> ok;
 	false -> throw({error, "Invalid function name!"})
     end,
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, [], TabWidth),
-    case interface_api:pos_to_expr_list(AnnAST, Start, End) of
+    case api_interface:pos_to_expr_list(AnnAST, Start, End) of
 	[] -> ExpList = [],
 	      throw({error, "You have not selected an expression or a sequence of expressions, "
 			    "or the function containing the expression(s) selected is malformed."});
 	ExpList ->
 	    ExpList
     end,
-    {ok, Fun} = interface_api:expr_to_fun(AnnAST, hd(ExpList)),
+    {ok, Fun} = api_interface:expr_to_fun(AnnAST, hd(ExpList)),
     ok = side_cond_analysis(FileName, Info, Fun, ExpList, list_to_atom(NewFunName)),
     fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, TabWidth, Cmd).
 
 fun_extraction_1(FileName, AnnAST, End, Fun, ExpList, NewFunName, Editor, TabWidth, Cmd) ->
-    FunName = refac_syntax:atom_value(refac_syntax:function_name(Fun)),
-    FunArity = refac_syntax:function_arity(Fun),
-    FunPos = refac_syntax:get_pos(Fun),
+    FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(Fun)),
+    FunArity = wrangler_syntax:function_arity(Fun),
+    FunPos = wrangler_syntax:get_pos(Fun),
     {FrVars, BdVars} = get_free_bd_vars(ExpList),
     VarsToExport = vars_to_export(Fun, End, BdVars),
     AnnAST1 = do_fun_extraction(FileName, AnnAST, ExpList, NewFunName, FrVars, VarsToExport, {FunName, FunArity, FunPos}),
     case Editor of
 	emacs ->
 	    Res = [{{FileName, FileName}, AnnAST1}],
-	    refac_write_file:write_refactored_files_for_preview(Res, TabWidth, Cmd),
+	    wrangler_write_file:write_refactored_files_for_preview(Res, TabWidth, Cmd),
 	    {ok, [FileName]};
 	eclipse ->
-	    FileContent = refac_prettypr:print_ast(refac_util:file_format(FileName), AnnAST1, TabWidth),
+	    FileContent = wrangler_prettypr:print_ast(wrangler_misc:file_format(FileName), AnnAST1, TabWidth),
 	    {ok, [{FileName, FileName, FileContent}]}
     end.
 
@@ -109,14 +101,14 @@ get_free_bd_vars(ExpList) ->
     FrBdVars = [envs_bounds_frees(E) || E <- ExpList],
     BdVars = lists:usort(lists:append([Vars || {{bound, Vars}, _} <- FrBdVars])),
     FrVars1 = lists:usort(lists:append([Vars || {_, {free, Vars}} <- FrBdVars])),
-    FrVars = refac_util:remove_duplicates(
-	       [VarName || {VarName, _Pos} <- lists:keysort(2, FrVars1 -- BdVars)]),
+    FrVars = wrangler_misc:remove_duplicates(
+	          [VarName || {VarName, _Pos} <- lists:keysort(2, FrVars1 -- BdVars)]),
     {FrVars, BdVars}.
 
 side_cond_analysis(FileName, Info, Fun, ExpList, NewFunName) ->
     funcall_replaceable(Fun, ExpList),
     {FrVars, _} = get_free_bd_vars(ExpList),
-    InScopeFuns = [{F, A} || {_M, F, A} <- refac_util:inscope_funs(Info)],
+    InScopeFuns = [{F, A} || {_M, F, A} <- api_refac:inscope_funs(Info)],
     case lists:member({NewFunName, length(FrVars)}, InScopeFuns) orelse 
 	   erl_internal:bif(erlang, NewFunName, length(FrVars))
 	of
@@ -125,40 +117,12 @@ side_cond_analysis(FileName, Info, Fun, ExpList, NewFunName) ->
 			  "or is used as an Erlang builtin function name, please choose another name!"});
 	_ -> ok
     end,
-    check_unsafe_vars(ExpList),
-    TestFrameWorkUsed = refac_util:test_framework_used(FileName),
+    TestFrameWorkUsed = wrangler_misc:test_framework_used(FileName),
     test_framework_aware_name_checking(TestFrameWorkUsed, NewFunName, length(FrVars)).
-
-check_unsafe_vars(ExpList) ->
-    BoundVars = refac_util:get_bound_vars(ExpList),
-    BoundLocs = [Loc || {_, Loc} <- BoundVars],
-    Fun = fun (Node, S) ->
-		  case refac_syntax:type(Node) of
-		      variable ->
-			  As = refac_syntax:get_ann(Node),
-			  case lists:keysearch(def, 1, As) of
-			      {value, {def, DefinePos}} ->
-				  case length(DefinePos) > 1 of
-				      true -> case DefinePos -- BoundLocs of
-						  [] -> S;
-						  _ ->
-						      Name = refac_syntax:variable_name(Node),
-						      throw({error, "Extracting the expression(s) selected into a new function would "
-								    "make variable '" ++ atom_to_list(Name) ++ "' unsafe."})
-					      end;
-				      _ -> S
-				  end;
-			      _ ->
-				  S
-			  end;
-		      _ -> S
-		  end
-	  end,
-    ast_traverse_api:fold(Fun, [], refac_syntax:block_expr(ExpList)).
 
 funcall_replaceable(Fun,[Exp]) ->
     check_expr_category(Fun, Exp),
-    {StartPos, EndPos} = refac_util:get_start_end_loc(Exp),
+    {StartPos, EndPos} = wrangler_misc:start_end_loc(Exp),
     Ranges = collect_prime_expr_ranges(Fun),
     Res = lists:any(
 	    fun ({StartPos1, EndPos1}) ->
@@ -188,65 +152,72 @@ check_expr_category(Fun, Exp) ->
     end.
 
 check_expr_category_1(Exp) ->
-    case lists:keysearch(category, 1, refac_syntax:get_ann(Exp)) of
-	{value, {category, record_field}} ->
-	    throw({error, "Record field cannot be replaced "
-		 "by a function application."});
-	{value, {category, record_type}} ->
-	    throw({error, "Record type cannot be replaced "
-		 "by a function application."});
-	{value, {category, guard_expression}} ->
+    case lists:keysearch(category, 1, wrangler_syntax:get_ann(Exp)) of
+        {value, {category, guard_expression}} ->
 	    throw({error, "Function abstraction whithin a "
-		 "guard expression is not supported."});
-	{value, {category, generator}} ->
-	    throw({error, "Function abstraction over a generator"
-		   "is not supported."});
-	{value, {category, {macro_name, _Num, _}}} ->
-	    throw({error, "Function abstraction over a macro name in a"
-		   "macro application is not supported."});
+                   "guard expression is not supported."});
 	_ ->
-	    case refac_syntax:type(Exp) of 
+	    case wrangler_syntax:type(Exp) of
 		binary_field ->
 		    throw({error, "Function abstraction over a binary field is "
 			   "not supported."});
-		_ ->
-		    true
-	    end
+                arity_qualifier ->
+                    throw({error, "Function abstraction over an arity qualifier is "
+			   "not supported."});
+                _  ->
+                    Ann =wrangler_syntax:get_ann(Exp),
+                    case lists:keyfind(syntax_path, 1, Ann) of
+                        {syntax_path, implicit_fun_name} ->
+                            throw({error, "Function abstraction over the body of an implicit "                           "fun-expression is not supported."});
+                        {syntax_path, module_qualifier_argument} ->
+                            throw({error, "Function abstraction over a module qualifier is "
+			   "not supported."});
+                        {syntax_path, arity_qualifier_arity} ->
+                              throw({error, "Function abstraction over the arity of an arity qualifier is "
+                                     "not supported."});
+                        {syntax_path, arity_qualifier_body} ->
+                              throw({error, "Function abstraction over an arity qualifier body is "
+                                     "not supported."});
+                        
+                        _ ->
+                            true
+                    end
+            end
     end.
 
 is_macro_arg(Fun, Exp) ->
     MacroArgRanges = collect_macro_arg_ranges(Fun),
-    {Start, End} = refac_util:get_start_end_loc(Exp),
+    {Start, End} = wrangler_misc:start_end_loc(Exp),
     lists:any(fun ({S1, E1}) ->
 		      S1 =< Start andalso End =< E1
 	      end, MacroArgRanges).
 
 collect_prime_expr_ranges(Tree) ->
     F = fun (T, S) ->
-		case refac_syntax:type(T) of
+		case wrangler_syntax:type(T) of
 		    application ->
-			Operator = refac_syntax:application_operator(T),
-			Range = refac_util:get_start_end_loc(Operator),
+			Operator = wrangler_syntax:application_operator(T),
+			Range = wrangler_misc:start_end_loc(Operator),
 			S ++ [Range];
 		    _ -> S
 		end
 	end,
-    ast_traverse_api:fold(F, [], Tree).
+    api_ast_traverse:fold(F, [], Tree).
 
 collect_macro_arg_ranges(Node) ->
     Fun = fun (T, Acc) ->
-		  case refac_syntax:type(T) of
+		  case wrangler_syntax:type(T) of
 		      macro ->
-			  Args = refac_syntax:macro_arguments(T),
+			  Args = wrangler_syntax:macro_arguments(T),
 			  case Args of
 			      none -> Acc;
 			      _ ->
-				  [refac_util:get_start_end_loc(A) || A <- Args] ++ Acc
+				  [wrangler_misc:start_end_loc(A) || A <- Args] ++ Acc
 			  end;
 		      _ -> Acc
 		  end
 	  end,
-    ast_traverse_api:fold(Fun, [], Node).
+    api_ast_traverse:fold(Fun, [], Node).
 
 test_framework_aware_name_checking(UsedFrameWorks, NewFunName, Arity) ->
     eunit_name_checking(UsedFrameWorks, NewFunName, Arity),
@@ -277,7 +248,7 @@ eunit_name_checking(UsedFrameWorks, NewFunName, Arity) ->
 eqc_name_checking(UsedFrameWorks, NewFunName, Arity) ->
     case lists:member(eqc_statem, UsedFrameWorks) of
 	true ->
-	    case lists:member({NewFunName, Arity}, refac_util:eqc_statem_callback_funs()) of
+	    case lists:member({NewFunName, Arity}, wrangler_misc:eqc_statem_callback_funs()) of
 		true ->
 		    throw({warning, "The new function name means that "
 				    "the new function is a quickcheck callback function, continue?"});
@@ -299,7 +270,7 @@ eqc_name_checking(UsedFrameWorks, NewFunName, Arity) ->
 testserver_name_checking(UsedFrameWorks, NewFunName, Arity) ->
     case lists:member(testserver, UsedFrameWorks) of
 	true ->
-	    case lists:member({NewFunName, Arity}, refac_util:testserver_callback_funs()) of
+	    case lists:member({NewFunName, Arity}, wrangler_misc:testserver_callback_funs()) of
 		true ->
 		    throw({warning, "The new function name means that "
 				    "the new function is a Test Server callback function, continue?"});
@@ -311,7 +282,7 @@ testserver_name_checking(UsedFrameWorks, NewFunName, Arity) ->
 commontest_name_checking(UsedFrameWorks, NewFunName, Arity) ->
     case lists:member(commontest, UsedFrameWorks) of
 	true ->
-	    case lists:member({NewFunName, Arity}, refac_util:commontest_callback_funs()) of
+	    case lists:member({NewFunName, Arity}, wrangler_misc:commontest_callback_funs()) of
 		true ->
 		    throw({warning, "The new function name means that "
 				    "the new function is a Common Test callback function, continue?"});
@@ -322,25 +293,25 @@ commontest_name_checking(UsedFrameWorks, NewFunName, Arity) ->
 
 do_fun_extraction(FileName, AnnAST, ExpList, NewFunName, ParNames, VarsToExport, 
                   {EncFunName, EncFunArity, EncFunPos}) ->
-    NewFunName1 = refac_syntax:atom(NewFunName),
-    Pars = [refac_syntax:variable(P) || P <- ParNames],
+    NewFunName1 = wrangler_syntax:atom(NewFunName),
+    Pars = [wrangler_syntax:variable(P) || P <- ParNames],
     ExportExpr = case VarsToExport of
                      [] -> none;
-                     [V] -> refac_syntax:variable(V);
+                     [V] -> wrangler_syntax:variable(V);
                      [_V| _Vs] ->
-                         Elems = [refac_syntax:variable(V1) || V1 <- VarsToExport],
-                         refac_syntax:tuple(Elems)
+                         Elems = [wrangler_syntax:variable(V1) || V1 <- VarsToExport],
+                         wrangler_syntax:tuple(Elems)
                  end,
     ExpList1 = case VarsToExport of
                    [] ->
                        [E|Es] = lists:reverse(ExpList),
-                       case refac_syntax:type(E) of 
+                       case wrangler_syntax:type(E) of
                            match_expr ->
-                               Pat = refac_syntax:match_expr_pattern(E),
-                               case refac_syntax:type(Pat)==variable andalso 
-                                   refac_util:get_free_vars(Pat)==[] of 
+                               Pat = wrangler_syntax:match_expr_pattern(E),
+                               case wrangler_syntax:type(Pat) == variable andalso
+                                   api_refac:free_vars(Pat) == [] of
                                    true ->
-                                       lists:reverse([refac_syntax:match_expr_body(E)|Es]);
+                                       lists:reverse([wrangler_syntax:match_expr_body(E)|Es]);
                                    false ->
                                       ExpList
                                end;
@@ -349,14 +320,14 @@ do_fun_extraction(FileName, AnnAST, ExpList, NewFunName, ParNames, VarsToExport,
                        end;
                    [V1] ->
                        [E|Es] = lists:reverse(ExpList),
-                       case refac_syntax:type(E) of 
+                       case wrangler_syntax:type(E) of
                            match_expr ->
-                               Pat = refac_syntax:match_expr_pattern(E),
-                               case refac_syntax:type(Pat)==variable of 
+                               Pat = wrangler_syntax:match_expr_pattern(E),
+                               case wrangler_syntax:type(Pat) == variable of
                                    true ->
-                                       case refac_syntax:variable_name(Pat)==V1 of 
+                                       case wrangler_syntax:variable_name(Pat) == V1 of
                                            true ->
-                                               lists:reverse([refac_syntax:match_expr_body(E)|Es]);
+                                               lists:reverse([wrangler_syntax:match_expr_body(E)|Es]);
                                            false ->
                                                ExpList++[ExportExpr]
                                        end;
@@ -369,108 +340,108 @@ do_fun_extraction(FileName, AnnAST, ExpList, NewFunName, ParNames, VarsToExport,
                    _ ->
                        ExpList++[ExportExpr]
                end,
-    Clause = refac_syntax:clause(Pars, [], ExpList1),
-    NewFun = refac_syntax:function(NewFunName1, [Clause]),
-    Forms = refac_syntax:form_list_elements(AnnAST),
+    Clause = wrangler_syntax:clause(Pars, [], ExpList1),
+    NewFun = wrangler_syntax:function(NewFunName1, [Clause]),
+    Forms = wrangler_syntax:form_list_elements(AnnAST),
     Fun = fun (Form) ->
-		  case refac_syntax:type(Form) of
+		  case wrangler_syntax:type(Form) of
 		      function ->
-			  Name = refac_syntax:atom_value(refac_syntax:function_name(Form)),
-			  Arity = refac_syntax:function_arity(Form),
-			  Pos = refac_syntax:get_pos(Form),
+			  Name = wrangler_syntax:atom_value(wrangler_syntax:function_name(Form)),
+			  Arity = wrangler_syntax:function_arity(Form),
+			  Pos = wrangler_syntax:get_pos(Form),
 			  case {Name, Arity, Pos} == {EncFunName, EncFunArity, EncFunPos} of
 			      true ->
 				  Form1 = replace_expr_with_fun_call(
 					    Form, ExpList, NewFunName, ParNames, VarsToExport),
-                                  Toks = get_node_toks(FileName, refac_util:get_toks(Form), ExpList),
-                                  NewFun1 = refac_util:update_ann(NewFun, {toks, Toks}),
+                                  Toks = get_node_toks(FileName, wrangler_misc:get_toks(Form), ExpList),
+                                  NewFun1 = wrangler_misc:update_ann(NewFun, {toks, Toks}),
 				  [Form1, NewFun1];
 			      _ -> [Form]
 			  end;
 		      _ -> [Form]
 		  end
 	  end,
-    refac_syntax:form_list([F || Form <- Forms, F <- Fun(Form)]).
+    wrangler_syntax:form_list([F || Form <- Forms, F <- Fun(Form)]).
 
 
 replace_expr_with_fun_call(Form, ExpList, NewFunName, ParNames, VarsToExport) ->
-    Op = refac_syntax:atom(NewFunName),
-    Pars = [refac_syntax:variable(P) || P <- ParNames],
-    FunCall = refac_syntax:copy_pos(hd(ExpList), refac_syntax:application(Op, Pars)),
+    Op = wrangler_syntax:atom(NewFunName),
+    Pars = [wrangler_syntax:variable(P) || P <- ParNames],
+    FunCall = wrangler_syntax:copy_pos(hd(ExpList), wrangler_syntax:application(Op, Pars)),
     NewExpr = case length(VarsToExport) of
 		0 ->
 		    FunCall;
 		1 ->
-		    Pats = refac_syntax:variable(hd(VarsToExport)),
-		    refac_syntax:match_expr(Pats, FunCall);
+		    Pats = wrangler_syntax:variable(hd(VarsToExport)),
+		    wrangler_syntax:match_expr(Pats, FunCall);
 		_ ->
-		    Pats = refac_syntax:tuple([refac_syntax:variable(V) || V <- VarsToExport]),
-		    refac_syntax:match_expr(Pats, FunCall)
+		    Pats = wrangler_syntax:tuple([wrangler_syntax:variable(V) || V <- VarsToExport]),
+		    wrangler_syntax:match_expr(Pats, FunCall)
 	      end,
-    case length(ExpList) == 1 andalso refac_syntax:type(hd(ExpList)) =/= match_expr of
+    case length(ExpList) == 1 andalso wrangler_syntax:type(hd(ExpList)) =/= match_expr of
       true ->
-	  element(1, ast_traverse_api:stop_tdTP(
+	  element(1, api_ast_traverse:stop_tdTP(
 		       fun do_replace_expr_with_fun_call_1/2, Form, {NewExpr, hd(ExpList)}));
       _ ->
-	  element(1, ast_traverse_api:stop_tdTP(
+	  element(1, api_ast_traverse:stop_tdTP(
 		       fun do_replace_expr_with_fun_call_2/2, Form, {NewExpr, ExpList}))
     end.
 
 do_replace_expr_with_fun_call_1(Tree, {NewExpr, Expr}) ->
-    Range = refac_util:get_start_end_loc(Expr),
-    case refac_util:get_start_end_loc(Tree) of
+    Range = wrangler_misc:start_end_loc(Expr),
+    case wrangler_misc:start_end_loc(Tree) of
 	Range ->
-	    case refac_syntax:type(Tree) of
+	    case wrangler_syntax:type(Tree) of
 		binary_field ->
-		    {refac_util:rewrite(Tree, refac_syntax:binary_field(NewExpr)), true};
-		_ -> {refac_util:rewrite(Tree, NewExpr), true}
+		    {wrangler_misc:rewrite(Tree, wrangler_syntax:binary_field(NewExpr)), true};
+		_ -> {wrangler_misc:rewrite(Tree, NewExpr), true}
 	    end;
 	_ -> {Tree, false}
     end.
 
 do_replace_expr_with_fun_call_2(Tree, {MApp, ExpList}) ->
-    Range1 = refac_util:get_start_end_loc(hd(ExpList)),
-    Range2 = refac_util:get_start_end_loc(lists:last(ExpList)),
+    Range1 = wrangler_misc:start_end_loc(hd(ExpList)),
+    Range2 = wrangler_misc:start_end_loc(lists:last(ExpList)),
     Fun = fun (Exprs) ->
 		  {Exprs1, Exprs2} = lists:splitwith(
 				       fun (E) ->
-                                               refac_util:get_start_end_loc(E) =/= Range1
+                                               wrangler_misc:start_end_loc(E) =/= Range1
 				       end, Exprs),
 		  case Exprs2 of
 		      [] -> {Exprs, false};
 		      _ -> {Exprs21, Exprs22} =
 			       lists:splitwith(fun (E) ->
-                                                       refac_util:get_start_end_loc(E) =/= Range2
+                                                       wrangler_misc:start_end_loc(E) =/= Range2
 					       end, Exprs2),
 			   case Exprs22 of
 			       [] -> {Exprs, false}; %% THIS SHOULD NOT HAPPEN.
 			       _ -> 
                                    Range3=get_start_end_loc_with_comment(Exprs21++[hd(Exprs22)]),
-                                   {Exprs1 ++ [refac_util:update_ann(MApp, {range, Range3})| tl(Exprs22)], true}
+                                   {Exprs1 ++ [wrangler_misc:update_ann(MApp, {range, Range3})| tl(Exprs22)], true}
 			   end
 		  end
 	  end,
-    case refac_syntax:type(Tree) of
+    case wrangler_syntax:type(Tree) of
 	clause ->
-	    Exprs = refac_syntax:clause_body(Tree),
+	    Exprs = wrangler_syntax:clause_body(Tree),
 	    {NewBody, Modified} = Fun(Exprs),
-	    Pats = refac_syntax:clause_patterns(Tree),
-	    G = refac_syntax:clause_guard(Tree),
-	    Tree1 = refac_util:rewrite(Tree, refac_syntax:clause(Pats, G, NewBody)),
+	    Pats = wrangler_syntax:clause_patterns(Tree),
+	    G = wrangler_syntax:clause_guard(Tree),
+	    Tree1 = wrangler_misc:rewrite(Tree, wrangler_syntax:clause(Pats, G, NewBody)),
 	    {Tree1, Modified};
 	block_expr ->
-	    Exprs = refac_syntax:block_expr_body(Tree),
+	    Exprs = wrangler_syntax:block_expr_body(Tree),
 	    {NewBody, Modified} = Fun(Exprs),
-	    Tree1 = refac_util:rewrite(Tree, refac_syntax:block_expr(NewBody)),
+	    Tree1 = wrangler_misc:rewrite(Tree, wrangler_syntax:block_expr(NewBody)),
 	    {Tree1, Modified};
 	try_expr ->
-	    Exprs = refac_syntax:try_expr_body(Tree),
+	    Exprs = wrangler_syntax:try_expr_body(Tree),
 	    {NewBody, Modified} = Fun(Exprs),
-	    Cs = refac_syntax:try_expr_clauses(Tree),
-	    Handlers = refac_syntax:try_expr_handlers(Tree),
-	    After = refac_syntax:try_expr_after(Tree),
-	    Tree1 = refac_util:rewrite(Tree, refac_syntax:try_expr(
-					       NewBody, Cs, Handlers, After)),
+	    Cs = wrangler_syntax:try_expr_clauses(Tree),
+	    Handlers = wrangler_syntax:try_expr_handlers(Tree),
+	    After = wrangler_syntax:try_expr_after(Tree),
+	    Tree1 = wrangler_misc:rewrite(Tree, wrangler_syntax:try_expr(
+					             NewBody, Cs, Handlers, After)),
 	    {Tree1, Modified};
 	_ -> {Tree, false}
     end.
@@ -478,7 +449,7 @@ do_replace_expr_with_fun_call_2(Tree, {MApp, ExpList}) ->
 
 
 envs_bounds_frees(Node) ->
-    As = refac_syntax:get_ann(Node),
+    As = wrangler_syntax:get_ann(Node),
     BdVars = case lists:keysearch(bound,1,As) of
 		 {value, {bound, BdVars1}} ->
 		     BdVars1;
@@ -491,41 +462,44 @@ envs_bounds_frees(Node) ->
 	     end,
     {{bound, BdVars},{free, FrVars}}.
 
+vars_to_export(_Fun,_ExpEndPos, []) ->
+    [];
 vars_to_export(Fun, ExprEndPos, ExprBdVars) ->
-    AllVars = refac_util:collect_var_source_def_pos_info(Fun),
+    AllVars = wrangler_misc:collect_var_source_def_pos_info(Fun),
     ExprBdVarsPos = [Pos || {_Var, Pos} <- ExprBdVars],
-    VarsToExport = lists:keysort(2, [{V, SourcePos}
-				     || {V, SourcePos, DefPos} <- AllVars,
-					SourcePos > ExprEndPos,
-					lists:subtract(DefPos, ExprBdVarsPos) == []]),
+    VarsToExport = 
+        lists:keysort(2, [{V, SourcePos}
+                          || {V, SourcePos, DefPos} <- AllVars,
+                             SourcePos > ExprEndPos,
+                             DefPos -- ExprBdVarsPos==[] ]),
     lists:reverse(lists:foldl(fun ({V,_Pos}, Acc) ->
 				      case lists:member(V, Acc) of
 					  false -> [V| Acc];
-					  _ -> Acc
-				      end
-			      end, [], VarsToExport)).
-
+                                          _ -> Acc
+                                      end
+                              end, [], VarsToExport)).
+ 
 %% The following functions should be combined with those in 'refac_expr_search.erl'
 filter_exprs_via_ast(Tree, ExpList) ->
     F = fun (T, Acc) ->
-		case refac_syntax:type(T) of
-		    clause -> Exprs = refac_syntax:clause_body(T),
+		case wrangler_syntax:type(T) of
+		    clause -> Exprs = wrangler_syntax:clause_body(T),
 			      Acc ++ [Exprs];
-		    block_expr -> Exprs = refac_syntax:block_expr_body(T),
+		    block_expr -> Exprs = wrangler_syntax:block_expr_body(T),
 				  Acc++ [Exprs];
-		    try_expr -> Exprs = refac_syntax:try_expr_body(T),
+		    try_expr -> Exprs = wrangler_syntax:try_expr_body(T),
 				Acc++[Exprs];
 		    _ -> Acc
 		end
 	end,
-    AllExprSeqs = lists:flatten(ast_traverse_api:fold(F, [], Tree)),
+    AllExprSeqs = lists:flatten(api_ast_traverse:fold(F, [], Tree)),
     case ExpList--AllExprSeqs of
 	[] -> [];
 	_ -> ExpList
     end.
 
 get_node_toks(FileName,Toks, Node) ->
-    {Start, End} = refac_util:get_start_end_loc(Node),
+    {Start, End} = wrangler_misc:start_end_loc(Node),
     case Start =={0,0} orelse End=={0,0} of
 	true -> [];
 	false ->
@@ -548,21 +522,21 @@ get_start_end_loc_with_comment(Node) when is_list(Node) ->
     {S, E};
 
 get_start_end_loc_with_comment(Node) ->
-    {Start, End} = refac_util:get_start_end_loc(Node),
-    PreCs = refac_syntax:get_precomments(Node),
-    PostCs = refac_syntax:get_postcomments(Node),
+    {Start, End} = wrangler_misc:start_end_loc(Node),
+    PreCs = wrangler_syntax:get_precomments(Node),
+    PostCs = wrangler_syntax:get_postcomments(Node),
     Start1 = case PreCs of
                  [] ->
                      Start;
                  _ ->
-                     refac_syntax:get_pos(hd(PreCs))
+                     wrangler_syntax:get_pos(hd(PreCs))
              end,
     End1 = case PostCs of
                [] ->
                    End;
                _ ->
-                   LastC = refac_syntax:comment_text(lists:last(PostCs)),
-                   {L, C}=refac_syntax:get_pos(lists:last(PostCs)),
+                   LastC = wrangler_syntax:comment_text(lists:last(PostCs)),
+                   {L, C}=wrangler_syntax:get_pos(lists:last(PostCs)),
                    {L, C+length(LastC)-1}
            end,
     {Start1, End1}.
@@ -570,7 +544,7 @@ get_start_end_loc_with_comment(Node) ->
 
 
 get_delimitor(FileName) ->        
-    case refac_util:file_format(FileName) of
+    case wrangler_misc:file_format(FileName) of
         dos ->
             [{whitespace, {0,0}, '\r'},
              {whitespace, {0,0}, '\n'},

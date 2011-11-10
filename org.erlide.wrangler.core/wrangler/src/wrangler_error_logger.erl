@@ -30,6 +30,8 @@
 %%%
 %%% Created : 31 Aug 2008 by  <Huiqing Li>
 %%%-------------------------------------------------------------------
+%%%@hidden
+%%%@private
 -module(wrangler_error_logger).
 
 -behaviour(gen_server).

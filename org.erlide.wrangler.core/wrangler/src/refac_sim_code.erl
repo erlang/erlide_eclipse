@@ -31,12 +31,13 @@
 
 %% THIS FILE WILL BE REMOVED!!!
 
+%% @private
 -module(refac_sim_code).
 
 -export([sim_code_detection/6, sim_code_detection_in_buffer/6]).
 -export([sim_code_detection_eclipse/6]).
 
--include("../include/wrangler.hrl").
+-include("../include/wrangler_internal.hrl").
 
 -include_lib("stdlib/include/ms_transform.hrl").
 
@@ -64,7 +65,7 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
     ASTTab = ets:new(ast_tab, [set, public]),
     VarTab = ets:new(var_tab, [set, public]),
     RangeTab = ets:new(range_tab, [set, public]),
-    Files = refac_util:expand_files(DirFileList, ".erl"),
+    Files = wrangler_misc:expand_files(DirFileList, ".erl"),
     FinalCs = case Files of
 		  [] -> ?wrangler_io("Warning: No files found in the searchpaths specified.", []),
 			[];
@@ -80,7 +81,7 @@ sim_code_detection(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPaths, TabW
 		      ets:delete(ASTTab),
 		      ets:delete(VarTab),
 		      ets:delete(RangeTab),
-		      refac_code_search_utils:display_clone_result(remove_fun_info(Cs2), "Similar"),
+		      wrangler_code_search_utils:display_clone_result(remove_fun_info(Cs2), "Similar"),
 		      Cs2
 	      end,
     CloneReport = gen_clone_report(FinalCs),
@@ -96,7 +97,7 @@ sim_code_detection_eclipse(DirFileList, MinLen1, MinFreq1, SimiScore1, SearchPat
     ASTTab = ets:new(ast_tab, [set, public]),
     VarTab = ets:new(var_tab, [set, public]),
     RangeTab = ets:new(range_tab, [set, public]),
-    Files = refac_util:expand_files(DirFileList, ".erl"),
+    Files = wrangler_misc:expand_files(DirFileList, ".erl"),
     case Files of
 	[] -> [];
 	_ ->
@@ -181,64 +182,64 @@ generalise_and_hash_ast(Files, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
 
 generalise_and_hash_ast_1(FName, Pid, SearchPaths, TabWidth, ASTTab, VarTab) ->
     Fun = fun (Form) ->
-		  case refac_syntax:type(Form) of
+		  case wrangler_syntax:type(Form) of
 		      function ->
-			  FunName = refac_syntax:atom_value(refac_syntax:function_name(Form)),
-			  Arity = refac_syntax:function_arity(Form),
-			  AllVars = refac_util:collect_var_source_def_pos_info(Form),
+			  FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(Form)),
+			  Arity = wrangler_syntax:function_arity(Form),
+			  AllVars = wrangler_misc:collect_var_source_def_pos_info(Form),
 			  ets:insert(VarTab, {{FName, FunName, Arity}, AllVars}),
-			  ast_traverse_api:full_tdTP(fun generalise_and_hash_ast_2/2,
+			  api_ast_traverse:full_tdTP(fun generalise_and_hash_ast_2/2,
 						     Form, {FName, FunName, Arity, ASTTab, Pid});
 		      _ -> ok
 		  end
 	  end,
     {ok, {AnnAST, _Info}} = wrangler_ast_server:quick_parse_annotate_file(FName, SearchPaths, TabWidth),
-    refac_syntax:form_list_elements(AnnAST),
-    lists:foreach(fun (F) -> Fun(F) end, refac_syntax:form_list_elements(AnnAST)),
+    wrangler_syntax:form_list_elements(AnnAST),
+    lists:foreach(fun (F) -> Fun(F) end, wrangler_syntax:form_list_elements(AnnAST)),
     insert_dummy_entry(Pid).
 
 generalise_and_hash_ast_2(Node, {FName, FunName, Arity, ASTTab, Pid}) ->
     F0 = fun (T, _Others) ->
-		 case refac_code_search_utils:generalisable(T) of
+		 case wrangler_code_search_utils:generalisable(T) of
 		     true ->
-			 {refac_syntax:variable('Var'), true};
+			 {wrangler_syntax:variable('Var'), true};
 		     false -> {T, false}
 		 end
 	 end,
     F1 = fun (T) ->
-		 {T1, _} = ast_traverse_api:stop_tdTP(F0, T, []),
+		 {T1, _} = api_ast_traverse:stop_tdTP(F0, T, []),
 		 HashVal = erlang:md5(format(T1)),
-		 {S, E} = refac_util:get_start_end_loc(T),
+		 {S, E} = wrangler_misc:start_end_loc(T),
 		 insert_hash(Pid, HashVal, {{FName, FunName, Arity}, S, E}),
 		 T1
 	 end,
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	clause ->
-	    Body = refac_syntax:clause_body(Node),
-	    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
-	     || E <- Body,
-		{StartLoc, EndLoc} <- [refac_util:get_start_end_loc(E)]],
+	    Body = wrangler_syntax:clause_body(Node),
+	    insert_to_tab(FName, FunName, Arity, ASTTab, Body),
 	    insert_dummy_entry(Pid),
 	    _NewBody = [F1(E) || E <- Body],
 	    {Node, true};
 	block_expr ->
 	    insert_dummy_entry(Pid),
-	    Body = refac_syntax:block_expr_body(Node),
-	    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
-	     || E <- Body,
-		{StartLoc, EndLoc} <- [refac_util:get_start_end_loc(E)]],
-	    _NewBody = [F1(E) || E <- Body],
-	    {Node, true};
+	    Body = wrangler_syntax:block_expr_body(Node),
+	    insert_to_tab(FName, FunName, Arity, ASTTab, Body),
+	    _NewBody_1 = [F1(E) || E <- Body],
+            {Node, true};
 	try_expr ->
 	    insert_dummy_entry(Pid),
-	    Body = refac_syntax:try_expr_body(Node),
-	    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
-	     || E <- Body,
-		{StartLoc, EndLoc} <- [refac_util:get_start_end_loc(E)]],
+	    Body = wrangler_syntax:try_expr_body(Node),
+	    insert_to_tab(FName, FunName, Arity, ASTTab, Body),
 	    _NewBody = [F1(E) || E <- Body],
 	    {Node, true};
 	_ -> {Node, false}
     end.
+
+insert_to_tab(FName, FunName, Arity, ASTTab, Body) ->
+    [ets:insert(ASTTab, {{FName, FunName, Arity, StartLoc, EndLoc}, E})
+     || E <- Body,
+        {StartLoc, EndLoc} <- [wrangler_misc:start_end_loc(E)]].
+
 
 %%=============================================================================
 examine_clone_sets([], _MinFreq, _SimiScore, ASTTab, _VarTab, RangeTab,Pid, _Num)->
@@ -387,25 +388,25 @@ examine_a_clone_member(Range={FName, _Start, _End}, {Rs, {Len, _Freq}},  MinFreq
 
 find_anti_unifier(_FileName, Exprs1, Range, SimiScore, ASTTab, VarTab, RangeTab) ->
     {Exprs2, VarsToExport} = get_expr_list_and_vars_to_export(Range, ASTTab, VarTab, RangeTab),
-    Res = anti_unification:anti_unification_with_score(Exprs1, Exprs2, SimiScore),
+    Res = wrangler_anti_unification:anti_unification_with_score(Exprs1, Exprs2, SimiScore),
     case Res of
 	none ->
 	    []; 
 	SubSt->
-	    EVs = [E1 || {E1, E2} <- SubSt, refac_syntax:type(E2) == variable,
-			 lists:member({refac_syntax:variable_name(E2), get_var_define_pos(E2)}, VarsToExport)],
+	    EVs = [E1 || {E1, E2} <- SubSt, wrangler_syntax:type(E2) == variable,
+			 lists:member({wrangler_syntax:variable_name(E2), get_var_define_pos(E2)}, VarsToExport)],
 	    [{Range, EVs, SubSt}]
     end.
 
 
 get_var_define_pos(V) ->
-    {value, {def, DefinePos}} = lists:keysearch(def,1, refac_syntax:get_ann(V)),
+    {value, {def, DefinePos}} = lists:keysearch(def, 1, wrangler_syntax:get_ann(V)),
     DefinePos.
 
 
 get_generalised_form(ASTTab, RangeTab, {Ranges, {Len, Freq}, {Range, SubSt, ExportVars}}) ->
     Exprs1 = get_expr_list(Range, ASTTab, RangeTab),
-    {AntiUnifier,{NumOfPars, NumOfNewVars}} = anti_unification:generate_anti_unifier_and_num_of_new_vars(Exprs1, SubSt, ExportVars),
+    {AntiUnifier,{NumOfPars, NumOfNewVars}} = wrangler_anti_unification:generate_anti_unifier_and_num_of_new_vars(Exprs1, SubSt, ExportVars),
     Files = [element(1, element(1,R)) ||R<-Ranges],
     case length(lists:usort(Files)) ==1 of 
 	true ->
@@ -436,7 +437,7 @@ get_expr_list_and_vars_to_export({{FName, FunName, Arity}, StartLoc, EndLoc}, AS
     case AllVars of
 	[] -> {Es, []};
 	[{_, Vars}] ->
-	    ExprBdVarsPos = [Pos || {_Var, Pos} <- refac_util:get_bound_vars(Es)],
+	    ExprBdVarsPos = [Pos || {_Var, Pos} <- api_refac:bound_vars(Es)],
 	    VarsToExport = [{V, DefPos} || {V, SourcePos, DefPos} <- Vars,
 					   SourcePos > EndLoc,
 					   lists:subtract(DefPos, ExprBdVarsPos) == []],
@@ -527,12 +528,12 @@ search_for_clones(Dir, Data, MinLen, MinFreq, RangeTab) ->
        end, 
     IndexStr = lists:append([F0(I)|| {I, _}<-Data]),
     NewData =lists:append([F(Elem) ||Elem <-Data]),
-    SuffixTreeExec = filename:join(?WRANGLER_DIR,"bin/suffixtree"),
-    Cs= suffix_tree:get_clones_by_suffix_tree(Dir, IndexStr++"&",MinLen, MinFreq,"0123456789,#&", 1, SuffixTreeExec),
+    SuffixTreeExec = filename:join(?WRANGLER_DIR, "bin/suffixtree"),
+    Cs= wrangler_suffix_tree:get_clones_by_suffix_tree(Dir, IndexStr ++ "&", MinLen, MinFreq, "0123456789,#&", 1, SuffixTreeExec),
     Cs1 = lists:append([strip_a_clone({[{S,E} |Ranges], {Len, Freq}}, SubStr, MinLen, MinFreq)
 			|| {[{S,E} |Ranges], Len, Freq} <- Cs, 
 			      SubStr <-[lists:sublist(IndexStr, S, E-S+1)]]),
-    Cs2 =refac_code_search_utils:remove_sub_clones([{R,Len,Freq}||{R, {Len, Freq}}<-Cs1]),
+    Cs2 =wrangler_code_search_utils:remove_sub_clones([{R,Len,Freq}||{R, {Len, Freq}} <- Cs1]),
     get_clones_in_ranges([{R,{Len, Freq}}||{R, Len, Freq}<-Cs2], 
 			 NewData, MinLen, MinFreq, RangeTab).
    
@@ -605,7 +606,7 @@ remove_overlapped_ranges([{S, E}| Rs], {S1, E1}, Acc) ->
 get_clones_in_ranges(Cs, Data, MinLen, MinFreq, RangeTab) ->
     F0 = fun ({S, E}) ->
 		 {_, Ranges} = lists:unzip(lists:sublist(Data, S, E - S + 1)),
-		 Ranges1 = refac_util:remove_duplicates(Ranges),
+		 Ranges1 = wrangler_misc:remove_duplicates(Ranges),
 		 sub_list(Ranges1, MinLen, length(Ranges1))
 	 end,
     F1 = fun (Rs) ->
@@ -696,25 +697,25 @@ gen_clone_report([_C={_Ranges, {Len, F}, {Code, {Pars,NewVars}}}|Cs], Num, Str) 
 
 
 post_process_anti_unifier(FunAST) ->
-    {FunAST1, _} = ast_traverse_api:stop_tdTP(fun do_post_process_anti_unifier/2, FunAST, none),
+    {FunAST1, _} = api_ast_traverse:stop_tdTP(fun do_post_process_anti_unifier/2, FunAST, none),
     FunAST1.
 
 do_post_process_anti_unifier(Node, _Others) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	application ->
-	    Operator = refac_syntax:application_operator(Node),
-	    Arguments = refac_syntax:application_arguments(Node),
-	    case refac_syntax:type(Operator) of
+	    Operator = wrangler_syntax:application_operator(Node),
+	    Arguments = wrangler_syntax:application_arguments(Node),
+	    case wrangler_syntax:type(Operator) of
 		atom ->
-		    As = refac_syntax:get_ann(Operator),
+		    As = wrangler_syntax:get_ann(Operator),
 		    {value, {fun_def, {M, _F, _A, _, _}}} = lists:keysearch(fun_def,1,As),
 		    case M== erlang orelse M=='_' of
 			true ->
 			    {Node, false};
 			false ->
-			    Mod = refac_syntax:atom(M),
-			    Operator1 = refac_util:rewrite(Operator, refac_syntax:module_qualifier(Mod, Operator)),
-			    Node1 = refac_util:rewrite(Node, refac_syntax:application(Operator1, Arguments)),
+			    Mod = wrangler_syntax:atom(M),
+			    Operator1 = wrangler_misc:rewrite(Operator, wrangler_syntax:module_qualifier(Mod, Operator)),
+			    Node1 = wrangler_misc:rewrite(Node, wrangler_syntax:application(Operator1, Arguments)),
 			    {Node1, false}
 		    end;
 		_ ->
@@ -724,4 +725,4 @@ do_post_process_anti_unifier(Node, _Others) ->
     end.
 
 format(Node) ->
-    refac_prettypr:format(refac_util:reset_ann_and_pos(Node)).
+    wrangler_prettypr:format(wrangler_misc:reset_ann_and_pos(Node)).

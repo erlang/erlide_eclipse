@@ -31,6 +31,8 @@
 %%%
 %%% Created : 13 Sep 2008 by  <Huiqing Li>
 %%%-------------------------------------------------------------------
+%%%@hidden
+%%%@private
 -module(wrangler_modulegraph_server).
 
 -export([get_client_files/2]).
@@ -44,7 +46,7 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 
--include("../include/wrangler.hrl").
+-include("../include/wrangler_internal.hrl").
 
 -record(state, {}).
 
@@ -92,7 +94,7 @@ init([]) ->
 %% Description: Handling call messages
 %%--------------------------------------------------------------------
 handle_call({get_client_files, File, SearchPaths}, _From, State) ->
-    ModuleGraph = refac_module_graph:module_graph(SearchPaths),
+    ModuleGraph = wrangler_module_graph:module_graph(SearchPaths),
     ClientFiles = case lists:keysearch(File, 1, ModuleGraph) of
 		      {value, {_, Clients}} -> 
 			  lists:delete(File, Clients);
@@ -101,7 +103,7 @@ handle_call({get_client_files, File, SearchPaths}, _From, State) ->
     {reply, ClientFiles, State};
 
 handle_call({get_called_modules, File, SearchPaths}, _From, State) ->
-    CalledMods = refac_module_graph:get_called_mods(File, SearchPaths),
+    CalledMods = wrangler_module_graph:get_called_mods(File, SearchPaths),
     {reply, CalledMods, State}.
 %%--------------------------------------------------------------------
 %% Function: handle_cast(Msg, State) -> {noreply, State} |
@@ -161,5 +163,5 @@ get_client_files(File, SearchPaths) ->
 			 "correct!\n", []);
 	_ -> ok
     end,
-    HeaderFiles = refac_util:expand_files(SearchPaths, ".hrl"),
+    HeaderFiles = wrangler_misc:expand_files(SearchPaths, ".hrl"),
     ClientFiles ++ HeaderFiles.
