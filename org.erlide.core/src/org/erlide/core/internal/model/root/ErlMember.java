@@ -65,7 +65,6 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         return null;
     }
 
-    @Override
     public IErlModule getModule() {
         final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
         if (ancestor instanceof IErlModule) {

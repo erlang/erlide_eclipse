@@ -209,7 +209,12 @@ public final class ErlangCore {
         if (CommonUtils.isTest()) {
             dev += " test ***";
         }
-        ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+        final String versionBanner = "*** starting Erlide v" + version + " ***"
+                + dev;
+        ErlLogger.info(versionBanner);
+        plugin.getLog().log(
+                new Status(IStatus.INFO, plugin.getBundle().getSymbolicName(),
+                        versionBanner));
         featureVersion = version;
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
