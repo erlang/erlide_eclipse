@@ -1,14 +1,13 @@
-package org.erlide.ui.editors.erl.scanner;
+package org.erlide.ui.util.text;
 
 import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
-import org.eclipse.jface.text.rules.Token;
+import org.eclipse.jface.text.rules.IToken;
 import org.erlide.ui.util.IColorManager;
 
 public class SingleTokenScanner extends BufferedRuleBasedScanner {
 
-    public SingleTokenScanner(final IColorManager manager, final String hToken) {
+    public SingleTokenScanner(final IColorManager manager, final IToken token) {
         super();
-        final Token token = ErlCodeScanner.getToken(hToken);
         setDefaultReturnToken(token);
     }
 }

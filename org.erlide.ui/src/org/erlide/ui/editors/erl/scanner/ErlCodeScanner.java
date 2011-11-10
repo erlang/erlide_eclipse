@@ -49,31 +49,25 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
     private static Token t_comment;
     private static Token t_edocTag;
     private static Token t_htmlTag;
+    private static Token t_tildeTag;
 
     protected final IColorManager fColorManager;
     protected List<ErlToken> fTokens;
     protected int fCrtToken;
     private int rangeLength;
     private int rangeOffset;
-    private Color bg = null;
 
     public ErlCodeScanner(final IColorManager colorManager) {
-        this(colorManager, 0, null);
-    }
-
-    public ErlCodeScanner(final IColorManager colorManager, final RGB back) {
-        this(colorManager, 0, back);
-    }
-
-    protected ErlCodeScanner(final IColorManager colorManager, final int x,
-            final RGB back) {
         fColorManager = colorManager;
-        bg = fColorManager.getColor(back);
         setTokens();
     }
 
-    public void setTokens() {
+    private void setTokens() {
+        if (t_string != null) {
+            return;
+        }
         t_string = new Token(getTextAttribute(TokenHighlight.STRING));
+        t_tildeTag = new Token(getTextAttribute(TokenHighlight.TILDE_TAG));
         t_keyword = new Token(getTextAttribute(TokenHighlight.KEYWORD));
         t_var = new Token(getTextAttribute(TokenHighlight.VARIABLE));
         t_default = new Token(getTextAttribute(TokenHighlight.DEFAULT));
@@ -95,7 +89,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         data.load(qualifier, th.getDefaultData());
         new InstanceScope().getNode(qualifier)
                 .addPreferenceChangeListener(this);
-        return new TextAttribute(fColorManager.getColor(data.getColor()), bg,
+        return new TextAttribute(fColorManager.getColor(data.getColor()), null,
                 data.getStyle());
     }
 
@@ -142,11 +136,13 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         fixTokenData(token, newValue, style);
     }
 
-    protected static Token getToken(final String id) {
+    public static Token getToken(final String id) {
         if (TokenHighlight.KEYWORD.getName().equals(id)) {
             return t_keyword;
         } else if (TokenHighlight.STRING.getName().equals(id)) {
             return t_string;
+        } else if (TokenHighlight.TILDE_TAG.getName().equals(id)) {
+            return t_tildeTag;
         } else if (TokenHighlight.VARIABLE.getName().equals(id)) {
             return t_var;
         } else if (TokenHighlight.CHAR.getName().equals(id)) {

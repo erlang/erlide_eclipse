@@ -49,7 +49,7 @@ compile_dir(Dir) ->
 
 %prepare module
 prepare(eunit, Arg) ->	
-	case eunit:test(Arg) of
+	case eunit:test(Arg, [{report, {test_listener, []}}]) of
 			ok ->
 				erlide_jrpc:event(?EVENT, {Arg, test_ok});
 			_Err ->

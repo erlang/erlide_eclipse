@@ -29,6 +29,20 @@ public class ErlCommentScanner extends BufferedRuleBasedScanner {
         final List<IRule> rulesList = Lists.newArrayList();
         rulesList.add(new WordRule(new EdocTagDetector(), edocTag));
         rulesList.add(new SingleLineRule("<", ">", htmlTag));
+        final WordRule taskRule = new WordRule(new IWordDetector() {
+
+            public boolean isWordStart(final char c) {
+                return Character.isLetter(c);
+            }
+
+            public boolean isWordPart(final char c) {
+                return Character.isLetter(c);
+            }
+        }, defaultToken);
+        taskRule.addWord("TODO", edocTag);
+        taskRule.addWord("FIXME", edocTag);
+        taskRule.addWord("XXX", edocTag);
+        rulesList.add(taskRule);
 
         final IRule[] rules = new IRule[rulesList.size()];
         rulesList.toArray(rules);

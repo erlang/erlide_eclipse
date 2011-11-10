@@ -2,14 +2,11 @@ package org.erlide.cover.core;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.cover.api.IConfiguration;
-import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.LineResult;
@@ -38,11 +35,11 @@ public class CoverEventHandler extends ErlangEventHandler {
     private static final String COVER_ERROR = "cover_error";
     private static final String COVER_RES = "module_res";
 
-    
-    private final Logger log;                   // log
-    private final CoverBackend coverBackend;   // cover backend
+    private final Logger log; // log
+    private final CoverBackend coverBackend; // cover backend
 
-    public CoverEventHandler(final IBackend backend, final CoverBackend coverBackend) {
+    public CoverEventHandler(final IBackend backend,
+            final CoverBackend coverBackend) {
         super(EVENT_NAME, backend);
         this.coverBackend = coverBackend;
         log = Activator.getDefault();

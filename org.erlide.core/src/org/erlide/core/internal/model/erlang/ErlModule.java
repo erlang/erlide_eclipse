@@ -60,6 +60,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -439,7 +440,7 @@ public class ErlModule extends Openable implements IErlModule {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = getProject();
         for (final IErlModule module : project.getModules()) {
-            final List<IErlModule> allIncludedFiles = module
+            final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
             if (allIncludedFiles.contains(this)) {
                 result.add(module);
@@ -510,20 +511,25 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
-    public List<IErlModule> findAllIncludedFiles() throws CoreException {
+    public Collection<IErlModule> findAllIncludedFiles() throws CoreException {
         final List<IErlModule> checked = Lists.newArrayList();
-        checked.add(this);
         return findAllIncludedFiles(checked);
     }
 
-    public List<IErlModule> findAllIncludedFiles(final List<IErlModule> checked)
-            throws CoreException {
+    public Collection<IErlModule> findAllIncludedFiles(
+            final List<IErlModule> checked) throws CoreException {
+        final Collection<IErlModule> result = Sets.newHashSet();
+
+        if (checked.contains(this)) {
+            return result;
+        }
+        checked.add(this);
+
         final List<IErlModule> includedFilesForModule = ErlModel
                 .getErlModelCache().getIncludedFilesForModule(this);
         if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
             return includedFilesForModule;
         }
-        final List<IErlModule> result = Lists.newArrayList();
         final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
         final IErlProject project = getProject();
         if (project == null) {
@@ -581,7 +587,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     private boolean findAllIncludedFilesAux(final List<IErlModule> checked,
-            final List<IErlModule> result,
+            final Collection<IErlModule> result,
             final Collection<IErlModule> includes, final String includeFileName)
             throws CoreException {
         for (final IErlModule include : includes) {

@@ -13,6 +13,7 @@ import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
+import org.erlide.cover.views.model.TestTreeModel;
 
 /**
  * Core backend for Cover-plugin
@@ -34,6 +35,9 @@ public class CoverBackend implements ICoverBackend {
     private ICoverAnnotationMarker annotationMarker;
 
     private final Logger log; // logger
+
+    private EUnitEventHandler testHandler;
+    private final List<IEUnitObserver> testListeners = new LinkedList<IEUnitObserver>();
 
     public static synchronized CoverBackend getInstance() {
         if (instance == null) {
@@ -58,6 +62,9 @@ public class CoverBackend implements ICoverBackend {
             backend = createBackend();
             handler = new CoverEventHandler(backend, this);
             handler.register();
+            testHandler = new EUnitEventHandler(backend,
+                    TestTreeModel.getInstance(), this);
+            testHandler.register();
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
         }
@@ -128,6 +135,25 @@ public class CoverBackend implements ICoverBackend {
      */
     public List<ICoverObserver> getListeners() {
         return listeners;
+    }
+
+    /**
+     * Add listener for coverage events
+     * 
+     * @param listener
+     */
+    public void addEUnitListener(final IEUnitObserver listener) {
+        log.info("adding eunit listener");
+        testListeners.add(listener);
+    }
+
+    /**
+     * Get all eunit listeners
+     * 
+     * @return
+     */
+    public List<IEUnitObserver> getEUnitListeners() {
+        return testListeners;
     }
 
     /**

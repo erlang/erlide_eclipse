@@ -11,6 +11,13 @@
             class="org.erlide.cover.ui.views.CoverStatsView"
             id="org.erlide.cover.core.views.TestResultView">
       </view>
+      <view
+            category="org.erlide.views"
+            class="org.erlide.cover.ui.views.EUnitView"
+            icon="icons/coverageView.gif"
+            id="org.erlide.cover.ui.EUnitView"
+            name="Test Results">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

@@ -43,7 +43,8 @@ public class ModelUtils {
         if (typespec != null) {
             return typespec;
         }
-        final List<IErlModule> includedFiles = module.findAllIncludedFiles();
+        final Collection<IErlModule> includedFiles = module
+                .findAllIncludedFiles();
         for (final IErlModule includedFile : includedFiles) {
             typespec = includedFile.findTypespec(name);
             if (typespec != null) {
@@ -259,7 +260,8 @@ public class ModelUtils {
             names.add(unquoted);
         }
         names.add(definedName);
-        final List<IErlModule> allIncludedFiles = module.findAllIncludedFiles();
+        final List<IErlModule> allIncludedFiles = Lists.newArrayList(module
+                .findAllIncludedFiles());
         allIncludedFiles.add(0, module);
         for (final IErlModule includedFile : allIncludedFiles) {
             for (final String name : names) {
@@ -306,8 +308,8 @@ public class ModelUtils {
             final IErlModule module, final IErlElement.Kind kind)
             throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        final List<IErlModule> modulesWithIncludes = module
-                .findAllIncludedFiles();
+        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(module
+                .findAllIncludedFiles());
         modulesWithIncludes.add(module);
         for (final IErlModule m : modulesWithIncludes) {
             result.addAll(m.getPreprocessorDefs(kind));

@@ -13,9 +13,9 @@ import org.erlide.ui.editors.erl.scanner.ErlCommentScanner;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
 import org.erlide.ui.editors.erl.scanner.ErlStringScanner;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
-import org.erlide.ui.editors.erl.scanner.SingleTokenScanner;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.util.IColorManager;
+import org.erlide.ui.util.text.SingleTokenScanner;
 
 public class ErlangSourceViewerConfiguration extends
         TextSourceViewerConfiguration {
@@ -34,7 +34,7 @@ public class ErlangSourceViewerConfiguration extends
         commentScanner = new ErlCommentScanner(colorManager);
         stringScanner = new ErlStringScanner(colorManager);
         qatomScanner = new SingleTokenScanner(colorManager,
-                TokenHighlight.ATOM.getName());
+                ErlCodeScanner.getToken(TokenHighlight.ATOM.getName()));
     }
 
     @Override

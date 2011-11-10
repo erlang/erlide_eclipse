@@ -23,7 +23,6 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
@@ -129,7 +128,7 @@ final class ErlangConsoleSourceViewerConfiguration extends
         DefaultDamagerRepairer dr;
 
         final ColorManager colorManager = new ColorManager();
-        final ITokenScanner scan = new ErlCodeScanner(colorManager, new RGB(245, 245, 245));
+        final ITokenScanner scan = new ErlCodeScanner(colorManager);
         dr = new ErlDamagerRepairer(scan);
         reconciler.setDamager(dr, IoRequestKind.INPUT.name());
         reconciler.setRepairer(dr, IoRequestKind.INPUT.name());
