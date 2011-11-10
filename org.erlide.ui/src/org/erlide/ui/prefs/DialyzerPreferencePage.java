@@ -518,8 +518,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
             prefs = DialyzerPreferences.get(fProject);
         } catch (final CoreException e) {
             // FIXME apply to status line or setErrorMessage
+            ErlLogger.error(e);
         } catch (final RpcException e) {
             // FIXME apply to status line or setErrorMessage
+            ErlLogger.error(e);
         }
     }
 
