@@ -283,8 +283,7 @@ public class ErlideOpen {
                 return result;
             }
         } catch (final RpcException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            ErlLogger.error(e);
         }
         return null;
     }

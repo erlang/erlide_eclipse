@@ -192,9 +192,11 @@ public class ErlProject extends Openable implements IErlProject {
                         .getBuildOrIdeBackend(fProject);
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());
-                for (final String include : includes) {
-                    projectIncludes
-                            .add(path.append(include).toPortableString());
+                if (includes != null) {
+                    for (final String include : includes) {
+                        projectIncludes.add(path.append(include)
+                                .toPortableString());
+                    }
                 }
             }
         }
