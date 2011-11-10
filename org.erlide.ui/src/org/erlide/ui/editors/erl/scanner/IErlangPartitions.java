@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.editors.erl.scanner;
 
+import org.eclipse.jface.text.IDocument;
+
 public interface IErlangPartitions {
 
     String ERLANG_PARTITIONING = "___erlang_partitioning"; //$NON-NLS-1$
@@ -19,6 +21,6 @@ public interface IErlangPartitions {
     String ERLANG_QATOM = "__erlang_qatom";
 
     String[] LEGAL_PARTITIONS = new String[] { ERLANG_COMMENT, ERLANG_QATOM,
-            ERLANG_STRING };
+            ERLANG_STRING, IDocument.DEFAULT_CONTENT_TYPE };
 
 }
