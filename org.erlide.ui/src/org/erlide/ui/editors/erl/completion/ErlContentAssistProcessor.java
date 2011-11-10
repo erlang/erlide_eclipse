@@ -229,6 +229,8 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
                             flags = EnumSet.of(Kinds.INCLUDE_LIBS);
                         }
                         break;
+                    default:
+                        break;
                     }
                 }
             }

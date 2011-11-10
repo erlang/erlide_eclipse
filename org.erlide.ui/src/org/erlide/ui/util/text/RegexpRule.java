@@ -18,7 +18,7 @@ public class RegexpRule implements IPredicateRule {
     }
 
     public RegexpRule(final String regexp, final Token token) {
-        this.pattern = Pattern.compile(regexp);
+        pattern = Pattern.compile(regexp);
         this.token = token;
     }
 
