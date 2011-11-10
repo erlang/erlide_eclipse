@@ -57,12 +57,12 @@ public class RpcMonitor {
 
         public RpcInfo(final RpcData data, final OtpErlangObject result,
                 final long answerTime) {
-            this.node = data.node;
-            this.module = data.module;
-            this.fun = data.fun;
-            this.args = data.args;
+            node = data.node;
+            module = data.module;
+            fun = data.fun;
+            args = data.args;
             this.result = result;
-            this.callTime = data.startTime;
+            callTime = data.startTime;
             this.answerTime = answerTime;
             callSize = data.size;
             answerSize = OtpErlang.sizeOf(result);

@@ -136,7 +136,6 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 
-
 /**
  * The actual editor itself
  * 
@@ -179,8 +178,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     private SendToConsoleAction sendToConsole;
     private IErlModule fModule = null;
 
-    final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(this, null,
-            IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
+    final MarkOccurencesHandler markOccurencesHandler = new MarkOccurencesHandler(
+            this, null, IDocumentExtension4.UNKNOWN_MODIFICATION_STAMP,
             new ActivationListener());
 
     private String stateDirCached;
@@ -298,11 +297,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 if (newBooleanValue != markOccurencesHandler.fMarkOccurrenceAnnotations) {
                     markOccurencesHandler.fMarkOccurrenceAnnotations = newBooleanValue;
                     if (!markOccurencesHandler.fMarkOccurrenceAnnotations) {
-                        markOccurencesHandler
-                                .uninstallOccurrencesFinder();
+                        markOccurencesHandler.uninstallOccurrencesFinder();
                     } else {
-                        markOccurencesHandler.installOccurrencesFinder(
-                                true);
+                        markOccurencesHandler.installOccurrencesFinder(true);
                     }
                 }
             }
@@ -1854,8 +1851,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             if (window == getEditorSite().getWorkbenchWindow()
                     && markOccurencesHandler.fMarkOccurrenceAnnotations
                     && isActivePart()) {
-                markOccurencesHandler
-                        .removeOccurrenceAnnotations();
+                markOccurencesHandler.removeOccurrenceAnnotations();
             }
         }
 

@@ -33,11 +33,6 @@ public class RpcFutureImpl implements IRpcFuture {
             final String env, final boolean logCalls, final RpcHelper helper) {
         this.ref = ref;
 
-
-
-
-
-
         this.mbox = mbox;
         this.env = env;
         this.logCalls = logCalls;
