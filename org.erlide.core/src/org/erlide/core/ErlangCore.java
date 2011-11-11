@@ -84,19 +84,9 @@ public final class ErlangCore {
                 }
             }
         };
-        final IPreferencesService service = Platform.getPreferencesService();
-        final String key = "erlide_log_directory";
-        final String pluginId = "org.erlide.core";
-        final String s = service.getString(pluginId, key,
-                System.getProperty("user.home"), null);
-        String dir;
-        if (s != null) {
-            dir = s;
-        } else {
-            dir = logDir;
-        }
-
         logger = ErlLogger.getInstance();
+        final String dir = getLogDir(logDir);
+        log(Level.INFO, "Erlide log is in " + dir);
         logger.setLogDir(dir);
 
         try {
@@ -105,6 +95,20 @@ public final class ErlangCore {
         } catch (final CoreException e) {
             // ignore
         }
+    }
+
+    public static String getLogDir(final String logDir) {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "erlide_log_directory";
+        final String pluginId = "org.erlide.core";
+        final String s = service.getString(pluginId, key, logDir, null);
+        String dir;
+        if (s != null) {
+            dir = s;
+        } else {
+            dir = System.getProperty("user.home");
+        }
+        return dir;
     }
 
     public void stop() {
@@ -211,10 +215,7 @@ public final class ErlangCore {
         }
         final String versionBanner = "*** starting Erlide v" + version + " ***"
                 + dev;
-        ErlLogger.info(versionBanner);
-        plugin.getLog().log(
-                new Status(IStatus.INFO, plugin.getBundle().getSymbolicName(),
-                        versionBanner));
+        log(Level.INFO, versionBanner);
         featureVersion = version;
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
