@@ -48,8 +48,8 @@
          rename_fun/7, 
          rename_fun_1/7,
          rename_mod/5,
-	     rename_process/7, 
-          generalise/7, 
+	 rename_process/7, 
+         generalise/7, 
          gen_fun_1/12, 
          gen_fun_clause/11,
 	 move_fun/7, 
@@ -70,7 +70,7 @@
          tuple_funpar_1/6,
          tuple_args/7,
          swap_args/7,
-	 register_pid/7, 
+       	 register_pid/7, 
          fun_to_process/7,
 	 new_macro/7,
          fold_against_macro/6,
@@ -92,7 +92,8 @@
 	 partition_exports/5,
 	 intro_new_var/7,
 	 inline_var/6,
-         inline_var_1/8]).
+         inline_var_1/8, 
+         add_to_export/5]).
 
 -export([rename_var_eclipse/6, rename_fun_eclipse/6,
 	 rename_fun_1_eclipse/6, rename_mod_eclipse/4,
@@ -121,9 +122,10 @@
 	 eqc_fsm_to_record_eclipse/3,eqc_fsm_to_record_1_eclipse/7,
 	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7,
 	 partition_exports_eclipse/4, intro_new_var_eclipse/6,
-	 inline_var_eclipse/5, inline_var_eclipse_1/6
+	 inline_var_eclipse/5, inline_var_eclipse_1/6,
+         get_var_name_eclipse/5, get_fun_name_eclipse/5
 	]).
-
+ 
 -export([try_refac/3, get_log_msg/0]).
 
 -export([init_eclipse/0]).
@@ -157,6 +159,11 @@ rename_var(FileName, Line, Col, NewName, SearchPaths, Context, TabWidth) ->
 	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
 rename_var_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refac(refac_rename_var, rename_var_eclipse, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
+
+%%-spec get_var_name_eclipse/5::(filename(), integer(), integer(), [dir()], integer()) -> string().
+get_var_name_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
+    try_refac(refac_rename_var, get_var_name, [FileName, Line, Col, SearchPaths, TabWidth]).
+
 
 %%=========================================================================================
 %% @doc Rename a function.
@@ -203,6 +210,11 @@ rename_fun_1(FileName, Line, Col, NewName, SearchPaths, Context, TabWidth) ->
 rename_fun_1_eclipse(FileName, Line, Col, NewName, SearchPaths, TabWidth) ->
     try_refac(refac_rename_fun, rename_fun_1_eclipse, [FileName, Line, Col, NewName, SearchPaths, TabWidth]).
     
+
+%%-spec(get_fun_name_eclipse/5::(string(), integer(), integer(), [dir()], integer()) ->
+%% string().
+get_fun_name_eclipse(FileName, Line, Col, SearchPaths, TabWidth) ->
+    try_refac(refac_rename_fun, get_fun_name, [FileName, Line, Col, SearchPaths, TabWidth]).
 
 
 %%======================================================================================
@@ -766,7 +778,11 @@ tuple_funpar_eclipse(FileName, StartLoc, EndLoc, SearchPaths, TabWidth) ->
 tuple_funpar_eclipse_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth) ->
     try_refac(refac_tuple, tuple_funpar_eclipse_1, [FileName, StartLoc, EndLoc, SearchPaths, TabWidth]).
 
+%%@private
+add_to_export(FileName, {FunName, Arity}, SearchPaths, Editor, TabWidth) ->
+    try_refac(refac_add_to_export, add_to_export, [FileName, {FunName, Arity}, SearchPaths, Editor, TabWidth]).
 
+%%@private
 swap_args(FileName, {FunName, Arity}, Index1, Index2, SearchPaths, Editor, TabWidth) ->
     try_refac(refac_swap_function_arguments, swap_args, [FileName, {FunName, Arity}, Index1, Index2, SearchPaths, Editor, TabWidth]).
 %%=========================================================================================
@@ -1305,7 +1321,7 @@ get_log_msg() ->
 	    Msg1=io_lib:format("There are syntax errors, or syntaxes not supported by Wrangler;"
 			       " functions/attribute containing these syntaxes may not be affected by the refactoring.\n", []),
 	    Msg2 = lists:flatmap(fun ({FileName, Errs}) ->
-					 Str = io_lib:format("File:\n ~p\n", [FileName]),
+			 		 Str = io_lib:format("File:\n ~p\n", [FileName]),
 					 Str1 = Str ++ io_lib:format("Error(s):\n", []),
 					 Str1 ++ lists:flatmap(fun (E) ->
 								       case E of
