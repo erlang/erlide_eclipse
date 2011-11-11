@@ -32,7 +32,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class WranglerSyntaxBackend implements IWranglerBackend {
     protected IRpcCallSite backend;
-    protected static final String MODULE = "refac_util";
+    protected static final String MODULE = "wrangler_ast_server";
+    protected static final String INTERFACE_MODULE = "api_interface";
     protected static final String PARSE_FUNCTION = "parse_annotate_file";
     protected static final String VAR_FUNCTION = "pos_to_var_name";
 
@@ -70,8 +71,8 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
         final OtpErlangInt[] position = new OtpErlangInt[2];
         position[0] = new OtpErlangInt(line);
         position[1] = new OtpErlangInt(col);
-        final RpcResult res = backend.call_noexception(MODULE, VAR_FUNCTION,
-                "xx", syntaxTree, new OtpErlangTuple(position));
+        final RpcResult res = backend.call_noexception(INTERFACE_MODULE,
+                VAR_FUNCTION, "xx", syntaxTree, new OtpErlangTuple(position));
         return parseVarInfo(res.getValue());
     }
 

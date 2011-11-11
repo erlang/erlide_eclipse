@@ -24,7 +24,6 @@ import com.ericsson.otp.erlang.OtpErlangList;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-
     /**
      * The plug-in ID.
      */
@@ -83,8 +82,8 @@ public class Activator extends AbstractUIPlugin {
          * "Wrangler's path is added to Erlang with result:" + res.isOk() +
          * "\t raw:" + res);
          */
-        RpcResult res = mb.call_noexception("wrangler", "init_eclipse", "",
-                new Object[0]);
+        RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse",
+                "", new Object[0]);
         /*
          * application :start(wrangler_app) res = mb.call_noexception
          * ("application", "start", "a", "wrangler_app");
