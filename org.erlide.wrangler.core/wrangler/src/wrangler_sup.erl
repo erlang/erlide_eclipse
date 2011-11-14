@@ -28,6 +28,8 @@
 %%% Author  :  <Huiqing Li>
 %%% Created : 15 Aug 2008 by  <Huiqing Li>
 %%%-------------------------------------------------------------------
+%%%@private
+%%%@hidden
 -module(wrangler_sup).
 
 -behaviour(supervisor).
@@ -74,7 +76,13 @@ init(_Args) ->
 		permanent, 10000, worker, [wrangler_undo_server]},
     PreviewServer={wrangler_preview_server, {wrangler_preview_server, start_preview_server, []}, 
 		   permanent, 10000, worker, [wrangler_preview_server]},
-    PreviewServer={wrangler_preview_server, {wrangler_preview_server, start_preview_server, []}, 
-		   permanent, 10000, worker, [wrangler_preview_server]},
-    {ok,{{one_for_one,3,60}, [ASTServer, CallGraphServer, ModuleGraphServer, ErrorLogger, UndoServer, PreviewServer]}}.
+    GenRefacServer={wrangler_gen_refac_server, {wrangler_gen_refac_server,start_gen_refac_server, []},
+                    permanent, 1000, worker, [wrangler_gen_refac_server]},
+    BackupServer={wrangler_backup_server, {wrangler_backup_server, start_backup_server, []},
+                  permanent, 1000, worker, [wrangler_backup_server]},
+    {ok,{{one_for_one,3,60}, [ASTServer, CallGraphServer,
+                              ModuleGraphServer, ErrorLogger, 
+                              UndoServer, PreviewServer,
+                              GenRefacServer,
+                              BackupServer]}}.
 

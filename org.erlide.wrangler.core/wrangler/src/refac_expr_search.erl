@@ -28,13 +28,14 @@
 %%
 %% Author contact: hl@kent.ac.uk, sjt@kent.ac.uk
 %% 
+%%@private
 -module(refac_expr_search).
 
 -export([expr_search_in_buffer/5, expr_search_in_dirs/5, expr_search_eclipse/4]).
 
 -export([contained_exprs/2]).
 
--include("../include/wrangler.hrl").
+-include("../include/wrangler_internal.hrl").
 %% ================================================================================================
 %% @doc Search for identical clones of an expression/ expression sequence in the current Erlang buffer.
 %%
@@ -50,9 +51,11 @@
 %% continuous sequence of expressions is taken as the user-selected expression. A continuous sequence of
 %% expressions is a sequence of expressions separated by ','.
 %% </p>
+%% @end
 %% =================================================================================================
 %% @spec expr_search_in_buffer(FileName::filename(), Start::Pos, End::Pos,SearchPaths::[dir()], TabWidth::integer())-> 
-%%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}.
+%%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}
+%% @end
 %% =================================================================================================         
 
 
@@ -63,9 +66,9 @@ expr_search_in_buffer(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, Se
 		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SearchPaths, TabWidth]),
     Es = get_expr_selected(FileName, Start, End, SearchPaths, TabWidth),
     Res = do_expr_search(FileName, Es, SearchPaths, TabWidth),
-    SE = refac_util:get_start_end_loc(Es),
+    SE = wrangler_misc:start_end_loc(Es),
     Res1 = [{FileName, SE}| Res -- [{FileName, SE}]],
-    refac_code_search_utils:display_search_results(Res1, none, "indentical").
+    wrangler_code_search_utils:display_search_results(Res1, none, "indentical").
 
 %% ================================================================================================
 %% @doc Search for identical clones of an expression/ expression sequence across multiple modules.
@@ -82,27 +85,29 @@ expr_search_in_buffer(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, Se
 %% continuous sequence of expressions is taken as the user-selected expression. A continuous sequence of
 %% expressions is a sequence of expressions separated by ','.
 %% </p>
+%% @end
 %% =================================================================================================
 %% @spec expr_search_in_dirs(FileName::filename(), Start::Pos, End::Pos,SearchPaths::[dir()], TabWidth::integer())-> 
-%%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}.
+%%           {ok, [{filename(), {{integer(), integer()}, {integer(), integer()}}}]}
+%% @end
 %% =================================================================================================         
 %%-spec(expr_search_in_dirs/5::(filename(), pos(), pos(), [dir()], integer()) -> 
 %%    {ok, [{filename(),{{integer(), integer()}, {integer(), integer()}}}]}).   
 expr_search_in_dirs(FileName, Start = {_Line, _Col}, End = {_Line1, _Col1}, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:expr_search_in_dirs(~p, {~p,~p},{~p,~p},~p, ~p, ~p).\n",
 		 [?MODULE, FileName, _Line, _Col, _Line1, _Col1, SearchPaths, SearchPaths, TabWidth]),
-    Files = [FileName| refac_util:expand_files(SearchPaths, ".erl") -- [FileName]],
+    Files = [FileName| wrangler_misc:expand_files(SearchPaths, ".erl") -- [FileName]],
     Es = get_expr_selected(FileName, Start, End, SearchPaths, TabWidth),
     Res = lists:append([do_expr_search(F, Es, SearchPaths, TabWidth) || F <- Files]),
-    SE = refac_util:get_start_end_loc(Es),
+    SE = wrangler_misc:start_end_loc(Es),
     Res1 = [{FileName, SE}| Res -- [{FileName, SE}]],
-    refac_code_search_utils:display_search_results(Res1, none, "indentical").
+    wrangler_code_search_utils:display_search_results(Res1, none, "indentical").
 
 %%-spec(expr_search_eclipse/4::(filename(), pos(), pos(), integer()) ->
 %%   {ok, [{{integer(), integer()}, {integer(), integer()}}]} | {error, string()}).
 expr_search_eclipse(FileName, Start, End, TabWidth) ->
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, [], TabWidth),
-    case interface_api:pos_to_expr_list(AnnAST, Start, End) of
+    case api_interface:pos_to_expr_list(AnnAST, Start, End) of
 	[E| Es] ->
 	    Res = case Es == [] of
 		      true ->
@@ -116,7 +121,7 @@ expr_search_eclipse(FileName, Start, End, TabWidth) ->
 
 get_expr_selected(FileName, Start, End, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-    Es = interface_api:pos_to_expr_list(AnnAST, Start, End),
+    Es = api_interface:pos_to_expr_list(AnnAST, Start, End),
     case Es of
 	[] -> throw({error, "You have not selected an expression!"});
 	_ -> Es
@@ -137,15 +142,15 @@ do_expr_search(FileName, Es, SearchPaths, TabWidth) ->
 %% Search the clones of an expression from Tree.
 search_one_expr(FileName, Tree, Exp) ->
     SimplifiedExp = simplify_expr(Exp),
-    BdStructExp = refac_code_search_utils:var_binding_structure([Exp]),
+    BdStructExp = wrangler_code_search_utils:var_binding_structure([Exp]),
     F = fun (T, Acc) ->
-		case refac_util:is_expr(T) orelse refac_syntax:type(T)==match_expr of
+		case api_refac:is_expr(T) orelse wrangler_syntax:type(T) == match_expr of
 		    true -> T1 = simplify_expr(T),
 			    case SimplifiedExp == T1 of
 				true ->
-				    case refac_code_search_utils:var_binding_structure([T]) of
+				    case wrangler_code_search_utils:var_binding_structure([T]) of
 					BdStructExp ->
-					    StartEndLoc = refac_util:get_start_end_loc(T),
+					    StartEndLoc = wrangler_misc:start_end_loc(T),
 					    [{FileName, StartEndLoc}| Acc];
 					_ -> Acc
 				    end;
@@ -154,7 +159,7 @@ search_one_expr(FileName, Tree, Exp) ->
 		    _ -> Acc
 		end
 	end,
-    lists:reverse(ast_traverse_api:fold(F, [], Tree)).
+    lists:reverse(api_ast_traverse:fold(F, [], Tree)).
     
 %% Search for the clones of an expresion sequence.
 search_expr_seq(FileName, Tree, ExpList) ->
@@ -171,14 +176,14 @@ get_clone(FileName, ExpList1, ExpList2) ->
 	    case lists:prefix(SimplifiedExpList1, SimplifiedExpList2) of
 		true ->
 		    List22 = lists:sublist(ExpList2, Len1),
-		    BdList1 = refac_code_search_utils:var_binding_structure(ExpList1),
-		    BdList2 = refac_code_search_utils:var_binding_structure(List22),
+		    BdList1 = wrangler_code_search_utils:var_binding_structure(ExpList1),
+		    BdList2 = wrangler_code_search_utils:var_binding_structure(List22),
 		    case BdList1 == BdList2 of
 			true ->
 			    E1 = hd(List22),
 			    En = lists:last(List22),
-			    {StartLoc, _EndLoc} = refac_util:get_start_end_loc(E1),
-			    {_StartLoc1, EndLoc1} = refac_util:get_start_end_loc(En),
+			    {StartLoc, _EndLoc} = wrangler_misc:start_end_loc(E1),
+			    {_StartLoc1, EndLoc1} = wrangler_misc:start_end_loc(En),
 			    [{FileName, {StartLoc, EndLoc1}}] ++ get_clone(FileName, ExpList1, tl(ExpList2));
 			_ -> get_clone(FileName, ExpList1, tl(ExpList2))
 		    end;
@@ -191,45 +196,45 @@ get_clone(FileName, ExpList1, ExpList2) ->
 simplify_expr(Exp) when is_list(Exp) ->
     [simplify_expr(E) || E <- Exp];
 simplify_expr(Exp) ->
-    ast_traverse_api:full_buTP(
+    api_ast_traverse:full_buTP(
       fun (Node, _Others) ->
 	      do_simplify_expr(Node)
       end, Exp, {}).
 
 
 do_simplify_expr(Node) ->
-    Node1 = case refac_syntax:type(Node) of
+    Node1 = case wrangler_syntax:type(Node) of
 	      macro ->
-		  case refac_syntax:macro_arguments(Node) of
+		  case wrangler_syntax:macro_arguments(Node) of
 		    none ->
-			refac_syntax:default_literals_vars(Node, '*');
+			wrangler_syntax:default_literals_vars(Node, '*');
 		    _ -> Node
 		  end;
 	      variable ->
-		  refac_syntax:default_literals_vars(Node, '&');
+		  wrangler_syntax:default_literals_vars(Node, '&');
 	      integer ->
-		  refac_syntax:default_literals_vars(Node, 0);
+		  wrangler_syntax:default_literals_vars(Node, 0);
 	      float ->
-		  refac_syntax:default_literals_vars(Node, 0);
+		  wrangler_syntax:default_literals_vars(Node, 0);
 	      char ->
-		  refac_syntax:default_literals_vars(Node, '%');
+		  wrangler_syntax:default_literals_vars(Node, '%');
 	      string ->
-		  refac_syntax:default_literals_vars(Node, '%');
-	      atom -> case refac_code_search_utils:generalisable(Node) of
+		  wrangler_syntax:default_literals_vars(Node, '%');
+	      atom -> case wrangler_code_search_utils:generalisable(Node) of
 			true ->
-			    As = refac_syntax:get_ann(Node),
+			    As = wrangler_syntax:get_ann(Node),
 			    case lists:keysearch(type, 1, As) of
 			      {value, _} ->
-				  refac_syntax:default_literals_vars(
-				    Node, refac_syntax:atom_value(Node));
+				  wrangler_syntax:default_literals_vars(
+				       Node, wrangler_syntax:atom_value(Node));
 			      false ->
-				  refac_syntax:default_literals_vars(Node, '%')
+				  wrangler_syntax:default_literals_vars(Node, '%')
 			    end;
-			_ -> refac_syntax:default_literals_vars(
-			       Node, refac_syntax:atom_value(Node))
+			_ -> wrangler_syntax:default_literals_vars(
+			          Node, wrangler_syntax:atom_value(Node))
 		      end;
-	      nil -> refac_syntax:default_literals_vars(Node, nil);
-	      underscore -> refac_syntax:default_literals_vars(Node, '&');
+	      nil -> wrangler_syntax:default_literals_vars(Node, nil);
+	      underscore -> wrangler_syntax:default_literals_vars(Node, '&');
 	      _ ->
 		  Node
 	    end,
@@ -237,32 +242,32 @@ do_simplify_expr(Node) ->
 			  
 
 set_default_ann(Node) ->
-    refac_syntax:set_pos(refac_syntax:remove_comments(refac_syntax:set_ann(Node, [])), {0,0}).
+    wrangler_syntax:set_pos(wrangler_syntax:remove_comments(wrangler_syntax:set_ann(Node, [])), {0,0}).
 
 %% get all the expression sequences contained in Tree.	    
 contained_exprs(Tree, MinLen) ->
     F = fun (T, Acc) ->
-		case refac_syntax:type(T) of
+		case wrangler_syntax:type(T) of
 		    clause ->
-			Exprs = refac_syntax:clause_body(T),  %% HOW ABOUT CLAUSE_GUARD?
+			Exprs = wrangler_syntax:clause_body(T),  %% HOW ABOUT CLAUSE_GUARD?
 			Acc ++ [Exprs];
 		    application ->
-			Exprs = refac_syntax:application_arguments(T),
+			Exprs = wrangler_syntax:application_arguments(T),
 			Acc++ [Exprs];
 		    tuple ->
-			Exprs = refac_syntax:tuple_elements(T),
+			Exprs = wrangler_syntax:tuple_elements(T),
 			Acc++ [Exprs];
 		    lists ->
-			Exprs = refac_syntax:list_prefix(T),
+			Exprs = wrangler_syntax:list_prefix(T),
 			Acc++ [Exprs];
 		    block_expr ->
-			Exprs = refac_syntax:block_expr_body(T),
+			Exprs = wrangler_syntax:block_expr_body(T),
 			Acc++ [Exprs];
 		    try_expr ->
-			Exprs = refac_syntax:try_expr_body(T),
+			Exprs = wrangler_syntax:try_expr_body(T),
 			Acc ++ [Exprs];
 		    _ -> Acc
 		end
 	end,
-    Es = ast_traverse_api:fold(F, [], Tree),
+    Es = api_ast_traverse:fold(F, [], Tree),
     [E || E <- Es, length(E) >= MinLen].

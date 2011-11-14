@@ -23,18 +23,20 @@
 %% WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
 %% OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 %% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+%%%@hidden
+%%%@private
 -module(wrangler_preview_server).
 
 -behaviour(gen_server).
 
 %% API
--export([commit/0, abort/0, add_files/1, start_preview_server/0]).
+-export([commit/0, abort/0,add_files/1, start_preview_server/0]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
 	 terminate/2, code_change/3]).
 
--include("../include/wrangler.hrl").
+-include("../include/wrangler_internal.hrl").
 
 -record(state, {files=[], logmsg=""}).
 
@@ -52,6 +54,7 @@ commit() ->
     gen_server:call(wrangler_preview_server, commit).
 
 %%-spec(abort/0::() ->{ok, [filename()]}).
+
 abort() ->
     gen_server:call(wrangler_preview_server, abort).
    
@@ -85,11 +88,11 @@ init([]) ->
 handle_call(abort, _From, #state{files=Files}) ->
     SwpFiles = lists:flatmap(fun ({{F1, F2, IsNew}, Swp}) ->
 				     case IsNew of
-				       false -> [Swp];
-				       _ -> case F1 == F2 of
-					      true -> [F1, Swp];
-					      _ -> [F1, F2, Swp]
-					    end
+                                         false -> [Swp];
+                                         _ -> case F1 == F2 of
+                                                  true -> [F1, Swp];
+                                                  _ -> [F1, F2, Swp]
+                                              end
 				     end
 			     end, Files),
     {reply, {ok, SwpFiles}, #state{files=[], logmsg=""}};
@@ -110,7 +113,7 @@ handle_call(commit, _From, #state{files=Files, logmsg=LogMsg}) ->
 				  throw(Err1)
      			  end,
      			  case F1==F2 of 
-     			      true -> ok;
+     			      true -> ok; 
      			      false ->
      				  case file:rename(F1, F2) of 
      				      ok -> ok;

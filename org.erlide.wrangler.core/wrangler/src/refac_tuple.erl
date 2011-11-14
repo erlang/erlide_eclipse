@@ -43,73 +43,78 @@
 %% </p>
 %% =============================================================================
 
+%% @private
 -module(refac_tuple).
 
--export([tuple_funpar/5, tuple_funpar_1/5]).
+-export([tuple_funpar/6, tuple_args/7, tuple_funpar_1/6]).
 -export([tuple_funpar_eclipse/5, tuple_funpar_1_eclipse/5]).
 
 -export([tuple_funpar/7]).  %% For testing purpose.
 
+-import(wrangler_misc,[commontest_callback_funs/0,
+                       try_eval/4,
+                       apply_style_funs/0,
+                       eqc_statem_callback_funs/0,
+                       testserver_callback_funs/0]).
 
--import(refac_util,[try_eval/4, commontest_callback_funs/0,
-		    eqc_statem_callback_funs/0, testserver_callback_funs/0,
-		    apply_style_funs/0]).
+-include("../include/wrangler_internal.hrl").
 
--include("../include/wrangler.hrl").
-
-%%-spec(tuple_funpar/5::(filename(), pos(), pos(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [filename()]}).
-tuple_funpar(FileName, StartLoc, EndLoc, SearchPaths, TabWidth)->
-    tuple_funpar(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, emacs).
-
-
-%%-spec(tuple_funpar_eclipse/5::(filename(), pos(), pos(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [{filename(), filename(), string()}]}).
+-spec(tuple_funpar_eclipse/5::(filename(), pos(), pos(),
+                               [dir()], integer()) -> 
+                                  {error, string()}
+                                   | {ok,
+                                      [{filename(), filename(), string()}]}).
 tuple_funpar_eclipse(FileName, StartLoc, EndLoc,  SearchPaths, TabWidth)->
-    tuple_funpar(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, eclipse).
+    tuple_funpar(FileName, StartLoc, EndLoc, SearchPaths, eclipse, TabWidth).
 
-
-%%-spec(tuple_funpar_1/5::(filename(), pos(), pos(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [filename()]}).
-tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth)->
-    tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, emacs).
-
-
-%%-spec(tuple_funpar_1_eclipse/5::(filename(), pos(), pos(), [dir()], integer()) ->
-%%	     {error, string()} | {ok, [filename()]}).
+-spec(tuple_funpar_1_eclipse/5::(filename(), pos(),
+                                 pos(), [dir()], integer()) -> 
+                                    {error, string()}  | {ok, [filename()]}).
 tuple_funpar_1_eclipse(FileName, StartLoc, EndLoc, SearchPaths, TabWidth)->
-    tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, TabWidth, emacs).
+    tuple_funpar_1(FileName, StartLoc, EndLoc, SearchPaths, emacs, TabWidth).
 
 tuple_funpar(FileName, Line, Col, Index, Num, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, ~p,~p,~p,~p, ~p, ~p).\n",
 		 [?MODULE, FileName, Line, Col, Index, Num, SearchPaths, TabWidth]),
-    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
-    {ok, FunDef} = interface_api:pos_to_fun_def(AnnAST, {Line, Col}),
-    FunName = refac_syntax:data(refac_syntax:function_name(FunDef)),
-    FunArity = refac_syntax:function_arity(FunDef),
+    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(
+                             FileName, true, SearchPaths, TabWidth),
+    {ok, FunDef} = api_interface:pos_to_fun_def(AnnAST, {Line, Col}),
+    FunName = wrangler_syntax:data(wrangler_syntax:function_name(FunDef)),
+    FunArity = wrangler_syntax:function_arity(FunDef),
     NewArity = FunArity - Num + 1,
     ok = pre_cond_check(FileName, FunName, FunArity, NewArity, Info),
     tuple_par_0(FileName, AnnAST, Info, FunName, FunArity,
 		Index, Num, SearchPaths, TabWidth, emacs, "").
 
-tuple_funpar_1(FileName, StartLoc = {StartLine, StartCol}, EndLoc = {EndLine, EndCol}, SearchPaths, TabWidth, Editor) ->
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":tuple_funpar(" ++ "\"" ++ 
-	    FileName ++ "\", {" ++ integer_to_list(StartLine) ++ ", " ++ integer_to_list(StartCol) ++ "}," ++ 
-	      "{" ++ integer_to_list(EndLine) ++ ", " ++ integer_to_list(EndCol) ++ "}, ["
-										       ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+tuple_args(FileName, {FunName, Arity},Index1, Index2, SearchPaths, Editor, TabWidth) ->
+    ?wrangler_io("\nCMD: ~p:tuple_args(~p, {~p,~p},~p,~p, ~p, ~p,~p).\n",
+		 [?MODULE, FileName, FunName, Arity,Index1, Index2, SearchPaths, Editor,TabWidth]),
+    {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
+    Num = Index2 - Index1 + 1,
+    ok = pre_cond_check(FileName, FunName, Arity, (Arity-Num+1), Info),
+    tuple_par_0(FileName, AnnAST, Info, FunName, Arity, Index1, Num, SearchPaths, TabWidth, Editor, "").
+
+    
+tuple_funpar_1(FileName, StartLoc = {StartLine, StartCol}, EndLoc = {EndLine, EndCol}, SearchPaths, Editor, TabWidth) ->
+     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":tuple_funpar(" ++ "\"" ++
+	     FileName ++ "\", {" ++ integer_to_list(StartLine) ++ ", " ++ integer_to_list(StartCol) ++ "}," ++
+         "{" ++ integer_to_list(EndLine) ++ ", " ++ integer_to_list(EndCol) ++ "}, ["
+      ++ wrangler_misc:format_search_paths(SearchPaths) ++ "], " ++ atom_to_list(Editor) ++ ", "++
+        integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {FunName, FunArity, Index, Num} = pos_to_pars(AnnAST, StartLoc, EndLoc),
     tuple_par_0(FileName, AnnAST, Info, FunName, FunArity,
 		Index, Num, SearchPaths, TabWidth, Editor, Cmd).
 
 tuple_funpar(FileName, StartLoc = {StartLine, StartCol}, EndLoc = {EndLine, EndCol},
-	     SearchPaths, TabWidth, Editor) ->
-    ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, {~p,~p}, {~p,~p}, ~p, ~p).\n",
-		 [?MODULE, FileName, StartLine, StartCol, EndLine, EndCol, SearchPaths, TabWidth]),
-    Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":tuple_funpar(" ++ "\"" ++ 
-	    FileName ++ "\", {" ++ integer_to_list(StartLine) ++ ", " ++ integer_to_list(StartCol) ++ "}," ++ 
-	      "{" ++ integer_to_list(EndLine) ++ ", " ++ integer_to_list(EndCol) ++ "}, ["
-										       ++ refac_util:format_search_paths(SearchPaths) ++ "]," ++ integer_to_list(TabWidth) ++ ").",
+	     SearchPaths, Editor, TabWidth) ->
+     ?wrangler_io("\nCMD: ~p:tuple_funpar(~p, {~p,~p}, {~p,~p}, ~p, ~p, ~p).\n",
+		  [?MODULE, FileName, StartLine, StartCol, EndLine, EndCol, SearchPaths, Editor, TabWidth]),
+     Cmd = "CMD: " ++ atom_to_list(?MODULE) ++ ":tuple_funpar(" ++ "\"" ++
+	     FileName ++ "\", {" ++ integer_to_list(StartLine) ++ ", " ++ integer_to_list(StartCol) ++ "}," ++
+	       "{" ++ integer_to_list(EndLine) ++ ", " ++ integer_to_list(EndCol) ++ "}, ["
+      ++ wrangler_misc:format_search_paths(SearchPaths) ++ "], " ++ atom_to_list(Editor) ++ ", " ++
+        integer_to_list(TabWidth) ++ ").",
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     {FunName, FunArity, Index, Num} = pos_to_pars(AnnAST, StartLoc, EndLoc),
     NewArity = FunArity - Num + 1,
@@ -121,7 +126,7 @@ tuple_par_0(FileName, AnnAST, Info, FunName, Arity, Index, Num, SearchPaths, Tab
     ?wrangler_io("The current file under refactoring is:\n~p\n", [FileName]),
     {ok, FunDefMod} = get_module_name(FileName, Info),
     AnnAST1 = tuple_pars(FileName, AnnAST, FunDefMod, FunName, Arity, Index, Num, Info, SearchPaths, TabWidth),
-    case refac_util:is_exported({FunName, Arity}, Info) of
+    case api_refac:is_exported({FunName, Arity}, Info) of
 	true ->
 	    ?wrangler_io("\nChecking client modules in the following search paths: \n~p\n", [SearchPaths]),
 	    ClientFiles = wrangler_modulegraph_server:get_client_files(FileName, SearchPaths),
@@ -129,17 +134,17 @@ tuple_par_0(FileName, AnnAST, Info, FunName, Arity, Index, Num, SearchPaths, Tab
 		tuple_pars_in_client_modules(ClientFiles, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth)
 	    of
 		Results ->
-		    refac_write_file:write_refactored_files([{{FileName, FileName}, AnnAST1}| Results], Editor, TabWidth, Cmd)
+		    wrangler_write_file:write_refactored_files([{{FileName, FileName}, AnnAST1}| Results], Editor, TabWidth, Cmd)
 	    catch
 		throw:Err ->
 		    Err
 	    end;
 	false ->
-	    refac_write_file:write_refactored_files([{{FileName, FileName}, AnnAST1}], Editor, TabWidth, Cmd)
+	    wrangler_write_file:write_refactored_files([{{FileName, FileName}, AnnAST1}], Editor, TabWidth, Cmd)
     end.
 
 pre_cond_check(FileName, FunName, OldArity, NewArity, Info) ->
-    Inscope_Funs = [{F, A} || {_M, F, A} <- refac_util:inscope_funs(Info)],
+    Inscope_Funs = [{F, A} || {_M, F, A} <- api_refac:inscope_funs(Info)],
     case lists:member({FunName, NewArity}, Inscope_Funs) orelse 
 	   erl_internal:bif(erlang, FunName, NewArity)
 	of
@@ -148,7 +153,7 @@ pre_cond_check(FileName, FunName, OldArity, NewArity, Info) ->
 			    integer_to_list(NewArity) ++ " is already in scope, "
 							 "or is an auto-imported builtin function."});
 	false ->
-	    case refac_util:is_callback_fun(Info, FunName, OldArity) of
+	    case wrangler_misc:is_callback_fun(Info, FunName, OldArity) of
 		true -> throw({warning, "The function to be renamed is"
 					"a callback function, continue?"});
 		false ->
@@ -158,7 +163,7 @@ pre_cond_check(FileName, FunName, OldArity, NewArity, Info) ->
     end.
 
 test_framework_aware_name_checking(FileName, FunName, OldArity, NewArity) ->
-    UsedTestFrameWorks = refac_util:test_framework_used(FileName),
+    UsedTestFrameWorks = wrangler_misc:test_framework_used(FileName),
     eunit_name_checking(UsedTestFrameWorks, FunName, OldArity, NewArity),
     eqc_name_checking(UsedTestFrameWorks, FunName, OldArity, NewArity),
     testserver_name_checking(UsedTestFrameWorks, FunName, OldArity, NewArity),
@@ -230,26 +235,26 @@ commontest_name_checking(FunName, OldArity,NewArity) ->
     end.
 
 pos_to_pars(AnnAST, StartLoc, EndLoc) ->
-    case interface_api:pos_to_fun_def(AnnAST, EndLoc) of
+    case api_interface:pos_to_fun_def(AnnAST, EndLoc) of
 	{ok, FunDef} ->
-	    FunName = refac_syntax:data(refac_syntax:function_name(FunDef)),
-	    FunArity = refac_syntax:function_arity(FunDef),
-	    Cs = refac_syntax:function_clauses(FunDef),
-	    C = [C || C <- Cs, {StartLoc1, EndLoc1} <- [refac_util:get_start_end_loc(C)],
+	    FunName = wrangler_syntax:data(wrangler_syntax:function_name(FunDef)),
+	    FunArity = wrangler_syntax:function_arity(FunDef),
+	    Cs = wrangler_syntax:function_clauses(FunDef),
+	    C = [C || C <- Cs, {StartLoc1, EndLoc1} <- [wrangler_misc:start_end_loc(C)],
 		      StartLoc1 =< StartLoc, EndLoc =< EndLoc1],
 	    case C of
 		[] -> throw({error, "You have not selected a sequence parameters,"
 				    "or the function containing the parameters selected does not parse."});
 		[C1| _] ->
-		    Pars = refac_syntax:clause_patterns(C1),
+		    Pars = wrangler_syntax:clause_patterns(C1),
 		    {Pars1, Pars2} = lists:splitwith(
 				       fun (P) ->
-					       {S, _E} = refac_util:get_start_end_loc(P),
+					       {S, _E} = wrangler_misc:start_end_loc(P),
 					       S < StartLoc
 				       end, Pars),
 		    {Pars21, _Pars22} = lists:splitwith(
 					  fun (P) ->
-						  {_S, E} = refac_util:get_start_end_loc(P),
+						  {_S, E} = wrangler_misc:start_end_loc(P),
 						  E =< EndLoc
 					  end, Pars2),
 		    case Pars21 of
@@ -267,15 +272,15 @@ pos_to_pars(AnnAST, StartLoc, EndLoc) ->
 
 collect_implicit_funs(AnnAST, {FunName, Arity}) ->
     F = fun (Node, _) ->
-		case refac_syntax:type(Node) of
+		case wrangler_syntax:type(Node) of
 		  implicit_fun ->
-		      Name = refac_syntax:implicit_fun_name(Node),
-		      case refac_syntax:type(Name) of
+		      Name = wrangler_syntax:implicit_fun_name(Node),
+		      case wrangler_syntax:type(Name) of
 			arity_qualifier ->
-			    Body = refac_syntax:arity_qualifier_body(Name),
-			    Arg = refac_syntax:arity_qualifier_argument(Name),
-			    F = refac_syntax:atom_value(Body),
-			    A = refac_syntax:integer_value(Arg),
+			    Body = wrangler_syntax:arity_qualifier_body(Name),
+			    Arg = wrangler_syntax:arity_qualifier_argument(Name),
+			    F = wrangler_syntax:atom_value(Body),
+			    A = wrangler_syntax:integer_value(Arg),
 			    case {F, A} of
 			      {FunName, Arity} ->
 				  {[Node], true};
@@ -287,112 +292,130 @@ collect_implicit_funs(AnnAST, {FunName, Arity}) ->
 		  _ -> {[], false}
 		end
 	end,
-    element(1, ast_traverse_api:once_tdTU(F, AnnAST, {})).
+    element(1, api_ast_traverse:once_tdTU(F, AnnAST, {})).
 
 tuple_pars(FileName, AnnAST, ModName, FunName, Arity, Index, Num, Info, SearchPaths, TabWidth) ->
-    Forms = refac_syntax:form_list_elements(AnnAST),
+    Forms = wrangler_syntax:form_list_elements(AnnAST),
     Args = {FileName, ModName, ModName, FunName, Arity, Index, Num, SearchPaths, TabWidth},
     Forms1 = [F1 || F <- Forms, F1 <- do_tuple_fun_pars(F, Args)],
-    AnnAST1 = refac_syntax:form_list(Forms1),
-    case refac_util:is_exported({FunName, Arity}, Info) of
-	true ->
-	    AnnAST1;
-	false ->
-	    case collect_implicit_funs(AnnAST1, {FunName, Arity}) of
-		[] ->
-		    Forms2 = [F || F <- Forms1,  not  defines(F, {FunName, Arity})],
-		    refac_syntax:form_list(Forms2);
-		_ ->
-		    AnnAST1
-	    end
+    case api_refac:is_exported({FunName, Arity}, Info) of
+        true ->
+            {Fs1, Fs2}=lists:splitwith(fun(F)-> 
+                                               not is_type_spec(F,ModName,FunName,Arity-Num+1)
+                                       end, Forms1),
+            case Fs2 of 
+                [] ->wrangler_syntax:form_list(Forms1);
+                [Spec|Fs3] ->
+                    {Fs31, [F1|Fs32]} = lists:splitwith(fun(F) ->
+                                                                not defines(F, {FunName, Arity})
+                                                        end, Fs3),
+                    wrangler_syntax:form_list(Fs1 ++ [F1, Spec] ++ Fs31 ++ Fs32)
+            end;
+        _ ->
+            AnnAST1 = wrangler_syntax:form_list(Forms1),
+            case collect_implicit_funs(AnnAST1, {FunName, Arity}) of
+                [] ->
+                    Forms2 = [F || F <- Forms1,  not  defines(F, {FunName, Arity})],
+                    wrangler_syntax:form_list(Forms2);
+                _ ->
+                    AnnAST1
+            end
     end.
+
+is_type_spec(F,ModName,FunName,Arity) ->
+    api_spec:is_type_spec(F, {FunName, Arity}) orelse
+        api_spec:is_type_spec(F, {ModName, FunName, Arity}).
 
 defines(F, {FunName, Arity}) ->
-    case refac_syntax:type(F) of
+    case wrangler_syntax:type(F) of
 	function ->
-	    refac_syntax:data(refac_syntax:function_name(F))==FunName andalso
-		refac_syntax:function_arity(F)==Arity;
-	    _ -> false
+	    wrangler_syntax:data(wrangler_syntax:function_name(F)) == FunName andalso
+		wrangler_syntax:function_arity(F) == Arity;
+	_ -> false
     end.
     
-		     
-
-		     
-   
 
 do_tuple_fun_pars(Form, Args) ->
-    case refac_syntax:type(Form) of
+    case wrangler_syntax:type(Form) of
 	function ->
 	    tuple_pars_in_function(Form, Args);
 	attribute ->
-	    tuple_pars_in_attribute(Form, Args);
+            tuple_pars_in_attribute(Form, Args);
 	_ -> [Form]    
     end.
 
 tuple_pars_in_function(Form, Args = {_FileName, _CurModName, _FunDefMod, FunName, Arity,
 				     Index, Num, _SearchPaths, _TabWidth}) ->
-    Fun1 = refac_syntax:function_name(Form),
-    FunName1 = refac_syntax:data(Fun1),
-    FunArity1 = refac_syntax:function_arity(Form),
+    Fun1 = wrangler_syntax:function_name(Form),
+    FunName1 = wrangler_syntax:data(Fun1),
+    FunArity1 = wrangler_syntax:function_arity(Form),
     case {FunName1, FunArity1} of
 	{FunName, Arity} ->
-	    Cs = refac_syntax:function_clauses(Form),
+	    Cs = wrangler_syntax:function_clauses(Form),
 	    NewCs = lists:map(
 		      fun (C) ->
-			      Body = refac_syntax:clause_body(C),
-			      Guard = refac_syntax:clause_guard(C),
-			      Pats = refac_syntax:clause_patterns(C),
+			      Body = wrangler_syntax:clause_body(C),
+			      Guard = wrangler_syntax:clause_guard(C),
+			      Pats = wrangler_syntax:clause_patterns(C),
 			      NewPats = process_pars(Pats, Index, Num),
 			      NewBody = [tuple_actual_pars(B, Args) || B <- Body],
-			      refac_util:rewrite(C, refac_syntax:clause(NewPats, Guard, NewBody))
+			      wrangler_misc:rewrite(C, wrangler_syntax:clause(NewPats, Guard, NewBody))
 		      end, Cs),
-	    NewForm = refac_util:rewrite(Form, refac_syntax:function(Fun1, NewCs)),
-	    Cs1 = refac_syntax:function_clauses(Form),
+	    NewForm = wrangler_misc:rewrite(Form, wrangler_syntax:function(Fun1, NewCs)),
+	    Cs1 = wrangler_syntax:function_clauses(Form),
 	    NewCs1 = lists:map(
 		       fun (C) ->
-			       Pats = refac_syntax:clause_patterns(C),
+			       Pats = wrangler_syntax:clause_patterns(C),
 			       Pats1 = [P1 || P <- Pats, {P1, _}
-							     <- [ast_traverse_api:full_tdTP(
+							     <- [api_ast_traverse:full_tdTP(
 								   fun do_replace_underscore/2, P, [])]],
-			       G = refac_syntax:clause_guard(C),
-			       Op = refac_syntax:atom(FunName),
+			       G = wrangler_syntax:clause_guard(C),
+			       Op = wrangler_syntax:atom(FunName),
 			       Pats2 = process_pars(Pats1, Index, Num),
-			       Body = [refac_syntax:application(Op, Pats2)],
-			       refac_syntax:clause(Pats, G, Body)
+			       Body = [wrangler_syntax:application(Op, Pats2)],
+			       wrangler_syntax:clause(Pats, G, Body)
 		       end, Cs1),
-	    NewForm1 = refac_syntax:function(refac_syntax:atom(FunName), NewCs1),
+	    NewForm1 = wrangler_syntax:function(wrangler_syntax:atom(FunName), NewCs1),
 	    [NewForm1, NewForm];
-	_ -> [tuple_actual_pars(Form, Args)]
+	_ -> 
+            [tuple_actual_pars(Form, Args)]
     end.
 
-tuple_pars_in_attribute(Form, Args = {_FileName, _CurModName, _FunDefMod, FunName, Arity,
-				      _Index, Num, _SearchPaths, _TabWidth}) ->
-    AttrName = refac_syntax:attribute_name(Form),
-    case refac_syntax:type(AttrName) of
+
+tuple_pars_in_attribute(Form, Args = {_FileName, CurModName, _FunDefMod, FunName, Arity,
+				      Index, Num, _SearchPaths, _TabWidth}) ->
+    AttrName = wrangler_syntax:attribute_name(Form),
+    case wrangler_syntax:type(AttrName) of
 	atom ->
-	    Name = refac_syntax:atom_value(AttrName),
-	    AttrArgs0 = refac_syntax:attribute_arguments(Form),
+	    Name = wrangler_syntax:atom_value(AttrName),
+	    AttrArgs0 = wrangler_syntax:attribute_arguments(Form),
 	    case Name of
 		export when AttrArgs0 /= none ->
-		    
-		    AttrArgs = hd(AttrArgs0),
+                    AttrArgs = hd(AttrArgs0),
 		    NewAttrArgs = lists:flatmap(
 				    fun (A) ->
-					    Fun = refac_syntax:arity_qualifier_body(A),
-					    FunName1 = refac_syntax:atom_value(Fun),
-					    Arity1 = refac_syntax:arity_qualifier_argument(A),
-					    ArityVal = refac_syntax:integer_value(Arity1),
+					    Fun = wrangler_syntax:arity_qualifier_body(A),
+					    FunName1 = wrangler_syntax:atom_value(Fun),
+					    Arity1 = wrangler_syntax:arity_qualifier_argument(A),
+					    ArityVal = wrangler_syntax:integer_value(Arity1),
 					    case {FunName1, ArityVal} of
 						{FunName, Arity} ->
 						    NewArity = Arity - Num + 1,
-						    NewArity1 = refac_util:rewrite(Arity1, refac_syntax:integer(NewArity)),
-						    [A, refac_syntax:arity_qualifier(Fun, NewArity1)];
+						    NewArity1 = wrangler_misc:rewrite(Arity1, wrangler_syntax:integer(NewArity)),
+						    [A, wrangler_syntax:arity_qualifier(Fun, NewArity1)];
 						_ -> [A]
 					    end
-				    end, refac_syntax:list_elements(AttrArgs)),
-		    NewAttrArgs1 = [refac_util:rewrite(AttrArgs, refac_syntax:list(NewAttrArgs))],
-		    NewAttr = refac_util:rewrite(Form, refac_syntax:attribute(AttrName, NewAttrArgs1)),
+				    end, wrangler_syntax:list_elements(AttrArgs)),
+		    NewAttrArgs1 = [wrangler_misc:rewrite(AttrArgs, wrangler_syntax:list(NewAttrArgs))],
+		    NewAttr = wrangler_misc:rewrite(Form, wrangler_syntax:attribute(AttrName, NewAttrArgs1)),
 		    [NewAttr];
+                'spec' ->
+                    case is_type_spec(Form, CurModName, FunName, Arity) of
+                        true ->
+                            [api_spec:tuple_arg_types_in_spec(Form, Index, Index + Num - 1)];
+                        false ->
+                            [Form]
+                        end;                    
 		_ ->
 		    [tuple_actual_pars(Form, Args)]
 	    end;
@@ -403,25 +426,25 @@ tuple_pars_in_attribute(Form, Args = {_FileName, _CurModName, _FunDefMod, FunNam
 process_pars(Pars, Index, Num) ->
     Pars1 = lists:sublist(Pars, Index - 1),
     Pars2 = lists:sublist(Pars, Index, Num),
-    Pars21 = [refac_util:rewrite_with_wrapper(Pars2, refac_syntax:tuple(Pars2))],
+    Pars21 = [wrangler_misc:rewrite_with_wrapper(Pars2, wrangler_syntax:tuple(Pars2))],
     Pars3 = lists:nthtail(Index + Num - 1, Pars),
     Pars1 ++ Pars21 ++ Pars3.
 
 
 tuple_actual_pars(Node, Args) ->
-    element(1, ast_traverse_api:full_tdTP(fun do_tuple_actual_pars/2, Node, Args)).
+    element(1, api_ast_traverse:full_tdTP(fun do_tuple_actual_pars/2, Node, Args)).
 
 do_tuple_actual_pars(Node, Others = {_FileName, CurModName, FunDefMod, FunName,
 				     Arity, Index, Num, _SearchPaths, _TabWith}) ->
-    case refac_syntax:type(Node) of
+    case wrangler_syntax:type(Node) of
 	application ->
-	    Op = refac_syntax:application_operator(Node),
-	    Args = refac_syntax:application_arguments(Node),
+	    Op = wrangler_syntax:application_operator(Node),
+	    Args = wrangler_syntax:application_arguments(Node),
 	    case get_fun_def_info(Op) of
 		{FunDefMod, FunName, Arity} ->
 		    NewArgs = process_pars(Args, Index, Num),
-		    Node1 = refac_syntax:application(Op, NewArgs),
-		    {refac_util:rewrite(Node, Node1), true};
+		    Node1 = wrangler_syntax:application(Op, NewArgs),
+		    {wrangler_misc:rewrite(Node, Node1), true};
 		{erlang, apply, 2} ->
 		    transform_apply_with_arity_of_2(
 		      Node, CurModName, FunDefMod, FunName, Arity, Index, Num);
@@ -438,35 +461,35 @@ do_tuple_actual_pars(Node, Others = {_FileName, CurModName, FunDefMod, FunName,
     end.
 
 transform_apply_with_arity_of_2(Tree, CurModName, FunDefMod, FunName, Arity, Index, Num) ->
-    Op = refac_syntax:application_operator(Tree),
-    Args = refac_syntax:application_arguments(Tree),
+    Op = wrangler_syntax:application_operator(Tree),
+    Args = wrangler_syntax:application_arguments(Tree),
     [Fun, Pars] = Args,
     NewArity = Arity - Num + 1,
-    case refac_syntax:type(Fun) of
+    case wrangler_syntax:type(Fun) of
 	implicit_fun ->
-	    Name = refac_syntax:implicit_fun_name(Fun),
-	    case refac_syntax:type(Name) of
+	    Name = wrangler_syntax:implicit_fun_name(Fun),
+	    case wrangler_syntax:type(Name) of
 		arity_qualifier ->
-		    Body = refac_syntax:arity_qualifier_body(Name),
-		    Arg = refac_syntax:arity_qualifier_argument(Name),
-		    F = refac_syntax:atom_value(Body),
-		    A = refac_syntax:integer_value(Arg),
+		    Body = wrangler_syntax:arity_qualifier_body(Name),
+		    Arg = wrangler_syntax:arity_qualifier_argument(Name),
+		    F = wrangler_syntax:atom_value(Body),
+		    A = wrangler_syntax:integer_value(Arg),
 		    case {CurModName, F, A} of
 			{FunDefMod, FunName, Arity} ->
-			    case refac_syntax:type(Pars) of
+			    case wrangler_syntax:type(Pars) of
 				list ->
-				    Pars0 = refac_syntax:list_elements(Pars),
+				    Pars0 = wrangler_syntax:list_elements(Pars),
 				    case length(Pars0) of
 					Arity ->
-					    NewPars = refac_util:rewrite(
-							Pars, refac_syntax:list(process_pars(Pars0, Index, Num))),
-					    NewArg = refac_util:rewrite(Arg, refac_syntax:integer(NewArity)),
-					    NewName = refac_util:rewrite(
-							Name, refac_syntax:arity_qualifier(Body, NewArg)),
-					    NewFun = refac_util:rewrite(
-						       Fun, refac_syntax:implicit_fun(NewName)),
-					    Tree1 = refac_syntax:application(Op, [NewFun, NewPars]),
-					    {refac_util:rewrite(Tree, Tree1), true};
+					    NewPars = wrangler_misc:rewrite(
+							   Pars, wrangler_syntax:list(process_pars(Pars0, Index, Num))),
+                                            NewArg = wrangler_misc:rewrite(Arg, wrangler_syntax:integer(NewArity)),
+					    NewName = wrangler_misc:rewrite(
+							   Name, wrangler_syntax:arity_qualifier(Body, NewArg)),
+					    NewFun = wrangler_misc:rewrite(
+						          Fun, wrangler_syntax:implicit_fun(NewName)),
+					    Tree1 = wrangler_syntax:application(Op, [NewFun, NewPars]),
+					    {wrangler_misc:rewrite(Tree, Tree1), true};
 					_ -> {Tree, false}
 				    end;
 				_ -> {Tree, false}
@@ -474,31 +497,31 @@ transform_apply_with_arity_of_2(Tree, CurModName, FunDefMod, FunName, Arity, Ind
 			_ -> {Tree, false}
 		    end;
 		module_qualifier ->
-		    Mod = refac_syntax:module_qualifier_argument(Name),
-		    MBody = refac_syntax:module_qualifier_body(Name),
-		    ABody = refac_syntax:arity_qualifier_body(MBody),
-		    Arg = refac_syntax:arity_qualifier_argument(MBody),
-		    case refac_syntax:atom_value(Mod) of
+		    Mod = wrangler_syntax:module_qualifier_argument(Name),
+		    MBody = wrangler_syntax:module_qualifier_body(Name),
+		    ABody = wrangler_syntax:arity_qualifier_body(MBody),
+		    Arg = wrangler_syntax:arity_qualifier_argument(MBody),
+		    case wrangler_syntax:atom_value(Mod) of
 			FunDefMod ->
-			    B = refac_syntax:atom_value(ABody),
-			    A = refac_syntax:integer_value(Arg),
+			    B = wrangler_syntax:atom_value(ABody),
+			    A = wrangler_syntax:integer_value(Arg),
 			    case {B, A} of
 				{FunName, Arity} ->
-				    case refac_syntax:type(Pars) of
+				    case wrangler_syntax:type(Pars) of
 					list ->
-					    Pars0 = refac_syntax:list_elements(Pars),
+					    Pars0 = wrangler_syntax:list_elements(Pars),
 					    case length(Pars0) of
 						Arity ->
-						    NewPars = process_pars(Pars0, Index, Num),
-						    NewArg = refac_util:rewrite(Arg, refac_syntax:integer(NewArity)),
-						    NewMBody = refac_util:rewrite(
-								 MBody, refac_syntax:arity_qualifier(ABody, NewArg)),
-						    NewName = refac_util:rewrite(
-								Name, refac_syntax:module_qualifier(Mod, NewMBody)),
-						    Fun1 = refac_util:rewrite(
-							     Fun, refac_syntax:implicit_fun(NewName)),
-						    Tree1 = refac_util:rewrite(
-							      Tree, refac_syntax:application(Op, [Fun1, NewPars])),
+						    NewPars = wrangler_syntax:list(process_pars(Pars0, Index, Num)),
+                                                    NewArg = wrangler_misc:rewrite(Arg, wrangler_syntax:integer(NewArity)),
+						    NewMBody = wrangler_misc:rewrite(
+								    MBody, wrangler_syntax:arity_qualifier(ABody, NewArg)),
+						    NewName = wrangler_misc:rewrite(
+								   Name, wrangler_syntax:module_qualifier(Mod, NewMBody)),
+						    Fun1 = wrangler_misc:rewrite(
+							        Fun, wrangler_syntax:implicit_fun(NewName)),
+						    Tree1 = wrangler_misc:rewrite(
+							         Tree, wrangler_syntax:application(Op, [Fun1, NewPars])),
 						    {Tree1, true};
 						_ -> {Tree, false}
 					    end;
@@ -514,8 +537,8 @@ transform_apply_with_arity_of_2(Tree, CurModName, FunDefMod, FunName, Arity, Ind
 
 transform_apply_style_calls(Node, {FileName, _ModName, FunDefMod, FunName, Arity,
 				   Index, Num, SearchPaths, TabWidth}) ->
-    Op = refac_syntax:application_operator(Node),
-    Args = refac_syntax:application_arguments(Node),
+    Op = wrangler_syntax:application_operator(Node),
+    Args = wrangler_syntax:application_arguments(Node),
     [N1, N2, Mod, Fun, Pars] = case length(Args) of
 				   5 -> Args;
 				   4 -> [none| Args];
@@ -524,9 +547,9 @@ transform_apply_style_calls(Node, {FileName, _ModName, FunDefMod, FunName, Arity
     Mod1 = try_eval(FileName, Mod, SearchPaths, TabWidth),
     Fun1 = try_eval(FileName, Fun, SearchPaths, TabWidth),
     NewApp = fun () ->
-		     Pars0 = refac_syntax:list_elements(Pars),
-		     NewPars = refac_util:rewrite(
-				 Pars, refac_syntax:list(process_pars(Pars0, Index, Num))),
+		     Pars0 = wrangler_syntax:list_elements(Pars),
+		     NewPars = wrangler_misc:rewrite(
+				    Pars, wrangler_syntax:list(process_pars(Pars0, Index, Num))),
 		     NewArgs = case length(Args) of
 				   5 ->
 				       [N1, N2, Mod, Fun, NewPars];
@@ -535,16 +558,16 @@ transform_apply_style_calls(Node, {FileName, _ModName, FunDefMod, FunName, Arity
 				   3 ->
 				       [Mod, Fun, NewPars]
 			       end,
-		     refac_util:rewrite(
-		       Node, refac_syntax:application(Op, NewArgs))
+		     wrangler_misc:rewrite(
+		          Node, wrangler_syntax:application(Op, NewArgs))
 	     end,
     case Fun1 of
 	{value, FunName} ->
 	    case Mod1 of
 		{value, FunDefMod} ->
-		    case refac_syntax:type(Pars) of
+		    case wrangler_syntax:type(Pars) of
 			list ->
-			    case refac_syntax:list_length(Pars) of
+			    case wrangler_syntax:list_length(Pars) of
 				Arity ->
 				    {NewApp(), true};
 				_ -> {Node, false}
@@ -579,12 +602,12 @@ tuple_pars_in_client_modules(ClientFiles, FunDefMod, FunName, Arity, Index, Num,
 
 tuple_pars_in_client_modules_1(F, AnnAST, CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth) ->
     Args = {F, CurModName, FunDefMod, FunName, Arity, Index, Num, SearchPaths, TabWidth},
-    ast_traverse_api:full_tdTP(fun do_tuple_actual_pars/2, AnnAST, Args).
+    api_ast_traverse:full_tdTP(fun do_tuple_actual_pars/2, AnnAST, Args).
     
 
     
 get_fun_def_info(Node) ->
-    As = refac_syntax:get_ann(Node),
+    As = wrangler_syntax:get_ann(Node),
     case lists:keysearch(fun_def, 1, As) of
       {value, {fun_def, {Mod, FunName, Arity, _, _}}} ->
 	    {Mod, FunName, Arity};
@@ -604,8 +627,8 @@ get_module_name(FileName, ModInfo) ->
     end.
 
 do_replace_underscore(Tree, _Others) ->
-    case refac_syntax:type(Tree) of 
+    case wrangler_syntax:type(Tree) of
 	underscore ->
-	    {refac_syntax:atom(undefined), true};
+	    {wrangler_syntax:atom(undefined), true};
 	_ -> {Tree,false}
     end.

@@ -25,13 +25,18 @@
 %% ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %%
 %%
+%% @private
+%% @hidden
 -module(wrangler_code_inspector_lib).
 
--export([find_var_instances/5, nested_exprs/5,
+-export([find_var_instances/5, nested_exprs/5, nested_exprs_1/5,
 	 calls_to_fun/5, calls_to_fun_1/5,
 	 dependencies_of_a_module/2, long_functions/4,
 	 large_modules/3, non_tail_recursive_servers/3,
-	 not_flush_unknown_messages/3]).
+	 not_flush_unknown_messages/3,
+         not_flush_unknown_messages_1/3,
+         calls_to_specific_function/2,
+         calls_to_specific_functions/2]).
 
 -include("../include/wrangler.hrl").
 
@@ -41,24 +46,24 @@
 %%	     {ok, [StartEnd::{pos(), pos()}], [VarDefPos::pos()]}).
 find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
     {ok, {AnnAST, _Info0}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
-    case interface_api:pos_to_var_name(AnnAST, {Line, Col}) of
-	{ok, {_VarName, DefinePos, _C}} ->
+    case api_interface:pos_to_var_name(AnnAST, {Line, Col}) of
+	{ok, {_VarName, DefinePos}} ->
 	    if DefinePos == [{0, 0}] ->
-		   throw({error, "The identifier selected is a macro, or not defined!"});
+		   throw({error, "The identifier selected is not defined!"});
 	       true ->
 		   F = fun (T, S) ->
-			       case refac_syntax:type(T) of
+			       case wrangler_syntax:type(T) of
 				   variable ->
-				       case lists:keysearch(def, 1, refac_syntax:get_ann(T)) of
+				       case lists:keysearch(def, 1, wrangler_syntax:get_ann(T)) of
 					   {value, {def, DefinePos}} ->
-					       Range = refac_util:get_start_end_loc(T),
+					       Range = wrangler_misc:start_end_loc(T),
 					       [Range| S];
 					   _ -> S
 				       end;
 				   _ -> S
 			       end
 		       end,
-		   Locs = lists:usort(ast_traverse_api:fold(F, [], AnnAST)),
+		   Locs = lists:usort(api_ast_traverse:fold(F, [], AnnAST)),
 		   {ok, Locs, DefinePos}
 	    end;
 	{error, Reason} -> throw({error, Reason})
@@ -68,9 +73,10 @@ find_var_instances(FName, Line, Col, SearchPaths, TabWidth) ->
 nested_exprs(DirFileNames, NestLevel, ExprType, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:nested_exprs(~p, ~p, ~p,~p,~p).\n",
 		 [?MODULE, DirFileNames, NestLevel, ExprType, SearchPaths, TabWidth]),
-    Files = refac_util:expand_files(DirFileNames, ".erl"),
-    Funs = lists:flatmap(fun (F) ->
-				 nested_exprs_1(F, NestLevel, ExprType, SearchPaths, TabWidth)
+    Files = wrangler_misc:expand_files(DirFileNames, ".erl"),
+    Funs = lists:flatmap(fun (File) ->
+				 ResRanges=nested_exprs_1(File, NestLevel, ExprType, SearchPaths, TabWidth),
+                                 [{M, F, A}||{M,F, A, _R} <-ResRanges]                                     
 			 end, Files),
     {ok, Funs}.
 
@@ -79,26 +85,26 @@ nested_exprs_1(FName, NestLevel, ExprType, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     ModName = get_module_name(FName, Info),
     Fun = fun (T, S) ->
-		  case refac_syntax:type(T) of
+		  case wrangler_syntax:type(T) of
 		      function ->
-			  FunName = refac_syntax:atom_value(refac_syntax:function_name(T)),
-			  Arity = refac_syntax:function_arity(T),
+			  FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(T)),
+			  Arity = wrangler_syntax:function_arity(T),
 			  Fun1 = fun (Node, S1) ->
-					 case refac_syntax:type(Node) of
+					 case wrangler_syntax:type(Node) of
 					     ExprType1 ->
-						 Range = refac_util:get_start_end_loc(Node),
+						 Range = wrangler_misc:start_end_loc(Node),
 						 [{ModName, FunName, Arity, Range}| S1];
 					     _ -> S1
 					 end
 				 end,
-			  ast_traverse_api:fold(Fun1, S, T);
+			  api_ast_traverse:fold(Fun1, S, T);
 		      _ -> S
 		  end
 	  end,
-    Ranges = lists:usort(ast_traverse_api:fold(Fun, [], AnnAST)),
+    Ranges = lists:usort(api_ast_traverse:fold(Fun, [], AnnAST)),
     SortedRanges = sort_ranges(Ranges),
-    ResRanges = lists:filter(fun (R) -> length(R) >= NestLevel end, SortedRanges),
-    lists:usort(lists:map(fun (R) -> {M, F, A, _R} = hd(R),{M, F, A} end,
+    ResRanges=lists:filter(fun (R) -> length(R) >= NestLevel end, SortedRanges),
+    lists:usort(lists:map(fun (R) -> {M, F, A, Range} = hd(R),{M, F, A, Range} end,
 			  ResRanges)).
 
 	    
@@ -132,9 +138,9 @@ calls_to_fun(FName, Line, Col, SearchPaths, TabWidth) ->
 		 [?MODULE, FName, Line, Col, SearchPaths, TabWidth]),
     check_search_paths(FName, SearchPaths),
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
-    case interface_api:pos_to_fun_def(AnnAST, {Line, Col}) of
+    case api_interface:pos_to_fun_def(AnnAST, {Line, Col}) of
 	{ok, Def} ->
-	    case lists:keysearch(fun_def, 1, refac_syntax:get_ann(Def)) of
+	    case lists:keysearch(fun_def, 1, wrangler_syntax:get_ann(Def)) of
 		{value, {fun_def, {M, F, A, _, _}}} ->
 		    caller_funs_2(FName, M, F, A, Info, SearchPaths, TabWidth);
 		false ->
@@ -155,7 +161,7 @@ calls_to_fun_1(FName, FunctionName, Arity, SearchPaths, TabWidth) ->
 caller_funs_2(FName, M, F, A, Info, SearchPaths, TabWidth) ->
     ?wrangler_io("\nSearching for caller function of ~p:~p/~p ...\n", [M, F, A]),
     {Res1, Res2} = get_caller_funs(FName, {M, F, A}, SearchPaths, TabWidth),
-    case refac_util:is_exported({F, A}, Info) of
+    case api_refac:is_exported({F, A}, Info) of
 	true ->
 	    ?wrangler_io("\nChecking client modules in the following paths: \n~p\n",
 			 [SearchPaths]),
@@ -179,16 +185,16 @@ get_caller_funs(FileName, {M, F, A}, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FileName, true, SearchPaths, TabWidth),
     ModName = get_module_name(FileName, Info),
     Fun = fun (Node, {S1, S2}) ->
-		  case refac_syntax:type(Node) of
+		  case wrangler_syntax:type(Node) of
 		      function ->
-			  FunName = refac_syntax:data(refac_syntax:function_name(Node)),
-			  FunArity = refac_syntax:function_arity(Node),
+			  FunName = wrangler_syntax:data(wrangler_syntax:function_name(Node)),
+			  FunArity = wrangler_syntax:function_arity(Node),
 			  case {ModName, FunName, FunArity} == {M, F, A} of
 			      false ->
 				  {Sure, UnSure} = collect_apps(FileName, Node, {M, F, A});
 			      true ->
 				  {Sure1, UnSure1} = lists:unzip([collect_apps(FileName, C, {M, F, A})
-								  || C <- refac_syntax:function_clauses(Node)]),
+								  || C <- wrangler_syntax:function_clauses(Node)]),
 				  {Sure, UnSure} = {lists:append(Sure1), lists:append(UnSure1)}
 			  end,
 			  case {Sure, UnSure} of
@@ -200,15 +206,15 @@ get_caller_funs(FileName, {M, F, A}, SearchPaths, TabWidth) ->
 		      _ -> {S1, S2}
 		  end
 	  end,
-    ast_traverse_api:fold(Fun, {[], []}, AnnAST).
+    api_ast_traverse:fold(Fun, {[], []}, AnnAST).
 
 collect_apps(FileName, Node, {M, F, A}) ->
     Fun = fun (T, {S1,S2}) ->
-		  case refac_syntax:type(T) of
+		  case wrangler_syntax:type(T) of
 		      atom ->
-			  case refac_syntax:atom_value(T) of
+			  case wrangler_syntax:atom_value(T) of
 			      F ->
-				  Ann = refac_syntax:get_ann(T),
+				  Ann = wrangler_syntax:get_ann(T),
 				  case lists:keysearch(type, 1, Ann) of
 				      {value, {type, {f_atom, [M, F, A]}}} ->
 					  {[true| S1], S2};
@@ -220,21 +226,21 @@ collect_apps(FileName, Node, {M, F, A}) ->
 					      true ->
 						  {S1, S2};
 					      false ->
-						  {Line, _Col} = refac_syntax:get_pos(T),
-						  {S1, [{FileName, Line, refac_prettypr:format(T)}| S2]}
+						  {Line, _Col} = wrangler_syntax:get_pos(T),
+						  {S1, [{FileName, Line, wrangler_prettypr:format(T)}| S2]}
 					  end;
 				      {value, {type, _}} ->
 					  {S1, S2};
 				      false ->
-					  {Line, _Col} = refac_syntax:get_pos(T),
-					  {S1, [{FileName, Line, refac_prettypr:format(T)}| S2]}
+					  {Line, _Col} = wrangler_syntax:get_pos(T),
+					  {S1, [{FileName, Line, wrangler_prettypr:format(T)}| S2]}
 				  end;
 			      _ -> {S1, S2}
 			  end;
 		      _ -> {S1, S2}
 		  end
 	  end,
-    ast_traverse_api:fold(Fun, {[], []}, Node).
+    api_ast_traverse:fold(Fun, {[], []}, Node).
 
 %%==========================================================================================
 %%-spec(dependencies_of_a_module(FileName::filename(), SearchPaths::[dir()]) -> 
@@ -248,7 +254,7 @@ dependencies_of_a_module(FName, SearchPaths) ->
 	    %% I use 'false' in the following function call, so that macro can get expanded;
 	    AbsFileName = filename:absname(filename:join(filename:split(FName))),
 	    ClientFiles = wrangler_modulegraph_server:get_client_files_basic(AbsFileName, SearchPaths),
-	    ClientMods = [M || {M, _Dir} <- refac_util:get_modules_by_file(ClientFiles)],
+	    ClientMods = [M || {M, _Dir} <- wrangler_misc:get_modules_by_file(ClientFiles)],
 	    CalledMods = wrangler_modulegraph_server:get_called_modules(FName, SearchPaths),
 	    {ok, {ClientMods, CalledMods}};
 	false ->
@@ -265,7 +271,7 @@ dependencies_of_a_module(FName, SearchPaths) ->
 long_functions(DirFileNames, Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:long_functions(~p, ~p,~p,~p).\n",
 		 [?MODULE, DirFileNames, Lines, SearchPaths, TabWidth]),
-    Files = refac_util:expand_files(DirFileNames, ".erl"),
+    Files = wrangler_misc:expand_files(DirFileNames, ".erl"),
     MFAs = lists:flatmap(fun (F) ->
 				 long_functions_2(F, Lines, SearchPaths, TabWidth)
 			 end, Files),
@@ -276,22 +282,23 @@ long_functions_2(FName, Lines, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     ModName = get_module_name(FName, Info),
     Fun = fun (Node, S) ->
-		  case refac_syntax:type(Node) of
+		  case wrangler_syntax:type(Node) of
 		      function ->
-			  Toks = refac_util:get_toks(Node),
+			  Toks = wrangler_misc:get_toks(Node),
 			  CodeLines = [element(1, element(2, T)) || T <- Toks, element(1, T) /= whitespace, element(1, T) /= comment],
-			  CodeLines1 = refac_util:remove_duplicates(CodeLines),
+			  CodeLines1 = wrangler_misc:remove_duplicates(CodeLines),
 			  case length(CodeLines1) > Lines of
 			      true ->
-				  FunName = refac_syntax:atom_value(refac_syntax:function_name(Node)),
-				  Arity = refac_syntax:function_arity(Node),
-				  [{ModName, FunName, Arity}| S];
+				  FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(Node)),
+				  Arity = wrangler_syntax:function_arity(Node),
+                                  {Line, _Col} = wrangler_syntax:get_pos(Node),
+				  [{{ModName, FunName, Arity}, {FName,Line}}| S];
 			      _ -> S
 			  end;
 		      _ -> S
 		  end
 	  end,
-    lists:usort(ast_traverse_api:fold(Fun, [], AnnAST)).
+    lists:usort(api_ast_traverse:fold(Fun, [], AnnAST)).
 
 %%==========================================================================================
 %%-spec(large_modules(Lines::integer(), SearchPaths::[dir()], TabWidth::integer()) ->				  
@@ -299,15 +306,15 @@ long_functions_2(FName, Lines, SearchPaths, TabWidth) ->
 large_modules(Lines, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:large_modules(~p,~p,~p).\n",
 		 [?MODULE, Lines, SearchPaths, TabWidth]),
-    Files = refac_util:expand_files(SearchPaths, ".erl"),
+    Files = wrangler_misc:expand_files(SearchPaths, ".erl"),
     LargeMods = lists:filter(fun (File) ->
 				     is_large_module(File, Lines, TabWidth)
 			     end, Files),
     {ok, LargeMods}.
 
 is_large_module(FName, Lines, TabWidth) ->
-    Toks = refac_util:tokenize(FName, false, TabWidth),
-    CodeLines = refac_util:remove_duplicates([element(1, element(2, T)) || T <- Toks]),
+    Toks = api_refac:tokenize(FName, false, TabWidth),
+    CodeLines = wrangler_misc:remove_duplicates([element(1, element(2, T)) || T <- Toks]),
     length(CodeLines) >= Lines.
 
 %%==========================================================================================
@@ -316,7 +323,7 @@ is_large_module(FName, Lines, TabWidth) ->
 non_tail_recursive_servers(FileOrDirs, SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:non_tail_recursive_servers(~p, ~p, ~p).\n",
 		 [?MODULE, FileOrDirs, SearchPaths, TabWidth]),
-    Files = refac_util:expand_files(FileOrDirs, ".erl"),
+    Files = wrangler_misc:expand_files(FileOrDirs, ".erl"),
     MFAs = lists:flatmap(fun (F) ->
 				 non_tail_recursive_servers_1(F, SearchPaths, TabWidth)
 			 end, Files),
@@ -326,10 +333,10 @@ non_tail_recursive_servers_1(FName, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     ModName = get_module_name(FName, Info),
     Fun = fun (T, S) ->
-		  case refac_syntax:type(T) of
+		  case wrangler_syntax:type(T) of
 		      function ->
-			  FunName = refac_syntax:atom_value(refac_syntax:function_name(T)),
-			  Arity = refac_syntax:function_arity(T),
+			  FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(T)),
+			  Arity = wrangler_syntax:function_arity(T),
 			  case has_receive_expr(T) of
 			      {true, Line} ->
 				  case is_non_tail_recursive_server(FName, T, {ModName, FunName, Arity}, Line, SearchPaths) of
@@ -341,11 +348,11 @@ non_tail_recursive_servers_1(FName, SearchPaths, TabWidth) ->
 		      _ -> S
 		  end
 	  end,
-    ast_traverse_api:fold(Fun, [], AnnAST).
+    api_ast_traverse:fold(Fun, [], AnnAST).
 
 is_non_tail_recursive_server(FileName, FunDef, {ModName, FunName, Arity}, Line, _SearchPaths) ->
     Fun = fun (T, S) ->
-		  case refac_syntax:type(T) of
+		  case wrangler_syntax:type(T) of
 		      receive_expr ->
 			  %% it is too slow to search the whole directory for those very rare cases
 			  %% when a server function is defined across multiple modules; so SearchPaths
@@ -356,7 +363,7 @@ is_non_tail_recursive_server(FileName, FunDef, {ModName, FunName, Arity}, Line, 
 		      _ -> S
 		  end
 	  end,
-    CandidateSccs = ast_traverse_api:fold(Fun, [], FunDef),
+    CandidateSccs = api_ast_traverse:fold(Fun, [], FunDef),
     case CandidateSccs of
 	[] -> false;
 	_ -> lists:any(fun (Scc) ->
@@ -366,24 +373,24 @@ is_non_tail_recursive_server(FileName, FunDef, {ModName, FunName, Arity}, Line, 
 
 check_candidate_scc(FunDef, Scc, Line) ->
     MFAs = [MFA || {MFA, _} <- Scc],
-    DummyExp = refac_syntax:atom(undefined),
+    DummyExp = wrangler_syntax:atom(undefined),
     F = fun (T, Acc) ->
-		case refac_syntax:type(T) of
+		case wrangler_syntax:type(T) of
 		    clause ->
-			Exprs = refac_syntax:clause_body(T),
+			Exprs = wrangler_syntax:clause_body(T),
 			Acc ++ [Exprs];
-		    try_expr -> Exprs = refac_syntax:try_expr_body(T),
+		    try_expr -> Exprs = wrangler_syntax:try_expr_body(T),
 				Acc ++ [Exprs ++ [DummyExp]];
-		    application -> Exprs = refac_syntax:application_arguments(T),
+		    application -> Exprs = wrangler_syntax:application_arguments(T),
 				   Acc ++ [Exprs ++ [DummyExp]];
-		    tuple -> Exprs = refac_syntax:tuple_elements(T),
+		    tuple -> Exprs = wrangler_syntax:tuple_elements(T),
 			     Acc ++ [Exprs ++ [DummyExp]];
-		    list -> Exprs = refac_syntax:list_prefix(T),
+		    list -> Exprs = wrangler_syntax:list_prefix(T),
 			    Acc ++ [Exprs ++ [DummyExp]];
 		    list_comp ->
 			Acc ++ [[T, DummyExp]];
 		    block_expr ->
-			Exprs = refac_syntax:block_expr_body(T),
+			Exprs = wrangler_syntax:block_expr_body(T),
 			Acc ++ [Exprs];
 		    infix_expr ->
 			Acc ++ [[T, DummyExp]];
@@ -394,7 +401,7 @@ check_candidate_scc(FunDef, Scc, Line) ->
 	end,
     F1 = fun (Es) ->
 		 F11 = fun (E) ->
-			       {_, {EndLine, _}} = refac_util:get_start_end_loc(E),
+			       {_, {EndLine, _}} = wrangler_misc:start_end_loc(E),
 			       case EndLine >= Line of
 				   true ->
 				       CalledFuns = wrangler_callgraph_server:called_funs(E),
@@ -408,34 +415,35 @@ check_candidate_scc(FunDef, Scc, Line) ->
 		 R = [F11(E) || E <- Es],
 		 lists:any(fun (E) -> E == true end, tl(lists:reverse(R)))
 	 end,
-    ListOfExpLists = ast_traverse_api:fold(F, [], FunDef),
+    ListOfExpLists = api_ast_traverse:fold(F, [], FunDef),
     ExpLists1 = lists:map(F1, ListOfExpLists),
     lists:any(fun (E) -> E == true end, ExpLists1).
 
 %%==========================================================================================
 %%-spec(not_flush_unknown_messages(FileOrDirss::[filename()|dir()], SearchPaths::[dir()], TabWidth::integer()) -> 
 %%	     {ok, [{modulename(), functionname(), functionarity()}]}).
-not_flush_unknown_messages(FileOrDirs, SearchPaths, TabWidth) ->
+not_flush_unknown_messages(FileOrDirs,SearchPaths, TabWidth) ->
     ?wrangler_io("\nCMD: ~p:not_flush_unknown_messages(~p, ~p, ~p).\n",
 		 [?MODULE, FileOrDirs, SearchPaths, TabWidth]),
-    Files = refac_util:expand_files(FileOrDirs, ".erl"),
+    Files = wrangler_misc:expand_files(FileOrDirs, ".erl"),
     Funs = lists:flatmap(fun (F) ->
 				 not_flush_unknown_messages_1(F, SearchPaths, TabWidth)
 			 end, Files),
-    {ok, lists:usort(Funs)}.
+    Res=[{ModName, FunName, Arity}||{_FName, ModName, FunName, Arity, _Ln}<-Funs],
+    {ok, lists:usort(Res)}.
 
 not_flush_unknown_messages_1(FName, SearchPaths, TabWidth) ->
     {ok, {AnnAST, Info}} = wrangler_ast_server:parse_annotate_file(FName, true, SearchPaths, TabWidth),
     ModName = get_module_name(FName, Info),
     Fun = fun (T, S) ->
-		  case refac_syntax:type(T) of
+		  case wrangler_syntax:type(T) of
 		      function ->
-			  FunName = refac_syntax:atom_value(refac_syntax:function_name(T)),
-			  Arity = refac_syntax:function_arity(T),
+			  FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(T)),
+			  Arity = wrangler_syntax:function_arity(T),
 			  case has_receive_expr(T) of
 			      {true, Line} ->
 				  case has_receive_expr_without_flush(FName, Info, ModName, T, Line, SearchPaths) of
-				      true -> [{ModName, FunName, Arity}| S];
+				      true -> [{FName, ModName, FunName, Arity, Line}| S];
 				      false -> S
 				  end;
 			      false -> S
@@ -443,13 +451,13 @@ not_flush_unknown_messages_1(FName, SearchPaths, TabWidth) ->
 		      _ -> S
 		  end
 	  end,
-    ast_traverse_api:fold(Fun, [], AnnAST).
+    api_ast_traverse:fold(Fun, [], AnnAST).
 
 has_receive_expr_without_flush(FileName, Info, ModName, FunDef, Line, _SearchPaths) ->
-    FunName = refac_syntax:atom_value(refac_syntax:function_name(FunDef)),
-    Arity = refac_syntax:function_arity(FunDef),
+    FunName = wrangler_syntax:atom_value(wrangler_syntax:function_name(FunDef)),
+    Arity = wrangler_syntax:function_arity(FunDef),
     F = fun (T,S) ->
-		case refac_syntax:type(T) of
+		case wrangler_syntax:type(T) of
 		    receive_expr ->
 			ResSccs = wrangler_callgraph_server:get_sccs_including_fun(
 				    {ModName, FunName, Arity}, [FileName]),
@@ -462,7 +470,7 @@ has_receive_expr_without_flush(FileName, Info, ModName, FunDef, Line, _SearchPat
 		    _ -> S
 		end
 	end,
-    lists:member(true, ast_traverse_api:fold(F, [], FunDef)).
+    lists:member(true, api_ast_traverse:fold(F, [], FunDef)).
 
 not_has_flush_scc(FileName, Info, FunDef, Scc, Line) ->
     case is_server(FileName, Info, FunDef, Scc, Line) of 
@@ -474,14 +482,14 @@ not_has_flush_scc(FileName, Info, FunDef, Scc, Line) ->
 is_server(_FileName, _Info, FunDef, Scc, Line) ->
     MFAs = [MFA || {MFA, _} <- Scc],
     F = fun (T, Acc) ->
-		case refac_syntax:type(T)      %% Any other cases here?
+		case wrangler_syntax:type(T)      %% Any other cases here?
 		    of
 		    application -> Acc ++ [T];
 		    _ -> Acc
 		end
 	end,
     F1 = fun (E) ->
-		 {_, {EndLine, _}} = refac_util:get_start_end_loc(E),
+		 {_, {EndLine, _}} = wrangler_misc:start_end_loc(E),
 		 case EndLine >= Line of
 		     true ->
 			 CalledFuns = wrangler_callgraph_server:called_funs(E),
@@ -492,21 +500,21 @@ is_server(_FileName, _Info, FunDef, Scc, Line) ->
 		     _ -> false
 		 end
 	 end,
-    ListOfApps = ast_traverse_api:fold(F, [], FunDef),
+    ListOfApps = api_ast_traverse:fold(F, [], FunDef),
     lists:member(true, lists:map(F1, ListOfApps)).
 
 not_has_flush_fun(FunDef) ->
     F = fun (T, S) ->
-		case refac_syntax:type(T) of
+		case wrangler_syntax:type(T) of
 		    receive_expr ->
-			Cs = refac_syntax:receive_expr_clauses(T),
+			Cs = wrangler_syntax:receive_expr_clauses(T),
 			R = lists:any(fun (C) ->
-					      Pat = refac_syntax:clause_patterns(C),
+					      Pat = wrangler_syntax:clause_patterns(C),
 					      case length(Pat) of
 						  1 -> P = hd(Pat),
-						       case refac_syntax:type(P) of
+						       case wrangler_syntax:type(P) of
 							   variable ->
-							       case refac_util:get_free_vars(P) of
+							       case api_refac:free_vars(P) of
 								   [] -> true;
 								   _ -> false
 							       end;
@@ -520,7 +528,7 @@ not_has_flush_fun(FunDef) ->
 		    _ -> S
 		end
 	end,
-    lists:member(true, ast_traverse_api:fold(F, [], FunDef)).
+    lists:member(true, api_ast_traverse:fold(F, [], FunDef)).
 
 check_search_paths(FileName, SearchPaths) ->
     InValidSearchPaths = lists:filter(fun (X) ->  not  filelib:is_dir(X) end, SearchPaths),
@@ -530,7 +538,7 @@ check_search_paths(FileName, SearchPaths) ->
 	     ?wrangler_io("The following directories specified in the search paths do not exist:\n~s", [InValidSearchPaths]),
 	     throw({error, "Some directories specified in the search paths do not exist!"})
     end,
-    Files = refac_util:expand_files(SearchPaths, ".erl") ++ refac_util:expand_files(SearchPaths, ".hrl"),
+    Files = wrangler_misc:expand_files(SearchPaths, ".erl") ++ wrangler_misc:expand_files(SearchPaths, ".hrl"),
     case lists:member(FileName, Files) of
 	true ->
 	    ok;
@@ -547,15 +555,29 @@ get_module_name(FName, Info) ->
 
 has_receive_expr(FunDef) ->
     F = fun (T, S) ->
-		case refac_syntax:type(T) of
+		case wrangler_syntax:type(T) of
 		    receive_expr ->
-			{{StartLine, _}, _} = refac_util:get_start_end_loc(T),
+			{{StartLine, _}, _} = wrangler_misc:start_end_loc(T),
 			[StartLine| S];
 		    _ -> S
 		end
 	end,
-    LineNums = ast_traverse_api:fold(F, [], FunDef),
+    LineNums = api_ast_traverse:fold(F, [], FunDef),
     case LineNums of
 	[] -> false;
 	_ -> {true, lists:min(LineNums)}
     end.
+
+calls_to_specific_function(MFA={M, F, A}, SearchPaths) ->
+    ?wrangler_io("\nCMD: ~p:calls_to_specific_function(~p, ~p).\n",
+		 [?MODULE, MFA, SearchPaths]),
+    {ok, ?FULL_TD_TU([?COLLECT_LOC(?FUN_APPLY(M,F,A), true)],
+                     [SearchPaths])}.
+    
+calls_to_specific_functions(MFAs, SearchPaths) ->
+    {ok, ?FULL_TD_TU([?COLLECT(?FUN_APPLY(M,F,A),
+                               {_File@,{M,F,A},api_refac:start_end_loc(_This@)}, 
+                               true)||
+                         {M, F, A}<-MFAs],
+                     [SearchPaths])}.
+   
