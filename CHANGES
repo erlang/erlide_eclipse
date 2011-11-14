@@ -1,5 +1,6 @@
 List of user visible changes between 0.13.6 and 0.13.7 (20111110)
 
+cdc48a2 950-content-assist-shows-empty
 6214168 Lock model when updating
 02eb40e 944-unhandled-event-loop-exception-java-lang-stackoverflowerror
 3f343f8 Merge remote-tracking branch 'esl/pu' into pu
