@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import org.erlide.core.rpc.IRpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 
 /**
  * Interface for handling RpcResultImpl objects of the Erlide's backend, which
@@ -48,6 +48,6 @@ public interface IRpcMessage {
      * @param result
      *            result of an RPC
      */
-    public void parse(IRpcResult result);
+    public void parse(RpcResult result);
 
 }

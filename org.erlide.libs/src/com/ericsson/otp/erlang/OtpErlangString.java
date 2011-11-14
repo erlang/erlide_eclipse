@@ -156,8 +156,11 @@ public class OtpErlangString extends OtpErlangObject implements Serializable,
     public static int[] stringToCodePoints(final String s) {
         final int m = s.codePointCount(0, s.length());
         final int[] codePoints = new int[m];
-        for (int i = 0, j = 0; j < m; i = s.offsetByCodePoints(i, 1), j++) {
-            codePoints[j] = s.codePointAt(i);
+        int j = 0;
+        for (int offset = 0; offset < s.length();) {
+            final int codepoint = s.codePointAt(offset);
+            codePoints[j++] = codepoint;
+            offset += Character.charCount(codepoint);
         }
         return codePoints;
     }

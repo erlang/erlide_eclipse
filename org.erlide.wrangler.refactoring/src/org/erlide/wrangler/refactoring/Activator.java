@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -83,7 +83,7 @@ public class Activator extends AbstractUIPlugin {
          * "Wrangler's path is added to Erlang with result:" + res.isOk() +
          * "\t raw:" + res);
          */
-        IRpcResult res = mb.call_noexception("wrangler", "init_eclipse", "",
+        RpcResult res = mb.call_noexception("wrangler", "init_eclipse", "",
                 new Object[0]);
         /*
          * application :start(wrangler_app) res = mb.call_noexception

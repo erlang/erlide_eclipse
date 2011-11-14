@@ -17,8 +17,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -34,7 +32,6 @@ import org.erlide.ui.util.ImageDescriptorRegistry;
  * Default strategy of the Erlang plugin for the construction of Erlang element
  * icons.
  */
-@SuppressWarnings("unused")
 public class ErlangElementImageProvider {
 
     /**
@@ -56,17 +53,17 @@ public class ErlangElementImageProvider {
 
     public static final Point BIG_SIZE = new Point(22, 16);
 
-    private static ImageDescriptor DESC_OBJ_PROJECT_CLOSED;
-
-    private static ImageDescriptor DESC_OBJ_PROJECT;
-    {
-        final ISharedImages images = ErlideUIPlugin.getDefault().getWorkbench()
-                .getSharedImages();
-        DESC_OBJ_PROJECT_CLOSED = images
-                .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED);
-        DESC_OBJ_PROJECT = images
-                .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT);
-    }
+    // private static ImageDescriptor DESC_OBJ_PROJECT_CLOSED;
+    //
+    // private static ImageDescriptor DESC_OBJ_PROJECT;
+    // {
+    // final ISharedImages images = ErlideUIPlugin.getDefault().getWorkbench()
+    // .getSharedImages();
+    // DESC_OBJ_PROJECT_CLOSED = images
+    // .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED);
+    // DESC_OBJ_PROJECT = images
+    // .getImageDescriptor(IDE.SharedImages.IMG_OBJ_PROJECT);
+    // }
 
     private ImageDescriptorRegistry fRegistry;
 
@@ -116,7 +113,7 @@ public class ErlangElementImageProvider {
             final IErlFolder ef = (IErlFolder) model
                     .findElement((IResource) element);
             if (ef != null && (ef.isOnSourcePath() || ef.isOnIncludePath())) {
-                final ImageDescriptor desc = getErlImageDescriptor(ef, flags);
+                return getErlImageDescriptor(ef, flags);
             }
         } else if (element instanceof IAdaptable) {
             return getWorkbenchImageDescriptor((IAdaptable) element, flags);
@@ -124,6 +121,7 @@ public class ErlangElementImageProvider {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private static boolean showOverlayIcons(final int flags) {
         return (flags & OVERLAY_ICONS) != 0;
     }
@@ -132,6 +130,7 @@ public class ErlangElementImageProvider {
         return (flags & SMALL_ICONS) != 0;
     }
 
+    @SuppressWarnings("unused")
     private static boolean useLightIcons(final int flags) {
         return (flags & LIGHT_TYPE_ICONS) != 0;
     }

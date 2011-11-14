@@ -54,24 +54,25 @@ import org.erlide.core.backend.InitialCall;
 import org.erlide.core.backend.console.BackendShellManager;
 import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
+import org.erlide.core.backend.events.ErlangEventPublisher;
+import org.erlide.core.backend.events.ErlangLogEventHandler;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
-import org.erlide.core.internal.rpc.RpcResultImpl;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.IRpcHelper;
-import org.erlide.core.rpc.IRpcResult;
-import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcCallback;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcHelper;
+import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -104,7 +105,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private String erlangVersion;
     private OtpMbox eventBox;
     private boolean stopped = false;
-    private EventDaemon eventDaemon;
+    private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
     protected ILaunch launch;
@@ -129,21 +130,21 @@ public abstract class Backend implements IStreamListener, IBackend {
         return this;
     }
 
-    public IRpcResult call_noexception(final String m, final String f,
+    public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
         return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
-    public IRpcResult call_noexception(final int timeout, final String m,
+    public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
             final OtpErlangObject result = runtime.makeCall(timeout, m, f,
                     signature, args);
-            return new RpcResultImpl(result);
+            return new RpcResult(result);
         } catch (final RpcException e) {
-            return RpcResultImpl.error(e.getMessage());
+            return RpcResult.error(e.getMessage());
         } catch (final SignatureException e) {
-            return RpcResultImpl.error(e.getMessage());
+            return RpcResult.error(e.getMessage());
         }
     }
 
@@ -415,10 +416,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    public EventDaemon getEventDaemon() {
-        return eventDaemon;
-    }
-
     public OtpMbox createMbox() {
         return getNode().createMbox();
     }
@@ -455,11 +452,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         // data.monitor = monitor;
         // data.managed = watch;
 
-        eventDaemon = new EventDaemon(this);
+        eventDaemon = new ErlangEventPublisher(this);
         eventDaemon.start();
-        eventDaemon.addHandler(new LogEventHandler());
+        new LogEventHandler(this).register();
+        new ErlangLogEventHandler(this).register();
 
-        BackendCore.getBackendManager().addBackendListener(getEventDaemon());
+        BackendCore.getBackendManager().addBackendListener(eventDaemon);
     }
 
     public void register(final ICodeBundle bundle) {

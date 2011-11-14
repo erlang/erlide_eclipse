@@ -25,7 +25,7 @@
 -define(TOK_VAR, 4).
 -define(TOK_CHAR, 5).
 -define(TOK_MACRO, 6).
--define(TOK_DOT, 7).
+-define(TOK_ARROW, 7).
 -define(TOK_INTEGER,8).
 -define(TOK_FLOAT, 9).
 -define(TOK_COMMENT, 10).
@@ -37,10 +37,10 @@ scanner_light_scan_string_test_() ->
                           $(, 0:24, 1:24, 1:24,
                           $), 0:24, 2:24, 1:24,
                           ?TOK_WS, 0:24, 3:24, 1:24,
-                          ?TOK_OTHER, 0:24, 4:24, 2:24,
+                          ?TOK_ARROW, 0:24, 4:24, 2:24,
                           ?TOK_WS, 0:24, 6:24, 1:24,
                           ?TOK_ATOM, 0:24, 7:24, 1:24,
-                          ?TOK_DOT, 0:24, 8:24, 1:24>>},
+                          ?TOK_OTHER, 0:24, 8:24, 1:24>>},
                        erlide_scanner:light_scan_string(<<"a() -> b.">>, latin1))].
 
 scanner_test_() ->

@@ -403,7 +403,7 @@ space_between(#token{offset=O1, length=Len1}, #token{offset=O2}) ->
 -define(TOK_VAR, 4).
 -define(TOK_CHAR, 5).
 -define(TOK_MACRO, 6).
--define(TOK_DOT, 7).
+-define(TOK_ARROW, 7).
 -define(TOK_INTEGER,8).
 -define(TOK_FLOAT, 9).
 -define(TOK_COMMENT, 10).
@@ -414,9 +414,11 @@ kind_small(string) -> ?TOK_STR;
 kind_small(atom) -> ?TOK_ATOM;
 kind_small(var) -> ?TOK_VAR;
 kind_small(macro) -> ?TOK_MACRO;
-kind_small(dot) -> ?TOK_DOT;
+kind_small(dot) -> ?TOK_OTHER;
 kind_small(float) -> ?TOK_FLOAT;
 kind_small(integer) -> ?TOK_INTEGER;
+kind_small(char) -> ?TOK_CHAR;
+kind_small('->') -> ?TOK_ARROW;
 kind_small(comment) -> ?TOK_COMMENT;
 kind_small(Kind) when is_atom(Kind) ->
     case erlide_scan:reserved_word(Kind) of

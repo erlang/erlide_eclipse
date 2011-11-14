@@ -740,7 +740,7 @@ i_declaration(R0, I) ->
     end.
 
 i_type(R0, I0) ->
-    {R1, A1} = i_expr(R0, I0, none),
+    {R1, _A1} = i_expr(R0, I0, none),
     i_kind(dot, R1, I0).
 
 i_fun_clause(R0, I0) ->

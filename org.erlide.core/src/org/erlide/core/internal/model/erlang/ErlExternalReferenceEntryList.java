@@ -18,9 +18,9 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.CoreUtil;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;

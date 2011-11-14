@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.console.IoRequest.IoRequestKind;
+import org.erlide.core.backend.events.ErlangEventHandler;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -29,7 +30,6 @@ public class BackendShell implements IBackendShell {
     private final IBackend backend;
     private OtpErlangPid server;
     private final String fId;
-    private final ConsoleEventHandler handler;
 
     public BackendShell(final IBackend backend, final String id,
             final OtpErlangPid server) {
@@ -39,8 +39,9 @@ public class BackendShell implements IBackendShell {
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
 
-        handler = new ConsoleEventHandler(this, backend.getFullNodeName());
-        backend.getEventDaemon().addHandler(handler);
+        final ErlangEventHandler handler = new ConsoleEventHandler(backend,
+                this);
+        handler.register();
     }
 
     public void close() {
@@ -185,9 +186,6 @@ public class BackendShell implements IBackendShell {
     }
 
     public void dispose() {
-        if (handler != null) {
-            backend.getEventDaemon().removeHandler(handler);
-        }
         listeners.clear();
     }
 

@@ -29,8 +29,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEvent;
-import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangLaunchDelegate;
@@ -41,6 +40,7 @@ import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
 import org.erlide.test_support.ui.suites.RegressionResultsView;
 import org.osgi.framework.Bundle;
+import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -174,15 +174,11 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
             final IBackend backend) {
 
         // TODO do we do this like this?
+        // TODO how to remove old handlers? or at least disable them?
 
-        final EventHandler handler = new EventHandler() {
-            @Override
-            protected void doHandleEvent(final ErlangEvent event)
-                    throws Exception {
-                if (!event.matchTopicAndNode("bterl_debugger",
-                        backend.getFullNodeName())) {
-                    return;
-                }
+        final ErlangEventHandler handler = new ErlangEventHandler(
+                "bterl_debugger", backend) {
+            public void handleEvent(final Event event) {
                 System.out.println("BTERL DEBUG INIT");
                 final String[] modules = workdir.list(new FilenameFilter() {
                     public boolean accept(final File dir, final String filename) {
@@ -197,12 +193,12 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                 }
                 backend.installDeferredBreakpoints();
 
-                final OtpErlangPid pid = (OtpErlangPid) event.data;
+                final OtpErlangPid pid = (OtpErlangPid) event
+                        .getProperty("DATA");
                 backend.send(pid, new OtpErlangAtom("ok"));
-                backend.getEventDaemon().removeHandler(this);
             }
         };
-        backend.getEventDaemon().addHandler(handler);
+        handler.register();
     }
 
     private void startMonitorJob(final IProgressMonitor monitor,
@@ -210,18 +206,13 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         // TODO do this in a job
 
-        final EventHandler handler = new EventHandler() {
-            @Override
-            protected void doHandleEvent(final ErlangEvent event)
-                    throws Exception {
-                if (!event.matchTopicAndNode("bterl_monitor",
-                        backend.getFullNodeName())) {
-                    return;
-                }
+        final ErlangEventHandler handler = new ErlangEventHandler(
+                "bterl_monitor", backend) {
+            public void handleEvent(final Event event) {
                 // TODO check events and do something
             }
         };
-        backend.getEventDaemon().addHandler(handler);
+        handler.register();
     }
 
     private OtpErlangList getFlags(final String theMode) {

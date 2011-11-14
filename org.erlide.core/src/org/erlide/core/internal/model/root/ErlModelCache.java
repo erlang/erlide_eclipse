@@ -147,7 +147,7 @@ public class ErlModelCache implements IDisposable {
     }
 
     public void putIncludedFilesForModule(final IErlModule module,
-            final List<IErlModule> result) {
+            final Collection<IErlModule> result) {
         if (disabled) {
             return;
         }

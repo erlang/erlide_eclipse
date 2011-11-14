@@ -3,9 +3,9 @@ package org.erlide.tracing.core.mvc.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracedNode;
 import org.erlide.tracing.core.mvc.model.TracedProcess;

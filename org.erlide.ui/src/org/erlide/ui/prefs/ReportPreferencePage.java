@@ -38,8 +38,8 @@ import org.eclipse.ui.progress.UIJob;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.LogUtil;
 import org.erlide.core.internal.backend.BackendHelper;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.swtdesigner.SWTResourceManager;
 

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;

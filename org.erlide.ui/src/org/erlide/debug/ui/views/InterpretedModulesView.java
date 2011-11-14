@@ -40,7 +40,7 @@ import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.debug.IErlangDebugNode;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;

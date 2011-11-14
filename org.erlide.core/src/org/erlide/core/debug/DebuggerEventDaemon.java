@@ -5,8 +5,8 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -15,9 +15,9 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.collect.Lists;
 
 /**
- * This daemon is almost a copy of EventDaemon, but accepts generic messages
- * because the debugger can't be convinced to send erlide_jrpc events. The
- * handler is also hardcoded.
+ * This daemon is almost a copy of ErlangEventPublisher, but accepts generic
+ * messages because the debugger can't be convinced to send erlide_jrpc events.
+ * The handler is also hardcoded.
  */
 public class DebuggerEventDaemon implements IBackendListener {
 

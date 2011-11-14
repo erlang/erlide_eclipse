@@ -12,8 +12,8 @@ import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
     private final Map<IBackend, IConsole> consoles;
@@ -29,10 +29,13 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
     }
 
     public void runtimeAdded(final IBackend b) {
-        if (b == null || !b.getRuntimeInfo().hasConsole()) {
+        if (b == null) {
             return;
         }
         final RuntimeInfo info = b.getRuntimeInfo();
+        if (!info.hasConsole()) {
+            return;
+        }
         ErlLogger.debug("console ADDED to " + info);
         final ErlangConsole console = new ErlangConsole(b);
         conMan.addConsoles(new IConsole[] { console });

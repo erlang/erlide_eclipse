@@ -10,25 +10,23 @@
  *******************************************************************************/
 package org.erlide.core.backend.console;
 
-import org.erlide.core.backend.events.ErlangEvent;
-import org.erlide.core.backend.events.EventHandler;
+import org.erlide.core.backend.IBackend;
+import org.erlide.core.backend.events.ErlangEventHandler;
+import org.osgi.service.event.Event;
 
-public class ConsoleEventHandler extends EventHandler {
+import com.ericsson.otp.erlang.OtpErlangObject;
+
+public class ConsoleEventHandler extends ErlangEventHandler {
 
     private final IBackendShell shell;
-    private final String nodeName;
 
-    public ConsoleEventHandler(final IBackendShell backendShell,
-            final String nodeName) {
+    public ConsoleEventHandler(final IBackend backend,
+            final IBackendShell backendShell) {
+        super("io_server", backend);
         shell = backendShell;
-        this.nodeName = nodeName;
     }
 
-    @Override
-    protected void doHandleEvent(final ErlangEvent event) throws Exception {
-        if (!event.matchTopicAndNode("io_server", nodeName)) {
-            return;
-        }
-        shell.add(event.data);
+    public void handleEvent(final Event event) {
+        shell.add((OtpErlangObject) event.getProperty("DATA"));
     }
 }

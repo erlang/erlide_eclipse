@@ -1,7 +1,7 @@
 package org.erlide.ui.views.processlist;
 
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

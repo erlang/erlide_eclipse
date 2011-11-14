@@ -14,8 +14,8 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.TypeConverter;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.swtdesigner.SWTResourceManager;

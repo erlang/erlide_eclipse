@@ -29,8 +29,8 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;

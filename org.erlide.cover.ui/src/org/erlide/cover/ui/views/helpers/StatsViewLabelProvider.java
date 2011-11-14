@@ -1,6 +1,5 @@
 package org.erlide.cover.ui.views.helpers;
 
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
@@ -14,6 +13,8 @@ import org.eclipse.ui.ide.IDE;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.cover.ui.Activator;
+import org.erlide.cover.ui.Images;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
@@ -38,10 +39,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
 
             switch (type) {
             case FUNCTION:
-                img = JavaUI
-                        .getSharedImages()
-                        .getImageDescriptor(
-                                org.eclipse.jdt.ui.ISharedImages.IMG_OBJS_PRIVATE)
+                img = Activator.getImageDescriptor(Images.FUNCTION)
                         .createImage();
                 break;
             case MODULE:

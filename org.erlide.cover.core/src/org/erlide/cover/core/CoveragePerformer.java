@@ -7,12 +7,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.api.ICoveragePerformer;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -140,7 +140,7 @@ public class CoveragePerformer implements ICoveragePerformer {
         recompileModules();
     }
 
-    // cover compilation of chosem modules
+    // cover compilation of chosen modules
     private void recompileModules() throws CoverException {
         final List<OtpErlangObject> paths = new ArrayList<OtpErlangObject>(
                 config.getModules().size());

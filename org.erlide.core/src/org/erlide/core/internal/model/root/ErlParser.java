@@ -37,9 +37,9 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlParser;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
 
@@ -96,26 +96,33 @@ public final class ErlParser implements IErlParser {
         } else {
             ErlLogger.error("rpc error when parsing %s: %s", path, res);
         }
-        module.setChildren(null);
         // mm.setParseTree(forms);
         if (forms == null) {
-            return true;
-        }
-
-        for (final OtpErlangObject form : forms) {
-            final IErlMember elem = create(module, (OtpErlangTuple) form);
-            if (elem != null) {
-                module.addChild(elem);
+            module.setChildren(null);
+        } else {
+            final List<IErlElement> children = Lists
+                    .newArrayListWithCapacity(forms.arity());
+            for (final OtpErlangObject form : forms) {
+                final IErlMember elem = create(module, (OtpErlangTuple) form);
+                if (elem != null) {
+                    children.add(elem);
+                }
             }
+            module.setChildren(children);
         }
-        if (comments != null) {
+        if (comments == null) {
+            module.setComments(null);
+        } else {
+            final List<IErlComment> moduleComments = Lists
+                    .newArrayListWithCapacity(comments.arity());
             for (final OtpErlangObject comment : comments) {
                 final IErlComment c = createComment(module,
                         (OtpErlangTuple) comment);
                 if (c != null) {
-                    module.addComment(c);
+                    moduleComments.add(c);
                 }
             }
+            module.setComments(moduleComments);
         }
         return true;
     }

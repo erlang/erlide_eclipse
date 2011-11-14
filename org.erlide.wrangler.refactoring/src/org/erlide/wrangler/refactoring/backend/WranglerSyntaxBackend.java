@@ -11,9 +11,9 @@
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo.Type;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
@@ -46,7 +46,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
 
     protected OtpErlangTuple parseFile(final IFile f) {
         final String filePath = f.getLocation().toOSString();
-        final IRpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION,
+        final RpcResult res = backend.call_noexception(MODULE, PARSE_FUNCTION,
                 "sax", filePath, "true", GlobalParameters
                         .getWranglerSelection().getSearchPath());
         return parseParserResult(res.getValue());
@@ -70,7 +70,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
         final OtpErlangInt[] position = new OtpErlangInt[2];
         position[0] = new OtpErlangInt(line);
         position[1] = new OtpErlangInt(col);
-        final IRpcResult res = backend.call_noexception(MODULE, VAR_FUNCTION,
+        final RpcResult res = backend.call_noexception(MODULE, VAR_FUNCTION,
                 "xx", syntaxTree, new OtpErlangTuple(position));
         return parseVarInfo(res.getValue());
     }

@@ -54,6 +54,7 @@ public class ErlCompletionProposal implements ICompletionProposal {
                 return new LinkedModeUI.ExitFlags(ILinkedModeListener.NONE,
                         true);
             case SWT.CR:
+                // FIXME this is Java specific!!!
                 // when entering an anonymous class as a parameter, we don't
                 // want
                 // to jump after the parenthesis when return is pressed

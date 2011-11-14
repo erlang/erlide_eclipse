@@ -3,8 +3,8 @@ package org.erlide.core.bdd;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 import org.jbehave.core.annotations.Given;

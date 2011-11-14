@@ -1,6 +1,8 @@
 setpref targetPlatformPath=#{TARGET}
 
 installJRE --location #{JAVA_HOME} --name erlide_jre
+installJRE --location #{JAVA_BASE} --name erlide_jre_base
+
 importpreferences -F #{WORKSPACE}/#{SITE_PRJ}/_erl.epf -S instance
 importpreferences -F #{WORKSPACE}/meta/config/java_compiler.epf -S instance
 

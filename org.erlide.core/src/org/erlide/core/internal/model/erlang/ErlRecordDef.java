@@ -70,7 +70,7 @@ public class ErlRecordDef extends ErlMember implements IErlRecordDef {
 
     public IErlRecordField getFieldNamed(final String name) {
         try {
-            for (final IErlElement e : getChildren()) {
+            for (final IErlElement e : getChildrenOfKind(Kind.RECORD_FIELD)) {
                 if (e instanceof IErlRecordField) {
                     final IErlRecordField field = (IErlRecordField) e;
                     if (field.getFieldName().equals(name)) {

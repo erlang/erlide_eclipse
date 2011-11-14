@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
@@ -37,14 +38,17 @@ import org.erlide.core.backend.IBackendManager;
 import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeBundle.CodeContext;
 import org.erlide.core.backend.IErlideBackendVisitor;
+import org.erlide.core.backend.events.ErlangEventHandler;
+import org.erlide.core.backend.events.ErlangEventPublisher;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
+import org.osgi.service.event.Event;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -83,6 +87,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
         factory = BackendCore.getBackendFactory();
+
+        registerGlobalEventhandlers();
     }
 
     private void tryStartEpmdProcess() {
@@ -111,6 +117,17 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
         epmdWatcher.addEpmdListener(this);
         new EpmdWatchJob(epmdWatcher).schedule(100);
+    }
+
+    private void registerGlobalEventhandlers() {
+        new ErlangEventHandler("*", null) {
+            public void handleEvent(final Event event) {
+                if (ErlangCore.hasFeatureEnabled("erlide.eventhandler.debug")) {
+                    ErlLogger.info("erlang event : "
+                            + ErlangEventPublisher.dumpEvent(event));
+                }
+            }
+        }.register();
     }
 
     public IBackend createExecutionBackend(final BackendData data) {

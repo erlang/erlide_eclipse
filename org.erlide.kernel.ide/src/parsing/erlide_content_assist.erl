@@ -145,7 +145,7 @@ check_record_tokens(record_want_name, [#token{kind='?'} | Rest], W, R, _B, _Fiel
     ?D(Rest),
     check_record_tokens(record_name, Rest, W, '?', '?', [], R);
 check_record_tokens(record_name, [#token{kind=Dot} | Rest], W, _R, B, _Fields, PrevR) % 3 
-  when Dot=:='.'; Dot=:=dot->
+  when Dot=:='.'; Dot=:=dot ->
     check_record_tokens(record_want_dot_field, Rest, W, B, '<>', [], PrevR);
 check_record_tokens(record_want_dot_field, [#token{kind=atom, value=V} | Rest],
                     W, R, _B, _Fields, PrevR) -> % 4

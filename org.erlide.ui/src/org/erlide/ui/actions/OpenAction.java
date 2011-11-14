@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.actions;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
@@ -39,11 +39,11 @@ import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.model.root.ISourceReference;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
@@ -257,7 +257,7 @@ public class OpenAction extends SelectionDispatchAction {
                     modulePath, erlProject, scope, module);
         } else {
             // functions defined in include files
-            final List<IErlModule> allIncludedFiles = module
+            final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
             for (final IErlModule includedModule : allIncludedFiles) {
                 final IErlFunction function = includedModule.findFunction(res

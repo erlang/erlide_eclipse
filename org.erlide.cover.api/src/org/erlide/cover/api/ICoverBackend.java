@@ -18,6 +18,6 @@ public interface ICoverBackend {
      * 
      * @param runner
      */
-    public void runCoverageAnalisys(AbstractCoverRunner runner);
+    public void runCoverageAnalysis(AbstractCoverRunner runner);
 
 }

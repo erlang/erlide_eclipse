@@ -38,6 +38,7 @@ import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcMonitor;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -83,19 +84,9 @@ public final class ErlangCore {
                 }
             }
         };
-        final IPreferencesService service = Platform.getPreferencesService();
-        final String key = "erlide_log_directory";
-        final String pluginId = "org.erlide.core";
-        final String s = service.getString(pluginId, key,
-                System.getProperty("user.home"), null);
-        String dir;
-        if (s != null) {
-            dir = s;
-        } else {
-            dir = logDir;
-        }
-
         logger = ErlLogger.getInstance();
+        final String dir = getLogDir(logDir);
+        log(Level.INFO, "Erlide log is in " + dir);
         logger.setLogDir(dir);
 
         try {
@@ -106,14 +97,31 @@ public final class ErlangCore {
         }
     }
 
+    public static String getLogDir(final String logDir) {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "erlide_log_directory";
+        final String pluginId = "org.erlide.core";
+        final String s = service.getString(pluginId, key, logDir, null);
+        String dir;
+        if (s != null) {
+            dir = s;
+        } else {
+            dir = System.getProperty("user.home");
+        }
+        return dir;
+    }
+
     public void stop() {
         CoreScope.getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         logger.dispose();
+        final String location = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toPortableString();
+        RpcMonitor.dump(location + "/rpc_monitor.dump");
     }
 
     public void log(final IStatus status) {
-        final Level lvl = getLevelFromStatus(status);
+        final Level lvl = getLevelFromSeverity(status.getSeverity());
         logger.log(lvl, status.getMessage());
         final Throwable exception = status.getException();
         if (exception != null) {
@@ -122,9 +130,15 @@ public final class ErlangCore {
         plugin.getLog().log(status);
     }
 
-    private Level getLevelFromStatus(final IStatus status) {
+    public void log(final Level lvl, final String status) {
+        logger.log(lvl, status);
+        plugin.getLog().log(
+                new Status(getSeverityFromLevel(lvl), PLUGIN_ID, status));
+    }
+
+    private static Level getLevelFromSeverity(final int severity) {
         Level lvl;
-        switch (status.getSeverity()) {
+        switch (severity) {
         case IStatus.ERROR:
             lvl = Level.SEVERE;
             break;
@@ -138,6 +152,20 @@ public final class ErlangCore {
             lvl = Level.FINEST;
         }
         return lvl;
+    }
+
+    private static int getSeverityFromLevel(final Level lvl) {
+        final int sev;
+        if (lvl == Level.SEVERE) {
+            sev = IStatus.ERROR;
+        } else if (lvl == Level.WARNING) {
+            sev = IStatus.WARNING;
+        } else if (lvl == Level.INFO) {
+            sev = IStatus.INFO;
+        } else {
+            sev = IStatus.OK;
+        }
+        return sev;
     }
 
     public void logErrorMessage(final String message) {
@@ -185,7 +213,9 @@ public final class ErlangCore {
         if (CommonUtils.isTest()) {
             dev += " test ***";
         }
-        ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+        final String versionBanner = "*** starting Erlide v" + version + " ***"
+                + dev;
+        log(Level.INFO, versionBanner);
         featureVersion = version;
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
