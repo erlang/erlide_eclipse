@@ -327,6 +327,16 @@
 		<command id="org.erlide.wrangler.refactoring.codeinspectionstub.about"
 			name="About">
 		</command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.adhoc"
+        name="%applyAdhocRefac">
+  </command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.composite"
+        name="%applyCompositeRefac">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -433,6 +443,24 @@
 				<command commandId="org.erlide.wrangler.refactoring.partitionexports"
 					id="org.erlide.wrangler.refactoring.partitionexports" style="push">
 				</command>
+    <separator
+          name="org.erlide.wrangler.refactoring.separator4"
+          visible="true">
+    </separator>
+    <command
+          commandId="org.erlide.wrangler.refactoring.adhoc"
+          id="org.erlide.wrangler.refactoring.adhoc"
+          style="push">
+    </command>
+    <command
+          commandId="org.erlide.wrangler.refactoring.composite"
+          id="org.erlide.wrangler.refactoring.composite"
+          style="push">
+    </command>
+    <menu
+          id="org.erlide.wrangler.refactoring.refacs"
+          label="gen_refac Refacs">
+    </menu>
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
@@ -591,6 +619,14 @@
 		<handler class="org.erlide.wrangler.refactoring.ui.AboutHandler"
 			commandId="org.erlide.wrangler.refactoring.codeinspectionstub.about">
 		</handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+        commandId="org.erlide.wrangler.refactoring.adhoc">
+  </handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+        commandId="org.erlide.wrangler.refactoring.composite">
+  </handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.propertyTesters">
 		<propertyTester class="org.erlide.wrangler.refactoring.ui.WranglerTester"
