@@ -1,3 +1,21 @@
+List of user visible changes between 0.13.6 and 0.13.7 (20111110)
+
+cdc48a2 950-content-assist-shows-empty
+6214168 Lock model when updating
+02eb40e 944-unhandled-event-loop-exception-java-lang-stackoverflowerror
+3f343f8 Merge remote-tracking branch 'esl/pu' into pu
+9b159b7 Better handling of include_lib completion and navigation
+bccf190 938-improved-performance-of-syntax-highlighting
+856232a Some bugs fixed; added images to label provider
+b92bbc5 added RpcMonitor: we can now gather rpc statistics
+12bc2cd change text for exception when detecting UTF-8 files
+ac81858 workaround for bug in java.lang.String http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6242664
+f1221d3 fix 934-eclipse-install-erlang-plugin-error
+6869d5f 891-wrong-function-comment-in-edoc-view-and-hover
+9cdf974 fix https://github.com/erlide/erlide/issues/15
+7be76cc 933-searching--can-t-find-function-ref-after-record
+1e343f0 use osgi events for erlang events
+
 List of user visible changes between 0.13.5 and 0.13.6 (20111005)
 
 833b979 http://www.assembla.com/spaces/erlide/tickets/613-dialyzer--progress-indicator

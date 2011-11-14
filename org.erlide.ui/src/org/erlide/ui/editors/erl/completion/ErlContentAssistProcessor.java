@@ -145,6 +145,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         try {
             final IDocument doc = viewer.getDocument();
             String before = getBefore(viewer, doc, offset);
+            ErlLogger.debug("computeCompletionProposals before %s", before);
             final int commaPos = before.lastIndexOf(',');
             final int colonPos = before.lastIndexOf(':');
             final int hashMarkPos = before.lastIndexOf('#');
@@ -161,7 +162,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final IErlProject erlProject = module.getProject();
             final IProject project = erlProject != null ? erlProject
                     .getWorkspaceProject() : null;
-            final IErlElement element = getElementAt(offset);
+            IErlElement element = getElementAt(offset);
+            for (int i = 1; element == null && i <= 5; ++i) {
+                element = getElementAt(offset - i);
+            }
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
                 rc = ErlideContextAssist.checkRecordCompletion(
@@ -199,6 +203,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             } else {
                 pos = colonPos;
                 before = prefix;
+                ErlLogger.debug("element %s", element);
                 if (element != null) {
                     switch (element.getKind()) {
                     case EXPORT:
@@ -241,8 +246,10 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             result.addAll(Arrays.asList(t.computeCompletionProposals(viewer,
                     offset)));
             if (result.size() == 0) {
+                ErlLogger.debug("no results");
                 return getNoCompletion(offset);
             } else {
+                ErlLogger.debug("%d results", result.size());
                 return result.toArray(new ICompletionProposal[result.size()]);
             }
         } catch (final Exception e) {
