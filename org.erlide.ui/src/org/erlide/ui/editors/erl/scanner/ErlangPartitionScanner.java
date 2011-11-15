@@ -16,11 +16,13 @@ public class ErlangPartitionScanner extends RuleBasedPartitionScanner {
 
     public ErlangPartitionScanner() {
         super();
+        final IToken character = new Token(IErlangPartitions.ERLANG_CHARACTER);
         final IToken string = new Token(IErlangPartitions.ERLANG_STRING);
         final IToken comment = new Token(IErlangPartitions.ERLANG_COMMENT);
         final IToken qatom = new Token(IErlangPartitions.ERLANG_QATOM);
 
         final List<IRule> rules = Lists.newArrayList();
+        rules.add(new ErlangCharRule(character));
         rules.add(new EndOfLineRule("%", comment));
         rules.add(new MultiLineRule("\"", "\"", string, '\\'));
         rules.add(new MultiLineRule("'", "'", qatom, '\\'));
