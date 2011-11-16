@@ -35,6 +35,8 @@ import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.ApplyCompositeRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcFsmStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcStatemStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
@@ -69,6 +71,7 @@ import org.erlide.wrangler.refactoring.ui.warning.WarningViewManager;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.ModuleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.RecordDataInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
@@ -112,8 +115,28 @@ public class RefactoringHandler extends AbstractHandler {
 
         final ArrayList<WranglerPage> pages = new ArrayList<WranglerPage>();
 
-        // run rename variable refactoring
-        if (actionId.equals("org.erlide.wrangler.refactoring.renamevariable")) {
+        // apply ad hoc refactoring
+        if (actionId.equals("org.erlide.wrangler.refactoring.adhoc")) {
+            pages.add(new ModuleInputPage("Apply ad hoc refactoring",
+                    "Please type the gen_refac module name!", "Module name:",
+                    "Name must be a valid Erlang module name!",
+                    new AtomValidator()));
+            pages.add(new SimpleInputPage("Apply ad hoc refactoring",
+                    "Please type input arguments", "Arg:",
+                    "Arguments should be valid!", new AtomValidator()));
+            refactoring = new ApplyAdhocRefactoring();
+
+            // apply composite refactoring
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.composite")) {
+            pages.add(new SimpleInputPage("Apply composite refactoring",
+                    "Please type the gen_composite_refac module name!",
+                    "Module name:", "Name must be a valid Erlang module name!",
+                    new AtomValidator()));
+            refactoring = new ApplyCompositeRefactoring();
+
+            // run rename variable refactoring
+        } else if (actionId
+                .equals("org.erlide.wrangler.refactoring.renamevariable")) {
             refactoring = new RenameVariableRefactoring();
             final SimpleInputPage page = new SimpleInputPage("Rename variable",
                     "Please type the new variable name!", "New variable name:",
