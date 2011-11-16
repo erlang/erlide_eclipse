@@ -123,7 +123,9 @@
 	 gen_fsm_to_record_eclipse/3,gen_fsm_to_record_1_eclipse/7,
 	 partition_exports_eclipse/4, intro_new_var_eclipse/6,
 	 inline_var_eclipse/5, inline_var_eclipse_1/6,
-         get_var_name_eclipse/5, get_fun_name_eclipse/5
+     get_var_name_eclipse/5, get_fun_name_eclipse/5,
+	 run_refac_eclipse/2, input_par_prompts_eclipse/1,
+     apply_changes_eclipse/3
 	]).
  
 -export([try_refac/3, get_log_msg/0]).
@@ -131,8 +133,27 @@
 -export([init_eclipse/0]).
 
 -include("../include/wrangler_internal.hrl").
+-include("../include/wrangler.hrl").
 
 -type(context():: emacs | composite_emacs).
+
+%% ====================================================================================================
+%% @doc gen_refac refactorings - delegate functions in order to achieve more clear API (especially for Eclipse)
+-spec(apply_changes_eclipse(Module::module(), Args::[term()], CandsNotToChange::[term()]) ->
+             {ok, [{filename(), filename(), syntaxTree()}]} |
+             {error, term()}).
+apply_changes_eclipse(Module, Args, CandsNotToChange) ->
+	gen_refac:apply_changes(Module, Args, CandsNotToChange).
+
+-spec(run_refac_eclipse(Module::module()|string()|tuple(), Args::[term()])->
+             {ok, string()} | {change_set, [{string(), string()}], module(), #args{}}|
+             {error, term()}).
+run_refac_eclipse(ModName, Args) ->
+	gen_refac:run_refac(ModName,Args).
+
+-spec(input_par_prompts_eclipse(CallBackMod::module()) -> [string()]).
+input_par_prompts_eclipse(CallBackMod) ->
+	gen_refac:input_par_prompts(CallBackMod).
 
 %% ====================================================================================================
 %% @doc Rename a variable.

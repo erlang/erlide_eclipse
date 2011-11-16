@@ -1,6 +1,6 @@
 -module(wrangler_parse).
 -export([parse/1, parse_and_scan/1, format_error/1]).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 502).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 502).
 
 -export([parse_form/1,parse_exprs/1,parse_term/1]).
 -export([normalise/1,abstract/1,tokens/1,tokens/2]).
@@ -612,7 +612,7 @@ get_attribute(L, Name) ->
 get_attributes(L) ->
     erl_scan:attributes_info(L).
 
--file("c:/ERL58~1.5/lib/parsetools-2.0.6/include/yeccpre.hrl", 0).
+-file("/usr/local/erlang/r14b03/lib/erlang/lib/parsetools-2.0.5/include/yeccpre.hrl", 0).
 %%
 %% %CopyrightBegin%
 %%
@@ -795,7 +795,7 @@ yecctoken2string(Other) ->
 
 
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 798).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 798).
 
 yeccpars2(0=S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_0(S, Cat, Ss, Stack, T, Ts, Tzr);
@@ -8197,7 +8197,7 @@ yeccgoto_typed_record_fields(450=_S, Cat, Ss, Stack, T, Ts, Tzr) ->
  yeccpars2_434(_S, Cat, Ss, Stack, T, Ts, Tzr).
 
 -compile({inline,yeccpars2_1_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 487).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 487).
 yeccpars2_1_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8205,7 +8205,7 @@ yeccpars2_1_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_2_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 489).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 489).
 yeccpars2_2_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8213,7 +8213,7 @@ yeccpars2_2_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_4_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 197).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 197).
 yeccpars2_4_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8221,7 +8221,7 @@ yeccpars2_4_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_5_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 199).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 199).
 yeccpars2_5_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8229,14 +8229,14 @@ yeccpars2_5_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_11_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_11_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
 -compile({inline,yeccpars2_12_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 206).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 206).
 yeccpars2_12_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8244,43 +8244,43 @@ yeccpars2_12_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_39_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 438).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 438).
 yeccpars2_39_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
    [ __1 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8254).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8254).
 -compile({inline,yeccpars2_46_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 434).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 434).
 yeccpars2_46_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { [ ] , ? line ( __1 ) }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8263).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8263).
 -compile({inline,yeccpars2_70_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 325).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 325).
 yeccpars2_70_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { tuple , ? line ( __1 ) , [ ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8272).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8272).
 -compile({inline,yeccpars2_71_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 326).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 326).
 yeccpars2_71_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { tuple , ? line ( __1 ) , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8281).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8281).
 -compile({inline,yeccpars2_73_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 408).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 408).
 yeccpars2_73_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8288,14 +8288,14 @@ yeccpars2_73_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_77_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_77_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
 -compile({inline,yeccpars2_79_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 377).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 377).
 yeccpars2_79_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8303,16 +8303,16 @@ yeccpars2_79_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_81_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 378).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 378).
 yeccpars2_81_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8313).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8313).
 -compile({inline,yeccpars2_82_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 406).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 406).
 yeccpars2_82_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8320,7 +8320,7 @@ yeccpars2_82_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_85_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 208).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 208).
 yeccpars2_85_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8328,7 +8328,7 @@ yeccpars2_85_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_86_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 441).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 441).
 yeccpars2_86_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8336,16 +8336,16 @@ yeccpars2_86_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_88_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 442).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 442).
 yeccpars2_88_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8346).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8346).
 -compile({inline,yeccpars2_89_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 381).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 381).
 yeccpars2_89_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8353,7 +8353,7 @@ yeccpars2_89_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_91_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 211).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 211).
 yeccpars2_91_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8361,7 +8361,7 @@ yeccpars2_91_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_93_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 417).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 417).
 yeccpars2_93_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8369,22 +8369,22 @@ yeccpars2_93_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_94_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_94_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
 -compile({inline,yeccpars2_98_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_98_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8385).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8385).
 -compile({inline,yeccpars2_100_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 427).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 427).
 yeccpars2_100_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8393,15 +8393,15 @@ yeccpars2_100_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_102_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_102_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8402).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8402).
 -compile({inline,yeccpars2_104_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 424).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 424).
 yeccpars2_104_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8409,9 +8409,9 @@ yeccpars2_104_(__Stack0) ->
     { clause , L , [ { tuple , L , [ __1 , __3 , { var , L , '_' } ] } ] , __4 , __5 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8412).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8412).
 -compile({inline,yeccpars2_106_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 421).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 421).
 yeccpars2_106_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8420,7 +8420,7 @@ yeccpars2_106_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_108_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 418).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 418).
 yeccpars2_108_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8428,7 +8428,7 @@ yeccpars2_108_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_110_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 411).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 411).
 yeccpars2_110_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8436,7 +8436,7 @@ yeccpars2_110_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_112_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 413).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 413).
 yeccpars2_112_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8444,43 +8444,43 @@ yeccpars2_112_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_114_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 415).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 415).
 yeccpars2_114_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { [ ] , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8454).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8454).
 -compile({inline,yeccpars2_115_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 452).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 452).
 yeccpars2_115_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { string , ? line ( __1 ) , element ( 3 , __1 ) ++ element ( 3 , __2 ) }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8463).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8463).
 -compile({inline,yeccpars2_120_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 386).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 386).
 yeccpars2_120_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { 'receive' , ? line ( __1 ) , [ ] , __3 , __4 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8472).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8472).
 -compile({inline,yeccpars2_122_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 384).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 384).
 yeccpars2_122_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { 'receive' , ? line ( __1 ) , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8481).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8481).
 -compile({inline,yeccpars2_125_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 388).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 388).
 yeccpars2_125_(__Stack0) ->
  [__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8488,25 +8488,25 @@ yeccpars2_125_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_131_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 318).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 318).
 yeccpars2_131_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
    [ __1 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8498).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8498).
 -compile({inline,yeccpars2_135_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 323).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 323).
 yeccpars2_135_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { b_generate , ? line ( __2 ) , __1 , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8507).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8507).
 -compile({inline,yeccpars2_137_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 322).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 322).
 yeccpars2_137_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8514,25 +8514,25 @@ yeccpars2_137_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_139_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 319).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 319).
 yeccpars2_139_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8524).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8524).
 -compile({inline,yeccpars2_140_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 315).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 315).
 yeccpars2_140_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { lc , ? line ( __1 ) , __2 , __4 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8533).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8533).
 -compile({inline,yeccpars2_141_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 431).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 431).
 yeccpars2_141_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8540,16 +8540,16 @@ yeccpars2_141_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_143_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 367).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 367).
 yeccpars2_143_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
    [ __1 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8550).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8550).
 -compile({inline,yeccpars2_145_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 371).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 371).
 yeccpars2_145_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8557,16 +8557,16 @@ yeccpars2_145_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_147_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 368).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 368).
 yeccpars2_147_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8567).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8567).
 -compile({inline,yeccpars2_148_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 365).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 365).
 yeccpars2_148_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8574,7 +8574,7 @@ yeccpars2_148_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_150_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 398).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 398).
 yeccpars2_150_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8582,24 +8582,24 @@ yeccpars2_150_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_151_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_151_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8591).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8591).
 -compile({inline,yeccpars2_157_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 394).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 394).
 yeccpars2_157_(__Stack0) ->
  [__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { 'fun' , ? line ( __1 ) , { function , element ( 3 , __2 ) , element ( 3 , __4 ) , element ( 3 , __6 ) } }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8600).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8600).
 -compile({inline,yeccpars2_158_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 392).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 392).
 yeccpars2_158_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8607,7 +8607,7 @@ yeccpars2_158_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_160_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 402).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 402).
 yeccpars2_160_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8616,70 +8616,70 @@ yeccpars2_160_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_162_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 399).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 399).
 yeccpars2_162_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8626).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8626).
 -compile({inline,yeccpars2_163_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 396).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 396).
 yeccpars2_163_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    build_fun ( ? line ( __1 ) , __2 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8635).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8635).
 -compile({inline,yeccpars2_164_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 214).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 214).
 yeccpars2_164_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { 'catch' , ? line ( __1 ) , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8644).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8644).
 -compile({inline,yeccpars2_168_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 375).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 375).
 yeccpars2_168_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { 'case' , ? line ( __1 ) , __2 , __4 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8653).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8653).
 -compile({inline,yeccpars2_170_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 270).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 270).
 yeccpars2_170_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { block , ? line ( __1 ) , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8662).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8662).
 -compile({inline,yeccpars2_172_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 279).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 279).
 yeccpars2_172_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { nil , ? line ( __1 ) }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8671).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8671).
 -compile({inline,yeccpars2_173_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 280).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 280).
 yeccpars2_173_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { cons , ? line ( __1 ) , __2 , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8680).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8680).
 -compile({inline,yeccpars2_175_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 282).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 282).
 yeccpars2_175_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8687,16 +8687,16 @@ yeccpars2_175_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_178_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 283).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 283).
 yeccpars2_178_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    __2
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8697).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8697).
 -compile({inline,yeccpars2_180_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 284).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 284).
 yeccpars2_180_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8704,23 +8704,23 @@ yeccpars2_180_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_183_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 300).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 300).
 yeccpars2_183_(__Stack0) ->
  [begin
    default
   end | __Stack0].
 
 -compile({inline,yeccpars2_186_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 290).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 290).
 yeccpars2_186_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
    [ __1 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8721).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8721).
 -compile({inline,yeccpars2_187_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 287).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 287).
 yeccpars2_187_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8728,25 +8728,25 @@ yeccpars2_187_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_189_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 291).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 291).
 yeccpars2_189_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8738).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8738).
 -compile({inline,yeccpars2_190_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 288).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 288).
 yeccpars2_190_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { bin , ? line ( __1 ) , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8747).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8747).
 -compile({inline,yeccpars2_193_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 317).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 317).
 yeccpars2_193_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8754,23 +8754,23 @@ yeccpars2_193_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_194_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 303).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 303).
 yeccpars2_194_(__Stack0) ->
  [begin
    default
   end | __Stack0].
 
 -compile({inline,yeccpars2_197_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 299).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 299).
 yeccpars2_197_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    __2
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8771).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8771).
 -compile({inline,yeccpars2_198_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 294).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 294).
 yeccpars2_198_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8778,7 +8778,7 @@ yeccpars2_198_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_200_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 302).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 302).
 yeccpars2_200_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8786,7 +8786,7 @@ yeccpars2_200_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_201_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 306).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 306).
 yeccpars2_201_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8794,7 +8794,7 @@ yeccpars2_201_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_202_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 308).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 308).
 yeccpars2_202_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8802,7 +8802,7 @@ yeccpars2_202_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_204_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 309).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 309).
 yeccpars2_204_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8810,25 +8810,25 @@ yeccpars2_204_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_206_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 305).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 305).
 yeccpars2_206_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8820).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8820).
 -compile({inline,yeccpars2_207_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 296).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 296).
 yeccpars2_207_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop1 ( __1 , __2 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8829).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8829).
 -compile({inline,yeccpars2_208_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 256).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 256).
 yeccpars2_208_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8836,16 +8836,16 @@ yeccpars2_208_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_210_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 269).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 269).
 yeccpars2_210_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    __2
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8846).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8846).
 -compile({inline,yeccpars2_212_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 340).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 340).
 yeccpars2_212_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8853,7 +8853,7 @@ yeccpars2_212_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_216_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 353).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 353).
 yeccpars2_216_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -8861,25 +8861,25 @@ yeccpars2_216_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_219_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 350).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 350).
 yeccpars2_219_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    [ ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8871).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8871).
 -compile({inline,yeccpars2_221_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 356).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 356).
 yeccpars2_221_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { record_field , ? line ( __1 ) , __1 , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8880).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8880).
 -compile({inline,yeccpars2_223_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 357).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 357).
 yeccpars2_223_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8887,7 +8887,7 @@ yeccpars2_223_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_225_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 354).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 354).
 yeccpars2_225_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8895,16 +8895,16 @@ yeccpars2_225_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_226_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 351).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 351).
 yeccpars2_226_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    __2
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8905).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8905).
 -compile({inline,yeccpars2_227_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 338).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 338).
 yeccpars2_227_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -8912,178 +8912,178 @@ yeccpars2_227_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_229_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 439).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 439).
 yeccpars2_229_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8922).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8922).
 -compile({inline,yeccpars2_232_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 217).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 217).
 yeccpars2_232_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { match , ? line ( __2 ) , __1 , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8931).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8931).
 -compile({inline,yeccpars2_233_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 218).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 218).
 yeccpars2_233_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8940).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8940).
 -compile({inline,yeccpars2_235_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 221).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 221).
 yeccpars2_235_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8949).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8949).
 -compile({inline,yeccpars2_237_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 224).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 224).
 yeccpars2_237_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8958).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8958).
 -compile({inline,yeccpars2_247_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 228).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 228).
 yeccpars2_247_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8967).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8967).
 -compile({inline,yeccpars2_260_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 236).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 236).
 yeccpars2_260_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8976).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8976).
 -compile({inline,yeccpars2_268_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 240).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 240).
 yeccpars2_268_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8985).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8985).
 -compile({inline,yeccpars2_269_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 232).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 232).
 yeccpars2_269_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop2 ( __1 , __2 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8994).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 8994).
 -compile({inline,yeccpars2_270_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 362).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 362).
 yeccpars2_270_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { call , ? line ( __1 ) , __1 , element ( 1 , __2 ) }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9003).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9003).
 -compile({inline,yeccpars2_273_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 252).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 252).
 yeccpars2_273_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { remote , ? line ( __2 ) , __1 , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9012).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9012).
 -compile({inline,yeccpars2_274_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 258).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 258).
 yeccpars2_274_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { record_field , ? line ( __2 ) , __1 , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9021).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9021).
 -compile({inline,yeccpars2_277_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 344).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 344).
 yeccpars2_277_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { record , ? line ( __2 ) , __1 , element ( 3 , __3 ) , __4 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9030).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9030).
 -compile({inline,yeccpars2_279_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 342).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 342).
 yeccpars2_279_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { record_field , ? line ( __2 ) , __1 , element ( 3 , __3 ) , __5 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9039).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9039).
 -compile({inline,yeccpars2_280_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 435).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 435).
 yeccpars2_280_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { __2 , ? line ( __1 ) }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9048).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9048).
 -compile({inline,yeccpars2_281_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 244).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 244).
 yeccpars2_281_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    ? mkop1 ( __1 , __2 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9057).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9057).
 -compile({inline,yeccpars2_284_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 348).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 348).
 yeccpars2_284_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { record , ? line ( __2 ) , __1 , element ( 3 , __3 ) , __4 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9066).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9066).
 -compile({inline,yeccpars2_286_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 346).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 346).
 yeccpars2_286_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { record_field , ? line ( __2 ) , __1 , element ( 3 , __3 ) , __5 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9075).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9075).
 -compile({inline,yeccpars2_288_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 493).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 493).
 yeccpars2_288_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { clause , ? line ( __1 ) , element ( 3 , __1 ) , __2 , __3 , __4 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9084).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9084).
 -compile({inline,yeccpars2_289_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 203).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 203).
 yeccpars2_289_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9091,7 +9091,7 @@ yeccpars2_289_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_291_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 495).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 495).
 yeccpars2_291_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9099,7 +9099,7 @@ yeccpars2_291_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_294_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 75).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 75).
 yeccpars2_294_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9107,7 +9107,7 @@ yeccpars2_294_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_300_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 81).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 81).
 yeccpars2_300_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9115,7 +9115,7 @@ yeccpars2_300_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_303_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 85).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 85).
 yeccpars2_303_(__Stack0) ->
  [__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9123,7 +9123,7 @@ yeccpars2_303_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_305_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 84).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 84).
 yeccpars2_305_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9131,7 +9131,7 @@ yeccpars2_305_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_308_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 99).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 99).
 yeccpars2_308_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -9139,52 +9139,52 @@ yeccpars2_308_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_318_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 113).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 113).
 yeccpars2_318_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
    [ __1 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9149).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9149).
 -compile({inline,yeccpars2_332_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 152).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 152).
 yeccpars2_332_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , tuple , [ ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9158).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9158).
 -compile({inline,yeccpars2_333_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 153).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 153).
 yeccpars2_333_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , tuple , __2 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9167).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9167).
 -compile({inline,yeccpars2_335_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 116).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 116).
 yeccpars2_335_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { ann_type , ? line ( __1 ) , [ __1 , __3 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9176).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9176).
 -compile({inline,yeccpars2_341_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 159).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 159).
 yeccpars2_341_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , 'fun' , [ ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9185).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9185).
 -compile({inline,yeccpars2_345_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 163).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 163).
 yeccpars2_345_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9193,16 +9193,16 @@ yeccpars2_345_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_346_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 160).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 160).
 yeccpars2_346_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    __3
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9203).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9203).
 -compile({inline,yeccpars2_352_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 144).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 144).
 yeccpars2_352_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9210,9 +9210,9 @@ yeccpars2_352_(__Stack0) ->
     [ __1 , __3 , [ ] ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9213).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9213).
 -compile({inline,yeccpars2_353_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 146).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 146).
 yeccpars2_353_(__Stack0) ->
  [__6,__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9221,16 +9221,16 @@ yeccpars2_353_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_355_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 141).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 141).
 yeccpars2_355_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    build_gen_type ( __1 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9231).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9231).
 -compile({inline,yeccpars2_356_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 142).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 142).
 yeccpars2_356_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9238,27 +9238,27 @@ yeccpars2_356_(__Stack0) ->
     normalise ( __1 ) , __3 }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9241).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9241).
 -compile({inline,yeccpars2_358_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 148).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 148).
 yeccpars2_358_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , nil , [ ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9250).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9250).
 -compile({inline,yeccpars2_360_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 149).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 149).
 yeccpars2_360_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , list , [ __2 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9259).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9259).
 -compile({inline,yeccpars2_362_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 150).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 150).
 yeccpars2_362_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9266,9 +9266,9 @@ yeccpars2_362_(__Stack0) ->
     nonempty_list , [ __2 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9269).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9269).
 -compile({inline,yeccpars2_365_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 179).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 179).
 yeccpars2_365_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9278,7 +9278,7 @@ yeccpars2_365_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_368_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 189).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 189).
 yeccpars2_368_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9286,16 +9286,16 @@ yeccpars2_368_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_371_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 191).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 191).
 yeccpars2_371_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    build_bin_type ( [ __1 , __3 ] , __5 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9296).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9296).
 -compile({inline,yeccpars2_373_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 182).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 182).
 yeccpars2_373_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9303,18 +9303,18 @@ yeccpars2_373_(__Stack0) ->
     [ __2 , abstract ( 0 , ? line ( __1 ) ) ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9306).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9306).
 -compile({inline,yeccpars2_378_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 187).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 187).
 yeccpars2_378_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , binary , [ __2 , __4 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9315).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9315).
 -compile({inline,yeccpars2_379_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 184).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 184).
 yeccpars2_379_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9322,9 +9322,9 @@ yeccpars2_379_(__Stack0) ->
     [ abstract ( 0 , ? line ( __1 ) ) , __2 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9325).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9325).
 -compile({inline,yeccpars2_381_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 167).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 167).
 yeccpars2_381_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9332,9 +9332,9 @@ yeccpars2_381_(__Stack0) ->
     [ { type , ? line ( __1 ) , product , [ ] } , __4 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9335).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9335).
 -compile({inline,yeccpars2_383_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 138).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 138).
 yeccpars2_383_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9342,25 +9342,25 @@ yeccpars2_383_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_387_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 173).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 173).
 yeccpars2_387_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
    [ __1 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9352).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9352).
 -compile({inline,yeccpars2_389_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 154).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 154).
 yeccpars2_389_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
    { type , ? line ( __1 ) , record , [ __2 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9361).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9361).
 -compile({inline,yeccpars2_391_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 176).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 176).
 yeccpars2_391_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9369,16 +9369,16 @@ yeccpars2_391_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_393_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 174).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 174).
 yeccpars2_393_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9379).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9379).
 -compile({inline,yeccpars2_394_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 155).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 155).
 yeccpars2_394_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9386,9 +9386,9 @@ yeccpars2_394_(__Stack0) ->
     record , [ __2 | __4 ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9389).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9389).
 -compile({inline,yeccpars2_395_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 135).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 135).
 yeccpars2_395_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9396,16 +9396,16 @@ yeccpars2_395_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_397_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 114).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 114).
 yeccpars2_397_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9406).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9406).
 -compile({inline,yeccpars2_400_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 170).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 170).
 yeccpars2_400_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9414,16 +9414,16 @@ yeccpars2_400_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_402_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 120).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 120).
 yeccpars2_402_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    lift_unions ( __1 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9424).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9424).
 -compile({inline,yeccpars2_405_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 122).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 122).
 yeccpars2_405_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9432,9 +9432,9 @@ yeccpars2_405_(__Stack0) ->
     skip_paren ( __3 ) ] }
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9435).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9435).
 -compile({inline,yeccpars2_406_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 127).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 127).
 yeccpars2_406_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9442,9 +9442,9 @@ yeccpars2_406_(__Stack0) ->
     __2 , skip_paren ( __3 ) )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9445).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9445).
 -compile({inline,yeccpars2_408_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 131).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 131).
 yeccpars2_408_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9452,9 +9452,9 @@ yeccpars2_408_(__Stack0) ->
     __2 , skip_paren ( __3 ) )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9455).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9455).
 -compile({inline,yeccpars2_410_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 103).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 103).
 yeccpars2_410_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9463,7 +9463,7 @@ yeccpars2_410_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_411_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 106).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 106).
 yeccpars2_411_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -9471,16 +9471,16 @@ yeccpars2_411_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_415_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 111).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 111).
 yeccpars2_415_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    build_def ( __1 , __3 )
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9481).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9481).
 -compile({inline,yeccpars2_418_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 109).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 109).
 yeccpars2_418_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9489,7 +9489,7 @@ yeccpars2_418_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_420_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 107).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 107).
 yeccpars2_420_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9497,7 +9497,7 @@ yeccpars2_420_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_422_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 100).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 100).
 yeccpars2_422_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9505,7 +9505,7 @@ yeccpars2_422_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_423_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 78).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 78).
 yeccpars2_423_(__Stack0) ->
  [__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9513,7 +9513,7 @@ yeccpars2_423_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_424_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 77).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 77).
 yeccpars2_424_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9521,7 +9521,7 @@ yeccpars2_424_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_425_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 73).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 73).
 yeccpars2_425_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9529,7 +9529,7 @@ yeccpars2_425_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_426_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 193).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 193).
 yeccpars2_426_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -9537,7 +9537,7 @@ yeccpars2_426_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_427_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 72).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 72).
 yeccpars2_427_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9545,7 +9545,7 @@ yeccpars2_427_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_433_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 88).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 88).
 yeccpars2_433_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9553,7 +9553,7 @@ yeccpars2_433_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_434_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 87).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 87).
 yeccpars2_434_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9561,7 +9561,7 @@ yeccpars2_434_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_438_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 92).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 92).
 yeccpars2_438_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -9569,7 +9569,7 @@ yeccpars2_438_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_439_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 438).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 438).
 yeccpars2_439_(__Stack0) ->
  [__1 | __Stack] = __Stack0,
  [begin
@@ -9577,7 +9577,7 @@ yeccpars2_439_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_442_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 97).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 97).
 yeccpars2_442_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9585,7 +9585,7 @@ yeccpars2_442_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_443_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 94).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 94).
 yeccpars2_443_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9593,7 +9593,7 @@ yeccpars2_443_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_445_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 93).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 93).
 yeccpars2_445_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9601,16 +9601,16 @@ yeccpars2_445_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_446_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 95).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 95).
 yeccpars2_446_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
    [ __1 | __3 ]
   end | __Stack].
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9611).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.erl", 9611).
 -compile({inline,yeccpars2_447_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 90).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 90).
 yeccpars2_447_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9618,7 +9618,7 @@ yeccpars2_447_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_448_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 195).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 195).
 yeccpars2_448_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9626,7 +9626,7 @@ yeccpars2_448_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_449_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 74).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 74).
 yeccpars2_449_(__Stack0) ->
  [__5,__4,__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9634,7 +9634,7 @@ yeccpars2_449_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_451_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 194).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 194).
 yeccpars2_451_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9642,7 +9642,7 @@ yeccpars2_451_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_452_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 68).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 68).
 yeccpars2_452_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9650,7 +9650,7 @@ yeccpars2_452_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_453_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 69).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 69).
 yeccpars2_453_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9658,7 +9658,7 @@ yeccpars2_453_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_455_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 200).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 200).
 yeccpars2_455_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9666,14 +9666,14 @@ yeccpars2_455_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_457_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_457_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
 -compile({inline,yeccpars2_459_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 70).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 70).
 yeccpars2_459_(__Stack0) ->
  [__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9681,7 +9681,7 @@ yeccpars2_459_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_461_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 490).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 490).
 yeccpars2_461_(__Stack0) ->
  [__3,__2,__1 | __Stack] = __Stack0,
  [begin
@@ -9689,11 +9689,11 @@ yeccpars2_461_(__Stack0) ->
   end | __Stack].
 
 -compile({inline,yeccpars2_463_/1}).
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 209).
 yeccpars2_463_(__Stack0) ->
  [begin
    [ ]
   end | __Stack0].
 
 
--file("C:/cygwin/home/hl/git_repos/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 1113).
+-file("/home/wirenth/workspace/erlide2/erlide/org.erlide.wrangler.core/wrangler/src/wrangler_parse.yrl", 1113).
