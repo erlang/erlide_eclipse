@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Groovy + GPars
 Bundle-SymbolicName: org.erlide.groovy;singleton:=true
-Bundle-Version: 1.180.11
-Bundle-ClassPath: gpars-0.11.jar,
- groovy-all-1.8.0.jar
+Bundle-Version: 1.184.12
+Bundle-ClassPath: groovy-all-1.8.4.jar,
+ gpars-0.12.jar
 Export-Package: groovy.beans,
  groovy.grape,
  groovy.inspect,
