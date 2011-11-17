@@ -84,6 +84,10 @@ public class ProcessListView extends ViewPart {
         private final ProcessEventHandler handler = new ProcessEventHandler(
                 getBackend());
 
+        public ViewContentProvider() {
+            handler.register();
+        }
+
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
         }
@@ -97,7 +101,6 @@ public class ProcessListView extends ViewPart {
             if (backend == null) {
                 return new OtpErlangObject[] {};
             }
-            handler.register();
 
             final OtpErlangList r = ErlideProclist.getProcessList(backend);
             if (r.arity() == 0) {
