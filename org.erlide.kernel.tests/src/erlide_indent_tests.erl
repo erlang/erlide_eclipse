@@ -176,7 +176,8 @@ type_test_() ->
                   "    ok.\n",
     ?Test_indent(SIndent, S).
 
-%% http://www.assembla.com/spaces/erlide/tickets/936-indent--macros-in-list-comprehensions
+
+%% https://www.assembla.com/spaces/erlide/tickets/936-indent--macros-in-list-comprehensions
 macro_in_lc_test_() ->
     S = "" ++
             "b() ->\n"++
@@ -187,6 +188,35 @@ macro_in_lc_test_() ->
             "    [?X(A) || X <-L],\n"++
             "    a.\n",
     ?Test_indent(I, S).
+
+
+%% for multi-line strings
+multiline_string_test_() ->
+    S = "a() -> \"aaa\n"
+        "b,b,b,\n"
+        " ddd\n"
+        "ccc\",\n"
+        "ok.",
+    SIndent = "a() -> \"aaa\n"
+              "b,b,b,\n"
+              " ddd\n"
+              "ccc\",\n"
+              "       ok.",
+    ?Test_indent(SIndent, S).
+    
+%% for adjacent strings on different lines
+adjacent_string_test_() ->
+    S = "a() -> \"aaa\"\n"
+        "\"b,b,b,\"\n"
+        " \"ddd\n"
+        "\"ccc\",\n"
+        "ok.",
+    SIndent = "a() -> \"aaa\"\n"
+              "       \"b,b,b,\"\n"
+              "       \"ddd\n"
+              "       \"ccc\",\n"
+              "       ok.",
+    ?Test_indent(SIndent, S).
 
 %% http://www.assembla.com/spaces/erlide/tickets/776
 %% indentation: receive..after is wrong
