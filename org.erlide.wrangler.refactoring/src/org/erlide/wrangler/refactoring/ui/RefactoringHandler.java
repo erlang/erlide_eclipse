@@ -64,6 +64,7 @@ import org.erlide.wrangler.refactoring.core.internal.UnfoldFunctionApplicationRe
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
+import org.erlide.wrangler.refactoring.ui.validator.ModuleNameValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NormalDoulbeValidator;
 import org.erlide.wrangler.refactoring.ui.validator.VariableNameValidator;
@@ -75,6 +76,7 @@ import org.erlide.wrangler.refactoring.ui.wizardpages.ModuleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.RecordDataInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.UserRefacInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.WranglerPage;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -120,10 +122,11 @@ public class RefactoringHandler extends AbstractHandler {
             pages.add(new ModuleInputPage("Apply ad hoc refactoring",
                     "Please type the gen_refac module name!", "Module name:",
                     "Name must be a valid Erlang module name!",
-                    new AtomValidator()));
-            pages.add(new SimpleInputPage("Apply ad hoc refactoring",
+                    new ModuleNameValidator()));
+            pages.add(new UserRefacInputPage("Apply ad hoc refactoring",
                     "Please type input arguments", "Arg:",
-                    "Arguments should be valid!", new AtomValidator()));
+                    "Arguments should not be empty!",
+                    new NonEmptyStringValidator()));
             refactoring = new ApplyAdhocRefactoring();
 
             // apply composite refactoring

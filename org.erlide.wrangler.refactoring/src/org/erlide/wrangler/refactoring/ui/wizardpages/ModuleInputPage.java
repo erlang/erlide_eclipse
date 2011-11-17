@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
+import org.eclipse.jface.wizard.IWizardPage;
 import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
@@ -11,19 +12,6 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
  * @version %I%, %G%
  */
 public class ModuleInputPage extends SimpleInputPage {
-
-    /*
-     * private String inputErrorMsg; private String labelText; private Label
-     * inputLabel; private Text inputText; IValidator validator;
-     * 
-     * public ModuleInputPage(final String name, final String description, final
-     * String labelText, final String inputErrorMsg, final IValidator validator)
-     * { super(name); setDescription(description); this.inputErrorMsg =
-     * inputErrorMsg; this.labelText = labelText; this.validator = validator;
-     * setPageComplete(false);
-     * 
-     * }
-     */
 
     public ModuleInputPage(final String name, final String description,
             final String labelText, final String inputErrorMsg,
@@ -39,11 +27,22 @@ public class ModuleInputPage extends SimpleInputPage {
             setErrorMessage(null);
             setPageComplete(true);
             return true;
+
         } else {
             setPageComplete(false);
             setErrorMessage(inputErrorMsg);
             return false;
         }
+    }
+
+    @Override
+    public IWizardPage getNextPage() {
+        if (!((ApplyAdhocRefactoring) getRefactoring()).fetchParPrompts()) {
+            setErrorMessage("Can not load specified callback module");
+            setPageComplete(false);
+        }
+        return super.getNextPage();
+
     }
 
 }
