@@ -53,11 +53,12 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
@@ -182,7 +183,12 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
             final Shell container = new Shell(consoleText.getShell(),
                     SWT.MODELESS);
-            container.setLayout(new FillLayout());
+            final GridLayout layout = new GridLayout(1, false);
+            layout.marginHeight = 0;
+            layout.marginWidth = 0;
+            layout.verticalSpacing = 0;
+            container.setLayout(layout);
+
             consoleInputViewer = new SourceViewer(container, null, SWT.MULTI
                     | SWT.WRAP | SWT.V_SCROLL);
             consoleInputViewer.setDocument(new Document());
@@ -190,26 +196,31 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                     .configure(new ErlangConsoleSourceViewerConfiguration());
             consoleInput = (StyledText) consoleInputViewer.getControl();
             consoleInput.setParent(container);
+            consoleInput.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+                    true));
+
+            final Label helpLabel = new Label(container, SWT.BORDER);
+            helpLabel
+                    .setText("Press Ctrl-Enter to send the input to the console. Press Esc to cancel.");
+            helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
             container.setAlpha(220);
 
             final int b = 1;
             final Point screenPos = consoleText.toDisplay(relpos.x - b,
                     relpos.y - b);
             container.setLocation(screenPos);
-            container.setSize(rect.width - relpos.x, rect.height - relpos.y);
+            container.setSize(rect.width - relpos.x, rect.height - relpos.y
+                    + 20);
 
             consoleInput.addKeyListener(new KeyAdapter() {
-
                 @Override
                 public void keyPressed(final KeyEvent e) {
                     final boolean ctrlPressed = (e.stateMask & SWT.CTRL) == SWT.CTRL;
-                    if (e.keyCode == 13
-                            && isInputComplete()
-                            && consoleInput.getSelection().x == consoleInput
-                                    .getText().length()) {
+                    if (e.keyCode == 13 && ctrlPressed && isInputComplete()) {
                         sendInput();
                         container.close();
-                        e.doit = false;
+                        e.doit = true;
                     } else if (e.keyCode == 13) {
                         final Rectangle loc = container.getBounds();
                         final int topIndex = consoleInput.getTopIndex();
@@ -347,8 +358,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     public void input(final String data) {
-        shell.input(data);
-        shell.send(data);
+        final String data2 = data.trim().replaceAll("\n", "")
+                .replaceAll("\r", "")
+                + "\n";
+        shell.input(data2);
+        shell.send(data2);
         history.addToHistory(data.trim());
     }
 
