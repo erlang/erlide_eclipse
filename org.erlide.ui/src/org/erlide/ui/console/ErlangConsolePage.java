@@ -41,8 +41,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.FocusAdapter;
-import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -254,13 +252,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                         container.close();
                         consoleInput = null;
                     }
-                }
-            });
-            consoleInput.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(final FocusEvent e) {
-                    container.close();
-                    consoleInput = null;
                 }
             });
             consoleInput.addModifyListener(new ModifyListener() {
