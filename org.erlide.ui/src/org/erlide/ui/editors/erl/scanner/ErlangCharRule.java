@@ -17,7 +17,12 @@ public class ErlangCharRule implements IPredicateRule {
         int c = scanner.read();
         if (c == '$') {
             c = scanner.read();
-            if (c != ICharacterScanner.EOF) {
+            if (c == '\\') {
+                c = scanner.read();
+                if (c != ICharacterScanner.EOF) {
+                    return token;
+                }
+            } else if (c != ICharacterScanner.EOF) {
                 return token;
             }
         }
