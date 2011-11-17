@@ -125,7 +125,7 @@
 	 inline_var_eclipse/5, inline_var_eclipse_1/6,
      get_var_name_eclipse/5, get_fun_name_eclipse/5,
 	 run_refac_eclipse/2, input_par_prompts_eclipse/1,
-     apply_changes_eclipse/3
+     apply_changes_eclipse/3, load_callback_mod_eclipse/2
 	]).
  
 -export([try_refac/3, get_log_msg/0]).
@@ -133,7 +133,6 @@
 -export([init_eclipse/0]).
 
 -include("../include/wrangler_internal.hrl").
--include("../include/wrangler.hrl").
 
 -type(context():: emacs | composite_emacs).
 
@@ -146,7 +145,7 @@ apply_changes_eclipse(Module, Args, CandsNotToChange) ->
 	gen_refac:apply_changes(Module, Args, CandsNotToChange).
 
 -spec(run_refac_eclipse(Module::module()|string()|tuple(), Args::[term()])->
-             {ok, string()} | {change_set, [{string(), string()}], module(), #args{}}|
+             {ok, string()} | {change_set, [{string(), string()}], module(), tuple()}|
              {error, term()}).
 run_refac_eclipse(ModName, Args) ->
 	gen_refac:run_refac(ModName,Args).
@@ -154,6 +153,18 @@ run_refac_eclipse(ModName, Args) ->
 -spec(input_par_prompts_eclipse(CallBackMod::module()) -> [string()]).
 input_par_prompts_eclipse(CallBackMod) ->
 	gen_refac:input_par_prompts(CallBackMod).
+
+-spec(load_callback_mod_eclipse(Module::module(), Path::string()) ->
+	ok | {error, Reason::term()}).
+load_callback_mod_eclipse(Module, Path) ->
+	code:add_patha(Path),
+	code:purge(list_to_atom(Module)),
+	case code:load_file(list_to_atom(Module)) of
+		{module, Module} ->
+ 				ok;
+		Error ->
+				Error	
+	end.
 
 %% ====================================================================================================
 %% @doc Rename a variable.
