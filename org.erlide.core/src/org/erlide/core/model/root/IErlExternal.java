@@ -9,8 +9,6 @@ package org.erlide.core.model.root;
  */
 public interface IErlExternal extends IErlElement, IParent, IOpenable {
 
-    String getExternalName();
-
     boolean isOTP();
 
     boolean hasIncludes();
