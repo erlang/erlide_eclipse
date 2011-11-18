@@ -181,7 +181,9 @@ public class RpcMonitor {
         out.format("Largest %d calls%n", largest.size());
         out.println(delim);
         for (final RpcInfo info : largest) {
-            info.dump(out, full);
+            if (info != null) {
+                info.dump(out, full);
+            }
         }
         out.println(delim);
         out.close();

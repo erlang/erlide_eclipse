@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -117,7 +119,11 @@ public final class ErlangCore {
         logger.dispose();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
-        RpcMonitor.dump(location + "/rpc_monitor.dump");
+
+        final String dateNow = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+
+        RpcMonitor.dump(location + "/rpc_monitor-" + dateNow + ".dump");
     }
 
     public void log(final IStatus status) {

@@ -21,6 +21,7 @@ public class ErlangSourceViewerConfiguration extends
         TextSourceViewerConfiguration {
 
     protected final IColorManager colorManager;
+    protected ITokenScanner charScanner;
     protected ITokenScanner codeScanner;
     private final ITokenScanner commentScanner;
     private final ITokenScanner stringScanner;
@@ -35,6 +36,8 @@ public class ErlangSourceViewerConfiguration extends
         stringScanner = new ErlStringScanner(colorManager);
         qatomScanner = new SingleTokenScanner(colorManager,
                 ErlCodeScanner.getToken(TokenHighlight.ATOM.getName()));
+        charScanner = new SingleTokenScanner(colorManager,
+                ErlCodeScanner.getToken(TokenHighlight.CHAR.getName()));
     }
 
     @Override
@@ -67,6 +70,9 @@ public class ErlangSourceViewerConfiguration extends
         dr = new ErlDamagerRepairer(qatomScanner);
         reconciler.setDamager(dr, IErlangPartitions.ERLANG_QATOM);
         reconciler.setRepairer(dr, IErlangPartitions.ERLANG_QATOM);
+        dr = new ErlDamagerRepairer(charScanner);
+        reconciler.setDamager(dr, IErlangPartitions.ERLANG_CHARACTER);
+        reconciler.setRepairer(dr, IErlangPartitions.ERLANG_CHARACTER);
 
         return reconciler;
     }
