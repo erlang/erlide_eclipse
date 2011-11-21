@@ -277,7 +277,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             }
 
             public void focusGained(final FocusEvent e) {
-                // consoleInput.setFocus();
+                consoleInput.setFocus();
             }
         });
         consoleOutputViewer.setDocument(fDoc);
