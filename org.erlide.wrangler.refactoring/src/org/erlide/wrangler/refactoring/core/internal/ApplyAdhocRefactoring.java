@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ApplyAdhocRefactoring extends SimpleOneStepWranglerRefactoring {
     private String callbackModule; // callback module
     private List<String> parPrompts = new LinkedList<String>(); // parameter
                                                                 // prompts
-    private List<String> parValues = new LinkedList<String>(); // parameter
+    private List<String> parValues = new ArrayList<String>(0); // parameter
                                                                // values
                                                                // submited by
                                                                // user
@@ -57,11 +58,11 @@ public class ApplyAdhocRefactoring extends SimpleOneStepWranglerRefactoring {
                 selectionBeg, selectionEnd });
         OtpErlangList args = new OtpErlangList(new OtpErlangObject[] {
                 new OtpErlangString(sel.getFilePath()), pos, selectionPos,
-                new OtpErlangString(prepareUserInput()), sel.getSearchPath(),
+                prepareUserInput(), sel.getSearchPath(),
                 new OtpErlangInt(GlobalParameters.getTabWidth()) });
 
         return WranglerBackendManager.getRefactoringBackend().call(
-                "rename_var_eclipse", "sx", callbackModule, args);
+                "run_refac_eclipse", "sx", callbackModule, args);
     }
 
     @Override
@@ -119,7 +120,7 @@ public class ApplyAdhocRefactoring extends SimpleOneStepWranglerRefactoring {
                 .elementAt(1);
         parPrompts.clear();
         for (OtpErlangObject obj : params.elements())
-            parPrompts.add(obj.toString());
+            parPrompts.add(obj.toString().replace("\"", ""));
 
         fetched = true;
 
@@ -149,15 +150,18 @@ public class ApplyAdhocRefactoring extends SimpleOneStepWranglerRefactoring {
      * 
      * @param value
      */
-    public void addParValue(String value) {
-        parValues.add(value);
+    public void setParValue(List<String> params) {
+        parValues = params;
     }
 
-    private String prepareUserInput() {
-        StringBuffer buf = new StringBuffer();
-        for (String val : parValues)
-            buf.append(val).append(" ");
-        return buf.toString().trim();
+    private OtpErlangList prepareUserInput() {
+        OtpErlangObject[] params = new OtpErlangObject[parValues.size()];
+        int i = 0;
+        for (String val : parValues) {
+            params[i] = new OtpErlangString(val);
+            i++;
+        }
+        return new OtpErlangList(params);
     }
 
 }

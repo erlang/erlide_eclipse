@@ -124,7 +124,7 @@ public class RefactoringHandler extends AbstractHandler {
                     "Name must be a valid Erlang module name!",
                     new ModuleNameValidator()));
             pages.add(new UserRefacInputPage("Apply ad hoc refactoring",
-                    "Please type input arguments", "Arg:",
+                    "Please type input arguments",
                     "Arguments should not be empty!",
                     new NonEmptyStringValidator()));
             refactoring = new ApplyAdhocRefactoring();

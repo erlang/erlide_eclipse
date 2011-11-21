@@ -16,7 +16,6 @@ import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 public class UserRefacInputPage extends InputPage {
 
-    protected String labelText;
     protected String inputErrorMsg;
 
     IValidator validator;
@@ -47,26 +46,26 @@ public class UserRefacInputPage extends InputPage {
      *            validator object
      */
     public UserRefacInputPage(final String name, final String description,
-            final String labelText, final String inputErrorMsg,
-            final IValidator validator) {
+            final String inputErrorMsg, final IValidator validator) {
         super(name);
         setDescription(description);
         this.inputErrorMsg = inputErrorMsg;
-        this.labelText = labelText;
         this.validator = validator;
         setPageComplete(false);
 
     }
 
-    public void createControl(Composite parent) {
+    public void createControl(final Composite parent) {
+
         Composite composite = new Composite(parent, SWT.NONE);
 
         final GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
+        layout.numColumns = 3;
         composite.setLayout(layout);
 
         List<String> parPrompts = ((ApplyAdhocRefactoring) getRefactoring())
                 .getParPrompts();
+
         if (parPrompts.size() == 0) {
             Label label = new Label(composite, SWT.LEFT);
             label.setText("No arguments for this refactoring");
@@ -77,10 +76,11 @@ public class UserRefacInputPage extends InputPage {
 
         inputLabels = new ArrayList<Label>(parPrompts.size());
         inputTexts = new ArrayList<Text>(parPrompts.size());
+
         for (String labelText : parPrompts) {
             GridData gridData = new GridData();
             gridData.horizontalAlignment = GridData.FILL;
-            gridData.horizontalSpan = 2;
+            gridData.horizontalSpan = 1;
             Label label = new Label(composite, SWT.LEFT);
             label.setText(labelText);
             label.setLayoutData(gridData);
@@ -99,14 +99,16 @@ public class UserRefacInputPage extends InputPage {
         setControl(composite);
 
         inputTexts.get(0).setFocus();
+
     }
 
     @Override
     protected boolean isInputValid() {
         if (checkCorrectness()) {
+            List<String> params = new ArrayList<String>(inputTexts.size());
             for (Text text : inputTexts)
-                ((ApplyAdhocRefactoring) getRefactoring()).addParValue(text
-                        .getText());
+                params.add(text.getText());
+            ((ApplyAdhocRefactoring) getRefactoring()).setParValue(params);
             setErrorMessage(null);
             setPageComplete(true);
             return true;

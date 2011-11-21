@@ -131,7 +131,7 @@
 %%</doc>
 -module(gen_refac).
 
--export([run_refac/2, 
+-export([run_refac/3, 
          input_par_prompts/1,
          apply_changes/3
         ]).
@@ -204,13 +204,14 @@ apply_changes(Module, Args, CandsNotToChange) ->
 
 %%@doc The interface function for invoking a refactoring defined 
 %% in module `ModName'.
--spec(run_refac(Module::module()|string()|tuple(), Args::[term()])->
-             {ok, string()} | {change_set, [{string(), string()}], module(), #args{}}|
+-spec(run_refac(Module::module()|string()|tuple(), Args::[term()], Editor::atom())->
+             {ok, string()} | {ok, [{filename(), filename(), string()}]} | 
+			 {change_set, [{string(), string()}], module(), #args{}}|
              {error, term()}).
 run_refac(ModName, Args=[CurFileName, [Line,Col],
                          [[StartLine, StartCol],
                           [EndLn, EndCol]], UserInputs,
-                         SearchPaths, TabWidth]) ->
+                         SearchPaths, TabWidth], Editor) ->
     ?wrangler_io("\nCMD: ~p:run_refac(~p,~p).\n",
 		 [?MODULE, ModName, Args]),
     Module = if is_list(ModName) ->
@@ -248,7 +249,15 @@ run_refac(ModName, Args=[CurFileName, [Line,Col],
                                     case apply(Module, transform, [Args2]) of
                                         {ok, Res} ->
                                             wrangler_gen_refac_server:delete_flag(self()),
-                                            wrangler_write_file:write_refactored_files(Res,emacs,TabWidth,"");
+                                            wrangler_write_file:write_refactored_files(Res,Editor,TabWidth,"");
+											%case Editor of
+	       									%	emacs ->
+		  									%		R;
+	      									%	_ ->
+											%		{ok, [{{FName, FName}, AST}]} = Res,
+		   									%		Content = wrangler_prettypr:print_ast(wrangler_misc:file_format(FName), AST, TabWidth),
+		 									%		{ok, [{FName, FName, Content}]}
+	   										%end;
                                         {error, Reason} ->
                                             wrangler_gen_refac_server:delete_flag(self()),
                                             {error, Reason}
