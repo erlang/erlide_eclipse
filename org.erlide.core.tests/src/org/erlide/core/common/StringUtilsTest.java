@@ -65,4 +65,69 @@ public class StringUtilsTest {
         Assert.assertEquals(expected, actual);
     }
 
+    @Test
+    public void joinWithSpaces() {
+        final String[] input = new String[] { "aa", "bb", "cc" };
+        final String expected = "aa bb cc";
+        final String actual = StringUtils.joinWithSpaces(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void withoutInterrogationMark_1() {
+        final String input = "?hello";
+        final String expected = "hello";
+        final String actual = StringUtils.withoutInterrogationMark(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void withoutInterrogationMark_2() {
+        final String input = "hello";
+        final String expected = "hello";
+        final String actual = StringUtils.withoutInterrogationMark(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void unquote_1() {
+        final String input = "'hello'";
+        final String expected = "hello";
+        final String actual = StringUtils.unquote(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void unquote_2() {
+        final String input = "h'ello'";
+        final String expected = "h'ello'";
+        final String actual = StringUtils.unquote(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void unquote_3() {
+        final String input = "h";
+        final String expected = "h";
+        final String actual = StringUtils.unquote(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void split_1() {
+        final String input = "this is a nice day";
+        final List<String> expected = Lists.newArrayList("this", "is", "a",
+                "nice", "day");
+        final List<String> actual = StringUtils.split(" ", input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void split_2() {
+        final String input = "this .is .a .nice .day";
+        final List<String> expected = Lists.newArrayList("this", "is", "a",
+                "nice", "day");
+        final List<String> actual = StringUtils.split(" .", input);
+        Assert.assertEquals(expected, actual);
+    }
 }
