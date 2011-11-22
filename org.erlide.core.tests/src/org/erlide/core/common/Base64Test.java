@@ -1,4 +1,4 @@
-package org.erlide.core.preferences;
+package org.erlide.core.common;
 
 import junit.framework.Assert;
 
