@@ -123,6 +123,7 @@ public final class ErlangCore {
         final String dateNow = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 .format(new Date());
 
+        RpcMonitor.cleanupOldLogs(location, "rpc_monitor");
         RpcMonitor.dump(location + "/rpc_monitor-" + dateNow + ".dump");
     }
 

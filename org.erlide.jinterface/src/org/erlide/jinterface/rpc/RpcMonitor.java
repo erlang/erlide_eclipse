@@ -1,5 +1,6 @@
 package org.erlide.jinterface.rpc;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -187,6 +188,18 @@ public class RpcMonitor {
         }
         out.println(delim);
         out.close();
+    }
+
+    public static void cleanupOldLogs(final String dirName, final String prefix) {
+        final File dir = new File(dirName);
+        for (final File f : dir.listFiles()) {
+            final long now = System.currentTimeMillis();
+            int aWeek = 7 * 24 * 3600 * 1000;
+            if (f.getName().startsWith(prefix)
+                    && (now - f.lastModified()) > aWeek) {
+                f.delete();
+            }
+        }
     }
 
 }
