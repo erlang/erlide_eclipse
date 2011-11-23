@@ -125,7 +125,9 @@
 	 inline_var_eclipse/5, inline_var_eclipse_1/6,
      get_var_name_eclipse/5, get_fun_name_eclipse/5,
 	 run_refac_eclipse/2, input_par_prompts_eclipse/1,
-     apply_changes_eclipse/3, load_callback_mod_eclipse/2
+     apply_changes_eclipse/3, load_callback_mod_eclipse/2,
+	 input_par_prompts_c_eclipse/1, init_composite_refac_eclipse/2,
+     get_next_command_eclipse/1, apply_next_command_eclipse/2
 	]).
  
 -export([try_refac/3, get_log_msg/0]).
@@ -154,6 +156,41 @@ run_refac_eclipse(ModName, Args) ->
 input_par_prompts_eclipse(CallBackMod) ->
 	gen_refac:input_par_prompts(CallBackMod).
 
+%% ====================================================================================================
+%% @doc gen_composite_refac refactorings - delegate functions in order to achieve more clear API (especially for Eclipse)
+-spec(input_par_prompts_c_eclipse(CallBackMod::module()) -> [string()]).
+input_par_prompts_c_eclipse(CallBackMod) ->
+	gen_composite_refac:input_par_prompts(CallBackMod).
+
+-spec(init_composite_refac_eclipse(Module::module()|string()|tuple(), Args::[term()])->
+	{ok,pid()} | ignore |{error, term()}).
+init_composite_refac_eclipse(ModName, Args) ->
+	gen_composite_refac:init_composite_refac(ModName, Args).
+
+get_next_command_eclipse(PrevResult) ->
+	case gen_composite_refac:get_next_command(PrevResult) of
+		{ok, none, _ChangedFiles, [error, Reason]} ->
+			%revert buffers
+			{error, io_lib:format("Composite refactoring failed: %s", Reason)};
+		{ok, none, ChangedFiles, _Msg} ->
+			{ok, ChangedFiles}; % do sth with them
+		{ok, Command} ->
+			{next, Command};
+		{error, Reason} ->
+			{error, io_lib:format("Refactoring failed: %s", Reason)};
+		{badrpc, Reason} ->
+			{error, io_lib:format("Refactoring failed: %s", Reason)};
+		Reasult ->
+			{error, io_lib:format("Unexpectedd result: %s", Reasult)}
+	end.
+
+apply_next_command_eclipse(Cmd, Args) ->
+	%? get user input
+	apply(wrangler_refacs, list_to_atom(Cmd ++ "_eclipse"), Args).
+		
+
+%% ====================================================================================================
+%% @doc user defined refactorings - common
 -spec(load_callback_mod_eclipse(Module::module(), Path::string()) ->
 	ok | {error, Reason::term()}).
 load_callback_mod_eclipse(Module, Path) ->

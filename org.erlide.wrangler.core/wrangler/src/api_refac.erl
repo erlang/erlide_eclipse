@@ -1126,7 +1126,7 @@ search_and_transform(Rules,Input,TraverseStrategy)
   when is_list(Input) ->
     check_rules(Rules),
     case lists:all(fun(I) -> 
-                           filelib:is_file(I) 
+                           filelib:is_file(I)
                    end, Input) of 
         true -> 
             search_and_transform_2(Rules, Input, TraverseStrategy);
@@ -1143,7 +1143,7 @@ search_and_transform(Rules,Input,TraverseStrategy)
                     Res=[search_and_transform_1(Rules,I,TraverseStrategy)||I <- Input],
                     {ok, Res};
                 false ->
-                    erlang:error("Transformation rules are applied to an invalid scope.")
+                    erlang:error("Transformation rules are applied to an invalid scope.") 
             end
     end;
 search_and_transform(Rules, Input, TraverseStrategy) ->

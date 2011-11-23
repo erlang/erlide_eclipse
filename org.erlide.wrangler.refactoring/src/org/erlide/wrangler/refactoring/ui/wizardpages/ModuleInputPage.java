@@ -1,7 +1,7 @@
 package org.erlide.wrangler.refactoring.ui.wizardpages;
 
 import org.eclipse.jface.wizard.IWizardPage;
-import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.UserRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 /**
@@ -22,7 +22,7 @@ public class ModuleInputPage extends SimpleInputPage {
     @Override
     protected boolean isInputValid() {
         if (validator.isValid(inputText.getText())) {
-            ((ApplyAdhocRefactoring) getRefactoring())
+            ((UserRefactoring) getRefactoring())
                     .setCallbackModuleName(inputText.getText());
             setErrorMessage(null);
             setPageComplete(true);
@@ -37,7 +37,7 @@ public class ModuleInputPage extends SimpleInputPage {
 
     @Override
     public IWizardPage getNextPage() {
-        if (!((ApplyAdhocRefactoring) getRefactoring()).fetchParPrompts()) {
+        if (!((UserRefactoring) getRefactoring()).fetchParPrompts()) {
             setErrorMessage("Can not load specified callback module");
             setPageComplete(false);
         }

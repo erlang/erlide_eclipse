@@ -11,7 +11,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.UserRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
 public class UserRefacInputPage extends InputPage {
@@ -63,7 +63,7 @@ public class UserRefacInputPage extends InputPage {
         layout.numColumns = 3;
         composite.setLayout(layout);
 
-        List<String> parPrompts = ((ApplyAdhocRefactoring) getRefactoring())
+        List<String> parPrompts = ((UserRefactoring) getRefactoring())
                 .getParPrompts();
 
         if (parPrompts.size() == 0) {
@@ -108,7 +108,7 @@ public class UserRefacInputPage extends InputPage {
             List<String> params = new ArrayList<String>(inputTexts.size());
             for (Text text : inputTexts)
                 params.add(text.getText());
-            ((ApplyAdhocRefactoring) getRefactoring()).setParValue(params);
+            ((UserRefactoring) getRefactoring()).setParValue(params);
             setErrorMessage(null);
             setPageComplete(true);
             return true;

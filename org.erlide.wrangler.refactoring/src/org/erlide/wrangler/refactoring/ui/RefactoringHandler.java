@@ -72,6 +72,7 @@ import org.erlide.wrangler.refactoring.ui.warning.WarningViewManager;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
+import org.erlide.wrangler.refactoring.ui.wizardpages.MainCompositeRefacInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ModuleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.RecordDataInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
@@ -131,10 +132,15 @@ public class RefactoringHandler extends AbstractHandler {
 
             // apply composite refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.composite")) {
-            pages.add(new SimpleInputPage("Apply composite refactoring",
+            pages.add(new ModuleInputPage("Apply composite refactoring",
                     "Please type the gen_composite_refac module name!",
                     "Module name:", "Name must be a valid Erlang module name!",
                     new AtomValidator()));
+            pages.add(new MainCompositeRefacInputPage(
+                    "Apply composite refactoring",
+                    "Please type input arguments",
+                    "Arguments should not be empty!",
+                    new NonEmptyStringValidator()));
             refactoring = new ApplyCompositeRefactoring();
 
             // run rename variable refactoring
