@@ -20,7 +20,7 @@ public class InternalBackend extends Backend {
     public InternalBackend(final BackendData data, final IErlRuntime runtime)
             throws BackendException {
         super(data, runtime);
-        Assert.isLegal(launch == null);
+        Assert.isLegal(getLaunch() == null);
     }
 
 }

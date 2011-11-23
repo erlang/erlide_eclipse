@@ -104,7 +104,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-    protected ILaunch launch;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
 
@@ -118,8 +117,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         codeManager = new CodeManager(this);
-
-        launch = data.getLaunch();
     }
 
     public IRpcCallSite getCallSite() {
@@ -476,11 +473,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public ILaunch getLaunch() {
-        return launch;
+        return data.getLaunch();
     }
 
-    public void setLaunch(final ILaunch launch) {
-        this.launch = launch;
+    public void assignStreamProxyListeners() {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
@@ -653,15 +649,15 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         if (data.isDebug()) {
             // add debug debugTarget
-            debugTarget = new ErlangDebugTarget(launch, this, projects,
+            debugTarget = new ErlangDebugTarget(getLaunch(), this, projects,
                     data.getDebugFlags());
             // debugTarget.getWaiter().doWait();
-            launch.addDebugTarget(debugTarget);
+            getLaunch().addDebugTarget(debugTarget);
             // interpret everything we can
             final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
             if (distributed) {
                 distributeDebuggerCode();
-                addNodesAsDebugTargets(launch, debugTarget);
+                addNodesAsDebugTargets(getLaunch(), debugTarget);
             }
             interpretModules(data, distributed);
             registerStartupFunctionStarter(data);
