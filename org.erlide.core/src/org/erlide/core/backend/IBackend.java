@@ -83,8 +83,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     void initialize();
 
-    void launchRuntime();
-
     String getJavaNodeName();
 
     void installDeferredBreakpoints();

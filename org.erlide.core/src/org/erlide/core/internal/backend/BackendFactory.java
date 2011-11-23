@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.erlide.core.internal.backend;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
@@ -55,17 +60,32 @@ public class BackendFactory implements IBackendFactory {
             final boolean hasHost = nodeName.contains("@");
             nodeName = hasHost ? nodeName : nodeName + "@"
                     + RuntimeInfo.getHost();
+            ILaunch launch = data.getLaunch();
+            final boolean internal = launch == null;
+            if (launch == null) {
+                launch = launchPeer(data);
+            }
             final IErlRuntime runtime = new ErlRuntime(nodeName,
                     info.getCookie());
-            b = data.getLaunch() == null ? new InternalBackend(data, runtime)
+            b = internal ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
-            b.launchRuntime();
             b.initialize();
             return b;
         } catch (final BackendException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private ILaunch launchPeer(final BackendData data) {
+        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
+        try {
+            return launchConfig.launch(ILaunchManager.RUN_MODE,
+                    new NullProgressMonitor(), false, true);
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+            return null;
+        }
     }
 
     private BackendData getIdeBackendData() {

@@ -20,12 +20,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -34,8 +32,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -851,19 +847,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             } catch (final DebugException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void launchRuntime() {
-        if (launch != null) {
-            return;
-        }
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
-        try {
-            launch = launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, true);
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
         }
     }
 
