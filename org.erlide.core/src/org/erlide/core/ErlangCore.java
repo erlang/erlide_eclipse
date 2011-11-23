@@ -212,9 +212,9 @@ public final class ErlangCore {
 
     public void start(final String version) throws CoreException {
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
-        String dev = "";
+        String dev = "(" + System.getProperty("file.encoding") + ") ";
         if (CommonUtils.isDeveloper()) {
-            dev = " erlide developer version ***";
+            dev += " developer version ***";
         }
         if (CommonUtils.isTest()) {
             dev += " test ***";
