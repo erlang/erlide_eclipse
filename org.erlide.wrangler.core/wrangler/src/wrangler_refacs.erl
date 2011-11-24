@@ -127,7 +127,8 @@
 	 run_refac_eclipse/2, input_par_prompts_eclipse/1,
      apply_changes_eclipse/3, load_callback_mod_eclipse/2,
 	 input_par_prompts_c_eclipse/1, init_composite_refac_eclipse/2,
-     get_next_command_eclipse/1, apply_next_command_eclipse/2
+     get_next_command_eclipse/1, apply_next_command_eclipse/2,
+	 get_user_refactorings/1
 	]).
  
 -export([try_refac/3, get_log_msg/0]).
@@ -137,6 +138,41 @@
 -include("../include/wrangler_internal.hrl").
 
 -type(context():: emacs | composite_emacs).
+
+%% ====================================================================================================
+%% @doc get all user refactoring modules (gen_refac and gen_composite_refac)
+
+get_user_refactorings(Modules) ->
+	Refacs = lists:foldl(fun(Module, Acc) ->
+						  Attrs = proplists:get_value(attributes, apply(list_to_atom(Module), module_info, [])),
+						  Behs = case proplists:get_value(behaviour, Attrs) of
+							 		 undefined ->
+										  case proplists:get_value(behavior, Attrs) of
+									 		 undefined ->
+												  undefined;
+									 		 Beh ->
+										  		  Beh
+								  		  end;
+						  	  	     Beh ->
+								 	  	  Beh
+						  		 end,
+						  case Behs of
+							  undefined ->
+								  Acc;
+							  _ ->
+								  case { lists:member(gen_refac, Behs), lists:member(gen_composite_refac, Behs)} of
+							  			{true, _} ->
+								  			[{gen_refac, list_to_atom(Module)} |Acc];
+							  			{_, true} ->
+								  			[{gen_composite_refac, list_to_atom(Module)} | Acc];
+							  			_ ->
+								  			Acc
+						  		  end
+						  end
+				  end, [], Modules),
+	[{gen_refac, proplists:append_values(gen_refac, Refacs)},
+	 {gen_composite_refac, proplists:append_values(gen_composite_refac, Refacs)}].
+
 
 %% ====================================================================================================
 %% @doc gen_refac refactorings - delegate functions in order to achieve more clear API (especially for Eclipse)

@@ -1,6 +1,6 @@
-#Mon Nov 14 15:52:53 CET 2011
+#Thu Nov 24 12:07:45 CET 2011
 backend_version=R14B
 eclipse.preferences.version=1
 include_dirs=wrangler/include;
 output_dir=wrangler/ebin
-source_dirs=wrangler/src;
+source_dirs=wrangler/src/gen_refacs;wrangler/src/gen_composite_refacs;wrangler/src;
