@@ -16,6 +16,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
@@ -64,6 +66,7 @@ import org.erlide.wrangler.refactoring.core.internal.UnfoldFunctionApplicationRe
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.ui.validator.AtomValidator;
+import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 import org.erlide.wrangler.refactoring.ui.validator.ModuleNameValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NonEmptyStringValidator;
 import org.erlide.wrangler.refactoring.ui.validator.NormalDoulbeValidator;
@@ -132,16 +135,50 @@ public class RefactoringHandler extends AbstractHandler {
 
             // apply composite refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.composite")) {
-            pages.add(new ModuleInputPage("Apply composite refactoring",
-                    "Please type the gen_composite_refac module name!",
-                    "Module name:", "Name must be a valid Erlang module name!",
-                    new AtomValidator()));
+
+            InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getShell(),
+                    "Apply composite refactoring",
+                    "Please type the gen_composite_refac module name!", "",
+                    new IInputValidator() {
+
+                        public IValidator internalV = new ModuleNameValidator();
+
+                        public String isValid(String newText) {
+                            if (internalV.isValid(newText))
+                                return null;
+                            else
+                                return "Please type a correct module name!";
+                        }
+                    });
+
+            dialog.open();
+
+            if (dialog.getReturnCode() == InputDialog.CANCEL)
+                return null;
+
+            String callbackModule = dialog.getValue();
+            // TODO call apropriet erlang function to get the number of
+            // refactorings
+            // Create the right number of pages
+
             pages.add(new MainCompositeRefacInputPage(
                     "Apply composite refactoring",
                     "Please type input arguments",
                     "Arguments should not be empty!",
                     new NonEmptyStringValidator()));
             refactoring = new ApplyCompositeRefactoring();
+
+            ((ApplyCompositeRefactoring) refactoring)
+                    .setCallbackModuleName(callbackModule);
+
+            if (!((ApplyCompositeRefactoring) refactoring).fetchParPrompts()) {
+                MessageDialog.openError(PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell(),
+                        "Composite refactoring error",
+                        "Can not load callback module");
+                return null;
+            }
 
             // run rename variable refactoring
         } else if (actionId
