@@ -110,7 +110,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     @Override
     public void setSelection(final ISelection selection) {
-        ErlLogger.debug("setSelection %s", selection);
         fOutlineViewer.setSelection(selection);
     }
 
@@ -156,9 +155,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
                 public void run() {
                     if (getTreeViewer().getControl() != null
                             && !getTreeViewer().getControl().isDisposed()) {
-                        ErlLogger.debug("*>> refreshing %s", fModule.getName());
                         getTreeViewer().refresh(fModule);
-                        // getTreeViewer().setInput(fModule);
                     }
                 }
             });
@@ -284,7 +281,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         if (getTreeViewer() != null) {
             ISelection s = getTreeViewer().getSelection();
             if (s instanceof IStructuredSelection) {
-                ErlLogger.debug("select %s", reference);
                 final IStructuredSelection ss = (IStructuredSelection) s;
                 final List<?> elements = ss.toList();
                 if (!elements.contains(reference)) {
@@ -332,7 +328,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     public void sort(final boolean sorting) {
-        ErlLogger.debug("sorting " + sorting);
+        ErlLogger.debug("NYI: sorting " + sorting);
     }
 
     public static IEclipsePreferences getPrefsNode() {
