@@ -207,9 +207,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     public void input(final String data) {
-        final String data2 = data.trim().replaceAll("\n", "")
-                .replaceAll("\r", "")
-                + "\n";
+        final String data2 = data.trim() + "\n";
         shell.input(data2);
         shell.send(data2);
         history.addToHistory(data.trim());
