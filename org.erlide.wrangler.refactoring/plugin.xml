@@ -337,6 +337,10 @@
         id="org.erlide.wrangler.refactoring.composite"
         name="%applyCompositeRefac">
   </command>
+  <command
+        id="org.erlide.wrangler.refactoring.gen_refac"
+        name="gen_refac">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -457,10 +461,6 @@
           id="org.erlide.wrangler.refactoring.composite"
           style="push">
     </command>
-    <menu
-          id="org.erlide.wrangler.refactoring.refacs"
-          label="gen_refac Refacs">
-    </menu>
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
@@ -468,6 +468,14 @@
 						</or>
 					</with>
 				</visibleWhen>
+    <menu
+          id="org.erlide.wrangler.refactoring.user.genrefac"
+          label="%userRefacs">
+       <dynamic
+             class="org.erlide.wrangler.refactoring.ui.menu.UserRefacContribution"
+             id="org.erlide.wrangler.refactoring.user.genrefac.items">
+       </dynamic>
+    </menu>
 			</menu>
 		</menuContribution>
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -626,6 +634,10 @@
   <handler
         class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
         commandId="org.erlide.wrangler.refactoring.composite">
+  </handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+        commandId="org.erlide.wrangler.refactoring.gen_refac">
   </handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.propertyTesters">

@@ -16,7 +16,6 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.wrangler.refactoring.backend.UserRefactoringsHandler;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -30,6 +29,11 @@ public class Activator extends AbstractUIPlugin {
      * The plug-in ID.
      */
     public static final String PLUGIN_ID = "org.erlide.wrangler.refactoring";
+
+    /**
+     * The core plugin ID.
+     */
+    public static final String CORE_ID = "org.erlide.wrangler.core";
 
     // The shared instance
     private static Activator plugin;
@@ -103,7 +107,6 @@ public class Activator extends AbstractUIPlugin {
 
         ErlLogger.debug("Error logger started:" + res);
 
-        UserRefactoringsHandler.scanForUserRefactorings();
     }
 
     /*

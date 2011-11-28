@@ -180,6 +180,13 @@ public class RefactoringHandler extends AbstractHandler {
                 return null;
             }
 
+            // apply user-defined refactoring
+        } else if (actionId.equals("org.erlide.wrangler.refactoring.gen_refac")) {
+            System.out.println("Custom!");
+
+            // TODO implementation
+            return null;
+
             // run rename variable refactoring
         } else if (actionId
                 .equals("org.erlide.wrangler.refactoring.renamevariable")) {
