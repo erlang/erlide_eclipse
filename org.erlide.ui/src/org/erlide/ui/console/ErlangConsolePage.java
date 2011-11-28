@@ -291,7 +291,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         sashForm.setWeights(new int[] { 2, 1 });
 
-        final Label helpLabel = new Label(composite, SWT.BORDER);
+        final Label helpLabel = new Label(composite, SWT.NONE);
         helpLabel
                 .setText("Press Ctrl-Enter to send the input to the console. Press Esc to clear input.");
         helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
