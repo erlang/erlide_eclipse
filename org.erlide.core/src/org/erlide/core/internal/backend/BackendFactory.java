@@ -80,8 +80,10 @@ public class BackendFactory implements IBackendFactory {
     private ILaunch launchPeer(final BackendData data) {
         final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
+            final boolean registerForDebug = data.getLaunch() != null
+                    || CommonUtils.isDeveloper();
             return launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, true);
+                    new NullProgressMonitor(), false, registerForDebug);
         } catch (final CoreException e) {
             ErlLogger.error(e);
             return null;
