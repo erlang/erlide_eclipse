@@ -20,6 +20,18 @@ public class ErlangCharRule implements IPredicateRule {
             if (c == '\\') {
                 c = scanner.read();
                 if (c != ICharacterScanner.EOF) {
+                    int octal = 0;
+                    while (c >= '0' && c <= '7') {
+                        octal++;
+                        c = scanner.read();
+                    }
+                    while (octal > 3) {
+                        scanner.unread();
+                        octal--;
+                    }
+                    if (octal > 0) {
+                        scanner.unread();
+                    }
                     return token;
                 }
             } else if (c != ICharacterScanner.EOF) {
