@@ -16,11 +16,19 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
+ * Logic for running user-defined, commited elementary refactrings
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
-public class ApplyAdhocRefactoring extends UserAdhocRefactoring {
+public class ApplyUserRefactoring extends UserRefactoring {
+
+    private String name; // name of the refactoring
+
+    public ApplyUserRefactoring(String name, String callbackModule) {
+        this.name = name;
+        setCallbackModuleName(callbackModule);
+    }
 
     @Override
     public IRefactoringRpcMessage run(IErlSelection selection) {
@@ -54,7 +62,7 @@ public class ApplyAdhocRefactoring extends UserAdhocRefactoring {
 
     @Override
     public String getName() {
-        return "Apply ad hoc refactoring";
+        return name;
     }
 
 }

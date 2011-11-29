@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.core.CoreScope;
-import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
@@ -31,7 +28,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
                                                                // values
                                                                // submited by
                                                                // user
-    private boolean fetched; // if parameter prompts are already fetched
+    protected boolean fetched; // if parameter prompts are already fetched
 
     public String getCallbackModule() {
         return callbackModule;
@@ -56,27 +53,9 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
         if (fetched)
             return true;
 
-        String callbackPath;
-        try {
-            if (CoreScope.getModel().findModule(callbackModule) == null)
-                return false;
-
-            IErlProject project = CoreScope.getModel()
-                    .findModule(callbackModule).getProject();
-            callbackPath = project.getWorkspaceProject().getLocation()
-                    .append(project.getOutputLocation()).toString();
-        } catch (ErlModelException e) {
-            return false;
-        }
-
         IRpcResult res = WranglerBackendManager.getRefactoringBackend()
-                .callWithoutParser("load_callback_mod_eclipse", "ss",
-                        callbackModule, callbackPath);
-        if (!res.isOk())
-            return false;
-
-        res = WranglerBackendManager.getRefactoringBackend().callWithoutParser(
-                "input_par_prompts_eclipse", "s", callbackModule);
+                .callWithoutParser("input_par_prompts_eclipse", "s",
+                        callbackModule);
         OtpErlangList params = (OtpErlangList) ((OtpErlangTuple) res.getValue())
                 .elementAt(1);
         parPrompts.clear();

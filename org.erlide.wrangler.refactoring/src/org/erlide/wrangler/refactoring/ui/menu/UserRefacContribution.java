@@ -1,5 +1,6 @@
 package org.erlide.wrangler.refactoring.ui.menu;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.jface.action.IContributionItem;
@@ -27,6 +28,7 @@ public class UserRefacContribution extends CompoundContributionItem {
         super(id);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     protected IContributionItem[] getContributionItems() {
 
@@ -36,11 +38,19 @@ public class UserRefacContribution extends CompoundContributionItem {
 
         int i = 0;
         for (UserRefactoringInfo info : refacs) {
+            System.out.println(info.getLabel());
             CommandContributionItemParameter param = new CommandContributionItemParameter(
                     PlatformUI.getWorkbench(), info.getCallback(),
                     "org.erlide.wrangler.refactoring.gen_refac",
                     CommandContributionItem.STYLE_PUSH);
             param.label = info.getLabel();
+            param.parameters = new HashMap();
+            param.parameters.put(
+                    "org.erlide.wrangler.refactoring.gen_refac.callback",
+                    info.getCallback());
+            param.parameters.put(
+                    "org.erlide.wrangler.refactoring.gen_refac.name",
+                    info.getLabel());
             items[i] = new CommandContributionItem(param);
             i++;
         }

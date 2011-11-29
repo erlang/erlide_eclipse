@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizard;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
@@ -39,6 +40,7 @@ import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositio
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ApplyCompositeRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.ApplyUserRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcFsmStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcStatemStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
@@ -154,7 +156,7 @@ public class RefactoringHandler extends AbstractHandler {
 
             dialog.open();
 
-            if (dialog.getReturnCode() == InputDialog.CANCEL)
+            if (dialog.getReturnCode() == Window.CANCEL)
                 return null;
 
             String callbackModule = dialog.getValue();
@@ -182,10 +184,25 @@ public class RefactoringHandler extends AbstractHandler {
 
             // apply user-defined refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.gen_refac")) {
-            System.out.println("Custom!");
+            System.out.println(event.getParameters());
 
-            // TODO implementation
-            return null;
+            String callbackModule = event
+                    .getParameter("org.erlide.wrangler.refactoring.gen_refac.callback");
+            String name = event
+                    .getParameter("org.erlide.wrangler.refactoring.gen_refac.name");
+
+            pages.add(new UserRefacInputPage(name,
+                    "Please type input arguments",
+                    "Arguments should not be empty!",
+                    new NonEmptyStringValidator()));
+            refactoring = new ApplyUserRefactoring(name, callbackModule);
+
+            if (!((ApplyUserRefactoring) refactoring).fetchParPrompts()) {
+                MessageDialog.openError(PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell(),
+                        "Refactoring error", "Can not find callback module");
+                return null;
+            }
 
             // run rename variable refactoring
         } else if (actionId

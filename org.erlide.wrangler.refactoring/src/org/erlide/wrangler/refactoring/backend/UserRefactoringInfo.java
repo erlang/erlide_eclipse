@@ -33,4 +33,9 @@ public class UserRefactoringInfo {
         }
         return buf.toString().trim();
     }
+
+    @Override
+    public String toString() {
+        return label;
+    }
 }

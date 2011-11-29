@@ -27,7 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
-public class ApplyCompositeRefactoring extends UserRefactoring {
+public class ApplyCompositeRefactoring extends UserAdhocRefactoring {
 
     protected RefactoringStatus status;
 

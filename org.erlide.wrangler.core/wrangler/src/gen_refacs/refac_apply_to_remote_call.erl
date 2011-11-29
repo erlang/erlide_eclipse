@@ -26,7 +26,7 @@ check_pre_cond(_Args) ->
     ok.
 
 selective() ->
-    true.
+    false.
 
 %%Do the actual program transformation here.
 -spec (transform/1::(#args{}) -> {ok, [{filename(), filename(), syntaxTree()}]}).
@@ -34,7 +34,7 @@ transform(_Args=#args{search_paths=SearchPaths})->
     ?FULL_TD_TP([rule(),
                  rule1(),
                  rule2()
-                ], [SearchPaths]).
+                ], SearchPaths).
 
 rule() ->
     ?RULE(?T("Op@(N@@, M@, F@, [Args@@])"),

@@ -338,8 +338,19 @@
         name="%applyCompositeRefac">
   </command>
   <command
+        categoryId="org.erlide.wrangler.refactoring"
         id="org.erlide.wrangler.refactoring.gen_refac"
         name="gen_refac">
+     <commandParameter
+           id="org.erlide.wrangler.refactoring.gen_refac.callback"
+           name="callback"
+           optional="false">
+     </commandParameter>
+     <commandParameter
+           id="org.erlide.wrangler.refactoring.gen_refac.name"
+           name="name"
+           optional="false">
+     </commandParameter>
   </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
