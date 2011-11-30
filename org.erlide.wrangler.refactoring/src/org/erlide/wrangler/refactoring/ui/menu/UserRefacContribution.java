@@ -38,7 +38,6 @@ public class UserRefacContribution extends CompoundContributionItem {
 
         int i = 0;
         for (UserRefactoringInfo info : refacs) {
-            System.out.println(info.getLabel());
             CommandContributionItemParameter param = new CommandContributionItemParameter(
                     PlatformUI.getWorkbench(), info.getCallback(),
                     "org.erlide.wrangler.refactoring.gen_refac",

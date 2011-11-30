@@ -184,8 +184,6 @@ public class RefactoringHandler extends AbstractHandler {
 
             // apply user-defined refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.gen_refac")) {
-            System.out.println(event.getParameters());
-
             String callbackModule = event
                     .getParameter("org.erlide.wrangler.refactoring.gen_refac.callback");
             String name = event

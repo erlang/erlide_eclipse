@@ -230,7 +230,12 @@ apply_next_command_eclipse(Cmd, Args) ->
 -spec(load_callback_mod_eclipse(Module::module(), Path::string()) ->
 	ok | {error, Reason::term()}).
 load_callback_mod_eclipse(Module, Path) ->
-	code:add_patha(Path),
+	case lists:member(Path, code:get_path()) of
+		false ->
+			code:add_patha(Path);
+		true ->
+			ok
+	end,
 	code:purge(list_to_atom(Module)),
 	case code:load_file(list_to_atom(Module)) of
 		{module, Module} ->

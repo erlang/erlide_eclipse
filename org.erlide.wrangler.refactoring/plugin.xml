@@ -352,6 +352,11 @@
            optional="false">
      </commandParameter>
   </command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.add"
+        name="%addRefac">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -487,6 +492,11 @@
              id="org.erlide.wrangler.refactoring.user.genrefac.items">
        </dynamic>
     </menu>
+    <command
+          commandId="org.erlide.wrangler.refactoring.add"
+          id="org.erlide.wrangler.refactoring.add"
+          style="push">
+    </command>
 			</menu>
 		</menuContribution>
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -649,6 +659,10 @@
   <handler
         class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
         commandId="org.erlide.wrangler.refactoring.gen_refac">
+  </handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.AddRefacHandler"
+        commandId="org.erlide.wrangler.refactoring.add">
   </handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.propertyTesters">
