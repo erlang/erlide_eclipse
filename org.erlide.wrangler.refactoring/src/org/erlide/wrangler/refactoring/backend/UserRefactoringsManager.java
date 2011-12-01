@@ -4,6 +4,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
@@ -32,6 +33,10 @@ public class UserRefactoringsManager {
     private List<UserRefactoringInfo> elementaryRefacs; // gen_refac refacs
     private List<UserRefactoringInfo> compositeRefacs; // gen_composite_refac
                                                        // refacs
+    private List<UserRefactoringInfo> myElementaryRefacs; // gen_refac refacs
+                                                          // - user's
+    private List<UserRefactoringInfo> myCompositeRefacs; // gen_composite_refac
+                                                         // refacs - user's
 
     private UserRefactoringsManager() {
 
@@ -55,22 +60,53 @@ public class UserRefactoringsManager {
         return compositeRefacs;
     }
 
+    public synchronized List<UserRefactoringInfo> getMyElementary() {
+        if (myElementaryRefacs == null)
+            scanForUserRefactorings();
+        return myElementaryRefacs;
+    }
+
+    public synchronized List<UserRefactoringInfo> getMyComposite() {
+        if (myCompositeRefacs == null)
+            scanForUserRefactorings();
+        return myCompositeRefacs;
+    }
+
+    public synchronized void addMyElementary(String module) {
+        if (myElementaryRefacs == null)
+            scanForUserRefactorings();
+        UserRefactoringInfo info = new UserRefactoringInfo(module);
+        if (!myElementaryRefacs.contains(info))
+            myElementaryRefacs.add(info);
+    }
+
+    public synchronized void addMyComposite(String module) {
+        if (myCompositeRefacs == null)
+            scanForUserRefactorings();
+        UserRefactoringInfo info = new UserRefactoringInfo(module);
+        if (!myCompositeRefacs.contains(info))
+            myCompositeRefacs.add(info);
+    }
+
     /**
      * Looks for user defined refactorings (in order to generate menu items for
      * them)
      */
+    @SuppressWarnings("rawtypes")
     private void scanForUserRefactorings() {
         elementaryRefacs = new LinkedList<UserRefactoringInfo>();
         compositeRefacs = new LinkedList<UserRefactoringInfo>();
+        myElementaryRefacs = new LinkedList<UserRefactoringInfo>();
+        myCompositeRefacs = new LinkedList<UserRefactoringInfo>();
 
         Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
 
-        @SuppressWarnings("rawtypes")
         Enumeration modules = coreBundle.findEntries("wrangler/ebin", "*.beam",
-                true);
+                false);
 
+        // modules that origin from repository
         List<OtpErlangObject> erlModules = new LinkedList<OtpErlangObject>();
-        while (modules.hasMoreElements()) {
+        while (modules != null && modules.hasMoreElements()) {
             String next = modules.nextElement().toString();
             String module = next.substring(next.lastIndexOf('/') + 1,
                     next.lastIndexOf('.'));
@@ -100,5 +136,39 @@ public class UserRefactoringsManager {
 
         ErlLogger.info("Refac modules found " + res.toString());
 
+        // user's own refactoring
+        Enumeration userModules = coreBundle.findEntries(
+                "wrangler/ebin/my_gen_refac", "*.beam", false);
+        while (userModules != null && userModules.hasMoreElements()) {
+            String next = userModules.nextElement().toString();
+            myElementaryRefacs.add(new UserRefactoringInfo(next.substring(
+                    next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));
+
+        }
+        // user's own composite refactorings
+        Enumeration userCompositeModules = coreBundle.findEntries(
+                "wrangler/ebin/my_gen_composite_refac", "*.beam", false);
+        while (userCompositeModules != null
+                && userCompositeModules.hasMoreElements()) {
+            String next = userCompositeModules.nextElement().toString();
+            myCompositeRefacs.add(new UserRefactoringInfo(next.substring(
+                    next.lastIndexOf('/') + 1, next.lastIndexOf('.'))));
+        }
+
+        // load refactorings
+        res = WranglerBackendManager.getRefactoringBackend().callWithoutParser(
+                "load_user_refactorings", "s", getEbinPath());
+        ErlLogger.debug(res.toString());
+
     }
+
+    // path to ebin directory
+    private String getEbinPath() {
+        Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
+        String path = new Path(coreBundle.getLocation()).append("wrangler")
+                .append("ebin").toOSString();
+        path = path.substring(path.lastIndexOf(':') + 1);
+        return path;
+    }
+
 }

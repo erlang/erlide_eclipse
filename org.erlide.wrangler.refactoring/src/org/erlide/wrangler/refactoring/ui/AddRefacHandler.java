@@ -20,9 +20,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
+import org.erlide.core.model.erlang.IErlAttribute;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.wrangler.refactoring.Activator;
+import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 import org.erlide.wrangler.refactoring.ui.validator.ModuleNameValidator;
@@ -60,13 +65,25 @@ public class AddRefacHandler extends AbstractHandler {
 
         String callbackModule = dialog.getValue();
 
-        if (!addAndLoad(callbackModule)) {
-            MessageDialog.openError(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(),
-                    "Add user-defined refactoring  - error",
-                    "Can not load callback module");
+        RefacType type = checkType(callbackModule);
+        if (type == null) {
+            showErrorMesg("Callback module must implement either "
+                    + "gen_refac or gen_composite_refac behaviour");
+            return null;
+        }
+
+        if (!addAndLoad(callbackModule, type)) {
+            showErrorMesg("Can not load callback module");
             return null;
         } else {
+            if (type.equals(RefacType.ELEMENTARY)) {
+                UserRefactoringsManager.getInstance().addMyElementary(
+                        callbackModule);
+            } else {
+                UserRefactoringsManager.getInstance().addMyComposite(
+                        callbackModule);
+            }
+
             MessageDialog.openInformation(PlatformUI.getWorkbench()
                     .getActiveWorkbenchWindow().getShell(),
                     "Add user-defined refactoring", "Success!");
@@ -75,19 +92,51 @@ public class AddRefacHandler extends AbstractHandler {
         return null;
     }
 
+    private void showErrorMesg(String mesg) {
+        MessageDialog.openError(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getShell(),
+                "Add user-defined refactoring  - error", mesg);
+    }
+
+    // check if the refactoring is elementary or composite
+    private RefacType checkType(String callbackModule) {
+
+        try {
+            IErlModule module = CoreScope.getModel().findModule(callbackModule);
+            module.resetAndCacheScannerAndParser(null);
+
+            for (IErlElement el : module.getChildrenOfKind(Kind.ATTRIBUTE)) {
+                IErlAttribute attr = (IErlAttribute) el;
+                if (attr.getName().equals("behaviour")
+                        || attr.getName().equals("behavior")) {
+                    if (attr.getValue().toString().contains("gen_refac")) {
+                        return RefacType.ELEMENTARY;
+                    } else if (attr.getValue().toString()
+                            .contains("gen_composite_refac")) {
+                        return RefacType.COMPOSITE;
+                    }
+                }
+            }
+            return null;
+
+        } catch (ErlModelException e) {
+            return null;
+        }
+    }
+
     // look for module path
-    private boolean addAndLoad(String callbackModule) {
+    private boolean addAndLoad(String callbackModule, RefacType type) {
 
         String sourcePath = getBinPath(callbackModule);
 
-        IPath destDir = getDestDir();
+        IPath destDir = getDestDir(type);
         String destPath = getDestPath(callbackModule, destDir);
+        String destDirStr = destDir.toOSString();
+        destDirStr = destDirStr.substring(destDirStr.lastIndexOf(":") + 1);
 
-        if (sourcePath == null
-                || destPath == null
-                || copy(sourcePath, destPath, destDir.toOSString()
-                        .substring(15))) {
-            load(callbackModule, destDir.toOSString().substring(15));
+        if (sourcePath == null || destPath == null
+                || copy(sourcePath, destPath, destDirStr)) {
+            load(callbackModule, destDirStr);
         } else {
             return false;
         }
@@ -109,7 +158,6 @@ public class AddRefacHandler extends AbstractHandler {
                     .append(project.getOutputLocation())
                     .append(callbackModule + ".beam").toOSString();
 
-            System.out.println(path);
             return path;
 
         } catch (ErlModelException e) {
@@ -118,17 +166,16 @@ public class AddRefacHandler extends AbstractHandler {
     }
 
     // destination directory
-    private IPath getDestDir() {
+    private IPath getDestDir(RefacType type) {
         Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
         return new Path(coreBundle.getLocation()).append("wrangler")
-                .append("ebin").append("my_gen_refac");
+                .append("ebin").append(type.getDirName());
     }
 
     // destination path
     private String getDestPath(String callbackModule, IPath dir) {
-        String path = dir.append(callbackModule + ".beam").toString()
-                .substring(15);
-        System.out.println(path);
+        String path = dir.append(callbackModule + ".beam").toOSString();
+        path = path.substring(path.lastIndexOf(':') + 1);
         return path;
     }
 
@@ -173,10 +220,30 @@ public class AddRefacHandler extends AbstractHandler {
         return true;
     }
 
+    // invoke loading module
     private void load(String callbackModule, String dir) {
         WranglerBackendManager.getRefactoringBackend().callWithoutParser(
                 "load_callback_mod_eclipse", "ss", callbackModule, dir);
+    }
 
+    /**
+     * enum for refactoring types - defining refactoring folders
+     * 
+     * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
+     * @version %I%, %G%
+     */
+    private enum RefacType {
+        ELEMENTARY("my_gen_refac"), COMPOSITE("my_gen_composite_refac");
+
+        private String dir;
+
+        private RefacType(String dir) {
+            this.dir = dir;
+        }
+
+        public String getDirName() {
+            return dir;
+        }
     }
 
 }

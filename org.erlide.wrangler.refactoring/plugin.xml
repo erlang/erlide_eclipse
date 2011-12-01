@@ -467,6 +467,22 @@
           name="org.erlide.wrangler.refactoring.separator4"
           visible="true">
     </separator>
+    <menu
+          id="org.erlide.wrangler.refactoring.user.genrefac"
+          label="%userRefacs">
+       <dynamic
+             class="org.erlide.wrangler.refactoring.ui.menu.UserRefacContribution"
+             id="org.erlide.wrangler.refactoring.user.genrefac.items">
+       </dynamic>
+    </menu>
+    <menu
+          id="org.erlide.wrangler.refactoring.user.mygenrefac"
+          label="%userMyRefacs">
+       <dynamic
+             class="org.erlide.wrangler.refactoring.ui.menu.UserMyRefacContribution"
+             id="org.erlide.wrangler.refactoring.user.mygenrefac">
+       </dynamic>
+    </menu>
     <command
           commandId="org.erlide.wrangler.refactoring.adhoc"
           id="org.erlide.wrangler.refactoring.adhoc"
@@ -484,14 +500,6 @@
 						</or>
 					</with>
 				</visibleWhen>
-    <menu
-          id="org.erlide.wrangler.refactoring.user.genrefac"
-          label="%userRefacs">
-       <dynamic
-             class="org.erlide.wrangler.refactoring.ui.menu.UserRefacContribution"
-             id="org.erlide.wrangler.refactoring.user.genrefac.items">
-       </dynamic>
-    </menu>
     <command
           commandId="org.erlide.wrangler.refactoring.add"
           id="org.erlide.wrangler.refactoring.add"

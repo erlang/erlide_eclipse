@@ -38,4 +38,18 @@ public class UserRefactoringInfo {
     public String toString() {
         return label;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof UserRefactoringInfo
+                && ((UserRefactoringInfo) obj).getCallback().equals(callback))
+            return true;
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return callback.hashCode();
+    }
+
 }

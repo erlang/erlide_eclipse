@@ -128,7 +128,7 @@
      apply_changes_eclipse/3, load_callback_mod_eclipse/2,
 	 input_par_prompts_c_eclipse/1, init_composite_refac_eclipse/2,
      get_next_command_eclipse/1, apply_next_command_eclipse/2,
-	 get_user_refactorings/1
+	 get_user_refactorings/1, load_user_refactorings/1
 	]).
  
 -export([try_refac/3, get_log_msg/0]).
@@ -227,15 +227,12 @@ apply_next_command_eclipse(Cmd, Args) ->
 
 %% ====================================================================================================
 %% @doc user defined refactorings - common
+%%
+%% @doc load new callback module (ad hoc refactorings)
 -spec(load_callback_mod_eclipse(Module::module(), Path::string()) ->
 	ok | {error, Reason::term()}).
 load_callback_mod_eclipse(Module, Path) ->
-	case lists:member(Path, code:get_path()) of
-		false ->
-			code:add_patha(Path);
-		true ->
-			ok
-	end,
+	code:add_patha(Path),
 	code:purge(list_to_atom(Module)),
 	case code:load_file(list_to_atom(Module)) of
 		{module, Module} ->
@@ -243,6 +240,30 @@ load_callback_mod_eclipse(Module, Path) ->
 		Error ->
 				Error	
 	end.
+
+%% @doc load user's own refactorings from my_gen_refac
+-spec(load_user_refactorings(Path::string()) -> ok).
+load_user_refactorings(Path) ->
+	MyRefacs = filename:join(Path, "my_gen_refac"),
+	MyCRefacs = filename:join(Path, "my_gen_composite_refac"),
+	code:add_patha(MyRefacs),
+	code:add_patha(MyCRefacs),
+	load_from_dir(MyRefacs),
+	load_from_dir(MyCRefacs),
+	[MyRefacs, MyCRefacs].
+
+-spec(load_from_dir(Dir::string()) -> ok).
+load_from_dir(Dir) ->
+	case file:list_dir(Dir) of
+		{ok, Filenames} ->
+			lists:foreach(fun(Name) ->
+								  code:load_file(list_to_atom(filename:basename(Name, ".beam")))
+						  end, Filenames);
+		_ ->
+			ok
+	end.
+	
+		
 
 %% ====================================================================================================
 %% @doc Rename a variable.
