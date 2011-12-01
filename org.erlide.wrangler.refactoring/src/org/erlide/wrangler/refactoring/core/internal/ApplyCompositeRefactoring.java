@@ -27,13 +27,21 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
-public class ApplyCompositeRefactoring extends UserAdhocRefactoring {
+public class ApplyCompositeRefactoring extends UserRefactoring {
 
     protected RefactoringStatus status;
 
     private CommandData command = new CommandData(); // all the data about
                                                      // cuddent command
     private boolean finished = false;
+
+    private UserAdhocRefactoring delegate; // delegate for adhoc specific
+
+    // functionality
+
+    public ApplyCompositeRefactoring() {
+        delegate = new UserAdhocRefactoring(this);
+    }
 
     @Override
     public IRefactoringRpcMessage run(IErlSelection selection) {
@@ -164,6 +172,14 @@ public class ApplyCompositeRefactoring extends UserAdhocRefactoring {
 
     public CommandData getCommand() {
         return command;
+    }
+
+    @Override
+    public boolean fetchParPrompts() {
+        if (fetched)
+            return true;
+
+        return delegate.load() && super.fetchParPrompts();
     }
 
 }

@@ -7,25 +7,33 @@ import org.erlide.core.rpc.IRpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 
 /**
- * Abstract class for ad hoc user-defined refactorings
+ * Class for common functionalities of adhoc refactorings ad hoc specific
+ * methods should delegate to if
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
-public abstract class UserAdhocRefactoring extends UserRefactoring {
+public class UserAdhocRefactoring {
 
-    @Override
-    public boolean fetchParPrompts() {
-        if (fetched)
-            return true;
+    private UserRefactoring refac; // base refactoring
 
+    public UserAdhocRefactoring(UserRefactoring refac) {
+        this.refac = refac;
+    }
+
+    /**
+     * Loading user's callback module
+     * 
+     * @return
+     */
+    public boolean load() {
         String callbackPath;
         try {
-            if (CoreScope.getModel().findModule(getCallbackModule()) == null)
+            if (CoreScope.getModel().findModule(refac.getCallbackModule()) == null)
                 return false;
 
             IErlProject project = CoreScope.getModel()
-                    .findModule(getCallbackModule()).getProject();
+                    .findModule(refac.getCallbackModule()).getProject();
             callbackPath = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation()).toString();
         } catch (ErlModelException e) {
@@ -34,10 +42,10 @@ public abstract class UserAdhocRefactoring extends UserRefactoring {
 
         IRpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("load_callback_mod_eclipse", "ss",
-                        getCallbackModule(), callbackPath);
+                        refac.getCallbackModule(), callbackPath);
         if (!res.isOk())
             return false;
-
-        return super.fetchParPrompts();
+        return true;
     }
+
 }

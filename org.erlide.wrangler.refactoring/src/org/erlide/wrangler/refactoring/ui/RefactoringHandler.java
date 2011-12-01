@@ -38,9 +38,9 @@ import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
-import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocElemRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ApplyCompositeRefactoring;
-import org.erlide.wrangler.refactoring.core.internal.ApplyUserRefactoring;
+import org.erlide.wrangler.refactoring.core.internal.ApplyUserElementaryRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcFsmStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcStatemStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ExtractFunctionRefactoring;
@@ -133,7 +133,7 @@ public class RefactoringHandler extends AbstractHandler {
                     "Please type input arguments",
                     "Arguments should not be empty!",
                     new NonEmptyStringValidator()));
-            refactoring = new ApplyAdhocRefactoring();
+            refactoring = new ApplyAdhocElemRefactoring();
 
             // apply composite refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.composite")) {
@@ -193,9 +193,9 @@ public class RefactoringHandler extends AbstractHandler {
                     "Please type input arguments",
                     "Arguments should not be empty!",
                     new NonEmptyStringValidator()));
-            refactoring = new ApplyUserRefactoring(name, callbackModule);
+            refactoring = new ApplyUserElementaryRefactoring(name, callbackModule);
 
-            if (!((ApplyUserRefactoring) refactoring).fetchParPrompts()) {
+            if (!((ApplyUserElementaryRefactoring) refactoring).fetchParPrompts()) {
                 MessageDialog.openError(PlatformUI.getWorkbench()
                         .getActiveWorkbenchWindow().getShell(),
                         "Refactoring error", "Can not find callback module");

@@ -16,11 +16,12 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
+ * Abstract class for ad hoc user-defined refactorings
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%
  */
-public class ApplyAdhocRefactoring extends UserAdhocRefactoring {
+public abstract class UserElementaryRefactoring extends UserRefactoring {
 
     @Override
     public IRefactoringRpcMessage run(IErlSelection selection) {
@@ -50,11 +51,6 @@ public class ApplyAdhocRefactoring extends UserAdhocRefactoring {
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
             throws CoreException, OperationCanceledException {
         return new RefactoringStatus(); // OK, no preconditins
-    }
-
-    @Override
-    public String getName() {
-        return "Apply ad hoc refactoring";
     }
 
 }
