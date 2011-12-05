@@ -4,9 +4,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.rpc.IRpcResult;
+import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
 import org.erlide.wrangler.refactoring.core.SimpleOneStepWranglerRefactoring;
+import org.erlide.wrangler.refactoring.selection.IErlSelection;
+import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -29,6 +38,13 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
                                                                // submited by
                                                                // user
     protected boolean fetched; // if parameter prompts are already fetched
+    protected RefactoringStatus status; // refactoring status
+
+    @Override
+    public RefactoringStatus checkFinalConditions(final IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
+        return status;
+    }
 
     public String getCallbackModule() {
         return callbackModule;
@@ -118,6 +134,32 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
             i++;
         }
         return new OtpErlangList(params);
+    }
+
+    /**
+     * Defines workflow of the refactoring, sets changed files and status
+     * 
+     * @param shell
+     * @return
+     */
+    public RefactoringWorkflowController getWorkflowController(final Shell shell) {
+        return new RefactoringWorkflowController(shell) {
+
+            @Override
+            public void doRefactoring() {
+                final IErlSelection sel = GlobalParameters
+                        .getWranglerSelection();
+                IRefactoringRpcMessage message = run(sel);
+                if (message.isSuccessful()) {
+                    changedFiles = message.getRefactoringChangeset();
+                    status = new RefactoringStatus();
+                } else {
+                    status = RefactoringStatus.createFatalErrorStatus(message
+                            .getMessageString());
+                }
+            }
+
+        };
     }
 
 }

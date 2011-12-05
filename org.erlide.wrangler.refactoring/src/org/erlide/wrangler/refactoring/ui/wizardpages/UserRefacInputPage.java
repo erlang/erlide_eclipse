@@ -10,10 +10,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.wrangler.refactoring.core.internal.UserRefactoring;
 import org.erlide.wrangler.refactoring.ui.validator.IValidator;
 
+/**
+ * Page for providing arguments to user defined refactorings
+ * 
+ * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
+ * @version %I%, %G%
+ */
 public class UserRefacInputPage extends InputPage {
 
     protected String inputErrorMsg;
@@ -22,11 +29,12 @@ public class UserRefacInputPage extends InputPage {
     protected List<Label> inputLabels;
     protected List<Text> inputTexts;
 
+    private String description;
+
     private ModifyListener modifyListener = new ModifyListener() {
 
         public void modifyText(final ModifyEvent e) {
-            if (isTextComplete())
-                isInputValid();
+            isInputValid();
         }
 
     };
@@ -51,6 +59,7 @@ public class UserRefacInputPage extends InputPage {
         setDescription(description);
         this.inputErrorMsg = inputErrorMsg;
         this.validator = validator;
+        this.description = description;
         setPageComplete(false);
 
     }
@@ -62,6 +71,13 @@ public class UserRefacInputPage extends InputPage {
         final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         composite.setLayout(layout);
+
+        GridData lgData = new GridData();
+        lgData.horizontalAlignment = GridData.FILL;
+        lgData.horizontalSpan = 3;
+        Label descrLabel = new Label(composite, SWT.LEFT);
+        descrLabel.setText(description);
+        descrLabel.setLayoutData(lgData);
 
         List<String> parPrompts = ((UserRefactoring) getRefactoring())
                 .getParPrompts();
@@ -103,6 +119,12 @@ public class UserRefacInputPage extends InputPage {
     }
 
     @Override
+    protected void controlWorkflow(final Shell s) {
+        ((UserRefactoring) getRefactoring()).getWorkflowController(s)
+                .doRefactoring();
+    }
+
+    @Override
     protected boolean isInputValid() {
         if (checkCorrectness()) {
             List<String> params = new ArrayList<String>(inputTexts.size());
@@ -116,14 +138,6 @@ public class UserRefacInputPage extends InputPage {
         setPageComplete(false);
         setErrorMessage(inputErrorMsg);
         return false;
-    }
-
-    // checks if all input fields are filled
-    private boolean isTextComplete() {
-        for (Text text : inputTexts)
-            if (text.getText().equals(""))
-                return false;
-        return true;
     }
 
     private boolean checkCorrectness() {

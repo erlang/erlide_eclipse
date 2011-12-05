@@ -78,7 +78,6 @@ import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizar
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.MainCompositeRefacInputPage;
-import org.erlide.wrangler.refactoring.ui.wizardpages.ModuleInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.RecordDataInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
@@ -125,34 +124,38 @@ public class RefactoringHandler extends AbstractHandler {
 
         // apply ad hoc refactoring
         if (actionId.equals("org.erlide.wrangler.refactoring.adhoc")) {
-            pages.add(new ModuleInputPage("Apply ad hoc refactoring",
-                    "Please type the gen_refac module name!", "Module name:",
-                    "Name must be a valid Erlang module name!",
-                    new ModuleNameValidator()));
+            InputDialog dialog = getModuleInput("Apply ad hoc refactoring",
+                    "Please type the gen_refac module name!");
+
+            dialog.open();
+
+            if (dialog.getReturnCode() == Window.CANCEL)
+                return null;
+
+            String callbackModule = dialog.getValue();
+
             pages.add(new UserRefacInputPage("Apply ad hoc refactoring",
-                    "Please type input arguments",
+                    "Please type input arguments for this refactoring",
                     "Arguments should not be empty!",
                     new NonEmptyStringValidator()));
             refactoring = new ApplyAdhocElemRefactoring();
 
+            ((ApplyAdhocElemRefactoring) refactoring)
+                    .setCallbackModuleName(callbackModule);
+
+            if (!((ApplyAdhocElemRefactoring) refactoring).fetchParPrompts()) {
+                MessageDialog.openError(PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow().getShell(),
+                        "Elementary refactoring error",
+                        "Can not load callback module");
+                return null;
+            }
+
             // apply composite refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.composite")) {
 
-            InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow().getShell(),
-                    "Apply composite refactoring",
-                    "Please type the gen_composite_refac module name!", "",
-                    new IInputValidator() {
-
-                        public IValidator internalV = new ModuleNameValidator();
-
-                        public String isValid(String newText) {
-                            if (internalV.isValid(newText))
-                                return null;
-                            else
-                                return "Please type a correct module name!";
-                        }
-                    });
+            InputDialog dialog = getModuleInput("Apply composite refactoring",
+                    "Please type the gen_composite_refac module name!");
 
             dialog.open();
 
@@ -190,12 +193,14 @@ public class RefactoringHandler extends AbstractHandler {
                     .getParameter("org.erlide.wrangler.refactoring.gen_refac.name");
 
             pages.add(new UserRefacInputPage(name,
-                    "Please type input arguments",
+                    "Please type input arguments for this refactoring",
                     "Arguments should not be empty!",
                     new NonEmptyStringValidator()));
-            refactoring = new ApplyUserElementaryRefactoring(name, callbackModule);
+            refactoring = new ApplyUserElementaryRefactoring(name,
+                    callbackModule);
 
-            if (!((ApplyUserElementaryRefactoring) refactoring).fetchParPrompts()) {
+            if (!((ApplyUserElementaryRefactoring) refactoring)
+                    .fetchParPrompts()) {
                 MessageDialog.openError(PlatformUI.getWorkbench()
                         .getActiveWorkbenchWindow().getShell(),
                         "Refactoring error", "Can not find callback module");
@@ -484,6 +489,22 @@ public class RefactoringHandler extends AbstractHandler {
         checkWarningMessages();
         return null;
 
+    }
+
+    private InputDialog getModuleInput(String name, String mesg) {
+        return new InputDialog(PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getShell(), name, mesg, "",
+                new IInputValidator() {
+
+                    public IValidator internalV = new ModuleNameValidator();
+
+                    public String isValid(String newText) {
+                        if (internalV.isValid(newText))
+                            return null;
+                        else
+                            return "Please type a correct module name!";
+                    }
+                });
     }
 
     private boolean checkForDirtyEditors() {
