@@ -26,7 +26,7 @@ check_pre_cond(_Args) ->
     ok.
 
 selective() ->
-    false.
+    true.
 
 %%Do the actual program transformation here.
 -spec (transform/1::(#args{}) -> {ok, [{filename(), filename(), syntaxTree()}]}).

@@ -25,7 +25,7 @@ check_pre_cond(_Args) ->
 
 -spec (selective/0::()-> true).                          
 selective() ->
-    false.
+    true.
 
 %% Apply the transformation rules to all the Erlang files included in the 
 %% SearchPaths.

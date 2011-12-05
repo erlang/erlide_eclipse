@@ -231,7 +231,12 @@ run_refac(ModName, Args=[CurFileName, [Line,Col],
             Args1 = Args0#args{focus_sel=Sel},
             case check_pre_cond(Module, Args1) of
                 ok -> 
-                    Selective=selective(Module),
+                    Selective = case Editor of
+								   eclipse ->
+									   false;
+							   	   _ ->
+									   selective(Module)
+							   end,
                     wrangler_gen_refac_server:set_flag({self(), Selective}),
                     Args2 = Args1#args{selective=Selective},
                     if is_boolean(Selective) ->
@@ -250,14 +255,6 @@ run_refac(ModName, Args=[CurFileName, [Line,Col],
                                         {ok, Res} ->
                                             wrangler_gen_refac_server:delete_flag(self()),
                                             wrangler_write_file:write_refactored_files(Res,Editor,TabWidth,"");
-											%case Editor of
-	       									%	emacs ->
-		  									%		R;
-	      									%	_ ->
-											%		{ok, [{{FName, FName}, AST}]} = Res,
-		   									%		Content = wrangler_prettypr:print_ast(wrangler_misc:file_format(FName), AST, TabWidth),
-		 									%		{ok, [{FName, FName, Content}]}
-	   										%end;
                                         {error, Reason} ->
                                             wrangler_gen_refac_server:delete_flag(self()),
                                             {error, Reason}
