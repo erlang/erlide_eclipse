@@ -22,6 +22,7 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.core.services.text.IndentResult;
@@ -61,14 +62,15 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int offset = c.offset;
         String txt = null;
         fEditor.reconcileNow();
-        final IErlElement element = fEditor.getElementAt(offset, false);
-        final IErlMember member = (IErlMember) element;
+        final IErlMember member = getMemberNearOffset(offset);
         if (member != null) {
             final int start = member.getSourceRange().getOffset();
-            txt = d.get(start, offset - start);
+            if (offset >= start) {
+                txt = d.get(start, offset - start);
+            }
         }
         if (txt == null) {
-            txt = d.get(0, offset);
+            txt = "";
         }
         final int lineN = d.getLineOfOffset(offset);
         final int lineOffset = d.getLineOffset(lineN);
@@ -94,6 +96,21 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
+    }
+
+    private IErlMember getMemberNearOffset(final int offset) {
+        final IErlElement element = fEditor.getElementAt(offset, false);
+        IErlMember member = (IErlMember) element;
+        final IErlModule module = fEditor.getModule();
+        try {
+            if (member == null) {
+                member = (IErlMember) module.getChildren().get(
+                        module.getChildCount() - 1);
+            }
+        } catch (final Exception e1) {
+            // ignore
+        }
+        return member;
     }
 
     /**
@@ -128,9 +145,6 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
      * @param c
      *            the command
      */
-
-    // FIXME flytta en del av denna logik till erlang!! (t.ex. vill man
-    // inte vara "elektrisk" i kommentarer)
     public void customizeDocumentCommand(final IDocument d,
             final DocumentCommand c) {
         if (c.length == 0 && c.text != null) {

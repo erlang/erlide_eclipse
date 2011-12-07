@@ -20,9 +20,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.UTFDataFormatException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -312,14 +317,6 @@ public final class Util {
         s2.getChars(0, l2, buf, l1);
         s3.getChars(0, l3, buf, l1 + l2);
         return new String(buf);
-    }
-
-    /**
-     * Converts a type signature from the IBinaryType representation to the DC
-     * representation.
-     */
-    public static String convertTypeSignature(final char[] sig) {
-        return new String(sig).replace('/', '.');
     }
 
     /**
@@ -1237,24 +1234,6 @@ public final class Util {
         return sb.toString();
     }
 
-    public static void verbose(final String log) {
-        verbose(log, System.out);
-    }
-
-    public static synchronized void verbose(final String log,
-            final PrintStream printStream) {
-        int start = 0;
-        do {
-            final int end = log.indexOf('\n', start);
-            printStream.print(Thread.currentThread());
-            printStream.print(" "); //$NON-NLS-1$
-            printStream.print(log.substring(start, end == -1 ? log.length()
-                    : end + 1));
-            start = end + 1;
-        } while (start != 0);
-        printStream.println();
-    }
-
     /**
      * Writes a string to the given output stream using UTF-8 encoding in a
      * machine-independent manner.
@@ -1649,17 +1628,37 @@ public final class Util {
             }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
-            try {
-                return new String(b.binaryValue(), "ISO-8859-1");
-            } catch (final UnsupportedEncodingException e) {
-                try {
-                    return new String(b.binaryValue(), "UTF8");
-                } catch (final UnsupportedEncodingException e1) {
-                    return "";
-                }
+            String result;
+            result = decode(b.binaryValue(), "UTF-8");
+            if (result == null) {
+                result = decode(b.binaryValue(), "ISO-8859-1");
             }
+            return result;
         }
         return null;
+    }
+
+    public static String decode(final byte[] binaryValue, final String encoding) {
+        final Charset charset = Charset.forName(encoding);
+        final CharsetDecoder decoder = charset.newDecoder();
+        try {
+            final ByteBuffer bbuf = ByteBuffer.wrap(binaryValue);
+            final CharBuffer cbuf = decoder.decode(bbuf);
+            return cbuf.toString();
+        } catch (final CharacterCodingException e) {
+            return null;
+        }
+    }
+
+    public static byte[] encode(final String string, final String encoding) {
+        final Charset charset = Charset.forName(encoding);
+        final CharsetEncoder encoder = charset.newEncoder();
+        try {
+            final ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(string));
+            return bbuf.array();
+        } catch (final CharacterCodingException e) {
+            return null;
+        }
     }
 
     public static OtpErlangList listValue(final OtpErlangObject o) {
@@ -1758,7 +1757,7 @@ public final class Util {
         } else if (o != null) {
             sb.append(o.toString());
         }
-        if (sb.length() >= maxLength) {
+        if (sb.length() > maxLength) {
             sb = new StringBuilder(sb.substring(0, maxLength));
             sb.append("... <truncated>");
         }

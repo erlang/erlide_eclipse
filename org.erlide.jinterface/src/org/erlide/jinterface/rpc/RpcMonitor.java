@@ -1,5 +1,6 @@
 package org.erlide.jinterface.rpc;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -71,10 +72,13 @@ public class RpcMonitor {
         public void dump(final PrintStream out, final boolean full) {
             final String argsString = full ? args.toString().replaceAll(
                     "\n|\r", " ") : "...";
-            final String resultString = full ? result.toString().replaceAll(
-                    "\n|\r", " ") : "...";
+            String resultString = full ? result.toString().replaceAll("\n|\r",
+                    " ") : "...";
+            if (resultString.length() > 100) {
+                resultString = new String(resultString.substring(0, 99) + "...");
+            }
             out.format(
-                    "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s, result=%s%n",
+                    "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s -> result=%s%n",
                     node.substring(0, Math.min(29, node.length() - 1)), module,
                     fun, args.size(), callSize, answerSize, answerTime
                             - callTime, argsString, resultString);
@@ -181,10 +185,24 @@ public class RpcMonitor {
         out.format("Largest %d calls%n", largest.size());
         out.println(delim);
         for (final RpcInfo info : largest) {
-            info.dump(out, full);
+            if (info != null) {
+                info.dump(out, full);
+            }
         }
         out.println(delim);
         out.close();
+    }
+
+    public static void cleanupOldLogs(final String dirName, final String prefix) {
+        final File dir = new File(dirName);
+        for (final File f : dir.listFiles()) {
+            final long now = System.currentTimeMillis();
+            final int aWeek = 7 * 24 * 3600 * 1000;
+            if (f.getName().startsWith(prefix)
+                    && now - f.lastModified() > aWeek) {
+                f.delete();
+            }
+        }
     }
 
 }

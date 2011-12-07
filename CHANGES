@@ -1,3 +1,10 @@
+List of user visible changes between 0.13.7 and 0.13.8 (20111117)
+
+3c00f4c fix crash in RpcMonitor
+f51e35f fix out of memory crash (error when registering event handler)
+d399c1c 954: highlighting chars is incomplete
+2ee5cad add character scanner as partitioner, otherwise it interferes with strings and atoms
+
 List of user visible changes between 0.13.6 and 0.13.7 (20111110)
 
 cdc48a2 950-content-assist-shows-empty

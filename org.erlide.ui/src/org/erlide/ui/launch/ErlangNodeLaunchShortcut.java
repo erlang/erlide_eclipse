@@ -36,8 +36,9 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErlangLaunchDelegate;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.debug.ErlangLaunchDelegate;
+import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
@@ -147,7 +148,11 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
-        final String name = CommonUtils.packList(projectNames, "_");
+        String name = CommonUtils.packList(projectNames, "_");
+        if (name.length() > 15) {
+            name = CommonUtils.packList(
+                    StringUtils.removeCommonPrefixes(projectNames), "_");
+        }
         // try and find one
         final ILaunchConfiguration[] launchConfigurations = launchManager
                 .getLaunchConfigurations();

@@ -24,16 +24,14 @@ public class ExternalBackend extends Backend {
     public ExternalBackend(final BackendData data, final IErlRuntime runtime)
             throws BackendException {
         super(data, runtime);
-        Assert.isNotNull(launch);
-        setLaunch(launch);
+        Assert.isNotNull(getLaunch());
+        assignStreamProxyListeners();
     }
 
     @Override
     public void dispose() {
         try {
-            if (launch != null) {
-                launch.terminate();
-            }
+            getLaunch().terminate();
         } catch (final DebugException e) {
             e.printStackTrace();
         }
@@ -53,7 +51,7 @@ public class ExternalBackend extends Backend {
     }
 
     private ErtsProcess getErtsProcess() {
-        final IProcess[] ps = launch.getProcesses();
+        final IProcess[] ps = getLaunch().getProcesses();
         if (ps == null || ps.length == 0) {
             return null;
         }

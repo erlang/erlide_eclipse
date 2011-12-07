@@ -305,6 +305,23 @@ public class SearchUtil {
         if (res == null) {
             return null;
         }
+        if (res.isLocalCall()) {
+            String name;
+            if (module != null) {
+                name = module.getModuleName();
+                if (offset != -1) {
+                    final IErlElement e = module.getElementAt(offset);
+                    if (e != null
+                            && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
+                        return new TypeRefPattern(name, res.getFun(), limitTo);
+                    }
+                }
+            } else {
+                name = res.getName();
+            }
+            return new FunctionPattern(name, res.getFun(), res.getArity(),
+                    limitTo, matchAnyFunctionDefinition);
+        }
         String name = res.getName();
         if (name == null) {
             return null;
@@ -324,21 +341,6 @@ public class SearchUtil {
                 oldName = name;
                 name = ModelUtils.resolveMacroValue(name, module);
             } while (!name.equals(oldName));
-            return new FunctionPattern(name, res.getFun(), res.getArity(),
-                    limitTo, matchAnyFunctionDefinition);
-        } else if (res.isLocalCall()) {
-            if (module != null) {
-                name = module.getModuleName();
-                if (offset != -1) {
-                    final IErlElement e = module.getElementAt(offset);
-                    if (e != null
-                            && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
-                        return new TypeRefPattern(name, res.getFun(), limitTo);
-                    }
-                }
-            } else {
-                name = res.getName();
-            }
             return new FunctionPattern(name, res.getFun(), res.getArity(),
                     limitTo, matchAnyFunctionDefinition);
         } else if (res.isMacro()) {

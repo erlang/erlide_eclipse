@@ -20,12 +20,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -34,8 +32,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -108,7 +104,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-    protected ILaunch launch;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
 
@@ -122,8 +117,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         codeManager = new CodeManager(this);
-
-        launch = data.getLaunch();
     }
 
     public IRpcCallSite getCallSite() {
@@ -480,11 +473,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public ILaunch getLaunch() {
-        return launch;
+        return data.getLaunch();
     }
 
-    public void setLaunch(final ILaunch launch) {
-        this.launch = launch;
+    public void assignStreamProxyListeners() {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
@@ -657,15 +649,15 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         if (data.isDebug()) {
             // add debug debugTarget
-            debugTarget = new ErlangDebugTarget(launch, this, projects,
+            debugTarget = new ErlangDebugTarget(getLaunch(), this, projects,
                     data.getDebugFlags());
             // debugTarget.getWaiter().doWait();
-            launch.addDebugTarget(debugTarget);
+            getLaunch().addDebugTarget(debugTarget);
             // interpret everything we can
             final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
             if (distributed) {
                 distributeDebuggerCode();
-                addNodesAsDebugTargets(launch, debugTarget);
+                addNodesAsDebugTargets(getLaunch(), debugTarget);
             }
             interpretModules(data, distributed);
             registerStartupFunctionStarter(data);
@@ -851,19 +843,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             } catch (final DebugException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void launchRuntime() {
-        if (launch != null) {
-            return;
-        }
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
-        try {
-            launch = launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, true);
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
         }
     }
 

@@ -59,7 +59,7 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     ILaunch getLaunch();
 
-    void setLaunch(final ILaunch launch);
+    void assignStreamProxyListeners();
 
     IBackendShell getShell(final String id);
 
@@ -82,8 +82,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
     BackendData getData();
 
     void initialize();
-
-    void launchRuntime();
 
     String getJavaNodeName();
 
