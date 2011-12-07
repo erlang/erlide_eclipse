@@ -48,11 +48,12 @@ public class EUnitEventHandler extends ErlangEventHandler {
                 .getProperty("DATA");
 
         if (!(data instanceof OtpErlangTuple && ((OtpErlangTuple) data)
-                .elementAt(0) instanceof OtpErlangAtom))
+                .elementAt(0) instanceof OtpErlangAtom)) {
             return;
+        }
 
-        OtpErlangTuple msg = (OtpErlangTuple) data;
-        OtpErlangAtom resType = (OtpErlangAtom) msg.elementAt(0);
+        final OtpErlangTuple msg = (OtpErlangTuple) data;
+        final OtpErlangAtom resType = (OtpErlangAtom) msg.elementAt(0);
         log.info(resType);
 
         if (resType.atomValue().equals(GROUP_BEGIN)) {
@@ -63,8 +64,9 @@ public class EUnitEventHandler extends ErlangEventHandler {
             handle_group(msg);
         } else if (resType.atomValue().equals(SUMMARY)) {
             handle_summary(msg);
-            for (IEUnitObserver obs : coverBackend.getEUnitListeners())
+            for (final IEUnitObserver obs : coverBackend.getEUnitListeners()) {
                 obs.labelChanged();
+            }
         } else if (resType.atomValue().equals(ERROR)) {
             handle_error(msg);
         } else if (resType.atomValue().equals(SKIPPED)) {
@@ -75,34 +77,34 @@ public class EUnitEventHandler extends ErlangEventHandler {
             handle_group_canceled(msg);
         }
 
-        for (IEUnitObserver obs : coverBackend.getEUnitListeners())
+        for (final IEUnitObserver obs : coverBackend.getEUnitListeners()) {
             obs.treeChanged();
+        }
     }
 
     // on group begining
-    private void handle_group_begin(OtpErlangTuple msg) {
+    private void handle_group_begin(final OtpErlangTuple msg) {
 
         final String group = msg.elementAt(1).toString();
         final String description = msg.elementAt(2).toString();
 
         if (group != null && !group.equals("[]") && !group.equals("undefined")) {
-            
+
             TestTreeObject node = model.findNode(description);
             TestTreeObject parent = model.findNode(group);
             if (parent == null) {
-                parent = new TestTreeObject(group,
-                        TestTreeObject.WARN);
+                parent = new TestTreeObject(group, TestTreeObject.WARN);
                 model.addChildren(parent);
             }
             if (node != null) {
-                model.removeChild(node);      
+                model.removeChild(node);
             } else {
                 node = new TestTreeObject(description, TestTreeObject.WARN);
             }
             parent.addChild(node);
-            
+
         } else {
-            TestTreeObject node = model.findNode(description);
+            final TestTreeObject node = model.findNode(description);
             if (node == null) {
                 model.addChildren(new TestTreeObject(description,
                         TestTreeObject.WARN));
@@ -111,14 +113,14 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // on group cancel
-    private void handle_group_canceled(OtpErlangTuple msg) {
+    private void handle_group_canceled(final OtpErlangTuple msg) {
 
         final String description = msg.elementAt(1).toString();
         final String reason = msg.elementAt(2).toString();
 
         if (description != null && !description.equals("[]")
                 && !description.equals("undefined")) {
-            TestTreeObject node = model.findNode(description);
+            final TestTreeObject node = model.findNode(description);
             node.setDescription(String.format("%s ... canceled: %s",
                     node.getDescription(), reason));
         } else {
@@ -129,20 +131,21 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // on test cancel
-    private void handle_test_canceled(OtpErlangTuple msg) {
+    private void handle_test_canceled(final OtpErlangTuple msg) {
 
         final String group = msg.elementAt(1).toString();
         final String description = msg.elementAt(2).toString();
         final int line = Integer.parseInt(msg.elementAt(3).toString());
         final String reason = msg.elementAt(4).toString();
 
-        OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(5);
+        final OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(5);
         final String module = source.elementAt(0).toString();
         final String function = source.elementAt(1).toString();
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
-        TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity), TestTreeObject.FAILOURE);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.FAILOURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, line, String.format("canceled: %s", reason)));
@@ -152,13 +155,13 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // on skipped test
-    private void handle_skipped(OtpErlangTuple msg) {
+    private void handle_skipped(final OtpErlangTuple msg) {
 
         final String group = msg.elementAt(2).toString();
         final String description = msg.elementAt(3).toString();
         final int line = Integer.parseInt(msg.elementAt(4).toString());
 
-        OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(5);
+        final OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(5);
         final String module = source.elementAt(0).toString();
         final String function = source.elementAt(1).toString();
         final int arity = Integer.parseInt(source.elementAt(2).toString());
@@ -171,15 +174,16 @@ public class EUnitEventHandler extends ErlangEventHandler {
 
         } else if (msg.elementAt(1).equals(NO_SUCH_FUNCTION)) {
 
-            OtpErlangTuple func = (OtpErlangTuple) msg.elementAt(5);
+            final OtpErlangTuple func = (OtpErlangTuple) msg.elementAt(5);
 
             reason = String.format("No such function: %s:%s/%s", func
                     .elementAt(1).toString(), func.elementAt(2).toString(),
                     func.elementAt(3).toString());
         }
 
-        TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity), TestTreeObject.FAILOURE);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.FAILOURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, line, String.format("skipped: %s", reason)));
@@ -189,21 +193,22 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // on failed test
-    private void handle_error(OtpErlangTuple msg) {
+    private void handle_error(final OtpErlangTuple msg) {
 
         final String group = msg.elementAt(1).toString();
         final String description = msg.elementAt(2).toString();
         final int line = Integer.parseInt(msg.elementAt(3).toString());
 
-        OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(4);
+        final OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(4);
         final String module = source.elementAt(0).toString();
         final String function = source.elementAt(1).toString();
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
         final String exception = msg.elementAt(5).toString();
 
-        TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity), TestTreeObject.FAILOURE);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.FAILOURE);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, line, "error"));
@@ -214,7 +219,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // at the end of testing
-    private void handle_summary(OtpErlangTuple msg) {
+    private void handle_summary(final OtpErlangTuple msg) {
 
         model.updatePass(Integer.parseInt(msg.elementAt(1).toString()));
         model.updateFail(Integer.parseInt(msg.elementAt(2).toString()));
@@ -224,32 +229,33 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // on group ending
-    private void handle_group(OtpErlangTuple msg) {
+    private void handle_group(final OtpErlangTuple msg) {
 
         final String description = msg.elementAt(1).toString();
         final int time = Integer.parseInt(msg.elementAt(2).toString());
 
-        TestTreeObject node = model.findNode(description);
+        final TestTreeObject node = model.findNode(description);
         node.setTime(time);
         node.updateType();
 
     }
 
     // on test success
-    private void handle_test(OtpErlangTuple msg) {
+    private void handle_test(final OtpErlangTuple msg) {
 
         final String group = msg.elementAt(1).toString();
         final String description = msg.elementAt(2).toString();
         final int line = Integer.parseInt(msg.elementAt(3).toString());
         final int time = Integer.parseInt(msg.elementAt(5).toString());
 
-        OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(4);
+        final OtpErlangTuple source = (OtpErlangTuple) msg.elementAt(4);
         final String module = source.elementAt(0).toString();
         final String function = source.elementAt(1).toString();
         final int arity = Integer.parseInt(source.elementAt(2).toString());
 
-        TestTreeObject node = new TestTreeObject(makeTestShortDescription(
-                module, function, arity), TestTreeObject.SUCCESS);
+        final TestTreeObject node = new TestTreeObject(
+                makeTestShortDescription(module, function, arity),
+                TestTreeObject.SUCCESS);
 
         node.setDescription(makeTestFullDescription(module, function, arity,
                 description, line, "ok"));
@@ -260,20 +266,22 @@ public class EUnitEventHandler extends ErlangEventHandler {
     }
 
     // test name
-    private String makeTestShortDescription(String module, String function,
-            int arity) {
+    private String makeTestShortDescription(final String module,
+            final String function, final int arity) {
         return String.format("%s:%s/%d", module, function, arity);
     }
 
     // test full description
-    private String makeTestFullDescription(String module, String function,
-            int arity, String description, int line, String status) {
-        if (description != null && !description.equals("undefined"))
+    private String makeTestFullDescription(final String module,
+            final String function, final int arity, final String description,
+            final int line, final String status) {
+        if (description != null && !description.equals("undefined")) {
             return String.format("%s:%s/%d (%s) at line %d - %s", module,
                     function, arity, description, line, status);
-        else
+        } else {
             return String.format("%s:%s/%d at line %d - %s", module, function,
                     arity, line, status);
+        }
     }
 
 }

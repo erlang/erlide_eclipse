@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.swt.widgets.Shell;
-import org.erlide.core.rpc.IRpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.RefactoringWorkflowController;
@@ -72,7 +72,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
         if (fetched)
             return true;
 
-        IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+        RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("input_par_prompts_eclipse", "s",
                         callbackModule);
         OtpErlangList params = (OtpErlangList) ((OtpErlangTuple) res.getValue())

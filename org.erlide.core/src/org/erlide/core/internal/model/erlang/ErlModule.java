@@ -60,6 +60,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class ErlModule extends Openable implements IErlModule {
 
@@ -204,19 +205,25 @@ public class ErlModule extends Openable implements IErlModule {
         return true;
     }
 
-    public void addComment(final IErlComment c) {
-        comments.add(c);
-    }
+    //public void addComment(final IErlComment c) {
+    //    comments.add(c);
+    //}
 
+    public void setComments(final Collection<? extends IErlComment> comments) {
+        synchronized (getModelLock()) {
+            this.comments.clear();
+            if (comments != null) {
+                this.comments.addAll(comments);
+            }
+        }
+    }
+ 
     public Collection<IErlComment> getComments() {
-        return Collections.unmodifiableCollection(comments);
+        synchronized (getModelLock()) {
+            return Collections.unmodifiableCollection(comments);
+        }
     }
 
-    @Override
-    public void setChildren(final Collection<? extends IErlElement> children) {
-        comments.clear();
-        super.setChildren(children);
-    }
 
     public synchronized long getTimestamp() {
         return timestamp;
@@ -253,8 +260,8 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        try {
-            for (final IErlElement fun : getChildren()) {
+        try { 
+            for (final IErlElement fun : getChildrenOfKind(Kind.FUNCTION)) {
                 if (fun instanceof IErlFunction) {
                     final IErlFunction f = (IErlFunction) fun;
                     if (f.getName().equals(function.name)
@@ -271,7 +278,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     public IErlTypespec findTypespec(final String typeName) {
         try {
-            for (final IErlElement child : getChildren()) {
+            for (final IErlElement child : getChildrenOfKind(Kind.TYPESPEC)) {
                 if (child instanceof IErlTypespec) {
                     final IErlTypespec typespec = (IErlTypespec) child;
                     if (typespec.getName().equals(typeName)) {
@@ -287,8 +294,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     public IErlPreprocessorDef findPreprocessorDef(final String definedName,
             final Kind kind) {
-        try {
-            for (final IErlElement m : getChildren()) {
+        synchronized (getModelLock()) {
+            for (final IErlElement m : internalGetChildren()) {
                 if (m instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef pd = (IErlPreprocessorDef) m;
                     if (pd.getKind() == kind
@@ -297,7 +304,6 @@ public class ErlModule extends Openable implements IErlModule {
                     }
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return null;
     }
@@ -307,17 +313,19 @@ public class ErlModule extends Openable implements IErlModule {
         if (!isStructureKnown()) {
             open(null);
         }
-        final List<ErlangIncludeFile> r = new ArrayList<ErlangIncludeFile>(0);
-        for (final IErlElement m : getChildren()) {
-            if (m instanceof IErlAttribute) {
-                final IErlAttribute a = (IErlAttribute) m;
-                final OtpErlangObject v = a.getValue();
-                if (v instanceof OtpErlangString) {
-                    final String s = ((OtpErlangString) v).stringValue();
-                    if ("include".equals(a.getName())) {
-                        r.add(new ErlangIncludeFile(false, s));
-                    } else if ("include_lib".equals(a.getName())) {
-                        r.add(new ErlangIncludeFile(true, s));
+        final List<ErlangIncludeFile> r = Lists.newArrayList();
+        synchronized (getModelLock()) {
+            for (final IErlElement m : internalGetChildren()) {
+                if (m instanceof IErlAttribute) {
+                    final IErlAttribute a = (IErlAttribute) m;
+                    final OtpErlangObject v = a.getValue();
+                    if (v instanceof OtpErlangString) {
+                        final String s = ((OtpErlangString) v).stringValue();
+                        if ("include".equals(a.getName())) {
+                            r.add(new ErlangIncludeFile(false, s));
+                        } else if ("include_lib".equals(a.getName())) {
+                            r.add(new ErlangIncludeFile(true, s));
+                        }
                     }
                 }
             }
@@ -327,15 +335,14 @@ public class ErlModule extends Openable implements IErlModule {
 
     public Collection<IErlImport> getImports() {
         final List<IErlImport> result = new ArrayList<IErlImport>();
-        try {
-            for (final IErlElement e : getChildren()) {
+         synchronized (getModelLock()) {
+            for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlImport) {
                     final IErlImport ei = (IErlImport) e;
                     result.add(ei);
                 }
             }
-        } catch (final ErlModelException e) {
-        }
+        } 
         return result;
     }
 
@@ -439,7 +446,7 @@ public class ErlModule extends Openable implements IErlModule {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = getProject();
         for (final IErlModule module : project.getModules()) {
-            final List<IErlModule> allIncludedFiles = module
+            final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
             if (allIncludedFiles.contains(this)) {
                 result.add(module);
@@ -496,8 +503,8 @@ public class ErlModule extends Openable implements IErlModule {
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        try {
-            for (final IErlElement e : getChildren()) {
+         synchronized (getModelLock()) {
+            for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
                     if (pd.getKind() == kind || kind == Kind.ERROR) {
@@ -505,25 +512,29 @@ public class ErlModule extends Openable implements IErlModule {
                     }
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return result;
     }
 
-    public List<IErlModule> findAllIncludedFiles() throws CoreException {
+    public Collection<IErlModule> findAllIncludedFiles() throws CoreException {
         final List<IErlModule> checked = Lists.newArrayList();
-        checked.add(this);
         return findAllIncludedFiles(checked);
     }
 
-    public List<IErlModule> findAllIncludedFiles(final List<IErlModule> checked)
-            throws CoreException {
+    public Collection<IErlModule> findAllIncludedFiles(
+            final List<IErlModule> checked) throws CoreException {
+        final Collection<IErlModule> result = Sets.newHashSet();
+
+        if (checked.contains(this)) {
+            return result;
+        }
+        checked.add(this);
+
         final List<IErlModule> includedFilesForModule = ErlModel
                 .getErlModelCache().getIncludedFilesForModule(this);
         if (includedFilesForModule != null && !includedFilesForModule.isEmpty()) {
             return includedFilesForModule;
         }
-        final List<IErlModule> result = Lists.newArrayList();
         final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
         final IErlProject project = getProject();
         if (project == null) {
@@ -581,7 +592,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     private boolean findAllIncludedFilesAux(final List<IErlModule> checked,
-            final List<IErlModule> result,
+            final Collection<IErlModule> result,
             final Collection<IErlModule> includes, final String includeFileName)
             throws CoreException {
         for (final IErlModule include : includes) {
@@ -661,7 +672,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     public boolean exportsAllFunctions() {
         try {
-            for (final IErlElement e : getChildren()) {
+            for (final IErlElement e : getChildrenOfKind(Kind.ATTRIBUTE)) {
                 if (e instanceof IErlAttribute) {
                     final IErlAttribute attr = (IErlAttribute) e;
                     if (attr.getName().equals("compile")) {

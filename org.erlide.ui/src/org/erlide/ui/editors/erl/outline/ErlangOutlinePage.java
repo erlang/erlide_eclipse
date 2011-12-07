@@ -155,8 +155,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
                 public void run() {
                     if (getTreeViewer().getControl() != null
                             && !getTreeViewer().getControl().isDisposed()) {
-                        // ErlLogger.log("*>> refreshing.");
-                        getTreeViewer().setInput(fModule);
+                        getTreeViewer().refresh(fModule);
                     }
                 }
             });
@@ -329,7 +328,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     public void sort(final boolean sorting) {
-        ErlLogger.debug("sorting " + sorting);
+        ErlLogger.debug("NYI: sorting " + sorting);
     }
 
     public static IEclipsePreferences getPrefsNode() {

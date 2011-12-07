@@ -30,13 +30,12 @@ public class CoverBackend implements ICoverBackend {
     private IBackend backend;
     private CoverEventHandler handler;
     private CoverLaunchSettings settings;
-    
+
     private final List<ICoverObserver> listeners = new LinkedList<ICoverObserver>();
     private ICoverAnnotationMarker annotationMarker;
 
-
     private final Logger log; // logger
-    
+
     private EUnitEventHandler testHandler;
     private final List<IEUnitObserver> testListeners = new LinkedList<IEUnitObserver>();
 
@@ -63,8 +62,8 @@ public class CoverBackend implements ICoverBackend {
             backend = createBackend();
             handler = new CoverEventHandler(backend, this);
             handler.register();
-            testHandler = new EUnitEventHandler(backend, 
-            		TestTreeModel.getInstance(), this);
+            testHandler = new EUnitEventHandler(backend,
+                    TestTreeModel.getInstance(), this);
             testHandler.register();
         } catch (final BackendException e) {
             handleError("Could not create backend " + e);
@@ -137,7 +136,7 @@ public class CoverBackend implements ICoverBackend {
     public List<ICoverObserver> getListeners() {
         return listeners;
     }
-    
+
     /**
      * Add listener for coverage events
      * 

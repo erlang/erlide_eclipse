@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.osgi.framework.Bundle;
@@ -113,7 +113,7 @@ public class UserRefactoringsManager {
             erlModules.add(new OtpErlangString(module));
         }
 
-        IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+        RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser(
                         "get_user_refactorings",
                         "x",

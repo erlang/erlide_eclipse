@@ -47,7 +47,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.backend.events.ErlangEventHandler;
-import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 import org.osgi.service.event.Event;
@@ -84,6 +84,10 @@ public class ProcessListView extends ViewPart {
         private final ProcessEventHandler handler = new ProcessEventHandler(
                 getBackend());
 
+        public ViewContentProvider() {
+            handler.register();
+        }
+
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
         }
@@ -97,7 +101,6 @@ public class ProcessListView extends ViewPart {
             if (backend == null) {
                 return new OtpErlangObject[] {};
             }
-            handler.register();
 
             final OtpErlangList r = ErlideProclist.getProcessList(backend);
             if (r.arity() == 0) {

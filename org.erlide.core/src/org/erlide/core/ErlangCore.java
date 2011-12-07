@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.ISaveContext;
@@ -37,8 +39,8 @@ import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
-import org.erlide.core.internal.rpc.RpcMonitor;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcMonitor;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -84,19 +86,9 @@ public final class ErlangCore {
                 }
             }
         };
-        final IPreferencesService service = Platform.getPreferencesService();
-        final String key = "erlide_log_directory";
-        final String pluginId = "org.erlide.core";
-        final String s = service.getString(pluginId, key,
-                System.getProperty("user.home"), null);
-        String dir;
-        if (s != null) {
-            dir = s;
-        } else {
-            dir = logDir;
-        }
-
         logger = ErlLogger.getInstance();
+        final String dir = getLogDir(logDir);
+        log(Level.INFO, "Erlide log is in " + dir);
         logger.setLogDir(dir);
 
         try {
@@ -107,13 +99,32 @@ public final class ErlangCore {
         }
     }
 
+    public static String getLogDir(final String logDir) {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String key = "erlide_log_directory";
+        final String pluginId = "org.erlide.core";
+        final String s = service.getString(pluginId, key, logDir, null);
+        String dir;
+        if (s != null) {
+            dir = s;
+        } else {
+            dir = System.getProperty("user.home");
+        }
+        return dir;
+    }
+
     public void stop() {
         CoreScope.getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         logger.dispose();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
-        RpcMonitor.dump(location + "/rpc_monitor.dump");
+
+        final String dateNow = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+
+        RpcMonitor.cleanupOldLogs(location, "rpc_monitor");
+        RpcMonitor.dump(location + "/rpc_monitor-" + dateNow + ".dump");
     }
 
     public void log(final IStatus status) {
@@ -202,14 +213,16 @@ public final class ErlangCore {
 
     public void start(final String version) throws CoreException {
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
-        String dev = "";
+        String dev = "(" + System.getProperty("file.encoding") + ") ";
         if (CommonUtils.isDeveloper()) {
-            dev = " erlide developer version ***";
+            dev += " developer version ***";
         }
         if (CommonUtils.isTest()) {
             dev += " test ***";
         }
-        ErlLogger.info("*** starting Erlide v" + version + " ***" + dev);
+        final String versionBanner = "*** starting Erlide v" + version + " ***"
+                + dev;
+        log(Level.INFO, versionBanner);
         featureVersion = version;
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(

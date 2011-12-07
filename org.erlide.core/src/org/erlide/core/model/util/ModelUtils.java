@@ -43,7 +43,8 @@ public class ModelUtils {
         if (typespec != null) {
             return typespec;
         }
-        final List<IErlModule> includedFiles = module.findAllIncludedFiles();
+        final Collection<IErlModule> includedFiles = module
+                .findAllIncludedFiles();
         for (final IErlModule includedFile : includedFiles) {
             typespec = includedFile.findTypespec(name);
             if (typespec != null) {
@@ -60,7 +61,7 @@ public class ModelUtils {
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
-                result.add(external.getExternalName());
+                result.add(external.getName());
             } else {
                 result.add(element.getName());
             }
@@ -74,7 +75,7 @@ public class ModelUtils {
             throws ErlModelException {
         for (final IErlElement i : parent.getChildrenOfKind(Kind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
-            final String externalName = external.getExternalName();
+            final String externalName = external.getName();
             ErlLogger
                     .debug("externalName %s segment %s", externalName, segment);
             if (externalName.equals(segment)) {
@@ -119,23 +120,42 @@ public class ModelUtils {
         return null;
     }
 
-    public static List<String> findModulesWithPrefix(final String prefix,
-            final IErlProject project, final boolean checkExternals)
-            throws ErlModelException {
+    public static List<String> findUnitsWithPrefix(final String prefix,
+            final IErlProject project, final boolean checkExternals,
+            final boolean includes) throws ErlModelException {
         final List<String> result = Lists.newArrayList();
         final Set<String> names = Sets.newHashSet();
-        addModuleNamesWithPrefix(prefix, result, names, project.getModules());
+        final Collection<IErlModule> units = getUnits(project, checkExternals,
+                includes);
+        addUnitNamesWithPrefix(prefix, result, names, units, false, includes);
         for (final IErlProject p : project.getReferencedProjects()) {
             if (p != null) {
                 p.open(null);
-                addModuleNamesWithPrefix(prefix, result, names, p.getModules());
+                addUnitNamesWithPrefix(prefix, result, names,
+                        getUnits(p, checkExternals, includes), false, includes);
             }
         }
         if (checkExternals) {
-            addModuleNamesWithPrefix(prefix, result, names,
-                    project.getExternalModules());
+            final Collection<IErlModule> externalUnits = includes ? project
+                    .getExternalIncludes() : project.getExternalModules();
+            addUnitNamesWithPrefix(prefix, result, names, externalUnits, true,
+                    includes);
         }
         return result;
+    }
+
+    private static Collection<IErlModule> getUnits(final IErlProject project,
+            final boolean checkExternals, final boolean includes)
+            throws ErlModelException {
+        final Collection<IErlModule> units;
+        if (!includes) {
+            units = project.getModules();
+        } else if (!checkExternals) {
+            units = project.getIncludes();
+        } else {
+            units = Sets.newHashSet();
+        }
+        return units;
     }
 
     public static String resolveMacroValue(final String definedName,
@@ -240,7 +260,8 @@ public class ModelUtils {
             names.add(unquoted);
         }
         names.add(definedName);
-        final List<IErlModule> allIncludedFiles = module.findAllIncludedFiles();
+        final List<IErlModule> allIncludedFiles = Lists.newArrayList(module
+                .findAllIncludedFiles());
         allIncludedFiles.add(0, module);
         for (final IErlModule includedFile : allIncludedFiles) {
             for (final String name : names) {
@@ -287,8 +308,8 @@ public class ModelUtils {
             final IErlModule module, final IErlElement.Kind kind)
             throws CoreException {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        final List<IErlModule> modulesWithIncludes = module
-                .findAllIncludedFiles();
+        final List<IErlModule> modulesWithIncludes = Lists.newArrayList(module
+                .findAllIncludedFiles());
         modulesWithIncludes.add(module);
         for (final IErlModule m : modulesWithIncludes) {
             result.addAll(m.getPreprocessorDefs(kind));
@@ -299,11 +320,16 @@ public class ModelUtils {
     public static final ArrayList<OtpErlangObject> NO_IMPORTS = new ArrayList<OtpErlangObject>(
             0);
 
-    private static void addModuleNamesWithPrefix(final String prefix,
+    private static void addUnitNamesWithPrefix(final String prefix,
             final List<String> result, final Set<String> names,
-            final Collection<IErlModule> modules) {
+            final Collection<IErlModule> modules, final boolean external,
+            final boolean includes) {
         for (final IErlModule module : modules) {
-            final String moduleName = module.getModuleName();
+            String moduleName = includes ? module.getName() : module
+                    .getModuleName();
+            if (external && includes) {
+                moduleName = getIncludeLibPath(module);
+            }
             if (moduleName.startsWith(prefix)) {
                 if (!names.contains(moduleName)) {
                     result.add(moduleName);
@@ -311,6 +337,22 @@ public class ModelUtils {
                 }
             }
         }
+    }
+
+    private static String getIncludeLibPath(final IErlModule module) {
+        String s = module.getName();
+        String prevS = s;
+        IErlElement e = module;
+        for (;;) {
+            final IParent p = e.getParent();
+            if (p instanceof IErlProject) {
+                break;
+            }
+            e = (IErlElement) p;
+            prevS = s;
+            s = e.getName() + "/" + s;
+        }
+        return prevS;
     }
 
     public static String[] getPredefinedMacroNames() {

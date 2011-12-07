@@ -15,7 +15,6 @@ import java.util.List;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
@@ -58,13 +57,12 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
     public List<IErlFunctionClause> getClauses() {
         final ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
-        try {
-            for (final IErlElement el : getChildren()) {
+        synchronized (getModelLock()) {
+            for (final IErlElement el : internalGetChildren()) {
                 if (el instanceof IErlFunctionClause) {
                     fc.add((IErlFunctionClause) el);
                 }
             }
-        } catch (final ErlModelException e) {
         }
         return fc;
     }

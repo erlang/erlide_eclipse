@@ -43,10 +43,10 @@ import org.erlide.core.backend.events.ErlangEventPublisher;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 

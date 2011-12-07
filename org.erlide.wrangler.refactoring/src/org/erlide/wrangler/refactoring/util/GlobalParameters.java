@@ -26,7 +26,7 @@ import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.rpc.IRpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
@@ -60,7 +60,7 @@ public class GlobalParameters {
         if (isQCchecked) {
             return hasQuickCheck;
         } else {
-            final IRpcResult res = BackendCore.getBackendManager()
+            final RpcResult res = BackendCore.getBackendManager()
                     .getIdeBackend()
                     .call_noexception("code", "which", "a", "eqc");
             if (!res.isOk()) {

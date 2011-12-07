@@ -16,6 +16,8 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Path;
 
+import com.google.common.collect.Lists;
+
 public class StringUtils {
 
     private StringUtils() {
@@ -519,4 +521,50 @@ public class StringUtils {
             return s;
         }
     }
+
+    public static String getLongestPrefix(final List<String> list) {
+        final StringBuilder b = new StringBuilder();
+        int i = 0;
+        while (true) {
+            final Character c = checkCharAt(i, list);
+            if (c == null) {
+                break;
+            } else {
+                b.append(c);
+            }
+            i++;
+        }
+        return b.toString();
+    }
+
+    private static Character checkCharAt(final int i, final List<String> list) {
+        Character c = null;
+        for (final String s : list) {
+            try {
+                if (c == null) {
+                    c = s.charAt(i);
+                } else {
+                    if (c != s.charAt(i)) {
+                        return null;
+                    }
+                }
+            } catch (final StringIndexOutOfBoundsException e) {
+                return null;
+            }
+        }
+        return c;
+    }
+
+    public static List<String> removeCommonPrefixes(final List<String> list) {
+        final int prefixLength = getLongestPrefix(list).length();
+        if (prefixLength == 0) {
+            return list;
+        }
+        final List<String> result = Lists.newArrayList();
+        for (final String s : list) {
+            result.add(s.substring(prefixLength));
+        }
+        return result;
+    }
+
 }

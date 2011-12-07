@@ -26,8 +26,8 @@ import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.core.model.util.ErlangFunction;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -1,6 +1,5 @@
 package org.erlide.core.model.erlang;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -47,27 +46,6 @@ public class IErlExternalTests extends ErlModelTestBase {
         }
         project.setExternalModulesFile(externalModulesString);
         super.tearDown();
-    }
-
-    // String getExternalName();
-    // String IErlElement#getName();
-    @Test
-    public void getExternalName() throws Exception {
-        final List<IErlElement> externals = project
-                .getChildrenOfKind(Kind.EXTERNAL);
-        final IErlExternal external = (IErlExternal) externals.get(0);
-        final String externalName = external.getExternalName();
-        external.open(null);
-        final IErlExternal external2 = (IErlExternal) external.getChildren()
-                .get(0);
-        final String name = external2.getName();
-        final List<IErlElement> externals3 = external
-                .getChildrenOfKind(Kind.EXTERNAL);
-        final IErlExternal external3 = (IErlExternal) externals3.get(0);
-        final String externalName2 = external3.getExternalName();
-        assertEquals("externals", externalName);
-        assertEquals("xx", name);
-        assertEquals(externalsFile.getAbsolutePath(), externalName2);
     }
 
     // boolean isOTP();

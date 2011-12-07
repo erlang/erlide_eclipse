@@ -29,8 +29,8 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.rpc.IRpcResult;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
@@ -506,7 +506,7 @@ public class RefactoringHandler extends AbstractHandler {
      */
     protected void checkWarningMessages() {
         try {
-            final IRpcResult res = WranglerBackendManager
+            final RpcResult res = WranglerBackendManager
                     .getRefactoringBackend().getLoggedInfo();
 
             if (res.isOk()) {

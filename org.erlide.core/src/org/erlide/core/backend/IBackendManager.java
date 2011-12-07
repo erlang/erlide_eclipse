@@ -8,8 +8,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.backend.ICodeBundle.CodeContext;
 import org.erlide.core.common.Tuple;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.jinterface.epmd.EpmdWatcher;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {

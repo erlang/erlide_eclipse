@@ -261,11 +261,12 @@ public class ErlModel extends Openable implements IErlModel {
 
     public void notifyChange(final IErlElement element) {
         if (System.getProperty("erlide.model.notify") != null) {
-            ErlLogger.debug("^> notifying change of " + element.getName());
+            ErlLogger.debug("^> notifying change of " + element.getName() + " "
+                    + fListeners.size());
             ErlLogger.debug("   caller = " + getStack());
         }
-        for (int i = 0; i < fListeners.size(); i++) {
-            fListeners.get(i).elementChanged(element);
+        for (final IErlModelChangeListener listener : fListeners) {
+            listener.elementChanged(element);
         }
     }
 
@@ -1139,4 +1140,10 @@ public class ErlModel extends Openable implements IErlModel {
                 includePath, false, true, scope);
     }
 
+    private final Object fModelLock = new Object();
+
+    @Override
+    public Object getModelLock() {
+        return fModelLock;
+    }
 }

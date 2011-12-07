@@ -21,13 +21,23 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.erlide.core.erlbuilder</name>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>full,incremental,</triggers>
 			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/org.erlide.core.erlbuilder.launch</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.erlide.core.builder.DialyzerBuilder</name>
+			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
+			<triggers>full,incremental,</triggers>
 			<arguments>
+				<dictionary>
+					<key>LaunchConfigHandle</key>
+					<value>&lt;project&gt;/.externalToolBuilders/org.erlide.core.builder.dialyzer.launch</value>
+				</dictionary>
 			</arguments>
 		</buildCommand>
 	</buildSpec>

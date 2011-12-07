@@ -16,20 +16,20 @@ public class TestTreeObject {
     public static final int FAILOURE = 2;
     public static final int DESCR = 3;
 
-    private String name;
+    private final String name;
     private String description = "";
-    private List<TestTreeObject> children = new LinkedList<TestTreeObject>();
+    private final List<TestTreeObject> children = new LinkedList<TestTreeObject>();
     private TestTreeObject parent = null;
     private int type; // type of node
 
-    public TestTreeObject(String name, int type) {
+    public TestTreeObject(final String name, final int type) {
         this.name = name;
-        this.description = name.replace("\"", "").replace("\\'", "'")
+        description = name.replace("\"", "").replace("\\'", "'")
                 .replaceFirst("^'", "").replaceFirst("'$", "");
         this.type = type;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -42,12 +42,12 @@ public class TestTreeObject {
      * 
      * @param time
      */
-    public void setTime(int time) {
+    public void setTime(final int time) {
         description = String
                 .format("%s     [%.3f]", description, time / 1000.0);
     }
 
-    public void addChild(TestTreeObject child) {
+    public void addChild(final TestTreeObject child) {
         child.setParent(this);
         children.add(child);
     }
@@ -64,7 +64,7 @@ public class TestTreeObject {
         return parent;
     }
 
-    private void setParent(TestTreeObject parent) {
+    private void setParent(final TestTreeObject parent) {
         this.parent = parent;
     }
 
@@ -72,13 +72,15 @@ public class TestTreeObject {
         return name;
     }
 
-    public TestTreeObject findNode(String name) {
-        if (this.name.equals(name))
+    public TestTreeObject findNode(final String name) {
+        if (this.name.equals(name)) {
             return this;
+        }
         TestTreeObject result;
-        for (TestTreeObject obj : children) {
-            if ((result = obj.findNode(name)) != null)
+        for (final TestTreeObject obj : children) {
+            if ((result = obj.findNode(name)) != null) {
                 return result;
+            }
         }
         return null;
     }
@@ -86,17 +88,19 @@ public class TestTreeObject {
     public int getType() {
         return type;
     }
-    
-    //updates type
+
+    // updates type
     public void updateType() {
-        if (children.size() == 0)
+        if (children.size() == 0) {
             return;
-        
+        }
+
         type = TestTreeObject.SUCCESS;
-        
-        for(TestTreeObject child : children) {
-            if(child.getType() != TestTreeObject.SUCCESS)
+
+        for (final TestTreeObject child : children) {
+            if (child.getType() != TestTreeObject.SUCCESS) {
                 type = TestTreeObject.WARN;
+            }
         }
     }
 

@@ -8,7 +8,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.core.backend.console.IBackendShell;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
@@ -59,7 +59,7 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     ILaunch getLaunch();
 
-    void setLaunch(final ILaunch launch);
+    void assignStreamProxyListeners();
 
     IBackendShell getShell(final String id);
 
@@ -82,8 +82,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
     BackendData getData();
 
     void initialize();
-
-    void launchRuntime();
 
     String getJavaNodeName();
 

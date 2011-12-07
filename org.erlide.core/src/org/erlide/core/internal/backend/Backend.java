@@ -20,12 +20,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -34,8 +32,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -62,18 +58,17 @@ import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
-import org.erlide.core.internal.rpc.RpcResultImpl;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.core.rpc.IRpcCallSite;
-import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.IRpcHelper;
-import org.erlide.core.rpc.IRpcResult;
-import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.rpc.IRpcCallback;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcHelper;
+import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -109,7 +104,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-    protected ILaunch launch;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
 
@@ -123,29 +117,27 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         codeManager = new CodeManager(this);
-
-        launch = data.getLaunch();
     }
 
     public IRpcCallSite getCallSite() {
         return this;
     }
 
-    public IRpcResult call_noexception(final String m, final String f,
+    public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
         return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
-    public IRpcResult call_noexception(final int timeout, final String m,
+    public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
             final OtpErlangObject result = runtime.makeCall(timeout, m, f,
                     signature, args);
-            return new RpcResultImpl(result);
+            return new RpcResult(result);
         } catch (final RpcException e) {
-            return RpcResultImpl.error(e.getMessage());
+            return RpcResult.error(e.getMessage());
         } catch (final SignatureException e) {
-            return RpcResultImpl.error(e.getMessage());
+            return RpcResult.error(e.getMessage());
         }
     }
 
@@ -481,11 +473,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public ILaunch getLaunch() {
-        return launch;
+        return data.getLaunch();
     }
 
-    public void setLaunch(final ILaunch launch) {
-        this.launch = launch;
+    public void assignStreamProxyListeners() {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
@@ -658,15 +649,15 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         if (data.isDebug()) {
             // add debug debugTarget
-            debugTarget = new ErlangDebugTarget(launch, this, projects,
+            debugTarget = new ErlangDebugTarget(getLaunch(), this, projects,
                     data.getDebugFlags());
             // debugTarget.getWaiter().doWait();
-            launch.addDebugTarget(debugTarget);
+            getLaunch().addDebugTarget(debugTarget);
             // interpret everything we can
             final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
             if (distributed) {
                 distributeDebuggerCode();
-                addNodesAsDebugTargets(launch, debugTarget);
+                addNodesAsDebugTargets(getLaunch(), debugTarget);
             }
             interpretModules(data, distributed);
             registerStartupFunctionStarter(data);
@@ -852,19 +843,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             } catch (final DebugException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void launchRuntime() {
-        if (launch != null) {
-            return;
-        }
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
-        try {
-            launch = launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, true);
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
         }
     }
 

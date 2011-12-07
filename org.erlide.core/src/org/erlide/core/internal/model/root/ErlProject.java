@@ -60,9 +60,9 @@ import org.erlide.core.model.root.IOldErlangProjectProperties;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.core.rpc.IRpcCallSite;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
@@ -192,9 +192,11 @@ public class ErlProject extends Openable implements IErlProject {
                         .getBuildOrIdeBackend(fProject);
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());
-                for (final String include : includes) {
-                    projectIncludes
-                            .add(path.append(include).toPortableString());
+                if (includes != null) {
+                    for (final String include : includes) {
+                        projectIncludes.add(path.append(include)
+                                .toPortableString());
+                    }
                 }
             }
         }

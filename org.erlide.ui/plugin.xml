@@ -1946,4 +1946,11 @@
             targetId="org.eclipse.ui.views.ContentOutline">
       </filter>
    </extension>
+   <extension
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            class="org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant"
+            contentTypeId="org.erlide.core.content.erlang">
+      </participant>
+   </extension>
 </plugin>

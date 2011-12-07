@@ -13,13 +13,13 @@ package org.erlide.core.internal.backend;
 import java.io.IOException;
 
 import org.erlide.core.backend.IErlRuntime;
-import org.erlide.core.internal.rpc.RpcHelper;
-import org.erlide.core.rpc.IRpcCallback;
-import org.erlide.core.rpc.IRpcFuture;
-import org.erlide.core.rpc.IRpcHelper;
-import org.erlide.core.rpc.IRpcResultCallback;
-import org.erlide.core.rpc.RpcException;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.internal.rpc.RpcHelper;
+import org.erlide.jinterface.rpc.IRpcCallback;
+import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.IRpcHelper;
+import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

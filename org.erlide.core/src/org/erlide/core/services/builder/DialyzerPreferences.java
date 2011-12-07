@@ -13,7 +13,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
-import org.erlide.core.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcException;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

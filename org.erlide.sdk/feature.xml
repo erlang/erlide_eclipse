@@ -2,15 +2,17 @@
 <feature
       id="org.erlide.sdk"
       label="erlide SDK"
-      version="0.13.6.qualifier"
+      version="0.13.8.qualifier"
       provider-name="erlide.org">
 
    <description>
       This feature provides Erlang IDE support for Eclipse, 
-      including unit and functional testing. 
-For bug reports and feature requests, please use the SouceForge
-trackers at http://sourceforge.net/projects/erlide/.
-Mailing to erlide-devel@sf.net would be the second option.
+including unit and functional testing. 
+For bug reports and feature requests, please use the trackers at 
+https://www.assembla.com/spaces/erlide/support/tickets 
+or at 
+https://github.com/erlide/erlide/issues.
+You can also mail to erlide-devel@lists.sourceforge.net.
    </description>
 
    <copyright>

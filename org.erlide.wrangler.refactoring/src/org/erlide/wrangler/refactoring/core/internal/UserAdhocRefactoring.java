@@ -3,7 +3,7 @@ package org.erlide.wrangler.refactoring.core.internal;
 import org.erlide.core.CoreScope;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.rpc.IRpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 
 /**
@@ -40,7 +40,7 @@ public class UserAdhocRefactoring {
             return false;
         }
 
-        IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+        RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("load_callback_mod_eclipse", "ss",
                         refac.getCallbackModule(), callbackPath);
         if (!res.isOk())
