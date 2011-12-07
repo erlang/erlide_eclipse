@@ -24,6 +24,15 @@ public class UserMyRefacContribution extends CompoundContributionItem {
     protected IContributionItem[] getContributionItems() {
         List<UserRefactoringInfo> refacs = UserRefactoringsManager
                 .getInstance().getMyElementary();
+        if (refacs.size() == 0) {
+            CommandContributionItemParameter param = new CommandContributionItemParameter(
+                    PlatformUI.getWorkbench(), null,
+                    "org.erlide.wrangler.refactoring.empty",
+                    CommandContributionItem.STYLE_PUSH);
+            param.label = "<Empty>";
+            CommandContributionItem item = new CommandContributionItem(param);
+            return new IContributionItem[] { item };
+        }
         IContributionItem[] items = new IContributionItem[refacs.size()];
 
         int i = 0;
@@ -46,5 +55,4 @@ public class UserMyRefacContribution extends CompoundContributionItem {
 
         return items;
     }
-
 }

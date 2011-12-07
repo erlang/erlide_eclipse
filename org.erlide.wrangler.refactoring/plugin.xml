@@ -334,11 +334,6 @@
   </command>
   <command
         categoryId="org.erlide.wrangler.refactoring"
-        id="org.erlide.wrangler.refactoring.composite"
-        name="%applyCompositeRefac">
-  </command>
-  <command
-        categoryId="org.erlide.wrangler.refactoring"
         id="org.erlide.wrangler.refactoring.gen_refac"
         name="gen_refac">
      <commandParameter
@@ -356,6 +351,10 @@
         categoryId="org.erlide.wrangler.refactoring"
         id="org.erlide.wrangler.refactoring.add"
         name="%addRefac">
+  </command>
+  <command
+        id="org.erlide.wrangler.refactoring.empty"
+        name="empty_cmd">
   </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
@@ -486,11 +485,6 @@
     <command
           commandId="org.erlide.wrangler.refactoring.adhoc"
           id="org.erlide.wrangler.refactoring.adhoc"
-          style="push">
-    </command>
-    <command
-          commandId="org.erlide.wrangler.refactoring.composite"
-          id="org.erlide.wrangler.refactoring.composite"
           style="push">
     </command>
 				<visibleWhen>
@@ -659,10 +653,6 @@
   <handler
         class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
         commandId="org.erlide.wrangler.refactoring.adhoc">
-  </handler>
-  <handler
-        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
-        commandId="org.erlide.wrangler.refactoring.composite">
   </handler>
   <handler
         class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
