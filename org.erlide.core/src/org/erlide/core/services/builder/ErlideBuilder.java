@@ -35,6 +35,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcFuture;
 
@@ -78,7 +79,10 @@ public class ErlideBuilder {
                     final float delta = 100.0f / beams.length;
                     for (final IResource element : beams) {
                         if ("beam".equals(element.getFileExtension())) {
-                            element.delete(true, monitor);
+                            final IResource source = findCorrespondingSource(element);
+                            if (source != null) {
+                                element.delete(true, monitor);
+                            }
                             notifier.updateProgressDelta(delta);
                         }
                     }
@@ -282,6 +286,15 @@ public class ErlideBuilder {
 
     public IProject getProject() {
         return myProject;
+    }
+
+    public IResource findCorrespondingSource(final IResource beam)
+            throws CoreException {
+        final String[] p = beam.getName().split("\\.");
+        final SearchVisitor searcher = helper.new SearchVisitor(p[0], null);
+        beam.getProject().accept(searcher);
+        final IResource source = searcher.getResult();
+        return source;
     }
 
 }
