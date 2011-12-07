@@ -16,7 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 
 /**
- * Abstract class for ad hoc user-defined refactorings
+ * Abstract class for elementary user-defined refactorings
  * 
  * @author Aleksandra Lipiec <aleksandra.lipiec@erlang-solutions.com>
  * @version %I%, %G%

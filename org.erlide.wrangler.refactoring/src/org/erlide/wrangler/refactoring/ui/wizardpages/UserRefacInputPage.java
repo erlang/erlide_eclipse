@@ -72,13 +72,6 @@ public class UserRefacInputPage extends InputPage {
         layout.numColumns = 3;
         composite.setLayout(layout);
 
-        GridData lgData = new GridData();
-        lgData.horizontalAlignment = GridData.FILL;
-        lgData.horizontalSpan = 3;
-        Label descrLabel = new Label(composite, SWT.LEFT);
-        descrLabel.setText(description);
-        descrLabel.setLayoutData(lgData);
-
         List<String> parPrompts = ((UserRefactoring) getRefactoring())
                 .getParPrompts();
 
@@ -89,6 +82,13 @@ public class UserRefacInputPage extends InputPage {
             setPageComplete(true);
             return;
         }
+
+        GridData lgData = new GridData();
+        lgData.horizontalAlignment = GridData.FILL;
+        lgData.horizontalSpan = 3;
+        Label descrLabel = new Label(composite, SWT.LEFT);
+        descrLabel.setText(description);
+        descrLabel.setLayoutData(lgData);
 
         inputLabels = new ArrayList<Label>(parPrompts.size());
         inputTexts = new ArrayList<Text>(parPrompts.size());

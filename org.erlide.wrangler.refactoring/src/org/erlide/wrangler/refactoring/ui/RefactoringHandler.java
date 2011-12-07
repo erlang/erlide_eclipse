@@ -39,7 +39,6 @@ import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.core.CostumWorkflowRefactoringWithPositionsSelection;
 import org.erlide.wrangler.refactoring.core.WranglerRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ApplyAdhocElemRefactoring;
-import org.erlide.wrangler.refactoring.core.internal.ApplyCompositeRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.ApplyUserElementaryRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcFsmStateDataToRecordRefactoring;
 import org.erlide.wrangler.refactoring.core.internal.EqcStatemStateDataToRecordRefactoring;
@@ -77,7 +76,6 @@ import org.erlide.wrangler.refactoring.ui.warning.WarningViewManager;
 import org.erlide.wrangler.refactoring.ui.wizard.DefaultWranglerRefactoringWizard;
 import org.erlide.wrangler.refactoring.ui.wizardpages.ComboInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.CostumworkFlowInputPage;
-import org.erlide.wrangler.refactoring.ui.wizardpages.MainCompositeRefacInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.RecordDataInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SelectionInputPage;
 import org.erlide.wrangler.refactoring.ui.wizardpages.SimpleInputPage;
@@ -147,40 +145,6 @@ public class RefactoringHandler extends AbstractHandler {
                 MessageDialog.openError(PlatformUI.getWorkbench()
                         .getActiveWorkbenchWindow().getShell(),
                         "Elementary refactoring error",
-                        "Can not load callback module");
-                return null;
-            }
-
-            // apply composite refactoring
-        } else if (actionId.equals("org.erlide.wrangler.refactoring.composite")) {
-
-            InputDialog dialog = getModuleInput("Apply composite refactoring",
-                    "Please type the gen_composite_refac module name!");
-
-            dialog.open();
-
-            if (dialog.getReturnCode() == Window.CANCEL)
-                return null;
-
-            String callbackModule = dialog.getValue();
-            // TODO call apropriet erlang function to get the number of
-            // refactorings
-            // Create the right number of pages
-
-            pages.add(new MainCompositeRefacInputPage(
-                    "Apply composite refactoring",
-                    "Please type input arguments",
-                    "Arguments should not be empty!",
-                    new NonEmptyStringValidator()));
-            refactoring = new ApplyCompositeRefactoring();
-
-            ((ApplyCompositeRefactoring) refactoring)
-                    .setCallbackModuleName(callbackModule);
-
-            if (!((ApplyCompositeRefactoring) refactoring).fetchParPrompts()) {
-                MessageDialog.openError(PlatformUI.getWorkbench()
-                        .getActiveWorkbenchWindow().getShell(),
-                        "Composite refactoring error",
                         "Can not load callback module");
                 return null;
             }
