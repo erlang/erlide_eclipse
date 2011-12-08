@@ -205,9 +205,9 @@ public class ErlModule extends Openable implements IErlModule {
         return true;
     }
 
-    // public void addComment(final IErlComment c) {
-    // comments.add(c);
-    // }
+    //public void addComment(final IErlComment c) {
+    //    comments.add(c);
+    //}
 
     public void setComments(final Collection<? extends IErlComment> comments) {
         synchronized (getModelLock()) {
@@ -217,12 +217,13 @@ public class ErlModule extends Openable implements IErlModule {
             }
         }
     }
-
+ 
     public Collection<IErlComment> getComments() {
         synchronized (getModelLock()) {
             return Collections.unmodifiableCollection(comments);
         }
     }
+
 
     public synchronized long getTimestamp() {
         return timestamp;
@@ -259,7 +260,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public IErlFunction findFunction(final ErlangFunction function) {
-        try {
+        try { 
             for (final IErlElement fun : getChildrenOfKind(Kind.FUNCTION)) {
                 if (fun instanceof IErlFunction) {
                     final IErlFunction f = (IErlFunction) fun;
@@ -269,7 +270,8 @@ public class ErlModule extends Openable implements IErlModule {
                     }
                 }
             }
-        } catch (final ErlModelException e) { // ignore
+        } catch (final ErlModelException e) {
+            // ignore
         }
         return null;
     }
@@ -284,7 +286,8 @@ public class ErlModule extends Openable implements IErlModule {
                     }
                 }
             }
-        } catch (final ErlModelException e) { // ignore
+        } catch (final ErlModelException e) {
+            // ignore
         }
         return null;
     }
@@ -332,14 +335,14 @@ public class ErlModule extends Openable implements IErlModule {
 
     public Collection<IErlImport> getImports() {
         final List<IErlImport> result = new ArrayList<IErlImport>();
-        synchronized (getModelLock()) {
+         synchronized (getModelLock()) {
             for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlImport) {
                     final IErlImport ei = (IErlImport) e;
                     result.add(ei);
                 }
             }
-        }
+        } 
         return result;
     }
 
@@ -500,7 +503,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
-        synchronized (getModelLock()) {
+         synchronized (getModelLock()) {
             for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
@@ -680,7 +683,8 @@ public class ErlModule extends Openable implements IErlModule {
                     }
                 }
             }
-        } catch (final ErlModelException e) { // ignore
+        } catch (final ErlModelException e) {
+            // ignore
         }
         return false;
     }

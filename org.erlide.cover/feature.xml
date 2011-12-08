@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.cover"
       label="Erlang code coverage for ErlIde"
-      version="0.2.0.qualifier"
+      version="0.2.1.qualifier"
       provider-name="Erlang Solutions">
 
    <description>
