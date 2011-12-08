@@ -28,7 +28,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.core.rpc.IRpcResult;
+import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.erlide.wrangler.refactoring.codeinspection.ui.InputDialogWithCheckbox;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
@@ -136,7 +136,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			if (InputDialogWithCheckbox.OK == dialog.open()) {
 				int linesVal = Integer.parseInt(dialog.getValue());
 				boolean inProject = dialog.isCheckBoxChecked();
-				IRpcResult res = null;
+				RpcResult res = null;
 				if (inProject) {
 					res = WranglerBackendManager.getRefactoringBackend()
 							.callInspection("long_functions_in_dirs_eclipse",
@@ -184,7 +184,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 			if (InputDialogWithCheckbox.OK == dialog.open()) {
 				int nestedVal = Integer.parseInt(dialog.getValue());
 				boolean inProject = dialog.isCheckBoxChecked();
-				IRpcResult res = null;
+				RpcResult res = null;
 				if (inProject) {
 					res = WranglerBackendManager.getRefactoringBackend()
 							.callInspection("nested_exprs_in_dirs_eclipse",
@@ -233,7 +233,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 				"Find incomplete receive patterns",
 				"Would you like to run the scan in the whole project?");
 		try {
-			IRpcResult result = null;
+			RpcResult result = null;
 			String function = "";
 			if (answer) {
 				function = inProject;
@@ -269,7 +269,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 	}
 
 	private ArrayList<IErlElement> processFunctionResult(Shell shell,
-			IRpcResult result) throws OtpErlangRangeException {
+			RpcResult result) throws OtpErlangRangeException {
 		ArrayList<IErlElement> elements = new ArrayList<IErlElement>();
 		OtpErlangObject obj = result.getValue();
 		OtpErlangTuple restuple = (OtpErlangTuple) obj;
@@ -306,7 +306,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 					"Find non tail recursive servers",
 					"Would you like to run the scan in the whole project?");
 			String function = "";
-			IRpcResult res = null;
+			RpcResult res = null;
 			if (!answer) {
 				function = inFile;
 				res = WranglerBackendManager.getRefactoringBackend()
@@ -362,7 +362,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 
 		// run the rpc
 		try {
-			IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+			RpcResult res = WranglerBackendManager.getRefactoringBackend()
 					.callInspection("dependencies_of_a_module_eclipse", "sx",
 							wranglerSelection.getFilePath(),
 							wranglerSelection.getSearchPath());
@@ -446,7 +446,7 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
 		if (ret == InputDialog.CANCEL)
 			return;
 		int lines = Integer.parseInt(dialog.getValue());
-		IRpcResult res = WranglerBackendManager.getRefactoringBackend()
+		RpcResult res = WranglerBackendManager.getRefactoringBackend()
 				.callInspection("large_modules_eclipse", "ixi", lines,
 						wranglerSelection.getSearchPath(),
 						GlobalParameters.getTabWidth());
