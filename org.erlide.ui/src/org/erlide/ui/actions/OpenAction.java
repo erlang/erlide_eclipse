@@ -139,9 +139,11 @@ public class OpenAction extends SelectionDispatchAction {
         try {
             final IErlProject project = module.getProject();
             final IErlModel model = CoreScope.getModel();
+            final String externalModulesString = project == null ? "" : project
+                    .getExternalModulesString();
             final OpenResult res = ErlideOpen.open(b, module, offset,
-                    ModelUtils.getImportsAsList(module),
-                    project.getExternalModulesString(), model.getPathVars());
+                    ModelUtils.getImportsAsList(module), externalModulesString,
+                    model.getPathVars());
             ErlLogger.debug("open " + res);
             openOpenResult(editor, module, b, offset, project, res);
         } catch (final Exception e) {

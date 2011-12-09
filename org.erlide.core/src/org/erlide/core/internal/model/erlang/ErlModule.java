@@ -96,7 +96,9 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        getModelCache().putModule(this);
+        if (useCaches) {
+            getModelCache().putModule(this);
+        }
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
@@ -683,6 +685,10 @@ public class ErlModule extends Openable implements IErlModule {
         } catch (final ErlModelException e) { // ignore
         }
         return false;
+    }
+
+    public boolean isRealFile() {
+        return useCaches;
     }
 
 }
