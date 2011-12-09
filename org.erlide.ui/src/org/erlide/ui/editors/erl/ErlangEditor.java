@@ -274,7 +274,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     public ICharacterPairMatcher getBracketMatcher() {
-        return ((EditorConfiguration) getSourceViewerConfiguration())
+        return ((ErlangSourceViewerConfiguration) getSourceViewerConfiguration())
                 .getBracketMatcher();
     }
 

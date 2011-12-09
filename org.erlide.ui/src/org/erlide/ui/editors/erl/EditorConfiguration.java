@@ -28,7 +28,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -56,7 +55,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     final ErlangEditor editor;
     private ITextDoubleClickStrategy doubleClickStrategy;
-    private ICharacterPairMatcher fBracketMatcher;
     private ErlReconciler reconciler;
     private ErlContentAssistProcessor contentAssistProcessor;
     private final static IAutoEditStrategy[] NO_AUTOEDIT = new IAutoEditStrategy[] {};
@@ -92,14 +90,6 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             doubleClickStrategy = new DoubleClickStrategy(getBracketMatcher());
         }
         return doubleClickStrategy;
-    }
-
-    public ICharacterPairMatcher getBracketMatcher() {
-        if (fBracketMatcher == null) {
-            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
-                    "{", "}", "[", "]", "<<", ">>" });
-        }
-        return fBracketMatcher;
     }
 
     @Override

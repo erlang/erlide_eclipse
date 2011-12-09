@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.erlide.ui.util;
 
+import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -22,6 +25,7 @@ import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
+import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlTypespec;
@@ -134,12 +138,22 @@ public class ErlModelUtils {
             final ErlangExternalEditorInput erlangExternalEditorInput = (ErlangExternalEditorInput) editorInput;
             return erlangExternalEditorInput.getModule();
         }
-        String path = null;
+        String path = null, initialText = null;
         if (editorInput instanceof IStorageEditorInput) {
             final IStorageEditorInput sei = (IStorageEditorInput) editorInput;
             try {
-                final IPath p = sei.getStorage().getFullPath();
+                final IStorage storage = sei.getStorage();
+                final IPath p = storage.getFullPath();
                 path = p.toPortableString();
+                String encoding;
+                if (storage instanceof IEncodedStorage) {
+                    final IEncodedStorage encodedStorage = (IEncodedStorage) storage;
+                    encoding = encodedStorage.getCharset();
+                } else {
+                    encoding = ResourcesPlugin.getEncoding();
+                }
+                initialText = Util.getInputStreamAsString(
+                        storage.getContents(), encoding);
             } catch (final CoreException e) {
             }
         }
@@ -155,7 +169,7 @@ public class ErlModelUtils {
             }
             final IPath p = new Path(path);
             return CoreScope.getModel().getModuleFromFile(null,
-                    p.lastSegment(), null, path, path);
+                    p.lastSegment(), initialText, path, path);
         }
         return null;
     }

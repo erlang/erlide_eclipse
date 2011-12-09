@@ -44,7 +44,7 @@
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
               UpdateSearchServer) ->
     try
-%%         ?D({StateDir, ModuleFileName}),
+        %%         ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
@@ -231,40 +231,15 @@ cac(attribute, Attribute, _Exports, _Imports) ->
     case Attribute of
         %% -spec, -type or -opaque
         [#token{kind='-', offset=Offset, line=Line},
-         #token{kind=Kind, line=_Line, offset=_Offset, value=Value} | Args]
-          when (Kind=:='spec') or ((Kind=:=atom) and (Value=:='type'))
-                   or ((Kind=:=atom) and (Value=:='opaque'))->
-            ?D(Value),
-            Name = case Kind of 'spec' -> Kind; _ -> Value end,
-            #token{line=LastLine, offset=LastOffset,
-                   length=LastLength} = last_not_eof(Attribute),
-            PosLength = LastOffset - Offset + LastLength,
-            ?D(Args),
-            Extra = to_string(Args),
-            ?D(Extra),
-            {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
-            ?D({AttrArgs, Extra}),
-            ExternalRefs = get_refs(tl(AttrArgs), Extra, ?ARI_TYPESPEC),
-            {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                        name=Name, args=AttrArgs, extra=Extra},
-             [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
-                   arity=?ARI_TYPESPEC, clause="", sub_clause=false} | ExternalRefs], [], []};
+         #token{kind=Kind, line=_Line, offset=_Offset, value=Name} | Args]
+          when (Kind=:='spec') or ((Kind=:=atom) and (Name=:='type'))
+                   or ((Kind=:=atom) and (Name=:='opaque'))->
+            get_type_attribute(Kind, Name, Offset, Line, Attribute, Args);
         %% other attributes
         [#token{kind='-', offset=Offset, line=Line},
          #token{kind=atom, value=Name, line=_Line, offset=_Offset},
          _, #token{value=Args} | _] = Attribute ->
-            #token{line=LastLine, offset=LastOffset, 
-                   length=LastLength} = last_not_eof(Attribute),
-            PosLength = LastOffset - Offset + LastLength,
-            Between = erlide_np_util:get_between_outer_pars(Attribute, '(', ')'),
-            Extra = to_string(Between),
-            {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
-            ?D({AttrArgs, Between}),
-            {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                        name=Name, args=AttrArgs, extra=Extra},
-             make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)++
-                 make_attribute_arg_refs(Name, AttrArgs, Between),
-             Exports, Imports};
+            get_other_attribute(Name, Offset, Line, Attribute, Args);
         [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
             #token{line=LastLine, offset=LastOffset, 
                    length=LastLength} = last_not_eof(Attribute),
@@ -277,6 +252,37 @@ cac(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _],
     {#other{pos={{Line, Line, Offset}, Length}, name=Name}, [], [], []};
 cac(_, _D, _E, _I) ->
     {eof, [], [], []}.
+
+get_type_attribute(Kind, Name0, Offset, Line, Attribute, Args) ->
+    ?D(Name0),
+    Name = case Kind of 'spec' -> Kind; _ -> Name0 end,
+    #token{line=LastLine, offset=LastOffset,
+           length=LastLength} = last_not_eof(Attribute),
+    PosLength = LastOffset - Offset + LastLength,
+    ?D(Args),
+    Extra = to_string(Args),
+    ?D(Extra),
+    {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
+    ?D({AttrArgs, Extra}),
+    ExternalRefs = get_refs(tl(AttrArgs), Extra, ?ARI_TYPESPEC),
+    {#attribute{pos={{Line, LastLine, Offset}, PosLength},
+                name=Name, args=AttrArgs, extra=Extra},
+     [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
+           arity=?ARI_TYPESPEC, clause="", sub_clause=false} | ExternalRefs], [], []}.
+
+get_other_attribute(Name, Offset, Line, Attribute, Args) ->
+    #token{line=LastLine, offset=LastOffset, 
+           length=LastLength} = last_not_eof(Attribute),
+    PosLength = LastOffset - Offset + LastLength,
+    Between = erlide_np_util:get_between_outer_pars(Attribute, '(', ')'),
+    Extra = to_string(Between),
+    {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
+    ?D({AttrArgs, Between}),
+    {#attribute{pos={{Line, LastLine, Offset}, PosLength},
+                name=Name, args=AttrArgs, extra=Extra},
+     make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)++
+         make_attribute_arg_refs(Name, AttrArgs, Between),
+     Exports, Imports}.
 
 get_exported(F_A, Exports) ->
     lists:member(F_A, Exports).

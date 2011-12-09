@@ -10,7 +10,7 @@ public class ErlangToolkit {
         final IResource res = module.getResource();
         if (res != null) {
             return createScannerModuleNameFromResource(res);
-        } else if (module.getFilePath() != null) {
+        } else if (module.getFilePath() != null && module.isRealFile()) {
             return "mod" + module.getFilePath().hashCode() + "__"
                     + module.getName();
         }
