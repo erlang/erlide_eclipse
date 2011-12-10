@@ -1726,11 +1726,10 @@ public final class Util {
     public static String getInputStreamAsString(final InputStream is,
             final String encoding) {
         final StringBuilder out = new StringBuilder();
-        final Charset cs = Charset.forName(encoding);
         final byte[] b = new byte[4096];
         try {
             for (int n; (n = is.read(b)) != -1;) {
-                out.append(new String(b, 0, n, cs));
+                out.append(new String(b, 0, n, encoding));
             }
         } catch (final IOException e) {
         }
