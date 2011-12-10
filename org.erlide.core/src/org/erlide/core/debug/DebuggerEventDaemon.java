@@ -36,6 +36,7 @@ public class DebuggerEventDaemon implements IBackendListener {
             this.backend = backend;
         }
 
+        @Override
         public void run() {
             OtpErlangObject msg = null;
             final List<OtpErlangObject> messages = Lists.newArrayList();
@@ -93,9 +94,11 @@ public class DebuggerEventDaemon implements IBackendListener {
         stopped = true;
     }
 
+    @Override
     public void runtimeAdded(final IBackend b) {
     }
 
+    @Override
     public void runtimeRemoved(final IBackend b) {
         if (b == runtime) {
             stop();
@@ -103,6 +106,7 @@ public class DebuggerEventDaemon implements IBackendListener {
         }
     }
 
+    @Override
     public void moduleLoaded(final IRpcCallSite backend,
             final IProject project, final String moduleName) {
     }

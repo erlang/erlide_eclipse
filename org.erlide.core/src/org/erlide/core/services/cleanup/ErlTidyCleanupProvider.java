@@ -53,6 +53,7 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
         this.resource = resource;
     }
 
+    @Override
     public void cleanUp() throws Exception {
         // lookup a backend to run erl_tidy with
         final IRpcCallSite Backend = BackendCore.getBackendManager()

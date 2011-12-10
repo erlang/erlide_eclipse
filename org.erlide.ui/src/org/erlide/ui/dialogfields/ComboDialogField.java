@@ -105,16 +105,19 @@ public class ComboDialogField extends DialogField {
             assertCompositeNotNull(parent);
             fModifyListener = new ModifyListener() {
 
+                @Override
                 public void modifyText(final ModifyEvent e) {
                     doModifyText(e);
                 }
             };
             final SelectionListener selectionListener = new SelectionListener() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     doSelectionChanged(e);
                 }
 
+                @Override
                 public void widgetDefaultSelected(final SelectionEvent e) {
                 }
             };

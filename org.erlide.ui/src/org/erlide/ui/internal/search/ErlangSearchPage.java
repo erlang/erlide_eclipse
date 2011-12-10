@@ -200,6 +200,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     // ---- Action Handling ------------------------------------------------
 
+    @Override
     public boolean performAction() {
         try {
             return performNewSearch();
@@ -342,6 +343,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
 
     // ---- Widget creation ------------------------------------------------
 
+    @Override
     public void createControl(final Composite parent) {
         initializeDialogUnits(parent);
         readConfiguration();
@@ -423,6 +425,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             }
         });
         fPattern.addModifyListener(new ModifyListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void modifyText(final ModifyEvent e) {
                 doPatternModified();
@@ -742,6 +745,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     /*
      * Implements method from ISearchPage
      */
+    @Override
     public void setContainer(final ISearchPageContainer container) {
         fContainer = container;
     }

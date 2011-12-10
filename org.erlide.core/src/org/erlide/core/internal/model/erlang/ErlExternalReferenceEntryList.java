@@ -43,6 +43,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         this.externalModules = externalModules;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.EXTERNAL;
     }
@@ -183,6 +184,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
+    @Override
     public boolean isOTP() {
         return false;
     }
@@ -192,6 +194,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
+    @Override
     public boolean hasIncludes() {
         return true;
     }

@@ -32,6 +32,7 @@ public class ErlangSearchTreeContentProvider extends
         // modules = new ArrayList<IErlModule>();
     }
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         return moduleNames.toArray();
     }
@@ -133,6 +134,7 @@ public class ErlangSearchTreeContentProvider extends
         }
     }
 
+    @Override
     public Object[] getChildren(final Object parentElement) {
         final List<Object> l = childMap.get(parentElement);
         if (l == null) {
@@ -141,10 +143,12 @@ public class ErlangSearchTreeContentProvider extends
         return l.toArray();
     }
 
+    @Override
     public boolean hasChildren(final Object element) {
         return childMap.containsKey(element);
     }
 
+    @Override
     public Object getParent(final Object element) {
         return parentMap.get(element);
     }

@@ -15,12 +15,14 @@ public class ModuleNameValidator extends AtomValidator {
 
     @Override
     public boolean isValid(final String s) {
-        if (!super.isValid(s))
+        if (!super.isValid(s)) {
             return false;
+        }
         try {
-            if (CoreScope.getModel().findModule(s) == null)
+            if (CoreScope.getModel().findModule(s) == null) {
                 return false;
-        } catch (ErlModelException e) {
+            }
+        } catch (final ErlModelException e) {
             return false;
         }
         return true;

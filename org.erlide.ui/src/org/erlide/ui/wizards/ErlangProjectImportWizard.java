@@ -181,6 +181,7 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
         return true;
     }
 
+    @Override
     public void init(final IWorkbench aWorkbench,
             final IStructuredSelection aSelection) {
         selection = aSelection;
@@ -211,6 +212,7 @@ public class ErlangProjectImportWizard extends Wizard implements IImportWizard {
             final IPageChangeProvider pcp = (IPageChangeProvider) wizardContainer;
             pcp.addPageChangedListener(new IPageChangedListener() {
 
+                @Override
                 public void pageChanged(final PageChangedEvent event) {
                     if (event.getSelectedPage() == importIncludeAndSourceDirsPage) {
                         setupDirectoriesPage();

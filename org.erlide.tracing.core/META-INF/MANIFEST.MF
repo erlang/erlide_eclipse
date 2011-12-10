@@ -15,6 +15,6 @@ Require-Bundle: org.erlide.tracing.erlang;bundle-version="0.2.0",
  org.erlide.ui;bundle-version="0.8.4",
  org.eclipse.osgi.services;bundle-version="3.2.100"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin
 Bundle-Vendor: Erlang Solutions

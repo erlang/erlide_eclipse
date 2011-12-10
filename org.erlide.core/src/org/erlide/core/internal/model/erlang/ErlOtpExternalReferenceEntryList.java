@@ -22,6 +22,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         super(parent, name);
     }
 
+    @Override
     public Kind getKind() {
         return Kind.EXTERNAL;
     }
@@ -99,6 +100,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return false;
     }
 
+    @Override
     public boolean isOTP() {
         return true;
     }
@@ -108,6 +110,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
         return null;
     }
 
+    @Override
     public boolean hasIncludes() {
         return true;
     }

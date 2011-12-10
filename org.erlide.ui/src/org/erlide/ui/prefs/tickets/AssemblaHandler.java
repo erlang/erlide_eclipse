@@ -40,10 +40,12 @@ public class AssemblaHandler extends TicketHandlerImpl {
         return false;
     }
 
+    @Override
     public String infoToMessage(final ProblemData info) {
         return "<ticket><summary>" + info.summary + "</summary></ticket>";
     }
 
+    @Override
     public TicketStatus parseMessage(final String message) {
         final boolean ok = false;
         final int id = 0;
@@ -52,6 +54,7 @@ public class AssemblaHandler extends TicketHandlerImpl {
         return result;
     }
 
+    @Override
     public URL getLoginURL(final String user, final String pass)
             throws MalformedURLException {
         if (checkUser(user)) {

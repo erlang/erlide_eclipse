@@ -18,6 +18,7 @@ package org.erlide.wrangler.refactoring.ui.validator;
  */
 public class NonEmptyStringValidator implements IValidator {
 
+    @Override
     public boolean isValid(final String text) {
         return !text.equals("");
     }

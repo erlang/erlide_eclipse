@@ -37,6 +37,7 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
     public AbstractErlMemberSelection() {
     }
 
+    @Override
     public IDocument getDocument() {
         return document;
     }
@@ -67,6 +68,7 @@ public abstract class AbstractErlMemberSelection extends AbstractErlSelection
      * @Override public ITextEditor getEditor() { return editor; }
      */
 
+    @Override
     public SelectionKind getKind() {
         final Kind k = getErlElement().getKind();
         if (k == Kind.CLAUSE) {

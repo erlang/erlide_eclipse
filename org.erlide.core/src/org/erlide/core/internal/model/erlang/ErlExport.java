@@ -15,6 +15,7 @@ public class ErlExport extends ErlImportExport implements IErlExport {
         this.functions = functions;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.EXPORT;
     }

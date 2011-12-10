@@ -57,13 +57,16 @@ public class ErlLoggerView extends ViewPart {
      */
 
     static class ViewContentProvider implements IStructuredContentProvider {
+        @Override
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Object[] getElements(final Object parent) {
             return new String[] { "One", "Two", "Three" };
         }
@@ -71,10 +74,12 @@ public class ErlLoggerView extends ViewPart {
 
     static class ViewLabelProvider extends LabelProvider implements
             ITableLabelProvider {
+        @Override
         public String getColumnText(final Object obj, final int index) {
             return getText(obj);
         }
 
+        @Override
         public Image getColumnImage(final Object obj, final int index) {
             return getImage(obj);
         }
@@ -117,6 +122,7 @@ public class ErlLoggerView extends ViewPart {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager manager) {
                 ErlLoggerView.this.fillContextMenu(manager);
             }
@@ -185,6 +191,7 @@ public class ErlLoggerView extends ViewPart {
 
     private void hookDoubleClickAction() {
         viewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 doubleClickAction.run();
             }

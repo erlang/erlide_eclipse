@@ -16,6 +16,7 @@ public class ErlangLogEventHandler extends ErlangEventHandler {
         super("erlang_log", backend);
     }
 
+    @Override
     public void handleEvent(final Event event) {
         final OtpErlangTuple t = (OtpErlangTuple) event.getProperty("DATA");
         final OtpErlangAtom module = (OtpErlangAtom) t.elementAt(0);

@@ -61,6 +61,7 @@ public final class ErlParser implements IErlParser {
     public ErlParser() {
     }
 
+    @Override
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
             final boolean useCaches) {

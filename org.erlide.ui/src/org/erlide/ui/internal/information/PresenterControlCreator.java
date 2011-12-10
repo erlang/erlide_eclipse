@@ -252,6 +252,7 @@ public final class PresenterControlCreator extends
             // tbm.add(openExternalJavadocAction);
 
             final IInputChangedListener inputChangeListener = new IInputChangedListener() {
+                @Override
                 public void inputChanged(final Object newInput) {
                     backAction.update();
                     forwardAction.update();

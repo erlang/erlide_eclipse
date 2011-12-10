@@ -17,16 +17,19 @@ class TestResultsContentProvider implements ITreeContentProvider {
 
     private List<OtpErlangObject> myEvents;
 
+    @Override
     @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         myEvents = (List<OtpErlangObject>) newInput;
     }
 
+    @Override
     public void dispose() {
         myEvents = null;
     }
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         if (myEvents.size() == 0) {
             return NO_RESULTS_MSG;
@@ -36,6 +39,7 @@ class TestResultsContentProvider implements ITreeContentProvider {
 
     // TODO group after test suite
 
+    @Override
     public Object[] getChildren(final Object parentElement) {
         if (parentElement instanceof TestCaseData) {
             final TestCaseData data = (TestCaseData) parentElement;
@@ -57,10 +61,12 @@ class TestResultsContentProvider implements ITreeContentProvider {
         return NO_CHILDREN;
     }
 
+    @Override
     public Object getParent(final Object element) {
         return null;
     }
 
+    @Override
     public boolean hasChildren(final Object element) {
         return getChildren(element).length > 0;
     }

@@ -11,6 +11,7 @@ import org.erlide.tracing.core.mvc.model.TracedProcess;
 public class ProcessLabelProvider extends LabelProvider implements
         ITableLabelProvider {
 
+    @Override
     public Image getColumnImage(final Object element, final int columnIndex) {
         final TracedProcess process = (TracedProcess) element;
 
@@ -41,6 +42,7 @@ public class ProcessLabelProvider extends LabelProvider implements
         return null;
     }
 
+    @Override
     public String getColumnText(final Object element, final int columnIndex) {
 
         final TracedProcess process = (TracedProcess) element;

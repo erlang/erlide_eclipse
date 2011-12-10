@@ -17,6 +17,7 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
 
     public static final String ID = "org.erlide.debug.trace.model";
 
+    @Override
     public void computeDetail(final IValue value,
             final IValueDetailListener listener) {
         String detail = "";
@@ -27,11 +28,13 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
         listener.detailComputed(value, detail);
     }
 
+    @Override
     public void setAttribute(final String attribute, final Object value) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public String getEditorId(final IEditorInput input, final Object element) {
         if (element instanceof IFile || element instanceof ILineBreakpoint) {
             return ErlangEditor.ERLANG_EDITOR_ID;
@@ -39,6 +42,7 @@ public class DebugTraceDebugModelPresentation extends LabelProvider implements
         return null;
     }
 
+    @Override
     public IEditorInput getEditorInput(final Object element) {
 
         if (element instanceof IFile) {

@@ -101,6 +101,7 @@ public class FolderSelectionDialog extends ElementTreeSelectionDialog implements
         }
     }
 
+    @Override
     public void selectionChanged(final SelectionChangedEvent event) {
         updateNewFolderButtonState();
     }

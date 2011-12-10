@@ -11,6 +11,7 @@ public class ErlangSourceLookupParticipant extends
         super();
     }
 
+    @Override
     public String getSourceName(final Object object) throws CoreException {
         if (!(object instanceof ErlangStackFrame)) {
             return null;

@@ -33,6 +33,7 @@ public abstract class RunnableWithProgress implements IRunnableWithProgress {
         this.label = label;
     }
 
+    @Override
     public void run(final IProgressMonitor monitor)
             throws InvocationTargetException, InterruptedException {
         synchronized (this) {

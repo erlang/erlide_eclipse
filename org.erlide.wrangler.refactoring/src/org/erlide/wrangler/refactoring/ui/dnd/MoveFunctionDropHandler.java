@@ -48,6 +48,7 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
     public MoveFunctionDropHandler() {
     }
 
+    @Override
     public IStatus validateDrop(final Object target, final int operation,
             final TransferData transferType) {
         final ISelection sel = (ISelection) LocalSelectionTransfer
@@ -63,6 +64,7 @@ public class MoveFunctionDropHandler implements INavigatorDropHandler {
         return Status.CANCEL_STATUS;
     }
 
+    @Override
     public IStatus handleDrop(final CommonDropAdapter dropAdapter,
             final DropTargetEvent dropTargetEvent, final Object target) {
 

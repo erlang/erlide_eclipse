@@ -67,6 +67,7 @@ public class SimpleInputPage extends InputPage {
 
     }
 
+    @Override
     public void createControl(final Composite parent) {
         composite = new Composite(parent, SWT.NONE);
 
@@ -92,6 +93,7 @@ public class SimpleInputPage extends InputPage {
 
         inputText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 isInputValid();
             }

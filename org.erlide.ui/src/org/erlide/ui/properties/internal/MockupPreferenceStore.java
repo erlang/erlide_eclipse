@@ -34,6 +34,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addPropertyChangeListener(final IPropertyChangeListener listener) {
         fListeners.add(listener);
     }
@@ -41,6 +42,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void removePropertyChangeListener(
             final IPropertyChangeListener listener) {
         fListeners.remove(listener);
@@ -49,6 +51,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean contains(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -56,6 +59,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void firePropertyChangeEvent(final String name,
             final Object oldValue, final Object newValue) {
         firePropertyChangeEvent(this, name, oldValue, newValue);
@@ -88,6 +92,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getBoolean(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -95,6 +100,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getDefaultBoolean(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -102,6 +108,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getDefaultDouble(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -109,6 +116,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public float getDefaultFloat(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -116,6 +124,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getDefaultInt(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -123,6 +132,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getDefaultLong(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -130,6 +140,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getDefaultString(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -137,6 +148,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public double getDouble(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -144,6 +156,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public float getFloat(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -151,6 +164,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getInt(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -158,6 +172,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public long getLong(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -165,6 +180,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getString(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -172,6 +188,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isDefault(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -179,6 +196,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean needsSaving() {
         return true;
         // throw new UnsupportedOperationException();
@@ -187,6 +205,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void putValue(final String name, final String value) {
         throw new UnsupportedOperationException();
     }
@@ -194,6 +213,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefault(final String name, final double value) {
         throw new UnsupportedOperationException();
     }
@@ -201,6 +221,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefault(final String name, final float value) {
         throw new UnsupportedOperationException();
     }
@@ -208,6 +229,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefault(final String name, final int value) {
         throw new UnsupportedOperationException();
     }
@@ -215,6 +237,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefault(final String name, final long value) {
         throw new UnsupportedOperationException();
     }
@@ -222,6 +245,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefault(final String name, final String defaultObject) {
         throw new UnsupportedOperationException();
     }
@@ -229,6 +253,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDefault(final String name, final boolean value) {
         throw new UnsupportedOperationException();
     }
@@ -236,6 +261,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setToDefault(final String name) {
         throw new UnsupportedOperationException();
     }
@@ -243,6 +269,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(final String name, final double value) {
         throw new UnsupportedOperationException();
     }
@@ -250,6 +277,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(final String name, final float value) {
         throw new UnsupportedOperationException();
     }
@@ -257,6 +285,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(final String name, final int value) {
         throw new UnsupportedOperationException();
     }
@@ -264,6 +293,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(final String name, final long value) {
         throw new UnsupportedOperationException();
     }
@@ -271,6 +301,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(final String name, final String value) {
         throw new UnsupportedOperationException();
     }
@@ -278,6 +309,7 @@ public class MockupPreferenceStore implements IPreferenceStore {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setValue(final String name, final boolean value) {
         throw new UnsupportedOperationException();
     }

@@ -36,6 +36,7 @@ public class ErlangPerspective implements IPerspectiveFactory {
     /**
      * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
      */
+    @Override
     public void createInitialLayout(final IPageLayout layout) {
         defineActions(layout);
         defineLayout(layout);

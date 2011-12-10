@@ -284,6 +284,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     class PreferenceChangeListener implements IPreferenceChangeListener {
+        @Override
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
             // ErlLogger.debug("event:: " + key);
@@ -479,7 +480,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();
@@ -868,6 +870,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
          * (org.eclipse.jface.viewers.SelectionChangedEvent)
          */
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             ErlangEditor.this.selectionChanged();
         }
@@ -1275,11 +1278,13 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                  * @seeorg.eclipse.jface.text.information.IInformationProvider#
                  * getSubject(org.eclipse.jface.text.ITextViewer, int)
                  */
+                @Override
                 public IRegion getSubject(final ITextViewer textViewer,
                         final int invocationOffset) {
                     return fHoverRegion;
                 }
 
+                @Override
                 public Object getInformation2(final ITextViewer textViewer,
                         final IRegion subject) {
                     return fHoverInfo;
@@ -1292,10 +1297,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                  * 
                  * @since 3.0
                  */
+                @Override
                 public IInformationControlCreator getInformationPresenterControlCreator() {
                     return fControlCreator;
                 }
 
+                @Override
                 @Deprecated
                 public String getInformation(final ITextViewer textViewer,
                         final IRegion subject) {
@@ -1568,32 +1575,39 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return v.getDocument();
     }
 
+    @Override
     public ViewerComparator createDefaultOutlineComparator() {
         return null;
     }
 
+    @Override
     public ViewerComparator createOutlineComparator() {
         return null;
     }
 
+    @Override
     public ITreeContentProvider createOutlineContentProvider() {
         return new ErlangContentProvider();
     }
 
+    @Override
     public ILabelProvider createOutlineLabelProvider() {
         final ErlangLabelProvider erlangLabelProvider = new ErlangLabelProvider();
         erlangLabelProvider.addLabelDecorator(new ProblemsLabelDecorator());
         return erlangLabelProvider;
     }
 
+    @Override
     public Object getOutlineInput() {
         return getModule();
     }
 
+    @Override
     public ISortableContentOutlinePage getContentOutline() {
         return myOutlinePage;
     }
 
+    @Override
     public void updateSelection(final SelectionChangedEvent event) {
         final ISelection sel = event.getSelection();
         if (sel instanceof IStructuredSelection) {
@@ -1602,6 +1616,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
     }
 
+    @Override
     public void updateSelection(final Object sel) {
     }
 
@@ -1743,6 +1758,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * @see org.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
          * IWorkbenchPartReference)
          */
+        @Override
         public void partVisible(final IWorkbenchPartReference partRef) {
             if (ErlangEditor.this.equals(partRef.getPart(false))) {
                 cancel();
@@ -1755,27 +1771,34 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * @seeorg.eclipse.ui.IPartListener2#partClosed(org.eclipse.ui.
          * IWorkbenchPartReference)
          */
+        @Override
         public void partClosed(final IWorkbenchPartReference partRef) {
             if (ErlangEditor.this.equals(partRef.getPart(false))) {
                 cancel();
             }
         }
 
+        @Override
         public void partActivated(final IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partBroughtToTop(final IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partDeactivated(final IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partOpened(final IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partHidden(final IWorkbenchPartReference partRef) {
         }
 
+        @Override
         public void partInputChanged(final IWorkbenchPartReference partRef) {
         }
     }
@@ -1825,6 +1848,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * 
          * @since 3.1
          */
+        @Override
         public void windowActivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
                     && markOccurencesHandler.fMarkOccurrenceAnnotations
@@ -1847,6 +1871,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * 
          * @since 3.1
          */
+        @Override
         public void windowDeactivated(final IWorkbenchWindow window) {
             if (window == getEditorSite().getWorkbenchWindow()
                     && markOccurencesHandler.fMarkOccurrenceAnnotations
@@ -1861,6 +1886,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * 
          * @since 3.1
          */
+        @Override
         public void windowClosed(final IWorkbenchWindow window) {
         }
 
@@ -1870,6 +1896,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
          * 
          * @since 3.1
          */
+        @Override
         public void windowOpened(final IWorkbenchWindow window) {
         }
     }

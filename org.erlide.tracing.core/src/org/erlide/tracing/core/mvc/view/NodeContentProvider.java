@@ -17,13 +17,16 @@ public class NodeContentProvider implements IStructuredContentProvider {
     public NodeContentProvider() {
     }
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         return backend.getTracedNodesArray();
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         backend = (TraceBackend) newInput;

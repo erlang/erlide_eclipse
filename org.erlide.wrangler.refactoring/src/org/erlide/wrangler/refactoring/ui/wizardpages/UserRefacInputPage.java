@@ -29,10 +29,11 @@ public class UserRefacInputPage extends InputPage {
     protected List<Label> inputLabels;
     protected List<Text> inputTexts;
 
-    private String description;
+    private final String description;
 
-    private ModifyListener modifyListener = new ModifyListener() {
+    private final ModifyListener modifyListener = new ModifyListener() {
 
+        @Override
         public void modifyText(final ModifyEvent e) {
             isInputValid();
         }
@@ -64,40 +65,41 @@ public class UserRefacInputPage extends InputPage {
 
     }
 
+    @Override
     public void createControl(final Composite parent) {
 
-        Composite composite = new Composite(parent, SWT.NONE);
+        final Composite composite = new Composite(parent, SWT.NONE);
 
         final GridLayout layout = new GridLayout();
         layout.numColumns = 3;
         composite.setLayout(layout);
 
-        List<String> parPrompts = ((UserRefactoring) getRefactoring())
+        final List<String> parPrompts = ((UserRefactoring) getRefactoring())
                 .getParPrompts();
 
         if (parPrompts.size() == 0) {
-            Label label = new Label(composite, SWT.LEFT);
+            final Label label = new Label(composite, SWT.LEFT);
             label.setText("No arguments for this refactoring");
             setControl(composite);
             setPageComplete(true);
             return;
         }
 
-        GridData lgData = new GridData();
+        final GridData lgData = new GridData();
         lgData.horizontalAlignment = GridData.FILL;
         lgData.horizontalSpan = 3;
-        Label descrLabel = new Label(composite, SWT.LEFT);
+        final Label descrLabel = new Label(composite, SWT.LEFT);
         descrLabel.setText(description);
         descrLabel.setLayoutData(lgData);
 
         inputLabels = new ArrayList<Label>(parPrompts.size());
         inputTexts = new ArrayList<Text>(parPrompts.size());
 
-        for (String labelText : parPrompts) {
+        for (final String labelText : parPrompts) {
             GridData gridData = new GridData();
             gridData.horizontalAlignment = GridData.FILL;
             gridData.horizontalSpan = 1;
-            Label label = new Label(composite, SWT.LEFT);
+            final Label label = new Label(composite, SWT.LEFT);
             label.setText(labelText);
             label.setLayoutData(gridData);
             inputLabels.add(label);
@@ -106,7 +108,7 @@ public class UserRefacInputPage extends InputPage {
             gridData.horizontalAlignment = GridData.FILL;
             gridData.horizontalSpan = 2;
             gridData.grabExcessHorizontalSpace = true;
-            Text text = new Text(composite, SWT.NONE);
+            final Text text = new Text(composite, SWT.NONE);
             text.setLayoutData(gridData);
             text.addModifyListener(modifyListener);
             inputTexts.add(text);
@@ -127,9 +129,10 @@ public class UserRefacInputPage extends InputPage {
     @Override
     protected boolean isInputValid() {
         if (checkCorrectness()) {
-            List<String> params = new ArrayList<String>(inputTexts.size());
-            for (Text text : inputTexts)
+            final List<String> params = new ArrayList<String>(inputTexts.size());
+            for (final Text text : inputTexts) {
                 params.add(text.getText());
+            }
             ((UserRefactoring) getRefactoring()).setParValue(params);
             setErrorMessage(null);
             setPageComplete(true);
@@ -141,9 +144,11 @@ public class UserRefacInputPage extends InputPage {
     }
 
     private boolean checkCorrectness() {
-        for (Text text : inputTexts)
-            if (!validator.isValid(text.getText()))
+        for (final Text text : inputTexts) {
+            if (!validator.isValid(text.getText())) {
                 return false;
+            }
+        }
         return true;
     }
 

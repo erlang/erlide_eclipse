@@ -11,6 +11,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 public class ToggleMarkOccurrencesHandler extends AbstractHandler implements
         IHandler {
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final boolean oldValue = HandlerUtil.toggleCommandState(event
                 .getCommand());

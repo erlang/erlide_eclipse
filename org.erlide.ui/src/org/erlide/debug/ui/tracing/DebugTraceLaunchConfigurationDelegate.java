@@ -26,6 +26,7 @@ public class DebugTraceLaunchConfigurationDelegate extends
         this.events = events;
     }
 
+    @Override
     public void launch(final ILaunchConfiguration configuration,
             final String mode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {

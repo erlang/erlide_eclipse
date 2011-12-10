@@ -371,6 +371,7 @@ public abstract class OverlayPage extends PropertyPage implements
         final PreferenceDialog dialog = new PreferenceDialog(getControl()
                 .getShell(), manager);
         BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
+            @Override
             public void run() {
                 dialog.create();
                 dialog.setMessage(targetNode.getLabelText());

@@ -104,6 +104,7 @@ public class ColoringPreferencePage extends PreferencePage implements
     /**
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(final IWorkbench workbench) {
         fColorManager = new ColorManager();
 
@@ -125,19 +126,23 @@ public class ColoringPreferencePage extends PreferencePage implements
 
     class ColorListContentProvider implements ITreeContentProvider {
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             return new String[] { fErlangCategory
             // , fEdocCategory
             };
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public Object[] getChildren(final Object parentElement) {
             if (parentElement instanceof String) {
                 final String entry = (String) parentElement;
@@ -151,6 +156,7 @@ public class ColoringPreferencePage extends PreferencePage implements
             return new Object[0];
         }
 
+        @Override
         public Object getParent(final Object element) {
             if (element instanceof String) {
                 return null;
@@ -162,6 +168,7 @@ public class ColoringPreferencePage extends PreferencePage implements
             return fErlangCategory;
         }
 
+        @Override
         public boolean hasChildren(final Object element) {
             return element instanceof String;
         }
@@ -411,6 +418,7 @@ public class ColoringPreferencePage extends PreferencePage implements
         fListViewer
                 .addSelectionChangedListener(new ISelectionChangedListener() {
 
+                    @Override
                     public void selectionChanged(
                             final SelectionChangedEvent event) {
                         handleSyntaxColorListSelection();
@@ -418,10 +426,12 @@ public class ColoringPreferencePage extends PreferencePage implements
                 });
 
         foregroundColorButton.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 // do nothing
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
@@ -431,10 +441,12 @@ public class ColoringPreferencePage extends PreferencePage implements
         });
 
         fBoldCheckBox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 // do nothing
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
@@ -444,10 +456,12 @@ public class ColoringPreferencePage extends PreferencePage implements
         });
 
         fItalicCheckBox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 // do nothing
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
@@ -456,10 +470,12 @@ public class ColoringPreferencePage extends PreferencePage implements
             }
         });
         fStrikethroughCheckBox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 // do nothing
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
@@ -470,10 +486,12 @@ public class ColoringPreferencePage extends PreferencePage implements
         });
 
         fUnderlineCheckBox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 // do nothing
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
@@ -484,10 +502,12 @@ public class ColoringPreferencePage extends PreferencePage implements
         });
 
         fEnableCheckbox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 // do nothing
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 fEnableCheckbox.setSelection(true);
                 // final TokenHighlight item = getHighlight();

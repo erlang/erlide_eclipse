@@ -10,16 +10,19 @@ public class RegressionResultsContentProvider implements
 
     private List<String> data;
 
+    @Override
     @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         data = (List<String>) newInput;
     }
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         return data.toArray();
     }
 
+    @Override
     public void dispose() {
     }
 

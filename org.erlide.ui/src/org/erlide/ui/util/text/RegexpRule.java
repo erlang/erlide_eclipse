@@ -22,10 +22,12 @@ public class RegexpRule implements IPredicateRule {
         this.token = token;
     }
 
+    @Override
     public IToken getSuccessToken() {
         return token;
     }
 
+    @Override
     public IToken evaluate(final ICharacterScanner scanner, final boolean resume) {
         final StringBuffer buffer = new StringBuffer();
         final char[][] lineDelimiters = scanner.getLegalLineDelimiters();
@@ -46,6 +48,7 @@ public class RegexpRule implements IPredicateRule {
         return Token.UNDEFINED;
     }
 
+    @Override
     public IToken evaluate(final ICharacterScanner scanner) {
         return evaluate(scanner, false);
     }

@@ -34,14 +34,17 @@ public class ConsoleOutputScanner implements ITokenScanner {
         fColorManager = colorManager;
     }
 
+    @Override
     public int getTokenLength() {
         return text.length();
     }
 
+    @Override
     public int getTokenOffset() {
         return offset;
     }
 
+    @Override
     public IToken nextToken() {
         if (gotten) {
             return Token.EOF;
@@ -69,6 +72,7 @@ public class ConsoleOutputScanner implements ITokenScanner {
         return new TextAttribute(fg, bg, style);
     }
 
+    @Override
     public void setRange(final IDocument document, final int offset,
             final int length) {
         this.offset = offset;

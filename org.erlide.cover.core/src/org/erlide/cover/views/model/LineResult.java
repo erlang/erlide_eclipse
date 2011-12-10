@@ -56,6 +56,7 @@ public class LineResult implements Comparable<LineResult>, Serializable {
         return buf.toString();
     }
 
+    @Override
     public int compareTo(final LineResult lineRes2) {
         return lineNum - lineRes2.getLineNum();
     }

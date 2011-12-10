@@ -95,6 +95,7 @@ public class ErlangSearchResultPage extends AbstractTextSearchViewPage {
 
     private static final String[] SHOW_IN_TARGETS = new String[] { IPageLayout.ID_PROJECT_EXPLORER };
     private static final IShowInTargetList SHOW_IN_TARGET_LIST = new IShowInTargetList() {
+        @Override
         @SuppressWarnings("synthetic-access")
         public String[] getShowInTargetIds() {
             return SHOW_IN_TARGETS;

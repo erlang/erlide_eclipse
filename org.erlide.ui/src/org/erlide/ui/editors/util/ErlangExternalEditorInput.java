@@ -16,6 +16,7 @@ public class ErlangExternalEditorInput extends FileStoreEditorInput implements
         this.module = module;
     }
 
+    @Override
     public IErlModule getModule() {
         return module;
     }

@@ -44,6 +44,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return super.getImage(element);
     }
 
+    @Override
     public void setAttribute(final String attribute, final Object value) {
         // TODO Auto-generated method stub
 
@@ -138,6 +139,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return el.getName() + " (backend)";
     }
 
+    @Override
     public void computeDetail(final IValue value,
             final IValueDetailListener listener) {
         String detail = "";
@@ -159,6 +161,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return true;
     }
 
+    @Override
     public IEditorInput getEditorInput(final Object element) {
         if (element instanceof IFile) {
             return new FileEditorInput((IFile) element);
@@ -181,6 +184,7 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         return null;
     }
 
+    @Override
     public String getEditorId(final IEditorInput input, final Object element) {
         if (element instanceof IFile || element instanceof ILineBreakpoint
                 || element instanceof LocalFileStorage) {

@@ -24,6 +24,7 @@ public class ThrowingProviders {
             implements ThrowingProvider<Result, E> {
         private final Queue<ThrowingProvider<Result, E>> delegates = new LinkedList<ThrowingProvider<Result, E>>();
 
+        @Override
         public Result get() throws E {
             return delegates.remove().get();
         }
@@ -34,6 +35,7 @@ public class ThrowingProviders {
         public ThrowingProviderBuilder<Result, E> of(final Result... results) {
             for (final Result result : results) {
                 delegates.add(new ThrowingProvider<Result, E>() {
+                    @Override
                     public Result get() {
                         return result;
                     }
@@ -49,6 +51,7 @@ public class ThrowingProviders {
                 final E... exceptions) {
             for (final E exception : exceptions) {
                 delegates.add(new ThrowingProvider<Result, E>() {
+                    @Override
                     public Result get() throws E {
                         throw exception;
                     }

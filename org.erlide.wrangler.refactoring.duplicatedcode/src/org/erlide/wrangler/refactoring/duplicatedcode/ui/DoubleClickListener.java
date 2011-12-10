@@ -19,6 +19,7 @@ class DoubleClickListener implements IDoubleClickListener {
 
     }
 
+    @Override
     public void doubleClick(final DoubleClickEvent event) {
         final ISelection selection = event.getSelection();
 

@@ -29,10 +29,12 @@ public abstract class ErlImportExport extends ErlMember implements IParent,
         }
     }
 
+    @Override
     public boolean hasFunction(final ErlangFunction f) {
         return fFunctions.contains(f);
     }
 
+    @Override
     public Collection<ErlangFunction> getFunctions() {
         return Collections.unmodifiableCollection(Lists
                 .newArrayList(fFunctions));

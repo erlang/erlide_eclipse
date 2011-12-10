@@ -16,6 +16,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 
     private ISelection selection;
 
+    @Override
     @SuppressWarnings({ "rawtypes" })
     public void run(final IAction action) {
         if (selection instanceof IStructuredSelection) {
@@ -36,11 +37,13 @@ public class ToggleNatureAction implements IObjectActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection theSelection) {
         selection = theSelection;
     }
 
+    @Override
     public void setActivePart(final IAction action,
             final IWorkbenchPart targetPart) {
     }

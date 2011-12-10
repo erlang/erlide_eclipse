@@ -19,6 +19,7 @@ import org.erlide.ui.editors.erl.folding.IErlangFoldingPreferenceBlock;
 public class EmptyErlangFoldingPreferenceBlock implements
         IErlangFoldingPreferenceBlock {
 
+    @Override
     public Control createControl(final Composite composite) {
         final Composite inner = new Composite(composite, SWT.NONE);
         inner.setLayout(new GridLayout(3, false));
@@ -43,15 +44,19 @@ public class EmptyErlangFoldingPreferenceBlock implements
         return inner;
     }
 
+    @Override
     public void initialize() {
     }
 
+    @Override
     public void performOk() {
     }
 
+    @Override
     public void performDefaults() {
     }
 
+    @Override
     public void dispose() {
     }
 

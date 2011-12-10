@@ -46,6 +46,7 @@ public class ErlMergeViewer extends TextMergeViewer {
         if (fPreferenceStore != null) {
             fPreferenceChangeListener = new IPropertyChangeListener() {
 
+                @Override
                 public void propertyChange(final PropertyChangeEvent event) {
                     handlePropertyChange(event);
                 }

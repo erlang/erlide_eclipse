@@ -40,11 +40,13 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         this.helper = helper;
     }
 
+    @Override
     public boolean visit(final IResourceDelta delta) throws CoreException {
         final IResource resource = delta.getResource();
         return visit(resource, delta.getKind(), false);
     }
 
+    @Override
     public boolean visit(final IResource resource) throws CoreException {
         return visit(resource, IResourceDelta.ADDED, true);
     }

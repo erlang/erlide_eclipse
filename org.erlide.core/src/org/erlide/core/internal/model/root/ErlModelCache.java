@@ -54,6 +54,7 @@ public class ErlModelCache implements IDisposable {
         // TODO should we handle changes of projects and includes too?
         // Which is hard, since the IOldErlangProjectProperties doesn't have
         // listeners
+        @Override
         public void elementChanged(final IErlElement element) {
             if (element instanceof IErlModule) {
                 final IErlModule module = (IErlModule) element;
@@ -166,6 +167,7 @@ public class ErlModelCache implements IDisposable {
         return Lists.newArrayList(modules);
     }
 
+    @Override
     public void dispose() {
         CoreScope.getModel().removeModelChangeListener(modelChangeListener);
     }

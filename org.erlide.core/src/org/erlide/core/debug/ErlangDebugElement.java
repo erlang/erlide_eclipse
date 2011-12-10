@@ -20,6 +20,7 @@ public class ErlangDebugElement extends DebugElement {
         super(target);
     }
 
+    @Override
     public String getModelIdentifier() {
         return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
     }

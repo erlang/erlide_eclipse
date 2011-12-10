@@ -41,31 +41,35 @@ import org.osgi.framework.Bundle;
  */
 public class AddRefacHandler extends AbstractHandler {
 
-    public Object execute(ExecutionEvent event) throws ExecutionException {
+    @Override
+    public Object execute(final ExecutionEvent event) throws ExecutionException {
 
-        InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
+        final InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getShell(),
                 "Add user-defined refactoring",
                 "Please type callback module name!", "", new IInputValidator() {
 
                     public IValidator internalV = new ModuleNameValidator();
 
-                    public String isValid(String newText) {
-                        if (internalV.isValid(newText))
+                    @Override
+                    public String isValid(final String newText) {
+                        if (internalV.isValid(newText)) {
                             return null;
-                        else
+                        } else {
                             return "Please type a correct module name!";
+                        }
                     }
                 });
 
         dialog.open();
 
-        if (dialog.getReturnCode() == Window.CANCEL)
+        if (dialog.getReturnCode() == Window.CANCEL) {
             return null;
+        }
 
-        String callbackModule = dialog.getValue();
+        final String callbackModule = dialog.getValue();
 
-        RefacType type = checkType(callbackModule);
+        final RefacType type = checkType(callbackModule);
         if (type == null) {
             showErrorMesg("Callback module must implement either "
                     + "gen_refac or gen_composite_refac behaviour");
@@ -92,21 +96,23 @@ public class AddRefacHandler extends AbstractHandler {
         return null;
     }
 
-    private void showErrorMesg(String mesg) {
+    private void showErrorMesg(final String mesg) {
         MessageDialog.openError(PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getShell(),
                 "Add user-defined refactoring  - error", mesg);
     }
 
     // check if the refactoring is elementary or composite
-    private RefacType checkType(String callbackModule) {
+    private RefacType checkType(final String callbackModule) {
 
         try {
-            IErlModule module = CoreScope.getModel().findModule(callbackModule);
+            final IErlModule module = CoreScope.getModel().findModule(
+                    callbackModule);
             module.resetAndCacheScannerAndParser(null);
 
-            for (IErlElement el : module.getChildrenOfKind(Kind.ATTRIBUTE)) {
-                IErlAttribute attr = (IErlAttribute) el;
+            for (final IErlElement el : module
+                    .getChildrenOfKind(Kind.ATTRIBUTE)) {
+                final IErlAttribute attr = (IErlAttribute) el;
                 if (attr.getName().equals("behaviour")
                         || attr.getName().equals("behavior")) {
                     if (attr.getValue().toString().contains("gen_refac")) {
@@ -119,18 +125,18 @@ public class AddRefacHandler extends AbstractHandler {
             }
             return null;
 
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             return null;
         }
     }
 
     // look for module path
-    private boolean addAndLoad(String callbackModule, RefacType type) {
+    private boolean addAndLoad(final String callbackModule, final RefacType type) {
 
-        String sourcePath = getBinPath(callbackModule);
+        final String sourcePath = getBinPath(callbackModule);
 
-        IPath destDir = getDestDir(type);
-        String destPath = getDestPath(callbackModule, destDir);
+        final IPath destDir = getDestDir(type);
+        final String destPath = getDestPath(callbackModule, destDir);
         String destDirStr = destDir.toOSString();
         destDirStr = destDirStr.substring(destDirStr.lastIndexOf(":") + 1);
 
@@ -145,14 +151,15 @@ public class AddRefacHandler extends AbstractHandler {
     }
 
     // gets original binary path
-    private String getBinPath(String callbackModule) {
+    private String getBinPath(final String callbackModule) {
         String path;
 
         try {
-            if (CoreScope.getModel().findModule(callbackModule) == null)
+            if (CoreScope.getModel().findModule(callbackModule) == null) {
                 return null;
+            }
 
-            IErlProject project = CoreScope.getModel()
+            final IErlProject project = CoreScope.getModel()
                     .findModule(callbackModule).getProject();
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation())
@@ -160,58 +167,60 @@ public class AddRefacHandler extends AbstractHandler {
 
             return path;
 
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             return null;
         }
     }
 
     // destination directory
-    private IPath getDestDir(RefacType type) {
-        Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
+    private IPath getDestDir(final RefacType type) {
+        final Bundle coreBundle = Platform.getBundle(Activator.CORE_ID);
         return new Path(coreBundle.getLocation()).append("wrangler")
                 .append("ebin").append(type.getDirName());
     }
 
     // destination path
-    private String getDestPath(String callbackModule, IPath dir) {
+    private String getDestPath(final String callbackModule, final IPath dir) {
         String path = dir.append(callbackModule + ".beam").toOSString();
         path = path.substring(path.lastIndexOf(':') + 1);
         return path;
     }
 
     // copying files
-    private boolean copy(String source, String dest, String destDir) {
+    private boolean copy(final String source, final String dest,
+            final String destDir) {
 
-        File dir = new File(destDir);
+        final File dir = new File(destDir);
         if (!dir.exists()) {
-            if (!dir.mkdir())
+            if (!dir.mkdir()) {
                 return false;
+            }
         }
 
         InputStream in;
         OutputStream out;
         try {
             in = new FileInputStream(source);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             return false;
         }
         try {
             out = new FileOutputStream(dest);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             return false;
         }
 
         try {
-            byte[] buf = new byte[1024];
+            final byte[] buf = new byte[1024];
             int len;
             while ((len = in.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             try {
                 in.close();
                 out.close();
-            } catch (IOException ignore) {
+            } catch (final IOException ignore) {
             }
 
             return false;
@@ -221,7 +230,7 @@ public class AddRefacHandler extends AbstractHandler {
     }
 
     // invoke loading module
-    private void load(String callbackModule, String dir) {
+    private void load(final String callbackModule, final String dir) {
         WranglerBackendManager.getRefactoringBackend().callWithoutParser(
                 "load_callback_mod_eclipse", "ss", callbackModule, dir);
     }
@@ -235,9 +244,9 @@ public class AddRefacHandler extends AbstractHandler {
     private enum RefacType {
         ELEMENTARY("my_gen_refac"), COMPOSITE("my_gen_composite_refac");
 
-        private String dir;
+        private final String dir;
 
-        private RefacType(String dir) {
+        private RefacType(final String dir) {
             this.dir = dir;
         }
 

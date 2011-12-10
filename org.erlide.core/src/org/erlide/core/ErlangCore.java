@@ -66,16 +66,20 @@ public final class ErlangCore {
         this.extensionRegistry = extensionRegistry;
         featureVersion = "?";
         saveParticipant = new ISaveParticipant() {
+            @Override
             public void doneSaving(final ISaveContext context1) {
             }
 
+            @Override
             public void prepareToSave(final ISaveContext context1)
                     throws CoreException {
             }
 
+            @Override
             public void rollback(final ISaveContext context1) {
             }
 
+            @Override
             public void saving(final ISaveContext context1)
                     throws CoreException {
                 try {

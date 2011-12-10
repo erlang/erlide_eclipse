@@ -157,10 +157,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return this;
     }
 
+    @Override
     public IProcess getProcess() {
         return null;
     }
 
+    @Override
     public IThread[] getThreads() throws DebugException {
         if (isTerminated()) {
             return NO_PROCS;
@@ -168,14 +170,17 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return fLocalProcesses.toArray(new IThread[fLocalProcesses.size()]);
     }
 
+    @Override
     public boolean hasThreads() throws DebugException {
         return !isTerminated();
     }
 
+    @Override
     public String getName() throws DebugException {
         return fNodeName;
     }
 
+    @Override
     public boolean supportsBreakpoint(final IBreakpoint breakpoint) {
         // TODO we should ask the Erlang debugger too...
         if (!isTerminated()
@@ -191,14 +196,17 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return false;
     }
 
+    @Override
     public boolean canTerminate() {
         return true;
     }
 
+    @Override
     public boolean isTerminated() {
         return fTerminated;
     }
 
+    @Override
     public void terminate() throws DebugException {
         if (fTerminated) {
             return;
@@ -253,24 +261,30 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         }
     }
 
+    @Override
     public boolean canResume() {
         return false;
     }
 
+    @Override
     public boolean canSuspend() {
         return false;
     }
 
+    @Override
     public boolean isSuspended() {
         return false;
     }
 
+    @Override
     public void resume() throws DebugException {
     }
 
+    @Override
     public void suspend() throws DebugException {
     }
 
+    @Override
     public void breakpointAdded(final IBreakpoint breakpoint) {
         if (supportsBreakpoint(breakpoint)) {
             try {
@@ -287,6 +301,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     }
 
+    @Override
     public void breakpointRemoved(final IBreakpoint breakpoint,
             final IMarkerDelta delta) {
         try {
@@ -301,6 +316,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         }
     }
 
+    @Override
     public void breakpointChanged(final IBreakpoint breakpoint,
             final IMarkerDelta delta) {
         if (supportsBreakpoint(breakpoint)) {
@@ -318,23 +334,28 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         }
     }
 
+    @Override
     public boolean canDisconnect() {
         return true;
     }
 
+    @Override
     public void disconnect() throws DebugException {
         // tell backend to stop debugging
         fDisconnected = true;
     }
 
+    @Override
     public boolean isDisconnected() {
         return fDisconnected;
     }
 
+    @Override
     public boolean supportsStorageRetrieval() {
         return false;
     }
 
+    @Override
     public IMemoryBlock getMemoryBlock(final long startAddress,
             final long length) throws DebugException {
         return null;
@@ -626,10 +647,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return Collections.unmodifiableCollection(projects);
     }
 
+    @Override
     public void addErlangProcess(final ErlangProcess p) {
         fLocalProcesses.add(p);
     }
 
+    @Override
     public void removeErlangProcess(final ErlangProcess p) {
         fLocalProcesses.remove(p);
     }

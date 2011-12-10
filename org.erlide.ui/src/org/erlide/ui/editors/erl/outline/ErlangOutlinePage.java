@@ -152,6 +152,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             final Display d = c.getDisplay();
             d.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (getTreeViewer().getControl() != null
                             && !getTreeViewer().getControl().isDisposed()) {
@@ -218,6 +219,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager m) {
                 // recursive loop?
                 // menuAboutToShow(m);
@@ -269,7 +271,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
+        @Override
+        public Object getAdapter(@SuppressWarnings("rawtypes")
+        final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }
@@ -303,6 +307,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         super.dispose();
     }
 
+    @Override
     public void elementChanged(final IErlElement element) {
         if (fModule == element) {
             refresh();
@@ -327,6 +332,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         viewMenuManager.add(fToggleLinkingAction);
     }
 
+    @Override
     public void sort(final boolean sorting) {
         ErlLogger.debug("NYI: sorting " + sorting);
     }

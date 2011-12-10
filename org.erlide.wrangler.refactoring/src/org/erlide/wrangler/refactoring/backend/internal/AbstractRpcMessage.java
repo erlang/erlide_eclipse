@@ -35,6 +35,7 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
      * @param result
      *            input object to be parsed
      */
+    @Override
     public void parse(final RpcResult result) {
         try {
             if (!result.isOk()) {
@@ -57,14 +58,17 @@ public abstract class AbstractRpcMessage implements IRpcMessage {
     protected abstract void parseRefactoringMessage(OtpErlangTuple resultTuple)
             throws WranglerException;
 
+    @Override
     public String getMessageString() {
         return messageString;
     }
 
+    @Override
     public boolean isSuccessful() {
         return refactoringState == RefactoringState.OK;
     }
 
+    @Override
     public RefactoringState getRefactoringState() {
         return refactoringState;
     }

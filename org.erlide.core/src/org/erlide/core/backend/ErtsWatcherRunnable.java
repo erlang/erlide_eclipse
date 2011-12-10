@@ -27,6 +27,7 @@ final public class ErtsWatcherRunnable implements Runnable {
     private final String nodeName;
 
     FilenameFilter filter = new FilenameFilter() {
+        @Override
         public boolean accept(final File dir, final String name) {
             return name.matches("^core.[0-9]+$");
         }
@@ -39,6 +40,7 @@ final public class ErtsWatcherRunnable implements Runnable {
         this.process = process;
     }
 
+    @Override
     @SuppressWarnings("boxing")
     public void run() {
         try {

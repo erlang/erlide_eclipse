@@ -32,6 +32,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         this.hasHeaders = hasHeaders;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.EXTERNAL;
     }
@@ -78,6 +79,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return entry;
     }
 
+    @Override
     public boolean isOTP() {
         final IParent parent = getParent();
         if (parent instanceof IErlExternal) {
@@ -92,6 +94,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
         return null;
     }
 
+    @Override
     public boolean hasIncludes() {
         return hasHeaders;
     }

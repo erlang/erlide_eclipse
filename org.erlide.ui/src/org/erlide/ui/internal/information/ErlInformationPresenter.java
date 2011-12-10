@@ -176,6 +176,7 @@ public class ErlInformationPresenter implements
      * @see IHoverInformationPresenter#updatePresentation(Display display,
      * String, TextPresentation, int, int)
      */
+    @Override
     public String updatePresentation(final Display display,
             final String hoverInfo, final TextPresentation presentation,
             final int maxWidth, final int maxHeight) {
@@ -189,6 +190,7 @@ public class ErlInformationPresenter implements
      * 
      * @since 3.2
      */
+    @Override
     public String updatePresentation(final Drawable drawable,
             final String hoverInfo, final TextPresentation presentation,
             final int maxWidth, final int maxHeight) {

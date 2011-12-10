@@ -65,6 +65,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
          * org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
          * text.DocumentEvent)
          */
+        @Override
         public void update(final DocumentEvent event) {
 
             final int eventOffset = event.getOffset();
@@ -167,6 +168,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
      * @see org.eclipse.swt.custom.VerifyKeyListener#verifyKey(org.eclipse.swt
      * .events.VerifyEvent)
      */
+    @Override
     public void verifyKey(final VerifyEvent event) {
 
         // early pruning to slow down normal typing as little as possible
@@ -335,6 +337,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
      * @see org.eclipse.jface.text.link.ILinkedModeListener#left(org.eclipse.
      * jface.text.link.LinkedModeModel, int)
      */
+    @Override
     @SuppressWarnings("synthetic-access")
     public void left(final LinkedModeModel environment, final int flags) {
 
@@ -352,6 +355,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
             extension.registerPostNotificationReplace(null,
                     new IDocumentExtension.IReplace() {
 
+                        @Override
                         public void perform(final IDocument d,
                                 final IDocumentListener owner) {
                             if ((level.fFirstPosition.isDeleted || level.fFirstPosition.length == 0)
@@ -384,6 +388,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
      * @see org.eclipse.jface.text.link.ILinkedModeListener#suspend(org.eclipse
      * .jface.text.link.LinkedModeModel)
      */
+    @Override
     public void suspend(final LinkedModeModel environment) {
     }
 
@@ -391,6 +396,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
      * @see org.eclipse.jface.text.link.ILinkedModeListener#resume(org.eclipse
      * .jface.text.link.LinkedModeModel, int)
      */
+    @Override
     public void resume(final LinkedModeModel environment, final int flags) {
     }
 
@@ -456,6 +462,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
          * #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
          * org.eclipse.swt.events.VerifyEvent, int, int)
          */
+        @Override
         @SuppressWarnings("synthetic-access")
         public ExitFlags doExit(final LinkedModeModel model,
                 final VerifyEvent event, final int offset, final int length) {

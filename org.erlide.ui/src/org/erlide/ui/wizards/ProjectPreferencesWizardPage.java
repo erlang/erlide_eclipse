@@ -89,6 +89,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     /**
      * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
      */
+    @Override
     public void createControl(final Composite parent) {
         prefs = new OldErlangProjectProperties();
         prefs.setRuntimeVersion(BackendCore.getRuntimeInfoManager()
@@ -173,6 +174,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         discoverBtn.setText("Discover paths...");
         discoverBtn.addListener(SWT.Selection, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 discoverPaths();
             }
@@ -292,6 +294,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
     private final Listener nameModifyListener = new Listener() {
 
+        @Override
         public void handleEvent(final Event e) {
             prefs.setOutputDir(new Path(output.getText()));
             prefs.setSourceDirs(PathSerializer.unpackList(source.getText()));

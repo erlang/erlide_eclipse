@@ -15,9 +15,9 @@ import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
  */
 public class UserAdhocRefactoring {
 
-    private UserRefactoring refac; // base refactoring
+    private final UserRefactoring refac; // base refactoring
 
-    public UserAdhocRefactoring(UserRefactoring refac) {
+    public UserAdhocRefactoring(final UserRefactoring refac) {
         this.refac = refac;
     }
 
@@ -29,22 +29,24 @@ public class UserAdhocRefactoring {
     public boolean load() {
         String callbackPath;
         try {
-            if (CoreScope.getModel().findModule(refac.getCallbackModule()) == null)
+            if (CoreScope.getModel().findModule(refac.getCallbackModule()) == null) {
                 return false;
+            }
 
-            IErlProject project = CoreScope.getModel()
+            final IErlProject project = CoreScope.getModel()
                     .findModule(refac.getCallbackModule()).getProject();
             callbackPath = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation()).toString();
-        } catch (ErlModelException e) {
+        } catch (final ErlModelException e) {
             return false;
         }
 
-        RpcResult res = WranglerBackendManager.getRefactoringBackend()
+        final RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("load_callback_mod_eclipse", "ss",
                         refac.getCallbackModule(), callbackPath);
-        if (!res.isOk())
+        if (!res.isOk()) {
             return false;
+        }
         return true;
     }
 

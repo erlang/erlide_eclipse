@@ -16,6 +16,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
     public HyperlinkDetector() {
     }
 
+    @Override
     public IHyperlink[] detectHyperlinks(final ITextViewer textViewer,
             final IRegion region, final boolean canShowMultipleHyperlinks) {
 
@@ -73,14 +74,17 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
             this.region = region;
         }
 
+        @Override
         public String getTypeLabel() {
             return null;
         }
 
+        @Override
         public String getHyperlinkText() {
             return text;
         }
 
+        @Override
         public void open() {
             final String[] mf = text.split(":");
             final String module = mf[0];
@@ -143,6 +147,7 @@ public class HyperlinkDetector extends AbstractHyperlinkDetector {
             }
         }
 
+        @Override
         public IRegion getHyperlinkRegion() {
             return region;
         }

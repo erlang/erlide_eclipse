@@ -88,14 +88,17 @@ public class ProcessListView extends ViewPart {
             handler.register();
         }
 
+        @Override
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public void dispose() {
             final IBackend backend = getBackend();
         }
 
+        @Override
         public Object[] getElements(final Object parent) {
             final IBackend backend = getBackend();
             if (backend == null) {
@@ -122,8 +125,10 @@ public class ProcessListView extends ViewPart {
                 super("processlist", backend);
             }
 
+            @Override
             public void handleEvent(final Event event) {
                 Display.getDefault().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         if (!viewer.getControl().isDisposed()) {
                             viewer.refresh();
@@ -137,6 +142,7 @@ public class ProcessListView extends ViewPart {
     static class ViewLabelProvider extends LabelProvider implements
             ITableLabelProvider {
 
+        @Override
         public String getColumnText(final Object obj, final int index) {
             final OtpErlangTuple t = (OtpErlangTuple) obj;
             final OtpErlangObject e = t.elementAt(index + 1);
@@ -146,6 +152,7 @@ public class ProcessListView extends ViewPart {
             return e.toString();
         }
 
+        @Override
         public Image getColumnImage(final Object obj, final int index) {
             if (index == 0) {
                 return getImage(obj);
@@ -216,6 +223,7 @@ public class ProcessListView extends ViewPart {
         // viewer.setSorter(new NameSorter());
         viewer.setInput(getViewSite());
         viewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 doubleClickAction.run();
             }
@@ -232,6 +240,7 @@ public class ProcessListView extends ViewPart {
         }
         BackendCore.getBackendManager().forEachBackend(
                 new IErlideBackendVisitor() {
+                    @Override
                     public void visit(final IBackend b) {
                         ErlideProclist.processListInit(b);
                     }
@@ -251,6 +260,7 @@ public class ProcessListView extends ViewPart {
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(final IMenuManager manager) {
                 ProcessListView.this.fillContextMenu(manager);
             }

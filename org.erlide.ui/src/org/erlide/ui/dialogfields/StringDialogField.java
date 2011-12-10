@@ -96,6 +96,7 @@ public class StringDialogField extends DialogField {
             assertCompositeNotNull(parent);
             fModifyListener = new ModifyListener() {
 
+                @Override
                 public void modifyText(final ModifyEvent e) {
                     doModifyText(e);
                 }

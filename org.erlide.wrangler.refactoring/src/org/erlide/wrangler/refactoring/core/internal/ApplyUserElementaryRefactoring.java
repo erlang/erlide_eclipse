@@ -1,6 +1,5 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
-
 /**
  * Logic for running user-defined, commited elementary refactrings
  * 
@@ -9,9 +8,10 @@ package org.erlide.wrangler.refactoring.core.internal;
  */
 public class ApplyUserElementaryRefactoring extends UserElementaryRefactoring {
 
-    private String name; // name of the refactoring
+    private final String name; // name of the refactoring
 
-    public ApplyUserElementaryRefactoring(String name, String callbackModule) {
+    public ApplyUserElementaryRefactoring(final String name,
+            final String callbackModule) {
         this.name = name;
         setCallbackModuleName(callbackModule);
     }

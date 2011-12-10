@@ -98,6 +98,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  */
 public class RefactoringHandler extends AbstractHandler {
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         try {
             GlobalParameters.setSelection(PlatformUI.getWorkbench()
@@ -122,15 +123,17 @@ public class RefactoringHandler extends AbstractHandler {
 
         // apply ad hoc refactoring
         if (actionId.equals("org.erlide.wrangler.refactoring.adhoc")) {
-            InputDialog dialog = getModuleInput("Apply ad hoc refactoring",
+            final InputDialog dialog = getModuleInput(
+                    "Apply ad hoc refactoring",
                     "Please type the gen_refac module name!");
 
             dialog.open();
 
-            if (dialog.getReturnCode() == Window.CANCEL)
+            if (dialog.getReturnCode() == Window.CANCEL) {
                 return null;
+            }
 
-            String callbackModule = dialog.getValue();
+            final String callbackModule = dialog.getValue();
 
             pages.add(new UserRefacInputPage("Apply ad hoc refactoring",
                     "Please type input arguments for this refactoring",
@@ -151,9 +154,9 @@ public class RefactoringHandler extends AbstractHandler {
 
             // apply user-defined refactoring
         } else if (actionId.equals("org.erlide.wrangler.refactoring.gen_refac")) {
-            String callbackModule = event
+            final String callbackModule = event
                     .getParameter("org.erlide.wrangler.refactoring.gen_refac.callback");
-            String name = event
+            final String name = event
                     .getParameter("org.erlide.wrangler.refactoring.gen_refac.name");
 
             pages.add(new UserRefacInputPage(name,
@@ -455,18 +458,20 @@ public class RefactoringHandler extends AbstractHandler {
 
     }
 
-    private InputDialog getModuleInput(String name, String mesg) {
+    private InputDialog getModuleInput(final String name, final String mesg) {
         return new InputDialog(PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getShell(), name, mesg, "",
                 new IInputValidator() {
 
                     public IValidator internalV = new ModuleNameValidator();
 
-                    public String isValid(String newText) {
-                        if (internalV.isValid(newText))
+                    @Override
+                    public String isValid(final String newText) {
+                        if (internalV.isValid(newText)) {
                             return null;
-                        else
+                        } else {
                             return "Please type a correct module name!";
+                        }
                     }
                 });
     }

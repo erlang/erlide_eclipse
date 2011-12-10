@@ -50,6 +50,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
             fChangedElements = changedElements;
         }
 
+        @Override
         public boolean visit(final IResourceDelta delta) throws CoreException {
             final IResource res = delta.getResource();
             if (res instanceof IProject
@@ -110,6 +111,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
     /*
      * @see IResourceChangeListener#resourceChanged
      */
+    @Override
     public void resourceChanged(final IResourceChangeEvent event) {
         final HashSet<IResource> changedElements = new HashSet<IResource>();
 
@@ -129,10 +131,12 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         }
     }
 
+    @Override
     public void modelChanged(final IAnnotationModel model) {
         // no action
     }
 
+    @Override
     public void modelChanged(final AnnotationModelEvent event) {
         if (event instanceof ErlangModuleAnnotationModelEvent) {
             final ErlangModuleAnnotationModelEvent emEvent = (ErlangModuleAnnotationModelEvent) event;
@@ -175,6 +179,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
         final Display display = SWTUtil.getStandardDisplay();
         if (display != null && !display.isDisposed()) {
             display.asyncExec(new Runnable() {
+                @Override
                 @SuppressWarnings("synthetic-access")
                 public void run() {
                     final Object[] listeners = fListeners.getListeners();

@@ -48,6 +48,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     /**
      * Start cover
      */
+    @Override
     public synchronized void startCover(final Collection<String> nodes)
             throws CoverException {
 
@@ -108,6 +109,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     /**
      * Set coverage configuration
      */
+    @Override
     public synchronized void setCoverageConfiguration(final IConfiguration conf)
             throws CoverException {
         config = conf;
@@ -170,6 +172,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     /**
      * Perform coverage analysis
      */
+    @Override
     public synchronized void analyse() throws CoverException {
 
         final List<OtpErlangObject> modules = new ArrayList<OtpErlangObject>(
@@ -195,6 +198,7 @@ public class CoveragePerformer implements ICoveragePerformer {
     /**
      * Allows to check configuration
      */
+    @Override
     public IConfiguration getConfig() {
         return config;
     }

@@ -24,7 +24,7 @@ public class UserRefacContribution extends CompoundContributionItem {
         super();
     }
 
-    public UserRefacContribution(String id) {
+    public UserRefacContribution(final String id) {
         super(id);
     }
 
@@ -32,13 +32,13 @@ public class UserRefacContribution extends CompoundContributionItem {
     @Override
     protected IContributionItem[] getContributionItems() {
 
-        List<UserRefactoringInfo> refacs = UserRefactoringsManager
+        final List<UserRefactoringInfo> refacs = UserRefactoringsManager
                 .getInstance().getElementary();
-        IContributionItem[] items = new IContributionItem[refacs.size()];
+        final IContributionItem[] items = new IContributionItem[refacs.size()];
 
         int i = 0;
-        for (UserRefactoringInfo info : refacs) {
-            CommandContributionItemParameter param = new CommandContributionItemParameter(
+        for (final UserRefactoringInfo info : refacs) {
+            final CommandContributionItemParameter param = new CommandContributionItemParameter(
                     PlatformUI.getWorkbench(), info.getCallback(),
                     "org.erlide.wrangler.refactoring.gen_refac",
                     CommandContributionItem.STYLE_PUSH);

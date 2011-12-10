@@ -25,43 +25,54 @@ public class DummyProcess implements IProcess {
         fLaunch = launch;
     }
 
+    @Override
     public String getLabel() {
         ErlLogger.debug("getlabel");
         return "...";
     }
 
+    @Override
     public ILaunch getLaunch() {
         return fLaunch;
     }
 
+    @Override
     public IStreamsProxy getStreamsProxy() {
         return null;
     }
 
+    @Override
     public void setAttribute(final String key, final String value) {
     }
 
+    @Override
     public String getAttribute(final String key) {
         return "?" + key;
     }
 
+    @Override
     public int getExitValue() throws DebugException {
         return 0;
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class adapter) {
         ErlLogger.debug("--> adapt as " + adapter.getName());
         return null;
     }
 
+    @Override
     public boolean canTerminate() {
         return false;
     }
 
+    @Override
     public boolean isTerminated() {
         return false;
     }
 
+    @Override
     public void terminate() throws DebugException {
     }
 

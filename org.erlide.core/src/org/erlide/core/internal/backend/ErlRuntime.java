@@ -14,12 +14,12 @@ import java.io.IOException;
 
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.internal.rpc.RpcHelper;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcHelper;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -79,6 +79,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         }
     }
 
+    @Override
     public String getNodeName() {
         return peerName;
     }
@@ -96,6 +97,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         return ok;
     }
 
+    @Override
     public boolean connect() {
         return getNode().ping(getNodeName(), RETRY_DELAY);
     }
@@ -114,6 +116,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         }
     }
 
+    @Override
     public void makeAsyncResultCall(final IRpcResultCallback cb,
             final String m, final String f, final String signature,
             final Object[] args) throws SignatureException {
@@ -122,6 +125,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 m, f, signature, args);
     }
 
+    @Override
     public IRpcFuture makeAsyncCall(final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
@@ -130,6 +134,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 module, fun, signature, args0);
     }
 
+    @Override
     public IRpcFuture makeAsyncCall(final String module, final String fun,
             final String signature, final Object... args0) throws RpcException,
             SignatureException {
@@ -137,6 +142,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 args0);
     }
 
+    @Override
     public void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
             final String module, final String fun, final String signature,
             final Object... args) throws RpcException, SignatureException {
@@ -144,6 +150,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 signature, args);
     }
 
+    @Override
     public void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
@@ -153,6 +160,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 module, fun, signature, args);
     }
 
+    @Override
     public OtpErlangObject makeCall(final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
@@ -163,6 +171,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         return result;
     }
 
+    @Override
     public OtpErlangObject makeCall(final int timeout, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
@@ -170,6 +179,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 signature, args0);
     }
 
+    @Override
     public void makeCast(final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
@@ -178,6 +188,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 signature, args0);
     }
 
+    @Override
     public void makeCast(final String module, final String fun,
             final String signature, final Object... args0)
             throws SignatureException, RpcException {
@@ -203,10 +214,12 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         }
     }
 
+    @Override
     public boolean isAvailable() {
         return state == State.CONNECTED;
     }
 
+    @Override
     public OtpNode getNode() {
         synchronized (localNodeLock) {
             if (localNode == null) {
@@ -244,12 +257,14 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         return node;
     }
 
+    @Override
     public void send(final OtpErlangPid pid, final Object msg)
             throws RpcException, SignatureException {
         tryConnect();
         rpcHelper.send(getNode(), pid, msg);
     }
 
+    @Override
     public void send(final String fullNodeName, final String name,
             final Object msg) throws SignatureException, RpcException {
         tryConnect();

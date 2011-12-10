@@ -110,6 +110,7 @@ public class RegressionLauncher {
             this.cmake = cmake;
         }
 
+        @Override
         public void run() {
             while (true) {
                 try {
@@ -151,6 +152,7 @@ public class RegressionLauncher {
             this.rview = rview;
         }
 
+        @Override
         public void run() {
             String line;
             try {

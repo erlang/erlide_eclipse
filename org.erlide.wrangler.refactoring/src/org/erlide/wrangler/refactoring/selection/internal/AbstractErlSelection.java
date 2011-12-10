@@ -33,10 +33,12 @@ public abstract class AbstractErlSelection implements IErlSelection {
 
     protected IFile file;
 
+    @Override
     public boolean isEmpty() {
         return false;
     }
 
+    @Override
     public OtpErlangList getSearchPath() {
         final IProject project = file.getProject();
         final IErlModel model = CoreScope.getModel();
@@ -55,10 +57,12 @@ public abstract class AbstractErlSelection implements IErlSelection {
         return new OtpErlangList(searchPath);
     }
 
+    @Override
     public String getFilePath() {
         return file.getLocation().toOSString();
     }
 
+    @Override
     public IFile getFile() {
         return file;
     }

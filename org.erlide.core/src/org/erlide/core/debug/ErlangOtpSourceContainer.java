@@ -23,6 +23,7 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer
         this.otpHome = otpHome;
     }
 
+    @Override
     public String getName() {
         return otpHome.toString();
     }
@@ -43,6 +44,7 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer
 
     private String highestVersion(final File directory, final String prefix) {
         final String candidates[] = directory.list(new FilenameFilter() {
+            @Override
             public boolean accept(final File dir, final String name) {
                 return name.startsWith(prefix);
             }
@@ -74,28 +76,34 @@ public class ErlangOtpSourceContainer extends CompositeSourceContainer
         return r;
     }
 
+    @Override
     public ISourceContainerType getType() {
         // FIXME implement this properly!
         return new ISourceContainerType() {
 
+            @Override
             public String getMemento(final ISourceContainer container)
                     throws CoreException {
                 return null;
             }
 
+            @Override
             public ISourceContainer createSourceContainer(final String memento)
                     throws CoreException {
                 return null;
             }
 
+            @Override
             public String getName() {
                 return null;
             }
 
+            @Override
             public String getId() {
                 return null;
             }
 
+            @Override
             public String getDescription() {
                 return null;
             }

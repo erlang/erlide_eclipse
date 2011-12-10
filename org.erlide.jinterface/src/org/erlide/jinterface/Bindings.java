@@ -36,6 +36,7 @@ public interface Bindings {
 
     public abstract Map<String, OtpErlangObject> getAll();
 
+    @Override
     public abstract String toString();
 
 }

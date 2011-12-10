@@ -83,6 +83,7 @@ final class ErlangConsoleSourceViewerConfiguration extends
             final ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
 
+            @Override
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 return new DefaultInformationControl(parent,

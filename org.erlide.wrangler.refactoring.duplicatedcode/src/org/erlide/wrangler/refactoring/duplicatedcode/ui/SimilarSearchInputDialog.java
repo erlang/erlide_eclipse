@@ -69,6 +69,7 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
         simScoreText.setText("0.8");
         simScoreText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -85,11 +86,13 @@ public class SimilarSearchInputDialog extends AbstractInputDialog {
                         | GridData.VERTICAL_ALIGN_CENTER));
         onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 validateInput();
 
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 validateInput();
 

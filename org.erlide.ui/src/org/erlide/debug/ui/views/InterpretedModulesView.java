@@ -59,6 +59,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
     private ErlangDebugTarget erlangDebugTarget;
     private boolean distributed;
 
+    @Override
     public void debugContextChanged(final DebugContextEvent event) {
         if ((event.getFlags() & DebugContextEvent.ACTIVATED) > 0) {
             contextActivated(event.getContext());
@@ -143,6 +144,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         }
     }
 
+    @Override
     public void handleDebugEvents(final DebugEvent[] events) {
         boolean changed = false;
         for (final DebugEvent debugEvent : events) {
@@ -165,6 +167,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
             DebugTab.addModules(interpret, interpretedModules);
             checkboxTreeViewer.getControl().getDisplay()
                     .syncExec(new Runnable() {
+                        @Override
                         public void run() {
                             root.setChecked(checkboxTreeViewer,
                                     interpretedModules);
@@ -185,6 +188,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
     protected Viewer createViewer(final Composite parent) {
         checkboxTreeViewer = new CheckboxTreeViewer(parent, SWT.BORDER);
         final ICheckStateListener checkStateListener = new ICheckStateListener() {
+            @Override
             public void checkStateChanged(final CheckStateChangedEvent event) {
                 final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
                         .getElement();
@@ -201,6 +205,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 .setContentProvider(new DebugTab.TreeContentProvider());
         checkboxTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 final StructuredSelection ss = (StructuredSelection) event
                         .getSelection();

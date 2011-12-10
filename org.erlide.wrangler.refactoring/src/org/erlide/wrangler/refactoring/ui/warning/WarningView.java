@@ -62,13 +62,16 @@ public class WarningView extends ViewPart implements IWarningHandler {
     // private Action doubleClickAction;
 
     class ViewContentProvider implements IStructuredContentProvider {
+        @Override
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Object[] getElements(final Object parent) {
             return warningMessages.toArray();
         }
@@ -76,10 +79,12 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
     class ViewLabelProvider extends LabelProvider implements
             ITableLabelProvider {
+        @Override
         public String getColumnText(final Object obj, final int index) {
             return getText(((WarningMessage) obj).getMessage());
         }
 
+        @Override
         public Image getColumnImage(final Object obj, final int index) {
             return getImage(obj);
         }
@@ -133,10 +138,12 @@ public class WarningView extends ViewPart implements IWarningHandler {
         viewer.getControl().setFocus();
     }
 
+    @Override
     public void addMessage(final String message) {
         warningMessages.add(new WarningMessage(message));
     }
 
+    @Override
     public void refresh() {
         try {
             viewer.refresh();
@@ -146,6 +153,7 @@ public class WarningView extends ViewPart implements IWarningHandler {
 
     }
 
+    @Override
     public void removeAll() {
         warningMessages.clear();
         refresh();

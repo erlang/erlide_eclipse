@@ -439,10 +439,12 @@ public class ListDialogField<Element> extends DialogField {
 
             final SelectionListener listener = new SelectionListener() {
 
+                @Override
                 public void widgetDefaultSelected(final SelectionEvent e) {
                     doButtonSelected(e);
                 }
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     doButtonSelected(e);
                 }
@@ -761,6 +763,7 @@ public class ListDialogField<Element> extends DialogField {
             final Display d = fTableControl.getDisplay();
             d.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (isOkToUse(fTableControl)) {
                         selectElements(selection);
@@ -890,6 +893,7 @@ public class ListDialogField<Element> extends DialogField {
 
         // ------- ITableContentProvider Interface ------------
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
             // will never happen
@@ -899,19 +903,23 @@ public class ListDialogField<Element> extends DialogField {
             return false;
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Object[] getElements(final Object obj) {
             return fElements.toArray();
         }
 
         // ------- ISelectionChangedListener Interface ------------
 
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             doListSelected(event);
         }
 
+        @Override
         public void doubleClick(final DoubleClickEvent event) {
             doDoubleClick(event);
         }

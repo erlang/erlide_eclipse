@@ -41,6 +41,7 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
         this.moduleName = moduleName;
     }
 
+    @Override
     public String getReferenceTypeName() throws DebugException {
         if (value instanceof OtpErlangString) {
             return "string";
@@ -63,18 +64,22 @@ public class ErlangValue extends ErlangDebugElement implements IValue {
         }
     }
 
+    @Override
     public String getValueString() throws DebugException {
         return value.toString();
     }
 
+    @Override
     public boolean isAllocated() throws DebugException {
         return true;
     }
 
+    @Override
     public IVariable[] getVariables() throws DebugException {
         return null;
     }
 
+    @Override
     public boolean hasVariables() throws DebugException {
         return false;
     }

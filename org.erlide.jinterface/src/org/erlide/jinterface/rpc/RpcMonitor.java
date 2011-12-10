@@ -88,11 +88,13 @@ public class RpcMonitor {
     private static int callCount = 0;
     private static final Map<OtpErlangRef, RpcData> ongoing = Maps.newHashMap();
     private static Comparator<RpcInfo> timeComparator = new Comparator<RpcInfo>() {
+        @Override
         public int compare(final RpcInfo o1, final RpcInfo o2) {
             return (int) (o2.answerTime - o2.callTime - (o1.answerTime - o1.callTime));
         }
     };
     private static Comparator<RpcInfo> sizeComparator = new Comparator<RpcInfo>() {
+        @Override
         public int compare(final RpcInfo o1, final RpcInfo o2) {
             return (int) (o2.callSize + o2.answerSize - (o1.callSize + o1.answerSize));
         }

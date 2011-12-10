@@ -116,6 +116,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
         return true;
     }
 
+    @Override
     public void createControl(final Composite parent) {
 
         initializeDialogUnits(parent);
@@ -224,6 +225,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
                 DialogUtil.inRegularFontMode(parent));
 
         final ICheckStateListener listener = new ICheckStateListener() {
+            @Override
             public void checkStateChanged(final CheckStateChangedEvent event) {
                 updateWidgetEnablements();
             }
@@ -433,6 +435,7 @@ public abstract class ErlangWizardResourceImportPage extends WizardPage {
     protected void updateSelections(final Map<Object, List<Object>> map) {
 
         final Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 selectionGroup.updateSelections(map);
             }

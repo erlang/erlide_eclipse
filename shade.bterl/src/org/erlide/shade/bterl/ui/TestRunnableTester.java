@@ -45,6 +45,7 @@ public class TestRunnableTester extends PropertyTester {
      * Can run if it is a file with name matching "*_SUITE.erl" or a folder
      * containing such a file directly beneath it.
      */
+    @Override
     public boolean test(Object receiver, final String property,
             final Object[] args, final Object expectedValue) {
         if (receiver instanceof IEditorPart
@@ -76,6 +77,7 @@ public class TestRunnableTester extends PropertyTester {
     static class BterlVisitor implements IResourceVisitor {
         boolean hasTests = false;
 
+        @Override
         public boolean visit(final IResource resource) throws CoreException {
             if (isTestSuite(resource)) {
                 hasTests = true;

@@ -37,10 +37,12 @@ public class CodeBundleImpl implements ICodeBundle {
         this.inits = inits;
     }
 
+    @Override
     public Bundle getBundle() {
         return bundle;
     }
 
+    @Override
     public Collection<String> getEbinDirs() {
         final List<String> result = Lists.newArrayList();
         for (final Tuple<String, CodeContext> path : paths) {
@@ -56,6 +58,7 @@ public class CodeBundleImpl implements ICodeBundle {
         return result;
     }
 
+    @Override
     public Collection<String> getPluginCode() {
         final List<String> result = new ArrayList<String>();
         for (final Tuple<String, CodeContext> dir : paths) {
@@ -68,10 +71,12 @@ public class CodeBundleImpl implements ICodeBundle {
         return result;
     }
 
+    @Override
     public Collection<Tuple<String, CodeContext>> getPaths() {
         return Collections.unmodifiableCollection(paths);
     }
 
+    @Override
     public Collection<Tuple<String, String>> getInits() {
         return Collections.unmodifiableCollection(inits);
     }

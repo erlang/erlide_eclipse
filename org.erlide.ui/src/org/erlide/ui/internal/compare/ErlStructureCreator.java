@@ -78,6 +78,7 @@ public class ErlStructureCreator extends StructureCreator {
     /**
      * @see IStructureCreator#getTitle
      */
+    @Override
     public String getName() {
         return ErlideUIPlugin.getResourceString(NAME);
     }
@@ -118,6 +119,7 @@ public class ErlStructureCreator extends StructureCreator {
             return super.validateEdit(shell);
         }
 
+        @Override
         public void dispose() {
             fInput = null;
         }
@@ -214,6 +216,7 @@ public class ErlStructureCreator extends StructureCreator {
     /**
      * @see IStructureCreator#getContents
      */
+    @Override
     public String getContents(final Object node, final boolean ignoreWhitespace) {
         if (node instanceof IStreamContentAccessor) {
             final IStreamContentAccessor sca = (IStreamContentAccessor) node;

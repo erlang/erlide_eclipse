@@ -55,6 +55,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
         this.parameters = ErlFunctionClause.getParameters(parameters);
     }
 
+    @Override
     public List<IErlFunctionClause> getClauses() {
         final ArrayList<IErlFunctionClause> fc = new ArrayList<IErlFunctionClause>();
         synchronized (getModelLock()) {
@@ -67,14 +68,17 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
         return fc;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.FUNCTION;
     }
 
+    @Override
     public int getArity() {
         return arity;
     }
 
+    @Override
     public boolean isExported() {
         return fExported || getModule().exportsAllFunctions();
     }
@@ -92,6 +96,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
         return b.toString();
     }
 
+    @Override
     public ErlangFunction getFunction() {
         return new ErlangFunction(getName(), getArity());
     }
@@ -122,6 +127,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
         return true;
     }
 
+    @Override
     public String getNameWithArity() {
         final StringBuilder b = getNameWithArityBuilder();
         return b.toString();
@@ -133,22 +139,27 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
         return b;
     }
 
+    @Override
     public String getNameWithParameters() {
         return ErlangFunction.getNameWithParameters(getName(), getArity());
     }
 
+    @Override
     public String getHead() {
         return head;
     }
 
+    @Override
     public String getComment() {
         return fComment;
     }
 
+    @Override
     public String getFunctionName() {
         return getName();
     }
 
+    @Override
     public List<String> getParameters() {
         return parameters;
     }

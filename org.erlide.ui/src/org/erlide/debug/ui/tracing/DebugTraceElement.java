@@ -9,6 +9,7 @@ public class DebugTraceElement extends DebugElement {
         super(target);
     }
 
+    @Override
     public String getModelIdentifier() {
         return DebugTraceDebugModelPresentation.ID;
     }

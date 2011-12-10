@@ -37,10 +37,12 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                 if (o instanceof INavigatorDropHandler) {
                     final ISafeRunnable runnable = new ISafeRunnable() {
 
+                        @Override
                         public void handleException(final Throwable exception) {
                             ErlLogger.error(exception);
                         }
 
+                        @Override
                         public void run() throws Exception {
                             final IStatus theStatus = ((INavigatorDropHandler) o)
                                     .handleDrop(dropAdapter, dropTargetEvent,
@@ -70,10 +72,12 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                 if (o instanceof INavigatorDropHandler) {
                     final ISafeRunnable runnable = new ISafeRunnable() {
 
+                        @Override
                         public void handleException(final Throwable exception) {
                             System.out.println("Exception in client");
                         }
 
+                        @Override
                         public void run() throws Exception {
                             final IStatus theStatus = ((INavigatorDropHandler) o)
                                     .validateDrop(target, operation,

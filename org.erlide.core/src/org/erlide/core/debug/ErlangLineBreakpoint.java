@@ -41,6 +41,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         super();
     }
 
+    @Override
     public String getModelIdentifier() {
         return ErlDebugConstants.ID_ERLANG_DEBUG_MODEL;
     }
@@ -48,6 +49,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     public void createMarker(final IResource resource, final int lineNumber)
             throws CoreException {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(final IProgressMonitor monitor)
                     throws CoreException {
                 final IMarker marker = DebugMarkerUtils
@@ -120,6 +122,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     /**
      * @see ILineBreakpoint#getLineNumber()
      */
+    @Override
     public int getLineNumber() throws CoreException {
         final IMarker m = getMarker();
         if (m != null) {
@@ -131,6 +134,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     /**
      * @see ILineBreakpoint#getCharStart()
      */
+    @Override
     public int getCharStart() throws CoreException {
         final IMarker m = getMarker();
         if (m != null) {
@@ -142,6 +146,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     /**
      * @see ILineBreakpoint#getCharEnd()
      */
+    @Override
     public int getCharEnd() throws CoreException {
         final IMarker m = getMarker();
         if (m != null) {
@@ -173,36 +178,45 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         clauseHead = null;
     }
 
+    @Override
     public String getCondition() throws CoreException {
         return null;
     }
 
+    @Override
     public boolean isConditionEnabled() throws CoreException {
         return false;
     }
 
+    @Override
     public void setCondition(final String condition) throws CoreException {
     }
 
+    @Override
     public void setConditionEnabled(final boolean enabled) throws CoreException {
     }
 
+    @Override
     public boolean supportsCondition() {
         return false;
     }
 
+    @Override
     public void setHitCount(final int hitCount) {
         fHitCount = hitCount;
     }
 
+    @Override
     public int getHitCount() {
         return fHitCount;
     }
 
+    @Override
     public int getBreakAction() {
         return fBreakAction;
     }
 
+    @Override
     public void setBreakAction(final int traceAction) {
         fBreakAction = traceAction;
     }
@@ -211,6 +225,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         return target;
     }
 
+    @Override
     public String getMessage() {
         final IMarker marker = getMarker();
         return "Line Breakpoint: " + marker.getResource().getName()

@@ -73,6 +73,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         fContents = new StringBuffer();
     }
 
+    @Override
     public synchronized void addListener(final IStreamListener listener) {
         fListeners.add(listener);
     }
@@ -100,6 +101,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         getNotifier().notifyAppend(text);
     }
 
+    @Override
     public synchronized String getContents() {
         return fContents.toString();
     }
@@ -171,6 +173,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         fKilled = true;
     }
 
+    @Override
     public synchronized void removeListener(final IStreamListener listener) {
         fListeners.remove(listener);
     }
@@ -184,6 +187,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         }
         if (fThread == null) {
             fThread = new Thread(new Runnable() {
+                @Override
                 public void run() {
                     read();
                 }
@@ -197,6 +201,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
     /**
      * @see org.eclipse.debug.core.model.IFlushableStreamMonitor#setBuffered(boolean)
      */
+    @Override
     public synchronized void setBuffered(final boolean buffer) {
         fBuffered = buffer;
     }
@@ -204,6 +209,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
     /**
      * @see org.eclipse.debug.core.model.IFlushableStreamMonitor#flushContents()
      */
+    @Override
     public synchronized void flushContents() {
         fContents.setLength(0);
     }
@@ -211,6 +217,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
     /**
      * @see IFlushableStreamMonitor#isBuffered()
      */
+    @Override
     public synchronized boolean isBuffered() {
         return fBuffered;
     }
@@ -227,6 +234,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         /**
          * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
          */
+        @Override
         public void handleException(final Throwable exception) {
             DebugPlugin.log(exception);
         }
@@ -234,6 +242,7 @@ public class OutputStreamMonitor implements IFlushableStreamMonitor {
         /**
          * @see org.eclipse.core.runtime.ISafeRunnable#run()
          */
+        @Override
         public void run() throws Exception {
             fListener.streamAppended(fText, OutputStreamMonitor.this);
         }

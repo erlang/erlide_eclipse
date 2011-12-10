@@ -165,10 +165,12 @@ public class SelectionButtonDialogFieldGroup extends DialogField {
 
             final SelectionListener listener = new SelectionListener() {
 
+                @Override
                 public void widgetDefaultSelected(final SelectionEvent e) {
                     doWidgetSelected(e);
                 }
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     doWidgetSelected(e);
                 }

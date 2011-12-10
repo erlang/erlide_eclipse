@@ -25,18 +25,18 @@ public class CommandData {
     public String type; // type of command (interactive, repeat interactive,
                         // non-interactive
 
-    public void addUserInput(List<String> input) {
+    public void addUserInput(final List<String> input) {
 
-        List<OtpErlangObject> argsTmp = new LinkedList<OtpErlangObject>();
-        OtpErlangObject[] userInput = new OtpErlangObject[input.size()];
+        final List<OtpErlangObject> argsTmp = new LinkedList<OtpErlangObject>();
+        final OtpErlangObject[] userInput = new OtpErlangObject[input.size()];
 
         int i = 0;
-        for (String text : input) {
+        for (final String text : input) {
             userInput[i] = new OtpErlangString(text);
             i++;
         }
 
-        for (OtpErlangObject arg : args) {
+        for (final OtpErlangObject arg : args) {
             if (arg instanceof OtpErlangTuple
                     && ((OtpErlangTuple) arg).elementAt(0).equals("prompt")) {
                 argsTmp.add(new OtpErlangList(userInput));
@@ -50,8 +50,8 @@ public class CommandData {
         args = argsTmp.toArray(new OtpErlangObject[0]);
     }
 
-    public void addTabWidth(int tabWidth) {
-        List<OtpErlangObject> argsTmp = Arrays.asList(args);
+    public void addTabWidth(final int tabWidth) {
+        final List<OtpErlangObject> argsTmp = Arrays.asList(args);
         argsTmp.add(new OtpErlangInt(tabWidth));
 
         args = argsTmp.toArray(new OtpErlangObject[0]);

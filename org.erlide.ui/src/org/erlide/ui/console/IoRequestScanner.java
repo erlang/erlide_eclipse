@@ -30,6 +30,7 @@ public class IoRequestScanner implements IPartitionTokenScanner {
         this.model = model;
     }
 
+    @Override
     public void setPartialRange(final IDocument document, final int offset,
             final int length, final String contentType,
             final int partitionOffset) {
@@ -44,6 +45,7 @@ public class IoRequestScanner implements IPartitionTokenScanner {
         crtLength = 0;
     }
 
+    @Override
     public int getTokenLength() {
         if (crtOffset + crtLength > docLength) {
             return crtLength - (docLength - crtOffset);
@@ -51,10 +53,12 @@ public class IoRequestScanner implements IPartitionTokenScanner {
         return crtLength;
     }
 
+    @Override
     public int getTokenOffset() {
         return crtOffset;
     }
 
+    @Override
     public IToken nextToken() {
         IoRequest req;
         crtOffset = crtOffset + crtLength;
@@ -69,6 +73,7 @@ public class IoRequestScanner implements IPartitionTokenScanner {
         return token;
     }
 
+    @Override
     public void setRange(final IDocument document, final int offset,
             final int length) {
         docOffset = offset;
@@ -94,22 +99,27 @@ public class IoRequestScanner implements IPartitionTokenScanner {
             }
         }
 
+        @Override
         public Object getData() {
             return data;
         }
 
+        @Override
         public boolean isEOF() {
             return data == null;
         }
 
+        @Override
         public boolean isOther() {
             return true;
         }
 
+        @Override
         public boolean isUndefined() {
             return false;
         }
 
+        @Override
         public boolean isWhitespace() {
             return false;
         }

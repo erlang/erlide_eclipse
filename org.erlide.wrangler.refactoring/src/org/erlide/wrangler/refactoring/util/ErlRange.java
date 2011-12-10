@@ -67,10 +67,12 @@ public class ErlRange extends Range implements IErlRange {
         }
     }
 
+    @Override
     public int getLength() {
         return length;
     }
 
+    @Override
     public int getOffset() {
         return offset;
     }

@@ -49,6 +49,7 @@ public class TracingResultsNode extends TreeNode implements
         return fileName.equals(trn.fileName);
     }
 
+    @Override
     public int compareTo(final TracingResultsNode trn) {
         if (trn == null) {
             throw new NullPointerException();

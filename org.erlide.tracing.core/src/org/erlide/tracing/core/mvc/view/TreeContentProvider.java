@@ -33,27 +33,33 @@ public class TreeContentProvider implements
         this.hasChildrenValue = hasChildrenValue;
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         list = (Collection<ITreeNode>) newInput;
     }
 
+    @Override
     public Object[] getChildren(final Object element) {
         return ((ITreeNode) element).getChildren().toArray();
     }
 
+    @Override
     public Object[] getElements(final Object element) {
         return list.toArray();
     }
 
+    @Override
     public Object getParent(final Object element) {
         return ((ITreeNode) element).getParent();
     }
 
+    @Override
     public boolean hasChildren(final Object element) {
         // return ((ITreeNode) element).hasChildren();
         // for optimization purposes always return true

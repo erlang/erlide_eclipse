@@ -77,6 +77,7 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
     }
 
     /* @see ICharacterPairMatcher#match(IDocument, int) */
+    @Override
     public IRegion match(final IDocument doc, final int offset) {
         if (doc == null || offset < 0 || offset > doc.getLength()) {
             return null;
@@ -171,15 +172,18 @@ public class ErlangPairMatcher implements ICharacterPairMatcher {
     }
 
     /* @see ICharacterPairMatcher#getAnchor() */
+    @Override
     public int getAnchor() {
         return fAnchor;
     }
 
     /* @see ICharacterPairMatcher#dispose() */
+    @Override
     public void dispose() {
     }
 
     /* @see ICharacterPairMatcher#clear() */
+    @Override
     public void clear() {
         fAnchor = -1;
     }

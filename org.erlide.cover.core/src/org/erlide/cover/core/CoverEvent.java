@@ -20,10 +20,12 @@ public class CoverEvent implements ICoverEvent {
         this(type, "");
     }
 
+    @Override
     public CoverStatus getType() {
         return type;
     }
 
+    @Override
     public String getInfo() {
         return info;
     }

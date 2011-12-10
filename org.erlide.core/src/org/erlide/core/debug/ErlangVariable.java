@@ -57,14 +57,17 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
         }
     }
 
+    @Override
     public IValue getValue() throws DebugException {
         return value;
     }
 
+    @Override
     public String getName() throws DebugException {
         return name;
     }
 
+    @Override
     public String getReferenceTypeName() throws DebugException {
         if (value == null) {
             return null;
@@ -72,10 +75,12 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
         return value.getReferenceTypeName();
     }
 
+    @Override
     public boolean hasValueChanged() throws DebugException {
         return false;
     }
 
+    @Override
     public void setValue(final String expression) throws DebugException {
         if (subVariable) {
             throw new DebugException(new Status(IStatus.ERROR,
@@ -93,18 +98,22 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
 
     }
 
+    @Override
     public void setValue(final IValue value) throws DebugException {
         setValue(value.toString());
     }
 
+    @Override
     public boolean supportsValueModification() {
         return !subVariable;
     }
 
+    @Override
     public boolean verifyValue(final String expression) throws DebugException {
         return true;
     }
 
+    @Override
     public boolean verifyValue(final IValue aValue) throws DebugException {
         return verifyValue(aValue.toString());
     }

@@ -82,6 +82,7 @@ public class ColorEditor {
 
         fButton.addDisposeListener(new DisposeListener() {
 
+            @Override
             public void widgetDisposed(final DisposeEvent event) {
                 if (fImage != null) {
                     fImage.dispose();

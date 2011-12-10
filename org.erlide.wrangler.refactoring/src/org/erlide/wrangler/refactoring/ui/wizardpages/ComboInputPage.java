@@ -67,6 +67,7 @@ public class ComboInputPage extends InputPage {
         setPageComplete(false);
     }
 
+    @Override
     public void createControl(final Composite parent) {
         composite = new Composite(parent, SWT.NONE);
 
@@ -98,9 +99,11 @@ public class ComboInputPage extends InputPage {
 
         selectionList.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
 
+            @Override
             @SuppressWarnings("synthetic-access")
             public void widgetSelected(final SelectionEvent e) {
                 ((SimpleOneStepWranglerRefactoring) getRefactoring())
@@ -113,6 +116,7 @@ public class ComboInputPage extends InputPage {
 
         selectionList.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 if (validator.isValid(selectionList.getText())) {
                     ((SimpleWranglerRefactoring) getRefactoring())

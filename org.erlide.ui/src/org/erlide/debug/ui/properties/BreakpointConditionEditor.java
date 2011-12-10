@@ -135,9 +135,11 @@ public class BreakpointConditionEditor {
             fViewer.setUndoManager(new TextViewerUndoManager(10));
             fViewer.getUndoManager().connect(fViewer);
             fDocumentListener = new IDocumentListener() {
+                @Override
                 public void documentAboutToBeChanged(final DocumentEvent event) {
                 }
 
+                @Override
                 public void documentChanged(final DocumentEvent event) {
                     valueChanged();
                 }
@@ -148,6 +150,7 @@ public class BreakpointConditionEditor {
             gd.widthHint = fPage.convertWidthInCharsToPixels(40);
             fViewer.getControl().setLayoutData(gd);
             fHandler = new AbstractHandler() {
+                @Override
                 public Object execute(final ExecutionEvent event)
                         throws org.eclipse.core.commands.ExecutionException {
                     fViewer.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);

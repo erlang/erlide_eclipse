@@ -24,21 +24,23 @@ import com.ericsson.otp.erlang.OtpErlangString;
 public abstract class UserElementaryRefactoring extends UserRefactoring {
 
     @Override
-    public IRefactoringRpcMessage run(IErlSelection selection) {
+    public IRefactoringRpcMessage run(final IErlSelection selection) {
         final IErlMemberSelection sel = (IErlMemberSelection) selection;
 
-        OtpErlangList pos = new OtpErlangList(new OtpErlangInt[] {
+        final OtpErlangList pos = new OtpErlangList(new OtpErlangInt[] {
                 new OtpErlangInt(sel.getSelectionRange().getStartLine()),
                 new OtpErlangInt(sel.getSelectionRange().getStartCol()) });
-        OtpErlangList selectionBeg = new OtpErlangList(new OtpErlangInt[] {
-                new OtpErlangInt(sel.getSelectionRange().getStartLine()),
-                new OtpErlangInt(sel.getSelectionRange().getStartCol()) });
-        OtpErlangList selectionEnd = new OtpErlangList(new OtpErlangInt[] {
-                new OtpErlangInt(sel.getSelectionRange().getEndLine()),
-                new OtpErlangInt(sel.getSelectionRange().getEndCol()) });
-        OtpErlangList selectionPos = new OtpErlangList(new OtpErlangObject[] {
-                selectionBeg, selectionEnd });
-        OtpErlangList args = new OtpErlangList(new OtpErlangObject[] {
+        final OtpErlangList selectionBeg = new OtpErlangList(
+                new OtpErlangInt[] {
+                        new OtpErlangInt(sel.getSelectionRange().getStartLine()),
+                        new OtpErlangInt(sel.getSelectionRange().getStartCol()) });
+        final OtpErlangList selectionEnd = new OtpErlangList(
+                new OtpErlangInt[] {
+                        new OtpErlangInt(sel.getSelectionRange().getEndLine()),
+                        new OtpErlangInt(sel.getSelectionRange().getEndCol()) });
+        final OtpErlangList selectionPos = new OtpErlangList(
+                new OtpErlangObject[] { selectionBeg, selectionEnd });
+        final OtpErlangList args = new OtpErlangList(new OtpErlangObject[] {
                 new OtpErlangString(sel.getFilePath()), pos, selectionPos,
                 prepareUserInput(), sel.getSearchPath(),
                 new OtpErlangInt(GlobalParameters.getTabWidth()) });
@@ -48,7 +50,7 @@ public abstract class UserElementaryRefactoring extends UserRefactoring {
     }
 
     @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+    public RefactoringStatus checkInitialConditions(final IProgressMonitor pm)
             throws CoreException, OperationCanceledException {
         return new RefactoringStatus(); // OK, no preconditins
     }

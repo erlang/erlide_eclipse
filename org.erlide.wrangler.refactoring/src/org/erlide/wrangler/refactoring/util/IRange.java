@@ -69,6 +69,7 @@ public interface IRange {
      */
     public OtpErlangTuple getPos();
 
+    @Override
     public String toString();
 
 }

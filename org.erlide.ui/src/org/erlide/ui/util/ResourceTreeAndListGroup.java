@@ -184,11 +184,13 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * @param event
      *            CheckStateChangedEvent
      */
+    @Override
     public void checkStateChanged(final CheckStateChangedEvent event) {
 
         // Potentially long operation - show a busy cursor
         BusyIndicator.showWhile(treeViewer.getControl().getDisplay(),
                 new Runnable() {
+                    @Override
                     public void run() {
                         if (event.getCheckable().equals(treeViewer)) {
                             treeItemChecked(event.getElement(),
@@ -356,6 +358,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     private void expandTreeElement(final Object item) {
         BusyIndicator.showWhile(treeViewer.getControl().getDisplay(),
                 new Runnable() {
+                    @Override
                     public void run() {
 
                         // First see if the children need to be given their
@@ -517,11 +520,13 @@ public class ResourceTreeAndListGroup extends EventManager implements
 
         final IElementFilter passThroughFilter = new IElementFilter() {
 
+            @Override
             public void filterElements(final Collection<?> elements,
                     final IProgressMonitor monitor) {
                 returnValue.addAll(elements);
             }
 
+            @Override
             public void filterElements(final Object[] elements,
                     final IProgressMonitor monitor) {
                 for (int i = 0; i < elements.length; i++) {
@@ -753,6 +758,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
         for (int i = 0; i < array.length; i++) {
             final ICheckStateListener l = (ICheckStateListener) array[i];
             SafeRunner.run(new SafeRunnable() {
+                @Override
                 public void run() {
                     l.checkStateChanged(event);
                 }
@@ -778,6 +784,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
             // Potentially long operation - show a busy cursor
             BusyIndicator.showWhile(treeViewer.getControl().getDisplay(),
                     new Runnable() {
+                        @Override
                         public void run() {
                             setListForWhiteSelection(treeElement);
                             listViewer.setAllChecked(true);
@@ -840,6 +847,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
      * @param event
      *            SelectionChangedEvent
      */
+    @Override
     public void selectionChanged(final SelectionChangedEvent event) {
         final IStructuredSelection selection = (IStructuredSelection) event
                 .getSelection();
@@ -874,6 +882,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
         // Potentially long operation - show a busy cursor
         BusyIndicator.showWhile(treeViewer.getControl().getDisplay(),
                 new Runnable() {
+                    @Override
                     public void run() {
                         setTreeChecked(root, selection);
                         listViewer.setAllChecked(selection);
@@ -1011,6 +1020,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Handle the collapsing of an element in a tree viewer
      */
+    @Override
     public void treeCollapsed(final TreeExpansionEvent event) {
         // We don't need to do anything with this
     }
@@ -1018,6 +1028,7 @@ public class ResourceTreeAndListGroup extends EventManager implements
     /**
      * Handle the expansionsion of an element in a tree viewer
      */
+    @Override
     public void treeExpanded(final TreeExpansionEvent event) {
         expandTreeElement(event.getElement());
     }

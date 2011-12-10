@@ -16,14 +16,17 @@ public class DebugTraceAsLaunchAction extends Action implements
     private IDebugTarget fTarget;
     private DebuggerTraceView fView;
 
+    @Override
     public void init(final IViewPart view) {
         fView = (DebuggerTraceView) view;
     }
 
+    @Override
     public void run(final IAction action) {
         DebugTraceLaunching.launch(fTarget, fView);
     }
 
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
         fTarget = null;

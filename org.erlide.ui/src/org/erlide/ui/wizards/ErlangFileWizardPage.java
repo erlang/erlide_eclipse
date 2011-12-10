@@ -90,6 +90,7 @@ public class ErlangFileWizardPage extends WizardPage {
                 .getTemplates(
                         ErlangSourceContextTypeModule.ERLANG_SOURCE_CONTEXT_TYPE_MODULE_ID);
         fModifyListener = new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 dialogChanged();
             }
@@ -99,6 +100,7 @@ public class ErlangFileWizardPage extends WizardPage {
     /**
      * @see IDialogPage#createControl(Composite)
      */
+    @Override
     public void createControl(final Composite parent) {
 
         final Composite container = new Composite(parent, SWT.NULL);

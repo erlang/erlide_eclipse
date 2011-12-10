@@ -175,6 +175,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
         final int endLine = selection.getEndLine();
         final int nLines = endLine - startLine + 1;
         final Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 final IRewriteTarget target = (IRewriteTarget) textEditor
                         .getAdapter(IRewriteTarget.class);

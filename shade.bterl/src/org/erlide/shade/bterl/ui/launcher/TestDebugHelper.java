@@ -25,6 +25,7 @@ public class TestDebugHelper extends ErlangDebugHelper {
             throws ErlModelException {
         final String beam = CommonUtils.withoutExtension(module) + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {
+            @Override
             public boolean accept(final File dir, final String name) {
                 ErlLogger.debug(dir.getAbsolutePath() + "   " + name);
                 return name.equals(beam);

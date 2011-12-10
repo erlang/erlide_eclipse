@@ -34,6 +34,7 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
         fEditor = editor;
     }
 
+    @Override
     public void setDocument(final IDocument document) {
         if (fEditor == null) {
             return;
@@ -41,14 +42,17 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
         // fDoc = document;
     }
 
+    @Override
     public void reconcile(final DirtyRegion dirtyRegion, final IRegion subRegion) {
         ErlLogger.error("reconcile called");
     }
 
+    @Override
     public void reconcile(final IRegion partition) {
         ErlLogger.error("reconcile called");
     }
 
+    @Override
     public void initialReconcile() {
         fModule = fEditor != null ? fEditor.getModule() : null;
         ErlLogger.debug("## initial reconcile "
@@ -59,22 +63,26 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
         // notify(new OtpErlangAtom("initialReconcile"));
     }
 
+    @Override
     public void setProgressMonitor(final IProgressMonitor monitor) {
         mon = monitor;
     }
 
+    @Override
     public void uninstall() {
         if (fModule != null) {
             fModule.finalReconcile();
         }
     }
 
+    @Override
     public void chunkReconciled() {
         if (fModule != null) {
             fModule.postReconcile(mon);
         }
     }
 
+    @Override
     public void reconcile(final ErlDirtyRegion r) {
         if (fModule != null) {
             ErlLogger.debug("## reconcile " + fModule.getName());

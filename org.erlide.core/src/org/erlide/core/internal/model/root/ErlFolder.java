@@ -66,12 +66,14 @@ public class ErlFolder extends Openable implements IErlFolder {
         }
     }
 
+    @Override
     public Collection<IErlModule> getModules() throws ErlModelException {
         final List<IErlModule> result = new ArrayList<IErlModule>();
         addModules(result);
         return result;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.FOLDER;
     }
@@ -86,18 +88,21 @@ public class ErlFolder extends Openable implements IErlFolder {
         return folder;
     }
 
+    @Override
     public boolean isOnSourcePath() {
         final IErlProject project = getProject();
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
                 project.getSourceDirs());
     }
 
+    @Override
     public boolean isOnIncludePath() {
         final IErlProject project = getProject();
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
                 project.getIncludeDirs());
     }
 
+    @Override
     public boolean isSourcePathParent() {
         final IProject project = folder.getProject();
         final IErlProject erlProject = getProject();
@@ -173,11 +178,13 @@ public class ErlFolder extends Openable implements IErlFolder {
         return null;
     }
 
+    @Override
     public IErlModule findModule(final String moduleName,
             final String modulePath) throws ErlModelException {
         return findModuleOrInclude(moduleName, modulePath, false);
     }
 
+    @Override
     public IErlModule findInclude(final String includeName,
             final String includePath) throws ErlModelException {
         return findModuleOrInclude(includeName, includePath, true);

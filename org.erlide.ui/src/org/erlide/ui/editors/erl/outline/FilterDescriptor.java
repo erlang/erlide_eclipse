@@ -128,6 +128,7 @@ public class FilterDescriptor implements Comparable<Object>,
                 /*
                  * @see org.eclipse.core.runtime.ISafeRunnable#run()
                  */
+                @Override
                 public void run() throws Exception {
                     result[0] = (ViewerFilter) fElement
                             .createExecutableExtension(CLASS_ATTRIBUTE);
@@ -240,6 +241,7 @@ public class FilterDescriptor implements Comparable<Object>,
     /*
      * Implements a method from Comparable<Object>
      */
+    @Override
     public int compareTo(final Object o) {
         if (o instanceof FilterDescriptor) {
             return Collator.getInstance().compare(getName(),
@@ -281,6 +283,7 @@ public class FilterDescriptor implements Comparable<Object>,
                 SafeRunner.run(new SafeRunnable(
                         " One of the extensions for extension-point "
                                 + extensionPointID + " is incorrect.") {
+                    @Override
                     public void run() throws Exception {
                         desc[0] = new FilterDescriptor(element);
                     }
@@ -295,10 +298,12 @@ public class FilterDescriptor implements Comparable<Object>,
         return result;
     }
 
+    @Override
     public String getLocalId() {
         return fElement.getAttribute(ID_ATTRIBUTE);
     }
 
+    @Override
     public String getPluginId() {
         return fElement.getContributor().getName();
     }

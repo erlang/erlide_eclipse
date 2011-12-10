@@ -38,19 +38,23 @@ public class ErlangBreakpointPropertiesRulerAction extends
         if (getBreakpoint() != null) {
             final PropertyDialogAction action = new PropertyDialogAction(
                     getEditor().getEditorSite(), new ISelectionProvider() {
+                        @Override
                         public void addSelectionChangedListener(
                                 final ISelectionChangedListener listener) {
                         }
 
+                        @Override
                         @SuppressWarnings("synthetic-access")
                         public ISelection getSelection() {
                             return new StructuredSelection(getBreakpoint());
                         }
 
+                        @Override
                         public void removeSelectionChangedListener(
                                 final ISelectionChangedListener listener) {
                         }
 
+                        @Override
                         public void setSelection(final ISelection selection) {
                         }
                     });
@@ -61,6 +65,7 @@ public class ErlangBreakpointPropertiesRulerAction extends
     /**
      * @see IUpdate#update()
      */
+    @Override
     public void update() {
         fBreakpoint = null;
         final IBreakpoint breakpoint = getBreakpoint();

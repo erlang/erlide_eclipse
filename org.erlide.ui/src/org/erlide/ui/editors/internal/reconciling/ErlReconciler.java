@@ -261,12 +261,14 @@ public class ErlReconciler implements IReconciler {
         /*
          * @see IDocumentListener#documentAboutToBeChanged(DocumentEvent)
          */
+        @Override
         public void documentAboutToBeChanged(final DocumentEvent e) {
         }
 
         /*
          * @see IDocumentListener#documentChanged(DocumentEvent)
          */
+        @Override
         public void documentChanged(final DocumentEvent e) {
             if (!fThread.isDirty() && fThread.isAlive()) {
                 if (!fIsAllowedToModifyDocument
@@ -299,6 +301,7 @@ public class ErlReconciler implements IReconciler {
          * @see ITextInputListener#inputDocumentAboutToBeChanged(IDocument,
          * IDocument)
          */
+        @Override
         public void inputDocumentAboutToBeChanged(final IDocument oldInput,
                 final IDocument newInput) {
 
@@ -329,6 +332,7 @@ public class ErlReconciler implements IReconciler {
         /*
          * @see ITextInputListener#inputDocumentChanged(IDocument, IDocument)
          */
+        @Override
         public void inputDocumentChanged(final IDocument oldInput,
                 final IDocument newInput) {
 
@@ -444,6 +448,7 @@ public class ErlReconciler implements IReconciler {
     /*
      * @see IReconciler#install(ITextViewer)
      */
+    @Override
     public void install(final ITextViewer textViewer) {
 
         Assert.isNotNull(textViewer);
@@ -478,6 +483,7 @@ public class ErlReconciler implements IReconciler {
     /*
      * @see IReconciler#uninstall()
      */
+    @Override
     public void uninstall() {
         if (fListener != null) {
 
@@ -591,6 +597,7 @@ public class ErlReconciler implements IReconciler {
     /*
      * @see IReconciler#getReconcilingStrategy(String)
      */
+    @Override
     public IReconcilingStrategy getReconcilingStrategy(final String contentType) {
         Assert.isNotNull(contentType);
         return fStrategy;

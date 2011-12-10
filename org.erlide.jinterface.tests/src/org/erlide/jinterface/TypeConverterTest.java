@@ -208,6 +208,7 @@ public class TypeConverterTest {
     @Test
     public void cvtConvertible_1() throws SignatureException {
         final IConvertible x = new IConvertible() {
+            @Override
             public OtpErlangObject toErlangObject() {
                 return new OtpErlangAtom("__kalle__");
             }

@@ -73,6 +73,7 @@ public class ErlElementDelta implements IErlElementDelta {
         fResourceDeltas = resourceDeltas;
     }
 
+    @Override
     public IErlElementDelta[] getChildren(final int kind) {
         final ArrayList<IErlElementDelta> children = new ArrayList<IErlElementDelta>(
                 0);
@@ -85,18 +86,22 @@ public class ErlElementDelta implements IErlElementDelta {
         return children.toArray(new IErlElementDelta[children.size()]);
     }
 
+    @Override
     public IErlElement getElement() {
         return fElement;
     }
 
+    @Override
     public int getFlags() {
         return fFlags;
     }
 
+    @Override
     public int getKind() {
         return fKind;
     }
 
+    @Override
     public IResourceDelta[] getResourceDeltas() {
         return fResourceDeltas.toArray(new IResourceDelta[fResourceDeltas
                 .size()]);
@@ -148,10 +153,12 @@ public class ErlElementDelta implements IErlElementDelta {
         return childDelta;
     }
 
+    @Override
     public IErlElement getMovedFromElement() {
         return fMovedFromElement;
     }
 
+    @Override
     public IErlElement getMovedToElement() {
         return fMovedToElement;
     }
@@ -329,6 +336,7 @@ public class ErlElementDelta implements IErlElementDelta {
         insertDeltaTree(element, changedDelta);
     }
 
+    @Override
     public IErlElementDelta findElement(final IErlElement element) {
         if (fElement.equals(element)) {
             return this;

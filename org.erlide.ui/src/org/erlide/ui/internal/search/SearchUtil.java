@@ -93,6 +93,7 @@ public class SearchUtil {
             Comparator<IWorkingSet> {
         private static Collator collator = Collator.getInstance();
 
+        @Override
         public int compare(final IWorkingSet o1, final IWorkingSet o2) {
             return collator.compare(o1.getLabel(), o2.getLabel());
         }
@@ -178,6 +179,7 @@ public class SearchUtil {
         for (final IErlElement external : externals) {
             external.accept(new IErlElementVisitor() {
 
+                @Override
                 public boolean visit(final IErlElement theElement)
                         throws ErlModelException {
                     if (theElement instanceof IErlExternal) {

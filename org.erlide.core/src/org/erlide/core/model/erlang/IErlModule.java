@@ -142,6 +142,7 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     boolean exportsAllFunctions();
 
+    @Override
     Object getModelLock();
 
     boolean isRealFile();

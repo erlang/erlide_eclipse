@@ -53,6 +53,7 @@ public class ErlangSourceViewerUpdater {
              * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
              * (org.eclipse.jface.util.PropertyChangeEvent)
              */
+            @Override
             public void propertyChange(final PropertyChangeEvent event) {
                 if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event
                         .getProperty())) {
@@ -69,6 +70,7 @@ public class ErlangSourceViewerUpdater {
              * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
              * (org.eclipse.jface.util.PropertyChangeEvent)
              */
+            @Override
             public void propertyChange(final PropertyChangeEvent event) {
                 // if (configuration.affectsTextPresentation(event)) {
                 // configuration.handlePropertyChangeEvent(event);
@@ -83,6 +85,7 @@ public class ErlangSourceViewerUpdater {
              * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse
              * .swt.events.DisposeEvent)
              */
+            @Override
             public void widgetDisposed(final DisposeEvent e) {
                 preferenceStore
                         .removePropertyChangeListener(propertyChangeListener);

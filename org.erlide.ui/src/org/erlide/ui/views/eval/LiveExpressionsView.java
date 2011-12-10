@@ -136,6 +136,7 @@ public class LiveExpressionsView extends ViewPart implements
             super();
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public void inputChanged(final Viewer v, final Object oldInput,
                 final Object newInput) {
@@ -144,10 +145,12 @@ public class LiveExpressionsView extends ViewPart implements
             }
         }
 
+        @Override
         public void dispose() {
             exprlist = null;
         }
 
+        @Override
         public Object[] getElements(final Object parent) {
             return exprlist.toArray();
         }
@@ -157,6 +160,7 @@ public class LiveExpressionsView extends ViewPart implements
     class ViewLabelProvider extends LabelProvider implements
             ITableLabelProvider {
 
+        @Override
         public String getColumnText(final Object obj, final int index) {
             final LiveExpr e = (LiveExpr) obj;
             if (index == 0) {
@@ -169,6 +173,7 @@ public class LiveExpressionsView extends ViewPart implements
             return null;
         }
 
+        @Override
         public Image getColumnImage(final Object obj, final int index) {
             // if (index == 0)
             // return getImage(obj);
@@ -280,6 +285,7 @@ public class LiveExpressionsView extends ViewPart implements
 
             SourceViewerInformationControl info = null;
 
+            @Override
             public void handleEvent(final Event event) {
                 switch (event.type) {
                 case SWT.Dispose:
@@ -392,6 +398,7 @@ public class LiveExpressionsView extends ViewPart implements
             view = v;
         }
 
+        @Override
         public boolean canModify(final Object element, final String property) {
             if ("expr".equals(property)) {
                 return true;
@@ -399,6 +406,7 @@ public class LiveExpressionsView extends ViewPart implements
             return false;
         }
 
+        @Override
         public Object getValue(final Object element, final String property) {
             Object result = null;
             final LiveExpr el = (LiveExpr) element;
@@ -406,6 +414,7 @@ public class LiveExpressionsView extends ViewPart implements
             return result;
         }
 
+        @Override
         public void modify(final Object element, final String property,
                 final Object value) {
             LiveExpr el;
@@ -426,6 +435,7 @@ public class LiveExpressionsView extends ViewPart implements
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
 
+            @Override
             public void menuAboutToShow(final IMenuManager manager) {
                 LiveExpressionsView.this.fillContextMenu(manager);
             }
@@ -530,6 +540,7 @@ public class LiveExpressionsView extends ViewPart implements
         viewer.getControl().setFocus();
     }
 
+    @Override
     public void resourceChanged(final IResourceChangeEvent event) {
         refreshView();
     }
@@ -541,6 +552,7 @@ public class LiveExpressionsView extends ViewPart implements
             if (!display.isDisposed()) {
                 display.asyncExec(new Runnable() {
 
+                    @Override
                     public void run() {
                         if (viewer == null) {
                             return;

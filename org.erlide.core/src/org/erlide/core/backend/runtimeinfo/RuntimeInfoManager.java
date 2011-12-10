@@ -238,6 +238,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         return getRuntime(getDefaultRuntimeName());
     }
 
+    @Override
     public void preferenceChange(final PreferenceChangeEvent event) {
         if (event.getNode().absolutePath().contains("org.erlide")) {
             load();

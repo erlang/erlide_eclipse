@@ -54,6 +54,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
          * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
          * createControl(org.eclipse.swt.widgets.Group)
          */
+        @Override
         public Control createControl(final Composite composite) {
             final Composite inner = new Composite(composite, SWT.NONE);
             inner.setLayout(new FillLayout(SWT.VERTICAL));
@@ -64,15 +65,19 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
             return inner;
         }
 
+        @Override
         public void initialize() {
         }
 
+        @Override
         public void performOk() {
         }
 
+        @Override
         public void performDefaults() {
         }
 
+        @Override
         public void dispose() {
         }
 
@@ -144,6 +149,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
      *            the parent composite
      * @return the control for the preference page
      */
+    @Override
     public Control createControl(final Composite parent) {
 
         final Composite composite = new Composite(parent, SWT.NULL);
@@ -166,6 +172,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         fFoldingCheckbox.setLayoutData(gd);
         fFoldingCheckbox.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 final boolean enabled = fFoldingCheckbox.getSelection();
                 fStore.setValue(PreferenceConstants.EDITOR_FOLDING_ENABLED,
@@ -173,6 +180,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
                 updateCheckboxDependencies();
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -238,6 +246,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
             /*
              * @see org.eclipse.jface.viewers.IContentProvider#dispose()
              */
+            @Override
             public void dispose() {
             }
 
@@ -246,6 +255,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
              * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse
              * .jface.viewers.Viewer, java.lang.Object, java.lang.Object)
              */
+            @Override
             public void inputChanged(final Viewer v, final Object oldInput,
                     final Object newInput) {
             }
@@ -255,6 +265,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
              * org.eclipse.jface.viewers.IStructuredContentProvider#getElements
              * (java.lang.Object)
              */
+            @Override
             public Object[] getElements(final Object inputElement) {
                 return fProviderDescriptors.values().toArray();
             }
@@ -283,6 +294,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         });
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 final IStructuredSelection sel = (IStructuredSelection) event
                         .getSelection();
@@ -349,10 +361,12 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         prefs.initialize();
     }
 
+    @Override
     public void initialize() {
         restoreFromPreferences();
     }
 
+    @Override
     public void performOk() {
         for (final Object element : fProviderPreferences.values()) {
             final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;
@@ -360,6 +374,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         }
     }
 
+    @Override
     public void performDefaults() {
         restoreFromPreferences();
         for (final Object element : fProviderPreferences.values()) {
@@ -368,6 +383,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
         }
     }
 
+    @Override
     public void dispose() {
         for (final Object element : fProviderPreferences.values()) {
             final IErlangFoldingPreferenceBlock prefs = (IErlangFoldingPreferenceBlock) element;

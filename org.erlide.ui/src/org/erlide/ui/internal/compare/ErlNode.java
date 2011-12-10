@@ -115,6 +115,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     /**
      * @see ITypedInput#getName
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -122,6 +123,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     /**
      * @see ITypedInput#getType
      */
+    @Override
     public String getType() {
         return "erl2";
     }
@@ -129,6 +131,7 @@ class ErlNode extends DocumentRangeNode implements ITypedElement {
     /**
      * @see ITypedInput#getImage
      */
+    @Override
     public Image getImage() {
         // final ImageDescriptor descriptor = ErlideUIPlugin.getDefault()
         // .getImageDescriptor("erl");

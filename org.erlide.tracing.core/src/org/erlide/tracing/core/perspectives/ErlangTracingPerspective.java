@@ -25,6 +25,7 @@ public class ErlangTracingPerspective implements IPerspectiveFactory {
     private static final String RIGHT_CENTER = "right center";
     private static final String RIGHT_BOTTOM = "right bottom";
 
+    @Override
     public void createInitialLayout(final IPageLayout pageLayout) {
         defineActions(pageLayout);
         defineLayout(pageLayout);

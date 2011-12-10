@@ -8,8 +8,9 @@ package org.erlide.wrangler.refactoring.core.internal;
  */
 public class ApplyAdhocElemRefactoring extends UserElementaryRefactoring {
 
-    private UserAdhocRefactoring delegate; // delegate for adhoc specific
-                                           // functionality
+    private final UserAdhocRefactoring delegate; // delegate for adhoc specific
+
+    // functionality
 
     public ApplyAdhocElemRefactoring() {
         delegate = new UserAdhocRefactoring(this);
@@ -22,8 +23,9 @@ public class ApplyAdhocElemRefactoring extends UserElementaryRefactoring {
 
     @Override
     public boolean fetchParPrompts() {
-        if (fetched)
+        if (fetched) {
             return true;
+        }
 
         return delegate.load() && super.fetchParPrompts();
     }

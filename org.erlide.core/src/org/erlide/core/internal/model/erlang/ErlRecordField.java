@@ -15,6 +15,7 @@ public class ErlRecordField extends ErlMember implements IErlRecordField {
         extra = "";
     }
 
+    @Override
     public Kind getKind() {
         return Kind.RECORD_FIELD;
     }
@@ -24,6 +25,7 @@ public class ErlRecordField extends ErlMember implements IErlRecordField {
         return getName() + ": " + getFieldName();
     }
 
+    @Override
     public String getFieldName() {
         return fieldName;
     }
@@ -32,6 +34,7 @@ public class ErlRecordField extends ErlMember implements IErlRecordField {
         this.extra = extra;
     }
 
+    @Override
     public String getExtra() {
         return extra;
     }

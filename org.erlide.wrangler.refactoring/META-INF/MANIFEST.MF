@@ -48,5 +48,5 @@ Export-Package:
  org.incava.util.diff;x-internal:=true
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.erlide.wrangler.refactoring.util

@@ -8,10 +8,10 @@ package org.erlide.wrangler.refactoring.backend;
  */
 public class UserRefactoringInfo {
 
-    private String label; // menu item's label
-    private String callback; // name of callback module
+    private final String label; // menu item's label
+    private final String callback; // name of callback module
 
-    public UserRefactoringInfo(String module) {
+    public UserRefactoringInfo(final String module) {
         callback = module;
         label = prepareLabel(module);
     }
@@ -25,9 +25,9 @@ public class UserRefactoringInfo {
     }
 
     // prepare label's text based on module name
-    private String prepareLabel(String module) {
-        StringBuffer buf = new StringBuffer();
-        for (String part : module.split("_")) {
+    private String prepareLabel(final String module) {
+        final StringBuffer buf = new StringBuffer();
+        for (final String part : module.split("_")) {
             buf.append(Character.toUpperCase(part.charAt(0)))
                     .append(part.substring(1)).append(" ");
         }
@@ -40,10 +40,11 @@ public class UserRefactoringInfo {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof UserRefactoringInfo
-                && ((UserRefactoringInfo) obj).getCallback().equals(callback))
+                && ((UserRefactoringInfo) obj).getCallback().equals(callback)) {
             return true;
+        }
         return false;
     }
 

@@ -81,6 +81,7 @@ public class ErlangTracingDialog extends Dialog {
         checkboxTreeViewer = new CheckboxTreeViewer(tracedModulesGroup,
                 SWT.BORDER);
         checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void checkStateChanged(final CheckStateChangedEvent event) {
                 final DebugTab.DebugTreeItem dti = (DebugTreeItem) event

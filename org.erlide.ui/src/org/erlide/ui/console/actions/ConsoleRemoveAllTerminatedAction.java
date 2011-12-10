@@ -34,6 +34,7 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
         DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(this);
     }
 
+    @Override
     public void update() {
         final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                 .getLaunches();
@@ -73,18 +74,22 @@ public class ConsoleRemoveAllTerminatedAction extends Action implements
         update();
     }
 
+    @Override
     public void launchesRemoved(final ILaunch[] launches) {
         if (isEnabled()) {
             update();
         }
     }
 
+    @Override
     public void launchesAdded(final ILaunch[] launches) {
     }
 
+    @Override
     public void launchesChanged(final ILaunch[] launches) {
     }
 
+    @Override
     public void launchesTerminated(final ILaunch[] launches) {
         update();
     }

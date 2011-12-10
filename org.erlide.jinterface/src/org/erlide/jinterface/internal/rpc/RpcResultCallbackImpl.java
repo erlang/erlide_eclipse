@@ -11,6 +11,7 @@
 package org.erlide.jinterface.internal.rpc;
 
 import org.erlide.jinterface.rpc.IRpcResultCallback;
+import org.erlide.jinterface.rpc.RpcHelper;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
@@ -20,12 +21,15 @@ import com.ericsson.otp.erlang.OtpErlangObject;
  * 
  */
 public class RpcResultCallbackImpl implements IRpcResultCallback {
+    @Override
     public void start(final OtpErlangObject msg) {
     }
 
+    @Override
     public void stop(final OtpErlangObject msg) {
     }
 
+    @Override
     public void progress(final OtpErlangObject msg) {
     }
 }

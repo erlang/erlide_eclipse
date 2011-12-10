@@ -44,6 +44,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     public static final String CONFIGURATION_TYPE_INTERNAL = "org.erlide.core.launch.internal";
     public static final String CONFIGURATION_TYPE = "org.erlide.core.launch.erlangProcess";
 
+    @Override
     public void launch(final ILaunchConfiguration config, final String mode,
             final ILaunch launch, final IProgressMonitor monitor)
             throws CoreException {

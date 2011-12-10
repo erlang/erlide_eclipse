@@ -138,6 +138,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return image;
     }
 
+    @Override
     public Image getImage(final Object element) {
         final Image result = fImageLabelProvider.getImageLabel(element,
                 evaluateImageFlags(element));
@@ -155,6 +156,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return text;
     }
 
+    @Override
     public String getText(final Object element) {
         final String label = getLabelString(element);
         return decorateText(label, element);
@@ -178,6 +180,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return label;
     }
 
+    @Override
     public void dispose() {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
@@ -189,6 +192,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         fImageLabelProvider.dispose();
     }
 
+    @Override
     public void addListener(final ILabelProviderListener listener) {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
@@ -199,10 +203,12 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         fListeners.add(listener);
     }
 
+    @Override
     public boolean isLabelProperty(final Object element, final String property) {
         return true;
     }
 
+    @Override
     public void removeListener(final ILabelProviderListener listener) {
         if (fLabelDecorators != null) {
             for (int i = 0; i < fLabelDecorators.size(); i++) {
@@ -227,10 +233,12 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
         return null;
     }
 
+    @Override
     public Color getForeground(final Object element) {
         return null;
     }
 
+    @Override
     public Color getBackground(final Object element) {
         return null;
     }
@@ -251,6 +259,7 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
             final ILabelProviderListener l = (ILabelProviderListener) element;
             SafeRunner.run(new SafeRunnable() {
 
+                @Override
                 public void run() {
                     l.labelProviderChanged(event);
                 }

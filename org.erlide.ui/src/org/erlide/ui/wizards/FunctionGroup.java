@@ -140,6 +140,7 @@ public class FunctionGroup implements SelectionListener {
                 false));
         functionNameText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 dialogChanged();
             }
@@ -148,17 +149,20 @@ public class FunctionGroup implements SelectionListener {
         arityText = new Text(container, SWT.BORDER | SWT.SINGLE);
         arityText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 dialogChanged();
             }
         });
         arityText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(final KeyEvent e) {
                 ErlLogger.debug(e.character + " was pressed.");
                 fWizPage.gettingInput = true;
             }
 
+            @Override
             public void keyReleased(final KeyEvent e) {
                 ErlLogger.debug(e.character + " was released.");
                 fWizPage.gettingInput = false;
@@ -171,6 +175,7 @@ public class FunctionGroup implements SelectionListener {
                 .setToolTipText("Create a new function or edit an existing one.");
         addFunctionBtn.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 addFunction(functionNameText.getText(),
                         Integer.parseInt(arityText.getText()),
@@ -179,6 +184,7 @@ public class FunctionGroup implements SelectionListener {
                 arityText.setText("0");
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -297,10 +303,12 @@ public class FunctionGroup implements SelectionListener {
         return functions;
     }
 
+    @Override
     public void widgetDefaultSelected(final SelectionEvent e) {
         // do nothing, I don't even know when this event is triggered.
     }
 
+    @Override
     public void widgetSelected(final SelectionEvent e) {
         ErlLogger.debug("widgetSelected: e.item = " + e.item);
         ErlLogger.debug("widgetSelected: e.widget = " + e.widget);

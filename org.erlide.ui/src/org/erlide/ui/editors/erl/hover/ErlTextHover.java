@@ -85,6 +85,7 @@ public class ErlTextHover implements ITextHover,
         initStyleSheet();
     }
 
+    @Override
     public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
         if (fEditor == null) {
             return null;
@@ -156,6 +157,7 @@ public class ErlTextHover implements ITextHover,
         return varName + " = " + value;
     }
 
+    @Override
     public IInformationControlCreator getInformationPresenterControlCreator() {
         if (fPresenterControlCreator == null) {
             fPresenterControlCreator = new PresenterControlCreator(fEditor);
@@ -163,6 +165,7 @@ public class ErlTextHover implements ITextHover,
         return fPresenterControlCreator;
     }
 
+    @Override
     public IInformationControlCreator getHoverControlCreator() {
         if (fHoverControlCreator == null) {
             fHoverControlCreator = new HoverControlCreator(
@@ -228,6 +231,7 @@ public class ErlTextHover implements ITextHover,
         return null;
     }
 
+    @Override
     public String getHoverInfo(final ITextViewer textViewer,
             final IRegion hoverRegion) {
         final ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) getHoverInfo2(
@@ -235,6 +239,7 @@ public class ErlTextHover implements ITextHover,
         return input == null ? "" : input.getHtml();
     }
 
+    @Override
     public Object getHoverInfo2(final ITextViewer textViewer,
             final IRegion hoverRegion) {
         return internalGetHoverInfo(fEditor, textViewer, hoverRegion);

@@ -131,6 +131,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     private MenuManager fMenuManager;
 
     private final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             updateSelectionDependentActions();
         }
@@ -271,9 +272,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         });
         consoleText.addFocusListener(new FocusListener() {
+            @Override
             public void focusLost(final FocusEvent e) {
             }
 
+            @Override
             public void focusGained(final FocusEvent e) {
                 consoleInput.setFocus();
             }
@@ -319,6 +322,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             }
         });
         consoleInput.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 if (isInputComplete()) {
                     consoleInput.setBackground(bgColor_Ok);
@@ -336,9 +340,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         // end layout
 
         final IDocumentListener documentListener = new IDocumentListener() {
+            @Override
             public void documentAboutToBeChanged(final DocumentEvent event) {
             }
 
+            @Override
             public void documentChanged(final DocumentEvent event) {
                 final int end = consoleOutputViewer.getDocument().getLength();
                 consoleOutputViewer.setSelectedRange(end, end);
@@ -354,6 +360,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         fMenuManager = new MenuManager("#ContextMenu", id); //$NON-NLS-1$
         fMenuManager.setRemoveAllWhenShown(true);
         fMenuManager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager m) {
                 contextMenuAboutToShow(m);
             }
@@ -385,7 +392,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.setFocus();
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (IFindReplaceTarget.class.equals(required)) {
             return consoleOutputViewer.getFindReplaceTarget();
         }
@@ -395,6 +404,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         return null;
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
         if (consoleOutputViewer != null) {
             final Object source = event.getSource();

@@ -12,6 +12,7 @@ public class ErlTestNature implements IProjectNature {
 
     private IProject project;
 
+    @Override
     public void configure() throws CoreException {
         final IProjectDescription desc = project.getDescription();
         final ICommand[] commands = desc.getBuildSpec();
@@ -31,6 +32,7 @@ public class ErlTestNature implements IProjectNature {
         project.setDescription(desc, null);
     }
 
+    @Override
     public void deconfigure() throws CoreException {
         final IProjectDescription description = getProject().getDescription();
         final ICommand[] commands = description.getBuildSpec();
@@ -47,10 +49,12 @@ public class ErlTestNature implements IProjectNature {
         }
     }
 
+    @Override
     public IProject getProject() {
         return project;
     }
 
+    @Override
     public void setProject(final IProject project) {
         this.project = project;
     }

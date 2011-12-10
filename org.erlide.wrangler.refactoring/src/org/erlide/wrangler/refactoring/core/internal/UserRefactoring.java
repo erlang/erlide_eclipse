@@ -34,8 +34,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
 
     private String callbackModule; // callback module
-    private List<String> parPrompts = new LinkedList<String>(); // parameter
-                                                                // prompts
+    private final List<String> parPrompts = new LinkedList<String>(); // parameter
+    // prompts
     private List<String> parValues = new ArrayList<String>(0); // parameter
                                                                // values
                                                                // submited by
@@ -58,7 +58,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
      * 
      * @param module
      */
-    public void setCallbackModuleName(String module) {
+    public void setCallbackModuleName(final String module) {
         callbackModule = module;
         fetched = false;
     }
@@ -69,17 +69,19 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
      * @param module
      */
     public boolean fetchParPrompts() {
-        if (fetched)
+        if (fetched) {
             return true;
+        }
 
-        RpcResult res = WranglerBackendManager.getRefactoringBackend()
+        final RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("input_par_prompts_eclipse", "s",
                         callbackModule);
-        OtpErlangList params = (OtpErlangList) ((OtpErlangTuple) res.getValue())
-                .elementAt(1);
+        final OtpErlangList params = (OtpErlangList) ((OtpErlangTuple) res
+                .getValue()).elementAt(1);
         parPrompts.clear();
-        for (OtpErlangObject obj : params.elements())
+        for (final OtpErlangObject obj : params.elements()) {
             parPrompts.add(obj.toString().replace("\"", ""));
+        }
 
         fetched = true;
 
@@ -107,7 +109,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
      * 
      * @param prompt
      */
-    protected void addParPrompts(String prompt) {
+    protected void addParPrompts(final String prompt) {
         parPrompts.add(prompt);
     }
 
@@ -125,14 +127,14 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
      * 
      * @param value
      */
-    public void setParValue(List<String> params) {
+    public void setParValue(final List<String> params) {
         parValues = params;
     }
 
     protected OtpErlangList prepareUserInput() {
-        OtpErlangObject[] params = new OtpErlangObject[parValues.size()];
+        final OtpErlangObject[] params = new OtpErlangObject[parValues.size()];
         int i = 0;
-        for (String val : parValues) {
+        for (final String val : parValues) {
             params[i] = new OtpErlangString(val);
             i++;
         }
@@ -152,7 +154,7 @@ public abstract class UserRefactoring extends SimpleOneStepWranglerRefactoring {
             public void doRefactoring() {
                 final IErlSelection sel = GlobalParameters
                         .getWranglerSelection();
-                IRefactoringRpcMessage message = run(sel);
+                final IRefactoringRpcMessage message = run(sel);
                 if (message.isSuccessful()) {
                     changedFiles = message.getRefactoringChangeset();
                     status = new RefactoringStatus();

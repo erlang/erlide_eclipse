@@ -68,6 +68,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
                     final IFolder folder = project.getFolder(dir);
                     if (folder.isAccessible()) {
                         folder.accept(new IResourceVisitor() {
+                            @Override
                             public boolean visit(final IResource resource)
                                     throws CoreException {
                                 if ("erl".equals(resource.getFileExtension())) {
@@ -94,6 +95,7 @@ public class EdocExportWizard extends Wizard implements IExportWizard {
         return true;
     }
 
+    @Override
     public void init(final IWorkbench workbench,
             final IStructuredSelection aSelection) {
         selection = aSelection;

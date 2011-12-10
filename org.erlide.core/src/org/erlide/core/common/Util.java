@@ -1563,6 +1563,7 @@ public final class Util {
     public static String toString(final Object[] objects) {
         return toString(objects, new Displayable() {
 
+            @Override
             public String displayString(final Object o) {
                 if (o == null) {
                     return "null"; //$NON-NLS-1$

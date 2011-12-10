@@ -13,6 +13,7 @@ public class ErlangCharRule implements IPredicateRule {
         this.token = token;
     }
 
+    @Override
     public IToken evaluate(final ICharacterScanner scanner) {
         int c = scanner.read();
         if (c == '$') {
@@ -42,10 +43,12 @@ public class ErlangCharRule implements IPredicateRule {
         return Token.UNDEFINED;
     }
 
+    @Override
     public IToken getSuccessToken() {
         return token;
     }
 
+    @Override
     public IToken evaluate(final ICharacterScanner scanner, final boolean resume) {
         return evaluate(scanner);
     }

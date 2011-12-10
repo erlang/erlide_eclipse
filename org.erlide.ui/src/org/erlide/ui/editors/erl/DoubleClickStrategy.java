@@ -41,6 +41,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
      * 
      * @see org.eclipse.jface.text.ITextDoubleClickStrategy#doubleClicked(org.eclipse.jface.text.ITextViewer)
      */
+    @Override
     public void doubleClicked(final ITextViewer part) {
         final int offset = part.getSelectedRange().x;
 

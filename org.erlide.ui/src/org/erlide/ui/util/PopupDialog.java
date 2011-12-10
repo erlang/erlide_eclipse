@@ -51,6 +51,7 @@ public class PopupDialog {
         if (delay >= 0) {
 
             display.syncExec(new Runnable() {
+                @Override
                 public void run() {
                     win = new BalloonWindow(display, SWT.ON_TOP | SWT.TITLE
                             | SWT.TOOL);

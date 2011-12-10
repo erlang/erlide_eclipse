@@ -29,6 +29,7 @@ public class SourceRange implements ISourceRange {
     /**
      * @see ISourceRange
      */
+    @Override
     public int getLength() {
         return fLength;
     }
@@ -36,6 +37,7 @@ public class SourceRange implements ISourceRange {
     /**
      * @see ISourceRange
      */
+    @Override
     public int getOffset() {
         return fOffset;
     }
@@ -51,6 +53,7 @@ public class SourceRange implements ISourceRange {
         return buffer.toString();
     }
 
+    @Override
     public boolean hasPosition(final int position) {
         return position >= fOffset && position <= fOffset + fLength;
     }

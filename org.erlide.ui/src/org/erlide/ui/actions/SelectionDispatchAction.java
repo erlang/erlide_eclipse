@@ -206,6 +206,7 @@ public abstract class SelectionDispatchAction extends Action implements
         dispatchRun(getSelection());
     }
 
+    @Override
     public void selectionChanged(final SelectionChangedEvent event) {
         dispatchSelectionChanged(event.getSelection());
     }

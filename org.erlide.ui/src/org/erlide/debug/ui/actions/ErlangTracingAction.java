@@ -14,13 +14,16 @@ public class ErlangTracingAction implements IWorkbenchWindowActionDelegate {
     private ILaunch fLaunch;
     private ErlangTracingDialog fDialog;
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void init(final IWorkbenchWindow window) {
         fDialog = new ErlangTracingDialog(window.getShell());
     }
 
+    @Override
     public void run(final IAction action) {
         if (fLaunch != null) {
             fDialog.initializeFrom(fLaunch);
@@ -28,6 +31,7 @@ public class ErlangTracingAction implements IWorkbenchWindowActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
         fLaunch = null;

@@ -67,10 +67,12 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         return null;
     }
 
+    @Override
     public int getInitialOffset() {
         return 0;
     }
 
+    @Override
     public int getSize() throws DebugException {
         int arity = getArity();
         if (record != null) {
@@ -79,6 +81,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         return arity;
     }
 
+    @Override
     public IVariable getVariable(final int offset) throws DebugException {
         String name;
         if (record != null) {
@@ -96,6 +99,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
                 getElementAt(offset), process, moduleName, -1);
     }
 
+    @Override
     public IVariable[] getVariables(final int offset, final int length)
             throws DebugException {
         final IVariable[] result = new IVariable[length];

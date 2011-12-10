@@ -36,6 +36,7 @@ public abstract class ShowWhenContentChangesAction extends Action implements
         update();
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
         final String property = event.getProperty();
         if (property.equals(getKey())) {

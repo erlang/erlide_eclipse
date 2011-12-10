@@ -107,9 +107,11 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
         return true;
     }
 
+    @Override
     public void preferenceChange(final PreferenceChangeEvent event) {
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
     }
 

@@ -28,30 +28,37 @@ public class DummyCompletionProposal implements ICompletionProposal,
                 "No completion proposal available", null, null);
     }
 
+    @Override
     public void apply(final IDocument document) {
         delegate.apply(document);
     }
 
+    @Override
     public Point getSelection(final IDocument document) {
         return delegate.getSelection(document);
     }
 
+    @Override
     public String getAdditionalProposalInfo() {
         return delegate.getAdditionalProposalInfo();
     }
 
+    @Override
     public String getDisplayString() {
         return delegate.getDisplayString();
     }
 
+    @Override
     public Image getImage() {
         return delegate.getImage();
     }
 
+    @Override
     public IContextInformation getContextInformation() {
         return delegate.getContextInformation();
     }
 
+    @Override
     public boolean isAutoInsertable() {
         return false;
     }

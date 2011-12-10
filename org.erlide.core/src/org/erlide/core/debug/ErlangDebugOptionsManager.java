@@ -41,16 +41,19 @@ public class ErlangDebugOptionsManager implements ILaunchesListener,
         debugPlugin.getBreakpointManager().removeBreakpointListener(this);
     }
 
+    @Override
     public void launchesRemoved(final ILaunch[] launches) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void launchesAdded(final ILaunch[] launches) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public void launchesChanged(final ILaunch[] launches) {
         // TODO Auto-generated method stub
 
@@ -61,6 +64,7 @@ public class ErlangDebugOptionsManager implements ILaunchesListener,
      */
     private void updateBreakpointsMessages(final IBreakpoint[] breakpoints) {
         final IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+            @Override
             public void run(final IProgressMonitor monitor)
                     throws CoreException {
                 for (final IBreakpoint breakpoint : breakpoints) {
@@ -80,14 +84,17 @@ public class ErlangDebugOptionsManager implements ILaunchesListener,
         }
     }
 
+    @Override
     public void breakpointsAdded(final IBreakpoint[] breakpoints) {
         updateBreakpointsMessages(breakpoints);
     }
 
+    @Override
     public void breakpointsRemoved(final IBreakpoint[] breakpoints,
             final IMarkerDelta[] deltas) {
     }
 
+    @Override
     public void breakpointsChanged(final IBreakpoint[] breakpoints,
             final IMarkerDelta[] deltas) {
         updateBreakpointsMessages(breakpoints);

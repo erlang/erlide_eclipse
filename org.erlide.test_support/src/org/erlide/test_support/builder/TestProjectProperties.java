@@ -20,6 +20,7 @@ public class TestProjectProperties {
         final List<String> result = Lists.newArrayList();
         try {
             prj.accept(new IResourceVisitor() {
+                @Override
                 public boolean visit(final IResource resource)
                         throws CoreException {
                     if (resource.getName().matches(".*_SUITE.erl")) {

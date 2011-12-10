@@ -293,18 +293,22 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         return res;
     }
 
+    @Override
     public IStackFrame[] getStackFrames() throws DebugException {
         return stackFrames.toArray(new IStackFrame[stackFrames.size()]);
     }
 
+    @Override
     public boolean hasStackFrames() throws DebugException {
         return !stackFrames.isEmpty();
     }
 
+    @Override
     public int getPriority() throws DebugException {
         return 0;
     }
 
+    @Override
     public IStackFrame getTopStackFrame() throws DebugException {
         if (stackFrames.isEmpty()) {
             return null;
@@ -312,6 +316,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         return stackFrames.get(0);
     }
 
+    @Override
     public String getName() throws DebugException {
         return toLocalPid(fPid);
     }
@@ -322,6 +327,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         return "<0." + a1 + "." + a2 + ">";
     }
 
+    @Override
     public IBreakpoint[] getBreakpoints() {
         if (!stackFrames.isEmpty()) {
             final IStackFrame f = stackFrames.get(0);
@@ -354,6 +360,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         return new IBreakpoint[0];
     }
 
+    @Override
     public boolean isSuspended() {
         // return getStatus().equals(STATUS_SUSPENDED)
         // || getStatus().equals(STATUS_BREAK)
@@ -362,40 +369,49 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
                 || getStatus().equals(STATUS_BREAK);
     }
 
+    @Override
     public boolean isTerminated() {
         return getStatus().equals(STATUS_TERMINATED);
     }
 
+    @Override
     public void resume() throws DebugException {
         stepping = false;
         ErlideDebug.resume(fBackend, getMeta());
     }
 
+    @Override
     public void suspend() throws DebugException {
         stepping = false;
         ErlideDebug.suspend(fBackend, getMeta());
     }
 
+    @Override
     public boolean canResume() {
         return isSuspended();
     }
 
+    @Override
     public boolean canSuspend() {
         return !isSuspended();
     }
 
+    @Override
     public boolean canStepInto() {
         return isSuspended();
     }
 
+    @Override
     public boolean canStepOver() {
         return isSuspended();
     }
 
+    @Override
     public boolean canStepReturn() {
         return isSuspended();
     }
 
+    @Override
     public boolean isStepping() {
         return stepping;
     }
@@ -404,25 +420,30 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         stepping = false;
     }
 
+    @Override
     public void stepInto() throws DebugException {
         stepping = true;
         ErlideDebug.stepInto(fBackend, getMeta());
     }
 
+    @Override
     public void stepOver() throws DebugException {
         stepping = true;
         ErlideDebug.stepOver(fBackend, getMeta());
     }
 
+    @Override
     public void stepReturn() throws DebugException {
         stepping = true;
         ErlideDebug.stepReturn(fBackend, getMeta());
     }
 
+    @Override
     public boolean canTerminate() {
         return false;
     }
 
+    @Override
     public void terminate() throws DebugException {
     }
 

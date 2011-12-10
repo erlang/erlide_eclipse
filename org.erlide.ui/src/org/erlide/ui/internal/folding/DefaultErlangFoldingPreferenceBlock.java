@@ -38,9 +38,11 @@ public class DefaultErlangFoldingPreferenceBlock implements
 
     private final SelectionListener fCheckBoxListener = new SelectionListener() {
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
             final Button button = (Button) e.widget;
             fOverlayStore.setValue(fCheckBoxes.get(button),
@@ -77,6 +79,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
      * @seeorg.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
      * createControl(org.eclipse.swt.widgets.Group)
      */
+    @Override
     public Control createControl(final Composite composite) {
         fOverlayStore.load();
         fOverlayStore.start();
@@ -138,6 +141,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
      * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
      * #performOk()
      */
+    @Override
     public void performOk() {
         fOverlayStore.propagate();
     }
@@ -147,6 +151,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
      * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
      * #initialize()
      */
+    @Override
     public void initialize() {
         initializeFields();
     }
@@ -156,6 +161,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
      * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
      * #performDefaults()
      */
+    @Override
     public void performDefaults() {
         fOverlayStore.loadDefaults();
         initializeFields();
@@ -166,6 +172,7 @@ public class DefaultErlangFoldingPreferenceBlock implements
      * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
      * #dispose()
      */
+    @Override
     public void dispose() {
         fOverlayStore.stop();
     }

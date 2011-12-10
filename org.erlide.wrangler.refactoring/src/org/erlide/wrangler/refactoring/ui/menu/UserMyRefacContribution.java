@@ -22,22 +22,23 @@ public class UserMyRefacContribution extends CompoundContributionItem {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     protected IContributionItem[] getContributionItems() {
-        List<UserRefactoringInfo> refacs = UserRefactoringsManager
+        final List<UserRefactoringInfo> refacs = UserRefactoringsManager
                 .getInstance().getMyElementary();
         if (refacs.size() == 0) {
-            CommandContributionItemParameter param = new CommandContributionItemParameter(
+            final CommandContributionItemParameter param = new CommandContributionItemParameter(
                     PlatformUI.getWorkbench(), null,
                     "org.erlide.wrangler.refactoring.empty",
                     CommandContributionItem.STYLE_PUSH);
             param.label = "<Empty>";
-            CommandContributionItem item = new CommandContributionItem(param);
+            final CommandContributionItem item = new CommandContributionItem(
+                    param);
             return new IContributionItem[] { item };
         }
-        IContributionItem[] items = new IContributionItem[refacs.size()];
+        final IContributionItem[] items = new IContributionItem[refacs.size()];
 
         int i = 0;
-        for (UserRefactoringInfo info : refacs) {
-            CommandContributionItemParameter param = new CommandContributionItemParameter(
+        for (final UserRefactoringInfo info : refacs) {
+            final CommandContributionItemParameter param = new CommandContributionItemParameter(
                     PlatformUI.getWorkbench(), info.getCallback(),
                     "org.erlide.wrangler.refactoring.gen_refac",
                     CommandContributionItem.STYLE_PUSH);

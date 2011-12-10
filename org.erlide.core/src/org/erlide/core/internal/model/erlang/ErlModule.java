@@ -151,9 +151,11 @@ public class ErlModule extends Openable implements IErlModule {
         return path;
     }
 
+    @Override
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
         return getModel().innermostThat(this, new Predicate<IErlElement>() {
+            @Override
             public boolean apply(final IErlElement e) {
                 if (e instanceof ISourceReference) {
                     final ISourceReference ch = (ISourceReference) e;
@@ -168,9 +170,11 @@ public class ErlModule extends Openable implements IErlModule {
         });
     }
 
+    @Override
     public IErlMember getElementAtLine(final int lineNumber) {
         return (IErlMember) getModel().innermostThat(this,
                 new Predicate<IErlElement>() {
+                    @Override
                     public boolean apply(final IErlElement e) {
                         if (e instanceof ISourceReference) {
                             final ISourceReference sr = (ISourceReference) e;
@@ -184,6 +188,7 @@ public class ErlModule extends Openable implements IErlModule {
                 });
     }
 
+    @Override
     public ModuleKind getModuleKind() {
         return moduleKind;
     }
@@ -211,6 +216,7 @@ public class ErlModule extends Openable implements IErlModule {
     // comments.add(c);
     // }
 
+    @Override
     public void setComments(final Collection<? extends IErlComment> comments) {
         synchronized (getModelLock()) {
             this.comments.clear();
@@ -220,16 +226,19 @@ public class ErlModule extends Openable implements IErlModule {
         }
     }
 
+    @Override
     public Collection<IErlComment> getComments() {
         synchronized (getModelLock()) {
             return Collections.unmodifiableCollection(comments);
         }
     }
 
+    @Override
     public synchronized long getTimestamp() {
         return timestamp;
     }
 
+    @Override
     public IErlImport findImport(final ErlangFunction function) {
         try {
             for (final IErlElement e : getChildrenOfKind(Kind.IMPORT)) {
@@ -260,6 +269,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
+    @Override
     public IErlFunction findFunction(final ErlangFunction function) {
         try {
             for (final IErlElement fun : getChildrenOfKind(Kind.FUNCTION)) {
@@ -276,6 +286,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
+    @Override
     public IErlTypespec findTypespec(final String typeName) {
         try {
             for (final IErlElement child : getChildrenOfKind(Kind.TYPESPEC)) {
@@ -291,6 +302,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
+    @Override
     public IErlPreprocessorDef findPreprocessorDef(final String definedName,
             final Kind kind) {
         synchronized (getModelLock()) {
@@ -307,6 +319,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
+    @Override
     public Collection<ErlangIncludeFile> getIncludeFiles()
             throws ErlModelException {
         if (!isStructureKnown()) {
@@ -332,6 +345,7 @@ public class ErlModule extends Openable implements IErlModule {
         return r;
     }
 
+    @Override
     public Collection<IErlImport> getImports() {
         final List<IErlImport> result = new ArrayList<IErlImport>();
         synchronized (getModelLock()) {
@@ -345,6 +359,7 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
+    @Override
     public synchronized void reconcileText(final int offset,
             final int removeLength, final String newText,
             final IProgressMonitor mon) {
@@ -364,6 +379,7 @@ public class ErlModule extends Openable implements IErlModule {
         disposeScanner();
     }
 
+    @Override
     public synchronized void postReconcile(final IProgressMonitor mon) {
         try {
             open(mon);
@@ -375,16 +391,19 @@ public class ErlModule extends Openable implements IErlModule {
         }
     }
 
+    @Override
     public synchronized void initialReconcile() {
         // currently unused
         // Note that the ErlReconciler doesn't send the first full-text
         // reconcile that the built-in reconciler does
     }
 
+    @Override
     public synchronized void finalReconcile() {
         // currently unused
     }
 
+    @Override
     public String getModuleName() {
         return CommonUtils.withoutExtension(getName());
     }
@@ -409,6 +428,7 @@ public class ErlModule extends Openable implements IErlModule {
     // parsed = false;
     // }
 
+    @Override
     public Kind getKind() {
         return Kind.MODULE;
     }
@@ -419,6 +439,7 @@ public class ErlModule extends Openable implements IErlModule {
         getModel().removeModule(this);
     }
 
+    @Override
     public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = getProject();
@@ -441,6 +462,7 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
+    @Override
     public Set<IErlModule> getAllDependentModules() throws CoreException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
         final IErlProject project = getProject();
@@ -454,6 +476,7 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
+    @Override
     public synchronized void resetAndCacheScannerAndParser(final String newText)
             throws ErlModelException {
         while (scanner != null) {
@@ -466,6 +489,7 @@ public class ErlModule extends Openable implements IErlModule {
         setStructureKnown(built);
     }
 
+    @Override
     public ErlToken getScannerTokenAt(final int offset) {
         if (scanner != null) {
             return scanner.getTokenAt(offset);
@@ -473,6 +497,7 @@ public class ErlModule extends Openable implements IErlModule {
         return null;
     }
 
+    @Override
     public void setResource(final IFile file) {
         fFile = file;
     }
@@ -500,6 +525,7 @@ public class ErlModule extends Openable implements IErlModule {
         return new ErlScanner(scannerName, initialText, filePath, useCaches);
     }
 
+    @Override
     public Collection<IErlPreprocessorDef> getPreprocessorDefs(final Kind kind) {
         final List<IErlPreprocessorDef> result = Lists.newArrayList();
         synchronized (getModelLock()) {
@@ -515,6 +541,7 @@ public class ErlModule extends Openable implements IErlModule {
         return result;
     }
 
+    @Override
     public Collection<IErlModule> findAllIncludedFiles() throws CoreException {
         final List<IErlModule> checked = Lists.newArrayList();
         return findAllIncludedFiles(checked);
@@ -625,6 +652,7 @@ public class ErlModule extends Openable implements IErlModule {
         return externalInclude;
     }
 
+    @Override
     public boolean isOnSourcePath() {
         final IParent parent = getParent();
         if (parent instanceof IErlFolder) {
@@ -637,6 +665,7 @@ public class ErlModule extends Openable implements IErlModule {
         return false;
     }
 
+    @Override
     public boolean isOnIncludePath() {
         final IParent parent = getParent();
         if (parent instanceof IErlFolder) {
@@ -669,6 +698,7 @@ public class ErlModule extends Openable implements IErlModule {
         return s;
     }
 
+    @Override
     public boolean exportsAllFunctions() {
         try {
             for (final IErlElement e : getChildrenOfKind(Kind.ATTRIBUTE)) {
@@ -687,6 +717,7 @@ public class ErlModule extends Openable implements IErlModule {
         return false;
     }
 
+    @Override
     public boolean isRealFile() {
         return useCaches;
     }

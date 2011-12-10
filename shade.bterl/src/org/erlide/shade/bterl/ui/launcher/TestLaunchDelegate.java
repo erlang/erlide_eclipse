@@ -178,9 +178,11 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final ErlangEventHandler handler = new ErlangEventHandler(
                 "bterl_debugger", backend) {
+            @Override
             public void handleEvent(final Event event) {
                 System.out.println("BTERL DEBUG INIT");
                 final String[] modules = workdir.list(new FilenameFilter() {
+                    @Override
                     public boolean accept(final File dir, final String filename) {
                         return filename.endsWith(".erl");
                     }
@@ -208,6 +210,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final ErlangEventHandler handler = new ErlangEventHandler(
                 "bterl_monitor", backend) {
+            @Override
             public void handleEvent(final Event event) {
                 // TODO check events and do something
             }
@@ -266,6 +269,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         wc.setAttribute(ErlLaunchAttributes.PROJECTS, project);
         final List<String> modules = Lists.newArrayList();
         for (final String m : workdir.list(new FilenameFilter() {
+            @Override
             public boolean accept(final File dir, final String name) {
                 return name.endsWith(".erl");
             }

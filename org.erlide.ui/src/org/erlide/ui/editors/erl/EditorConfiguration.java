@@ -167,6 +167,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             final ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
 
+            @Override
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 if (parent.getText().length() == 0
@@ -228,6 +229,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
      */
     private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
         return new IInformationControlCreator() {
+            @Override
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 final String affordance = getAdditionalInfoAffordanceString();

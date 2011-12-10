@@ -45,6 +45,7 @@ public class RuntimeInfoInitializer {
         final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(
                 runtimeInfoManager.getRuntimes());
         Collections.sort(list, new Comparator<RuntimeInfo>() {
+            @Override
             public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
                 final int x = o2.getVersion().compareTo(o1.getVersion());
                 if (x != 0) {
@@ -93,6 +94,7 @@ public class RuntimeInfoInitializer {
             return result;
         }
         final File[] candidates = folder.listFiles(new FileFilter() {
+            @Override
             public boolean accept(final File pathname) {
                 return pathname.isDirectory()
                         && (pathname.getName().startsWith("erl")

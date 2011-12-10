@@ -29,10 +29,12 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
         macro = uptoCommaOrParen(extra);
     }
 
+    @Override
     public Kind getKind() {
         return Kind.MACRO_DEF;
     }
 
+    @Override
     public String getDefinedName() {
         return macro;
     }
@@ -56,6 +58,7 @@ public class ErlMacroDef extends ErlMember implements IErlMacroDef {
         return false;
     }
 
+    @Override
     public String getExtra() {
         return extra;
     }

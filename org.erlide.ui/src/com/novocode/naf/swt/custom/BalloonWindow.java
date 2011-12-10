@@ -102,6 +102,7 @@ public class BalloonWindow {
 
         final Listener globalListener = new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 final Widget w = event.widget;
                 for (int i = selectionControls.size() - 1; i >= 0; i--) {
@@ -121,6 +122,7 @@ public class BalloonWindow {
 
         shell.addListener(SWT.Show, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 if (!addedGlobalListener) {
                     shell.getDisplay().addFilter(SWT.MouseDown, globalListener);
@@ -131,6 +133,7 @@ public class BalloonWindow {
 
         shell.addListener(SWT.Hide, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 if (addedGlobalListener) {
                     shell.getDisplay().removeFilter(SWT.MouseDown,
@@ -142,6 +145,7 @@ public class BalloonWindow {
 
         shell.addListener(SWT.Dispose, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 if (addedGlobalListener) {
                     shell.getDisplay().removeFilter(SWT.MouseDown,
@@ -259,6 +263,7 @@ public class BalloonWindow {
                 final Font font = new Font(shell.getDisplay(), fds);
                 titleLabel.addListener(SWT.Dispose, new Listener() {
 
+                    @Override
                     public void handleEvent(final Event event) {
                         font.dispose();
                     }
@@ -278,6 +283,7 @@ public class BalloonWindow {
                 titleImageLabel.setBounds(titleImage.getBounds());
                 titleImageLabel.addListener(SWT.Paint, new Listener() {
 
+                    @Override
                     public void handleEvent(final Event event) {
                         event.gc.drawImage(titleImage, 0, 0);
                     }
@@ -304,6 +310,7 @@ public class BalloonWindow {
                         closeBG, closeFG);
                 shell.addListener(SWT.Dispose, new Listener() {
 
+                    @Override
                     public void handleEvent(final Event event) {
                         closeImage.dispose();
                     }
@@ -316,6 +323,7 @@ public class BalloonWindow {
                 closeItem.setImage(closeImage);
                 closeItem.addListener(SWT.Selection, new Listener() {
 
+                    @Override
                     public void handleEvent(final Event event) {
                         shell.close();
                     }
@@ -412,6 +420,7 @@ public class BalloonWindow {
         shell.setRegion(region);
         shell.addListener(SWT.Dispose, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 region.dispose();
             }
@@ -420,6 +429,7 @@ public class BalloonWindow {
         final int[] outline = createOutline(shellSize, anchor, false);
         shell.addListener(SWT.Paint, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 event.gc.drawPolygon(outline);
             }

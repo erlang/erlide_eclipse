@@ -31,21 +31,25 @@ public class BackendManagerLaunchListener implements ILaunchesListener2 {
         launchManager.removeLaunchListener(this);
     }
 
+    @Override
     public void launchesAdded(final ILaunch[] launches) {
     }
 
+    @Override
     public void launchesTerminated(final ILaunch[] launches) {
         for (final ILaunch launch : launches) {
             backendManager.terminateBackendsForLaunch(launch);
         }
     }
 
+    @Override
     public void launchesRemoved(final ILaunch[] launches) {
         for (final ILaunch launch : launches) {
             backendManager.removeBackendsForLaunch(launch);
         }
     }
 
+    @Override
     public void launchesChanged(final ILaunch[] launches) {
     }
 

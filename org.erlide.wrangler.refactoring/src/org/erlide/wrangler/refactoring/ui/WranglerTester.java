@@ -29,6 +29,7 @@ public class WranglerTester extends PropertyTester {
      * Test if QC, GraphViz is installed on the system.
      */
 
+    @Override
     public boolean test(final Object receiver, final String property,
             final Object[] args, final Object expectedValue) {
         if (property.equals("hasQuickCheck")) {

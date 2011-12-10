@@ -55,6 +55,7 @@ public final class ErlConsoleDocument extends Document implements
         return new IoRequestScanner(shell);
     }
 
+    @Override
     public void changed(final IBackendShell aShell) {
         if (aShell != shell) {
             return;
@@ -62,6 +63,7 @@ public final class ErlConsoleDocument extends Document implements
         final String text = shell.getText();
         Display.getDefault().asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     replace(0, getLength(), text);

@@ -145,6 +145,7 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
      * @param c
      *            the command
      */
+    @Override
     public void customizeDocumentCommand(final IDocument d,
             final DocumentCommand c) {
         if (c.length == 0 && c.text != null) {

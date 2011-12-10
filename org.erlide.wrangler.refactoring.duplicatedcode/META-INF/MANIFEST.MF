@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.erlide.wrangler.refactoring.duplicatedcode;singleton:=t
 Bundle-Version: 0.9.8.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.9"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.wrangler.refactoring.core.exception,
  org.erlide.wrangler.refactoring.duplicatedcode,
  org.erlide.wrangler.refactoring.duplicatedcode.core,

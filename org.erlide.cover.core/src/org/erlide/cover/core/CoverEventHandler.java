@@ -45,6 +45,7 @@ public class CoverEventHandler extends ErlangEventHandler {
         log = Activator.getDefault();
     }
 
+    @Override
     public void handleEvent(final Event event) {
         OtpErlangTuple tuple = null;
 

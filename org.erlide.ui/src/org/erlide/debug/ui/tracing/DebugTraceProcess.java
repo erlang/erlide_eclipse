@@ -23,18 +23,22 @@ public class DebugTraceProcess extends DebugTraceElement implements IThread {
         setPid(pid);
     }
 
+    @Override
     public IBreakpoint[] getBreakpoints() {
         return null;
     }
 
+    @Override
     public String getName() throws DebugException {
         return fPid.toString();
     }
 
+    @Override
     public int getPriority() throws DebugException {
         return 0;
     }
 
+    @Override
     public IStackFrame[] getStackFrames() throws DebugException {
         getStack();
         return fStackFrames.toArray(new IStackFrame[fStackFrames.size()]);
@@ -47,6 +51,7 @@ public class DebugTraceProcess extends DebugTraceElement implements IThread {
         }
     }
 
+    @Override
     public IStackFrame getTopStackFrame() throws DebugException {
         getStack();
         if (fStackFrames.isEmpty()) {
@@ -55,64 +60,80 @@ public class DebugTraceProcess extends DebugTraceElement implements IThread {
         return fStackFrames.get(0);
     }
 
+    @Override
     public boolean hasStackFrames() throws DebugException {
         getStack();
         return !fStackFrames.isEmpty();
     }
 
+    @Override
     public boolean canResume() {
         return false;
     }
 
+    @Override
     public boolean canSuspend() {
         return true;
     }
 
+    @Override
     public boolean isSuspended() {
         return true;
     }
 
+    @Override
     public void resume() throws DebugException {
     }
 
+    @Override
     public void suspend() throws DebugException {
     }
 
+    @Override
     public boolean canStepInto() {
         return true;
     }
 
+    @Override
     public boolean canStepOver() {
         return false;
     }
 
+    @Override
     public boolean canStepReturn() {
         return false;
     }
 
+    @Override
     public boolean isStepping() {
         return true;
     }
 
+    @Override
     public void stepInto() throws DebugException {
         fStackFrames = null;
     }
 
+    @Override
     public void stepOver() throws DebugException {
         fStackFrames = null;
     }
 
+    @Override
     public void stepReturn() throws DebugException {
     }
 
+    @Override
     public boolean canTerminate() {
         return false;
     }
 
+    @Override
     public boolean isTerminated() {
         return false;
     }
 
+    @Override
     public void terminate() throws DebugException {
     }
 

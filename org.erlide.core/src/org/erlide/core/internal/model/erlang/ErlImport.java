@@ -27,10 +27,12 @@ public class ErlImport extends ErlImportExport implements IErlImport {
         fImportModule = importModule;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.IMPORT;
     }
 
+    @Override
     public String getImportModule() {
         return fImportModule;
     }

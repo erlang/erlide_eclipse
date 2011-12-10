@@ -115,8 +115,9 @@ public class RenameFunctionRefactoring extends CostumWorkflowRefactoring {
     public String getDefaultValue() {
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
-        if (sel == null)
+        if (sel == null) {
             return "";
+        }
 
         final RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("get_fun_name_eclipse", "siixi",

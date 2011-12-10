@@ -27,14 +27,17 @@ public class DirectoryTreeGroup extends Composite {
 
     private class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             return allDirs.toArray(new Object[allDirs.size()]);
         }
 
+        @Override
         public void dispose() {
             // do nothing
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
             // do nothing
@@ -75,6 +78,7 @@ public class DirectoryTreeGroup extends Composite {
         checkboxTableViewer.setContentProvider(new ContentProvider());
         checkboxTableViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(final CheckStateChangedEvent event) {
                 checkedDirs.clear();
                 for (final Object o : checkboxTableViewer.getCheckedElements()) {

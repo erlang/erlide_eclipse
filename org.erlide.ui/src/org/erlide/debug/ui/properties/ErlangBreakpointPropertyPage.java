@@ -67,6 +67,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     @Override
     public boolean performOk() {
         final IWorkspaceRunnable wr = new IWorkspaceRunnable() {
+            @Override
             public void run(final IProgressMonitor monitor)
                     throws CoreException {
                 final IErlangBreakpoint breakpoint = getBreakpoint();
@@ -219,6 +220,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
         try {
             if (getBreakpoint().getMarker().getAttribute(ATTR_DELETE_ON_CANCEL) != null) {
                 getShell().addShellListener(new ShellListener() {
+                    @Override
                     public void shellActivated(final ShellEvent e) {
                         final Shell shell = (Shell) e.getSource();
                         shell.setText(MessageFormat.format(
@@ -227,15 +229,19 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
                         shell.removeShellListener(this);
                     }
 
+                    @Override
                     public void shellClosed(final ShellEvent e) {
                     }
 
+                    @Override
                     public void shellDeactivated(final ShellEvent e) {
                     }
 
+                    @Override
                     public void shellDeiconified(final ShellEvent e) {
                     }
 
+                    @Override
                     public void shellIconified(final ShellEvent e) {
                     }
                 });
