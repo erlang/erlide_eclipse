@@ -1,5 +1,6 @@
 List of user visible changes between 0.13.8 and 0.13.9 (20111212)
 
+15b0f2c 962: indent macros in list comprehensions
 bad0074 merge latest wrangler updates
 40aff8e updated to require java 1.6
 ad108d1 http://www.assembla.com/spaces/erlide/tickets/946 erlide_otp_docs_x uses the deprecated regexp module removed the module, it's not used
