@@ -1,3 +1,21 @@
+List of user visible changes between 0.13.8 and 0.13.9 (20111212)
+
+bad0074 merge latest wrangler updates
+40aff8e updated to require java 1.6
+ad108d1 http://www.assembla.com/spaces/erlide/tickets/946 erlide_otp_docs_x uses the deprecated regexp module removed the module, it's not used
+77293e6 Outline when opening a local history file Still no highlight in local history or compare
+29b1703 builder: dont delete beam file if no erl exists in source directories
+f5b55a1 included fix for jinterface https://github.com/NicoK/otp/compare/jinterface_better_buffer_alloc
+e33a94e partial fix for #914: slow edit for large files -- autoindentation is improved
+656eacf backend: start peer node first, so that epmd is running
+9b118b0 external file in editor will not open after restart http://www.assembla.com/spaces/erlide/tickets/951/
+df5b68b changed console UI to address several problems with it
+cdef88d 961: console: keep input field open when losing focus
+554a1c8 962: console: switch meaning of Enter and Ctrl-Enter
+0df9663 http://www.assembla.com/spaces/erlide/tickets/952-mark-occurences---no-mark-when-on-local-call
+87f3244 shorten names for node when projects have common prefix
+7ebe9ca disabeld auto newlines in strings, comments, chars
+
 List of user visible changes between 0.13.7 and 0.13.8 (20111117)
 
 3c00f4c fix crash in RpcMonitor
