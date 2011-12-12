@@ -35,13 +35,13 @@
 	 %% in case filename does NOT match with moduleName
 	 final_files = [],  
 	 
-	 ex_func     = typer_map:new(),
-	 record      = typer_map:new(),
+	 ex_func     = dict:new(),
+	 record      = dict:new(),
 	 
 	 %% Functions: the line number of the function 
 	 %%            should be kept as well
-	 func        = typer_map:new(),
-	 inc_func    = typer_map:new(),
+	 func        = dict:new(),
+	 inc_func    = dict:new(),
 	 trust_plt   = dialyzer_plt:new()}).
 
 
