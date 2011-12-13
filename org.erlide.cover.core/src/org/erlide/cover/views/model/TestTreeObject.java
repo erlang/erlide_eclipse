@@ -72,13 +72,13 @@ public class TestTreeObject {
         return name;
     }
 
-    public TestTreeObject findNode(final String name) {
-        if (this.name.equals(name)) {
+    public TestTreeObject findNode(final String myName) {
+        if (this.name.equals(myName)) {
             return this;
         }
         TestTreeObject result;
         for (final TestTreeObject obj : children) {
-            if ((result = obj.findNode(name)) != null) {
+            if ((result = obj.findNode(myName)) != null) {
                 return result;
             }
         }
