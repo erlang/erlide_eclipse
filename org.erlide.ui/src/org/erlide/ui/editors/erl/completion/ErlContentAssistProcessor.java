@@ -165,7 +165,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final IProject project = erlProject != null ? erlProject
                     .getWorkspaceProject() : null;
             IErlElement element = getElementAt(offset);
-            for (int i = 1; element == null && i <= 5; ++i) {
+            for (int i = 1; element == null && i <= 15; ++i) {
                 element = getElementAt(offset - i);
             }
             RecordCompletion rc = null;
