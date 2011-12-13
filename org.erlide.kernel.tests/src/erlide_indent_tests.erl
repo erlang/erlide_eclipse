@@ -146,10 +146,22 @@ type_test_() ->
             "a() ->\n"++
             "ok.\n",
     SIndent = "" ++
-            "-type mod_deps() :: dict().\n"++
-            "a() ->\n"++
-            "    ok.\n",
+                  "-type mod_deps() :: dict().\n"++
+                  "a() ->\n"++
+                  "    ok.\n",
     ?Test_indent(SIndent, S).
+
+%% https://www.assembla.com/spaces/erlide/tickets/936-indent--macros-in-list-comprehensions
+macro_in_lc_test_() ->
+    S = "" ++
+            "b() ->\n"++
+            "[?X(A) || X <-L],\n"++
+            "a.\n",
+    I = "" ++
+            "b() ->\n"++
+            "    [?X(A) || X <-L],\n"++
+            "    a.\n",
+    ?Test_indent(I, S).
 
 
 %%
