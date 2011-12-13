@@ -208,7 +208,8 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             case CONNECTED:
                 break;
             case DOWN:
-                final String msg = "BackendImpl %s is down";
+                final String msg = "Backend '%s' is down";
+                // XXX restart it??
                 throw new RpcException(String.format(msg, peerName));
             }
         }

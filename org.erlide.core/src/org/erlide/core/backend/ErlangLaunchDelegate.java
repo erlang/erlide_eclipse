@@ -158,19 +158,21 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         final ProcessBuilder builder = new ProcessBuilder(cmds);
         builder.directory(workingDirectory);
         setEnvironment(data, builder);
-        int code = 0;
         try {
             Process process = builder.start();
             try {
-                code = process.exitValue();
+                final int code = process.exitValue();
+                ErlLogger.error(
+                        "Could not create runtime (exit code = %d): %s", code,
+                        Arrays.toString(cmds));
                 process = null;
             } catch (final IllegalThreadStateException e) {
                 ErlLogger.debug("process is running");
             }
             return process;
         } catch (final IOException e) {
-            ErlLogger.error("Could not create runtime (exit code = %d): %s",
-                    code, Arrays.toString(cmds));
+            ErlLogger.error("Could not create runtime: %s",
+                    Arrays.toString(cmds));
             ErlLogger.error(e);
             return null;
         }
