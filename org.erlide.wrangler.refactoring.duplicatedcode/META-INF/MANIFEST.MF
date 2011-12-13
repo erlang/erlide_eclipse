@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Duplicated code detection fragment
 Bundle-SymbolicName: org.erlide.wrangler.refactoring.duplicatedcode;singleton:=true
-Bundle-Version: 0.9.8.qualifier
+Bundle-Version: 0.9.9.qualifier
 Bundle-Vendor: UKC
 Fragment-Host: org.erlide.wrangler.refactoring;bundle-version="0.9"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
