@@ -28,12 +28,15 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
 public class ErlangDebuggerBackendListener implements IBackendListener {
+    @Override
     public void runtimeRemoved(final IBackend backend) {
     }
 
+    @Override
     public void runtimeAdded(final IBackend backend) {
     }
 
+    @Override
     public void moduleLoaded(final IRpcCallSite backend,
             final IProject project, final String moduleName) {
         try {
@@ -108,6 +111,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                 "Some code changes cannot be replaced when being debugged.",
                 new Object[] { vmName, launchName });
         display.asyncExec(new Runnable() {
+            @Override
             public void run() {
                 if (display.isDisposed()) {
                     return;

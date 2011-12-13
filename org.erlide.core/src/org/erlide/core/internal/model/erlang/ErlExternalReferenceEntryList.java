@@ -43,6 +43,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         this.externalModules = externalModules;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.EXTERNAL;
     }
@@ -81,14 +82,14 @@ public class ErlExternalReferenceEntryList extends Openable implements
         setChildren(null);
         final IErlModel model = getModel();
         if (externalModuleTree != null && !externalModuleTree.isEmpty()) {
-            addExternalEntries(pm, externalModuleTree, model, "modules",
-                    externalModules, null, false);
+            addExternalEntries(pm, externalModuleTree, model, "modules", null,
+                    false);
             cache.putExternalTree(externalModules, project, externalModuleTree);
         }
         if (externalIncludeTree != null && !externalIncludeTree.isEmpty()
                 || !projectIncludes.isEmpty()) {
             addExternalEntries(pm, externalIncludeTree, model, "includes",
-                    externalIncludes, projectIncludes, true);
+                    projectIncludes, true);
             if (externalIncludeTree != null) {
                 cache.putExternalTree(externalIncludes, project,
                         externalIncludeTree);
@@ -99,9 +100,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
 
     private void addExternalEntries(final IProgressMonitor pm,
             final List<ExternalTreeEntry> externalTree, final IErlModel model,
-            final String rootName, final String rootEntry,
-            final List<String> otherItems, final boolean includeDir)
-            throws ErlModelException {
+            final String rootName, final List<String> otherItems,
+            final boolean includeDir) throws ErlModelException {
         final Map<String, IErlExternal> pathToEntryMap = Maps.newHashMap();
         pathToEntryMap.put("root", this);
         IErlExternal parent = null;
@@ -126,8 +126,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         }
         if (otherItems != null) {
             if (parent == null) {
-                parent = new ErlExternalReferenceEntry(this, rootName,
-                        rootEntry, true, includeDir);
+                parent = new ErlExternalReferenceEntry(this, rootName, "."
+                        + rootName + ".", true, includeDir);
                 addChild(parent);
             }
             for (final String path : otherItems) {
@@ -184,6 +184,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
+    @Override
     public boolean isOTP() {
         return false;
     }
@@ -193,6 +194,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return null;
     }
 
+    @Override
     public boolean hasIncludes() {
         return true;
     }

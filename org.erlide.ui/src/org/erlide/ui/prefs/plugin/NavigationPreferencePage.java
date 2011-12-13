@@ -69,6 +69,7 @@ public class NavigationPreferencePage extends ErlidePreferencePage implements
         return fCachedCheckAllProjects.booleanValue();
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

@@ -89,6 +89,7 @@ public class TraceBackend {
         private final TraceDataHandler dataHandler = new TraceDataHandler();
         private boolean firstTrace = true;
 
+        @Override
         public void handleEvent(final Event event) {
             final OtpErlangObject message = (OtpErlangObject) event
                     .getProperty("DATA");

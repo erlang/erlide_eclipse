@@ -97,6 +97,7 @@ public class ConsoleRemoveLaunchAction extends Action implements
         }
     }
 
+    @Override
     public void init(final IViewPart view) {
         if (view instanceof IConsoleView) {
             fConsoleView = (IConsoleView) view;
@@ -104,31 +105,39 @@ public class ConsoleRemoveLaunchAction extends Action implements
         update();
     }
 
+    @Override
     public void run(final IAction action) {
         run();
     }
 
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
     }
 
+    @Override
     public void consolesAdded(final IConsole[] consoles) {
     }
 
+    @Override
     public void consolesRemoved(final IConsole[] consoles) {
         update();
     }
 
+    @Override
     public void launchesTerminated(final ILaunch[] launches) {
         update();
     }
 
+    @Override
     public void launchesRemoved(final ILaunch[] launches) {
     }
 
+    @Override
     public void launchesAdded(final ILaunch[] launches) {
     }
 
+    @Override
     public void launchesChanged(final ILaunch[] launches) {
     }
 

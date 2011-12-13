@@ -53,6 +53,7 @@ public abstract class AbstractResultTreeObject implements IAdaptable {
         return getName();
     }
 
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
         return null;
     }

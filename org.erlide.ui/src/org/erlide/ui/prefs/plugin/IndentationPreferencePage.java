@@ -78,6 +78,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
     /**
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(final IWorkbench workbench) {
     }
 
@@ -163,6 +164,7 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
     }
 
     private final ModifyListener fNumberFieldListener = new ModifyListener() {
+        @Override
         public void modifyText(final ModifyEvent e) {
             numberFieldChanged((Text) e.widget);
         }

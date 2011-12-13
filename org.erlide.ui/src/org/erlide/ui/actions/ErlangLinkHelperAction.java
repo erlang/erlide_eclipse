@@ -15,6 +15,7 @@ import org.erlide.ui.util.ErlModelUtils;
 
 public class ErlangLinkHelperAction implements ILinkHelper {
 
+    @Override
     public void activateEditor(final IWorkbenchPage page,
             final IStructuredSelection selection) {
 
@@ -52,6 +53,7 @@ public class ErlangLinkHelperAction implements ILinkHelper {
 
     }
 
+    @Override
     public IStructuredSelection findSelection(final IEditorInput input) {
         try {
             final IErlModule module = ErlModelUtils.getModule(input);

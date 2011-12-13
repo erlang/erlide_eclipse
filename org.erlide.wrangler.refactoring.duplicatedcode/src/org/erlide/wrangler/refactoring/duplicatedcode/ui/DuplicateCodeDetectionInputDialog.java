@@ -122,6 +122,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         minToksText.setText("20");
         minToksText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -141,6 +142,7 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         minClonesText.setText("2");
         minClonesText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -152,9 +154,11 @@ public class DuplicateCodeDetectionInputDialog extends AbstractInputDialog {
                 GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
         onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 validateInput();
 

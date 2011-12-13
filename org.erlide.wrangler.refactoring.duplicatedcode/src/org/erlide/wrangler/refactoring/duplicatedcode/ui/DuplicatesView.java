@@ -47,6 +47,7 @@ public class DuplicatesView extends ViewPart {
 
     ISelectionListener listener = new ISelectionListener() {
 
+        @Override
         public void selectionChanged(final IWorkbenchPart part,
                 final ISelection selection) {
             MessageDialog.openInformation(getSite().getShell(), "test",
@@ -186,6 +187,7 @@ public class DuplicatesView extends ViewPart {
                 .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
 
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 final ISelection sel = event.getSelection();
                 if (sel == null || sel.isEmpty()) {

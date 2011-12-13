@@ -57,6 +57,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
     /**
      * @wbp.parser.entryPoint
      */
+    @Override
     public void createControl(final Composite parent) {
         runtimes = BackendCore.getRuntimeInfoManager().getRuntimes();
 
@@ -108,6 +109,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         gd_nameText.widthHint = 333;
         nameText.setLayoutData(gd_nameText);
         nameText.addModifyListener(new ModifyListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void modifyText(final ModifyEvent e) {
                 final boolean isRemote = nameText.getText().contains("@");
@@ -157,6 +159,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         gd_cookieText.widthHint = 232;
         cookieText.setLayoutData(gd_cookieText);
         cookieText.addModifyListener(new ModifyListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void modifyText(final ModifyEvent e) {
                 updateLaunchConfigurationDialog();
@@ -187,6 +190,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         workingDirText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                 false, 2, 1));
         workingDirText.addModifyListener(new ModifyListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void modifyText(final ModifyEvent e) {
                 updateLaunchConfigurationDialog();
@@ -201,6 +205,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         argsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
                 2, 1));
         argsText.addModifyListener(new ModifyListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void modifyText(final ModifyEvent e) {
                 updateLaunchConfigurationDialog();
@@ -217,10 +222,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
                 false, false, 2, 1));
         distributedLoadCheck.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 updateLaunchConfigurationDialog();
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 updateLaunchConfigurationDialog();
             }
@@ -228,6 +235,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
     }
 
+    @Override
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.START_ME, true);
         config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
@@ -240,6 +248,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
     }
 
+    @Override
     public void initializeFrom(final ILaunchConfiguration config) {
         try {
             final String runtimeName = config.getAttribute(
@@ -301,6 +310,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         }
     }
 
+    @Override
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
                 runtimesCombo.getText());
@@ -320,6 +330,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 distributedLoadCheck.getSelection());
     }
 
+    @Override
     public String getName() {
         return "Runtimes";
     }

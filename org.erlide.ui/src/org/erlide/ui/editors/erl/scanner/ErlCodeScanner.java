@@ -174,6 +174,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
                 .getBackground(), style));
     }
 
+    @Override
     public void setRange(final IDocument document, final int offset,
             final int length) {
         if (document == null) {
@@ -211,11 +212,13 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         }
     }
 
+    @Override
     public IToken nextToken() {
         final ErlToken nextErlToken = nextErlToken();
         return convert(nextErlToken);
     }
 
+    @Override
     public int getTokenOffset() {
         if (fTokens == null) {
             return 0;
@@ -229,6 +232,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         return tk.getOffset();
     }
 
+    @Override
     public int getTokenLength() {
         if (fTokens == null) {
             return 0;
@@ -259,6 +263,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         return fTokens.get(fCrtToken);
     }
 
+    @Override
     public void preferenceChange(final PreferenceChangeEvent event) {
         final String key = event.getKey();
         final Preferences node = event.getNode();

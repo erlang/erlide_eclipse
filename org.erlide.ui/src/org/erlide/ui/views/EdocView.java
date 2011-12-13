@@ -218,6 +218,7 @@ public class EdocView extends AbstractInfoView {
          * org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener
          * (org.eclipse.jface.viewers.ISelectionChangedListener)
          */
+        @Override
         public void addSelectionChangedListener(
                 final ISelectionChangedListener listener) {
             fListeners.add(listener);
@@ -226,6 +227,7 @@ public class EdocView extends AbstractInfoView {
         /*
          * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
          */
+        @Override
         public ISelection getSelection() {
             if (fControl instanceof StyledText) {
                 final IDocument document = new Document(
@@ -240,6 +242,7 @@ public class EdocView extends AbstractInfoView {
          * removeSelectionChangedListener
          * (org.eclipse.jface.viewers.ISelectionChangedListener)
          */
+        @Override
         public void removeSelectionChangedListener(
                 final ISelectionChangedListener listener) {
             fListeners.remove(listener);
@@ -250,6 +253,7 @@ public class EdocView extends AbstractInfoView {
          * org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse
          * .jface.viewers.ISelection)
          */
+        @Override
         public void setSelection(final ISelection selection) {
             // not supported
         }

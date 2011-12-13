@@ -244,6 +244,7 @@ public class ErlangProjectImportWizardPage extends
 
         sourceNameField.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 dialogChanged();
             }
@@ -287,6 +288,7 @@ public class ErlangProjectImportWizardPage extends
             /*
              * @see KeyListener.keyPressed
              */
+            @Override
             public void keyPressed(final KeyEvent e) {
                 // If there has been a key pressed then mark as dirty
                 entryChanged = true;
@@ -295,6 +297,7 @@ public class ErlangProjectImportWizardPage extends
             /*
              * @see KeyListener.keyReleased
              */
+            @Override
             public void keyReleased(final KeyEvent e) {
             }
         });
@@ -303,6 +306,7 @@ public class ErlangProjectImportWizardPage extends
             /*
              * @see FocusListener.focusGained(FocusEvent)
              */
+            @Override
             public void focusGained(final FocusEvent e) {
                 // Do nothing when getting focus
             }
@@ -310,6 +314,7 @@ public class ErlangProjectImportWizardPage extends
             /*
              * @see FocusListener.focusLost(FocusEvent)
              */
+            @Override
             public void focusLost(final FocusEvent e) {
                 // Clear the flag to prevent constant update
                 if (entryChanged) {
@@ -757,6 +762,7 @@ public class ErlangProjectImportWizardPage extends
         final MinimizedFileSystemElement[] results = new MinimizedFileSystemElement[1];
 
         BusyIndicator.showWhile(getShell().getDisplay(), new Runnable() {
+            @Override
             public void run() {
                 // Create the root element from the supplied file system object
                 results[0] = createRootElement(rootFileSystemObject,
@@ -1118,6 +1124,7 @@ public class ErlangProjectImportWizardPage extends
      * @return the user's reply: one of <code>"YES"</code>, <code>"NO"</code>,
      *         <code>"ALL"</code>, or <code>"CANCEL"</code>
      */
+    @Override
     public String queryOverwrite(final String pathString) {
 
         final Path path = new Path(pathString);
@@ -1149,6 +1156,7 @@ public class ErlangProjectImportWizardPage extends
         // run in syncExec because callback is from an operation,
         // which is probably not running in the UI thread.
         getControl().getDisplay().syncExec(new Runnable() {
+            @Override
             public void run() {
                 dialog.open();
             }

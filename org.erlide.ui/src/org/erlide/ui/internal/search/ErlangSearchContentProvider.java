@@ -14,6 +14,7 @@ public abstract class ErlangSearchContentProvider implements
         fPage = page;
     }
 
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         initialize((ErlangSearchResult) newInput);
@@ -23,10 +24,13 @@ public abstract class ErlangSearchContentProvider implements
         fResult = result;
     }
 
+    @Override
     public abstract void elementsChanged(Object[] updatedElements);
 
+    @Override
     public abstract void clear();
 
+    @Override
     public void dispose() {
         // nothing to do
     }

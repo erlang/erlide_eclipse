@@ -209,9 +209,6 @@ scan([C|Cs], _Stack, Toks, Pos, State, Errors)
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
   when C >= $A, C =< $Z ->                              % Variables
     sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
-scan([C|Cs], _Stack, Toks, Pos, State, Errors)
-  when C >= $À, C =< $Þ, C =/= $× ->                     % Variables
-    sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([$_|Cs], _Stack, Toks, Pos, State, Errors) ->      % _Variables
     sub_scan_name(Cs, [$_,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)

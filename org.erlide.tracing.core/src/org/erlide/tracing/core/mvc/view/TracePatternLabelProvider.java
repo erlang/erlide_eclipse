@@ -16,6 +16,7 @@ import org.erlide.tracing.core.mvc.model.TracePattern;
 public class TracePatternLabelProvider extends LabelProvider implements
         ITableLabelProvider {
 
+    @Override
     public Image getColumnImage(final Object element, final int index) {
         final TracePattern pattern = (TracePattern) element;
         if (index == TracePatternColumn.ENABLED.ordinal()) {
@@ -39,6 +40,7 @@ public class TracePatternLabelProvider extends LabelProvider implements
         }
     }
 
+    @Override
     public String getColumnText(final Object element, final int index) {
         final TracePattern tracePattern = (TracePattern) element;
         switch (TracePatternColumn.getByIndex(index)) {

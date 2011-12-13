@@ -85,6 +85,7 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
             fRunnable = runnable;
         }
 
+        @Override
         public void run() {
             try {
                 internalRun(fFork, fRunnable);
@@ -133,6 +134,7 @@ public class BusyIndicatorRunnableContext implements IRunnableContext {
         }
     }
 
+    @Override
     public void run(final boolean fork, final boolean cancelable,
             final IRunnableWithProgress runnable)
             throws InvocationTargetException, InterruptedException {

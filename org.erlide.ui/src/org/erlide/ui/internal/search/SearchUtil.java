@@ -93,6 +93,7 @@ public class SearchUtil {
             Comparator<IWorkingSet> {
         private static Collator collator = Collator.getInstance();
 
+        @Override
         public int compare(final IWorkingSet o1, final IWorkingSet o2) {
             return collator.compare(o1.getLabel(), o2.getLabel());
         }
@@ -178,6 +179,7 @@ public class SearchUtil {
         for (final IErlElement external : externals) {
             external.accept(new IErlElementVisitor() {
 
+                @Override
                 public boolean visit(final IErlElement theElement)
                         throws ErlModelException {
                     if (theElement instanceof IErlExternal) {
@@ -305,6 +307,23 @@ public class SearchUtil {
         if (res == null) {
             return null;
         }
+        if (res.isLocalCall()) {
+            String name;
+            if (module != null) {
+                name = module.getModuleName();
+                if (offset != -1) {
+                    final IErlElement e = module.getElementAt(offset);
+                    if (e != null
+                            && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
+                        return new TypeRefPattern(name, res.getFun(), limitTo);
+                    }
+                }
+            } else {
+                name = res.getName();
+            }
+            return new FunctionPattern(name, res.getFun(), res.getArity(),
+                    limitTo, matchAnyFunctionDefinition);
+        }
         String name = res.getName();
         if (name == null) {
             return null;
@@ -324,21 +343,6 @@ public class SearchUtil {
                 oldName = name;
                 name = ModelUtils.resolveMacroValue(name, module);
             } while (!name.equals(oldName));
-            return new FunctionPattern(name, res.getFun(), res.getArity(),
-                    limitTo, matchAnyFunctionDefinition);
-        } else if (res.isLocalCall()) {
-            if (module != null) {
-                name = module.getModuleName();
-                if (offset != -1) {
-                    final IErlElement e = module.getElementAt(offset);
-                    if (e != null
-                            && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
-                        return new TypeRefPattern(name, res.getFun(), limitTo);
-                    }
-                }
-            } else {
-                name = res.getName();
-            }
             return new FunctionPattern(name, res.getFun(), res.getArity(),
                     limitTo, matchAnyFunctionDefinition);
         } else if (res.isMacro()) {

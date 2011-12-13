@@ -43,6 +43,7 @@ public class EUnitEventHandler extends ErlangEventHandler {
         log = Activator.getDefault();
     }
 
+    @Override
     public void handleEvent(final Event event) {
         final OtpErlangObject data = (OtpErlangObject) event
                 .getProperty("DATA");

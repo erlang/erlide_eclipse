@@ -103,6 +103,7 @@ public class CodeAssistPreferencePage extends PreferencePage implements
 
         textBox.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateSettings();
             }
@@ -188,6 +189,7 @@ public class CodeAssistPreferencePage extends PreferencePage implements
         super.performDefaults();
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
     }
 }

@@ -49,10 +49,12 @@ public class StatsTreeObject implements ICoverageObject {
         this.covered = covered;
     }
 
+    @Override
     public ObjectType getType() {
         return type;
     }
 
+    @Override
     public String getLabel() {
         return label;
     }
@@ -75,51 +77,63 @@ public class StatsTreeObject implements ICoverageObject {
         return null;
     }
 
+    @Override
     public void setParent(final ICoverageObject parent) {
         this.parent = parent;
     }
 
+    @Override
     public ICoverageObject getParent() {
         return parent;
     }
 
+    @Override
     public void addChild(final String name, final ICoverageObject child) {
         children.put(name, child);
         child.setParent(this);
     }
 
+    @Override
     public void removeChild(final String name) {
         children.remove(name);
     }
 
+    @Override
     public ICoverageObject[] getChildren() {
         return children.values().toArray(new ICoverageObject[0]);
     }
 
+    @Override
     public boolean hasChildren() {
         return !children.isEmpty();
     }
 
+    @Override
     public void setLabel(final String label) {
         this.label = label;
     }
 
+    @Override
     public int getLinesCount() {
         return all;
     }
 
+    @Override
     public void setLiniesCount(final int count) {
         all = count;
     }
 
+    @Override
     public int getCoverCount() {
         return covered;
     }
 
+    @Override
     public void setCoverCount(final int count) {
         covered = count;
     }
 
+    @Override
     public double getPercentage() {
         if (all > 0) {
             return covered / (double) all * 100;
@@ -127,24 +141,29 @@ public class StatsTreeObject implements ICoverageObject {
         return 0;
     }
 
+    @Override
     public void removeAllChildren() {
         children.clear();
     }
 
+    @Override
     public String[] getStringArray() {
         return new String[] { label, Integer.toString(all),
                 Integer.toString(covered),
                 String.format("%.2f", getPercentage()) };
     }
 
+    @Override
     public String getHtmlPath() {
         return htmlPath;
     }
 
+    @Override
     public void setHtmlPath(final String htmlPath) {
         this.htmlPath = htmlPath;
     }
 
+    @Override
     public ICoverageObject findChild(final String name) {
         return children.get(name);
     }
@@ -152,6 +171,7 @@ public class StatsTreeObject implements ICoverageObject {
     /**
      * Returns sibbling name to the name given
      */
+    @Override
     public ICoverageObject getPrevSiblingTo(final String name) {
         final List<String> l = new LinkedList<String>(children.keySet());
         final ListIterator<String> it = l.listIterator(l.indexOf(name));
@@ -163,6 +183,7 @@ public class StatsTreeObject implements ICoverageObject {
         }
     }
 
+    @Override
     public ICoverageObject getNextSiblingTo(final String name) {
         final List<String> l = new LinkedList<String>(children.keySet());
         final ListIterator<String> it = l.listIterator(l.indexOf(name));
@@ -175,6 +196,7 @@ public class StatsTreeObject implements ICoverageObject {
         }
     }
 
+    @Override
     public ICoverageObject treeSearch(final String name) {
         if (label.equals(name)) {
             return this;
@@ -189,6 +211,7 @@ public class StatsTreeObject implements ICoverageObject {
         return res;
     }
 
+    @Override
     public Collection<ICoverageObject> getModules() {
         final Collection<ICoverageObject> col = new HashSet<ICoverageObject>();
         if (type.equals(ObjectType.MODULE)) {
@@ -202,14 +225,17 @@ public class StatsTreeObject implements ICoverageObject {
         return col;
     }
 
+    @Override
     public String getPercentageStringified() {
         return String.format("%.2f ", getPercentage()) + "%";
     }
 
+    @Override
     public String getRelativePath() {
         return relativePath;
     }
 
+    @Override
     public void setRelativePath(final String path) {
         relativePath = path;
     }

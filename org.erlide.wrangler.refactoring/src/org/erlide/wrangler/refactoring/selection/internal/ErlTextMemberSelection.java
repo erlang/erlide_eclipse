@@ -79,6 +79,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
         return textSelection.getStartLine() + 1;
     }
 
+    @Override
     public IErlElement getErlElement() {
         final IErlModule module = (IErlModule) CoreScope.getModel()
                 .findElement(file);
@@ -97,6 +98,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
         return module;
     }
 
+    @Override
     public IErlRange getMemberRange() {
         if (getErlElement() instanceof IErlMember) {
             IErlRange range = null;
@@ -118,12 +120,14 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
         return getSelectionRange();
     }
 
+    @Override
     public IErlRange getSelectionRange() {
         return new ErlRange(getStartLine(), getStartCol(), getEndLine(),
                 getEndCol(), textSelection.getOffset(),
                 textSelection.getLength());
     }
 
+    @Override
     public SelectionKind getDetailedKind() {
         if (getKind() == SelectionKind.FUNCTION
                 || getKind() == SelectionKind.FUNCTION_CLAUSE) {
@@ -140,6 +144,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
         }
     }
 
+    @Override
     public IErlModule getErlModule() {
         return (IErlModule) CoreScope.getModel().findElement(file);
     }

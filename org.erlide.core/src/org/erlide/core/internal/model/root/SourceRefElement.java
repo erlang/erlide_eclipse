@@ -114,6 +114,7 @@ public abstract class SourceRefElement extends ErlElement implements
     /**
      * @see ISourceReference
      */
+    @Override
     public ISourceRange getSourceRange() {
         return new SourceRange(fSourceRangeOffset, fSourceRangeLength);
     }
@@ -150,6 +151,7 @@ public abstract class SourceRefElement extends ErlElement implements
         this.lineStart = lineStart;
     }
 
+    @Override
     public int getLineStart() {
         return lineStart;
     }
@@ -158,6 +160,7 @@ public abstract class SourceRefElement extends ErlElement implements
         this.lineEnd = lineEnd;
     }
 
+    @Override
     public int getLineEnd() {
         return lineEnd;
     }
@@ -178,6 +181,7 @@ public abstract class SourceRefElement extends ErlElement implements
                 fSourceRangeLength);
     }
 
+    @Override
     public String getSource() throws ErlModelException {
         throw new UnsupportedOperationException();
     }

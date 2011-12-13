@@ -120,6 +120,7 @@ public class TestResultsView extends ViewPart {
 
     public void notifyEvent(final OtpErlangObject msg) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 try {
                     handleEvent(msg);

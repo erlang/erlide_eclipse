@@ -34,6 +34,7 @@ public abstract class AbstractRefactoringRpcMessage extends AbstractRpcMessage
     /**
      * Returns with those files, which are changed during the refactoring.
      */
+    @Override
     public ArrayList<ChangedFile> getRefactoringChangeset() {
         return changedFiles;
     }

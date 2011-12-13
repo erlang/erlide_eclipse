@@ -29,11 +29,11 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
     /**
      * Wrangler module name
      */
-    final static public String MODULE = "wrangler";
+    final static public String MODULE = "wrangler_refacs";
     /**
      * Wrangler code inspection module name
      */
-    final static public String INSPECTION_MODULE = "wrangler_code_inspector";
+    final static public String INSPECTION_MODULE = "inspec_lib";
     final static protected String RENAME_FUNCTION = "rename_fun_eclipse";
 
     protected IRpcCallSite backend;
@@ -55,7 +55,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * @param parser
      *            parser object
      * @param functionName
-     *            function name in wrangler.erl
+     *            function name in wrangler_refacs.erl
      * @param signature
      *            parameters signature
      * @param parameters
@@ -96,7 +96,7 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * Call an RPC without a parser
      * 
      * @param functionName
-     *            function name in wrangler.erl
+     *            function name in wrangler_refacs.erl
      * @param signature
      *            parameters signature
      * @param parameters
@@ -203,8 +203,8 @@ public class WranglerRefactoringBackend implements IWranglerBackend {
      * @return log list
      */
     public RpcResult getLoggedInfo() {
-        final RpcResult res = backend.call_noexception(
-                "wrangler_error_logger", "get_logged_info", "");
+        final RpcResult res = backend.call_noexception("wrangler_error_logger",
+                "get_logged_info", "");
         @SuppressWarnings("unused")
         final RpcResult res2 = backend.call_noexception(
                 "wrangler_error_logger", "remove_all_from_logger", "");

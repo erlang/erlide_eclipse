@@ -76,27 +76,33 @@ public class Range implements IRange {
                 ((OtpErlangLong) endPos.elementAt(1)).intValue());
     }
 
+    @Override
     public int getEndCol() {
         return endCol;
     }
 
+    @Override
     public int getEndLine() {
         return endLine;
     }
 
+    @Override
     public int getStartCol() {
         return startCol;
     }
 
+    @Override
     public int getStartLine() {
         return startLine;
     }
 
+    @Override
     public OtpErlangTuple getStartPos() {
         return OtpErlang.mkTuple(new OtpErlangInt(startLine), new OtpErlangInt(
                 startCol));
     }
 
+    @Override
     public OtpErlangTuple getEndPos() {
         return OtpErlang.mkTuple(new OtpErlangInt(endLine), new OtpErlangInt(
                 endCol));
@@ -108,6 +114,7 @@ public class Range implements IRange {
                 + getEndLine() + "," + getEndCol() + "}";
     }
 
+    @Override
     public OtpErlangTuple getPos() {
         return OtpErlang.mkTuple(getStartPos(), getEndPos());
     }

@@ -26,6 +26,7 @@ public class ConsoleEventHandler extends ErlangEventHandler {
         shell = backendShell;
     }
 
+    @Override
     public void handleEvent(final Event event) {
         shell.add((OtpErlangObject) event.getProperty("DATA"));
     }

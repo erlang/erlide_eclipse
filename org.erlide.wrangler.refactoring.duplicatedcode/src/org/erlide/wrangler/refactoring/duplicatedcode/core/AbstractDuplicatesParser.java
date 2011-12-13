@@ -38,14 +38,17 @@ public abstract class AbstractDuplicatesParser implements IResultParser {
         parse(obj);
     }
 
+    @Override
     public List<DuplicatedCodeElement> getDuplicates() {
         return duplicates;
     }
 
+    @Override
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    @Override
     public boolean isSuccessful() {
         return isSuccessful;
     }

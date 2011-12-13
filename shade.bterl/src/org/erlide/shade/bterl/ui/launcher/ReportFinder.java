@@ -52,6 +52,7 @@ public class ReportFinder {
 
     public static IFile findTraceFile(final File parent) {
         final File[] files = parent.listFiles(new FilenameFilter() {
+            @Override
             public boolean accept(final File dir, final String name) {
                 return "tr.txt".equals(name);
             }

@@ -44,6 +44,7 @@ public class BackendShell implements IBackendShell {
         handler.register();
     }
 
+    @Override
     public void close() {
         if (server != null) {
             backend.send(server, new OtpErlangAtom("stop"));
@@ -51,6 +52,7 @@ public class BackendShell implements IBackendShell {
         server = null;
     }
 
+    @Override
     public void send(final String string) {
         if (server != null) {
             backend.send(server, OtpErlang.mkTuple(new OtpErlangAtom("input"),
@@ -64,6 +66,7 @@ public class BackendShell implements IBackendShell {
         }
     }
 
+    @Override
     public String getId() {
         return fId;
     }
@@ -75,6 +78,7 @@ public class BackendShell implements IBackendShell {
     private final List<BackendShellListener> listeners;
     private int pos = 0;
 
+    @Override
     public void input(String s) {
         if (!s.endsWith("\n")) {
             s += "\n";
@@ -88,6 +92,7 @@ public class BackendShell implements IBackendShell {
         notifyListeners();
     }
 
+    @Override
     public void add(final OtpErlangObject msg) {
         synchronized (requests) {
             deleteOldItems();
@@ -99,6 +104,7 @@ public class BackendShell implements IBackendShell {
         notifyListeners();
     }
 
+    @Override
     public void add(final String text, final IoRequestKind kind) {
         if (backend.isDistributed()
                 && IoRequest.RE_PROMPT.matcher(text).matches()) {
@@ -151,6 +157,7 @@ public class BackendShell implements IBackendShell {
         }
     }
 
+    @Override
     public IoRequest findAtPos(final int thePos) {
         synchronized (requests) {
             for (final IoRequest req : requests) {
@@ -163,6 +170,7 @@ public class BackendShell implements IBackendShell {
         }
     }
 
+    @Override
     public List<IoRequest> getAllFrom(final OtpErlangPid sender) {
         final List<IoRequest> result = new ArrayList<IoRequest>();
         synchronized (requests) {
@@ -175,6 +183,7 @@ public class BackendShell implements IBackendShell {
         return result;
     }
 
+    @Override
     public void add(final List<OtpErlangObject> msgs) {
         synchronized (requests) {
             deleteOldItems();
@@ -185,10 +194,12 @@ public class BackendShell implements IBackendShell {
         notifyListeners();
     }
 
+    @Override
     public void dispose() {
         listeners.clear();
     }
 
+    @Override
     public synchronized void addListener(final BackendShellListener listener) {
         synchronized (listeners) {
             if (!listeners.contains(listener)) {
@@ -197,6 +208,7 @@ public class BackendShell implements IBackendShell {
         }
     }
 
+    @Override
     public void removeListener(final BackendShellListener listener) {
         synchronized (listeners) {
             listeners.remove(listener);
@@ -211,6 +223,7 @@ public class BackendShell implements IBackendShell {
         }
     }
 
+    @Override
     public int getTextLength() {
         int res = 0;
         synchronized (requests) {
@@ -221,6 +234,7 @@ public class BackendShell implements IBackendShell {
         return res;
     }
 
+    @Override
     public String getText() {
         final StringBuffer res = new StringBuffer();
         synchronized (requests) {

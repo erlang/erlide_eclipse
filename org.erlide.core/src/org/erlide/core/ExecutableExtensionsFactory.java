@@ -32,6 +32,7 @@ public class ExecutableExtensionsFactory implements
         this.bundle = bundle;
     }
 
+    @Override
     public void setInitializationData(final IConfigurationElement config,
             final String propertyName, final Object data) throws CoreException {
         if (data instanceof String) {
@@ -40,6 +41,7 @@ public class ExecutableExtensionsFactory implements
 
     }
 
+    @Override
     public Object create() throws CoreException {
         // Class<?> class1;
         try {

@@ -46,10 +46,12 @@ public class EdocExportWizardPage extends WizardPage {
 
     static class TableLabelProvider extends LabelProvider implements
             ITableLabelProvider {
+        @Override
         public String getColumnText(final Object element, final int columnIndex) {
             return ((IProject) element).getName();
         }
 
+        @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
@@ -57,6 +59,7 @@ public class EdocExportWizardPage extends WizardPage {
 
     static class TableContentProvider implements IStructuredContentProvider {
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             final java.util.List<IProject> ps = new ArrayList<IProject>();
 
@@ -77,9 +80,11 @@ public class EdocExportWizardPage extends WizardPage {
             return ps.toArray(new IProject[0]);
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
         }
@@ -96,6 +101,7 @@ public class EdocExportWizardPage extends WizardPage {
         setDescription("Select the projects and files for which you want to generate eDoc documentation");
     }
 
+    @Override
     public void createControl(final Composite parent) {
         final Composite composite = new Composite(parent, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();

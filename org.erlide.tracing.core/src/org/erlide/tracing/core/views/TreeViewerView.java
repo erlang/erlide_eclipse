@@ -106,6 +106,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         // listener
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 doDoubleClick(event);
             }
@@ -190,6 +191,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         traceIndexField.setLayoutData(new RowData(60, SWT.DEFAULT));
         traceIndexField.addListener(SWT.Modify, new Listener() {
 
+            @Override
             public void handleEvent(final Event event) {
                 try {
                     correctInput = false;
@@ -212,12 +214,14 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
         traceIndexField.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyReleased(final KeyEvent e) {
                 if (e.keyCode == SWT.CR && correctInput) {
                     doSelection();
                 }
             }
 
+            @Override
             public void keyPressed(final KeyEvent e) {
             }
         });
@@ -328,16 +332,20 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
+    @Override
     public void startTracing() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 buttonsPanel.setEnabled(false);
             }
         });
     }
 
+    @Override
     public void finishLoadingFile(final TracingStatus theStatus) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 if (TracingStatus.OK.equals(theStatus)) {
                     treeViewer.refresh();
@@ -346,6 +354,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
+    @Override
     public void finishLoadingTraces(final TracingStatus theStatus) {
         status = theStatus;
         if (task != null) {
@@ -354,6 +363,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         } else {
             // when loading was initialized outside this view
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     doAfterLoadingTraces();
                 }
@@ -361,8 +371,10 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
+    @Override
     public void removeFile() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 updateButtonsPanel();
                 treeViewer.refresh();
@@ -370,6 +382,7 @@ public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
+    @Override
     public void updateTracePatterns() {
     }
 }

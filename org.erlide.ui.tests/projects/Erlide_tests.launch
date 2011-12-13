@@ -43,9 +43,10 @@
 <stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_DESTINATION_PROJECT" value="ProfileProject"/>
 <booleanAttribute key="org.eclipse.hyades.trace.ui.ATTR_PROFILE_TO_FILE" value="false"/>
 <stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_PROFILING_SET" value="tptp-dummy-profiling-set-Erlide_tests"/>
+<stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}&#13;&#10;-consoleLog -verbose -debug"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Derlide.clearCacheAvailable=true &#13;&#10;-Xms96m &#13;&#10;-Xmx384m&#13;&#13;&#10;-Derlide.console.stdout=false&#13;&#13;&#10;-D__eclipse.p2.data.area=c:/apps/eclipse352_ref/eclipse/p2/&#13;&#13;&#10;-Declipse.p2.profile=SDKProfile&#13;&#13;&#10;-Derlide.devel=true&#13;&#10;-Derlide.rpcmonitor&#13;&#10;-Derlide.rpcmonitor.full_"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Derlide.clearCacheAvailable=true &#13;&#10;-Xms96m &#13;&#10;-Xmx384m&#13;&#13;&#10;-Derlide.console.stdout=false&#13;&#13;&#10;-D__eclipse.p2.data.area=c:/apps/eclipse352_ref/eclipse/p2/&#13;&#13;&#10;-Declipse.p2.profile=SDKProfile&#13;&#13;&#10;-Derlide.devel=true&#13;&#10;-Derlide.rpcmonitor&#13;&#10;-Derlide.rpcmonitor.full"/>
 <booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_AUTO_POLLING" value="true"/>
 <booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_CPU_TIME" value="true"/>
 <booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_FLOW" value="true"/>

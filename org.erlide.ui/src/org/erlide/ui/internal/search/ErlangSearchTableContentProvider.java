@@ -49,6 +49,7 @@ public class ErlangSearchTableContentProvider extends
         }
     }
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         if (inputElement instanceof ErlangSearchResult) {
             final ErlangSearchResult esr = (ErlangSearchResult) inputElement;

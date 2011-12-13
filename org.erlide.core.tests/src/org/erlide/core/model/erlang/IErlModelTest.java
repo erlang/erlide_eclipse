@@ -79,6 +79,7 @@ public class IErlModelTest extends ErlModelTestBase {
         final List<IErlElement> changed = Lists.newArrayList();
         final IErlModelChangeListener listener = new IErlModelChangeListener() {
 
+            @Override
             public void elementChanged(final IErlElement element) {
                 changed.add(element);
             }

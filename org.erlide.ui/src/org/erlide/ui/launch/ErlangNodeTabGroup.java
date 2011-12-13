@@ -36,6 +36,7 @@ public class ErlangNodeTabGroup extends AbstractLaunchConfigurationTabGroup {
         return Arrays.asList(tabs);
     }
 
+    @Override
     public void createTabs(final ILaunchConfigurationDialog dialog,
             final String mode) {
         final List<ILaunchConfigurationTab> tabs = new ArrayList<ILaunchConfigurationTab>(

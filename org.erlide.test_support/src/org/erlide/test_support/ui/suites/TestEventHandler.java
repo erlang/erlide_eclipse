@@ -15,6 +15,7 @@ public class TestEventHandler extends ErlangEventHandler {
         this.view = view;
     }
 
+    @Override
     public void handleEvent(final Event event) {
         if (view != null) {
             view.notifyEvent((OtpErlangObject) event.getProperty("DATA"));

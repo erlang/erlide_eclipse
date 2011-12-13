@@ -41,6 +41,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#beginTask(String, int)
      */
+    @Override
     public void beginTask(final String name, final int totalWork) {
         progressMonitor.beginTask(name, totalWork);
     }
@@ -53,6 +54,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * @see IProgressMonitorWithBlocking#clearBlocked()
      * @since 3.0
      */
+    @Override
     public void clearBlocked() {
         if (progressMonitor instanceof IProgressMonitorWithBlocking) {
             ((IProgressMonitorWithBlocking) progressMonitor).clearBlocked();
@@ -66,6 +68,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#done()
      */
+    @Override
     public void done() {
         progressMonitor.done();
     }
@@ -86,6 +89,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#internalWorked(double)
      */
+    @Override
     public void internalWorked(final double work) {
         progressMonitor.internalWorked(work);
     }
@@ -97,6 +101,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#isCanceled()
      */
+    @Override
     public boolean isCanceled() {
         return progressMonitor.isCanceled();
     }
@@ -109,6 +114,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * @see IProgressMonitorWithBlocking#setBlocked(IStatus)
      * @since 3.0
      */
+    @Override
     public void setBlocked(final IStatus reason) {
         if (progressMonitor instanceof IProgressMonitorWithBlocking) {
             ((IProgressMonitorWithBlocking) progressMonitor).setBlocked(reason);
@@ -122,6 +128,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#setCanceled(boolean)
      */
+    @Override
     public void setCanceled(final boolean b) {
         progressMonitor.setCanceled(b);
     }
@@ -133,6 +140,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#setTaskName(String)
      */
+    @Override
     public void setTaskName(final String name) {
         progressMonitor.setTaskName(name);
     }
@@ -144,6 +152,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#subTask(String)
      */
+    @Override
     public void subTask(final String name) {
         progressMonitor.subTask(name);
     }
@@ -155,6 +164,7 @@ public class ErlProgressMonitor implements IProgressMonitor,
      * 
      * @see IProgressMonitor#worked(int)
      */
+    @Override
     public void worked(final int work) {
         progressMonitor.worked(work);
     }

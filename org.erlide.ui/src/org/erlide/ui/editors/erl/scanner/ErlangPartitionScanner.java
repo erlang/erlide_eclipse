@@ -24,8 +24,8 @@ public class ErlangPartitionScanner extends RuleBasedPartitionScanner {
         final List<IRule> rules = Lists.newArrayList();
         rules.add(new ErlangCharRule(character));
         rules.add(new EndOfLineRule("%", comment));
-        rules.add(new MultiLineRule("\"", "\"", string, '\\'));
-        rules.add(new MultiLineRule("'", "'", qatom, '\\'));
+        rules.add(new MultiLineRule("\"", "\"", string, '\\', true));
+        rules.add(new MultiLineRule("'", "'", qatom, '\\', true));
 
         final IPredicateRule[] result = new IPredicateRule[rules.size()];
         rules.toArray(result);

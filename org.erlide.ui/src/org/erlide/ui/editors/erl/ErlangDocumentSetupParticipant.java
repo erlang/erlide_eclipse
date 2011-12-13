@@ -11,6 +11,7 @@ import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 public class ErlangDocumentSetupParticipant implements
         IDocumentSetupParticipant {
 
+    @Override
     public void setup(final IDocument document) {
         setupErlangDocumentPartitioner(document,
                 IErlangPartitions.ERLANG_PARTITIONING);

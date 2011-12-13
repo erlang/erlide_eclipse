@@ -52,6 +52,7 @@ public class StatusInfo implements IStatus {
     /*
      * @see org.eclipse.core.runtime.IStatus#isOK()
      */
+    @Override
     public boolean isOK() {
         return fSeverity == IStatus.OK;
     }
@@ -89,6 +90,7 @@ public class StatusInfo implements IStatus {
     /*
      * @see IStatus#getMessage()
      */
+    @Override
     public String getMessage() {
         return fStatusMessage;
     }
@@ -143,6 +145,7 @@ public class StatusInfo implements IStatus {
     /*
      * @see IStatus#matches(int)
      */
+    @Override
     public boolean matches(final int severityMask) {
         return (fSeverity & severityMask) != 0;
     }
@@ -152,6 +155,7 @@ public class StatusInfo implements IStatus {
      * 
      * @see IStatus#isMultiStatus()
      */
+    @Override
     public boolean isMultiStatus() {
         return false;
     }
@@ -159,6 +163,7 @@ public class StatusInfo implements IStatus {
     /*
      * @see IStatus#getSeverity()
      */
+    @Override
     public int getSeverity() {
         return fSeverity;
     }
@@ -166,6 +171,7 @@ public class StatusInfo implements IStatus {
     /*
      * @see IStatus#getPlugin()
      */
+    @Override
     public String getPlugin() {
         return ErlangCore.PLUGIN_ID;
     }
@@ -175,6 +181,7 @@ public class StatusInfo implements IStatus {
      * 
      * @see IStatus#getException()
      */
+    @Override
     public Throwable getException() {
         return null;
     }
@@ -184,6 +191,7 @@ public class StatusInfo implements IStatus {
      * 
      * @see IStatus#getCode()
      */
+    @Override
     public int getCode() {
         return fSeverity;
     }
@@ -193,6 +201,7 @@ public class StatusInfo implements IStatus {
      * 
      * @see IStatus#getChildren()
      */
+    @Override
     public IStatus[] getChildren() {
         return new IStatus[0];
     }

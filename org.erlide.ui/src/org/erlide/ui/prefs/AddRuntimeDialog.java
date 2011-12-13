@@ -41,25 +41,31 @@ public class AddRuntimeDialog extends StatusDialog implements
 
     public static class StringLabelProvider implements ILabelProvider {
 
+        @Override
         public Image getImage(final Object element) {
             return null;
         }
 
+        @Override
         public String getText(final Object element) {
             return (String) element;
         }
 
+        @Override
         public void addListener(final ILabelProviderListener listener) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public boolean isLabelProperty(final Object element,
                 final String property) {
             return false;
         }
 
+        @Override
         public void removeListener(final ILabelProviderListener listener) {
         }
 
@@ -104,6 +110,7 @@ public class AddRuntimeDialog extends StatusDialog implements
     protected void createFieldListeners() {
         fOtpHome.setDialogFieldListener(new IDialogFieldListener() {
 
+            @Override
             public void dialogFieldChanged(final DialogField field) {
                 setLocationStatus(validateLocation());
                 updateStatusLine();
@@ -111,6 +118,7 @@ public class AddRuntimeDialog extends StatusDialog implements
         });
         fName.setDialogFieldListener(new IDialogFieldListener() {
 
+            @Override
             public void dialogFieldChanged(final DialogField field) {
                 setNameStatus(validateName());
                 updateStatusLine();
@@ -126,6 +134,7 @@ public class AddRuntimeDialog extends StatusDialog implements
     protected Control createDialogArea(final Composite ancestor) {
         fOtpHome = new StringButtonDialogField(new IStringButtonAdapter() {
 
+            @Override
             public void changeControlPressed(final DialogField field) {
                 browseForInstallDir();
             }
@@ -344,6 +353,7 @@ public class AddRuntimeDialog extends StatusDialog implements
         // getDialogSettingsSectionName(), size);
     }
 
+    @Override
     public void customButtonPressed(final ListDialogField<String> field,
             final int index) {
         switch (index) {
@@ -411,9 +421,11 @@ public class AddRuntimeDialog extends StatusDialog implements
         }
     }
 
+    @Override
     public void doubleClicked(final ListDialogField<String> field) {
     }
 
+    @Override
     public void selectionChanged(final ListDialogField<String> field) {
     }
 

@@ -6,6 +6,7 @@ import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.ITokenScanner;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
@@ -26,6 +27,7 @@ public class ErlangSourceViewerConfiguration extends
     private final ITokenScanner commentScanner;
     private final ITokenScanner stringScanner;
     private final ITokenScanner qatomScanner;
+    private ICharacterPairMatcher fBracketMatcher;
 
     public ErlangSourceViewerConfiguration(final IPreferenceStore store,
             final IColorManager colorManager) {
@@ -75,6 +77,14 @@ public class ErlangSourceViewerConfiguration extends
         reconciler.setRepairer(dr, IErlangPartitions.ERLANG_CHARACTER);
 
         return reconciler;
+    }
+
+    public ICharacterPairMatcher getBracketMatcher() {
+        if (fBracketMatcher == null) {
+            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
+                    "{", "}", "[", "]", "<<", ">>" });
+        }
+        return fBracketMatcher;
     }
 
 }

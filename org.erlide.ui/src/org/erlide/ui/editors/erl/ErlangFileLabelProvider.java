@@ -43,6 +43,7 @@ public class ErlangFileLabelProvider extends LabelProvider implements
         return null;
     }
 
+    @Override
     public String getDescription(final Object anElement) {
         if (anElement instanceof IErlElement) {
             final IErlElement data = (IErlElement) anElement;

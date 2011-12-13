@@ -35,6 +35,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         ErlideUIPlugin.getDefault().getProblemMarkerManager().addListener(this);
     }
 
+    @Override
     public void problemsChanged(final IResource[] changedResources,
             final boolean isMarkerChange) {
         if (isMarkerChange) {
@@ -71,6 +72,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         final Shell shell = fErlangEditor.getEditorSite().getShell();
         if (shell != null && !shell.isDisposed()) {
             shell.getDisplay().syncExec(new Runnable() {
+                @Override
                 public void run() {
                     fErlangEditor.updatedTitleImage(newImage);
                 }

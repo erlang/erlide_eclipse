@@ -27,6 +27,7 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
         memento.putString(TAG_URI, uri.toString());
     }
 
+    @Override
     public IAdaptable createElement(final IMemento memento) {
         // Get the file name.
         final String externalModulePath = memento

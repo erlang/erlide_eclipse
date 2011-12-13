@@ -11,6 +11,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 public class ExpandCollapseAllHandler extends AbstractHandler implements
         IHandler {
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
         if (!(activeEditor instanceof ErlangEditor)) {

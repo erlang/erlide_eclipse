@@ -69,6 +69,7 @@ public class CallHierarchyView extends ViewPart {
 
         private Object input;
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
             input = newInput;
@@ -81,13 +82,16 @@ public class CallHierarchyView extends ViewPart {
             }
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             return getChildren(inputElement);
         }
 
+        @Override
         public Object[] getChildren(final Object parentElement) {
             if (parentElement instanceof String) {
                 return new Object[0];
@@ -119,10 +123,12 @@ public class CallHierarchyView extends ViewPart {
             return result.toArray(new IErlFunction[result.size()]);
         }
 
+        @Override
         public Object getParent(final Object element) {
             return null;
         }
 
+        @Override
         public boolean hasChildren(final Object element) {
             return getChildren(element).length > 0;
         }

@@ -59,6 +59,7 @@ public class BackendShellManager implements IDisposable {
         }
     }
 
+    @Override
     public void dispose() {
         final Collection<BackendShell> c = fShells.values();
         for (final IBackendShell backendShell : c) {

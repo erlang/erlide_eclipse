@@ -31,6 +31,7 @@ public class BackendManagerPopup implements IBackendListener {
         BackendCore.getBackendManager().addBackendListener(fInstance);
     }
 
+    @Override
     public void runtimeAdded(final IBackend b) {
         ErlLogger.debug("$$ added backend " + b);
         ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
@@ -39,6 +40,7 @@ public class BackendManagerPopup implements IBackendListener {
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 // PopupDialog.showBalloon("Backend notification", "Added "
                 // + b.getInfo().getName(), DELAY);
@@ -46,12 +48,14 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
+    @Override
     public void runtimeRemoved(final IBackend b) {
         ErlLogger.debug("$$ removed backend " + b.getRuntimeInfo().getName());
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {
 
+            @Override
             public void run() {
                 // PopupDialog.showBalloon("Backend notification", "Removed "
                 // + b.getInfo().getName(), DELAY);
@@ -59,6 +63,7 @@ public class BackendManagerPopup implements IBackendListener {
         });
     }
 
+    @Override
     public void moduleLoaded(final IRpcCallSite backend,
             final IProject project, final String moduleName) {
     }

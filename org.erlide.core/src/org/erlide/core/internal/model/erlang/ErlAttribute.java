@@ -37,10 +37,12 @@ public class ErlAttribute extends ErlMember implements IErlAttribute {
     /**
      * @see org.erlide.core.model.root.IErlElement#getKind()
      */
+    @Override
     public Kind getKind() {
         return Kind.ATTRIBUTE;
     }
 
+    @Override
     public OtpErlangObject getValue() {
         return fValue;
     }

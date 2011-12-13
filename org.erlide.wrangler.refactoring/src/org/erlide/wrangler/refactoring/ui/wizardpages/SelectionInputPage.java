@@ -68,6 +68,7 @@ public class SelectionInputPage extends InputPage {
         refactoring = refac;
     }
 
+    @Override
     public void createControl(final Composite parent) {
         composite = new Composite(parent, SWT.NONE);
 

@@ -79,6 +79,7 @@ public class ProjectPathEditor extends PathEditor {
             ISelectionStatusValidator myValidator = new TypedElementSelectionValidator(
                     acceptedClasses, false);
 
+            @Override
             public IStatus validate(final Object[] selection) {
                 final IStatus typedStatus = myValidator.validate(selection);
                 if (!typedStatus.isOK()) {

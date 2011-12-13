@@ -57,6 +57,7 @@ public class SimilarExpressionSearchParser extends AbstractDuplicatesParser {
      * org.erlide.wrangler.refactoring.duplicatedcode.core.IResultParser#parse
      * (com.ericsson.otp.erlang.OtpErlangObject)
      */
+    @Override
     public void parse(final OtpErlangObject object) {
         try {
             final OtpErlangTuple res = (OtpErlangTuple) object;

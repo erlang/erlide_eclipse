@@ -79,6 +79,7 @@ public class CheckedListDialogField<Element> extends ListDialogField<Element> {
         final CheckboxTableViewer tableViewer = new CheckboxTableViewer(table);
         tableViewer.addCheckStateListener(new ICheckStateListener() {
 
+            @Override
             public void checkStateChanged(final CheckStateChangedEvent e) {
                 doCheckStateChanged(e);
             }

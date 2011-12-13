@@ -57,6 +57,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
 
     private class MatchSpecValidator implements IInputValidator {
 
+        @Override
         public String isValid(final String newText) {
             if (newText == null || newText.length() == 0) {
                 // no match spec

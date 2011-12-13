@@ -28,7 +28,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.quickassist.QuickAssistAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -56,9 +55,9 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     final ErlangEditor editor;
     private ITextDoubleClickStrategy doubleClickStrategy;
-    private ICharacterPairMatcher fBracketMatcher;
     private ErlReconciler reconciler;
     private ErlContentAssistProcessor contentAssistProcessor;
+    private final static IAutoEditStrategy[] NO_AUTOEDIT = new IAutoEditStrategy[] {};
 
     /**
      * Default configuration constructor
@@ -93,25 +92,14 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return doubleClickStrategy;
     }
 
-    public ICharacterPairMatcher getBracketMatcher() {
-        if (fBracketMatcher == null) {
-            fBracketMatcher = new ErlangPairMatcher(new String[] { "(", ")",
-                    "{", "}", "[", "]", "<<", ">>" });
-        }
-        return fBracketMatcher;
-    }
-
-    /*
-     * @see
-     * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies
-     * (org.eclipse.jface.text.source.ISourceViewer, java.lang.String)
-     */
     @Override
     public IAutoEditStrategy[] getAutoEditStrategies(
             final ISourceViewer sourceViewer, final String contentType) {
-        // final String partitioning =
-        // getConfiguredDocumentPartitioning(sourceViewer);
-        return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
+        if (contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
+            return new IAutoEditStrategy[] { new AutoIndentStrategy(editor) };
+        } else {
+            return NO_AUTOEDIT;
+        }
     }
 
     @Override
@@ -179,6 +167,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             final ISourceViewer sourceViewer) {
         return new IInformationControlCreator() {
 
+            @Override
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 if (parent.getText().length() == 0
@@ -240,6 +229,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
      */
     private IInformationControlCreator getQuickAssistAssistantInformationControlCreator() {
         return new IInformationControlCreator() {
+            @Override
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 final String affordance = getAdditionalInfoAffordanceString();

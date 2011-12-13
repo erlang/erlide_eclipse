@@ -27,10 +27,12 @@ public class TracePatternCellModifier implements ICellModifier {
         this.tableViewer = tableViewer;
     }
 
+    @Override
     public boolean canModify(final Object element, final String property) {
         return true;
     }
 
+    @Override
     public Object getValue(final Object element, final String property) {
         final TracePattern pattern = (TracePattern) element;
         switch (TracePatternColumn.valueOf(property)) {
@@ -55,6 +57,7 @@ public class TracePatternCellModifier implements ICellModifier {
         }
     }
 
+    @Override
     public void modify(final Object element, final String property,
             final Object value) {
         final TracePattern pattern = (TracePattern) ((TableItem) element)

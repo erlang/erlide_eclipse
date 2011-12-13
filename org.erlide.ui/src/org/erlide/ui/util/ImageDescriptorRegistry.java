@@ -91,6 +91,7 @@ public class ImageDescriptorRegistry {
     private void hookDisplay() {
         fDisplay.disposeExec(new Runnable() {
 
+            @Override
             public void run() {
                 dispose();
             }

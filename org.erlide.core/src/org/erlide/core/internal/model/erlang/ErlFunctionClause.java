@@ -43,10 +43,12 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
         return pars;
     }
 
+    @Override
     public String getHead() {
         return head;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.CLAUSE;
     }
@@ -70,16 +72,19 @@ public class ErlFunctionClause extends ErlMember implements IErlFunctionClause {
         return head;
     }
 
+    @Override
     public String getFunctionName() {
         final IErlElement element = (IErlElement) getParent();
         return element.getName();
     }
 
+    @Override
     public int getArity() {
         final IErlFunction f = (IErlFunction) getParent();
         return f.getArity();
     }
 
+    @Override
     public List<String> getParameters() {
         return parameters;
     }

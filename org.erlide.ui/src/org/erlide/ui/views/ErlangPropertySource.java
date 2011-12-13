@@ -29,6 +29,7 @@ public class ErlangPropertySource implements IPropertySource {
     /**
      * @see org.eclipse.ui.views.properties.IPropertySource#getEditableValue()
      */
+    @Override
     public Object getEditableValue() {
         return null;
     }
@@ -36,6 +37,7 @@ public class ErlangPropertySource implements IPropertySource {
     /**
      * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
      */
+    @Override
     public IPropertyDescriptor[] getPropertyDescriptors() {
         return new IPropertyDescriptor[] { new PropertyDescriptor("hello",
                 "balh") };
@@ -44,6 +46,7 @@ public class ErlangPropertySource implements IPropertySource {
     /**
      * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
      */
+    @Override
     public Object getPropertyValue(final Object id) {
         return id.getClass().getName();
     }
@@ -51,6 +54,7 @@ public class ErlangPropertySource implements IPropertySource {
     /**
      * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
      */
+    @Override
     public boolean isPropertySet(final Object id) {
         return false;
     }
@@ -58,6 +62,7 @@ public class ErlangPropertySource implements IPropertySource {
     /**
      * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
      */
+    @Override
     public void resetPropertyValue(final Object id) {
 
     }
@@ -66,6 +71,7 @@ public class ErlangPropertySource implements IPropertySource {
      * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object,
      *      java.lang.Object)
      */
+    @Override
     public void setPropertyValue(final Object id, final Object value) {
 
     }

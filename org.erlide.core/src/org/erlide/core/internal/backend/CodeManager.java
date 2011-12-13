@@ -46,6 +46,7 @@ public class CodeManager implements ICodeManager {
         registeredBundles = new ArrayList<ICodeBundle>();
     }
 
+    @Override
     public void addPath(final boolean usePathZ, final String path) {
         if (usePathZ) {
             if (addPath(pathZ, path)) {
@@ -58,23 +59,27 @@ public class CodeManager implements ICodeManager {
         }
     }
 
+    @Override
     public void removePath(final String path) {
         if (removePath(pathA, path)) {
             ErlangCode.removePath(backend, path);
         }
     }
 
+    @Override
     public void reRegisterBundles() {
         for (final ICodeBundle p : registeredBundles) {
             registerBundle(p);
         }
     }
 
+    @Override
     public void register(final ICodeBundle b) {
         registeredBundles.add(b);
         registerBundle(b);
     }
 
+    @Override
     public void unregister(final Bundle b) {
         final ICodeBundle p = findBundle(b);
         if (p == null) {

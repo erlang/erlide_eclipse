@@ -74,6 +74,7 @@ public class RegressionResultsView extends ViewPart {
 
     public void addLine(final String line) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 data.add("" + data.size() + ": " + line);
                 tableViewer.refresh();

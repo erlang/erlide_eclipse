@@ -28,11 +28,11 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErlangLaunchDelegate;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEventHandler;
-import org.erlide.core.common.PreferencesUtils;
+import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugHelper;
-import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParser;
@@ -178,9 +178,11 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final ErlangEventHandler handler = new ErlangEventHandler(
                 "bterl_debugger", backend) {
+            @Override
             public void handleEvent(final Event event) {
                 System.out.println("BTERL DEBUG INIT");
                 final String[] modules = workdir.list(new FilenameFilter() {
+                    @Override
                     public boolean accept(final File dir, final String filename) {
                         return filename.endsWith(".erl");
                     }
@@ -208,6 +210,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
         final ErlangEventHandler handler = new ErlangEventHandler(
                 "bterl_monitor", backend) {
+            @Override
             public void handleEvent(final Event event) {
                 // TODO check events and do something
             }
@@ -260,12 +263,13 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         wc.setAttribute(ErlLaunchAttributes.COOKIE, "shade");
         wc.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
         final String args = "-boot start_clean -sasl sasl_error_logger false -pa "
-                + PreferencesUtils.packList(paths, " -pa ");
+                + CommonUtils.packList(paths, " -pa ");
         wc.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, args);
 
         wc.setAttribute(ErlLaunchAttributes.PROJECTS, project);
         final List<String> modules = Lists.newArrayList();
         for (final String m : workdir.list(new FilenameFilter() {
+            @Override
             public boolean accept(final File dir, final String name) {
                 return name.endsWith(".erl");
             }

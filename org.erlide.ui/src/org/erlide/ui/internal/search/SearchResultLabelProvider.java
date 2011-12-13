@@ -188,6 +188,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
         // fLabelProvider.addListener(listener);
     }
 
+    @Override
     public StyledString getStyledText(final Object element) {
         final StyledString result = new StyledString();
         if (fOrder == SHOW_LABEL_PATH || element instanceof String

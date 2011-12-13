@@ -1,5 +1,6 @@
 package org.erlide.jinterface.rpc;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Collection;
@@ -71,10 +72,13 @@ public class RpcMonitor {
         public void dump(final PrintStream out, final boolean full) {
             final String argsString = full ? args.toString().replaceAll(
                     "\n|\r", " ") : "...";
-            final String resultString = full ? result.toString().replaceAll(
-                    "\n|\r", " ") : "...";
+            String resultString = full ? result.toString().replaceAll("\n|\r",
+                    " ") : "...";
+            if (resultString.length() > 100) {
+                resultString = new String(resultString.substring(0, 99) + "...");
+            }
             out.format(
-                    "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s, result=%s%n",
+                    "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s -> result=%s%n",
                     node.substring(0, Math.min(29, node.length() - 1)), module,
                     fun, args.size(), callSize, answerSize, answerTime
                             - callTime, argsString, resultString);
@@ -84,11 +88,13 @@ public class RpcMonitor {
     private static int callCount = 0;
     private static final Map<OtpErlangRef, RpcData> ongoing = Maps.newHashMap();
     private static Comparator<RpcInfo> timeComparator = new Comparator<RpcInfo>() {
+        @Override
         public int compare(final RpcInfo o1, final RpcInfo o2) {
             return (int) (o2.answerTime - o2.callTime - (o1.answerTime - o1.callTime));
         }
     };
     private static Comparator<RpcInfo> sizeComparator = new Comparator<RpcInfo>() {
+        @Override
         public int compare(final RpcInfo o1, final RpcInfo o2) {
             return (int) (o2.callSize + o2.answerSize - (o1.callSize + o1.answerSize));
         }
@@ -187,6 +193,18 @@ public class RpcMonitor {
         }
         out.println(delim);
         out.close();
+    }
+
+    public static void cleanupOldLogs(final String dirName, final String prefix) {
+        final File dir = new File(dirName);
+        for (final File f : dir.listFiles()) {
+            final long now = System.currentTimeMillis();
+            final int aWeek = 7 * 24 * 3600 * 1000;
+            if (f.getName().startsWith(prefix)
+                    && now - f.lastModified() > aWeek) {
+                f.delete();
+            }
+        }
     }
 
 }

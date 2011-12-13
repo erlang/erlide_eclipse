@@ -35,6 +35,7 @@ public class ErlTypespec extends ErlMember implements IErlTypespec {
     /**
      * @see org.erlide.core.model.root.IErlElement#getKind()
      */
+    @Override
     public Kind getKind() {
         return Kind.TYPESPEC;
     }

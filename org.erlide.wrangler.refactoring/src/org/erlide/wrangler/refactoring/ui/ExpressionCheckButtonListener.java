@@ -46,14 +46,17 @@ public class ExpressionCheckButtonListener implements MouseTrackListener {
                 .getWranglerSelection();
     }
 
+    @Override
     public void mouseEnter(final MouseEvent e) {
         setHighlight(e.widget);
     }
 
+    @Override
     public void mouseExit(final MouseEvent e) {
         resetHighlight();
     }
 
+    @Override
     public void mouseHover(final MouseEvent e) {
     }
 

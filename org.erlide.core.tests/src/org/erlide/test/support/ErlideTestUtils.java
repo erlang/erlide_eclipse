@@ -40,68 +40,84 @@ public class ErlideTestUtils {
 
     // TODO replace ResourceDeltaStub with a mock object
     public static class ResourceDeltaStub implements IResourceDelta {
+        @Override
         @SuppressWarnings("rawtypes")
         public Object getAdapter(final Class adapter) {
             return null;
         }
 
+        @Override
         public void accept(final IResourceDeltaVisitor visitor)
                 throws CoreException {
         }
 
+        @Override
         public void accept(final IResourceDeltaVisitor visitor,
                 final boolean includePhantoms) throws CoreException {
         }
 
+        @Override
         public void accept(final IResourceDeltaVisitor visitor,
                 final int memberFlags) throws CoreException {
         }
 
+        @Override
         public IResourceDelta findMember(final IPath path) {
             return null;
         }
 
+        @Override
         public IResourceDelta[] getAffectedChildren() {
             return null;
         }
 
+        @Override
         public IResourceDelta[] getAffectedChildren(final int kindMask) {
             return null;
         }
 
+        @Override
         public IResourceDelta[] getAffectedChildren(final int kindMask,
                 final int memberFlags) {
             return null;
         }
 
+        @Override
         public int getFlags() {
             return CONTENT;
         }
 
+        @Override
         public IPath getFullPath() {
             return null;
         }
 
+        @Override
         public int getKind() {
             return 0;
         }
 
+        @Override
         public IMarkerDelta[] getMarkerDeltas() {
             return null;
         }
 
+        @Override
         public IPath getMovedFromPath() {
             return null;
         }
 
+        @Override
         public IPath getMovedToPath() {
             return null;
         }
 
+        @Override
         public IPath getProjectRelativePath() {
             return null;
         }
 
+        @Override
         public IResource getResource() {
             return null;
         }

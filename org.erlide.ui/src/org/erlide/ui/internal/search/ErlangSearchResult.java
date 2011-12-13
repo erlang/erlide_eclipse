@@ -85,11 +85,13 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         return this;
     }
 
+    @Override
     public ImageDescriptor getImageDescriptor() {
         // return ErlideUIPluginImages.DESC_EXTERNAL;
         return ErlideImage.ERLANG_SEARCH_RESULTS.getDescriptor();
     }
 
+    @Override
     public String getLabel() {
         final int matchCount = getMatchCount();
         final String occurrences = getOccurrencesLabel(matchCount);
@@ -112,10 +114,12 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         return null;
     }
 
+    @Override
     public ISearchQuery getQuery() {
         return query;
     }
 
+    @Override
     public String getTooltip() {
         return null;
     }
@@ -130,6 +134,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
 
     private static final Match[] NO_MATCHES = new Match[0];
 
+    @Override
     public Match[] computeContainedMatches(
             final AbstractTextSearchResult aResult, final IEditorPart editor) {
         // TODO: copied from JavaSearchResult:
@@ -141,6 +146,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         return NO_MATCHES;
     }
 
+    @Override
     public boolean isShownInEditor(final Match match, final IEditorPart editor) {
         final ErlangSearchElement ese = (ErlangSearchElement) match
                 .getElement();
@@ -160,6 +166,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         return false;
     }
 
+    @Override
     public Match[] computeContainedMatches(
             final AbstractTextSearchResult aResult, final IFile file) {
         final ErlangSearchResult esr = (ErlangSearchResult) aResult;
@@ -182,6 +189,7 @@ public class ErlangSearchResult extends AbstractTextSearchResult implements
         return l.toArray(new Match[l.size()]);
     }
 
+    @Override
     public IFile getFile(final Object element) {
         if (element instanceof ErlangSearchElement) {
             final ErlangSearchElement ese = (ErlangSearchElement) element;

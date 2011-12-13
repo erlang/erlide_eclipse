@@ -113,6 +113,7 @@ public class HTMLTextPresenter implements
      *      java.lang.String, org.eclipse.jface.text.TextPresentation, int, int)
      * @deprecated
      */
+    @Override
     @Deprecated
     public String updatePresentation(final Display display,
             final String hoverInfo, final TextPresentation presentation,
@@ -127,6 +128,7 @@ public class HTMLTextPresenter implements
      * 
      * @since 3.2
      */
+    @Override
     public String updatePresentation(final Drawable drawable,
             final String hoverInfo, final TextPresentation presentation,
             final int maxWidth, final int maxHeight) {

@@ -38,6 +38,7 @@ import org.erlide.test_support.ui.suites.TestResultsView;
 
 public class TestLaunchShortcut implements ILaunchShortcut {
 
+    @Override
     public void launch(final ISelection selection, final String mode) {
         if (selection instanceof IStructuredSelection) {
             final Object item = ((IStructuredSelection) selection)
@@ -46,6 +47,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         }
     }
 
+    @Override
     public void launch(final IEditorPart editor, final String mode) {
         doLaunch(editor, mode);
     }

@@ -43,6 +43,7 @@ public abstract class OpenAndLinkWithEditorHelper {
          * org.eclipse.jface.viewers.IOpenListener#open(org.eclipse.jface.viewers
          * .OpenEvent)
          */
+        @Override
         public final void open(final OpenEvent event) {
             lastOpenSelection = event.getSelection();
             OpenAndLinkWithEditorHelper.this.open(lastOpenSelection,
@@ -54,6 +55,7 @@ public abstract class OpenAndLinkWithEditorHelper {
          * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
          * (org.eclipse.jface.viewers.SelectionChangedEvent)
          */
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             final ISelection selection = event.getSelection();
             if (isLinkingEnabled && !selection.equals(lastOpenSelection)
@@ -68,6 +70,7 @@ public abstract class OpenAndLinkWithEditorHelper {
          * org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse
          * .jface.viewers.DoubleClickEvent)
          */
+        @Override
         public void doubleClick(final DoubleClickEvent event) {
             if (!OpenStrategy.activateOnOpen()) {
                 activate(event.getSelection());

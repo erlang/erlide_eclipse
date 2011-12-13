@@ -37,6 +37,7 @@ public class QuickOutlineMouseMoveListener implements MouseMoveListener {
         fTreeViewer = treeViewer;
     }
 
+    @Override
     public void mouseMove(final MouseEvent e) {
         final Tree tree = fTreeViewer.getTree();
         if (tree.equals(e.getSource())) {

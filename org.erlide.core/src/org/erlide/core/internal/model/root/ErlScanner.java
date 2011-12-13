@@ -28,14 +28,17 @@ public class ErlScanner implements IDisposable, IErlScanner {
         ErlideScanner.initialScan(scannerName, path, initialText, useCaches);
     }
 
+    @Override
     public void addRef() {
         ++refCount;
     }
 
+    @Override
     public boolean willDispose() {
         return refCount == 1;
     }
 
+    @Override
     public void dispose() {
         --refCount;
         if (refCount == 0) {
@@ -43,19 +46,23 @@ public class ErlScanner implements IDisposable, IErlScanner {
         }
     }
 
+    @Override
     public void replaceText(final int offset, final int removeLength,
             final String newText) {
         ErlideScanner.replaceText(scannerName, offset, removeLength, newText);
     }
 
+    @Override
     public ErlToken getTokenAt(final int offset) {
         return ErlideScanner.getTokenAt(scannerName, offset);
     }
 
+    @Override
     public String getText() {
         return ErlideScanner.getText(scannerName);
     }
 
+    @Override
     public String getName() {
         return scannerName;
     }

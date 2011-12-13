@@ -75,6 +75,7 @@ public class RecordDataInputPage extends MultiInputPage {
 
         final ModifyListener modifyListener = new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 isInputValid();
             }

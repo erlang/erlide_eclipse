@@ -31,10 +31,12 @@ public class ErlCommentScanner extends BufferedRuleBasedScanner {
         rulesList.add(new SingleLineRule("<", ">", htmlTag));
         final WordRule taskRule = new WordRule(new IWordDetector() {
 
+            @Override
             public boolean isWordStart(final char c) {
                 return Character.isLetter(c);
             }
 
+            @Override
             public boolean isWordPart(final char c) {
                 return Character.isLetter(c);
             }
@@ -50,10 +52,12 @@ public class ErlCommentScanner extends BufferedRuleBasedScanner {
     }
 
     private final class EdocTagDetector implements IWordDetector {
+        @Override
         public boolean isWordStart(final char c) {
             return c == '@';
         }
 
+        @Override
         public boolean isWordPart(final char c) {
             return Character.isLowerCase(c);
         }

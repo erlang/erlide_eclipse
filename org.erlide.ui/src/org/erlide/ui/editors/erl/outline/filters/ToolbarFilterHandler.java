@@ -24,6 +24,7 @@ public class ToolbarFilterHandler extends AbstractHandler implements
         super();
     }
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         // final Command command = event.getCommand();
         // final boolean oldValue = HandlerUtil.toggleCommandState(command);
@@ -62,8 +63,10 @@ public class ToolbarFilterHandler extends AbstractHandler implements
         return null;
     }
 
+    @Override
     public void updateElement(final UIElement element,
-            @SuppressWarnings("rawtypes") final Map parameters) {
+            @SuppressWarnings("rawtypes")
+            final Map parameters) {
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final String filterId = (String) parameters
                 .get("org.erlide.ui.filterId");

@@ -26,6 +26,7 @@ import org.erlide.core.debug.ErlangLineBreakpoint;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
+    @Override
     public void toggleLineBreakpoints(final IWorkbenchPart part,
             final ISelection selection) throws CoreException {
         final ITextEditor textEditor = getEditor(part);
@@ -56,6 +57,7 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
         }
     }
 
+    @Override
     public boolean canToggleLineBreakpoints(final IWorkbenchPart part,
             final ISelection selection) {
         return getEditor(part) != null;
@@ -77,19 +79,23 @@ public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {
         return null;
     }
 
+    @Override
     public void toggleMethodBreakpoints(final IWorkbenchPart part,
             final ISelection selection) throws CoreException {
     }
 
+    @Override
     public boolean canToggleMethodBreakpoints(final IWorkbenchPart part,
             final ISelection selection) {
         return false;
     }
 
+    @Override
     public void toggleWatchpoints(final IWorkbenchPart part,
             final ISelection selection) throws CoreException {
     }
 
+    @Override
     public boolean canToggleWatchpoints(final IWorkbenchPart part,
             final ISelection selection) {
         return false;

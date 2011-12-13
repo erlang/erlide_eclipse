@@ -84,6 +84,7 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
     /*
      * @see Iterator#hasNext()
      */
+    @Override
     public boolean hasNext() {
         return fNext != null;
     }
@@ -91,6 +92,7 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
     /*
      * @see Iterator#next()
      */
+    @Override
     public Annotation next() {
         try {
             return fNext;
@@ -102,6 +104,7 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
     /*
      * @see Iterator#remove()
      */
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

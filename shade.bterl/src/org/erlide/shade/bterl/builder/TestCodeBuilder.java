@@ -296,6 +296,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             cleaning = clean;
         }
 
+        @Override
         public boolean visit(final IResource resource) throws CoreException {
             final IProject my_project = resource.getProject();
             if (resource.isDerived()) {
@@ -346,6 +347,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             this.monitor = monitor;
         }
 
+        @Override
         public boolean visit(final IResourceDelta delta) throws CoreException {
             final IResource resource = delta.getResource();
             if (resource.isDerived()) {
@@ -419,6 +421,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 final StreamsProxy proxy = new StreamsProxy(makeLinks,
                         "ISO-8859-1");
                 final IStreamListener listener = new IStreamListener() {
+                    @Override
                     public void streamAppended(final String text,
                             final IStreamMonitor streamMonitor) {
                         final String[] lines = text.split("\n");
@@ -459,6 +462,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             return haslinks;
         }
 
+        @Override
         public boolean visit(final IResource resource) throws CoreException {
             final IProject my_project = resource.getProject();
             if (resource.isDerived()) {

@@ -59,6 +59,7 @@ public class AboutHandler extends AbstractHandler {
         }
     }
 
+    @Override
     public Object execute(final ExecutionEvent event)
             throws org.eclipse.core.commands.ExecutionException {
 

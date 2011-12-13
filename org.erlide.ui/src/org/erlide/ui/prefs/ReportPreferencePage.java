@@ -219,6 +219,7 @@ public class ReportPreferencePage extends PreferencePage implements
         }
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

@@ -51,6 +51,7 @@ public class DuplicateDetectionParser extends AbstractDuplicatesParser {
 
     // [{ [{ {filename(), integer(), integer()} , {filename(), integer(),
     // integer()} }], integer(), integer(), string()}]
+    @Override
     public void parse(final OtpErlangObject object) {
         try {
             // TODO testing all cases

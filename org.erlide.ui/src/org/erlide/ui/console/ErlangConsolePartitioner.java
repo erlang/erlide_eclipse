@@ -76,6 +76,7 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
     /**
      * @return the ranges that intersect with the given offset/length.
      */
+    @Override
     public ScriptStyleRange[] getStyleRanges(final int offset, final int length) {
         int lastOffset = -1;
 
@@ -122,36 +123,45 @@ public class ErlangConsolePartitioner implements IConsoleDocumentPartitioner {
     // -------------------- Just return default content type for any related
     // request ------------------------------------
 
+    @Override
     public boolean isReadOnly(final int offset) {
         return false;
     }
 
+    @Override
     public ITypedRegion[] computePartitioning(final int offset, final int length) {
         return new TypedRegion[] { new TypedRegion(offset, length,
                 IDocument.DEFAULT_CONTENT_TYPE) };
     }
 
+    @Override
     public void connect(final IDocument document) {
     }
 
+    @Override
     public void disconnect() {
     }
 
+    @Override
     public void documentAboutToBeChanged(final DocumentEvent event) {
     }
 
+    @Override
     public boolean documentChanged(final DocumentEvent event) {
         return false;
     }
 
+    @Override
     public String getContentType(final int offset) {
         return IDocument.DEFAULT_CONTENT_TYPE;
     }
 
+    @Override
     public String[] getLegalContentTypes() {
         return LEGAL_CONTENT_TYPES;
     }
 
+    @Override
     public ITypedRegion getPartition(final int offset) {
         return new TypedRegion(offset, 1, IDocument.DEFAULT_CONTENT_TYPE);
     }

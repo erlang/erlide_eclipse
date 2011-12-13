@@ -217,6 +217,7 @@ public class FilteredModulesSelectionDialog extends
 
         workingSetFilterActionGroup = new WorkingSetFilterActionGroup(
                 getShell(), new IPropertyChangeListener() {
+                    @Override
                     public void propertyChange(final PropertyChangeEvent event) {
                         final String property = event.getProperty();
 
@@ -340,6 +341,7 @@ public class FilteredModulesSelectionDialog extends
 
             fComparator = new Comparator<Object>() {
 
+                @Override
                 public int compare(final Object o1, final Object o2) {
                     final String s1 = o1 instanceof IResource ? ((IResource) o1)
                             .getName() : (String) o1;
@@ -417,6 +419,7 @@ public class FilteredModulesSelectionDialog extends
             return str;
         }
 
+        @Override
         public StyledString getStyledText(final Object element) {
             if (!(element instanceof IResource)) {
                 return new StyledString(super.getText(element));
@@ -451,6 +454,7 @@ public class FilteredModulesSelectionDialog extends
             listeners.remove(listener);
         }
 
+        @Override
         public void labelProviderChanged(final LabelProviderChangedEvent event) {
             final Object[] l = listeners.getListeners();
             for (int i = 0; i < listeners.size(); i++) {
@@ -573,6 +577,7 @@ public class FilteredModulesSelectionDialog extends
             }
         }
 
+        @Override
         public boolean visit(final IResourceProxy proxy) {
 
             if (progressMonitor.isCanceled()) {

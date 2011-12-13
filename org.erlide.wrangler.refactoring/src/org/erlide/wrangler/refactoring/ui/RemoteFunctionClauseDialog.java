@@ -128,12 +128,14 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
             // listen to treeitem selection
             functionClausesTree.addSelectionListener(new SelectionListener() {
 
+                @Override
                 public void widgetDefaultSelected(final SelectionEvent e) {
                 }
 
                 // if a function or a function clause is selected, then
                 // highlight it
                 // and store the selection
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
 
                     final TreeItem[] selectedItems = functionClausesTree

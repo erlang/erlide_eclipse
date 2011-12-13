@@ -40,11 +40,13 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         this.helper = helper;
     }
 
+    @Override
     public boolean visit(final IResourceDelta delta) throws CoreException {
         final IResource resource = delta.getResource();
         return visit(resource, delta.getKind(), false);
     }
 
+    @Override
     public boolean visit(final IResource resource) throws CoreException {
         return visit(resource, IResourceDelta.ADDED, true);
     }
@@ -101,17 +103,23 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
         case IResourceDelta.CHANGED:
             break;
         case IResourceDelta.REMOVED:
-            final String[] p = resource.getName().split("\\.");
-            final SearchVisitor searcher = helper.new SearchVisitor(p[0], null);
-            resource.getProject().accept(searcher);
-            if (searcher.getResult() != null) {
-                final BuildResource bres = new BuildResource(
-                        searcher.getResult());
+            final IResource source = findCorrespondingSource(resource);
+            if (source != null) {
+                final BuildResource bres = new BuildResource(source);
                 result.add(bres);
                 monitor.worked(1);
             }
             break;
         }
+    }
+
+    public IResource findCorrespondingSource(final IResource beam)
+            throws CoreException {
+        final String[] p = beam.getName().split("\\.");
+        final SearchVisitor searcher = helper.new SearchVisitor(p[0], null);
+        beam.getProject().accept(searcher);
+        final IResource source = searcher.getResult();
+        return source;
     }
 
     private void handleYrlFile(final int kind, final IResource resource) {

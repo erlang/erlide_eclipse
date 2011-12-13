@@ -38,10 +38,12 @@ public class SimpleSelectionProvider implements ISelectionProvider {
         fSelectionChangedListeners = new ListenerList();
     }
 
+    @Override
     public ISelection getSelection() {
         return fSelection;
     }
 
+    @Override
     public void setSelection(final ISelection selection) {
         fSelection = selection;
 
@@ -52,11 +54,13 @@ public class SimpleSelectionProvider implements ISelectionProvider {
         }
     }
 
+    @Override
     public void removeSelectionChangedListener(
             final ISelectionChangedListener listener) {
         fSelectionChangedListeners.remove(listener);
     }
 
+    @Override
     public void addSelectionChangedListener(
             final ISelectionChangedListener listener) {
         fSelectionChangedListeners.add(listener);

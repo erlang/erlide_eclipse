@@ -30,5 +30,6 @@ public abstract class MultiInputPage extends InputPage {
         super(name);
     }
 
+    @Override
     public abstract void createControl(Composite parent);
 }

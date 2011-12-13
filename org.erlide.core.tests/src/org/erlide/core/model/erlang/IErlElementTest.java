@@ -240,6 +240,7 @@ public class IErlElementTest extends ErlModelTestBase {
         final List<IErlElement> elements = Lists.newArrayList();
         final IErlElementVisitor visitor = new IErlElementVisitor() {
 
+            @Override
             public boolean visit(final IErlElement element)
                     throws ErlModelException {
                 if (element instanceof IErlExternal) {

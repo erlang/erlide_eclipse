@@ -149,18 +149,18 @@ public final class BuilderHelper {
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IProject project, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IProject project,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         project.accept(new BuilderVisitor(result, monitor, this));
         return result;
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes") final Map args,
-            final IResourceDelta delta, final IProgressMonitor monitor)
-            throws CoreException {
+            @SuppressWarnings("rawtypes")
+            final Map args, final IResourceDelta delta,
+            final IProgressMonitor monitor) throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         if (delta != null) {
             delta.accept(new BuilderVisitor(result, monitor, this));
@@ -302,6 +302,7 @@ public final class BuilderHelper {
             this.how = how;
         }
 
+        @Override
         public boolean visit(final IResource resource) throws CoreException {
             if (compare(resource, fileName, how)) {
                 found = resource;
@@ -629,6 +630,7 @@ public final class BuilderHelper {
             fName = name;
         }
 
+        @Override
         public boolean visit(final IResource resource) throws CoreException {
             if (fName == null) {
                 return false;

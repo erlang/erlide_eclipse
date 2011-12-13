@@ -180,6 +180,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * @see IErlModelStatus
      */
+    @Override
     public IErlElement[] getElements() {
         return fElements;
     }
@@ -317,6 +318,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * @see IErlModelStatus#getPath()
      */
+    @Override
     public IPath getPath() {
         return fPath;
     }
@@ -343,6 +345,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * @see IErlModelStatus#getString()
      * @deprecated
      */
+    @Override
     @Deprecated
     public String getString() {
         return fString;
@@ -351,6 +354,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     /**
      * @see IErlModelStatus#isDoesNotExist()
      */
+    @Override
     public boolean isDoesNotExist() {
         return getCode() == ErlModelStatusConstants.ELEMENT_DOES_NOT_EXIST;
     }

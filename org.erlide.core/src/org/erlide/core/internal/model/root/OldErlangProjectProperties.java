@@ -115,6 +115,7 @@ public final class OldErlangProjectProperties implements
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
     }
 
+    @Override
     public void store() throws BackingStoreException {
         if (project == null) {
             return;
@@ -165,14 +166,17 @@ public final class OldErlangProjectProperties implements
         }
     }
 
+    @Override
     public Collection<IPath> getIncludeDirs() {
         return Collections.unmodifiableCollection(includeDirs);
     }
 
+    @Override
     public void setIncludeDirs(final Collection<IPath> includeDirs2) {
         includeDirs = Lists.newArrayList(includeDirs2);
     }
 
+    @Override
     @Deprecated
     public IPath getOutputDir() {
         try {
@@ -182,10 +186,12 @@ public final class OldErlangProjectProperties implements
         }
     }
 
+    @Override
     public Collection<IPath> getOutputDirs() {
         return outputDirs;
     }
 
+    @Override
     @Deprecated
     public void setOutputDir(final IPath dir) {
         setOutputDirs(Lists.newArrayList(dir));
@@ -195,14 +201,17 @@ public final class OldErlangProjectProperties implements
         outputDirs = Lists.newArrayList(dirs);
     }
 
+    @Override
     public Collection<IPath> getSourceDirs() {
         return Collections.unmodifiableCollection(sourceDirs);
     }
 
+    @Override
     public void setSourceDirs(final Collection<IPath> sourceDirs2) {
         sourceDirs = Lists.newArrayList(sourceDirs2);
     }
 
+    @Override
     public void copyFrom(
             final IOldErlangProjectProperties erlangProjectProperties) {
         final OldErlangProjectProperties bprefs = (OldErlangProjectProperties) erlangProjectProperties;
@@ -213,22 +222,27 @@ public final class OldErlangProjectProperties implements
         runtimeVersion = bprefs.runtimeVersion;
     }
 
+    @Override
     public String getExternalIncludesFile() {
         return externalIncludesFile;
     }
 
+    @Override
     public void setExternalIncludesFile(final String file) {
         externalIncludesFile = file;
     }
 
+    @Override
     public void setExternalModulesFile(final String externalModules) {
         externalModulesFile = externalModules;
     }
 
+    @Override
     public String getExternalModulesFile() {
         return externalModulesFile;
     }
 
+    @Override
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
                 .getRuntime(runtimeVersion, runtimeName);
@@ -239,16 +253,19 @@ public final class OldErlangProjectProperties implements
         return rt;
     }
 
+    @Override
     public RuntimeVersion getRuntimeVersion() {
         return runtimeVersion;
     }
 
+    @Override
     public void preferenceChange(final PreferenceChangeEvent event) {
         final IEclipsePreferences root = new ProjectScope(project)
                 .getNode(ErlangCore.PLUGIN_ID);
         load(root);
     }
 
+    @Override
     public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
         this.runtimeVersion = runtimeVersion;
     }

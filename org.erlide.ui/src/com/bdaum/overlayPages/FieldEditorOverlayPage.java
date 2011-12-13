@@ -132,6 +132,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
      * 
      * @see org.eclipse.ui.IWorkbenchPropertyPage#setElement(org.eclipse.core.runtime.IAdaptable)
      */
+    @Override
     public void setElement(final IAdaptable element) {
         this.element = element;
     }
@@ -141,6 +142,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
      * 
      * @see org.eclipse.ui.IWorkbenchPropertyPage#getElement()
      */
+    @Override
     public IAdaptable getElement() {
         return element;
     }
@@ -390,6 +392,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage
         final PreferenceDialog dialog = new PreferenceDialog(getControl()
                 .getShell(), manager);
         BusyIndicator.showWhile(getControl().getDisplay(), new Runnable() {
+            @Override
             public void run() {
                 dialog.create();
                 dialog.setMessage(targetNode.getLabelText());

@@ -41,11 +41,13 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         super(parent, name);
     }
 
+    @Override
     public void setNameRange(final int offset, final int length) {
         fNameRangeOffset = offset;
         fNameRangeLength = length;
     }
 
+    @Override
     public ISourceRange getNameRange() {
         if (fNameRangeOffset == 0 && fNameRangeLength == 0) {
             return getSourceRange();
@@ -53,6 +55,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         return new SourceRange(fNameRangeOffset, fNameRangeLength);
     }
 
+    @Override
     public String getModuleName() {
         final IErlModule module = getModule();
         if (module != null) {
@@ -65,6 +68,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         return null;
     }
 
+    @Override
     public IErlModule getModule() {
         final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
         if (ancestor instanceof IErlModule) {

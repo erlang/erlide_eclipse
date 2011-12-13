@@ -191,6 +191,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         return false;
     }
 
+    @Override
     public void decorate(final Object element, final IDecoration decoration) {
         final int adornmentFlags = computeAdornmentFlags(element);
         if (adornmentFlags == ERRORTICK_ERROR) {
@@ -201,6 +202,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
 
     }
 
+    @Override
     public void addListener(final ILabelProviderListener listener) {
         if (fListeners == null) {
             fListeners = new ListenerList();
@@ -208,6 +210,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         fListeners.add(listener);
         if (fProblemChangedListener == null) {
             fProblemChangedListener = new IProblemChangedListener() {
+                @Override
                 public void problemsChanged(final IResource[] changedResources,
                         final boolean isMarkerChange) {
                     fireProblemsChanged(changedResources, isMarkerChange);
@@ -231,6 +234,7 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         }
     }
 
+    @Override
     public void dispose() {
         if (fProblemChangedListener != null) {
             ErlideUIPlugin.getDefault().getProblemMarkerManager()
@@ -242,10 +246,12 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         // }
     }
 
+    @Override
     public boolean isLabelProperty(final Object element, final String property) {
         return true;
     }
 
+    @Override
     public void removeListener(final ILabelProviderListener listener) {
         if (fListeners != null) {
             fListeners.remove(listener);
@@ -257,10 +263,12 @@ public class ProblemsLabelDecorator implements ILabelDecorator,
         }
     }
 
+    @Override
     public String decorateText(final String text, final Object element) {
         return text;
     }
 
+    @Override
     public Image decorateImage(final Image image, final Object obj) {
         final int adornmentFlags = computeAdornmentFlags(obj);
         if (adornmentFlags != 0) {

@@ -44,8 +44,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErlangLaunchDelegate;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.debug.ErlangLaunchDelegate;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntry;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
@@ -220,6 +220,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             super();
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
             try {
@@ -245,23 +246,28 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             }
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             return getChildren(getRoot());
         }
 
+        @Override
         public Object[] getChildren(final Object parentElement) {
             final DebugTreeItem dti = (DebugTreeItem) parentElement;
             return dti.children.toArray();
         }
 
+        @Override
         public Object getParent(final Object element) {
             final DebugTreeItem dti = (DebugTreeItem) element;
             return dti.getParent();
         }
 
+        @Override
         public boolean hasChildren(final Object element) {
             return getChildren(element).length > 0;
         }
@@ -278,6 +284,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
     /**
      * @wbp.parser.entryPoint
      */
+    @Override
     public void createControl(final Composite parent) {
         interpretedModules = new ArrayList<IErlModule>();
 
@@ -317,6 +324,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
                 SWT.BORDER);
         checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void checkStateChanged(final CheckStateChangedEvent event) {
                 final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
@@ -389,6 +397,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
+    @Override
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
                 new ArrayList<String>());
@@ -436,6 +445,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void initializeFrom(final ILaunchConfiguration config) {
         List<String> interpret;
@@ -485,6 +495,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
+    @Override
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
                 getFlagCheckboxes());
@@ -495,6 +506,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
     }
 
+    @Override
     public String getName() {
         return "Debug";
     }
@@ -548,11 +560,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
     }
 
     private final SelectionListener fBasicSelectionListener = new SelectionListener() {
+        @Override
         @SuppressWarnings("synthetic-access")
         public void widgetDefaultSelected(final SelectionEvent e) {
             updateLaunchConfigurationDialog();
         }
 
+        @Override
         @SuppressWarnings("synthetic-access")
         public void widgetSelected(final SelectionEvent e) {
             updateLaunchConfigurationDialog();

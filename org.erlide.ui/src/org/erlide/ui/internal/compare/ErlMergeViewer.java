@@ -15,9 +15,7 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.TextViewer;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -48,6 +46,7 @@ public class ErlMergeViewer extends TextMergeViewer {
         if (fPreferenceStore != null) {
             fPreferenceChangeListener = new IPropertyChangeListener() {
 
+                @Override
                 public void propertyChange(final PropertyChangeEvent event) {
                     handlePropertyChange(event);
                 }
@@ -140,15 +139,7 @@ public class ErlMergeViewer extends TextMergeViewer {
     private ErlangSourceViewerConfiguration getSourceViewerConfiguration() {
         if (fSourceViewerConfiguration == null) {
             fSourceViewerConfiguration = new EditorConfiguration(
-                    fPreferenceStore, null, new ColorManager()) {
-
-                @Override
-                public String getConfiguredDocumentPartitioning(
-                        final ISourceViewer sourceViewer) {
-                    return IDocumentExtension3.DEFAULT_PARTITIONING;
-                }
-
-            };
+                    fPreferenceStore, null, new ColorManager());
         }
         return fSourceViewerConfiguration;
     }

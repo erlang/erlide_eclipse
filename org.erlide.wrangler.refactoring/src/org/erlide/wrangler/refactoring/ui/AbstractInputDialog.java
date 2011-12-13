@@ -104,9 +104,11 @@ public abstract class AbstractInputDialog extends Dialog {
 
         okButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 isFinished = true;
             }

@@ -43,6 +43,7 @@ public class ExpressionSearchParser extends AbstractDuplicatesParser {
         super(obj);
     }
 
+    @Override
     public void parse(final OtpErlangObject object) {
         try {
             final OtpErlangTuple res = (OtpErlangTuple) object;

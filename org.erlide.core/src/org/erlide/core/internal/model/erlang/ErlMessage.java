@@ -27,14 +27,17 @@ public class ErlMessage extends ErlMember implements IErlMessage {
         message = name;
     }
 
+    @Override
     public Kind getKind() {
         return Kind.ERROR;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public String getData() {
         return null;
     }
@@ -54,6 +57,7 @@ public class ErlMessage extends ErlMember implements IErlMessage {
         return "ERR: " + getMessage();
     }
 
+    @Override
     public MessageKind getMessageKind() {
         return fKind;
     }

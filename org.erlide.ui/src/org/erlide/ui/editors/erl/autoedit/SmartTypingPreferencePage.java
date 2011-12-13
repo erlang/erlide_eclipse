@@ -134,6 +134,7 @@ public class SmartTypingPreferencePage extends ErlidePreferencePage implements
         addCheckboxes(composite, nlStrings, autoNLButtons);
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

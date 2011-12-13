@@ -29,14 +29,17 @@ public class ErlPatternMatchListenerDelegate implements
 
     private TextConsole fConsole;
 
+    @Override
     public void connect(final TextConsole console) {
         fConsole = console;
     }
 
+    @Override
     public void disconnect() {
         fConsole = null;
     }
 
+    @Override
     public void matchFound(final PatternMatchEvent event) {
         if (fConsole == null) {
             return;

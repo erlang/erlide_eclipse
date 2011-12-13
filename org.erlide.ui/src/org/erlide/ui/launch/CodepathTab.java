@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 
 public class CodepathTab extends AbstractLaunchConfigurationTab {
 
+    @Override
     public void createControl(final Composite parent) {
 
         final Composite comp = new Composite(parent, SWT.NONE);
@@ -36,15 +37,19 @@ public class CodepathTab extends AbstractLaunchConfigurationTab {
 
     }
 
+    @Override
     public void setDefaults(final ILaunchConfigurationWorkingCopy configuration) {
     }
 
+    @Override
     public void initializeFrom(final ILaunchConfiguration configuration) {
     }
 
+    @Override
     public void performApply(final ILaunchConfigurationWorkingCopy configuration) {
     }
 
+    @Override
     public String getName() {
         return "Code path";
     }

@@ -10,6 +10,7 @@ public class ProjectAdapterFactory implements IAdapterFactory {
 
     private static final Class[] ADAPTER_LIST = new Class[] { IErlProject.class };
 
+    @Override
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
         if (adapterType == IErlProject.class
@@ -20,6 +21,7 @@ public class ProjectAdapterFactory implements IAdapterFactory {
         return null;
     }
 
+    @Override
     public Class[] getAdapterList() {
         return ADAPTER_LIST;
     }

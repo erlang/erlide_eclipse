@@ -26,6 +26,7 @@ public class ToggleNatureAction implements IObjectActionDelegate {
 
     private ISelection fSelection;
 
+    @Override
     public void run(final IAction action) {
         if (fSelection instanceof IStructuredSelection) {
             for (final Iterator<?> it = ((IStructuredSelection) fSelection)
@@ -45,11 +46,13 @@ public class ToggleNatureAction implements IObjectActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
         fSelection = selection;
     }
 
+    @Override
     public void setActivePart(final IAction action,
             final IWorkbenchPart targetPart) {
     }

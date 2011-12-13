@@ -27,6 +27,7 @@ public class SuiteLocator {
 
         public List<IResource> result = new ArrayList<IResource>();
 
+        @Override
         public boolean visit(final IResource arg) throws CoreException {
             if (arg instanceof IFile && arg.getName().endsWith("_SUITE.erl")) {
                 result.add(arg);

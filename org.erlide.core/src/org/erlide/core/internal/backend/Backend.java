@@ -20,12 +20,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -34,8 +32,6 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
@@ -108,7 +104,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-    protected ILaunch launch;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
 
@@ -122,19 +117,20 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.runtime = runtime;
         this.data = data;
         codeManager = new CodeManager(this);
-
-        launch = data.getLaunch();
     }
 
+    @Override
     public IRpcCallSite getCallSite() {
         return this;
     }
 
+    @Override
     public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
         return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
+    @Override
     public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
@@ -148,6 +144,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public IRpcFuture async_call(final String m, final String f,
             final String signature, final Object... args) throws RpcException {
         try {
@@ -157,6 +154,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void async_call_cb(final IRpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
@@ -167,6 +165,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void async_call_result(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
@@ -177,6 +176,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void cast(final String m, final String f, final String signature,
             final Object... args) throws RpcException {
         try {
@@ -186,17 +186,20 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public OtpErlangObject call(final String m, final String f,
             final String signature, final Object... a) throws RpcException {
         return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
+    @Override
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
             throws RpcException {
         return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
     }
 
+    @Override
     public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... a) throws RpcException {
@@ -207,6 +210,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void send(final OtpErlangPid pid, final Object msg) {
         if (!runtime.isAvailable()) {
             return;
@@ -220,6 +224,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void send(final String name, final Object msg) {
         if (!runtime.isAvailable()) {
             return;
@@ -233,6 +238,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public OtpErlangObject receiveEvent(final long timeout)
             throws OtpErlangExit, OtpErlangDecodeException {
         if (eventBox == null) {
@@ -241,6 +247,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         return eventBox.receive(timeout);
     }
 
+    @Override
     public void connect() {
         final String label = getName();
         ErlLogger.debug(label + ": waiting connection to peer...");
@@ -263,6 +270,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void dispose() {
         // runtime.stop();
 
@@ -279,6 +287,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public String getErlangVersion() {
         if (erlangVersion == null) {
             try {
@@ -293,6 +302,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         return eventBox;
     }
 
+    @Override
     public OtpErlangPid getEventPid() {
         final OtpMbox theEventBox = getEventBox();
         if (theEventBox == null) {
@@ -301,10 +311,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         return theEventBox.self();
     }
 
+    @Override
     public RuntimeInfo getRuntimeInfo() {
         return info;
     }
 
+    @Override
     public String getName() {
         if (runtime == null) {
             return "<not_connected>";
@@ -312,6 +324,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
+    @Override
     public String getFullNodeName() {
         return runtime.getNodeName();
     }
@@ -346,14 +359,17 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public boolean isStopped() {
         return stopped;
     }
 
+    @Override
     public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
         getNode().registerStatusHandler(handler);
     }
 
+    @Override
     public void stop() {
         stopped = true;
     }
@@ -416,10 +432,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public OtpMbox createMbox() {
         return getNode().createMbox();
     }
 
+    @Override
     public OtpMbox createMbox(final String name) {
         return getNode().createMbox(name);
     }
@@ -437,14 +455,17 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void removePath(final String path) {
         codeManager.removePath(path);
     }
 
+    @Override
     public void addPath(final boolean usePathZ, final String path) {
         codeManager.addPath(usePathZ, path);
     }
 
+    @Override
     public synchronized void initErlang(final boolean monitor,
             final boolean watch) {
         init(getEventPid(), monitor, watch);
@@ -460,14 +481,17 @@ public abstract class Backend implements IStreamListener, IBackend {
         BackendCore.getBackendManager().addBackendListener(eventDaemon);
     }
 
+    @Override
     public void register(final ICodeBundle bundle) {
         codeManager.register(bundle);
     }
 
+    @Override
     public void unregister(final Bundle b) {
         codeManager.unregister(b);
     }
 
+    @Override
     public void streamAppended(final String text, final IStreamMonitor monitor) {
         final IStreamsProxy proxy = getStreamsProxy();
         if (monitor == proxy.getOutputStreamMonitor()) {
@@ -479,12 +503,13 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public ILaunch getLaunch() {
-        return launch;
+        return data.getLaunch();
     }
 
-    public void setLaunch(final ILaunch launch) {
-        this.launch = launch;
+    @Override
+    public void assignStreamProxyListeners() {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
             final IStreamMonitor errorStreamMonitor = proxy
@@ -496,6 +521,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public IBackendShell getShell(final String id) {
         final IBackendShell shell = shellManager.openShell(id);
         final IStreamsProxy proxy = getStreamsProxy();
@@ -503,6 +529,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             final IStreamMonitor errorStreamMonitor = proxy
                     .getErrorStreamMonitor();
             errorStreamMonitor.addListener(new IStreamListener() {
+                @Override
                 public void streamAppended(final String text,
                         final IStreamMonitor monitor) {
                     shell.add(text, IoRequestKind.STDERR);
@@ -511,6 +538,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             final IStreamMonitor outputStreamMonitor = proxy
                     .getOutputStreamMonitor();
             outputStreamMonitor.addListener(new IStreamListener() {
+                @Override
                 public void streamAppended(final String text,
                         final IStreamMonitor monitor) {
                     shell.add(text, IoRequestKind.STDOUT);
@@ -520,10 +548,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         return shell;
     }
 
+    @Override
     public boolean isDistributed() {
         return !getData().getNodeName().equals("");
     }
 
+    @Override
     public void input(final String s) throws IOException {
         if (!isStopped()) {
             final IStreamsProxy proxy = getStreamsProxy();
@@ -537,6 +567,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void addProjectPath(final IProject project) {
         final IErlProject eproject = CoreScope.getModel().findProject(project);
         final String outDir = project.getLocation()
@@ -571,6 +602,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public void removeProjectPath(final IProject project) {
         final IErlProject eproject = CoreScope.getModel().findProject(project);
         if (eproject == null) {
@@ -636,14 +668,17 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
     public boolean isManaged() {
         return data.isManaged();
     }
 
+    @Override
     public boolean doLoadOnAllNodes() {
         return getRuntimeInfo().loadOnAllNodes();
     }
 
+    @Override
     public IStreamsProxy getStreamsProxy() {
         return null;
     }
@@ -657,15 +692,15 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         if (data.isDebug()) {
             // add debug debugTarget
-            debugTarget = new ErlangDebugTarget(launch, this, projects,
+            debugTarget = new ErlangDebugTarget(getLaunch(), this, projects,
                     data.getDebugFlags());
             // debugTarget.getWaiter().doWait();
-            launch.addDebugTarget(debugTarget);
+            getLaunch().addDebugTarget(debugTarget);
             // interpret everything we can
             final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
             if (distributed) {
                 distributeDebuggerCode();
-                addNodesAsDebugTargets(launch, debugTarget);
+                addNodesAsDebugTargets(getLaunch(), debugTarget);
             }
             interpretModules(data, distributed);
             registerStartupFunctionStarter(data);
@@ -689,6 +724,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private void registerStartupFunctionStarter(final BackendData myData) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
+                    @Override
                     public void handleDebugEvents(final DebugEvent[] events) {
                         final InitialCall init_call = myData.getInitialCall();
                         if (init_call != null) {
@@ -828,14 +864,17 @@ public abstract class Backend implements IStreamListener, IBackend {
         return new ErlangDebugHelper();
     }
 
+    @Override
     public boolean hasConsole() {
         return getData().hasConsole();
     }
 
+    @Override
     public BackendData getData() {
         return data;
     }
 
+    @Override
     public void initialize() {
         shellManager = new BackendShellManager(this);
         if (isDistributed()) {
@@ -854,23 +893,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    public void launchRuntime() {
-        if (launch != null) {
-            return;
-        }
-        final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
-        try {
-            launch = launchConfig.launch(ILaunchManager.RUN_MODE,
-                    new NullProgressMonitor(), false, true);
-        } catch (final CoreException e) {
-            ErlLogger.error(e);
-        }
-    }
-
+    @Override
     public String getJavaNodeName() {
         return runtime.getNode().node();
     }
 
+    @Override
     public void installDeferredBreakpoints() {
         debugTarget.installDeferredBreakpoints();
     }

@@ -25,6 +25,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
 
     private ElementChangedListener fListener;
 
+    @Override
     public Object[] getChildren(final Object parent) {
         if (parent instanceof IParent) {
             final IParent p = (IParent) parent;
@@ -39,10 +40,12 @@ public class ErlangContentProvider implements ITreeContentProvider {
         return NO_CHILDREN;
     }
 
+    @Override
     public Object[] getElements(final Object parent) {
         return getChildren(parent);
     }
 
+    @Override
     public Object getParent(final Object child) {
         if (child instanceof IErlElement) {
             final IErlElement e = (IErlElement) child;
@@ -51,6 +54,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
         return null;
     }
 
+    @Override
     public boolean hasChildren(final Object parent) {
         if (parent instanceof IParent) {
             final IParent p = (IParent) parent;
@@ -63,6 +67,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
         return false;
     }
 
+    @Override
     public void dispose() {
         if (fListener != null) {
             CoreScope.getModel().removeElementChangedListener(fListener);
@@ -73,6 +78,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
     /*
      * @see IContentProvider#inputChanged(Viewer, Object, Object)
      */
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         final boolean isModule = newInput instanceof IErlModule;

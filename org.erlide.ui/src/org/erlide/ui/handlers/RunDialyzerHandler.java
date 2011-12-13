@@ -106,6 +106,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         }
     }
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final Job job = new DialyzeOperation("Running Dialyzer");
         final Set<IFile> files = collectFiles();

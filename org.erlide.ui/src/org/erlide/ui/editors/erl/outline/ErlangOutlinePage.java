@@ -110,7 +110,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     @Override
     public void setSelection(final ISelection selection) {
-        ErlLogger.debug("setSelection %s", selection);
         fOutlineViewer.setSelection(selection);
     }
 
@@ -153,12 +152,11 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             final Display d = c.getDisplay();
             d.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     if (getTreeViewer().getControl() != null
                             && !getTreeViewer().getControl().isDisposed()) {
-                        ErlLogger.debug("*>> refreshing %s", fModule.getName());
                         getTreeViewer().refresh(fModule);
-                        // getTreeViewer().setInput(fModule);
                     }
                 }
             });
@@ -221,6 +219,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager m) {
                 // recursive loop?
                 // menuAboutToShow(m);
@@ -272,7 +271,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * 
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
-        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
+        @Override
+        public Object getAdapter(@SuppressWarnings("rawtypes")
+        final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }
@@ -284,7 +285,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         if (getTreeViewer() != null) {
             ISelection s = getTreeViewer().getSelection();
             if (s instanceof IStructuredSelection) {
-                ErlLogger.debug("select %s", reference);
                 final IStructuredSelection ss = (IStructuredSelection) s;
                 final List<?> elements = ss.toList();
                 if (!elements.contains(reference)) {
@@ -307,6 +307,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         super.dispose();
     }
 
+    @Override
     public void elementChanged(final IErlElement element) {
         if (fModule == element) {
             refresh();
@@ -331,8 +332,9 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         viewMenuManager.add(fToggleLinkingAction);
     }
 
+    @Override
     public void sort(final boolean sorting) {
-        ErlLogger.debug("sorting " + sorting);
+        ErlLogger.debug("NYI: sorting " + sorting);
     }
 
     public static IEclipsePreferences getPrefsNode() {

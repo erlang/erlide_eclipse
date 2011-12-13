@@ -17,6 +17,7 @@ import org.erlide.tracing.core.mvc.model.TracedNode;
 public class NodeLabelProvider extends LabelProvider implements
         ITableLabelProvider {
 
+    @Override
     public Image getColumnImage(final Object element, final int index) {
         final TracedNode node = (TracedNode) element;
 
@@ -33,6 +34,7 @@ public class NodeLabelProvider extends LabelProvider implements
         }
     }
 
+    @Override
     public String getColumnText(final Object element, final int columnIndex) {
         final TracedNode node = (TracedNode) element;
         switch (NodeColumn.getByIndex(columnIndex)) {

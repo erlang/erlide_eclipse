@@ -50,6 +50,7 @@ public class CoverBackend implements ICoverBackend {
         log = Activator.getDefault();
     }
 
+    @Override
     public void startBackend() {
         if (backend != null && !backend.isStopped()) {
             log.info("is started");
@@ -95,6 +96,7 @@ public class CoverBackend implements ICoverBackend {
     /**
      * Run coverage analysis
      */
+    @Override
     public synchronized void runCoverageAnalysis(
             final AbstractCoverRunner runner) {
         runner.start();

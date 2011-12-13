@@ -84,6 +84,7 @@ public class ErlangNature implements IProjectNature {
      * 
      * @see org.eclipse.core.resources.IProjectNature#configure()
      */
+    @Override
     public void configure() throws CoreException {
         final IProjectDescription description = project.getDescription();
         if (!hasBuildSpec(description.getBuildSpec())) {
@@ -105,6 +106,7 @@ public class ErlangNature implements IProjectNature {
      * 
      * @see org.eclipse.core.resources.IProjectNature#deconfigure()
      */
+    @Override
     public void deconfigure() throws CoreException {
         final IProjectDescription description = project.getDescription();
         final int count = getBuildSpecCount(description.getBuildSpec());
@@ -131,6 +133,7 @@ public class ErlangNature implements IProjectNature {
      * 
      * @see org.eclipse.core.resources.IProjectNature#getProject()
      */
+    @Override
     public IProject getProject() {
         return project;
     }
@@ -140,6 +143,7 @@ public class ErlangNature implements IProjectNature {
      * 
      * @see org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.resources.IProject)
      */
+    @Override
     public void setProject(final IProject lproject) {
         project = lproject;
     }

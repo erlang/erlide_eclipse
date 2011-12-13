@@ -185,6 +185,7 @@ public class OtpErlangPid extends OtpErlangObject implements Serializable,
         return hash.valueOf();
     }
 
+    @Override
     public int compareTo(final Object o) {
         if (!(o instanceof OtpErlangPid)) {
             return -1;

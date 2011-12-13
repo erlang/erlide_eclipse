@@ -202,6 +202,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
         description.setLayoutData(data);
         fCheckBoxList
                 .addSelectionChangedListener(new ISelectionChangedListener() {
+                    @Override
                     public void selectionChanged(
                             final SelectionChangedEvent event) {
                         final ISelection selection = event.getSelection();
@@ -222,6 +223,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
              * org.eclipse.jface.viewers.ICheckStateListener#checkStateChanged
              * (org.eclipse.jface.viewers.CheckStateChangedEvent)
              */
+            @Override
             public void checkStateChanged(final CheckStateChangedEvent event) {
                 final Object element = event.getElement();
                 if (element instanceof FilterDescriptor) {

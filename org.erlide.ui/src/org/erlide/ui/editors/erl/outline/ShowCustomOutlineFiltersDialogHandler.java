@@ -25,6 +25,7 @@ public class ShowCustomOutlineFiltersDialogHandler extends AbstractHandler
         super();
     }
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final Object activePart = HandlerUtil.getVariable(event, "activePart");
         final String targetId;

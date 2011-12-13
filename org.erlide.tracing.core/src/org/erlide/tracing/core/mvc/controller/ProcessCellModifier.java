@@ -21,6 +21,7 @@ public class ProcessCellModifier implements ICellModifier {
         this.tableViewer = tableViewer;
     }
 
+    @Override
     public boolean canModify(final Object element, final String property) {
         // when cell from processes column was clicked
         try {
@@ -36,6 +37,7 @@ public class ProcessCellModifier implements ICellModifier {
         return true;
     }
 
+    @Override
     public Object getValue(final Object element, final String property) {
         final TracedProcess process = (TracedProcess) element;
 
@@ -54,6 +56,7 @@ public class ProcessCellModifier implements ICellModifier {
         return process.hasFlag(ProcessFlag.valueOf(property));
     }
 
+    @Override
     public void modify(final Object element, final String property,
             final Object value) {
         final TracedProcess process = (TracedProcess) ((TableItem) element)

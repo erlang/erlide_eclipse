@@ -36,38 +36,47 @@ import org.erlide.ui.util.StatusInfo;
 public class ProjectSelectionDialog extends SelectionStatusDialog {
 
     final static class OurLabelProvider implements ILabelProvider {
+        @Override
         public Image getImage(final Object element) {
             return null;
         }
 
+        @Override
         public String getText(final Object element) {
             final IProject p = (IProject) element;
             return p.getName();
         }
 
+        @Override
         public void addListener(final ILabelProviderListener listener) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public boolean isLabelProperty(final Object element,
                 final String property) {
             return true;
         }
 
+        @Override
         public void removeListener(final ILabelProviderListener listener) {
         }
     }
 
     final class OurContentProvider implements IStructuredContentProvider {
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             return fErlProjects.toArray();
         }
@@ -118,6 +127,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
                 | SWT.BORDER);
         fTableViewer
                 .addSelectionChangedListener(new ISelectionChangedListener() {
+                    @Override
                     public void selectionChanged(
                             final SelectionChangedEvent event) {
                         doSelectionChanged(((IStructuredSelection) event
@@ -125,6 +135,7 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
                     }
                 });
         fTableViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 okPressed();
             }
@@ -144,10 +155,12 @@ public class ProjectSelectionDialog extends SelectionStatusDialog {
         checkbox.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, true,
                 false));
         checkbox.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 updateFilter(((Button) e.widget).getSelection());
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 updateFilter(((Button) e.widget).getSelection());
             }

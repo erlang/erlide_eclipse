@@ -290,6 +290,7 @@ public class MarkOccurencesHandler {
          * org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged
          * (org.eclipse.jface.text.DocumentEvent)
          */
+        @Override
         public void documentAboutToBeChanged(final DocumentEvent event) {
             if (erlangEditor.markOccurencesHandler.fOccurrencesFinderJob != null) {
                 erlangEditor.markOccurencesHandler.fOccurrencesFinderJob
@@ -302,6 +303,7 @@ public class MarkOccurencesHandler {
          * org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse
          * .jface.text.DocumentEvent)
          */
+        @Override
         public void documentChanged(final DocumentEvent event) {
         }
 
@@ -310,6 +312,7 @@ public class MarkOccurencesHandler {
          * org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged
          * (org.eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
          */
+        @Override
         public void inputDocumentAboutToBeChanged(final IDocument oldInput,
                 final IDocument newInput) {
             if (oldInput == null) {
@@ -324,6 +327,7 @@ public class MarkOccurencesHandler {
          * org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org
          * .eclipse.jface.text.IDocument, org.eclipse.jface.text.IDocument)
          */
+        @Override
         public void inputDocumentChanged(final IDocument oldInput,
                 final IDocument newInput) {
             if (newInput == null) {
@@ -448,6 +452,7 @@ public class MarkOccurencesHandler {
 
         fPostSelectionListener = new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 final ISelection selection = event.getSelection();
                 erlangEditor.markOccurencesHandler.updateOccurrenceAnnotations(

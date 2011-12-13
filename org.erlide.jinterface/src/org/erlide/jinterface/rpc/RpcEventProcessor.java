@@ -23,6 +23,7 @@ public final class RpcEventProcessor implements Runnable {
         this.mbox = mbox;
     }
 
+    @Override
     public void run() {
         terminated = false;
         mbox.send(starter, new OtpErlangAtom("start"));

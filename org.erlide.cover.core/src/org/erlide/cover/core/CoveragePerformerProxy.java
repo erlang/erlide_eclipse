@@ -6,10 +6,12 @@ import org.erlide.cover.api.ICoveragePerformerProxy;
 
 public class CoveragePerformerProxy implements ICoveragePerformerProxy {
 
+    @Override
     public ICoveragePerformer getPerformer() {
         return CoveragePerformer.getPerformer();
     }
 
+    @Override
     public ICoverBackend getBackend() {
         return CoverBackend.getInstance();
     }

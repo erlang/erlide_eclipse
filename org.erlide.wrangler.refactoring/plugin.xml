@@ -327,6 +327,35 @@
 		<command id="org.erlide.wrangler.refactoring.codeinspectionstub.about"
 			name="About">
 		</command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.adhoc"
+        name="%applyAdhocRefac">
+  </command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.gen_refac"
+        name="gen_refac">
+     <commandParameter
+           id="org.erlide.wrangler.refactoring.gen_refac.callback"
+           name="callback"
+           optional="false">
+     </commandParameter>
+     <commandParameter
+           id="org.erlide.wrangler.refactoring.gen_refac.name"
+           name="name"
+           optional="false">
+     </commandParameter>
+  </command>
+  <command
+        categoryId="org.erlide.wrangler.refactoring"
+        id="org.erlide.wrangler.refactoring.add"
+        name="%addRefac">
+  </command>
+  <command
+        id="org.erlide.wrangler.refactoring.empty"
+        name="empty_cmd">
+  </command>
 	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -433,6 +462,31 @@
 				<command commandId="org.erlide.wrangler.refactoring.partitionexports"
 					id="org.erlide.wrangler.refactoring.partitionexports" style="push">
 				</command>
+    <separator
+          name="org.erlide.wrangler.refactoring.separator4"
+          visible="true">
+    </separator>
+    <menu
+          id="org.erlide.wrangler.refactoring.user.genrefac"
+          label="%userRefacs">
+       <dynamic
+             class="org.erlide.wrangler.refactoring.ui.menu.UserRefacContribution"
+             id="org.erlide.wrangler.refactoring.user.genrefac.items">
+       </dynamic>
+    </menu>
+    <menu
+          id="org.erlide.wrangler.refactoring.user.mygenrefac"
+          label="%userMyRefacs">
+       <dynamic
+             class="org.erlide.wrangler.refactoring.ui.menu.UserMyRefacContribution"
+             id="org.erlide.wrangler.refactoring.user.mygenrefac">
+       </dynamic>
+    </menu>
+    <command
+          commandId="org.erlide.wrangler.refactoring.adhoc"
+          id="org.erlide.wrangler.refactoring.adhoc"
+          style="push">
+    </command>
 				<visibleWhen>
 					<with variable="activeEditorId">
 						<or>
@@ -440,6 +494,11 @@
 						</or>
 					</with>
 				</visibleWhen>
+    <command
+          commandId="org.erlide.wrangler.refactoring.add"
+          id="org.erlide.wrangler.refactoring.add"
+          style="push">
+    </command>
 			</menu>
 		</menuContribution>
 		<menuContribution locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -591,6 +650,18 @@
 		<handler class="org.erlide.wrangler.refactoring.ui.AboutHandler"
 			commandId="org.erlide.wrangler.refactoring.codeinspectionstub.about">
 		</handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+        commandId="org.erlide.wrangler.refactoring.adhoc">
+  </handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.RefactoringHandler"
+        commandId="org.erlide.wrangler.refactoring.gen_refac">
+  </handler>
+  <handler
+        class="org.erlide.wrangler.refactoring.ui.AddRefacHandler"
+        commandId="org.erlide.wrangler.refactoring.add">
+  </handler>
 	</extension>
 	<extension point="org.eclipse.core.expressions.propertyTesters">
 		<propertyTester class="org.erlide.wrangler.refactoring.ui.WranglerTester"

@@ -121,6 +121,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
     private void registerGlobalEventhandlers() {
         new ErlangEventHandler("*", null) {
+            @Override
             public void handleEvent(final Event event) {
                 if (ErlangCore.hasFeatureEnabled("erlide.eventhandler.debug")) {
                     ErlLogger.info("erlang event : "
@@ -130,6 +131,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }.register();
     }
 
+    @Override
     public IBackend createExecutionBackend(final BackendData data) {
         ErlLogger.debug("create execution backend " + data.getNodeName());
         final IBackend b = factory.createBackend(data);
@@ -144,6 +146,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
     }
 
+    @Override
     public IBackend getBuildBackend(final IProject project)
             throws BackendException {
         final IErlProject erlProject = CoreScope.getModel().getErlangProject(
@@ -171,6 +174,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         return b;
     }
 
+    @Override
     public IBackend getIdeBackend() {
         // System.out.println("GET ide" + Thread.currentThread());
         if (ideBackend == null) {
@@ -208,6 +212,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
     }
 
+    @Override
     public synchronized void updateNodeStatus(final String host,
             final Collection<String> started, final Collection<String> stopped) {
         for (final String b : started) {
@@ -239,6 +244,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
     }
 
+    @Override
     public synchronized void removeExecutionBackend(final IProject project,
             final IBackend b) {
         b.removeProjectPath(project);
@@ -250,6 +256,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         list.remove(b);
     }
 
+    @Override
     public void loadCodepathExtensions() {
         final IExtensionPoint exPnt = BackendUtils.getCodepathExtension();
         // TODO listen to changes to the registry!
@@ -289,6 +296,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         addBundle(plugin, paths, inits);
     }
 
+    @Override
     public void addBundle(final Bundle b,
             final Collection<Tuple<String, CodeContext>> paths,
             final Collection<Tuple<String, String>> inits) {
@@ -299,6 +307,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final CodeBundleImpl pp = new CodeBundleImpl(b, paths, inits);
         getCodeBundles().put(b, pp);
         forEachBackend(new IErlideBackendVisitor() {
+            @Override
             public void visit(final IBackend bb) {
                 bb.register(pp);
             }
@@ -309,16 +318,19 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         return getCodeBundles().get(b);
     }
 
+    @Override
     public Map<Bundle, ICodeBundle> getCodeBundles() {
         return codeBundles;
     }
 
+    @Override
     public void forEachBackend(final IErlideBackendVisitor visitor) {
         for (final IBackend b : getAllBackends()) {
             visitor.visit(b);
         }
     }
 
+    @Override
     public IRpcCallSite getByName(final String nodeName) {
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
@@ -329,17 +341,20 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         return null;
     }
 
+    @Override
     public Collection<IBackend> getAllBackends() {
         synchronized (allBackends) {
             return Collections.unmodifiableCollection(allBackends);
         }
     }
 
+    @Override
     public void moduleLoaded(final IBackend b, final IProject project,
             final String moduleName) {
         notifyBackendChange(b, BackendEvent.MODULE_LOADED, project, moduleName);
     }
 
+    @Override
     public synchronized Set<IBackend> getExecutionBackends(
             final IProject project) {
         final Set<IBackend> bs = executionBackends.get(project);
@@ -349,14 +364,17 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         return Collections.unmodifiableSet(bs);
     }
 
+    @Override
     public void addBackendListener(final IBackendListener listener) {
         listeners.add(listener);
     }
 
+    @Override
     public void removeBackendListener(final IBackendListener listener) {
         listeners.remove(listener);
     }
 
+    @Override
     public synchronized void addExecutionBackend(final IProject project,
             final IBackend b) {
         Set<IBackend> list = executionBackends.get(project);
@@ -368,16 +386,19 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         b.addProjectPath(project);
     }
 
+    @Override
     public EpmdWatcher getEpmdWatcher() {
         return epmdWatcher;
     }
 
+    @Override
     public void dispose(final IBackend backend) {
         if (backend != null && backend != ideBackend) {
             backend.dispose();
         }
     }
 
+    @Override
     public void dispose() {
         final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                 .getLaunches();
@@ -386,6 +407,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         epmdWatcherJob.stop();
     }
 
+    @Override
     public IBackend getBackendForLaunch(final ILaunch launch) {
         for (final IBackend backend : allBackends) {
             if (backend.getLaunch() == launch) {
@@ -395,9 +417,11 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         return null;
     }
 
+    @Override
     public void terminateBackendsForLaunch(final ILaunch launch) {
     }
 
+    @Override
     public void removeBackendsForLaunch(final ILaunch launch) {
     }
 

@@ -29,6 +29,7 @@ class ElementChangedListener implements IElementChangedListener {
         this.page = page;
     }
 
+    @Override
     public void elementChanged(final ElementChangedEvent e) {
 
         if (page.getControl() == null) {
@@ -39,6 +40,7 @@ class ElementChangedListener implements IElementChangedListener {
         if (d != null) {
             d.asyncExec(new Runnable() {
 
+                @Override
                 public void run() {
                     // IErlModule cu = (IErlModule) fInput;
                     // IErlElement base = cu;

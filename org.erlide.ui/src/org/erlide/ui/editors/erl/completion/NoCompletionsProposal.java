@@ -30,6 +30,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
      * org.eclipse.jface.text.contentassist.ICompletionProposal#apply(org.eclipse
      * .jface.text.IDocument)
      */
+    @Override
     public void apply(final IDocument document) {
         // do nothing
     }
@@ -38,6 +39,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
      * @seeorg.eclipse.jface.text.contentassist.ICompletionProposal#
      * getAdditionalProposalInfo()
      */
+    @Override
     public String getAdditionalProposalInfo() {
         return null;
     }
@@ -46,6 +48,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
      * @seeorg.eclipse.jface.text.contentassist.ICompletionProposal#
      * getContextInformation()
      */
+    @Override
     public IContextInformation getContextInformation() {
         return null;
     }
@@ -55,6 +58,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
      * org.eclipse.jface.text.contentassist.ICompletionProposal#getDisplayString
      * ()
      */
+    @Override
     public String getDisplayString() {
         return "No suggestions available";
     }
@@ -62,6 +66,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
     /*
      * @see org.eclipse.jface.text.contentassist.ICompletionProposal#getImage()
      */
+    @Override
     public Image getImage() {
         return null;
     }
@@ -71,6 +76,7 @@ public final class NoCompletionsProposal implements ICompletionProposal {
      * org.eclipse.jface.text.contentassist.ICompletionProposal#getSelection
      * (org.eclipse.jface.text.IDocument)
      */
+    @Override
     public Point getSelection(final IDocument document) {
         return null;
     }

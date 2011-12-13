@@ -65,6 +65,7 @@ public class EditorPreferencePage extends PreferencePage implements
     /**
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
+    @Override
     public void init(final IWorkbench workbench) {
         setPreferenceStore(ErlideUIPlugin.getDefault().getPreferenceStore());
     }
@@ -112,6 +113,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
     private final ModifyListener fTextFieldListener = new ModifyListener() {
 
+        @Override
         public void modifyText(final ModifyEvent e) {
             final Text text = (Text) e.widget;
             fOverlayStore.setValue(fTextFields.get(text), text.getText());
@@ -122,6 +124,7 @@ public class EditorPreferencePage extends PreferencePage implements
 
     private final ModifyListener fNumberFieldListener = new ModifyListener() {
 
+        @Override
         public void modifyText(final ModifyEvent e) {
             numberFieldChanged((Text) e.widget);
         }

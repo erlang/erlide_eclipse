@@ -20,6 +20,7 @@ import org.erlide.core.model.util.CoreUtil;
 public class ErlangSourcePathComputerDelegate implements
         ISourcePathComputerDelegate {
 
+    @Override
     public ISourceContainer[] computeSourceContainers(
             final ILaunchConfiguration configuration,
             final IProgressMonitor monitor) throws CoreException {

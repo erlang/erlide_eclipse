@@ -203,6 +203,7 @@ class MessageDialogPage extends DialogPage {
         createControl(parent);
     }
 
+    @Override
     public void createControl(final Composite parent) {
         final Composite composite1 = new Composite(parent, SWT.NONE);
         final GridLayout layout = new GridLayout();

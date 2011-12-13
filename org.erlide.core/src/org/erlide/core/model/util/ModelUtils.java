@@ -61,7 +61,7 @@ public class ModelUtils {
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
-                result.add(external.getExternalName());
+                result.add(external.getName());
             } else {
                 result.add(element.getName());
             }
@@ -75,7 +75,7 @@ public class ModelUtils {
             throws ErlModelException {
         for (final IErlElement i : parent.getChildrenOfKind(Kind.EXTERNAL)) {
             final IErlExternal external = (IErlExternal) i;
-            final String externalName = external.getExternalName();
+            final String externalName = external.getName();
             ErlLogger
                     .debug("externalName %s segment %s", externalName, segment);
             if (externalName.equals(segment)) {

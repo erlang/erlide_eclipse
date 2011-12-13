@@ -13,6 +13,7 @@ package org.erlide.jinterface.internal.rpc;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcHelper;
 import org.erlide.jinterface.rpc.RpcMonitor;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -39,10 +40,12 @@ public class RpcFutureImpl implements IRpcFuture {
         this.helper = helper;
     }
 
+    @Override
     public OtpErlangObject get() throws RpcException {
         return get(IRpcHelper.INFINITY);
     }
 
+    @Override
     public OtpErlangObject get(final long timeout) throws RpcException {
         if (isDone()) {
             if (logCalls) {
@@ -60,6 +63,7 @@ public class RpcFutureImpl implements IRpcFuture {
         return result;
     }
 
+    @Override
     public boolean isDone() {
         return result != null;
     }

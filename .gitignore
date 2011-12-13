@@ -22,4 +22,4 @@ ttb_last_config
 *.log.lck
 .nfs*
 .~lock.*
-
+.recommenders

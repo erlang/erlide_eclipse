@@ -26,10 +26,12 @@ public class NodeCellModifier implements ICellModifier {
         this.tableViewer = tableViewer;
     }
 
+    @Override
     public boolean canModify(final Object element, final String property) {
         return true;
     }
 
+    @Override
     public Object getValue(final Object element, final String property) {
         final TracedNode node = (TracedNode) element;
         switch (NodeColumn.valueOf(property)) {
@@ -44,6 +46,7 @@ public class NodeCellModifier implements ICellModifier {
         }
     }
 
+    @Override
     public void modify(final Object element, final String property,
             final Object value) {
         final TracedNode node = (TracedNode) ((TableItem) element).getData();

@@ -62,6 +62,7 @@ public class DialyzerUtils {
             this.locker = locker;
         }
 
+        @Override
         public void stop(final OtpErlangObject msg) {
             monitor.done();
             synchronized (locker) {
@@ -69,6 +70,7 @@ public class DialyzerUtils {
             }
         }
 
+        @Override
         public void start(final OtpErlangObject msg) {
             final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
             int progressMax;
@@ -81,6 +83,7 @@ public class DialyzerUtils {
             child.setTaskName("Dialyzing " + projectName);
         }
 
+        @Override
         public void progress(final OtpErlangObject msg) {
             final OtpErlangTuple t = (OtpErlangTuple) msg;
             final OtpErlangPid dialyzerPid = (OtpErlangPid) t.elementAt(0);

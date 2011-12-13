@@ -84,13 +84,16 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     public class ContentProvider implements IStructuredContentProvider {
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             return shownPLTFiles.toArray();
         }
@@ -99,24 +102,30 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
     private static class LabelProvider implements ILabelProvider {
 
+        @Override
         public void addListener(final ILabelProviderListener listener) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public boolean isLabelProperty(final Object element,
                 final String property) {
             return true;
         }
 
+        @Override
         public void removeListener(final ILabelProviderListener listener) {
         }
 
+        @Override
         public Image getImage(final Object element) {
             return null;
         }
 
+        @Override
         public String getText(final Object element) {
             if (element instanceof String) {
                 final String s = (String) element;
@@ -279,6 +288,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         fEditButton.setText("Change...");
         fEditButton.setLayoutData(gd);
         fEditButton.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(final Event evt) {
                 changeSelectedPLTFiles();
             }
@@ -288,6 +298,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         fRemoveButton.setText("Remove");
         fRemoveButton.setLayoutData(gd);
         fRemoveButton.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(final Event evt) {
                 removeSelectedPLTFiles();
 
@@ -531,6 +542,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         super.setElement(element);
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
     }
 
@@ -677,6 +689,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
             }
             if (changed) {
                 getControl().getDisplay().asyncExec(new Runnable() {
+                    @Override
                     public void run() {
                         if (!fPLTTableViewer.getControl().isDisposed()) {
                             fPLTTableViewer.refresh();

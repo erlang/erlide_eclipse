@@ -10,6 +10,7 @@ public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("rawtypes")
     private static final Class[] ADAPTER_LIST = new Class[] { IErlElement.class };
 
+    @Override
     @SuppressWarnings("rawtypes")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
@@ -23,6 +24,7 @@ public class EditorInputToModuleAdapterFactory implements IAdapterFactory {
         return null;
     }
 
+    @Override
     @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return ADAPTER_LIST;

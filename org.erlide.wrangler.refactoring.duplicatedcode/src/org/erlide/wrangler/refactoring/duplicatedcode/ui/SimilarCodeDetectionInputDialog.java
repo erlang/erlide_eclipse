@@ -97,6 +97,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         minLenText.setText("5");
         minLenText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -116,6 +117,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         minToksText.setText("40");
         minToksText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -135,6 +137,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         minFreqText.setText("2");
         minFreqText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -155,6 +158,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         maxNewVarsText.setText("4");
         maxNewVarsText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -175,6 +179,7 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
         simScoreText.setText("0.8");
         simScoreText.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 validateInput();
             }
@@ -191,11 +196,13 @@ public class SimilarCodeDetectionInputDialog extends AbstractInputDialog {
                         | GridData.VERTICAL_ALIGN_CENTER));
         onlyInFileCheckBoxButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 validateInput();
 
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 validateInput();
 

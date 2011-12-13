@@ -84,6 +84,7 @@ public class ErlangPreferencePage extends PreferencePage implements
         return panel;
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
     }
 

@@ -173,6 +173,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         // listener
         treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 doSelection(event);
             }
@@ -229,14 +230,17 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
+    @Override
     public void startTracing() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 enableActions(false);
             }
         });
     }
 
+    @Override
     public void finishLoadingFile(final TracingStatus theStatus) {
         status = theStatus;
         if (task != null) {
@@ -245,6 +249,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         } else {
             // when loading was initialized outside this view
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     doAfterLoadingFile();
                 }
@@ -252,6 +257,7 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
+    @Override
     public void finishLoadingTraces(final TracingStatus theStatus) {
         status = theStatus;
         if (task != null) {
@@ -259,14 +265,17 @@ public class TraceBrowserView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
+    @Override
     public void removeFile() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 treeViewer.refresh();
             }
         });
     }
 
+    @Override
     public void updateTracePatterns() {
     }
 }

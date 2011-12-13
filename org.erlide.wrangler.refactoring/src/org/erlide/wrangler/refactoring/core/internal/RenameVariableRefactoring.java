@@ -64,6 +64,9 @@ public class RenameVariableRefactoring extends SimpleOneStepWranglerRefactoring 
     public String getDefaultValue() {
         final IErlMemberSelection sel = (IErlMemberSelection) GlobalParameters
                 .getWranglerSelection();
+        if (sel == null) {
+            return "";
+        }
 
         final RpcResult res = WranglerBackendManager.getRefactoringBackend()
                 .callWithoutParser("get_var_name_eclipse", "siixi",

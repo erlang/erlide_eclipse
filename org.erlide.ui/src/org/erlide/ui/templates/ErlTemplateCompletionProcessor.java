@@ -75,6 +75,7 @@ public class ErlTemplateCompletionProcessor extends TemplateCompletionProcessor 
                 context, region, getImage(template), relevance);
         p.setInformationControlCreator(new IInformationControlCreator() {
 
+            @Override
             public IInformationControl createInformationControl(
                     final Shell parent) {
                 return new SourceViewerInformationControl(parent,

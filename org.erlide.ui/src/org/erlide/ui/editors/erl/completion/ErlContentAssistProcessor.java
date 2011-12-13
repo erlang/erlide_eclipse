@@ -86,6 +86,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     public static class CompletionNameComparer implements
             Comparator<ICompletionProposal> {
 
+        @Override
         public int compare(final ICompletionProposal o1,
                 final ICompletionProposal o2) {
             final String s1 = o1.getDisplayString();
@@ -137,6 +138,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         initStyleSheet();
     }
 
+    @Override
     public ICompletionProposal[] computeCompletionProposals(
             final ITextViewer viewer, final int offset) {
         if (module == null) {
@@ -163,7 +165,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
             final IProject project = erlProject != null ? erlProject
                     .getWorkspaceProject() : null;
             IErlElement element = getElementAt(offset);
-            for (int i = 1; element == null && i <= 5; ++i) {
+            for (int i = 1; element == null && i <= 15; ++i) {
                 element = getElementAt(offset - i);
             }
             RecordCompletion rc = null;
@@ -805,6 +807,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         return Character.isJavaIdentifierPart(char1);
     }
 
+    @Override
     public IContextInformation[] computeContextInformation(
             final ITextViewer viewer, final int offset) {
         return null;
@@ -825,23 +828,28 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
     }
 
     private class PreferenceChangeListener implements IPreferenceChangeListener {
+        @Override
         public void preferenceChange(final PreferenceChangeEvent event) {
             setToPrefs();
         }
     }
 
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return fCompletionProposalAutoActivationCharacters;
     }
 
+    @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return null;
     }
 
+    @Override
     public String getErrorMessage() {
         return null;
     }
 
+    @Override
     public IContextInformationValidator getContextInformationValidator() {
         return null;
     }
@@ -878,6 +886,7 @@ public class ErlContentAssistProcessor implements IContentAssistProcessor,
         }
     }
 
+    @Override
     public void dispose() {
         final IEclipsePreferences node = CodeAssistPreferences.getNode();
         node.removePreferenceChangeListener(fPreferenceChangeListener);

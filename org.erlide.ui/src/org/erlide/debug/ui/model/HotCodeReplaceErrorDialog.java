@@ -77,6 +77,7 @@ public class HotCodeReplaceErrorDialog extends ErrorDialog {
         if (id == TERMINATE_ID || id == DISCONNECT_ID || id == RESTART_ID) {
             final String[] operation = new String[1];
             final Runnable r = new Runnable() {
+                @Override
                 public void run() {
                     try {
                         if (id == TERMINATE_ID) {

@@ -370,6 +370,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
                 .getProgressService();
         try {
             ps.busyCursorWhile(new IRunnableWithProgress() {
+                @Override
                 public void run(final IProgressMonitor pm) {
                     final TracedProcess[] processesList = ProcessHelper
                             .getProcsOnTracedNodes();
@@ -845,8 +846,10 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
     public void setFocus() {
     }
 
+    @Override
     public void startTracing() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 startStopAction.setImageDescriptor(PlatformUI.getWorkbench()
                         .getSharedImages()
@@ -856,6 +859,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         });
     }
 
+    @Override
     public void finishLoadingFile(final TracingStatus theStatus) {
         status = theStatus;
         if (task != null) {
@@ -863,14 +867,18 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
         }
     }
 
+    @Override
     public void finishLoadingTraces(final TracingStatus theStatus) {
     }
 
+    @Override
     public void removeFile() {
     }
 
+    @Override
     public void updateTracePatterns() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 functionsTableViewer.refresh();
             }

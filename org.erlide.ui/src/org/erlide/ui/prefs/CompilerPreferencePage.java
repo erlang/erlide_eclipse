@@ -102,6 +102,7 @@ public class CompilerPreferencePage extends PropertyPage implements
 
         text = new Text(prefsComposite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
         text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 final String txt = text.getText().trim();
                 final OptionStatus optionsAreOk = optionsAreOk(txt);
@@ -348,10 +349,12 @@ public class CompilerPreferencePage extends PropertyPage implements
         link.setFont(composite.getFont());
         link.setText("<A>" + theText + "</A>"); //$NON-NLS-1$//$NON-NLS-2$
         link.addSelectionListener(new SelectionListener() {
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 doLinkActivated((Link) e.widget);
             }
 
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
                 doLinkActivated((Link) e.widget);
             }
@@ -495,6 +498,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         super.setElement(element);
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
         performDefaults();
     }

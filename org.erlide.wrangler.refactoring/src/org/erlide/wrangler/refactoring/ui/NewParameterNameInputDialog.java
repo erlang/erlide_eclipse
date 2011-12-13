@@ -73,6 +73,7 @@ public class NewParameterNameInputDialog extends AbstractInputDialog {
         newParameterName.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
         newParameterName.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(final ModifyEvent e) {
                 data = newParameterName.getText();
                 validateInput();

@@ -28,6 +28,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         BackendCore.getBackendManager().addBackendListener(this);
     }
 
+    @Override
     public void runtimeAdded(final IBackend b) {
         if (b == null) {
             return;
@@ -42,6 +43,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         consoles.put(b, console);
     }
 
+    @Override
     public void runtimeRemoved(final IBackend b) {
         ErlLogger.debug("console REMOVED from " + b.getRuntimeInfo());
         final IConsole console = consoles.get(b);
@@ -51,10 +53,12 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
         conMan.removeConsoles(new IConsole[] { console });
     }
 
+    @Override
     public void dispose() {
         BackendCore.getBackendManager().removeBackendListener(this);
     }
 
+    @Override
     public void moduleLoaded(final IRpcCallSite backend,
             final IProject project, final String moduleName) {
     }

@@ -125,6 +125,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
         return true;
     }
 
+    @Override
     public synchronized void open(final IProgressMonitor monitor)
             throws ErlModelException {
         if (ErlModel.verbose) {
@@ -159,6 +160,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
             aname = name;
         }
 
+        @Override
         public boolean visit(final IResource resource) {
             if (resource.getType() == IResource.FILE
                     && resource.getName().equals(aname)) {
@@ -181,6 +183,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
     /**
      * @see IOpenable
      */
+    @Override
     public boolean hasUnsavedChanges() throws ErlModelException {
 
         if (isReadOnly() || !isOpen()) {
@@ -215,6 +218,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * 
      * @see IOpenable
      */
+    @Override
     public boolean isConsistent() {
         return true;
     }
@@ -223,6 +227,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
      * 
      * @see IOpenable
      */
+    @Override
     public boolean isOpen() {
         return true;
     }
@@ -238,6 +243,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
     /**
      * @see IOpenable
      */
+    @Override
     public void makeConsistent(final IProgressMonitor monitor)
             throws ErlModelException {
         ErlLogger.debug("make consistent? ");
@@ -299,6 +305,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
     /**
      * @see IOpenable
      */
+    @Override
     public void save(final IProgressMonitor pm, final boolean force)
             throws ErlModelException {
         if (isReadOnly()) {

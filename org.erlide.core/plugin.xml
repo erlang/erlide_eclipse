@@ -103,7 +103,7 @@
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.erlide.core.debug.ErlangLaunchDelegate"
+            delegate="org.erlide.core.backend.ErlangLaunchDelegate"
             delegateName="Erlang application"
             id="org.erlide.core.launch.erlangProcess"
             modes="run, debug"
@@ -113,7 +113,7 @@
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
       <launchConfigurationType
-            delegate="org.erlide.core.debug.ErlangLaunchDelegate"
+            delegate="org.erlide.core.backend.ErlangLaunchDelegate"
             id="org.erlide.core.launch.internal"
             modes="run"
             name="internal Erlang node"

@@ -36,8 +36,9 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
+import org.erlide.core.backend.ErlangLaunchDelegate;
 import org.erlide.core.common.CommonUtils;
-import org.erlide.core.debug.ErlangLaunchDelegate;
+import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
@@ -53,6 +54,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
     private static final String CONSOLE_VIEW_ID = "org.eclipse.ui.console.ConsoleView";
 
+    @Override
     public void launch(final ISelection selection, final String mode) {
         ErlLogger.debug("** Launch:: " + selection.toString());
         if (selection.isEmpty()) {
@@ -80,6 +82,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         projects.addAll(getDependentProjects(projects));
         final List<IErlProject> projectList = Lists.newArrayList(projects);
         Collections.sort(projectList, new Comparator<IErlProject>() {
+            @Override
             public int compare(final IErlProject o1, final IErlProject o2) {
                 return o1.getName().compareTo(o2.getName());
             }
@@ -105,6 +108,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         return depProjects;
     }
 
+    @Override
     public void launch(final IEditorPart editor, final String mode) {
         ErlLogger.debug("** Launch :: " + editor.getTitle());
         if (editor instanceof ErlangEditor) {
@@ -147,7 +151,11 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
-        final String name = CommonUtils.packList(projectNames, "_");
+        String name = CommonUtils.packList(projectNames, "_");
+        if (name.length() > 15) {
+            name = CommonUtils.packList(
+                    StringUtils.removeCommonPrefixes(projectNames), "_");
+        }
         // try and find one
         final ILaunchConfiguration[] launchConfigurations = launchManager
                 .getLaunchConfigurations();

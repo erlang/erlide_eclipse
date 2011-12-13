@@ -19,16 +19,19 @@ import org.erlide.core.backend.IBackend;
 
 public class BackendContentProvider implements IStructuredContentProvider {
 
+    @Override
     public void dispose() {
         // TODO unsubscribe from backend manager
 
     }
 
+    @Override
     public void inputChanged(final Viewer vwr, final Object oldInput,
             final Object newInput) {
         // TODO subscribe to backendmanager events
     }
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         final Collection<IBackend> bs = BackendCore.getBackendManager()
                 .getAllBackends();

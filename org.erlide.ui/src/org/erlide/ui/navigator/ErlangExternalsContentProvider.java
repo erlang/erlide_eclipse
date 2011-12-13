@@ -26,20 +26,24 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
 
     private static final Object[] NO_CHILDREN = new Object[0];
 
+    @Override
     public Object[] getElements(final Object inputElement) {
         return getChildren(inputElement);
     }
 
+    @Override
     public void dispose() {
         erlangFileContentProvider.dispose();
     }
 
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         // TODO Auto-generated method stub
 
     }
 
+    @Override
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IProject) {
@@ -66,6 +70,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         return NO_CHILDREN;
     }
 
+    @Override
     public Object getParent(final Object element) {
         if (element instanceof IErlProject) {
             final IErlProject project = (IErlProject) element;
@@ -97,6 +102,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         return null;
     }
 
+    @Override
     public boolean hasChildren(Object element) {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;

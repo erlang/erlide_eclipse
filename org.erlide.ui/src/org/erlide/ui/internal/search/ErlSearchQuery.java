@@ -60,18 +60,22 @@ public class ErlSearchQuery implements ISearchQuery {
         }
     }
 
+    @Override
     public boolean canRerun() {
         return true;
     }
 
+    @Override
     public boolean canRunInBackground() {
         return true;
     }
 
+    @Override
     public String getLabel() {
         return pattern.labelString();
     }
 
+    @Override
     public ISearchResult getSearchResult() {
         if (fSearchResult == null) {
             fSearchResult = new ErlangSearchResult(this);
@@ -79,11 +83,13 @@ public class ErlSearchQuery implements ISearchQuery {
         return fSearchResult;
     }
 
+    @Override
     public IStatus run(final IProgressMonitor monitor)
             throws OperationCanceledException {
         final Object locker = new Object();
         final IRpcResultCallback callback = new IRpcResultCallback() {
 
+            @Override
             public void start(final OtpErlangObject msg) {
                 if (fSearchResult != null) {
                     fSearchResult.removeAll();
@@ -98,6 +104,7 @@ public class ErlSearchQuery implements ISearchQuery {
                 monitor.beginTask("Searching", progressMax);
             }
 
+            @Override
             public void stop(final OtpErlangObject msg) {
                 monitor.done();
                 synchronized (locker) {
@@ -105,6 +112,7 @@ public class ErlSearchQuery implements ISearchQuery {
                 }
             }
 
+            @Override
             public void progress(final OtpErlangObject msg) {
                 final OtpErlangTuple t = (OtpErlangTuple) msg;
                 final OtpErlangPid backgroundSearchPid = (OtpErlangPid) t

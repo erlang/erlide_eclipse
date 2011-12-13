@@ -28,13 +28,16 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     class TreeContentProvider implements IStructuredContentProvider,
             ITreeContentProvider {
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput,
                 final Object newInput) {
         }
 
+        @Override
         public void dispose() {
         }
 
+        @Override
         public Object[] getElements(final Object inputElement) {
             model = epmdWatcher.getData();
             if (model == null) {
@@ -43,6 +46,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
             return model.keySet().toArray();
         }
 
+        @Override
         public Object[] getChildren(final Object parentElement) {
             if (parentElement instanceof String) {
                 final String host = (String) parentElement;
@@ -60,10 +64,12 @@ public class EpmdView extends ViewPart implements IEpmdListener {
             return new Object[] {};
         }
 
+        @Override
         public Object getParent(final Object element) {
             return null;
         }
 
+        @Override
         public boolean hasChildren(final Object element) {
             return getChildren(element).length > 0;
         }
@@ -94,6 +100,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     public void createPartControl(final Composite parent) {
         treeViewer = new TreeViewer(parent, SWT.BORDER);
         treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 treeViewer.refresh();
             }
@@ -115,10 +122,12 @@ public class EpmdView extends ViewPart implements IEpmdListener {
         // .getToolBarManager();
     }
 
+    @Override
     public void updateNodeStatus(final String host,
             final Collection<String> started, final Collection<String> stopped) {
         model = epmdWatcher.getData();
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 treeViewer.setInput(model);
             }

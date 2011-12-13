@@ -36,6 +36,7 @@ import org.erlide.wrangler.refactoring.util.GlobalParameters;
  */
 public abstract class AbstractDuplicatesSearcherAction extends AbstractHandler {
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         run();
         return null;

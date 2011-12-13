@@ -33,13 +33,16 @@ public class DuplicatesViewContentProvider implements
 
     private ResultTreeRoot invisibleRoot;
 
+    @Override
     public void inputChanged(final Viewer v, final Object oldInput,
             final Object newInput) {
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public Object[] getElements(final Object parent) {
         if (parent.equals(duplicatedCodeView.getViewSite())) {
             if (invisibleRoot == null) {
@@ -50,6 +53,7 @@ public class DuplicatesViewContentProvider implements
         return getChildren(parent);
     }
 
+    @Override
     public Object getParent(final Object child) {
         if (child instanceof AbstractResultTreeObject) {
             return ((AbstractResultTreeObject) child).getParent();
@@ -57,6 +61,7 @@ public class DuplicatesViewContentProvider implements
         return null;
     }
 
+    @Override
     public Object[] getChildren(final Object parent) {
         if (parent instanceof AbstractResultTreeParent) {
             return ((AbstractResultTreeParent) parent).getChildren();
@@ -64,6 +69,7 @@ public class DuplicatesViewContentProvider implements
         return new Object[0];
     }
 
+    @Override
     public boolean hasChildren(final Object parent) {
         if (parent instanceof AbstractResultTreeParent) {
             return ((AbstractResultTreeParent) parent).hasChildren();
@@ -85,6 +91,7 @@ public class DuplicatesViewContentProvider implements
         invisibleRoot.addChild(child);
     }
 
+    @Override
     public void showResult(final List<DuplicatedCodeElement> result) {
         invisibleRoot.dropChildren();
         if (result != null) {

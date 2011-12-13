@@ -25,6 +25,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
     /**
      * @see IActionDelegate#run(IAction)
      */
+    @Override
     public void run(final IAction action) {
         if (fBreakpoint != null) {
             IShellProvider provider;
@@ -32,6 +33,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
                 provider = fPart.getSite();
             } else {
                 provider = new IShellProvider() {
+                    @Override
                     public Shell getShell() {
                         final IWorkbench workbench = PlatformUI.getWorkbench();
                         final IWorkbenchWindow window = workbench
@@ -42,18 +44,22 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
             }
             final PropertyDialogAction propertyAction = new PropertyDialogAction(
                     provider, new ISelectionProvider() {
+                        @Override
                         public void addSelectionChangedListener(
                                 final ISelectionChangedListener listener) {
                         }
 
+                        @Override
                         public ISelection getSelection() {
                             return new StructuredSelection(fBreakpoint);
                         }
 
+                        @Override
                         public void removeSelectionChangedListener(
                                 final ISelectionChangedListener listener) {
                         }
 
+                        @Override
                         public void setSelection(final ISelection selection) {
                         }
                     });
@@ -64,6 +70,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
     /**
      * @see IActionDelegate#selectionChanged(IAction, ISelection)
      */
+    @Override
     public void selectionChanged(final IAction action,
             final ISelection selection) {
         if (selection instanceof IStructuredSelection) {
@@ -92,6 +99,7 @@ public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
     /**
      * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
      */
+    @Override
     public void setActivePart(final IAction action,
             final IWorkbenchPart targetPart) {
         fPart = targetPart;

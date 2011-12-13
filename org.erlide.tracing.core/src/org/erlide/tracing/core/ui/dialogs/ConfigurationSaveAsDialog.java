@@ -39,6 +39,7 @@ public class ConfigurationSaveAsDialog extends InputDialog {
             this.existingNames = existingNames;
         }
 
+        @Override
         public String isValid(final String newText) {
             if (newText == null || newText.length() == 0) {
                 return "";

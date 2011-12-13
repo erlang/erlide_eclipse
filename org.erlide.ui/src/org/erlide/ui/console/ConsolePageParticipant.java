@@ -81,6 +81,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
      * Handler to send EOF
      */
     private class EOFHandler extends AbstractHandler {
+        @Override
         public Object execute(final ExecutionEvent event)
                 throws org.eclipse.core.commands.ExecutionException {
             final IStreamsProxy proxy = getProcess().getStreamsProxy();
@@ -96,6 +97,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
 
     }
 
+    @Override
     public void init(final IPageBookViewPage page, final IConsole console) {
         fPage = page;
         fConsole = (ErlangConsole) console;
@@ -127,6 +129,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
     }
 
+    @Override
     public void dispose() {
         DebugUITools.getDebugContextManager()
                 .getContextService(fPage.getSite().getWorkbenchWindow())
@@ -164,7 +167,9 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         mgr.appendToGroup(IConsoleConstants.OUTPUT_GROUP, fStdOut);
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (IShowInSource.class.equals(required)) {
             return this;
         }
@@ -182,6 +187,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         return null;
     }
 
+    @Override
     public ShowInContext getShowInContext() {
         final IProcess process = getProcess();
         if (process == null) {
@@ -202,15 +208,18 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         return new ShowInContext(null, selection);
     }
 
+    @Override
     public String[] getShowInTargetIds() {
         return new String[] { IDebugUIConstants.ID_DEBUG_VIEW };
     }
 
+    @Override
     public void handleDebugEvents(final DebugEvent[] events) {
         for (int i = 0; i < events.length; i++) {
             final DebugEvent event = events[i];
             if (event.getSource().equals(getProcess())) {
                 final Runnable r = new Runnable() {
+                    @Override
                     public void run() {
                         if (fTerminate != null) {
                             fTerminate.update();
@@ -227,6 +236,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         // return fConsole != null ? fConsole.getProcess() : null;
     }
 
+    @Override
     public void activated() {
         // add EOF submissions
         final IPageSite site = fPage.getSite();
@@ -240,6 +250,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         ErlideUIPlugin.getDefault().setConsolePage((ErlangConsolePage) fPage);
     }
 
+    @Override
     public void deactivated() {
         // remove EOF submissions
         final IPageSite site = fPage.getSite();
@@ -251,6 +262,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
         contextService.deactivateContext(fActivatedContext);
     }
 
+    @Override
     public void debugContextChanged(final DebugContextEvent event) {
         if ((event.getFlags() & DebugContextEvent.ACTIVATED) > 0) {
             final IProcess process = getProcess();

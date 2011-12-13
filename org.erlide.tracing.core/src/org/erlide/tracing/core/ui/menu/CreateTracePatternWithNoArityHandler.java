@@ -12,6 +12,7 @@ import org.erlide.tracing.core.mvc.model.TracePattern;
 
 public class CreateTracePatternWithNoArityHandler extends AbstractHandler {
 
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
         final ISelection selection = PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getSelection();

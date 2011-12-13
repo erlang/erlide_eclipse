@@ -8,6 +8,7 @@ package org.erlide.wrangler.refactoring.ui.validator;
  */
 public class NormalDoulbeValidator implements IValidator {
 
+    @Override
     public boolean isValid(final String text) {
         try {
             final Double val = Double.parseDouble(text);

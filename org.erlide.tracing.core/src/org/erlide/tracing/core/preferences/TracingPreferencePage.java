@@ -14,6 +14,7 @@ public class TracingPreferencePage extends FieldEditorPreferencePage implements
         super(GRID);
     }
 
+    @Override
     public void init(final IWorkbench workbench) {
         setPreferenceStore(Activator.getDefault().getPreferenceStore());
         setDescription("Set the options for tracing.");

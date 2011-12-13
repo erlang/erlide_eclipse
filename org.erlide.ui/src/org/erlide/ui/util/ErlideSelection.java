@@ -962,6 +962,7 @@ public class ErlideSelection {
             return startingLine;
         }
 
+        @Override
         public boolean hasNext() {
             if (forward) {
                 return startingLine < numberOfLines;
@@ -975,6 +976,7 @@ public class ErlideSelection {
          * (and only after that does it return from the full line -- if it is
          * iterating backwards).
          */
+        @Override
         public String next() {
             try {
                 String line;
@@ -998,6 +1000,7 @@ public class ErlideSelection {
             }
         }
 
+        @Override
         public void remove() {
             throw new RuntimeException("Remove not implemented.");
         }

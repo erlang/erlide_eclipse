@@ -22,6 +22,7 @@ public class ErlComment extends ErlMember implements IErlComment {
         fIsHeader = isHeader;
     }
 
+    @Override
     public boolean isHeader() {
         return fIsHeader;
     }
@@ -29,6 +30,7 @@ public class ErlComment extends ErlMember implements IErlComment {
     /**
      * @see org.erlide.core.model.root.IErlElement#getKind()
      */
+    @Override
     public Kind getKind() {
         return Kind.COMMENT;
     }

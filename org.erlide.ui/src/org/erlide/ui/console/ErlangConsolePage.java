@@ -39,27 +39,24 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
@@ -134,10 +131,13 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     private MenuManager fMenuManager;
 
     private final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             updateSelectionDependentActions();
         }
     };
+
+    private Composite composite;
 
     public ErlangConsolePage(final IConsoleView view,
             final ErlangConsole console) {
@@ -167,145 +167,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         bgColor_Err.dispose();
         bgColor_Ok.dispose();
         super.dispose();
-    }
-
-    void createInputField(final KeyEvent first, final boolean isPaste) {
-        if (!isPaste && first.character == SWT.ESC) {
-            return;
-        }
-        try {
-            final String text = consoleText.getText();
-            final int charCount = text.length();
-            consoleText.setCaretOffset(charCount);
-            final Rectangle rect = consoleText.getClientArea();
-            final Point relpos = consoleText.getLocationAtOffset(charCount);
-
-            final Shell container = new Shell(consoleText.getShell(),
-                    SWT.MODELESS);
-            container.setLayout(new FillLayout());
-            consoleInputViewer = new SourceViewer(container, null, SWT.MULTI
-                    | SWT.WRAP | SWT.V_SCROLL);
-            consoleInputViewer.setDocument(new Document());
-            consoleInputViewer
-                    .configure(new ErlangConsoleSourceViewerConfiguration());
-            consoleInput = (StyledText) consoleInputViewer.getControl();
-            consoleInput.setParent(container);
-            container.setAlpha(220);
-
-            final int b = 1;
-            final Point screenPos = consoleText.toDisplay(relpos.x - b,
-                    relpos.y - b);
-            container.setLocation(screenPos);
-            container.setSize(rect.width - relpos.x, rect.height - relpos.y);
-
-            consoleInput.addKeyListener(new KeyAdapter() {
-
-                @Override
-                public void keyPressed(final KeyEvent e) {
-                    final boolean ctrlPressed = (e.stateMask & SWT.CTRL) == SWT.CTRL;
-                    if (e.keyCode == 13
-                            && isInputComplete()
-                            && consoleInput.getSelection().x == consoleInput
-                                    .getText().length()) {
-                        sendInput();
-                        container.close();
-                        e.doit = false;
-                    } else if (e.keyCode == 13) {
-                        final Rectangle loc = container.getBounds();
-                        final int topIndex = consoleInput.getTopIndex();
-                        final int lineCount = consoleInput.getLineCount();
-                        final int lineHeight = consoleInput.getLineHeight();
-                        final int visibleLines = loc.height / lineHeight;
-                        final int maxLines = consoleText.getSize().y
-                                / lineHeight - 1;
-                        if (topIndex + visibleLines - 1 <= lineCount
-                                && visibleLines < maxLines) {
-                            container.setBounds(loc.x, loc.y - lineHeight,
-                                    loc.width, loc.height + lineHeight);
-                            consoleInput.setTopIndex(lineCount - visibleLines
-                                    + 1);
-                        }
-                    } else if (ctrlPressed && e.keyCode == SWT.ARROW_UP) {
-                        history.prev();
-                        final String s = history.get();
-                        consoleInput.setText(s);
-                        consoleInput.setSelection(consoleInput.getText()
-                                .length());
-                        fixPosition(container);
-                    } else if (ctrlPressed && e.keyCode == SWT.ARROW_DOWN) {
-                        history.next();
-                        final String s = history.get();
-                        consoleInput.setText(s);
-                        consoleInput.setSelection(consoleInput.getText()
-                                .length());
-                        fixPosition(container);
-                    } else if (e.keyCode == SWT.ESC) {
-                        container.close();
-                        consoleInput = null;
-                    }
-                }
-            });
-            consoleInput.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(final FocusEvent e) {
-                    container.close();
-                    consoleInput = null;
-                }
-            });
-            consoleInput.addModifyListener(new ModifyListener() {
-                public void modifyText(final ModifyEvent e) {
-                    if (isInputComplete()) {
-                        consoleInput.setBackground(bgColor_Ok);
-                    } else {
-                        final Color bgColorErr = bgColor_Err;
-                        consoleInput.setBackground(bgColorErr);
-                    }
-                }
-            });
-            consoleInput.setFont(consoleText.getFont());
-            consoleInput.setBackground(consoleText.getBackground());
-            consoleInput.setWordWrap(true);
-
-            if (isPaste) {
-                consoleInput.paste();
-            } else if (first.character != 0) {
-                consoleInput.setText("" + first.character);
-            } else {
-                String s = "";
-                if (history.size() == 0) {
-                    s = "";
-                } else {
-                    if (first.keyCode == SWT.ARROW_UP) {
-                        history.gotoLast();
-                    } else {
-                        history.gotoFirst();
-                    }
-                    s = history.get();
-                }
-                consoleInput.setText(s);
-                fixPosition(container);
-            }
-            consoleInput.setSelection(consoleInput.getCharCount());
-
-            container.setVisible(true);
-            consoleInput.setFocus();
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    void fixPosition(final Shell container) {
-        final Rectangle loc = container.getBounds();
-        final int lineCount = consoleInput.getLineCount();
-        final int lineHeight = consoleInput.getLineHeight();
-        final int visibleLines = loc.height / lineHeight;
-        final int maxLines = consoleText.getSize().y / lineHeight - 1;
-        final int lines = Math.max(
-                Math.min(maxLines, lineCount) - visibleLines, visibleLines);
-        if (visibleLines - 1 <= lineCount) {
-            container.setBounds(loc.x, loc.y - lineHeight * lines, loc.width,
-                    loc.height + lineHeight * lines);
-        }
     }
 
     boolean isInputComplete() {
@@ -347,8 +208,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     public void input(final String data) {
-        shell.input(data);
-        shell.send(data);
+        final String data2 = data.trim() + "\n";
+        shell.input(data2);
+        shell.send(data2);
         history.addToHistory(data.trim());
     }
 
@@ -385,18 +247,16 @@ public class ErlangConsolePage extends Page implements IAdaptable,
      */
     @Override
     public void createControl(final Composite parent) {
-        consoleOutputViewer = new SourceViewer(parent, null, SWT.V_SCROLL
-                | SWT.H_SCROLL | SWT.MULTI);
-        consoleText = (StyledText) consoleOutputViewer.getControl();
-        consoleText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
-                2, 1));
+        composite = new Composite(parent, SWT.NONE);
+        composite.setLayout(new GridLayout(1, false));
 
+        final SashForm sashForm = new SashForm(composite, SWT.VERTICAL);
+        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        consoleOutputViewer = new SourceViewer(sashForm, null, SWT.V_SCROLL
+                | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
+        consoleText = (StyledText) consoleOutputViewer.getControl();
         consoleText.setFont(JFaceResources.getTextFont());
-        consoleText.addVerifyListener(new VerifyListener() {
-            public void verifyText(final VerifyEvent e) {
-                e.doit = false;
-            }
-        });
         consoleText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
@@ -406,20 +266,85 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 final boolean isHistoryCommand = (e.stateMask & SWT.CTRL) == SWT.CTRL
                         && (e.keyCode == SWT.ARROW_UP || e.keyCode == SWT.ARROW_DOWN);
                 if (e.character != (char) 0 || isHistoryCommand) {
-                    createInputField(e, false);
                     e.doit = false;
                 }
             }
 
         });
+        consoleText.addFocusListener(new FocusListener() {
+            @Override
+            public void focusLost(final FocusEvent e) {
+            }
+
+            @Override
+            public void focusGained(final FocusEvent e) {
+                consoleInput.setFocus();
+            }
+        });
         consoleOutputViewer.setDocument(fDoc);
         consoleOutputViewer
                 .configure(new ErlangConsoleSourceViewerConfiguration());
 
+        consoleInputViewer = new SourceViewer(sashForm, null, SWT.MULTI
+                | SWT.WRAP | SWT.V_SCROLL);
+        consoleInputViewer.setDocument(new Document());
+        consoleInputViewer
+                .configure(new ErlangConsoleSourceViewerConfiguration());
+        consoleInput = (StyledText) consoleInputViewer.getControl();
+
+        sashForm.setWeights(new int[] { 2, 1 });
+
+        final Label helpLabel = new Label(composite, SWT.NONE);
+        helpLabel
+                .setText("Press Ctrl-Enter to send the input to the console. Press Esc to clear input.");
+        helpLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        consoleInput.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                final boolean ctrlPressed = (e.stateMask & SWT.CTRL) == SWT.CTRL;
+                if (e.keyCode == 13 && ctrlPressed && isInputComplete()) {
+                    sendInput();
+                    e.doit = true;
+                } else if (ctrlPressed && e.keyCode == SWT.ARROW_UP) {
+                    history.prev();
+                    final String s = history.get();
+                    consoleInput.setText(s);
+                    consoleInput.setSelection(consoleInput.getText().length());
+                } else if (ctrlPressed && e.keyCode == SWT.ARROW_DOWN) {
+                    history.next();
+                    final String s = history.get();
+                    consoleInput.setText(s);
+                    consoleInput.setSelection(consoleInput.getText().length());
+                } else if (e.keyCode == SWT.ESC) {
+                    consoleInput.setText("");
+                }
+            }
+        });
+        consoleInput.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                if (isInputComplete()) {
+                    consoleInput.setBackground(bgColor_Ok);
+                } else {
+                    final Color bgColorErr = bgColor_Err;
+                    consoleInput.setBackground(bgColorErr);
+                }
+            }
+        });
+        consoleInput.setFont(consoleText.getFont());
+        consoleInput.setBackground(consoleText.getBackground());
+        consoleInput.setWordWrap(true);
+        consoleInput.setFocus();
+
+        // end layout
+
         final IDocumentListener documentListener = new IDocumentListener() {
+            @Override
             public void documentAboutToBeChanged(final DocumentEvent event) {
             }
 
+            @Override
             public void documentChanged(final DocumentEvent event) {
                 final int end = consoleOutputViewer.getDocument().getLength();
                 consoleOutputViewer.setSelectedRange(end, end);
@@ -435,6 +360,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         fMenuManager = new MenuManager("#ContextMenu", id); //$NON-NLS-1$
         fMenuManager.setRemoveAllWhenShown(true);
         fMenuManager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager m) {
                 contextMenuAboutToShow(m);
             }
@@ -454,7 +380,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     @Override
     public Control getControl() {
-        return consoleOutputViewer.getControl();
+        return composite;
     }
 
     @Override
@@ -463,14 +389,12 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     @Override
     public void setFocus() {
-        if (consoleInput != null && !consoleInput.isDisposed()) {
-            consoleInput.setFocus();
-        } else if (consoleOutputViewer != null) {
-            consoleOutputViewer.getTextWidget().setFocus();
-        }
+        consoleInput.setFocus();
     }
 
-    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes")
+    final Class required) {
         if (IFindReplaceTarget.class.equals(required)) {
             return consoleOutputViewer.getFindReplaceTarget();
         }
@@ -480,6 +404,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         return null;
     }
 
+    @Override
     public void propertyChange(final PropertyChangeEvent event) {
         if (consoleOutputViewer != null) {
             final Object source = event.getSource();
@@ -544,23 +469,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         PlatformUI.getWorkbench().getHelpSystem()
                 .setHelp(action, IConsoleHelpContextIds.CONSOLE_COPY_ACTION);
         setGlobalAction(actionBars, ActionFactory.COPY.getId(), action);
-
-        action = new TextViewerAction(consoleOutputViewer,
-                ITextOperationTarget.PASTE) {
-            @Override
-            public void run() {
-                createInputField(null, true);
-            }
-        };
-        action.configureAction(ConsoleMessages.TextConsolePage_PasteText,
-                ConsoleMessages.TextConsolePage_PasteDescrip,
-                ConsoleMessages.TextConsolePage_PasteDescrip);
-        action.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
-        action.setActionDefinitionId(IWorkbenchCommandConstants.EDIT_PASTE);
-        PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(action, IConsoleHelpContextIds.CONSOLE_PASTE_ACTION);
-        setGlobalAction(actionBars, ActionFactory.PASTE.getId(), action);
 
         // fClearOutputAction = new ClearOutputAction(fConsole);
 
