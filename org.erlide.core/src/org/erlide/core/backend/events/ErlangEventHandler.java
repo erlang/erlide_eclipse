@@ -28,7 +28,7 @@ public abstract class ErlangEventHandler implements EventHandler {
     public void register() {
         final String fullTopic = ErlangEventPublisher.getFullTopic(topic,
                 backend);
-        ErlLogger.info("Register event handler for " + topic + ": " + this);
+        // ErlLogger.info("Register event handler for " + topic + ": " + this);
         final BundleContext context = ErlangPlugin.getDefault().getBundle()
                 .getBundleContext();
         try {

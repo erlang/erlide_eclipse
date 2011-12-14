@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.backend;
+package org.erlide.core.internal.backend;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,22 +43,24 @@ final public class ErtsWatcherRunnable implements Runnable {
     @Override
     @SuppressWarnings("boxing")
     public void run() {
-        try {
-            final int v = process.waitFor();
-            final String msg = "Backend '%s' terminated with exit code %d.";
-            ErlLogger.error(msg, nodeName, v);
+        do {
+            try {
+                final int v = process.waitFor();
+                final String msg = "Backend '%s' terminated with exit code %d.";
+                ErlLogger.error(msg, nodeName, v);
 
-            // 129 = SIGHUP (probably logout, ignore)
-            // 143 = SIGTERM (probably logout, ignore)
-            // 137 = SIGKILL (probably killed by user)
-            if (v > 1 && v != 143 && v != 129 && v != 137
-                    && CommonUtils.isEricssonUser()) {
-                createReport(v, msg);
+                // 129 = SIGHUP (probably logout, ignore)
+                // 143 = SIGTERM (probably logout, ignore)
+                // 137 = SIGKILL (probably killed by user)
+                if (v > 1 && v != 143 && v != 129 && v != 137
+                        && CommonUtils.isEricssonUser()) {
+                    createReport(v, msg);
+                }
+                // FIXME backend.setExitStatus(v);
+                return;
+            } catch (final InterruptedException e) {
             }
-            // FIXME backend.setExitStatus(v);
-        } catch (final InterruptedException e) {
-            ErlLogger.warn("BackendImpl watcher was interrupted");
-        }
+        } while (true);
     }
 
     private void createReport(final int v, final String msg) {
