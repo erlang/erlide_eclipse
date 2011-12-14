@@ -125,21 +125,16 @@ public class BackendFactory implements IBackendFactory {
         final RuntimeInfo info = RuntimeInfo.copy(
                 runtimeInfoManager.getErlideRuntime(), false);
         if (info != null) {
-            final String defLabel = BackendFactory.getLabelProperty();
-            if (defLabel != null) {
-                info.setNodeName(defLabel);
-            } else {
-                final String nodeName = BackendUtils.getErlideNodeNameTag()
-                        + "_erlide";
-                info.setNodeName(nodeName);
-            }
+            final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
+            final String defLabel = getLabelProperty(dflt);
+            info.setNodeName(defLabel);
             info.setCookie("erlide");
         }
         return info;
     }
 
-    public static String getLabelProperty() {
-        return System.getProperty("erlide.label", null);
+    private static String getLabelProperty(final String dflt) {
+        return System.getProperty("erlide.label", dflt);
     }
 
 }
