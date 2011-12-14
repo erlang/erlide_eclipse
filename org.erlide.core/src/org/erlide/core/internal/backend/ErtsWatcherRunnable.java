@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.erlide.core.common.CommonUtils;
+import org.erlide.core.MessageReporter;
+import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.core.common.LogUtil;
 import org.erlide.jinterface.ErlLogger;
 
@@ -46,15 +47,29 @@ final public class ErtsWatcherRunnable implements Runnable {
         do {
             try {
                 final int v = process.waitFor();
-                final String msg = "Backend '%s' terminated with exit code %d.";
-                ErlLogger.error(msg, nodeName, v);
+                final String msg = String.format(
+                        "Backend '%s' terminated with exit code %d.", nodeName,
+                        v);
 
+                String report = null;
                 // 129 = SIGHUP (probably logout, ignore)
                 // 143 = SIGTERM (probably logout, ignore)
                 // 137 = SIGKILL (probably killed by user)
-                if (v > 1 && v != 143 && v != 129 && v != 137
-                        && CommonUtils.isEricssonUser()) {
-                    createReport(v, msg);
+                if (v > 1 && v != 143 && v != 129 && v != 137) {
+                    ErlLogger.error(msg);
+                    report = createReport(v, msg);
+                    final String reportMsg = report != null ? "\n\n"
+                            + "An error log has been created at "
+                            + report
+                            + ".\nPlease report the problem so that we can fix it."
+                            : "";
+                    final String bigMsg = msg
+                            + "\n\n"
+                            + "This error is not recoverable, please restart your Eclipse instance."
+                            + reportMsg;
+                    MessageReporter.showError(bigMsg, ReporterPosition.MODAL);
+                } else {
+                    ErlLogger.info(msg);
                 }
                 // FIXME backend.setExitStatus(v);
                 return;
@@ -63,13 +78,14 @@ final public class ErtsWatcherRunnable implements Runnable {
         } while (true);
     }
 
-    private void createReport(final int v, final String msg) {
+    private String createReport(final int v, final String msg) {
         final String plog = LogUtil.fetchPlatformLog();
         final String elog = LogUtil.fetchErlideLog();
         final String slog = LogUtil.fetchStraceLog(workingDir + "/" + nodeName
                 + ".strace");
         final String delim = "\n==================================\n";
-        final File report = new File(LogUtil.getReportFile());
+        final String reportFile = LogUtil.getReportFile();
+        final File report = new File(reportFile);
         try {
             report.createNewFile();
             final OutputStream out = new FileOutputStream(report);
@@ -93,6 +109,7 @@ final public class ErtsWatcherRunnable implements Runnable {
         } catch (final IOException e) {
             ErlLogger.warn(e);
         }
+        return reportFile;
     }
 
 }
