@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
@@ -203,7 +202,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     }
 
     private String[] getAllRuntimeNames() {
-        final String[][] runtimes = RuntimeInfoManager.getAllRuntimesVersions();
+        final String[][] runtimes = BackendCore.getRuntimeInfoManager()
+                .getAllRuntimesVersions();
         final List<String> runtimeNames = Lists.newArrayList();
         for (int i = 0; i < runtimes.length; i++) {
             if (!runtimeNames.contains(runtimes[i][0])) {
