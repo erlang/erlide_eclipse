@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.internal.backend.ModelInternalUtils;
+import org.erlide.core.internal.model.erlang.ModelInternalUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;

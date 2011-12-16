@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.internal.backend;
+package org.erlide.core.internal.model.erlang;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.backend.BackendException;

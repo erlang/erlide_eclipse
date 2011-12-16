@@ -114,9 +114,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
     private void startEpmdWatcher() {
         epmdWatcher = new EpmdWatcher();
-        epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
         epmdWatcher.addEpmdListener(this);
-        new EpmdWatchJob(epmdWatcher).schedule(100);
+        epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
+        epmdWatcherJob.schedule(100);
     }
 
     private void registerGlobalEventhandlers() {
