@@ -21,8 +21,7 @@ public interface IErlangPartitions {
     String ERLANG_STRING = "__erlang_string";
     String ERLANG_QATOM = "__erlang_qatom";
 
-    String[] LEGAL_PARTITIONS = new String[] { ERLANG_CHARACTER,
-            ERLANG_COMMENT, ERLANG_QATOM, ERLANG_STRING,
-            IDocument.DEFAULT_CONTENT_TYPE };
+    String[] LEGAL_PARTITIONS = new String[] { IDocument.DEFAULT_CONTENT_TYPE,
+            ERLANG_CHARACTER, ERLANG_COMMENT, ERLANG_QATOM, ERLANG_STRING };
 
 }

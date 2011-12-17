@@ -124,6 +124,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         final String path = module != null ? module.getFilePath() : null;
         reconciler = new ErlReconciler(strategy, true, true, path, module);
         reconciler.setProgressMonitor(new NullProgressMonitor());
+        reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);
         return reconciler;
     }
@@ -133,9 +134,12 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             final ISourceViewer sourceViewer) {
         if (editor != null) {
             final ContentAssistant contentAssistant = new ContentAssistant();
+            contentAssistant
+                    .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
             contentAssistProcessor = new ErlContentAssistProcessor(
                     sourceViewer, editor.getModule(), contentAssistant);
+
             contentAssistProcessor.setToPrefs();
             contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                     IDocument.DEFAULT_CONTENT_TYPE);
