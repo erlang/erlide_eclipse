@@ -9,10 +9,10 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public class ErlideReshd {
 
-    public static OtpErlangPid start(final IBackend fBackend) {
+    public static OtpErlangPid start(final IBackend backend) {
         try {
-            final OtpErlangObject r = fBackend.call("erlide_shell", "start",
-                    "p", fBackend.getEventPid());
+            final OtpErlangObject r = backend.call("erlide_shell", "start",
+                    "p", backend.getEventPid());
             final OtpErlangPid server = (OtpErlangPid) BackendUtils.ok(r);
             return server;
         } catch (final RpcException e) {

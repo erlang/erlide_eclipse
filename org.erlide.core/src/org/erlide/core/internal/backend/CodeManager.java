@@ -38,8 +38,8 @@ public class CodeManager implements ICodeManager {
 
     private final List<ICodeBundle> registeredBundles;
 
-    // only to be called by ErlideBackend
-    public CodeManager(final Backend b) {
+    // only to be called by Backend
+    CodeManager(final Backend b) {
         backend = b;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
@@ -196,7 +196,7 @@ public class CodeManager implements ICodeManager {
             final boolean accessible = ErlideUtil.isAccessible(backend,
                     externalPath);
             if (accessible) {
-                ErlLogger.debug("adding %s to code path for %s:: %s",
+                ErlLogger.debug("adding external %s to code path for %s:: %s",
                         externalPath, backend, backend.getRuntimeInfo());
                 ErlangCode.addPathA(backend, externalPath);
                 return;
