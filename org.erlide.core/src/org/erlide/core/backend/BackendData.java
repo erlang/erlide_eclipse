@@ -44,7 +44,7 @@ public final class BackendData extends GenericBackendData {
 
     private RuntimeInfoManager runtimeInfoManager;
 
-    public BackendData(RuntimeInfoManager runtimeInfoManager,
+    public BackendData(final RuntimeInfoManager runtimeInfoManager,
             final ILaunchConfiguration config, final String mode) {
         super(config, mode);
         this.runtimeInfoManager = runtimeInfoManager;
@@ -58,7 +58,8 @@ public final class BackendData extends GenericBackendData {
         }
     }
 
-    public BackendData(RuntimeInfoManager runtimeInfoManager, final RuntimeInfo info) {
+    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+            final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
         if (info == null) {
             throw new IllegalArgumentException(

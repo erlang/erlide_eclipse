@@ -44,9 +44,11 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementDelta;
@@ -54,7 +56,6 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
-import org.erlide.core.model.root.IErlParser;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
@@ -117,7 +118,7 @@ public class ErlModel extends Openable implements IErlModel {
      */
     ErlModel() {
         super(null, ""); //$NON-NLS-1$
-        parser = new ErlParser();
+        parser = ErlangToolkit.createParser();
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IPathVariableManager pvm = workspace.getPathVariableManager();
         fPathVariableChangeListener = new PathVariableChangeListener();
@@ -575,8 +576,8 @@ public class ErlModel extends Openable implements IErlModel {
         if (m == null) {
             final IParent parent2 = parent == null ? this : parent;
             final boolean useCache = false;
-            // TODO kan vi skilja pŒ t.ex. local history och OTP-moduler? de
-            // senare vill vi ha cache fšr, men inte de tidigare, fšr dŒ krockar
+            // TODO kan vi skilja pï¿½ t.ex. local history och OTP-moduler? de
+            // senare vill vi ha cache fï¿½r, men inte de tidigare, fï¿½r dï¿½ krockar
             // det med aktuell fil
             // final boolean useCache = path != null && path.length() > 0;
             m = new ErlModule(parent2, name, initialText, null, path, useCache);

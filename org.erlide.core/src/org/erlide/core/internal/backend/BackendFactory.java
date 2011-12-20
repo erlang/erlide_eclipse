@@ -96,7 +96,8 @@ public class BackendFactory implements IBackendFactory {
 
     private BackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
-        final BackendData result = new BackendData(BackendCore.getRuntimeInfoManager(), info);
+        final BackendData result = new BackendData(
+                BackendCore.getRuntimeInfoManager(), info);
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
@@ -114,7 +115,8 @@ public class BackendFactory implements IBackendFactory {
         myinfo.setNodeName(info.getVersion().asMajor().toString());
         myinfo.setNodeNameSuffix("_" + BackendUtils.getErlideNodeNameTag());
 
-        final BackendData result = new BackendData(BackendCore.getRuntimeInfoManager(), myinfo);
+        final BackendData result = new BackendData(
+                BackendCore.getRuntimeInfoManager(), myinfo);
         result.setCookie("erlide");
         result.setDebug(false);
         result.setAutostart(true);

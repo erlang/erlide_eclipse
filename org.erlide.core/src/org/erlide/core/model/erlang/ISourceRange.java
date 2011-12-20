@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.model.root;
+package org.erlide.core.model.erlang;
 
 /**
  * A source range defines an element's source coordinates relative to its source

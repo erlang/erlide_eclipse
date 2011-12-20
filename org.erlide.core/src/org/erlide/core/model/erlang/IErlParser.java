@@ -1,6 +1,4 @@
-package org.erlide.core.model.root;
-
-import org.erlide.core.model.erlang.IErlModule;
+package org.erlide.core.model.erlang;
 
 public interface IErlParser {
 

@@ -8,12 +8,11 @@
  *     Eric Merritt
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.model.root;
+package org.erlide.core.internal.model.erlang;
 
 import org.erlide.core.common.IDisposable;
-import org.erlide.core.internal.model.erlang.ErlideScanner;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.root.ErlToken;
-import org.erlide.core.model.root.IErlScanner;
 
 /**
  * Erlang syntax scanner

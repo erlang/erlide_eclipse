@@ -12,8 +12,8 @@ package org.erlide.core.internal.model.erlang;
 
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlMessage;
+import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.root.ISourceRange;
 
 public class ErlMessage extends ErlMember implements IErlMessage {
 

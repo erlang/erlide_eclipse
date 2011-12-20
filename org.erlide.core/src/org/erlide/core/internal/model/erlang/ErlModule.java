@@ -25,9 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.root.ErlModel;
-import org.erlide.core.internal.model.root.ErlScanner;
 import org.erlide.core.internal.model.root.Openable;
-import org.erlide.core.internal.model.root.SourceRange;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
@@ -36,8 +34,12 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.erlang.IErlTypespec;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlToken;
@@ -45,12 +47,8 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlParser;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IErlScanner;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.model.root.ISourceReference;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.jinterface.ErlLogger;
@@ -522,7 +520,8 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return new ErlScanner(scannerName, initialText, filePath, useCaches);
+        return ErlangToolkit.createScanner(scannerName, initialText, filePath,
+                useCaches);
     }
 
     @Override

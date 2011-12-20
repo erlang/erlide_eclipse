@@ -12,12 +12,11 @@ package org.erlide.core.internal.model.erlang;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.internal.model.root.SourceRange;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.ISourceRange;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.rpc.IRpcCallSite;

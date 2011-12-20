@@ -1,6 +1,8 @@
 package org.erlide.core.model.erlang;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.internal.model.erlang.ErlParser;
+import org.erlide.core.internal.model.erlang.ErlScanner;
 import org.erlide.jinterface.Assert;
 
 public class ErlangToolkit {
@@ -24,6 +26,15 @@ public class ErlangToolkit {
         resName = "mod" + res.getFullPath().toPortableString().hashCode() + "_"
                 + res.getName();
         return resName;
+    }
+
+    public static IErlParser createParser() {
+        return new ErlParser();
+    }
+
+    public static IErlScanner createScanner(final String scannerName,
+            final String initialText, final String path, final boolean useCaches) {
+        return new ErlScanner(scannerName, initialText, path, useCaches);
     }
 
 }

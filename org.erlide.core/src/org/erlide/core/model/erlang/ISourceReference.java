@@ -8,7 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.model.root;
+package org.erlide.core.model.erlang;
+
+import org.erlide.core.model.root.ErlModelException;
 
 /**
  * Common protocol for Erlang elements that have associated source code. This

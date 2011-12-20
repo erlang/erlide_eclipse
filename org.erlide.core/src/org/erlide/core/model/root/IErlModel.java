@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 

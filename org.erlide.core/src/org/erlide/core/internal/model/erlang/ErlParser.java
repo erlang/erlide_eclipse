@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.internal.model.root;
+package org.erlide.core.internal.model.erlang;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,26 +17,15 @@ import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.Util;
 import org.erlide.core.internal.backend.BackendHelper;
-import org.erlide.core.internal.model.erlang.ErlAttribute;
-import org.erlide.core.internal.model.erlang.ErlComment;
-import org.erlide.core.internal.model.erlang.ErlExport;
-import org.erlide.core.internal.model.erlang.ErlFunction;
-import org.erlide.core.internal.model.erlang.ErlFunctionClause;
-import org.erlide.core.internal.model.erlang.ErlImport;
-import org.erlide.core.internal.model.erlang.ErlMacroDef;
-import org.erlide.core.internal.model.erlang.ErlMessage;
-import org.erlide.core.internal.model.erlang.ErlRecordDef;
-import org.erlide.core.internal.model.erlang.ErlRecordField;
-import org.erlide.core.internal.model.erlang.ErlTypespec;
-import org.erlide.core.internal.model.erlang.ErlideNoparse;
+import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlParser;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
