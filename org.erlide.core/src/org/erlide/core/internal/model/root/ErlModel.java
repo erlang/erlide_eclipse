@@ -449,21 +449,21 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     public OtpErlangList getPathVars() {
-        if (fCachedPathVars == null) {
-            final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-                    .getPathVariableManager();
-            final String[] names = pvm.getPathVariableNames();
-            final OtpErlangObject[] objects = new OtpErlangObject[names.length];
-            for (int i = 0; i < names.length; i++) {
-                final String name = names[i];
-                final String value = PluginUtils.getPVMValue(pvm, name)
-                        .toOSString();
-                objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
-                        new OtpErlangString(name), new OtpErlangString(value) });
-            }
-            fCachedPathVars = new OtpErlangList(objects);
+        // if (fCachedPathVars == null) {
+        final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+                .getPathVariableManager();
+        final String[] names = pvm.getPathVariableNames();
+        final OtpErlangObject[] objects = new OtpErlangObject[names.length];
+        for (int i = 0; i < names.length; i++) {
+            final String name = names[i];
+            final String value = PluginUtils.getPVMValue(pvm, name)
+                    .toOSString();
+            objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
+                    new OtpErlangString(name), new OtpErlangString(value) });
         }
-        return fCachedPathVars;
+        fCachedPathVars = new OtpErlangList(objects);
+        // }
+         return fCachedPathVars;
     }
 
     @Override
@@ -577,7 +577,8 @@ public class ErlModel extends Openable implements IErlModel {
             final IParent parent2 = parent == null ? this : parent;
             final boolean useCache = false;
             // TODO kan vi skilja p� t.ex. local history och OTP-moduler? de
-            // senare vill vi ha cache f�r, men inte de tidigare, f�r d� krockar
+            // senare vill vi ha cache f�r, men inte de tidigare, f�r d�
+            // krockar
             // det med aktuell fil
             // final boolean useCache = path != null && path.length() > 0;
             m = new ErlModule(parent2, name, initialText, null, path, useCache);
