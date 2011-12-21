@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -260,7 +261,7 @@ public class ErlideTestUtils {
     }
 
     public static URI getTmpURIPath(final String fileName) {
-        return URI.create(getTmpPath(fileName).toPortableString());
+        return URIUtil.toURI(getTmpPath(fileName).toPortableString());
     }
 
     public static File createTmpFile(final String fileName,
