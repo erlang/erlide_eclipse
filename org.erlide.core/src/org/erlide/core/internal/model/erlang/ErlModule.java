@@ -418,14 +418,6 @@ public class ErlModule extends Openable implements IErlModule {
         setStructureKnown(false);
     }
 
-    // public synchronized void disposeParser() {
-    // final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-    // ErlideNoparse.destroy(b, getModuleName());
-    // disposeScanner();
-    // setStructureKnown(false);
-    // parsed = false;
-    // }
-
     @Override
     public Kind getKind() {
         return Kind.MODULE;
@@ -690,13 +682,6 @@ public class ErlModule extends Openable implements IErlModule {
             }
         }
         return false;
-    }
-
-    public String getText() {
-        getScanner();
-        final String s = scanner.getText();
-        disposeScanner();
-        return s;
     }
 
     @Override
