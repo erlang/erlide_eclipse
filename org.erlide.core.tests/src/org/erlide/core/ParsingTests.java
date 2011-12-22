@@ -50,7 +50,7 @@ public class ParsingTests {
 
     private boolean parse(final String s) {
         final String scannerModuleName = ErlangToolkit
-                .createScannerModuleName(module);
+                .createScannerName(module);
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
         final IErlParser parser = CoreScope.getModel().getParser();
         return parser.parse(module, scannerModuleName, false, "", false);

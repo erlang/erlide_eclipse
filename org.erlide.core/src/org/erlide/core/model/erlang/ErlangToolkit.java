@@ -7,11 +7,11 @@ import org.erlide.jinterface.Assert;
 
 public class ErlangToolkit {
 
-    public static String createScannerModuleName(final IErlModule module) {
+    public static String createScannerName(final IErlModule module) {
         Assert.isNotNull(module);
         final IResource res = module.getResource();
         if (res != null) {
-            return createScannerModuleNameFromResource(res);
+            return createScannerNameFromResource(res);
         } else if (module.getFilePath() != null && module.isRealFile()) {
             return "mod" + module.getFilePath().hashCode() + "__"
                     + module.getName();
@@ -21,7 +21,7 @@ public class ErlangToolkit {
         return "mod" + module.hashCode() + "_";
     }
 
-    public static String createScannerModuleNameFromResource(final IResource res) {
+    private static String createScannerNameFromResource(final IResource res) {
         String resName;
         resName = "mod" + res.getFullPath().toPortableString().hashCode() + "_"
                 + res.getName();

@@ -192,7 +192,7 @@ public class ErlideTestUtils {
     public static void deleteModule(final IErlModule module)
             throws CoreException {
         final String scannerName = ErlangToolkit
-                .createScannerModuleName(module);
+                .createScannerName(module);
         final IFile file = (IFile) module.getResource();
         if (file != null) {
             file.delete(true, null);

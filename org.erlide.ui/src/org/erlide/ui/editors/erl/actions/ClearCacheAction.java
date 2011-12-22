@@ -40,7 +40,7 @@ public class ClearCacheAction extends TextEditorAction {
             final String cacheFileOSPath = ErlangPlugin
                     .getDefault()
                     .getStateLocation()
-                    .append(ErlangToolkit.createScannerModuleName(module)
+                    .append(ErlangToolkit.createScannerName(module)
                             + suffix).toOSString();
             final File cacheFile = new File(cacheFileOSPath);
             cacheFile.delete();

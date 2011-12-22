@@ -24,7 +24,7 @@ public class ErlideSearchServer {
         int i = 0;
         for (final IErlModule module : scope.getModules()) {
             result[i] = make2Tuple(
-                    ErlangToolkit.createScannerModuleName(module),
+                    ErlangToolkit.createScannerName(module),
                     module.getFilePath());
             i++;
         }

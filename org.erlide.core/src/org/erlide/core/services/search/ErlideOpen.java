@@ -49,7 +49,7 @@ public class ErlideOpen {
             final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<IPath> extra = BackendUtils.getExtraSourcePaths();
-        final String scanner = ErlangToolkit.createScannerModuleName(module);
+        final String scanner = ErlangToolkit.createScannerName(module);
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
                 scanner, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));

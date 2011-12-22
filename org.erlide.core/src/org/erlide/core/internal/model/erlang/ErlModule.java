@@ -84,7 +84,7 @@ public class ErlModule extends Openable implements IErlModule {
         this.path = path;
         this.initialText = initialText;
         parsed = false;
-        scannerName = ErlangToolkit.createScannerModuleName(this);
+        scannerName = ErlangToolkit.createScannerName(this);
         scanner = null;
         this.useCaches = useCaches;
         comments = Lists.newArrayList();
@@ -509,7 +509,9 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             scanner = getNewScanner();
         }
-        scanner.addRef();
+        if (scanner != null) {
+            scanner.addRef();
+        }
     }
 
     private IErlScanner getNewScanner() {

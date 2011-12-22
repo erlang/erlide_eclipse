@@ -41,7 +41,7 @@ public class TestAction extends TextEditorAction {
                     .getDocument(textEditor.getEditorInput());
             final String text = document.get();
             final String s = ErlideScanner.checkAll(
-                    ErlangToolkit.createScannerModuleName(module), text);
+                    ErlangToolkit.createScannerName(module), text);
             ErlLogger.debug("%s", s);
             // return;
         }
