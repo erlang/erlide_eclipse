@@ -652,8 +652,7 @@ public class FilteredModulesSelectionDialog extends
                 final IContainer my_container = resource.getParent();
                 if (validPaths.contains(my_container.getFullPath())
                         || !extraLocations.isEmpty()
-                        && extraLocations.contains(my_container.getLocation()
-                                .toString())) {
+                        && extraLocations.contains(my_container.getLocation())) {
                     proxyContentProvider.add(resource, moduleFilter);
                 }
             }

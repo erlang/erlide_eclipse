@@ -247,7 +247,7 @@ public class FilterDescriptor implements Comparable<Object>,
             return Collator.getInstance().compare(getName(),
                     ((FilterDescriptor) o).getName());
         } else {
-            return Integer.MIN_VALUE;
+            return -1;
         }
     }
 

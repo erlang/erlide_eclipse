@@ -46,7 +46,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     private final List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
 
-    public Collection<RuntimeInfo> getRuntimes() {
+    public synchronized Collection<RuntimeInfo> getRuntimes() {
         return new ArrayList<RuntimeInfo>(fRuntimes.values());
     }
 

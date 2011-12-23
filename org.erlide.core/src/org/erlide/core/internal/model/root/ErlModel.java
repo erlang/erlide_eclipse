@@ -463,7 +463,7 @@ public class ErlModel extends Openable implements IErlModel {
         }
         fCachedPathVars = new OtpErlangList(objects);
         // }
-         return fCachedPathVars;
+        return fCachedPathVars;
     }
 
     @Override

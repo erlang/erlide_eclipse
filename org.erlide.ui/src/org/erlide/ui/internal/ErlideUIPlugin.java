@@ -85,7 +85,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * The shared instance.
      */
-    private static ErlideUIPlugin plugin;
+    private static volatile ErlideUIPlugin plugin;
 
     /**
      * Resource bundle.
