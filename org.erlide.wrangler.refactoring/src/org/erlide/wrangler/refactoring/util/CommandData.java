@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -38,7 +39,8 @@ public class CommandData {
 
         for (final OtpErlangObject arg : args) {
             if (arg instanceof OtpErlangTuple
-                    && ((OtpErlangTuple) arg).elementAt(0).equals("prompt")) {
+                    && ((OtpErlangTuple) arg).elementAt(0).equals(
+                            new OtpErlangAtom("prompt"))) {
                 argsTmp.add(new OtpErlangList(userInput));
                 // TODO make it so that it adds input only once, check repeat
                 // interactive

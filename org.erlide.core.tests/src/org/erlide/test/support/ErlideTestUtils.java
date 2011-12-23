@@ -191,8 +191,7 @@ public class ErlideTestUtils {
 
     public static void deleteModule(final IErlModule module)
             throws CoreException {
-        final String scannerName = ErlangToolkit
-                .createScannerName(module);
+        final String scannerName = ErlangToolkit.createScannerName(module);
         final IFile file = (IFile) module.getResource();
         if (file != null) {
             file.delete(true, null);
@@ -295,7 +294,7 @@ public class ErlideTestUtils {
         }
         erlProject.dispose();
         if (projects != null) {
-            projects.remove(project);
+            projects.remove(CoreScope.getModel().findProject(project));
         }
         final IErlModel model = CoreScope.getModel();
         model.resourceChanged(null);
