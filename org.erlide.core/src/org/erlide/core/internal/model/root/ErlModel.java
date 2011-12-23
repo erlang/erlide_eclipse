@@ -490,7 +490,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     private static volatile ErlModel fgErlangModel;
 
-    public static final IErlModel getErlangModel() {
+    public static synchronized final IErlModel getErlangModel() {
         if (fgErlangModel == null) {
             fgErlangModel = new ErlModel();
             fgErlangModel.buildStructure(null);

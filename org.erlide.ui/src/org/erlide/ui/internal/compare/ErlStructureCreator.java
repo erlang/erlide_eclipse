@@ -299,14 +299,15 @@ public class ErlStructureCreator extends StructureCreator {
             module = model.getModuleFromText(model, fName, s, s);
         }
         ErlNode root = null;
-        try {
-            module.open(null);
-            root = new RootErlNode(document, element);
-            recursiveMakeErlNodes(module, root, document);
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
+        if (element != null && document != null) {
+            try {
+                module.open(null);
+                root = new RootErlNode(document, element);
+                recursiveMakeErlNodes(module, root, document);
+            } catch (final ErlModelException e) {
+                ErlLogger.warn(e);
+            }
         }
-
         return root;
     }
 
