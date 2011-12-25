@@ -47,7 +47,7 @@ public interface IBackendManager {
 
     IRpcCallSite getByName(final String nodeName);
 
-    void moduleLoaded(final IBackend b, final IProject project,
+    void moduleLoaded(final IRpcCallSite backend, final IProject project,
             final String moduleName);
 
     IBackend getBackendForLaunch(final ILaunch launch);
