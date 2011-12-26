@@ -178,10 +178,18 @@ public abstract class ErlangSearchPattern {
                 new OtpErlangAtom(s) });
     }
 
+    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
+            "undefined");
+
     private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
             final String s, final int a) {
+        if (a >= 0) {
+            return new OtpErlangTuple(new OtpErlangObject[] { atom,
+                    new OtpErlangAtom(s), new OtpErlangLong(a) });
+        }
         return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s), new OtpErlangLong(a) });
+                new OtpErlangAtom(s), UNDEFINED });
+
     }
 
     private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
@@ -192,9 +200,13 @@ public abstract class ErlangSearchPattern {
 
     private static OtpErlangObject make4Tuple(final OtpErlangAtom atom,
             final String s1, final String s2, final int a) {
+        if (a >= 0) {
+            return new OtpErlangTuple(new OtpErlangObject[] { atom,
+                    new OtpErlangAtom(s1), new OtpErlangAtom(s2),
+                    new OtpErlangLong(a) });
+        }
         return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s1), new OtpErlangAtom(s2),
-                new OtpErlangLong(a) });
+                new OtpErlangAtom(s1), new OtpErlangAtom(s2), UNDEFINED });
     }
 
     public LimitTo getLimitTo() {

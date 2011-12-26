@@ -288,10 +288,10 @@ is_def(#record_field_def{}) -> true;
 is_def(_) -> false.
 
 check_pattern(Pattern, Mod, #local_call{function=F, arity=A}, _, _, _)->
-    lists:member(#external_call{module=Mod, function=F, arity=A}, Pattern);
+    check_function_ref(#external_call{module=Mod, function=F, arity=A}, Pattern);
 check_pattern(Pattern, Mod, #function_def{function=F, arity=A} = FD, _, _, _)->
-    lists:member(FD, Pattern) orelse
-		lists:member(#function_def_mod{module=Mod, function=F, arity=A}, Pattern);
+    check_function_ref(FD, Pattern) orelse
+        check_function_ref(#function_def_mod{module=Mod, function=F, arity=A}, Pattern);
 check_pattern(Pattern, Mod, #type_ref{module='_', type=T}, _, _, _) ->
     lists:member(#type_ref{module=Mod, type=T}, Pattern);
 check_pattern(Pattern, _Mod, #var_ref{}=VR, F, A, C) ->
@@ -301,6 +301,19 @@ check_pattern(Pattern, _Mod, #var_def{}=VD, F, A, C) ->
 check_pattern(Pattern, _Mod, D, _, _, _) ->
 %%     ?D({check_pattern, Pattern, D}),
     lists:member(D, Pattern).
+
+check_function_ref(_, []) ->
+    false;
+check_function_ref(#external_call{module=Mod, function=F, arity=A1}, [#external_call{module=Mod, function=F, arity=A2}|_]) ->
+    A1==A2 orelse A2==undefined;
+check_function_ref(#function_def{function=F, arity=A1}, [#function_def{function=F, arity=A2}|_]) ->
+    A1==A2 orelse A2==undefined;
+check_function_ref(#function_def_mod{module=Mod, function=F, arity=A1}, [#function_def_mod{module=Mod, function=F, arity=A2}|_]) ->
+    A1==A2 orelse A2==undefined;
+check_function_ref(X, [_|Tail]) ->
+    check_function_ref(X, Tail).
+
+    
 
 check_var_pattern([], _, _, _, _) ->
 	false;

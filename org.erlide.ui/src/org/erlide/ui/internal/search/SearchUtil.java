@@ -373,8 +373,9 @@ public class SearchUtil {
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
             final SearchFor searchFor, final String pattern,
             final LimitTo limitTo) {
-        String moduleName = "", name = pattern;
-        int arity = 0;
+        String moduleName = "";
+        String name = pattern;
+        int arity = -1;
         int p = pattern.indexOf(':');
         if (p != -1) {
             moduleName = pattern.substring(0, p);
