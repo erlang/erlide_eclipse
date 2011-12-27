@@ -53,16 +53,13 @@ public final class ErlangCore {
     private static String featureVersion;
 
     private final ErlLogger logger;
-    private final ServicesMap services;
     private final Plugin plugin;
     private final IWorkspace workspace;
     private final IExtensionRegistry extensionRegistry;
     private final ISaveParticipant saveParticipant;
 
-    public ErlangCore(final Plugin plugin, final ServicesMap services,
-            final IWorkspace workspace,
+    public ErlangCore(final Plugin plugin, final IWorkspace workspace,
             final IExtensionRegistry extensionRegistry, final String logDir) {
-        this.services = services;
         this.plugin = plugin;
         this.workspace = workspace;
         this.extensionRegistry = extensionRegistry;

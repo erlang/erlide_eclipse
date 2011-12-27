@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.jinterface.ErlLogger;
@@ -62,10 +64,16 @@ public class ErlangPlugin extends Plugin {
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        core = CoreInjector.injectErlangCore(this);
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IExtensionRegistry extensionRegistry = Platform
+                .getExtensionRegistry();
+        final String portableString = workspace.getRoot().getLocation()
+                .toPortableString();
+        core = new ErlangCore(this, workspace, extensionRegistry,
+                portableString);
         super.start(context);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(
-                getBundle().getSymbolicName(), core.getSaveParticipant());
+        workspace.addSaveParticipant(getBundle().getSymbolicName(),
+                core.getSaveParticipant());
 
         core.start(getFeatureVersion());
     }
