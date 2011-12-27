@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -69,11 +70,11 @@ public class ErlangPlugin extends Plugin {
                 .getExtensionRegistry();
         final String portableString = workspace.getRoot().getLocation()
                 .toPortableString();
+        final ErlangDebugOptionsManager erlangDebugOptionsManager = ErlangDebugOptionsManager
+                .getDefault();
         core = new ErlangCore(this, workspace, extensionRegistry,
-                portableString);
+                portableString, erlangDebugOptionsManager);
         super.start(context);
-        workspace.addSaveParticipant(getBundle().getSymbolicName(),
-                core.getSaveParticipant());
 
         core.start(getFeatureVersion());
     }

@@ -38,6 +38,7 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
+import org.erlide.core.common.EncodingUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.model.root.IErlModel;
@@ -56,39 +57,18 @@ public final class ErlangCore {
     private final Plugin plugin;
     private final IWorkspace workspace;
     private final IExtensionRegistry extensionRegistry;
-    private final ISaveParticipant saveParticipant;
+    private ISaveParticipant saveParticipant;
+    private final ErlangDebugOptionsManager erlangDebugOptionsManager;
 
     public ErlangCore(final Plugin plugin, final IWorkspace workspace,
-            final IExtensionRegistry extensionRegistry, final String logDir) {
+            final IExtensionRegistry extensionRegistry, final String logDir,
+            final ErlangDebugOptionsManager erlangDebugOptionsManager) {
         this.plugin = plugin;
         this.workspace = workspace;
         this.extensionRegistry = extensionRegistry;
+        this.erlangDebugOptionsManager = erlangDebugOptionsManager;
         featureVersion = "?";
-        saveParticipant = new ISaveParticipant() {
-            @Override
-            public void doneSaving(final ISaveContext context1) {
-            }
 
-            @Override
-            public void prepareToSave(final ISaveContext context1)
-                    throws CoreException {
-            }
-
-            @Override
-            public void rollback(final ISaveContext context1) {
-            }
-
-            @Override
-            public void saving(final ISaveContext context1)
-                    throws CoreException {
-                try {
-                    new InstanceScope().getNode(
-                            plugin.getBundle().getSymbolicName()).flush();
-                } catch (final BackingStoreException e) {
-                    // ignore
-                }
-            }
-        };
         logger = ErlLogger.getInstance();
         final String dir = getLogDir(logDir);
         log(Level.INFO, "Erlide log is in " + dir);
@@ -216,17 +196,20 @@ public final class ErlangCore {
 
     public void start(final String version) throws CoreException {
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
-        String dev = "(" + System.getProperty("file.encoding") + ") ";
+        String dev = "(" + EncodingUtils.getEncoding() + ") ";
         if (CommonUtils.isDeveloper()) {
             dev += " developer version ***";
         }
         if (CommonUtils.isTest()) {
             dev += " test ***";
         }
-        final String versionBanner = "*** starting Erlide v" + version + " ***"
-                + dev;
+        final String versionBanner = "*** starting Erlide v" + version
+                + " *** " + dev;
         log(Level.INFO, versionBanner);
         featureVersion = version;
+
+        workspace.addSaveParticipant(plugin.getBundle().getSymbolicName(),
+                getSaveParticipant());
 
         final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
                 BackendCore.getRuntimeInfoManager());
@@ -340,6 +323,33 @@ public final class ErlangCore {
     }
 
     public ISaveParticipant getSaveParticipant() {
+        if (saveParticipant == null) {
+            saveParticipant = new ISaveParticipant() {
+                @Override
+                public void doneSaving(final ISaveContext context1) {
+                }
+
+                @Override
+                public void prepareToSave(final ISaveContext context1)
+                        throws CoreException {
+                }
+
+                @Override
+                public void rollback(final ISaveContext context1) {
+                }
+
+                @Override
+                public void saving(final ISaveContext context1)
+                        throws CoreException {
+                    try {
+                        new InstanceScope().getNode(
+                                plugin.getBundle().getSymbolicName()).flush();
+                    } catch (final BackingStoreException e) {
+                        // ignore
+                    }
+                }
+            };
+        }
         return saveParticipant;
     }
 
