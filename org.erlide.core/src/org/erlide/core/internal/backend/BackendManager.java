@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -71,8 +70,13 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     private EpmdWatchJob epmdWatcherJob;
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
+    private final RuntimeInfo erlideRuntimeInfo;
 
-    public BackendManager() {
+    public BackendManager(final RuntimeInfo erlideRuntimeInfo,
+            final IBackendFactory factory) {
+        this.factory = factory;
+        this.erlideRuntimeInfo = erlideRuntimeInfo;
+
         ideBackend = null;
         executionBackends = Maps.newHashMap();
         buildBackends = Maps.newHashMap();
@@ -85,14 +89,11 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
-        factory = BackendCore.getBackendFactory();
-
         registerGlobalEventhandlers();
     }
 
     private void tryStartEpmdProcess() {
-        final RuntimeInfo info = BackendCore.getRuntimeInfoManager()
-                .getErlideRuntime();
+        final RuntimeInfo info = erlideRuntimeInfo;
         if (info == null || info.getOtpHome() == null) {
             ErlLogger.error("Trying to start with a null runtime info");
             return;
