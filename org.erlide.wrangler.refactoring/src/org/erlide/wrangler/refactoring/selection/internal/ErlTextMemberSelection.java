@@ -15,7 +15,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
@@ -86,7 +86,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlElement getErlElement() {
-        final IErlModule module = (IErlModule) CoreScope.getModel()
+        final IErlModule module = (IErlModule) ErlangCore.getModel()
                 .findElement(file);
 
         try {
@@ -151,6 +151,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) CoreScope.getModel().findElement(file);
+        return (IErlModule) ErlangCore.getModel().findElement(file);
     }
 }

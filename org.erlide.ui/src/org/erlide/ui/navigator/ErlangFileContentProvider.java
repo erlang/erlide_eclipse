@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.navigator.SaveablesProvider;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
@@ -44,7 +44,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public ErlangFileContentProvider() {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
                 IResourceChangeEvent.POST_CHANGE);
-        final IErlModel mdl = CoreScope.getModel();
+        final IErlModel mdl = ErlangCore.getModel();
         mdl.addModelChangeListener(this);
     }
 
@@ -55,7 +55,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     public Object[] getChildren(Object parentElement) {
         try {
             if (parentElement instanceof IFile) {
-                parentElement = CoreScope.getModel().findModule(
+                parentElement = ErlangCore.getModel().findModule(
                         (IFile) parentElement);
             }
             if (parentElement instanceof IOpenable) {
@@ -114,7 +114,7 @@ public class ErlangFileContentProvider implements ITreeContentProvider,
     @Override
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        CoreScope.getModel().removeModelChangeListener(this);
+        ErlangCore.getModel().removeModelChangeListener(this);
     }
 
     @Override

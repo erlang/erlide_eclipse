@@ -35,7 +35,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.IErlProject;
@@ -215,7 +214,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
             buildPaths(monitor, root, project, bprefs.getSourceDirs());
             buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-            final IErlProject erlProject = CoreScope.getModel()
+            final IErlProject erlProject = ErlangCore.getModel()
                     .getErlangProject(project);
             erlProject.setAllProperties(bprefs);
 

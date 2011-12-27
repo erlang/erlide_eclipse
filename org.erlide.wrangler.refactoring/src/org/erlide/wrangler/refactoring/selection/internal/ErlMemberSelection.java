@@ -12,7 +12,7 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.IDocument;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
@@ -103,6 +103,6 @@ public class ErlMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) CoreScope.getModel().findElement(file);
+        return (IErlModule) ErlangCore.getModel().findElement(file);
     }
 }

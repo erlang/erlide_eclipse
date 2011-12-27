@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
@@ -106,7 +106,7 @@ public class AddRefacHandler extends AbstractHandler {
     private RefacType checkType(final String callbackModule) {
 
         try {
-            final IErlModule module = CoreScope.getModel().findModule(
+            final IErlModule module = ErlangCore.getModel().findModule(
                     callbackModule);
             module.resetAndCacheScannerAndParser(null);
 
@@ -155,11 +155,11 @@ public class AddRefacHandler extends AbstractHandler {
         String path;
 
         try {
-            if (CoreScope.getModel().findModule(callbackModule) == null) {
+            if (ErlangCore.getModel().findModule(callbackModule) == null) {
                 return null;
             }
 
-            final IErlProject project = CoreScope.getModel()
+            final IErlProject project = ErlangCore.getModel()
                     .findModule(callbackModule).getProject();
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation())

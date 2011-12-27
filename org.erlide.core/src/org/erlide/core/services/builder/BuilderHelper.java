@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.services.builder.BuilderVisitor;
 import org.erlide.core.internal.services.builder.InternalErlideBuilder;
@@ -86,7 +86,7 @@ public final class BuilderHelper {
 
     public Collection<IPath> getIncludeDirs(final IProject project,
             final Collection<IPath> includeDirs) {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 project);
         final Collection<IPath> projectIncludeDirs = erlProject
                 .getIncludeDirs();
@@ -129,7 +129,7 @@ public final class BuilderHelper {
     public void addDependents(final IResource resource,
             final IProject my_project, final Set<BuildResource> result)
             throws ErlModelException {
-        final IErlProject eprj = CoreScope.getModel().findProject(my_project);
+        final IErlProject eprj = ErlangCore.getModel().findProject(my_project);
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
@@ -193,7 +193,7 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final IErlProject erlProject = CoreScope.getModel()
+            final IErlProject erlProject = ErlangCore.getModel()
                     .getErlangProject(project);
             final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
@@ -245,7 +245,7 @@ public final class BuilderHelper {
         boolean shouldCompile = beam == null;
 
         if (beam != null) {
-            final IErlProject eprj = CoreScope.getModel().findProject(project);
+            final IErlProject eprj = ErlangCore.getModel().findProject(project);
             if (eprj != null) {
                 shouldCompile = shouldCompileModule(project, source, beam,
                         shouldCompile, eprj);
@@ -352,7 +352,7 @@ public final class BuilderHelper {
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 project);
         final IPath outputDir = erlProject.getOutputLocation();
         final IResource ebinDir = project.findMember(outputDir);
@@ -430,7 +430,7 @@ public final class BuilderHelper {
                     br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IErlProject erlProject = CoreScope.getModel()
+                    final IErlProject erlProject = ErlangCore.getModel()
                             .getErlangProject(project);
                     compileErl(project, bbr, erlProject.getOutputLocation()
                             .toString(), backend, compilerOptions);
@@ -522,7 +522,7 @@ public final class BuilderHelper {
     }
 
     private IPath getBeamForErl(final IResource source) {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 source.getProject());
         IPath p = erlProject.getOutputLocation();
         p = p.append(source.getName());
@@ -638,7 +638,7 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IErlProject erlProject = CoreScope.getModel()
+            final IErlProject erlProject = ErlangCore.getModel()
                     .getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null

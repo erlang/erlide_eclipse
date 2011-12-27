@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlangLaunchDelegate;
@@ -236,7 +236,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                     if (projNames == null) {
                         return;
                     }
-                    final IErlModel model = CoreScope.getModel();
+                    final IErlModel model = ErlangCore.getModel();
                     for (final String projName : projNames) {
                         final IErlElement prj = model.getChildNamed(projName);
                         getRoot().addAllErlangModules(prj);
@@ -416,7 +416,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      */
     public static void addModules(final Collection<String> interpret,
             final Collection<IErlModule> interpretedModules) {
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         for (final String i : interpret) {
             final String[] pm = i.split(":");
             IErlModule module = null;

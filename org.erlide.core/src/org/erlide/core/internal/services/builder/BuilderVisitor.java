@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
@@ -57,7 +57,7 @@ public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {
             return false;
         }
         if (resource.getType() == IResource.PROJECT) {
-            erlProject = CoreScope.getModel().getErlangProject(
+            erlProject = ErlangCore.getModel().getErlangProject(
                     (IProject) resource);
             return true;
         }

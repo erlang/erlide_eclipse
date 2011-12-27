@@ -35,7 +35,7 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         module = model.getModuleFromText(model, "testing", "", null);
     }
 
@@ -52,7 +52,7 @@ public class ParsingTests {
         final String scannerModuleName = ErlangToolkit
                 .createScannerName(module);
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final IErlParser parser = CoreScope.getModel().getParser();
+        final IErlParser parser = ErlangCore.getModel().getParser();
         return parser.parse(module, scannerModuleName, false, "", false);
     }
 

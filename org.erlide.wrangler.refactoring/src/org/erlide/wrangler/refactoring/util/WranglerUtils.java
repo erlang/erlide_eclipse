@@ -36,7 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
@@ -468,7 +468,7 @@ public final class WranglerUtils {
      */
     public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
 
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         for (final ChangedFile f : changedFiles) {
             IFile file;
             try {

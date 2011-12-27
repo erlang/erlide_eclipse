@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.cover.ui.Activator;
@@ -45,7 +45,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
             case MODULE:
                 IErlModule m;
                 try {
-                    m = CoreScope.getModel().findModule(statsEl.getLabel());
+                    m = ErlangCore.getModel().findModule(statsEl.getLabel());
                 } catch (final ErlModelException e) {
                     e.printStackTrace();
                     return null;

@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.IErlProject;
@@ -198,7 +198,7 @@ public class ErlangFileWizardPage extends WizardPage {
                     container = resource.getParent();
                 }
                 final IProject project = resource.getProject();
-                final IErlProject erlProject = CoreScope.getModel()
+                final IErlProject erlProject = ErlangCore.getModel()
                         .getErlangProject(project);
                 String txt;
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();

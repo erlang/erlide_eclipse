@@ -58,7 +58,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
@@ -415,7 +414,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = CoreScope.getModel();
+            final IErlModel model = ErlangCore.getModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();
@@ -723,7 +722,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 List<String> ebinDirs = null;
                 if (alternatePltFileDirectory != null) {
                     ebinDirs = Lists.newArrayList();
-                    for (final IErlElement i : CoreScope.getModel()
+                    for (final IErlElement i : ErlangCore.getModel()
                             .getChildrenOfKind(Kind.PROJECT)) {
                         final IErlProject project = (IErlProject) i;
                         final String ebinDir = project.getWorkspaceProject()

@@ -16,7 +16,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IIndexedValue;
 import org.eclipse.debug.core.model.IVariable;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
@@ -140,7 +140,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final Collection<IProject> projects) {
         final List<IErlProject> result = Lists
                 .newArrayListWithCapacity(projects.size());
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         for (final IProject project : projects) {
             final IErlElement element = model.getChildWithResource(project);
             if (element instanceof IErlProject) {

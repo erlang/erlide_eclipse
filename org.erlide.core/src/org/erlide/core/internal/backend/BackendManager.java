@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
@@ -149,7 +148,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public IBackend getBuildBackend(final IProject project)
             throws BackendException {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 project);
         if (erlProject == null) {
             return null;

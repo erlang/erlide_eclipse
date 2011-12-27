@@ -41,7 +41,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendManager;
@@ -285,7 +285,7 @@ public class ErlTextHover implements ITextHover,
             final IRpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
-            final IErlModel model = CoreScope.getModel();
+            final IErlModel model = ErlangCore.getModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
             r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,

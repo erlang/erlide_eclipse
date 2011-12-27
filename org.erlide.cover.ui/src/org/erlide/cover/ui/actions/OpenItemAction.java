@@ -16,7 +16,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
@@ -86,7 +86,7 @@ public class OpenItemAction extends Action {
 
             IErlModule module;
             try {
-                module = CoreScope.getModel().findModule(moduleName);
+                module = ErlangCore.getModel().findModule(moduleName);
 
                 final IErlFunction f = module.findFunction(new ErlangFunction(
                         fs.getLabel(), fs.getArity()));
@@ -108,7 +108,7 @@ public class OpenItemAction extends Action {
 
         IErlModule module;
         try {
-            module = CoreScope.getModel().findModule(name);
+            module = ErlangCore.getModel().findModule(name);
         } catch (final ErlModelException e1) {
             e1.printStackTrace();
             return null;

@@ -39,6 +39,8 @@ import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoInitializer;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
+import org.erlide.core.internal.model.root.ErlModel;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcMonitor;
 import org.osgi.framework.Bundle;
@@ -118,7 +120,7 @@ public final class ErlangCore {
     }
 
     public void stop() {
-        CoreScope.getModel().shutdown();
+        getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         logger.dispose();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
@@ -362,5 +364,9 @@ public final class ErlangCore {
 
     public static boolean hasFeatureEnabled(final String feature) {
         return Boolean.parseBoolean(System.getProperty(feature));
+    }
+
+    public static IErlModel getModel() {
+        return ErlModel.getErlangModel();
     }
 }

@@ -35,7 +35,7 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlFunctionClause;
@@ -104,7 +104,7 @@ public class SearchUtil {
             final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         for (final IProject project : projects) {
             addProjectToScope(project, result);
             if (ErlideUtil.hasErlangNature(project)) {
@@ -121,7 +121,7 @@ public class SearchUtil {
         if (project == null) {
             return;
         }
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
+        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
                 project);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath path : sourcePaths) {
@@ -145,7 +145,7 @@ public class SearchUtil {
     private static void addFileToScope(final IFile file,
             final ErlSearchScope result) {
         if (ModuleKind.hasModuleExtension(file.getName())) {
-            final IErlModule module = CoreScope.getModel().findModule(file);
+            final IErlModule module = ErlangCore.getModel().findModule(file);
             result.addModule(module);
         }
     }
@@ -153,7 +153,7 @@ public class SearchUtil {
     public static ErlSearchScope getWorkspaceScope(final boolean addExternals,
             final boolean addOtp) throws ErlModelException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Collection<IErlProject> erlangProjects = CoreScope.getModel()
+        final Collection<IErlProject> erlangProjects = ErlangCore.getModel()
                 .getErlangProjects();
         for (final IErlProject i : erlangProjects) {
             final Collection<IErlModule> modules = i.getModulesAndIncludes();
@@ -478,7 +478,7 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element = CoreScope.getModel()
+                        final IErlElement element = ErlangCore.getModel()
                                 .findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;

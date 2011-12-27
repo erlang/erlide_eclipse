@@ -1,7 +1,7 @@
 package org.erlide.debug.ui.utils;
 
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -10,7 +10,7 @@ import org.erlide.jinterface.ErlLogger;
 public class BreakpointUtils {
 
     public static IErlElement getElement(final ILineBreakpoint breakpoint) {
-        final IErlElementLocator model = CoreScope.getModel();
+        final IErlElementLocator model = ErlangCore.getModel();
         final IErlElement element = model.findElement(breakpoint.getMarker()
                 .getResource());
         if (element instanceof IErlModule) {

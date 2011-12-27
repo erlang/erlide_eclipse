@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.Tuple;
 import org.erlide.core.common.Util;
@@ -116,7 +115,7 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlElementLocator model = CoreScope.getModel();
+                    final IErlElementLocator model = ErlangCore.getModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model
@@ -396,7 +395,7 @@ public final class MarkerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            final IErlElementLocator model = CoreScope.getModel();
+            final IErlElementLocator model = ErlangCore.getModel();
             addDialyzerWarningMarker(model, filename, line, s);
         }
     }
@@ -474,7 +473,7 @@ public final class MarkerUtils {
         if (ErlangCore.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
-        final IErlProject p = CoreScope.getModel().findProject(project);
+        final IErlProject p = ErlangCore.getModel().findProject(project);
         if (p != null) {
             try {
                 // getMarkersFor(resource, p);

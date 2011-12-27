@@ -42,7 +42,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
@@ -267,7 +267,7 @@ public class ErlStructureCreator extends StructureCreator {
             final IProgressMonitor monitor) throws CoreException {
         IErlModule module = null;
         String s = "";
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         if (element instanceof ResourceNode) {
             final ResourceNode rn = (ResourceNode) element;
             final IResource r = rn.getResource();

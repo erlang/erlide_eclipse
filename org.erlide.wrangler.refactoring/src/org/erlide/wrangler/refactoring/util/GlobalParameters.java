@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
@@ -142,7 +142,7 @@ public class GlobalParameters {
                             WranglerUtils.getDocument(file));
                 } else if (firstElement instanceof IFile) {
                     final IFile file = (IFile) firstElement;
-                    final IErlModule module = CoreScope.getModel().findModule(
+                    final IErlModule module = ErlangCore.getModel().findModule(
                             file);
                     wranglerSelection = new ErlModuleSelection(module, file);
                 } else {

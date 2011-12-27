@@ -26,7 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
@@ -99,7 +99,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = CoreScope.getModel().getErlangProjects();
+            projects = ErlangCore.getModel().getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
@@ -128,7 +128,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             projectMBr.setText(projectName);
 
             if (projectName != null && projectName.length() > 0) {
-                final IErlProject p = CoreScope.getModel().getErlangProject(
+                final IErlProject p = ErlangCore.getModel().getErlangProject(
                         ResourcesPlugin.getWorkspace().getRoot()
                                 .getProject(projectName));
                 if (p != null) {
@@ -249,7 +249,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
                 if (projectName != null && projectName.length() > 0) {
-                    final IErlProject p = CoreScope.getModel()
+                    final IErlProject p = ErlangCore.getModel()
                             .getErlangProject(
                                     ResourcesPlugin.getWorkspace().getRoot()
                                             .getProject(projectName));
@@ -272,7 +272,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         try {
             final List<ProjectElement> res = new LinkedList<ProjectElement>();
 
-            final Collection<IErlProject> projects = CoreScope.getModel()
+            final Collection<IErlProject> projects = ErlangCore.getModel()
                     .getErlangProjects();
 
             for (final IErlProject p : projects) {

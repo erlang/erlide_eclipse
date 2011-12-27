@@ -47,7 +47,6 @@ import org.eclipse.ui.model.WorkbenchAdapter;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceReference;
@@ -123,7 +122,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public ErlangOutlinePage(final ErlangEditor editor) {
         // myDocProvider = documentProvider;
         fEditor = editor;
-        CoreScope.getModel().addModelChangeListener(this);
+        ErlangCore.getModel().addModelChangeListener(this);
     }
 
     /**
@@ -302,7 +301,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fEditor.outlinePageClosed();
             fEditor = null;
         }
-        CoreScope.getModel().removeModelChangeListener(this);
+        ErlangCore.getModel().removeModelChangeListener(this);
 
         super.dispose();
     }

@@ -12,7 +12,7 @@ package org.erlide.ui.editors.erl.outline;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
@@ -70,7 +70,7 @@ public class ErlangContentProvider implements ITreeContentProvider {
     @Override
     public void dispose() {
         if (fListener != null) {
-            CoreScope.getModel().removeElementChangedListener(fListener);
+            ErlangCore.getModel().removeElementChangedListener(fListener);
             fListener = null;
         }
     }
@@ -88,9 +88,9 @@ public class ErlangContentProvider implements ITreeContentProvider {
             // TODO fixme
             fListener = new ElementChangedListener(null);
 
-            CoreScope.getModel().addElementChangedListener(fListener);
+            ErlangCore.getModel().addElementChangedListener(fListener);
         } else if (!isModule && fListener != null) {
-            CoreScope.getModel().removeElementChangedListener(fListener);
+            ErlangCore.getModel().removeElementChangedListener(fListener);
             fListener = null;
         }
     }

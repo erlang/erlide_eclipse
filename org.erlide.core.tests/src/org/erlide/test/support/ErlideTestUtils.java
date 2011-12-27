@@ -25,7 +25,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.erlang.ErlangToolkit;
@@ -170,7 +170,7 @@ public class ErlideTestUtils {
             final String moduleContents, final IFolder folder)
             throws CoreException {
         final IFile file = createFile(moduleName, moduleContents, folder);
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         IErlModule module = model.findModule(file);
         if (module == null) {
             final String path = file.getLocation().toPortableString();
@@ -216,7 +216,7 @@ public class ErlideTestUtils {
         } catch (final CoreException x) {
             // ignore
         }
-        final IErlProject erlProject = CoreScope.getModel().newProject(name,
+        final IErlProject erlProject = ErlangCore.getModel().newProject(name,
                 path.toPortableString());
         final IProject project = erlProject.getWorkspaceProject();
         final IOldErlangProjectProperties prefs = new OldErlangProjectProperties(
@@ -240,7 +240,7 @@ public class ErlideTestUtils {
     public static IErlProject getExistingProject(final String name) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         final IProject project = root.getProject(name);
-        return CoreScope.getModel().getErlangProject(project);
+        return ErlangCore.getModel().getErlangProject(project);
     }
 
     public static void createFolderHelper(final IFolder folder)
@@ -294,9 +294,9 @@ public class ErlideTestUtils {
         }
         erlProject.dispose();
         if (projects != null) {
-            projects.remove(CoreScope.getModel().findProject(project));
+            projects.remove(ErlangCore.getModel().findProject(project));
         }
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         model.resourceChanged(null);
         model.open(null);
     }
@@ -323,7 +323,7 @@ public class ErlideTestUtils {
 
     public static void initProjects() throws CoreException {
         projects = Lists.newArrayList();
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         model.open(null);
         final List<IErlElement> children = model.getChildren();
         for (final IErlElement child : children) {
@@ -337,7 +337,7 @@ public class ErlideTestUtils {
     }
 
     public static IErlModule createModuleFromText(final String initialText) {
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlangCore.getModel();
         final IErlModule module = model.getModuleFromText(model, "test1",
                 initialText, "test1");
         modulesAndIncludes.add(module);

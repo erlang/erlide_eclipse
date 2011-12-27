@@ -32,7 +32,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.root.ErlElementDelta;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlMember;
@@ -521,7 +521,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fEditor = editor;
             fViewer = viewer;
             fViewer.addProjectionListener(this);
-            final IErlModel mdl = CoreScope.getModel();
+            final IErlModel mdl = ErlangCore.getModel();
             mdl.addModelChangeListener(this);
         }
     }
@@ -533,7 +533,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            CoreScope.getModel().removeModelChangeListener(this);
+            ErlangCore.getModel().removeModelChangeListener(this);
         }
     }
 
@@ -558,7 +558,7 @@ public class DefaultErlangFoldingStructureProvider implements
         initialize();
         if (fEditor instanceof ErlangEditor && fModule != null) {
             fElementListener = new ElementChangedListener();
-            CoreScope.getModel().addElementChangedListener(fElementListener);
+            ErlangCore.getModel().addElementChangedListener(fElementListener);
             boolean structureKnown = false;
             try {
                 structureKnown = fModule.isStructureKnown();
@@ -587,7 +587,7 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            CoreScope.getModel().removeElementChangedListener(fElementListener);
+            ErlangCore.getModel().removeElementChangedListener(fElementListener);
             fElementListener = null;
         }
     }

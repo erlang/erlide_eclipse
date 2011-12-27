@@ -3,7 +3,7 @@ package org.erlide.cover.core;
 import java.io.File;
 import java.util.Iterator;
 
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.cover.api.IConfiguration;
@@ -109,7 +109,7 @@ public class CoverEventHandler extends ErlangEventHandler {
                 // calculate md5
 
                 try {
-                    final File file = new File(CoreScope.getModel()
+                    final File file = new File(ErlangCore.getModel()
                             .findModule(moduleName).getFilePath());
                     moduleStats.setMd5(MD5Checksum.getMD5(file));
                 } catch (final Exception e) {

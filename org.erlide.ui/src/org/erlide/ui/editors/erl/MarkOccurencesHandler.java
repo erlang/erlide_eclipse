@@ -32,7 +32,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
@@ -105,7 +105,7 @@ public class MarkOccurencesHandler {
                 final int offset = aSelection.getOffset();
                 final OpenResult res = ErlideOpen.open(ideBackend, theModule,
                         offset, ModelUtils.getImportsAsList(theModule), "",
-                        CoreScope.getModel().getPathVars());
+                        ErlangCore.getModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
                                 offset, res, LimitTo.ALL_OCCURRENCES, false);

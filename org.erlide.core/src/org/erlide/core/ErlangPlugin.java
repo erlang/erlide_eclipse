@@ -62,8 +62,7 @@ public class ErlangPlugin extends Plugin {
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        final CoreScope coreScope = new CoreScope(this, context);
-        core = CoreInjector.injectErlangCore(coreScope);
+        core = CoreInjector.injectErlangCore(this);
         super.start(context);
         ResourcesPlugin.getWorkspace().addSaveParticipant(
                 getBundle().getSymbolicName(), core.getSaveParticipant());

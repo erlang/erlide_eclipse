@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
@@ -67,7 +67,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
         clauseHead = "";
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
-            final IErlModule m = CoreScope.getModel().findModule(file);
+            final IErlModule m = ErlangCore.getModel().findModule(file);
             if (m != null) {
                 try {
                     m.open(null);

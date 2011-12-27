@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.CoreScope;
+import org.erlide.core.ErlangCore;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelStatus;
@@ -171,7 +171,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     @Override
     public IErlModel getModel() {
-        return CoreScope.getModel();
+        return ErlangCore.getModel();
     }
 
     /**
