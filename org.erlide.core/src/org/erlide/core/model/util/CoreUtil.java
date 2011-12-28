@@ -146,64 +146,6 @@ public final class CoreUtil {
         return -1;
     }
 
-    public static final boolean isExcluded(final IPath resourcePath,
-            final char[][] exclusionPatterns) {
-        return isExcluded(resourcePath, null, exclusionPatterns, false);
-    }
-
-    /**
-     * Returns whether the given resource path matches one of the
-     * inclusion/exclusion patterns. NOTE: should not be asked directly using
-     * pkg root paths
-     * 
-     * @see IClasspathEntry#getInclusionPatterns
-     * @see IClasspathEntry#getExclusionPatterns
-     */
-    private static final boolean isExcluded(final IPath resourcePath,
-            final char[][] inclusionPatterns, final char[][] exclusionPatterns,
-            final boolean isFolderPath) {
-        if (inclusionPatterns == null && exclusionPatterns == null) {
-            return false;
-        }
-        char[] path = resourcePath.toString().toCharArray();
-
-        inclusionCheck: if (inclusionPatterns != null) {
-            for (final char[] pattern : inclusionPatterns) {
-                char[] folderPattern = pattern;
-                if (isFolderPath) {
-                    final int lastSlash = CharOperation.lastIndexOf('/',
-                            pattern);
-                    if (lastSlash != -1 && lastSlash != pattern.length - 1) { // trailing
-                        // slash
-                        // ->
-                        // adds
-                        // '**'
-                        // for
-                        // free
-                        // (see
-                        // http://ant.apache.org/manual/dirtasks.html)
-                        final int star = CharOperation.indexOf('*', pattern,
-                                lastSlash);
-                        if (star == -1 || star >= pattern.length - 1
-                                || pattern[star + 1] != '*') {
-                            folderPattern = CharOperation.subarray(pattern, 0,
-                                    lastSlash);
-                        }
-                    }
-                }
-                if (CharOperation.pathMatch(folderPattern, path, true, '/')) {
-                    break inclusionCheck;
-                }
-            }
-            return true; // never included
-        }
-        if (isFolderPath) {
-            path = CharOperation.concat(path, new char[] { '*' }, '/');
-        }
-
-        return false;
-    }
-
     private CoreUtil() {
     }
 
