@@ -5,6 +5,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.erlide.ui.prefs.PreferenceConstants.Color;
 
 public enum TokenHighlight {
+    //@formatter:off
     DEFAULT(Color.BLACK.getColor(), SWT.NORMAL),
     KEYWORD(new RGB(0xA0, 0x20, 0xF0), SWT.BOLD),
     ATOM(Color.BLACK.getColor(), SWT.NORMAL),
@@ -17,8 +18,10 @@ public enum TokenHighlight {
     COMMENT(new RGB(0xB2, 0x22, 0x22), SWT.NORMAL),
     EDOC_TAG(new RGB(0x82, 0x22, 0x22), SWT.BOLD),
     HTML_TAG(new RGB(0xB3, 0x6A, 0x6A), SWT.NORMAL),
-    STRING(new RGB(0xBc, 0x8f, 0x8F), SWT.NORMAL),
-    TILDE_TAG(new RGB(0xBc, 0x8f, 0x8F), SWT.BOLD);
+    STRING(new RGB(0xBC, 0x8f, 0x8F), SWT.NORMAL),
+    ESCAPE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD),
+    TILDE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD);
+    //@formatter:on
 
     private final HighlightStyle defaultData;
 
