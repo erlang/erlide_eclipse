@@ -31,11 +31,18 @@ public class IOServer implements Runnable {
 
     private final IOCallback callback;
     private final OtpMbox mbox;
+    private final Thread thread;
+    private volatile boolean stopped = false;
 
     public IOServer(final OtpMbox box, final IOCallback callback) {
         this.callback = callback;
         mbox = box;
-        new Thread(this, "io_server").start();
+        thread = new Thread(this, "io_server");
+        thread.start();
+    }
+
+    public void stop() {
+        stopped = true;
     }
 
     @Override
@@ -61,7 +68,10 @@ public class IOServer implements Runnable {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-        } while (!done || !Thread.interrupted());
+        } while (!stopped || !done || !Thread.interrupted());
+        if (stopped) {
+            mbox.close();
+        }
     }
 
     private void handleMessage(final OtpErlangObject msg) {
