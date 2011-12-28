@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface.util;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -35,5 +36,9 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     @Override
     protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
         return size() > max;
+    }
+
+    public Map<K, V> asSynchronized() {
+        return Collections.synchronizedMap(this);
     }
 }

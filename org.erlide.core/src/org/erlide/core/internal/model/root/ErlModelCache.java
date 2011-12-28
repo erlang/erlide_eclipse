@@ -29,18 +29,18 @@ public class ErlModelCache implements IDisposable {
     // private static final int NAME_CACHE_SIZE = 300;
     private static ErlModelCache fgInstance = null;
 
-    private final LRUCache<IErlModule, List<IErlModule>> moduleIncludeCache;
-    private final LRUCache<String, IErlModule> pathToModuleCache;
-    private final LRUCache<String, Tuple<IErlProject, List<ExternalTreeEntry>>> externalTreeCache;
+    private final Map<IErlModule, List<IErlModule>> moduleIncludeCache;
+    private final Map<String, IErlModule> pathToModuleCache;
+    private final Map<String, Tuple<IErlProject, List<ExternalTreeEntry>>> externalTreeCache;
     private final Map<String, IErlModule> editedModulesMap;
     // private final LRUCache<String, Set<IErlModule>> nameToModuleCache;
     private final ModelChangeListener modelChangeListener;
-    private final LRUCache<IErlProject, List<IErlModule>> projectModuleCache;
-    private final LRUCache<IErlProject, List<IErlModule>> projectIncludeCache;
-    private final LRUCache<IErlProject, String> projectExternalModulesStringCache;
-    private final LRUCache<IErlProject, String> projectExternalIncludesStringCache;
-    private final LRUCache<IErlProject, Collection<IPath>> projectSourceDirsCache;
-    private final LRUCache<IErlProject, Collection<IPath>> projectIncludeDirsCache;
+    private final Map<IErlProject, List<IErlModule>> projectModuleCache;
+    private final Map<IErlProject, List<IErlModule>> projectIncludeCache;
+    private final Map<IErlProject, String> projectExternalModulesStringCache;
+    private final Map<IErlProject, String> projectExternalIncludesStringCache;
+    private final Map<IErlProject, Collection<IPath>> projectSourceDirsCache;
+    private final Map<IErlProject, Collection<IPath>> projectIncludeDirsCache;
     private final boolean disabled;
 
     public static ErlModelCache getDefault() {
@@ -64,26 +64,27 @@ public class ErlModelCache implements IDisposable {
     }
 
     private ErlModelCache() {
-        pathToModuleCache = new LRUCache<String, IErlModule>(CACHE_SIZE);
+        pathToModuleCache = new LRUCache<String, IErlModule>(CACHE_SIZE)
+                .asSynchronized();
         editedModulesMap = Maps.newHashMap();
         // nameToModuleCache = new LRUCache<String, Set<IErlModule>>(
-        // NAME_CACHE_SIZE);
+        // NAME_CACHE_SIZE).asSynchronized();
         moduleIncludeCache = new LRUCache<IErlModule, List<IErlModule>>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         externalTreeCache = new LRUCache<String, Tuple<IErlProject, List<ExternalTreeEntry>>>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         projectModuleCache = new LRUCache<IErlProject, List<IErlModule>>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         projectIncludeCache = new LRUCache<IErlProject, List<IErlModule>>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         projectExternalModulesStringCache = new LRUCache<IErlProject, String>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         projectExternalIncludesStringCache = new LRUCache<IErlProject, String>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         projectSourceDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         projectIncludeDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
-                CACHE_SIZE);
+                CACHE_SIZE).asSynchronized();
         modelChangeListener = new ModelChangeListener();
         ErlangCore.getModel().addModelChangeListener(modelChangeListener);
         disabled = ErlideUtil.isCacheDisabled();
