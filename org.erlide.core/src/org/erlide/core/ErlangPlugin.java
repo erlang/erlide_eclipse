@@ -109,7 +109,7 @@ public class ErlangPlugin extends Plugin {
                     break;
                 }
             }
-            if (version != null) {
+            if (!version.equals("?")) {
                 break;
             }
         }
