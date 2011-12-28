@@ -56,11 +56,8 @@ public final class ErlUtils {
      */
     public static OtpErlangObject format(final String fmt, final Object... args)
             throws TermParserException, SignatureException {
-        OtpErlangObject result;
-        result = parse(fmt);
-        List<Object> values = new ArrayList<Object>(args.length);
-        values = new ArrayList<Object>(Arrays.asList(args));
-        result = fill(result, values);
+        final List<Object> values = new ArrayList<Object>(Arrays.asList(args));
+        final OtpErlangObject result = fill(parse(fmt), values);
         return result;
     }
 
