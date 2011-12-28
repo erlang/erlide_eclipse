@@ -37,6 +37,9 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     private RuntimeInfo erlideRuntime;
 
     public RuntimeInfoManager() {
+        final RuntimeInfoInitializer runtimeInfoInitializer = new RuntimeInfoInitializer(
+                this);
+        runtimeInfoInitializer.initializeRuntimesList();
         getRootPreferenceNode().addPreferenceChangeListener(this);
         load();
     }

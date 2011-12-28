@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.RegistryFactory;
 
 import com.google.common.collect.Lists;
 
@@ -62,8 +64,7 @@ public abstract class MessageReporter {
 
     private static List<MessageReporter> getAllImplementors() {
         final List<MessageReporter> result = Lists.newArrayList();
-        final IConfigurationElement[] elements = ErlangCore
-                .getMessageReporterConfigurationElements();
+        final IConfigurationElement[] elements = getMessageReporterConfigurationElements();
         for (final IConfigurationElement element : elements) {
             try {
                 final MessageReporter provider = (MessageReporter) element
@@ -75,4 +76,11 @@ public abstract class MessageReporter {
         }
         return result;
     }
+
+    public static IConfigurationElement[] getMessageReporterConfigurationElements() {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        return reg.getConfigurationElementsFor(ErlangCore.PLUGIN_ID,
+                "messageReporter");
+    }
+
 }
