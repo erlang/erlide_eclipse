@@ -174,4 +174,18 @@ public class UtilTest {
         Assert.assertArrayEquals(expected, actual.getBytes("UTF-8"));
     }
 
+    @Test
+    public void extractLastName_1() {
+        final String actual = Util.extractLastName("aaa.ddd.ccc");
+        final String expected = "ccc";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void extractLastName_2() {
+        final String actual = Util.extractLastName("ccc");
+        final String expected = "ccc";
+        assertEquals(expected, actual);
+    }
+
 }

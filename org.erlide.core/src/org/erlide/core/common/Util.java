@@ -1655,7 +1655,8 @@ public final class Util {
         final Charset charset = Charset.forName(encoding);
         final CharsetEncoder encoder = charset.newEncoder();
         try {
-            final ByteBuffer bbuf = encoder.encode(CharBuffer.wrap(string));
+            CharBuffer cbuf = CharBuffer.wrap(string);
+            final ByteBuffer bbuf = encoder.encode(cbuf);
             return bbuf.array();
         } catch (final CharacterCodingException e) {
             return null;
