@@ -111,7 +111,7 @@ public class ErlModel extends Openable implements IErlModel {
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created. One should only
-     * indirect through ErlModelManager#getErlangModel() to get access to it.
+     * indirect through ErlModel#getErlangModel() to get access to it.
      * 
      * @exception Error
      *                if called more than once
@@ -119,13 +119,17 @@ public class ErlModel extends Openable implements IErlModel {
     ErlModel() {
         super(null, ""); //$NON-NLS-1$
         parser = ErlangToolkit.createParser();
+        fPathVariableChangeListener = new PathVariableChangeListener();
+        setupWorkspaceListeners();
+        deltaManager = new ErlModelDeltaManager(this);
+    }
+
+    public void setupWorkspaceListeners() {
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IPathVariableManager pvm = workspace.getPathVariableManager();
-        fPathVariableChangeListener = new PathVariableChangeListener();
         pvm.addChangeListener(fPathVariableChangeListener);
         final IResourceChangeListener listener = new ResourceChangeListener();
         workspace.addResourceChangeListener(listener);
-        deltaManager = new ErlModelDeltaManager(this);
     }
 
     @Override
