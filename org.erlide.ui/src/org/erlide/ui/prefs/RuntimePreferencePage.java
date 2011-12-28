@@ -22,7 +22,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -121,7 +120,6 @@ public class RuntimePreferencePage extends PreferencePage implements
      * Previous selection
      */
     private ISelection fPrevSelection = new StructuredSelection();
-    private ComboViewer erlideCombo;
 
     public RuntimePreferencePage() {
         super();
@@ -356,14 +354,12 @@ public class RuntimePreferencePage extends PreferencePage implements
             return;
         }
         fRuntimeList.refresh();
-        erlideCombo.refresh();
     }
 
     @Override
     public void itemAdded(final RuntimeInfo vm) {
         runtimes.add(vm);
         fRuntimeList.refresh();
-        erlideCombo.refresh();
         selectSingle();
     }
 
@@ -371,17 +367,11 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (runtimes.size() == 1) {
             final RuntimeInfo vm = runtimes.iterator().next();
             fRuntimeList.setChecked(vm, true);
-            erlideCombo.setSelection(new StructuredSelection(vm));
         }
         if (runtimes.size() > 1) {
             final RuntimeInfo vm = runtimes.iterator().next();
             if (fRuntimeList.getCheckedElements().length == 0) {
                 fRuntimeList.setChecked(vm, true);
-            }
-            final StructuredSelection sel = (StructuredSelection) erlideCombo
-                    .getSelection();
-            if (sel.isEmpty()) {
-                erlideCombo.setSelection(new StructuredSelection(vm));
             }
         }
     }
@@ -408,7 +398,6 @@ public class RuntimePreferencePage extends PreferencePage implements
             return;
         }
         fRuntimeList.refresh(vm);
-        erlideCombo.refresh();
     }
 
     protected void duplicateRuntime() {
@@ -426,7 +415,6 @@ public class RuntimePreferencePage extends PreferencePage implements
             return;
         }
         fRuntimeList.refresh();
-        erlideCombo.refresh();
     }
 
     protected void removeSelectedRuntimes() {
@@ -458,7 +446,6 @@ public class RuntimePreferencePage extends PreferencePage implements
             runtimes.remove(element);
         }
         fRuntimeList.refresh();
-        erlideCombo.refresh();
         final IStructuredSelection curr = (IStructuredSelection) getSelection();
         if (!curr.equals(prev)) {
             final List<RuntimeInfo> installs = getRuntimes();
@@ -623,44 +610,15 @@ public class RuntimePreferencePage extends PreferencePage implements
 
         final Label erlideLabel = new Label(composite, SWT.NONE);
         erlideLabel
-                .setToolTipText("The erlide runtime is used for IDE purposes, not for running project code.");
+                .setToolTipText("The erlide runtime is used for IDE purposes, not for running project code. "
+                        + "It is the most recent stable version that is installed.");
+        final String erlideName = erlideRuntime == null ? "none"
+                : erlideRuntime.getName();
         erlideLabel
-                .setText("Backend used by Erlide itself (restart is required)");
-
-        erlideCombo = new ComboViewer(composite, SWT.READ_ONLY);
-        erlideCombo.setLabelProvider(new RuntimeLabelProvider());
-        erlideCombo.setContentProvider(new RuntimeContentProvider());
-        erlideCombo.setInput(runtimes);
-        combo = erlideCombo.getCombo();
-        final GridData gd_combo = new GridData(SWT.LEFT, SWT.FILL, true, false);
-        gd_combo.widthHint = 153;
-        combo.setLayoutData(gd_combo);
-        if (erlideRuntime != null) {
-            erlideCombo.setSelection(new StructuredSelection(erlideRuntime),
-                    true);
-        }
-        erlideCombo
-                .addPostSelectionChangedListener(new ISelectionChangedListener() {
-                    @Override
-                    public void selectionChanged(
-                            final SelectionChangedEvent event) {
-                        fireSelectionChanged();
-                    }
-                });
-        erlideCombo
-                .addSelectionChangedListener(new ISelectionChangedListener() {
-                    @Override
-                    public void selectionChanged(
-                            final SelectionChangedEvent event) {
-                        final ISelection sel = event.getSelection();
-                        if (sel instanceof IStructuredSelection) {
-                            final IStructuredSelection ssel = (IStructuredSelection) sel;
-                            erlideRuntime = (RuntimeInfo) ssel
-                                    .getFirstElement();
-                        }
-
-                    }
-                });
+                .setText(RuntimePreferenceMessages.RuntimePreferencePage_erlideLabel_text
+                        + erlideName);
+        new Label(composite, SWT.NONE);
+        new Label(parent, SWT.NONE);
 
         final Label tableLabel = new Label(parent, SWT.NONE);
         tableLabel.setText("Installed runtimes:");
@@ -824,7 +782,6 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     @Override
     public boolean performOk() {
-        manager.setErlideRuntime(erlideRuntime);
         if (defaultRuntime == null) {
             defaultRuntime = (RuntimeInfo) fRuntimeList.getElementAt(0);
         }
@@ -849,15 +806,10 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     void checkValid() {
         final RuntimeInfo def = getCheckedRuntime();
-        final StructuredSelection sel = (StructuredSelection) erlideCombo
-                .getSelection();
 
         if (def == null && getRuntimes().size() > 0) {
             setValid(false);
             setErrorMessage("Please select a default runtime.");
-        } else if (sel.isEmpty() && getRuntimes().size() > 0) {
-            setValid(false);
-            setErrorMessage("Please select a runtime to be used by erlide.");
         } else {
             setValid(true);
             setErrorMessage(null);

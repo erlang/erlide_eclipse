@@ -24,6 +24,7 @@ public final class RuntimePreferenceMessages extends NLS {
     public static String addDialog_add;
     public static String addDialog_remove;
     public static String addDialog_pickInstallationRoot;
+    public static String RuntimePreferencePage_erlideLabel_text;
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, RuntimePreferenceMessages.class);
