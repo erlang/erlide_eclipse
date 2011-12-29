@@ -63,28 +63,22 @@ public class ErlModelCache implements IDisposable {
         }
     }
 
+    private static <K, V> Map<K, V> newCache() {
+        return new LRUCache<K, V>(CACHE_SIZE).asSynchronized();
+    }
+
     private ErlModelCache() {
-        pathToModuleCache = new LRUCache<String, IErlModule>(CACHE_SIZE)
-                .asSynchronized();
+        pathToModuleCache = newCache();
         editedModulesMap = Maps.newHashMap();
-        // nameToModuleCache = new LRUCache<String, Set<IErlModule>>(
-        // NAME_CACHE_SIZE).asSynchronized();
-        moduleIncludeCache = new LRUCache<IErlModule, List<IErlModule>>(
-                CACHE_SIZE).asSynchronized();
-        externalTreeCache = new LRUCache<String, Tuple<IErlProject, List<ExternalTreeEntry>>>(
-                CACHE_SIZE).asSynchronized();
-        projectModuleCache = new LRUCache<IErlProject, List<IErlModule>>(
-                CACHE_SIZE).asSynchronized();
-        projectIncludeCache = new LRUCache<IErlProject, List<IErlModule>>(
-                CACHE_SIZE).asSynchronized();
-        projectExternalModulesStringCache = new LRUCache<IErlProject, String>(
-                CACHE_SIZE).asSynchronized();
-        projectExternalIncludesStringCache = new LRUCache<IErlProject, String>(
-                CACHE_SIZE).asSynchronized();
-        projectSourceDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
-                CACHE_SIZE).asSynchronized();
-        projectIncludeDirsCache = new LRUCache<IErlProject, Collection<IPath>>(
-                CACHE_SIZE).asSynchronized();
+        // nameToModuleCache = newCache();
+        moduleIncludeCache = newCache();
+        externalTreeCache = newCache();
+        projectModuleCache = newCache();
+        projectIncludeCache = newCache();
+        projectExternalModulesStringCache = newCache();
+        projectExternalIncludesStringCache = newCache();
+        projectSourceDirsCache = newCache();
+        projectIncludeDirsCache = newCache();
         modelChangeListener = new ModelChangeListener();
         ErlangCore.getModel().addModelChangeListener(modelChangeListener);
         disabled = ErlideUtil.isCacheDisabled();
