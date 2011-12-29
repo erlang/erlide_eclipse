@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.EncodingUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
@@ -57,12 +58,13 @@ public final class ErlangCore {
         featureVersion = "?";
         logger = new ErlangCoreLogger(plugin, logDir);
 
-        // try {
-        // // ignore result, just setup cache
-        // BackendUtils.getSourcePathProviders();
-        // } catch (final CoreException e) {
-        // // ignore
-        // }
+        // TODO can we remove this from here?
+        try {
+            // ignore result, just setup cache
+            BackendUtils.getSourcePathProviders();
+        } catch (final CoreException e) {
+            // ignore
+        }
     }
 
     public void start(final String version) throws CoreException {
