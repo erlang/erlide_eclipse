@@ -58,6 +58,7 @@ import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
@@ -569,7 +570,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void addProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = ErlModelManager.getErlangModel()
+                .findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -604,7 +606,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void removeProjectPath(final IProject project) {
-        final IErlProject eproject = ErlangCore.getModel().findProject(project);
+        final IErlProject eproject = ErlModelManager.getErlangModel()
+                .findProject(project);
         if (eproject == null) {
             // can happen if project was removed
             return;
@@ -906,7 +909,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     public static void loadModuleViaInput(final IBackend b,
             final IProject project, final String module)
             throws ErlModelException, IOException {
-        final IErlProject p = ErlangCore.getModel().findProject(project);
+        final IErlProject p = ErlModelManager.getErlangModel().findProject(
+                project);
         final IPath outputLocation = project.getFolder(p.getOutputLocation())
                 .getFile(module + ".beam").getLocation();
         final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,

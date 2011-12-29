@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
-import org.erlide.core.model.erlang.ErlangToolkitFactory;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -98,8 +98,6 @@ public class ErlModel extends Openable implements IErlModel {
 
     private final ErlModelDeltaManager deltaManager;
 
-    public static boolean verbose = Boolean.getBoolean("erlide.model.verbose");
-
     public enum External {
         EXTERNAL_MODULES, EXTERNAL_INCLUDES
     }
@@ -107,6 +105,8 @@ public class ErlModel extends Openable implements IErlModel {
     OtpErlangList fCachedPathVars = null;
 
     private final IErlParser parser;
+
+    private final ErlangToolkit toolkit;
 
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
@@ -116,9 +116,10 @@ public class ErlModel extends Openable implements IErlModel {
      * @exception Error
      *                if called more than once
      */
-    ErlModel() {
+    public ErlModel(final ErlangToolkit toolkit) {
         super(null, ""); //$NON-NLS-1$
-        parser = ErlangToolkitFactory.getInstance().createParser();
+        this.toolkit = toolkit;
+        parser = toolkit.createParser();
         fPathVariableChangeListener = new PathVariableChangeListener();
         setupWorkspaceListeners();
         deltaManager = new ErlModelDeltaManager(this);
@@ -133,7 +134,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     @Override
-    protected boolean buildStructure(final IProgressMonitor pm) {
+    public boolean buildStructure(final IProgressMonitor pm) {
         setChildren(null);
         // determine my children
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
@@ -492,16 +493,6 @@ public class ErlModel extends Openable implements IErlModel {
                 false, IErlElementLocator.Scope.ALL_PROJECTS);
     }
 
-    private static volatile ErlModel fgErlangModel;
-
-    public static synchronized final IErlModel getErlangModel() {
-        if (fgErlangModel == null) {
-            fgErlangModel = new ErlModel();
-            fgErlangModel.buildStructure(null);
-        }
-        return fgErlangModel;
-    }
-
     /**
      * Adds the given listener for changes to Erlang elements. Has no effect if
      * an identical listener is already registered. After completion of this
@@ -636,7 +627,7 @@ public class ErlModel extends Openable implements IErlModel {
             if (listenerMask == null || (listenerMask[i] & eventType) != 0) {
                 final IElementChangedListener listener = listeners[i];
                 long start = -1;
-                if (verbose) {
+                if (ModelConfig.verbose) {
                     System.out
                             .print("Listener #" + (i + 1) + "=" + listener.toString());//$NON-NLS-1$//$NON-NLS-2$
                     start = System.currentTimeMillis();
@@ -659,7 +650,7 @@ public class ErlModel extends Openable implements IErlModel {
                         listener.elementChanged(extraEvent);
                     }
                 });
-                if (verbose) {
+                if (ModelConfig.verbose) {
                     System.out
                             .println(" -> " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -857,7 +848,7 @@ public class ErlModel extends Openable implements IErlModel {
         if (root == null) {
             return null;
         }
-        return getErlangModel();
+        return this;
     }
 
     class ResourceChangeListener implements IResourceChangeListener {
@@ -875,7 +866,7 @@ public class ErlModel extends Openable implements IErlModel {
                     @Override
                     public boolean visit(final IResourceDelta delta) {
                         final IResource resource = delta.getResource();
-                        if (verbose) {
+                        if (ModelConfig.verbose) {
                             ErlLogger.debug("delta " + delta.getKind()
                                     + " for " + resource.getLocation());
                         }
@@ -970,10 +961,6 @@ public class ErlModel extends Openable implements IErlModel {
                 remove(rsrc);
             }
         }
-    }
-
-    @Override
-    public void shutdown() {
     }
 
     @Override
@@ -1196,5 +1183,10 @@ public class ErlModel extends Openable implements IErlModel {
     @Override
     public Object getModelLock() {
         return fModelLock;
+    }
+
+    @Override
+    public ErlangToolkit getToolkit() {
+        return toolkit;
     }
 }

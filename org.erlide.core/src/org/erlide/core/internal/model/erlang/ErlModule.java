@@ -25,8 +25,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.root.ErlModel;
+import org.erlide.core.internal.model.root.ModelConfig;
 import org.erlide.core.internal.model.root.Openable;
-import org.erlide.core.model.erlang.ErlangToolkitFactory;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlExport;
@@ -88,7 +88,7 @@ public class ErlModule extends Openable implements IErlModule {
         scanner = null;
         this.useCaches = useCaches;
         comments = Lists.newArrayList();
-        if (ErlModel.verbose) {
+        if (ModelConfig.verbose) {
             final IErlElement element = (IErlElement) parent;
             final String parentName = element.getName();
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
@@ -514,8 +514,8 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return ErlangToolkitFactory.getInstance().createScanner(scannerName,
-                initialText, filePath, useCaches);
+        return getModel().getToolkit().createScanner(scannerName, initialText,
+                filePath, useCaches);
     }
 
     @Override

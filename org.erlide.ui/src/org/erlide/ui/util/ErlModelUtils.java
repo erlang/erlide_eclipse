@@ -23,13 +23,13 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
@@ -123,7 +123,7 @@ public class ErlModelUtils {
         if (editorInput instanceof IFileEditorInput) {
             final IFileEditorInput input = (IFileEditorInput) editorInput;
             final IFile file = input.getFile();
-            final IErlModel model = ErlangCore.getModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             IErlModule module = model.findModule(file);
             if (module != null) {
                 return module;
@@ -168,7 +168,7 @@ public class ErlModelUtils {
                 return module;
             }
             final IPath p = new Path(path);
-            return ErlangCore.getModel().getModuleFromFile(null,
+            return ErlModelManager.getErlangModel().getModuleFromFile(null,
                     p.lastSegment(), initialText, path, path);
         }
         return null;
@@ -177,7 +177,8 @@ public class ErlModelUtils {
     public static void openMFA(final String module, final String function,
             final int arity) throws CoreException {
         ErlModelUtils.openExternalFunction(module, new ErlangFunction(function,
-                arity), null, ErlangCore.getModel().findModule(module), null,
+                arity), null,
+                ErlModelManager.getErlangModel().findModule(module), null,
                 IErlElementLocator.Scope.ALL_PROJECTS);
     }
 

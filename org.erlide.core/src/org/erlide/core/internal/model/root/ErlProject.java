@@ -381,7 +381,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         } catch (final CoreException e) {
             // could not flush markers: not much we can do
-            if (ErlModel.verbose) {
+            if (ModelConfig.verbose) {
                 ErlLogger.warn(e);
             }
         }

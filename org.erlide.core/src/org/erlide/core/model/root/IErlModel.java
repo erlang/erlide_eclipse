@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.util.ElementChangedEvent;
@@ -93,11 +94,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
     IErlElement create(IResource resource);
 
     /**
-     * @see org.erlide.core.model.erlang.IErlModelManager#shutdown()
-     */
-    void shutdown();
-
-    /**
      * Adds the given listener for changes to Erlang elements. Has no effect if
      * an identical listener is already registered. After completion of this
      * method, the given listener will be registered for exactly the specified
@@ -166,4 +162,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
     void putEdited(String path, IErlModule module);
 
     IErlParser getParser();
+
+    ErlangToolkit getToolkit();
 }

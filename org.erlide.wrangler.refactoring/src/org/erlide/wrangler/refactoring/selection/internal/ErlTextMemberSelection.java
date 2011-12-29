@@ -15,10 +15,10 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -86,7 +86,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlElement getErlElement() {
-        final IErlModule module = (IErlModule) ErlangCore.getModel()
+        final IErlModule module = (IErlModule) ErlModelManager.getErlangModel()
                 .findElement(file);
 
         try {
@@ -151,6 +151,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) ErlangCore.getModel().findElement(file);
+        return (IErlModule) ErlModelManager.getErlangModel().findElement(file);
     }
 }

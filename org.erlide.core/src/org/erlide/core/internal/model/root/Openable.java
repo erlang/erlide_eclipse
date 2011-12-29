@@ -128,7 +128,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
     @Override
     public synchronized void open(final IProgressMonitor monitor)
             throws ErlModelException {
-        if (ErlModel.verbose) {
+        if (ModelConfig.verbose) {
             ErlLogger.debug("open " + isStructureKnown() + " > " + this);
         }
         // open the parent if necessary

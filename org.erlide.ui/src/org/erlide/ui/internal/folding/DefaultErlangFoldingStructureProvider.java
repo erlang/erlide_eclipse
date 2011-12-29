@@ -32,7 +32,6 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.root.ErlElementDelta;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlMember;
@@ -40,6 +39,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementDelta;
@@ -521,7 +521,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fEditor = editor;
             fViewer = viewer;
             fViewer.addProjectionListener(this);
-            final IErlModel mdl = ErlangCore.getModel();
+            final IErlModel mdl = ErlModelManager.getErlangModel();
             mdl.addModelChangeListener(this);
         }
     }
@@ -533,7 +533,7 @@ public class DefaultErlangFoldingStructureProvider implements
             fViewer.removeProjectionListener(this);
             fViewer = null;
             fEditor = null;
-            ErlangCore.getModel().removeModelChangeListener(this);
+            ErlModelManager.getErlangModel().removeModelChangeListener(this);
         }
     }
 
@@ -558,7 +558,8 @@ public class DefaultErlangFoldingStructureProvider implements
         initialize();
         if (fEditor instanceof ErlangEditor && fModule != null) {
             fElementListener = new ElementChangedListener();
-            ErlangCore.getModel().addElementChangedListener(fElementListener);
+            ErlModelManager.getErlangModel().addElementChangedListener(
+                    fElementListener);
             boolean structureKnown = false;
             try {
                 structureKnown = fModule.isStructureKnown();
@@ -587,7 +588,8 @@ public class DefaultErlangFoldingStructureProvider implements
     public void projectionDisabled() {
         fCachedDocument = null;
         if (fElementListener != null) {
-            ErlangCore.getModel().removeElementChangedListener(fElementListener);
+            ErlModelManager.getErlangModel().removeElementChangedListener(
+                    fElementListener);
             fElementListener = null;
         }
     }

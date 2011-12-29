@@ -40,6 +40,7 @@ import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.core.backend.events.ErlangEventPublisher;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.Tuple;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
@@ -83,6 +84,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         allBackends = Sets.newHashSet();
         listeners = Lists.newArrayList();
         codeBundles = Maps.newHashMap();
+
+        loadCodepathExtensions();
 
         tryStartEpmdProcess();
         startEpmdWatcher();
@@ -149,8 +152,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public IBackend getBuildBackend(final IProject project)
             throws BackendException {
-        final IErlProject erlProject = ErlangCore.getModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         if (erlProject == null) {
             return null;
         }

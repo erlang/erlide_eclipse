@@ -15,6 +15,7 @@ import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
 import org.junit.After;
@@ -34,7 +35,7 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model =  ErlModelManager.getErlangModel();
         module = model.getModuleFromText(model, "testing", "", null);
     }
 
@@ -50,7 +51,7 @@ public class ParsingTests {
     private boolean parse(final String s) {
         final String scannerModuleName = module.getScannerName();
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final IErlParser parser = ErlangCore.getModel().getParser();
+        final IErlParser parser =  ErlModelManager.getErlangModel().getParser();
         return parser.parse(module, scannerModuleName, false, "", false);
     }
 

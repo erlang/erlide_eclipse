@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Collection;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.MD5Checksum;
@@ -79,7 +79,7 @@ public class ShowCoverageAction extends CoverageAction {
     // calculate md5
     private boolean ifMarkAnnotations(final ModuleStats module) {
         try {
-            final File file = new File(ErlangCore.getModel()
+            final File file = new File( ErlModelManager.getErlangModel()
                     .findModule(module.getLabel()).getFilePath());
 
             if (module.getMd5().equals(MD5Checksum.getMD5(file))) {

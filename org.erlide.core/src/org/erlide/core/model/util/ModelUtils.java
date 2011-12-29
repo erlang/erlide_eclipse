@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -16,6 +15,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -57,7 +57,7 @@ public class ModelUtils {
     public static String getExternalModulePath(final IErlModule module) {
         final List<String> result = Lists.newArrayList();
         IErlElement element = module;
-        final IErlElementLocator model = ErlangCore.getModel();
+        final IErlElementLocator model =  ErlModelManager.getErlangModel();
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
@@ -88,7 +88,7 @@ public class ModelUtils {
     public static IErlModule getModuleFromExternalModulePath(
             final String modulePath) throws ErlModelException {
         final List<String> path = StringUtils.split(DELIMITER, modulePath);
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model =  ErlModelManager.getErlangModel();
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         ErlLogger.debug(">>childNamed %s", childNamed == null ? "<null>"
@@ -203,7 +203,7 @@ public class ModelUtils {
     public static IErlModule findModule(final IErlProject project,
             final String moduleName, final String modulePath,
             final IErlElementLocator.Scope scope) throws ErlModelException {
-        final IErlElementLocator model = ErlangCore.getModel();
+        final IErlElementLocator model =  ErlModelManager.getErlangModel();
         if (project != null) {
             return model.findModuleFromProject(project, moduleName, modulePath,
                     scope);

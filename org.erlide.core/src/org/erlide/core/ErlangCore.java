@@ -24,13 +24,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.EncodingUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
-import org.erlide.core.internal.model.root.ErlModel;
-import org.erlide.core.model.root.IErlModel;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcMonitor;
 import org.osgi.framework.Bundle;
@@ -61,12 +57,12 @@ public final class ErlangCore {
         featureVersion = "?";
         logger = new ErlangCoreLogger(plugin, logDir);
 
-        try {
-            // ignore result, just setup cache
-            BackendUtils.getSourcePathProviders();
-        } catch (final CoreException e) {
-            // ignore
-        }
+        // try {
+        // // ignore result, just setup cache
+        // BackendUtils.getSourcePathProviders();
+        // } catch (final CoreException e) {
+        // // ignore
+        // }
     }
 
     public void start(final String version) throws CoreException {
@@ -86,14 +82,11 @@ public final class ErlangCore {
         workspace.addSaveParticipant(plugin.getBundle().getSymbolicName(),
                 getSaveParticipant());
 
-        BackendCore.getBackendManager().loadCodepathExtensions();
-
         ErlangDebugOptionsManager.getDefault().start();
         ErlLogger.debug("Started CORE");
     }
 
     public void stop() {
-        getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
@@ -162,10 +155,6 @@ public final class ErlangCore {
 
     public static boolean hasFeatureEnabled(final String feature) {
         return Boolean.parseBoolean(System.getProperty(feature));
-    }
-
-    public static IErlModel getModel() {
-        return ErlModel.getErlangModel();
     }
 
     public boolean isTracing(final String traceOption) {

@@ -33,7 +33,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlangLaunchDelegate;
@@ -41,6 +40,7 @@ import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
@@ -69,7 +69,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             if (!(element instanceof IResource)) {
                 return;
             }
-            final IErlElement erlElement = ErlangCore.getModel().findElement(
+            final IErlElement erlElement =  ErlModelManager.getErlangModel().findElement(
                     (IResource) element);
             final IErlProject project = erlElement.getProject();
             if (project != null) {

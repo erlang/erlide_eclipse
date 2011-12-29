@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlangLaunchDelegate;
@@ -51,6 +50,7 @@ import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
@@ -236,7 +236,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                     if (projNames == null) {
                         return;
                     }
-                    final IErlModel model = ErlangCore.getModel();
+                    final IErlModel model = ErlModelManager.getErlangModel();
                     for (final String projName : projNames) {
                         final IErlElement prj = model.getChildNamed(projName);
                         getRoot().addAllErlangModules(prj);
@@ -416,7 +416,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      */
     public static void addModules(final Collection<String> interpret,
             final Collection<IErlModule> interpretedModules) {
-        final IErlModel model = ErlangCore.getModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         for (final String i : interpret) {
             final String[] pm = i.split(":");
             IErlModule module = null;

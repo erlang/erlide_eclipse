@@ -26,6 +26,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
@@ -115,7 +116,7 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlElementLocator model = ErlangCore.getModel();
+                    final IErlElementLocator model =  ErlModelManager.getErlangModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model
@@ -395,7 +396,7 @@ public final class MarkerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            final IErlElementLocator model = ErlangCore.getModel();
+            final IErlElementLocator model =  ErlModelManager.getErlangModel();
             addDialyzerWarningMarker(model, filename, line, s);
         }
     }
@@ -473,7 +474,7 @@ public final class MarkerUtils {
         if (ErlangCore.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
-        final IErlProject p = ErlangCore.getModel().findProject(project);
+        final IErlProject p =  ErlModelManager.getErlangModel().findProject(project);
         if (p != null) {
             try {
                 // getMarkersFor(resource, p);
