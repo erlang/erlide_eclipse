@@ -41,7 +41,8 @@ public final class ErlangCore {
     public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
     public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
     public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.backend/debug";
-    private static String featureVersion;
+
+    private String featureVersion;
 
     private final Plugin plugin;
     private final IWorkspace workspace;
@@ -112,7 +113,7 @@ public final class ErlangCore {
         return extensionRegistry;
     }
 
-    public static String getFeatureVersion() {
+    public String getFeatureVersion() {
         return featureVersion;
     }
 

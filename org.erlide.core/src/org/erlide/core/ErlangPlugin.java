@@ -117,4 +117,7 @@ public class ErlangPlugin extends Plugin {
         return version;
     }
 
+    public ErlangCore getCore() {
+        return core;
+    }
 }

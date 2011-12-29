@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.erlide.core.ErlangCore;
+import org.erlide.core.ErlangPlugin;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.swtdesigner.ResourceManager;
@@ -61,7 +61,9 @@ public class ErlangPreferencePage extends PreferencePage implements
 
         final Label textv = new Label(composite, SWT.NONE);
         textv.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-        textv.setText("    version " + ErlangCore.getFeatureVersion());
+        final String version = ErlangPlugin.getDefault().getCore()
+                .getFeatureVersion();
+        textv.setText("    version " + version);
 
         final Link erlideorgLink = new Link(composite, SWT.NONE);
         erlideorgLink.setText(PreferenceMessages.ErlangPreferencePage_3);
