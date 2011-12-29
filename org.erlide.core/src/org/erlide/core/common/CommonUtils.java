@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
-import org.erlide.jinterface.ErlLogger;
 
 import com.google.common.collect.Lists;
 
@@ -55,22 +54,6 @@ public class CommonUtils {
     }
 
     private CommonUtils() {
-    }
-
-    public static boolean isTracing(final String traceOption) {
-        if (!Platform.inDebugMode()) {
-            return false;
-        }
-        final String globalTraceValue = Platform
-                .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION);
-        final String value = Platform
-                .getDebugOption(ErlLogger.ERLIDE_GLOBAL_TRACE_OPTION + "/"
-                        + traceOption);
-        if ("true".equalsIgnoreCase(globalTraceValue)
-                && "true".equalsIgnoreCase(value)) {
-            return true;
-        }
-        return false;
     }
 
     public static boolean hasExtension(final String name) {

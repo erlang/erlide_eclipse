@@ -20,14 +20,9 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendUtils;
@@ -45,14 +40,15 @@ public final class ErlangCore {
     public static final String PLUGIN_ID = "org.erlide.core";
     public static final String NATURE_ID = PLUGIN_ID + ".erlnature";
     public static final String BUILDER_ID = PLUGIN_ID + ".erlbuilder";
+    public static final String ERLIDE_GLOBAL_TRACE_OPTION = "org.erlide.backend/debug";
     private static String featureVersion;
 
-    private final ErlLogger logger;
     private final Plugin plugin;
     private final IWorkspace workspace;
     private final IExtensionRegistry extensionRegistry;
     private ISaveParticipant saveParticipant;
     private final ErlangDebugOptionsManager erlangDebugOptionsManager;
+    private final ErlangCoreLogger logger;
 
     public ErlangCore(final Plugin plugin, final IWorkspace workspace,
             final IExtensionRegistry extensionRegistry, final String logDir,
@@ -62,11 +58,7 @@ public final class ErlangCore {
         this.extensionRegistry = extensionRegistry;
         this.erlangDebugOptionsManager = erlangDebugOptionsManager;
         featureVersion = "?";
-
-        logger = ErlLogger.getInstance();
-        final String dir = getLogDir(logDir);
-        log(Level.INFO, "Erlide log is in " + dir);
-        logger.setLogDir(dir);
+        logger = new ErlangCoreLogger(plugin, logDir);
 
         try {
             // ignore result, just setup cache
@@ -74,20 +66,6 @@ public final class ErlangCore {
         } catch (final CoreException e) {
             // ignore
         }
-    }
-
-    public static String getLogDir(final String logDir) {
-        final IPreferencesService service = Platform.getPreferencesService();
-        final String key = "erlide_log_directory";
-        final String pluginId = "org.erlide.core";
-        final String s = service.getString(pluginId, key, logDir, null);
-        String dir;
-        if (s != null) {
-            dir = s;
-        } else {
-            dir = System.getProperty("user.home");
-        }
-        return dir;
     }
 
     public void start(final String version) throws CoreException {
@@ -101,7 +79,7 @@ public final class ErlangCore {
         }
         final String versionBanner = "*** starting Erlide v" + version
                 + " *** " + dev;
-        log(Level.INFO, versionBanner);
+        logger.log(Level.INFO, versionBanner);
         featureVersion = version;
 
         workspace.addSaveParticipant(plugin.getBundle().getSymbolicName(),
@@ -116,7 +94,6 @@ public final class ErlangCore {
     public void stop() {
         getModel().shutdown();
         ErlangDebugOptionsManager.getDefault().shutdown();
-        logger.dispose();
         final String location = ResourcesPlugin.getWorkspace().getRoot()
                 .getLocation().toPortableString();
 
@@ -178,10 +155,6 @@ public final class ErlangCore {
         return plugin.getBundle();
     }
 
-    public ILog getLog() {
-        return plugin.getLog();
-    }
-
     public IPath getStateLocation() {
         return plugin.getStateLocation();
     }
@@ -194,88 +167,18 @@ public final class ErlangCore {
         return ErlModel.getErlangModel();
     }
 
-    public void log(final IStatus status) {
-        final Level lvl = getLevelFromSeverity(status.getSeverity());
-        logger.log(lvl, status.getMessage());
-        final Throwable exception = status.getException();
-        if (exception != null) {
-            logger.log(lvl, exception);
+    public boolean isTracing(final String traceOption) {
+        if (!Platform.inDebugMode()) {
+            return false;
         }
-        plugin.getLog().log(status);
-    }
-
-    public void log(final Level lvl, final String status) {
-        logger.log(lvl, status);
-        plugin.getLog().log(
-                new Status(getSeverityFromLevel(lvl), PLUGIN_ID, status));
-    }
-
-    private static Level getLevelFromSeverity(final int severity) {
-        Level lvl;
-        switch (severity) {
-        case IStatus.ERROR:
-            lvl = Level.SEVERE;
-            break;
-        case IStatus.WARNING:
-            lvl = Level.WARNING;
-            break;
-        case IStatus.INFO:
-            lvl = Level.INFO;
-            break;
-        default:
-            lvl = Level.FINEST;
+        final String globalTraceValue = Platform
+                .getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION);
+        final String value = Platform.getDebugOption(ERLIDE_GLOBAL_TRACE_OPTION
+                + "/" + traceOption);
+        if ("true".equalsIgnoreCase(globalTraceValue)
+                && "true".equalsIgnoreCase(value)) {
+            return true;
         }
-        return lvl;
+        return false;
     }
-
-    private static int getSeverityFromLevel(final Level lvl) {
-        final int sev;
-        if (lvl == Level.SEVERE) {
-            sev = IStatus.ERROR;
-        } else if (lvl == Level.WARNING) {
-            sev = IStatus.WARNING;
-        } else if (lvl == Level.INFO) {
-            sev = IStatus.INFO;
-        } else {
-            sev = IStatus.OK;
-        }
-        return sev;
-    }
-
-    public void logErrorMessage(final String message) {
-        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
-                ErlangStatus.INTERNAL_ERROR.getValue(), message, null));
-    }
-
-    public void logErrorStatus(final String message, final IStatus status) {
-        if (status == null) {
-            logErrorMessage(message);
-            return;
-        }
-        final MultiStatus multi = new MultiStatus(plugin.getBundle()
-                .getSymbolicName(), ErlangStatus.INTERNAL_ERROR.getValue(),
-                message, null);
-        multi.add(status);
-        log(multi);
-    }
-
-    public void log(final Throwable e) {
-        log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(),
-                ErlangStatus.INTERNAL_ERROR.getValue(),
-                "Erlide internal error", e));
-    }
-
-    public void log(final String msg, final Throwable thr) {
-        final String id = plugin.getBundle().getSymbolicName();
-        final Status status = new Status(IStatus.ERROR, id, IStatus.OK, msg,
-                thr);
-        plugin.getLog().log(status);
-    }
-
-    public void debug(final String message) {
-        if (plugin.isDebugging()) {
-            ErlLogger.debug(message);
-        }
-    }
-
 }

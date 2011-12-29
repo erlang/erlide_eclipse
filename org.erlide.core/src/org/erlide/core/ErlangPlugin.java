@@ -65,6 +65,8 @@ public class ErlangPlugin extends Plugin {
 
     @Override
     public void start(final BundleContext context) throws Exception {
+        super.start(context);
+
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
                 .getExtensionRegistry();
@@ -72,10 +74,9 @@ public class ErlangPlugin extends Plugin {
                 .toPortableString();
         final ErlangDebugOptionsManager erlangDebugOptionsManager = ErlangDebugOptionsManager
                 .getDefault();
+
         core = new ErlangCore(this, workspace, extensionRegistry,
                 portableString, erlangDebugOptionsManager);
-        super.start(context);
-
         core.start(getFeatureVersion());
     }
 
