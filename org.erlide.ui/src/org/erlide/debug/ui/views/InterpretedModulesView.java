@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
 import org.erlide.core.backend.ErlDebugConstants;
 import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugElement;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugTarget;
@@ -41,6 +40,7 @@ import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.debug.IErlangDebugNode;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
@@ -265,7 +265,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
     private void interpretOrDeinterpret(final DebugTab.DebugTreeItem dti,
             final boolean checked) {
         final String module = dti.getItem().getName();
-        final String moduleWoExtension = CommonUtils.withoutExtension(module);
+        final String moduleWoExtension = SystemUtils.withoutExtension(module);
         final IProject project = dti.getItem().getProject()
                 .getWorkspaceProject();
         final boolean interpret = checked;

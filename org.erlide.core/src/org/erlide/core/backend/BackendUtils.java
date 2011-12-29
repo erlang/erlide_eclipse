@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.SourcePathProvider;
-import org.erlide.core.common.Util;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;

@@ -7,8 +7,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ListsUtils;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -28,11 +28,11 @@ class OutlineFilterUtils {
                 false);
         final String userDefinedPatternsString = prefsNode.get(
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS, "");
-        userDefinedPatterns.addAll(CommonUtils.unpackList(
+        userDefinedPatterns.addAll(ListsUtils.unpackList(
                 userDefinedPatternsString, SEPARATOR));
         final String enabledFilterIDsString = prefsNode.get(
                 PreferenceConstants.OUTLINE_ENABLED_FILTERS, "");
-        enabledFilterIDs.addAll(CommonUtils.unpackList(enabledFilterIDsString,
+        enabledFilterIDs.addAll(ListsUtils.unpackList(enabledFilterIDsString,
                 SEPARATOR));
         return areUserDefinedPatternsEnabled;
     }
@@ -46,9 +46,9 @@ class OutlineFilterUtils {
                 PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS_ENABLED,
                 areUserDefinedPatternsEnabled);
         prefsNode.put(PreferenceConstants.OUTLINE_CUSTOM_PATTERN_FILTERS,
-                CommonUtils.packList(userDefinedPatterns, SEPARATOR));
+                ListsUtils.packList(userDefinedPatterns, SEPARATOR));
         prefsNode.put(PreferenceConstants.OUTLINE_ENABLED_FILTERS,
-                CommonUtils.packList(enabledFilterIDs, SEPARATOR));
+                ListsUtils.packList(enabledFilterIDs, SEPARATOR));
         try {
             prefsNode.flush();
         } catch (final BackingStoreException e) {

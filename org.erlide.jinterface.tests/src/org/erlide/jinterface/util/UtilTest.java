@@ -1,4 +1,4 @@
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
+import org.erlide.jinterface.util.Util;
 import org.junit.Assert;
 import org.junit.Test;
 

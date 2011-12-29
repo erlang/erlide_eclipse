@@ -1,9 +1,10 @@
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.erlide.jinterface.util.StringUtils;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

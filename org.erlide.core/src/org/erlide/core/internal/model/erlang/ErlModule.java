@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.ModelConfig;
 import org.erlide.core.internal.model.root.Openable;
@@ -52,6 +51,7 @@ import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -403,7 +403,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public String getModuleName() {
-        return CommonUtils.withoutExtension(getName());
+        return SystemUtils.withoutExtension(getName());
     }
 
     public void disposeScanner() {

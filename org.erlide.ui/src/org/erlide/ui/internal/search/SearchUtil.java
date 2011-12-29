@@ -35,8 +35,6 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.common.StringUtils;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -65,6 +63,8 @@ import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
+import org.erlide.jinterface.util.StringUtils;
+import org.erlide.jinterface.util.Util;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 

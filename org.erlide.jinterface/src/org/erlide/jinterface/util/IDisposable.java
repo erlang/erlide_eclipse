@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 public interface IDisposable {
 

@@ -31,10 +31,10 @@ import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlangLaunchDelegate;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.events.ErlangEventHandler;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.ListsUtils;
 import org.erlide.jinterface.util.TermParser;
 import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
@@ -263,7 +263,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         wc.setAttribute(ErlLaunchAttributes.COOKIE, "shade");
         wc.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, false);
         final String args = "-boot start_clean -sasl sasl_error_logger false -pa "
-                + CommonUtils.packList(paths, " -pa ");
+                + ListsUtils.packList(paths, " -pa ");
         wc.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, args);
 
         wc.setAttribute(ErlLaunchAttributes.PROJECTS, project);

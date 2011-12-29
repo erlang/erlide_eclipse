@@ -2,15 +2,15 @@ package org.erlide.core.services.search;
 
 import java.util.EnumSet;
 
-import org.erlide.core.common.CommonUtils;
-import org.erlide.core.common.StringUtils;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMacroDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.jinterface.util.StringUtils;
+import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -223,7 +223,7 @@ public abstract class ErlangSearchPattern {
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = CommonUtils
+            final String withoutExtension = SystemUtils
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,

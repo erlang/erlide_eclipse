@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -39,13 +38,14 @@ import org.erlide.core.backend.IErlideBackendVisitor;
 import org.erlide.core.backend.events.ErlangEventHandler;
 import org.erlide.core.backend.events.ErlangEventPublisher;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.Tuple;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.jinterface.util.Tuple;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
@@ -126,7 +126,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         new ErlangEventHandler("*", null) {
             @Override
             public void handleEvent(final Event event) {
-                if (ErlangCore.hasFeatureEnabled("erlide.eventhandler.debug")) {
+                if (SystemUtils.hasFeatureEnabled("erlide.eventhandler.debug")) {
                     ErlLogger.info("erlang event : "
                             + ErlangEventPublisher.dumpEvent(event));
                 }

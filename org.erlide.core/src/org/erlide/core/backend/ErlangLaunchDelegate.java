@@ -33,11 +33,11 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
@@ -182,7 +182,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private void setEnvironment(final BackendData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
-        if (!CommonUtils.isOnWindows() && CommonUtils.isEricssonUser()) {
+        if (!SystemUtils.isOnWindows() && SystemUtils.isEricssonUser()) {
             env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
         }
         if (data.getEnv() != null) {

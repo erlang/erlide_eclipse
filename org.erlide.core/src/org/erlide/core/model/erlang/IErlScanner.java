@@ -1,7 +1,7 @@
 package org.erlide.core.model.erlang;
 
-import org.erlide.core.common.IDisposable;
 import org.erlide.core.model.root.ErlToken;
+import org.erlide.jinterface.util.IDisposable;
 
 public interface IErlScanner extends IDisposable {
 

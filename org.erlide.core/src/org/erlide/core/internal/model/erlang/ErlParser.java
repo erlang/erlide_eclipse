@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.common.Util;
 import org.erlide.core.internal.backend.BackendHelper;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -31,6 +30,7 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.jinterface.util.TermParserException;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.common.IDisposable;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.IDisposable;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 

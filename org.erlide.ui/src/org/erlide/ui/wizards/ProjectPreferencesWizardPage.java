@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.internal.model.root.PathSerializer;
+import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
@@ -194,7 +194,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         runtimeVersion.addListener(SWT.Modify, nameModifyListener);
 
         new Label(composite, SWT.NONE);
-        if (CommonUtils.isTest()) {
+        if (SystemUtils.isTest()) {
             createExternalModuleEditor(composite);
             createExternalIncludeEditor(composite);
         }

@@ -1,7 +1,8 @@
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 import junit.framework.Assert;
 
+import org.erlide.jinterface.util.Base64;
 import org.junit.Test;
 
 public class Base64Test {

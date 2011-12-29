@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.erlide.core.common.CommonUtils;
+import org.erlide.jinterface.util.ListsUtils;
 import org.erlide.ui.editors.erl.outline.FilterDescriptor;
 import org.erlide.ui.util.SWTUtil;
 
@@ -166,7 +166,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     private String convertToString(final List<String> patterns,
             final String separator) {
-        return CommonUtils.packList(patterns, separator);
+        return ListsUtils.packList(patterns, separator);
     }
 
     private void createCheckBoxList(final Composite parent) {
@@ -338,7 +338,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
 
     private List<String> convertFromString(final String text,
             final String separator) {
-        return CommonUtils.unpackList(text, separator);
+        return ListsUtils.unpackList(text, separator);
     }
 
     /**

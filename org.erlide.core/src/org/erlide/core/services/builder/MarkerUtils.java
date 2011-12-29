@@ -18,8 +18,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.common.Tuple;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -32,6 +30,9 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.jinterface.util.Tuple;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -116,7 +117,8 @@ public final class MarkerUtils {
             res = BuilderHelper.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
-                    final IErlElementLocator model =  ErlModelManager.getErlangModel();
+                    final IErlElementLocator model = ErlModelManager
+                            .getErlangModel();
                     final IErlProject erlProject = model.findProject(project);
                     if (erlProject != null) {
                         final IErlModule includeFile = model
@@ -396,7 +398,7 @@ public final class MarkerUtils {
             if (j != -1) {
                 s = s.substring(j + 1);
             }
-            final IErlElementLocator model =  ErlModelManager.getErlangModel();
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
             addDialyzerWarningMarker(model, filename, line, s);
         }
     }
@@ -471,10 +473,11 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        if (ErlangCore.hasFeatureEnabled("erlide.skip.tasks")) {
+        if (SystemUtils.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
-        final IErlProject p =  ErlModelManager.getErlangModel().findProject(project);
+        final IErlProject p = ErlModelManager.getErlangModel().findProject(
+                project);
         if (p != null) {
             try {
                 // getMarkersFor(resource, p);

@@ -36,14 +36,14 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.ErlLaunchAttributes;
 import org.erlide.core.backend.ErlangLaunchDelegate;
-import org.erlide.core.common.CommonUtils;
-import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.ListsUtils;
+import org.erlide.jinterface.util.StringUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 import com.google.common.collect.Lists;
@@ -69,8 +69,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             if (!(element instanceof IResource)) {
                 return;
             }
-            final IErlElement erlElement =  ErlModelManager.getErlangModel().findElement(
-                    (IResource) element);
+            final IErlElement erlElement = ErlModelManager.getErlangModel()
+                    .findElement((IResource) element);
             final IErlProject project = erlElement.getProject();
             if (project != null) {
                 projects.add(project);
@@ -151,9 +151,9 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
         final ILaunchManager launchManager = DebugPlugin.getDefault()
                 .getLaunchManager();
         final List<String> projectNames = getProjectNames(projects);
-        String name = CommonUtils.packList(projectNames, "_");
+        String name = ListsUtils.packList(projectNames, "_");
         if (name.length() > 15) {
-            name = CommonUtils.packList(
+            name = ListsUtils.packList(
                     StringUtils.removeCommonPrefixes(projectNames), "_");
         }
         // try and find one
@@ -172,7 +172,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
                 .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE);
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
-        wc.setAttribute(ErlLaunchAttributes.PROJECTS, CommonUtils.packList(
+        wc.setAttribute(ErlLaunchAttributes.PROJECTS, ListsUtils.packList(
                 projectNames, BackendData.PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.iterator()
                 .next().getRuntimeInfo().getName());

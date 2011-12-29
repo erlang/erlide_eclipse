@@ -25,11 +25,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.backend.BackendUtils;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.common.EncodingUtils;
 import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcMonitor;
+import org.erlide.jinterface.util.SystemUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -70,10 +70,10 @@ public final class ErlangCore {
     public void start(final String version) throws CoreException {
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ") ";
-        if (CommonUtils.isDeveloper()) {
+        if (SystemUtils.isDeveloper()) {
             dev += " developer version ***";
         }
-        if (CommonUtils.isTest()) {
+        if (SystemUtils.isTest()) {
             dev += " test ***";
         }
         final String versionBanner = "*** starting Erlide v" + version
@@ -153,10 +153,6 @@ public final class ErlangCore {
 
     public IPath getStateLocation() {
         return plugin.getStateLocation();
-    }
-
-    public static boolean hasFeatureEnabled(final String feature) {
-        return Boolean.parseBoolean(System.getProperty(feature));
     }
 
     public boolean isTracing(final String traceOption) {

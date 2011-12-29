@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 /**
  * Base64 is a helper class for converting byte arrays to and from base 64

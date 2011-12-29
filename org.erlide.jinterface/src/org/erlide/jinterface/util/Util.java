@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.common;
+package org.erlide.jinterface.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -74,7 +74,7 @@ public final class Util {
     /* Bundle containing messages */
     static ResourceBundle bundle;
 
-    private static final String BUNDLE_NAME = "org.erlide.core.common.util"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.erlide.jinterface.util.util"; //$NON-NLS-1$
 
     private static final char[] DOUBLE_QUOTES = "''".toCharArray(); //$NON-NLS-1$
 
@@ -1655,7 +1655,7 @@ public final class Util {
         final Charset charset = Charset.forName(encoding);
         final CharsetEncoder encoder = charset.newEncoder();
         try {
-            CharBuffer cbuf = CharBuffer.wrap(string);
+            final CharBuffer cbuf = CharBuffer.wrap(string);
             final ByteBuffer bbuf = encoder.encode(cbuf);
             return bbuf.array();
         } catch (final CharacterCodingException e) {
@@ -1701,7 +1701,7 @@ public final class Util {
         return isTag(o, "error");
     }
 
-    protected static boolean isTag(final OtpErlangObject o, final String string) {
+    public static boolean isTag(final OtpErlangObject o, final String string) {
         OtpErlangAtom tag = null;
         if (o instanceof OtpErlangAtom) {
             tag = (OtpErlangAtom) o;

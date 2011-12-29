@@ -43,11 +43,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
@@ -198,7 +198,7 @@ public class ErlangFileWizardPage extends WizardPage {
                     container = resource.getParent();
                 }
                 final IProject project = resource.getProject();
-                final IErlProject erlProject =  ErlModelManager.getErlangModel()
+                final IErlProject erlProject = ErlModelManager.getErlangModel()
                         .getErlangProject(project);
                 String txt;
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
@@ -332,7 +332,7 @@ public class ErlangFileWizardPage extends WizardPage {
             final TemplateContextType contextType) {
         String s = getFileName();
         if (ModuleKind.hasModuleExtension(s)) {
-            s = CommonUtils.withoutExtension(s);
+            s = SystemUtils.withoutExtension(s);
         }
         ModuleVariableResolver.getDefault().setModule(s);
 
