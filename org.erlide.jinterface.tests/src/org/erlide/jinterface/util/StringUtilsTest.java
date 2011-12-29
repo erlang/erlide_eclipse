@@ -4,7 +4,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.erlide.jinterface.util.StringUtils;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -67,14 +66,6 @@ public class StringUtilsTest {
     }
 
     @Test
-    public void joinWithSpaces() {
-        final String[] input = new String[] { "aa", "bb", "cc" };
-        final String expected = "aa bb cc";
-        final String actual = StringUtils.joinWithSpaces(input);
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
     public void withoutInterrogationMark_1() {
         final String input = "?hello";
         final String expected = "hello";
@@ -114,21 +105,4 @@ public class StringUtilsTest {
         Assert.assertEquals(expected, actual);
     }
 
-    @Test
-    public void split_1() {
-        final String input = "this is a nice day";
-        final List<String> expected = Lists.newArrayList("this", "is", "a",
-                "nice", "day");
-        final List<String> actual = StringUtils.split(" ", input);
-        Assert.assertEquals(expected, actual);
-    }
-
-    @Test
-    public void split_2() {
-        final String input = "this .is .a .nice .day";
-        final List<String> expected = Lists.newArrayList("this", "is", "a",
-                "nice", "day");
-        final List<String> actual = StringUtils.split(" .", input);
-        Assert.assertEquals(expected, actual);
-    }
 }

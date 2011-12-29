@@ -12,7 +12,6 @@ package org.erlide.jinterface.util;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.google.common.collect.Lists;
 
 public class StringUtils {
@@ -21,73 +20,6 @@ public class StringUtils {
     }
 
     public static final Object EMPTY = "";
-
-    public static String joinWithSpaces(final String[] cmds) {
-        return join(" ", cmds);
-    }
-
-    /**
-     * Formats a string, replacing %s with the arguments passed.
-     * 
-     * @param str
-     *            string to be formatted
-     * @param args
-     *            arguments passed
-     * @return a string with the %s replaced by the arguments passed
-     */
-    public static String format(final String str, final Object... args) {
-        final StringBuilder buffer = new StringBuilder(str.length() + 16
-                * args.length);
-        int j = 0;
-
-        for (int i = 0; i < str.length(); i++) {
-            final char c = str.charAt(i);
-            if (c == '%' && i + 1 < str.length()) {
-                final char nextC = str.charAt(i + 1);
-                if (nextC == 's') {
-                    buffer.append(args[j].toString());
-                    j++;
-                    i++;
-                } else if (nextC == '%') {
-                    buffer.append('%');
-                    j++;
-                    i++;
-                }
-            } else {
-                buffer.append(c);
-            }
-        }
-        return buffer.toString();
-    }
-
-    /**
-     * Removes whitespaces at the beggining of the string.
-     */
-    public static String rightTrim(final String input) {
-        int len = input.length();
-        final int st = 0;
-        final int off = 0;
-        final char[] val = input.toCharArray();
-
-        while (st < len && val[off + len - 1] <= ' ') {
-            len--;
-        }
-        return input.substring(0, len);
-    }
-
-    /**
-     * Removes whitespaces at the end of the string.
-     */
-    public static String leftTrim(final String input) {
-        final int len = input.length();
-        int off = 0;
-        final char[] val = input.toCharArray();
-
-        while (off < len && val[off] <= ' ') {
-            off++;
-        }
-        return input.substring(off, len);
-    }
 
     /**
      * Given a string remove all from the rightmost '.' onwards.
@@ -140,15 +72,6 @@ public class StringUtils {
             len--;
         }
         return input.substring(0, len);
-    }
-
-    /**
-     * Removes the occurrences of the passed char in the start and end of the
-     * string.
-     */
-    public static String leftAndRightTrim(final String input,
-            final char charToTrim) {
-        return rightTrim(leftTrim(input, charToTrim), charToTrim);
     }
 
     /**
@@ -264,92 +187,6 @@ public class StringUtils {
     }
 
     /**
-     * Splits the passed string based on the toSplit string.
-     */
-    public static List<String> split(final String delimiter, final String string) {
-        if (delimiter.length() == 1) {
-            return split(string, delimiter.charAt(0));
-        }
-        final ArrayList<String> ret = new ArrayList<String>();
-        if (delimiter.length() == 0) {
-            ret.add(string);
-            return ret;
-        }
-
-        final int len = string.length();
-
-        int last = 0;
-
-        char c = 0;
-
-        for (int i = 0; i < len; i++) {
-            c = string.charAt(i);
-            if (c == delimiter.charAt(0) && matches(string, delimiter, i)) {
-                if (last != i) {
-                    ret.add(string.substring(last, i));
-                }
-                last = i + delimiter.length();
-                i += delimiter.length() - 1;
-            }
-        }
-
-        if (last < len) {
-            ret.add(string.substring(last, len));
-        }
-
-        return ret;
-    }
-
-    private static boolean matches(final String string, final String toSplit,
-            final int i) {
-        if (string.length() - i >= toSplit.length()) {
-            for (int j = 0; j < toSplit.length(); j++) {
-                if (string.charAt(i + j) != toSplit.charAt(j)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Splits some string given some char
-     */
-    public static List<String> split(final char delimiter, final String string) {
-        final ArrayList<String> ret = new ArrayList<String>();
-        final int len = string.length();
-
-        int last = 0;
-
-        char c = 0;
-
-        for (int i = 0; i < len; i++) {
-            c = string.charAt(i);
-            if (c == delimiter) {
-                if (last != i) {
-                    ret.add(string.substring(last, i));
-                }
-                while (c == delimiter && i < len - 1) {
-                    i++;
-                    c = string.charAt(i);
-                }
-                last = i;
-            }
-        }
-        if (c != delimiter) {
-            if (last == 0 && len > 0) {
-                ret.add(string); // it is equal to the original (no dots)
-
-            } else if (last < len) {
-                ret.add(string.substring(last, len));
-
-            }
-        }
-        return ret;
-    }
-
-    /**
      * Splits some string given many chars
      */
     public static List<String> split(final String string, final char... toSplit) {
@@ -386,17 +223,6 @@ public class StringUtils {
         return ret;
     }
 
-    public static List<String> splitAndRemoveEmptyTrimmed(final char c,
-            final String string) {
-        final List<String> split = split(c, string);
-        for (int i = split.size() - 1; i >= 0; i--) {
-            if (split.get(i).trim().length() == 0) {
-                split.remove(i);
-            }
-        }
-        return split;
-    }
-
     private static boolean contains(final char c, final char[] toSplit) {
         for (final char ch : toSplit) {
             if (c == ch) {
@@ -420,45 +246,6 @@ public class StringUtils {
             return new Tuple<String, String>(fullRep, "");
         }
 
-    }
-
-    /**
-     * Splits the string as would string.split("\\."), but without yielding
-     * empty strings
-     */
-    public static List<String> dotSplit(final String string) {
-        return splitAndRemoveEmptyTrimmed('.', string);
-    }
-
-    /**
-     * Same as Python join: Go through all the paths in the string and join them
-     * with the passed delimiter.
-     */
-    public static String join(final String delimiter, final String[] splitted) {
-        final StringBuilder buf = new StringBuilder(splitted.length * 100);
-        for (final String string : splitted) {
-            if (buf.length() > 0) {
-                buf.append(delimiter);
-            }
-            buf.append(string);
-        }
-        return buf.toString();
-    }
-
-    /**
-     * Same as Python join: Go through all the paths in the string and join them
-     * with the passed delimiter.
-     */
-    public static String join(final String delimiter,
-            final List<String> splitted) {
-        final StringBuilder buf = new StringBuilder(splitted.size() * 100);
-        for (final String string : splitted) {
-            if (buf.length() > 0) {
-                buf.append(delimiter);
-            }
-            buf.append(string);
-        }
-        return buf.toString();
     }
 
     /**
