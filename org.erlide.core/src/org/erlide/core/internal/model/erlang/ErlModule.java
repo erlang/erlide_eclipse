@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.Openable;
-import org.erlide.core.model.erlang.ErlangToolkit;
+import org.erlide.core.model.erlang.ErlangToolkitFactory;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlExport;
@@ -84,7 +84,7 @@ public class ErlModule extends Openable implements IErlModule {
         this.path = path;
         this.initialText = initialText;
         parsed = false;
-        scannerName = ErlangToolkit.createScannerName(this);
+        scannerName = createScannerName();
         scanner = null;
         this.useCaches = useCaches;
         comments = Lists.newArrayList();
@@ -514,8 +514,8 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return ErlangToolkit.createScanner(scannerName, initialText, filePath,
-                useCaches);
+        return ErlangToolkitFactory.getInstance().createScanner(scannerName,
+                initialText, filePath, useCaches);
     }
 
     @Override
@@ -706,6 +706,30 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public boolean isRealFile() {
         return useCaches;
+    }
+
+    public String createScannerName() {
+        final IResource res = getResource();
+        if (res != null) {
+            return createScannerNameFromResource(res);
+        } else if (getFilePath() != null && isRealFile()) {
+            return "mod" + getFilePath().hashCode() + "__" + getName();
+        }
+        // This is not used more than temporarily, so it's OK to have
+        // a name that's temporary, as long as it's unique
+        return "mod" + hashCode() + "_";
+    }
+
+    private String createScannerNameFromResource(final IResource res) {
+        String resName;
+        resName = "mod" + res.getFullPath().toPortableString().hashCode() + "_"
+                + res.getName();
+        return resName;
+    }
+
+    @Override
+    public String getScannerName() {
+        return scannerName;
     }
 
 }

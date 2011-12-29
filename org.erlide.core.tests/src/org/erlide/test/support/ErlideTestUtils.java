@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
@@ -191,7 +190,7 @@ public class ErlideTestUtils {
 
     public static void deleteModule(final IErlModule module)
             throws CoreException {
-        final String scannerName = ErlangToolkit.createScannerName(module);
+        final String scannerName = module.getScannerName();
         final IFile file = (IFile) module.getResource();
         if (file != null) {
             file.delete(true, null);

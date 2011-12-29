@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
-import org.erlide.core.model.erlang.ErlangToolkit;
+import org.erlide.core.model.erlang.ErlangToolkitFactory;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -118,7 +118,7 @@ public class ErlModel extends Openable implements IErlModel {
      */
     ErlModel() {
         super(null, ""); //$NON-NLS-1$
-        parser = ErlangToolkit.createParser();
+        parser = ErlangToolkitFactory.getInstance().createParser();
         fPathVariableChangeListener = new PathVariableChangeListener();
         setupWorkspaceListeners();
         deltaManager = new ErlModelDeltaManager(this);
