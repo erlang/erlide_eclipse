@@ -28,11 +28,13 @@ import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.Signature;
 import com.ericsson.otp.erlang.SignatureException;
 
-public final class RpcHelper implements IRpcHelper {
+public final class RpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
             .getBoolean("erlide.checkrpc");
-    private static volatile IRpcHelper instance;
+    public static final int INFINITY = -1;
+
+    private static volatile RpcHelper instance;
 
     /**
      * Convenience method to send a remote message.
@@ -42,7 +44,6 @@ public final class RpcHelper implements IRpcHelper {
      * @param msg
      * @throws RpcException
      */
-    @Override
     public void send(final OtpNode node, final OtpErlangPid pid,
             final Object msg) throws SignatureException {
         final OtpMbox mbox = node.createMbox();
@@ -67,7 +68,6 @@ public final class RpcHelper implements IRpcHelper {
      * @param msg
      * @throws RpcException
      */
-    @Override
     public void send(final OtpNode node, final String peer, final String name,
             final Object msg) throws SignatureException {
         final OtpMbox mbox = node.createMbox();
@@ -96,7 +96,6 @@ public final class RpcHelper implements IRpcHelper {
      * @return
      * @throws RpcException
      */
-    @Override
     public OtpErlangObject rpcCall(final OtpNode node, final String peer,
             final boolean logCalls, final OtpErlangObject gleader,
             final String module, final String fun, final int timeout,
@@ -115,7 +114,6 @@ public final class RpcHelper implements IRpcHelper {
         return result;
     }
 
-    @Override
     public boolean isBadRpc(final OtpErlangObject result) {
         if (result instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) result;
@@ -131,7 +129,6 @@ public final class RpcHelper implements IRpcHelper {
      * Calls a function that supports sending progress reports back. The first
      * argument is implicit and is the pid where the reports are to be sent.
      */
-    @Override
     public void rpcCastWithProgress(final IRpcResultCallback callback,
             final OtpNode node, final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
@@ -158,7 +155,6 @@ public final class RpcHelper implements IRpcHelper {
      * @return
      * @throws RpcException
      */
-    @Override
     public synchronized IRpcFuture sendRpcCall(final OtpNode node,
             final String peer, final boolean logCalls,
             final OtpErlangObject gleader, final String module,
@@ -184,7 +180,7 @@ public final class RpcHelper implements IRpcHelper {
                 + args0.length, logCalls, this);
     }
 
-    final static String SEP = ", ";
+    private final static String SEP = ", ";
 
     private Object argString(final OtpErlangObject[] args) {
         final StringBuilder result = new StringBuilder();
@@ -204,7 +200,6 @@ public final class RpcHelper implements IRpcHelper {
      * @return
      * @throws RpcException
      */
-    @Override
     public OtpErlangObject getRpcResult(final OtpMbox mbox, final String env)
             throws RpcException {
         return getRpcResult(mbox, INFINITY, env);
@@ -219,7 +214,6 @@ public final class RpcHelper implements IRpcHelper {
      * @return
      * @throws RpcException
      */
-    @Override
     public OtpErlangObject getRpcResult(final OtpMbox mbox, final long timeout,
             final String env) throws RpcException {
         assert mbox != null;
@@ -283,7 +277,6 @@ public final class RpcHelper implements IRpcHelper {
      * @param args0
      * @throws RpcException
      */
-    @Override
     public void rpcCast(final OtpNode node, final String peer,
             final boolean logCalls, final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
@@ -350,7 +343,6 @@ public final class RpcHelper implements IRpcHelper {
         ErlLogger.debug(e);
     }
 
-    @Override
     public void makeAsyncCbCall(final OtpNode node, final String peer,
             final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,
@@ -382,7 +374,7 @@ public final class RpcHelper implements IRpcHelper {
     private RpcHelper() {
     }
 
-    public static IRpcHelper getInstance() {
+    public static RpcHelper getInstance() {
         if (instance == null) {
             instance = new RpcHelper();
         }

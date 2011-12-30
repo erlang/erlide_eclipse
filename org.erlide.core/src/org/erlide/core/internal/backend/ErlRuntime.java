@@ -16,7 +16,6 @@ import org.erlide.core.backend.IErlRuntime;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcHelper;
@@ -33,7 +32,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
     private static final Object connectLock = new Object();
-    private static final IRpcHelper rpcHelper = RpcHelper.getInstance();
+    private static final RpcHelper rpcHelper = RpcHelper.getInstance();
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN

@@ -65,9 +65,9 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcHelper;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.osgi.framework.Bundle;
 
@@ -446,7 +446,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private static void setDefaultTimeout() {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = IRpcHelper.INFINITY;
+            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
         } else {
             try {
                 DEFAULT_TIMEOUT = Integer.parseInt(t);
