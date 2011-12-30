@@ -16,7 +16,6 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.OtpNodeStatus;
 
 public interface IBackend extends IRpcCallSite, IDisposable {
 
@@ -38,8 +37,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
     String getFullNodeName();
 
     boolean isStopped();
-
-    void registerStatusHandler(final OtpNodeStatus handler);
 
     void stop();
 
@@ -82,8 +79,6 @@ public interface IBackend extends IRpcCallSite, IDisposable {
     BackendData getData();
 
     void initialize();
-
-    String getJavaNodeName();
 
     void installDeferredBreakpoints();
 

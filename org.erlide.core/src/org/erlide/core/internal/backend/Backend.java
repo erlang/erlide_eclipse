@@ -82,8 +82,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
@@ -254,7 +252,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-            eventBox = getNode().createMbox("rex");
+            eventBox = runtime.createMbox("rex");
 
             if (waitForCodeServer()) {
                 ErlLogger.debug("connected!");
@@ -273,19 +271,15 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void dispose() {
-        // runtime.stop();
-
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {
             shellManager.dispose();
         }
 
-        if (getNode() != null) {
-            getNode().close();
-        }
         if (eventDaemon != null) {
             eventDaemon.stop();
         }
+        runtime.stop();
     }
 
     @Override
@@ -330,10 +324,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
-    private synchronized OtpNode getNode() {
-        return runtime.getNode();
-    }
-
     private String getScriptId() throws RpcException {
         OtpErlangObject r;
         r = call("init", "script_id", "");
@@ -363,11 +353,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public boolean isStopped() {
         return stopped;
-    }
-
-    @Override
-    public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
-        getNode().registerStatusHandler(handler);
     }
 
     @Override
@@ -435,12 +420,12 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public OtpMbox createMbox() {
-        return getNode().createMbox();
+        return runtime.createMbox();
     }
 
     @Override
     public OtpMbox createMbox(final String name) {
-        return getNode().createMbox(name);
+        return runtime.createMbox(name);
     }
 
     private static void setDefaultTimeout() {
@@ -894,11 +879,6 @@ public abstract class Backend implements IStreamListener, IBackend {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public String getJavaNodeName() {
-        return runtime.getNode().node();
     }
 
     @Override

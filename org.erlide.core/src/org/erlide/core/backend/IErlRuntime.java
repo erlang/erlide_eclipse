@@ -17,16 +17,24 @@ import org.erlide.jinterface.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpNode;
+import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.SignatureException;
 
 public interface IErlRuntime {
 
+    boolean isAvailable();
+
     String getNodeName();
 
-    boolean connect();
-
     void remoteStatus(final String node, final boolean up, final Object info);
+
+    OtpMbox createMbox(String string);
+
+    OtpMbox createMbox();
+
+    void stop();
+
+    // RPC stuff; TODO why duplicate IRpcCallSite?
 
     void makeAsyncResultCall(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object[] args)
@@ -64,10 +72,6 @@ public interface IErlRuntime {
     void makeCast(final String module, final String fun,
             final String signature, final Object... args0)
             throws SignatureException, RpcException;
-
-    boolean isAvailable();
-
-    OtpNode getNode();
 
     void send(OtpErlangPid pid, Object msg) throws SignatureException,
             RpcException;

@@ -74,7 +74,7 @@ public class Activator extends AbstractUIPlugin {
          */
         final IBackend mb = BackendCore.getBackendManager().getIdeBackend();
 
-        ErlLogger.debug("Managed backend found:" + mb.getJavaNodeName());
+        ErlLogger.debug("Managed backend found:" + mb.getName());
 
         /*
          * ErlangCode.addPathA(mb , wranglerEbinPath); ErlangCode .addPathA(mb,
