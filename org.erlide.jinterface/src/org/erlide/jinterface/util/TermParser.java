@@ -15,8 +15,6 @@ import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.erlide.jinterface.ErlLogger;
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -36,23 +34,18 @@ public class TermParser {
         return new TermParser();
     }
 
-    private Cache<String, OtpErlangObject> cache;
+    private final Cache<String, OtpErlangObject> cache;
 
     private TermParser() {
-        ErlLogger.debug("create TermParser");
-        try {
-            cache = CacheBuilder.newBuilder()
-                    .expireAfterAccess(5, TimeUnit.HOURS).maximumSize(250)
-                    .build(new CacheLoader<String, OtpErlangObject>() {
-                        @Override
-                        public OtpErlangObject load(final String key)
-                                throws TermParserException {
-                            return parse(scan(key));
-                        }
-                    });
-        } catch (final Throwable e) {
-            ErlLogger.error(e);
-        }
+        cache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.HOURS)
+                .maximumSize(250)
+                .build(new CacheLoader<String, OtpErlangObject>() {
+                    @Override
+                    public OtpErlangObject load(final String key)
+                            throws TermParserException {
+                        return parse(scan(key));
+                    }
+                });
     }
 
     public OtpErlangObject parse(final String s) throws TermParserException {
