@@ -33,6 +33,9 @@ public class ErlangConsoleHistory {
     }
 
     public String get() {
+        if (history.size() == 0) {
+            return null;
+        }
         return history.get(navIndex);
     }
 
