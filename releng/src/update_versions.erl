@@ -15,11 +15,17 @@
 %% - commit 
 
 
--mode(compile).
-%-module(update_versions).
+%-mode(compile).
+-module(update_versions).
 -compile([export_all]).
 
 -define(DBG(X), io:format("~p~n", [X])).
+
+check() ->
+    main(["check"]).
+info() ->
+    main(["info"]).
+   
 
 main([]) ->
     usage();
@@ -39,7 +45,6 @@ main([CmdStr]) ->
 usage() ->
     io:format("Check which plugin versions need to be updated and add commit info to the CHANGES file\n"
      "Usage: ~s base cmd\n"
-     "    base = branch or tag for the reference build\n"
      "    cmd = check    : check which plugins need version updates\n"
      "          modify   : modify the plugins versions where needed, do not commit\n"
      "          commit   : as above and commit changes\n"
@@ -90,27 +95,27 @@ check(_Base, {Features, Plugins} ) ->
     ChangedPlugins = lists:filter(Fun1, Plugins),
 
     Fun3 = fun(#plugin{name=Id, crt_version=OldV, changed=C, code_changed=CC}) ->
-                  io:format("? ~p ~p ~n", [C, CC]),
+                  %io:format("> ~s: ~p ~p ~n", [Id, C, CC]),
                    Ch = if CC -> micro; true -> nothing end,
                    NewV = inc_version(OldV, max_change(C, Ch)),
                    Old = version_string(OldV),
                    New = version_string(NewV),
-                   io:format("~.40s ~18s -> ~.18s~n", [Id, Old, New]),
+                   io:format("P ~.40s ~18s -> ~.18s~n", [Id, Old, New]),
                    ok
            end,
     lists:foreach(Fun3, ChangedPlugins),
 
-        Fun = fun(#feature{changed=C, children_changed=CC})->
-                  io:format("? ~p ~p ~n", [C, CC]),
+    Fun = fun(#feature{name=_N, changed=C, children_changed=CC})->
+                  %io:format("> ~s: ~p ~p ~n", [N, C, CC]),
                   (max_change(C, CC) == CC) and (CC=/=nothing)
           end,
     ChangedFeatures = lists:filter(Fun, Features),
-
+    
     Fun2 = fun(#feature{name=Id, crt_version=OldV, children_changed=CC}) ->
                    Old = version_string(OldV),
                    NewV = inc_version(OldV, CC),
                    New = version_string(NewV),
-                   io:format("~.40s ~18s -> ~.18s~n", [Id, Old, New]),
+                   io:format("F ~.40s ~18s -> ~.18s~n", [Id, Old, New]),
                    ok
            end,
     lists:foreach(Fun2, ChangedFeatures),
@@ -161,7 +166,10 @@ commit(Base, Projects) ->
     ok.
 
 crt_branch() ->
-    string:strip(os:cmd("git branch | grep '*' | cut -d ' ' -f 2"), both, $\n).
+    Branches = [string:strip(X) || X <- string:tokens(os:cmd("git branch"), [$\n])],
+    [Crt] = lists:filter(fun("*"++_) -> true; (_) -> false end, Branches),
+    string:substr(Crt, 3).
+
 
 projects_info(Base) ->
     Crt = crt_branch(),
@@ -170,10 +178,18 @@ projects_info(Base) ->
     {ok, Dirs} = file:list_dir("."),
     update_features(sort(lists:flatten([parse_project(Name, Base, Changed) || Name <- lists:sort(Dirs)]))).
 
-changed_projects(Base, Crt) ->
-    Str = os:cmd("git log --name-only "++Base++".."++Crt++" --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq"),
-    string:tokens(Str, "\n").
+-define(D(X), io:format("- ~p~n", [X])).
 
+changed_projects(Base, Crt) ->
+    Projects = lists:usort(string:tokens(os:cmd("git log --name-only "++Base++".."++Crt++" --oneline"), "\n")),
+    Names = [ hd(string:tokens(X, " ")) || X <- Projects],
+    Erlide = lists:filter(fun("org.erlide"++_) ->
+                                  true; 
+                             (_) ->
+                                  false 
+                          end, Names),
+    lists:usort([ hd(string:tokens(X, "/")) || X <- Erlide]).
+    
 parse_project(Name, Base, Changed) ->
     case get_feature_project(Name, Base) of
         [] ->
@@ -211,8 +227,7 @@ changed_children(F, Ps) ->
     Fun = fun(P, Fx) ->
                   case lists:member(P#plugin.name, Fx#feature.plugins) andalso P#plugin.code_changed of
                       true ->
-                          io:format("???? ~p~n", [{P, Fx}]),
-                          Fx#feature{children_changed = what_changed(Fx#feature.children_changed, P#plugin.changed)};
+                          Fx#feature{children_changed = max_change(Fx#feature.children_changed, P#plugin.changed)};
                       _ ->                 
                           Fx
                   end
@@ -406,9 +421,7 @@ summary(Features) ->
     Fs.
 
 get_latest_tag() ->
-    Tags = string:tokens(os:cmd("git tag"), "\n"),
-    PTags = [parse_tag(T) || T<-Tags],
-    tag_as_string(get_latest_tag(PTags)).
+    string:strip(os:cmd("git describe --abbrev=0"), both, $\n).
 
 tag_as_string({A,B,C}) ->
     lists:flatten(io_lib:format("v~p.~p.~p", [A,B,C])).
@@ -417,10 +430,4 @@ parse_tag("v"++Tag) ->
     list_to_tuple([list_to_integer(T) || T<-string:tokens(Tag, ".")]);
 parse_tag(_) ->
     {0, 0, 0}.
-
-get_latest_tag(Tags) ->
-    Fun = fun(T, R) when T>R -> T;
-              (_T, R) -> R
-          end,
-    lists:foldl(Fun, {0, 0, 0}, Tags).
 

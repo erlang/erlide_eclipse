@@ -1,0 +1,8 @@
+#Wed Jan 04 14:36:50 CET 2012
+backend_version=R14B
+eclipse.preferences.version=1
+external_includes=
+external_modules=
+include_dirs=include;
+output_dir=ebin
+source_dirs=src;
