@@ -499,22 +499,28 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public void removeChild(final IErlElement child) {
-        clearCaches();
-        fChildren.remove(child);
+        synchronized (getModelLock()) {
+            clearCaches();
+            fChildren.remove(child);
+        }
     }
 
     @Override
     public void addChild(final IErlElement child) {
-        clearCaches();
-        fChildren.add(child);
+        synchronized (getModelLock()) {
+            clearCaches();
+            fChildren.add(child);
+        }
     }
 
     @Override
     public void setChildren(final Collection<? extends IErlElement> children) {
-        clearCaches();
-        fChildren.clear();
-        if (children != null) {
-            fChildren.addAll(children);
+        synchronized (getModelLock()) {
+            clearCaches();
+            fChildren.clear();
+            if (children != null) {
+                fChildren.addAll(children);
+            }
         }
     }
 
