@@ -16,17 +16,24 @@ public enum TokenHighlight {
     INTEGER(new RGB(90, 90, 180), SWT.NORMAL),
     FLOAT(Color.NAVY.getColor(), SWT.NORMAL),
     COMMENT(new RGB(0xB2, 0x22, 0x22), SWT.NORMAL),
-    EDOC_TAG(new RGB(0x82, 0x22, 0x22), SWT.BOLD),
-    HTML_TAG(new RGB(0xB3, 0x6A, 0x6A), SWT.NORMAL),
+    EDOC_TAG(new RGB(0x82, 0x22, 0x22), SWT.BOLD, "EDoc tag (in comments)"),
+    HTML_TAG(new RGB(0xB3, 0x6A, 0x6A), SWT.NORMAL, "HTML tag (in comments)"),
     STRING(new RGB(0xBC, 0x8f, 0x8F), SWT.NORMAL),
-    ESCAPE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD),
-    TILDE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD);
+    ESCAPE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD, "Escaped chars (in strings)"),
+    TILDE_TAG(new RGB(0xBC, 0x8f, 0x8F), SWT.BOLD, "Format specifiers (in strings)");
     //@formatter:on
 
     private final HighlightStyle defaultData;
+    private String displayName;
 
     private TokenHighlight(final RGB color, final int style) {
+        this(color, style, null);
+    }
+
+    private TokenHighlight(final RGB color, final int style,
+            final String displayName) {
         defaultData = new HighlightStyle(color, style);
+        this.displayName = displayName;
     }
 
     public HighlightStyle getDefaultData() {
@@ -34,6 +41,9 @@ public enum TokenHighlight {
     }
 
     public String getName() {
-        return toString().toLowerCase().replaceAll("_", " ");
+        if (displayName == null) {
+            return toString().toLowerCase().replaceAll("_", " ");
+        }
+        return displayName;
     }
 }
