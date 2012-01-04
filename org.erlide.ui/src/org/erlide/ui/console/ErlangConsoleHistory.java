@@ -26,6 +26,7 @@ public class ErlangConsoleHistory {
         if (history.size() > 50) {
             history.remove(0);
         }
+        navIndex = -1;
     }
 
     public List<String> getHistory() {
