@@ -65,6 +65,7 @@ import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
 import org.erlide.jinterface.util.StringUtils;
 import org.erlide.jinterface.util.Util;
+import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
@@ -104,7 +105,7 @@ public class SearchUtil {
             final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
-        final IErlModel model =  ErlModelManager.getErlangModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         for (final IProject project : projects) {
             addProjectToScope(project, result);
             if (ErlideUtil.hasErlangNature(project)) {
@@ -121,7 +122,7 @@ public class SearchUtil {
         if (project == null) {
             return;
         }
-        final IErlProject erlProject =  ErlModelManager.getErlangModel()
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .getErlangProject(project);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath path : sourcePaths) {
@@ -314,8 +315,7 @@ public class SearchUtil {
                 name = module.getModuleName();
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
-                    if (e != null
-                            && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
+                    if (OpenAction.isTypeDefOrRecordDef(e, res)) {
                         return new TypeRefPattern(name, res.getFun(), limitTo);
                     }
                 }
@@ -479,8 +479,8 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element =  ErlModelManager.getErlangModel()
-                                .findElement(resource);
+                        final IErlElement element = ErlModelManager
+                                .getErlangModel().findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;
                         }
