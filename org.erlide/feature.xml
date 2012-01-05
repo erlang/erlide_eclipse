@@ -4,7 +4,7 @@
       label="Erlang IDE"
       version="0.14.0.qualifier"
       provider-name="erlide.org"
-      image="erlang120.gif">
+      image="erlang-64.gif">
    <install-handler/>
 
    <description>
