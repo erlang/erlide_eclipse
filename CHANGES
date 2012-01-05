@@ -1,3 +1,15 @@
+List of user visible changes between 0.13.9 and 0.14.0 (20120105)
+
+d09c74e 971 navigation - should go from -spec to function
+33cd5b0 981 model sync: getModelLock is not used everywhere
+bc5e271 fix for console history when there was no previous input
+ede4c50 976 scanner: doesn't recognize all escape sequences in char literals
+27693ee erlide runtime is always the most recent stable one, user can't choose it anymore
+05433b7 fixed 979 (search for a function without specifying arity uses zero as default), but results are affected by ticket 984
+687d997 found problem with highlighting in history files (but not the root cause)
+d81a5b6 test #975: display dialog when backend dies
+326bb0e test #974: improve printouts when backend dies
+
 List of user visible changes between 0.13.8 and 0.13.9 (20111212)
 
 15b0f2c 962: indent macros in list comprehensions
