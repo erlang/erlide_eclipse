@@ -1,5 +1,6 @@
 List of user visible changes between 0.13.9 and 0.14.0 (20120105)
 
+        947: completion of include and include_lib
 d09c74e 971 navigation - should go from -spec to function
 33cd5b0 981 model sync: getModelLock is not used everywhere
 bc5e271 fix for console history when there was no previous input
