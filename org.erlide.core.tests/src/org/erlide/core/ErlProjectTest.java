@@ -9,7 +9,7 @@ import java.io.File;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.backend.BackendCore;
-import org.erlide.core.common.StringUtils;
+import org.erlide.core.common.FilePathUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
@@ -238,7 +238,7 @@ public class ErlProjectTest {
             // then
             // we should find it
             assertNotNull(externalModule);
-            assertTrue(StringUtils.equalFilePaths(absolutePath,
+            assertTrue(FilePathUtils.equalFilePaths(absolutePath,
                     externalModule.getFilePath()));
         } finally {
             if (externalFile != null && externalFile.exists()) {

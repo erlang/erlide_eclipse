@@ -18,8 +18,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
@@ -212,8 +212,9 @@ public class DialyzerUtilsTest {
             final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
             final IResource selectedResource = selectResource(select,
                     erlProject, a);
-            DialyzerUtils.addModulesFromResource(CoreScope.getModel(),
-                    selectedResource, modules);
+            DialyzerUtils
+                    .addModulesFromResource(ErlModelManager.getErlangModel(),
+                            selectedResource, modules);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();
@@ -309,7 +310,7 @@ public class DialyzerUtilsTest {
 
     @Test
     public void dialyzeBinaryOnProjectWithErrorFile() throws Exception {
-        // http://www.assembla.com/spaces/erlide/tickets/616-dialyzer-Ð-crash-on-binary-analysis-and-files-with-errors
+        // http://www.assembla.com/spaces/erlide/tickets/616-dialyzer-ï¿½-crash-on-binary-analysis-and-files-with-errors
         IErlProject erlProject = null;
         try {
             // given
@@ -334,8 +335,9 @@ public class DialyzerUtilsTest {
             // when
             // collecting files to dialyze
             final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
-            DialyzerUtils.addModulesFromResource(CoreScope.getModel(),
-                    erlProject.getResource(), modules);
+            DialyzerUtils.addModulesFromResource(
+                    ErlModelManager.getErlangModel(), erlProject.getResource(),
+                    modules);
             final List<String> names = new ArrayList<String>();
             final List<IPath> includeDirs = new ArrayList<IPath>();
             final List<String> files = new ArrayList<String>();

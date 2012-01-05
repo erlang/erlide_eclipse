@@ -21,10 +21,13 @@ public class ErlStringScanner extends BufferedRuleBasedScanner {
 
         final Token tildeTag = ErlCodeScanner.getToken(TokenHighlight.TILDE_TAG
                 .getName());
+        final Token escapeTag = ErlCodeScanner
+                .getToken(TokenHighlight.ESCAPE_TAG.getName());
 
         final List<IRule> rulesList = Lists.newArrayList();
         rulesList.add(new RegexpRule(
                 "~[0-9*]*(\\.[0-9*]+)?.?t?[~cfegswWpPBbXx#+ni]", tildeTag));
+        rulesList.add(new EscapeRule(escapeTag));
 
         final IRule[] rules = new IRule[rulesList.size()];
         rulesList.toArray(rules);

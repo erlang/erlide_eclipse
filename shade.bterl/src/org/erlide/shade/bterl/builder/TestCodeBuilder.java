@@ -29,7 +29,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.internal.core.StreamsProxy;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -39,6 +38,7 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -430,7 +430,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         }
                     }
                 };
-                if (ErlangCore.hasFeatureEnabled("erlide.make_links.snoop")) {
+                if (SystemUtils.hasFeatureEnabled("erlide.make_links.snoop")) {
                     proxy.getOutputStreamMonitor().addListener(listener);
                     proxy.getErrorStreamMonitor().addListener(listener);
                 }

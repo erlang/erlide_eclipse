@@ -34,13 +34,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.services.builder.BuilderVisitor;
 import org.erlide.core.internal.services.builder.InternalErlideBuilder;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.PluginUtils;
@@ -86,8 +86,8 @@ public final class BuilderHelper {
 
     public Collection<IPath> getIncludeDirs(final IProject project,
             final Collection<IPath> includeDirs) {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         final Collection<IPath> projectIncludeDirs = erlProject
                 .getIncludeDirs();
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
@@ -129,7 +129,8 @@ public final class BuilderHelper {
     public void addDependents(final IResource resource,
             final IProject my_project, final Set<BuildResource> result)
             throws ErlModelException {
-        final IErlProject eprj = CoreScope.getModel().findProject(my_project);
+        final IErlProject eprj = ErlModelManager.getErlangModel().findProject(
+                my_project);
         if (eprj != null) {
             final Collection<IErlModule> ms = eprj.getModules();
             for (final IErlModule m : ms) {
@@ -149,18 +150,18 @@ public final class BuilderHelper {
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes")
-            final Map args, final IProject project,
-            final IProgressMonitor monitor) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProject project, final IProgressMonitor monitor)
+            throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         project.accept(new BuilderVisitor(result, monitor, this));
         return result;
     }
 
     public Set<BuildResource> getAffectedResources(
-            @SuppressWarnings("rawtypes")
-            final Map args, final IResourceDelta delta,
-            final IProgressMonitor monitor) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args,
+            final IResourceDelta delta, final IProgressMonitor monitor)
+            throws CoreException {
         final Set<BuildResource> result = Sets.newHashSet();
         if (delta != null) {
             delta.accept(new BuilderVisitor(result, monitor, this));
@@ -193,7 +194,7 @@ public final class BuilderHelper {
         } catch (final Exception e) {
         }
         try {
-            final IErlProject erlProject = CoreScope.getModel()
+            final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(project);
             final Collection<IPath> sd = erlProject.getSourceDirs();
             final String[] dirList = new String[sd.size()];
@@ -245,7 +246,8 @@ public final class BuilderHelper {
         boolean shouldCompile = beam == null;
 
         if (beam != null) {
-            final IErlProject eprj = CoreScope.getModel().findProject(project);
+            final IErlProject eprj = ErlModelManager.getErlangModel()
+                    .findProject(project);
             if (eprj != null) {
                 shouldCompile = shouldCompileModule(project, source, beam,
                         shouldCompile, eprj);
@@ -352,8 +354,8 @@ public final class BuilderHelper {
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         final IPath outputDir = erlProject.getOutputLocation();
         final IResource ebinDir = project.findMember(outputDir);
         if (ebinDir != null) {
@@ -430,8 +432,8 @@ public final class BuilderHelper {
                     br.setDerived(true, null);
                     final BuildResource bbr = new BuildResource(br);
                     // br.touch() doesn't work...
-                    final IErlProject erlProject = CoreScope.getModel()
-                            .getErlangProject(project);
+                    final IErlProject erlProject = ErlModelManager
+                            .getErlangModel().getErlangProject(project);
                     compileErl(project, bbr, erlProject.getOutputLocation()
                             .toString(), backend, compilerOptions);
                 }
@@ -522,8 +524,8 @@ public final class BuilderHelper {
     }
 
     private IPath getBeamForErl(final IResource source) {
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                source.getProject());
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(source.getProject());
         IPath p = erlProject.getOutputLocation();
         p = p.append(source.getName());
         if (!"erl".equals(p.getFileExtension())) {
@@ -638,7 +640,7 @@ public final class BuilderHelper {
             if (getResult() != null) {
                 return false;
             }
-            final IErlProject erlProject = CoreScope.getModel()
+            final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(resource.getProject());
             if (resource.getType() == IResource.FILE
                     && resource.getFileExtension() != null

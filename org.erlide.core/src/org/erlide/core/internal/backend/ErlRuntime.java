@@ -16,7 +16,6 @@ import org.erlide.core.backend.IErlRuntime;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcHelper;
@@ -24,6 +23,7 @@ import org.erlide.jinterface.rpc.RpcHelper;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
+import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
@@ -33,7 +33,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
     private static final Object connectLock = new Object();
-    private static final IRpcHelper rpcHelper = RpcHelper.getInstance();
+    private static final RpcHelper rpcHelper = RpcHelper.getInstance();
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN
@@ -90,16 +90,11 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         while (!ok && tries > 0) {
             ErlLogger.debug("# ping..." + getNodeName() + " "
                     + Thread.currentThread().getName());
-            ok = getNode().ping(getNodeName(),
-                    RETRY_DELAY + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
+            ok = localNode.ping(getNodeName(), RETRY_DELAY
+                    + (MAX_RETRIES - tries) * RETRY_DELAY % 3);
             tries--;
         }
         return ok;
-    }
-
-    @Override
-    public boolean connect() {
-        return getNode().ping(getNodeName(), RETRY_DELAY);
     }
 
     @Override
@@ -121,7 +116,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String m, final String f, final String signature,
             final Object[] args) throws SignatureException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        rpcHelper.rpcCastWithProgress(cb, getNode(), peerName, false, gleader,
+        rpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
                 m, f, signature, args);
     }
 
@@ -130,7 +125,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String module, final String fun, final String signature,
             final Object... args0) throws RpcException, SignatureException {
         tryConnect();
-        return rpcHelper.sendRpcCall(getNode(), peerName, false, gleader,
+        return rpcHelper.sendRpcCall(localNode, peerName, false, gleader,
                 module, fun, signature, args0);
     }
 
@@ -156,7 +151,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args)
             throws RpcException, SignatureException {
         tryConnect();
-        rpcHelper.makeAsyncCbCall(getNode(), peerName, cb, timeout, gleader,
+        rpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout, gleader,
                 module, fun, signature, args);
     }
 
@@ -166,7 +161,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args0)
             throws RpcException, SignatureException {
         tryConnect();
-        final OtpErlangObject result = rpcHelper.rpcCall(getNode(), peerName,
+        final OtpErlangObject result = rpcHelper.rpcCall(localNode, peerName,
                 false, gleader, module, fun, timeout, signature, args0);
         return result;
     }
@@ -184,7 +179,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             final String fun, final String signature, final Object... args0)
             throws SignatureException, RpcException {
         tryConnect();
-        rpcHelper.rpcCast(getNode(), peerName, false, gleader, module, fun,
+        rpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
                 signature, args0);
     }
 
@@ -208,7 +203,8 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             case CONNECTED:
                 break;
             case DOWN:
-                final String msg = "BackendImpl %s is down";
+                final String msg = "Backend '%s' is down";
+                // XXX restart it??
                 throw new RpcException(String.format(msg, peerName));
             }
         }
@@ -217,17 +213,6 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     @Override
     public boolean isAvailable() {
         return state == State.CONNECTED;
-    }
-
-    @Override
-    public OtpNode getNode() {
-        synchronized (localNodeLock) {
-            if (localNode == null) {
-                // TODO what do we do if it's still not starting?
-                startLocalNode();
-            }
-            return localNode;
-        }
     }
 
     public static String createJavaNodeName() {
@@ -261,14 +246,29 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public void send(final OtpErlangPid pid, final Object msg)
             throws RpcException, SignatureException {
         tryConnect();
-        rpcHelper.send(getNode(), pid, msg);
+        rpcHelper.send(localNode, pid, msg);
     }
 
     @Override
     public void send(final String fullNodeName, final String name,
             final Object msg) throws SignatureException, RpcException {
         tryConnect();
-        rpcHelper.send(getNode(), fullNodeName, name, msg);
+        rpcHelper.send(localNode, fullNodeName, name, msg);
     }
 
+    @Override
+    public OtpMbox createMbox(final String name) {
+        return localNode.createMbox(name);
+    }
+
+    @Override
+    public OtpMbox createMbox() {
+        return localNode.createMbox();
+    }
+
+    @Override
+    public void stop() {
+        // close peer too?
+        localNode.close();
+    }
 }

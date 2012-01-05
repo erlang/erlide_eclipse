@@ -1,12 +1,11 @@
 package org.erlide.core.services.search;
 
-import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -23,8 +22,7 @@ public class ErlideSearchServer {
         final OtpErlangObject result[] = new OtpErlangObject[scope.size()];
         int i = 0;
         for (final IErlModule module : scope.getModules()) {
-            result[i] = make2Tuple(
-                    ErlangToolkit.createScannerModuleName(module),
+            result[i] = make2Tuple(module.getScannerName(),
                     module.getFilePath());
             i++;
         }

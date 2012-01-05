@@ -33,9 +33,9 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.common.ErlangFunctionCall;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.util.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

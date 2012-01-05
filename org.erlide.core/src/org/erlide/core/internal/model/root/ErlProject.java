@@ -381,7 +381,7 @@ public class ErlProject extends Openable implements IErlProject {
             }
         } catch (final CoreException e) {
             // could not flush markers: not much we can do
-            if (ErlModel.verbose) {
+            if (ModelConfig.verbose) {
                 ErlLogger.warn(e);
             }
         }
@@ -680,7 +680,7 @@ public class ErlProject extends Openable implements IErlProject {
             return getModel().findModuleFromProject(this, name, null, false,
                     false, IErlElementLocator.Scope.PROJECT_ONLY);
         } catch (final ErlModelException e) {
-            // final boolean hasExtension = CommonUtils.hasExtension(name);
+            // final boolean hasExtension = ListsUtils.hasExtension(name);
             return null;
         }
     }

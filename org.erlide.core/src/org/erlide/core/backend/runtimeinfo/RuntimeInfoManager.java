@@ -10,14 +10,19 @@
  *******************************************************************************/
 package org.erlide.core.backend.runtimeinfo;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -26,28 +31,28 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
+import com.google.common.collect.Lists;
 
 public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     private RuntimeInfo erlideRuntime;
+    private final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
+    private String defaultRuntimeName = "";
+    private final List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
 
     public RuntimeInfoManager() {
         getRootPreferenceNode().addPreferenceChangeListener(this);
         load();
+        initializeRuntimesList();
+        setDefaultRuntimes();
     }
 
-    private final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
-    private String defaultRuntimeName = "";
-
-    private final List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
-
-    public Collection<RuntimeInfo> getRuntimes() {
+    public synchronized Collection<RuntimeInfo> getRuntimes() {
         return new ArrayList<RuntimeInfo>(fRuntimes.values());
     }
 
@@ -144,8 +149,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                         .getName();
             }
         }
-        final RuntimeInfo rt = getRuntime(root.get("erlide", null));
-        setErlideRuntime(rt == null ? getDefaultRuntime() : rt);
     }
 
     protected IEclipsePreferences getRootPreferenceNode() {
@@ -205,7 +208,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         notifyListeners();
     }
 
-    public synchronized void setErlideRuntime(final RuntimeInfo runtime) {
+    private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
         if (runtime != null) {
             runtime.setNodeName("erlide");
         }
@@ -219,18 +222,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     }
 
     public synchronized RuntimeInfo getErlideRuntime() {
-        if (erlideRuntime == null) {
-            RuntimeInfo ri = null;
-            final Iterator<RuntimeInfo> iterator = getRuntimes().iterator();
-            if (iterator.hasNext()) {
-                ri = iterator.next();
-            }
-            if (ri != null) {
-                setErlideRuntime(ri);
-            } else {
-                ErlLogger.error("There is no erlideRuntime defined!");
-            }
-        }
         return erlideRuntime;
     }
 
@@ -307,9 +298,8 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         }
     }
 
-    public static String[][] getAllRuntimesVersions() {
-        final Collection<RuntimeInfo> rs = BackendCore.getRuntimeInfoManager()
-                .getRuntimes();
+    public String[][] getAllRuntimesVersions() {
+        final Collection<RuntimeInfo> rs = getRuntimes();
         final String[][] runtimes = new String[rs.size()][2];
         final Iterator<RuntimeInfo> it = rs.iterator();
         for (int i = 0; i < rs.size(); i++) {
@@ -317,6 +307,110 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             runtimes[i][1] = runtimes[i][0];
         }
         return runtimes;
+    }
+
+    /**
+     * If runtime is not set, try to locate one. The first one found as below is
+     * set as default. All "obvious" runtimes found are stored.
+     * <ul>
+     * <li>A system property <code>erlide.runtime</code> can be set to point to
+     * a location.</li>
+     * <li>A preference in the default scope
+     * <code>org.erlide.core/default_runtime</code> can be set to point to a
+     * location.</li>
+     * <li>Look for existing Erlang runtimes in a few obvious places and install
+     * them, choosing a suitable one as default.</li>
+     * </ul>
+     * 
+     */
+    public void initializeRuntimesList() {
+        final Collection<RuntimeInfo> found = guessRuntimeLocations();
+        for (final RuntimeInfo info : found) {
+            addRuntime(info);
+        }
+    }
+
+    private void setDefaultRuntimes() {
+        final List<RuntimeInfo> list = new ArrayList<RuntimeInfo>(getRuntimes());
+        Collections.sort(list, new Comparator<RuntimeInfo>() {
+            @Override
+            public int compare(final RuntimeInfo o1, final RuntimeInfo o2) {
+                final int x = o2.getVersion().compareTo(o1.getVersion());
+                if (x != 0) {
+                    return x;
+                }
+                return o2.getName().compareTo(o1.getName());
+            }
+        });
+        if (list.size() > 0) {
+            final String firstName = list.get(0).getName();
+            if (defaultRuntimeName == null) {
+                setDefaultRuntime(firstName);
+            }
+
+            // the erlide backend is the most recent stable version
+            for (final RuntimeInfo info : list) {
+                if (info.getVersion().isStable()) {
+                    setErlideRuntime(info);
+                    break;
+                }
+            }
+            if (erlideRuntime == null) {
+                setErlideRuntime(getDefaultRuntime());
+            }
+        }
+    }
+
+    private Collection<RuntimeInfo> guessRuntimeLocations() {
+        final List<RuntimeInfo> result = Lists.newArrayList();
+        final String[] locations = {
+                System.getProperty("erlide.runtime"),
+                new DefaultScope().getNode("org.erlide.core").get(
+                        "default_runtime", null), "c:/program files",
+                "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
+                System.getProperty("user.home"), "/usr", "/usr/local",
+                "/usr/local/lib", "/Library/Frameworks/erlang/Versions" };
+        for (final String loc : locations) {
+            final Collection<File> roots = findRuntime(loc);
+            for (final File root : roots) {
+                final RuntimeInfo rt = new RuntimeInfo();
+                rt.setOtpHome(root.getPath());
+                rt.setName(root.getName());
+                final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
+                        .getRoot();
+                final String location = wroot.getLocation().toPortableString();
+                rt.setWorkingDir(location);
+                result.add(rt);
+            }
+        }
+        return result;
+    }
+
+    private static Collection<File> findRuntime(final String loc) {
+        final Collection<File> result = new ArrayList<File>();
+        if (loc == null) {
+            return result;
+        }
+        final File folder = new File(loc);
+        if (!folder.exists()) {
+            return result;
+        }
+        final File[] candidates = folder.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
+                final String path = pathname.getName();
+                return pathname.isDirectory()
+                        && (path.startsWith("otp") || path.startsWith("erl")
+                                || path.startsWith("Erl") || path
+                                    .startsWith("R"));
+            }
+        });
+        for (final File f : candidates) {
+            if (RuntimeInfo.validateLocation(f.getPath())) {
+                result.add(f);
+            }
+        }
+        return result;
     }
 
 }

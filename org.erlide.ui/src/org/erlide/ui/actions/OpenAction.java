@@ -21,22 +21,22 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.internal.backend.ModelInternalUtils;
+import org.erlide.core.internal.model.erlang.ModelInternalUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlRecordDef;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.model.root.ISourceReference;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
@@ -138,7 +138,7 @@ public class OpenAction extends SelectionDispatchAction {
         final int offset = selection.getOffset();
         try {
             final IErlProject project = module.getProject();
-            final IErlModel model = CoreScope.getModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = project == null ? "" : project
                     .getExternalModulesString();
             final OpenResult res = ErlideOpen.open(b, module, offset,
@@ -191,7 +191,7 @@ public class OpenAction extends SelectionDispatchAction {
         final IErlElementLocator.Scope scope = NavigationPreferencePage
                 .getCheckAllProjects() ? IErlElementLocator.Scope.ALL_PROJECTS
                 : IErlElementLocator.Scope.REFERENCED_PROJECTS;
-        final IErlElementLocator model = CoreScope.getModel();
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
         Object found = null;
         if (res.isExternalCall()) {
             found = findExternalCallOrType(module, res, erlProject, element,
@@ -222,10 +222,19 @@ public class OpenAction extends SelectionDispatchAction {
         return found;
     }
 
-    public static boolean isTypeDefOrRecordDef(final IErlElement element) {
-        return element != null
-                && (element.getKind() == IErlElement.Kind.TYPESPEC || element
-                        .getKind() == IErlElement.Kind.RECORD_DEF);
+    public static boolean isTypeDefOrRecordDef(final IErlElement element,
+            final OpenResult res) {
+        if (element != null) {
+            if (element.getKind() == IErlElement.Kind.RECORD_DEF) {
+                return true;
+            }
+            if (element.getKind() == IErlElement.Kind.TYPESPEC) {
+                if (!res.getFun().equals(element.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static IErlElement findLocalCall(final IErlModule module,
@@ -233,7 +242,7 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IErlElement element,
             final IErlElementLocator.Scope scope) throws RpcException,
             CoreException {
-        if (isTypeDefOrRecordDef(element)) {
+        if (isTypeDefOrRecordDef(element, res)) {
             return ModelUtils.findTypespec(module, res.getFun());
         }
         final IErlFunction foundElement = module
@@ -246,7 +255,7 @@ public class OpenAction extends SelectionDispatchAction {
         String moduleName = null;
         final IErlImport ei = module.findImport(res.getFunction());
         if (ei != null) {
-            final IErlModel model = CoreScope.getModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             moduleName = ei.getImportModule();
             res2 = ErlideOpen.getSourceFromModule(backend, model.getPathVars(),
                     moduleName, erlProject.getExternalModulesString());
@@ -276,7 +285,7 @@ public class OpenAction extends SelectionDispatchAction {
             final OpenResult res, final IErlProject project,
             final IErlElement element, final IErlElementLocator.Scope scope)
             throws CoreException {
-        if (isTypeDefOrRecordDef(element)) {
+        if (isTypeDefOrRecordDef(element, res)) {
             return ModelUtils.findTypeDef(module, res.getName(), res.getFun(),
                     res.getPath(), project, scope);
         }

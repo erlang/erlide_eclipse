@@ -14,7 +14,7 @@ import org.erlide.jinterface.ErlLogger;
 import com.google.common.collect.Lists;
 
 public class TestProjectProperties {
-    List<String> sources;
+    List<String> sources = Lists.newArrayList();
 
     private List<String> findTestDirs(final IProject prj) {
         final List<String> result = Lists.newArrayList();

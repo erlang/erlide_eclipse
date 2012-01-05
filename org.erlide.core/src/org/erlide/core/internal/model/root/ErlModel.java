@@ -44,9 +44,11 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
+import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementDelta;
@@ -54,7 +56,6 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
-import org.erlide.core.model.root.IErlParser;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
@@ -64,6 +65,7 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -97,8 +99,6 @@ public class ErlModel extends Openable implements IErlModel {
 
     private final ErlModelDeltaManager deltaManager;
 
-    public static boolean verbose = Boolean.getBoolean("erlide.model.verbose");
-
     public enum External {
         EXTERNAL_MODULES, EXTERNAL_INCLUDES
     }
@@ -107,28 +107,35 @@ public class ErlModel extends Openable implements IErlModel {
 
     private final IErlParser parser;
 
+    private final ErlangToolkit toolkit;
+
     /**
      * Constructs a new Erlang Model on the given workspace. Note that only one
      * instance of ErlModel handle should ever be created. One should only
-     * indirect through ErlModelManager#getErlangModel() to get access to it.
+     * indirect through ErlModel#getErlangModel() to get access to it.
      * 
      * @exception Error
      *                if called more than once
      */
-    ErlModel() {
+    public ErlModel(final ErlangToolkit toolkit) {
         super(null, ""); //$NON-NLS-1$
-        parser = new ErlParser();
-        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        final IPathVariableManager pvm = workspace.getPathVariableManager();
+        this.toolkit = toolkit;
+        parser = toolkit.createParser();
         fPathVariableChangeListener = new PathVariableChangeListener();
-        pvm.addChangeListener(fPathVariableChangeListener);
-        final IResourceChangeListener listener = new ResourceChangeListener();
-        workspace.addResourceChangeListener(listener);
+        setupWorkspaceListeners();
         deltaManager = new ErlModelDeltaManager(this);
     }
 
+    public void setupWorkspaceListeners() {
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IPathVariableManager pvm = workspace.getPathVariableManager();
+        pvm.addChangeListener(fPathVariableChangeListener);
+        final IResourceChangeListener listener = new ResourceChangeListener();
+        workspace.addResourceChangeListener(listener);
+    }
+
     @Override
-    protected boolean buildStructure(final IProgressMonitor pm) {
+    public boolean buildStructure(final IProgressMonitor pm) {
         setChildren(null);
         // determine my children
         final IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
@@ -448,20 +455,20 @@ public class ErlModel extends Openable implements IErlModel {
 
     @Override
     public OtpErlangList getPathVars() {
-        if (fCachedPathVars == null) {
-            final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
-                    .getPathVariableManager();
-            final String[] names = pvm.getPathVariableNames();
-            final OtpErlangObject[] objects = new OtpErlangObject[names.length];
-            for (int i = 0; i < names.length; i++) {
-                final String name = names[i];
-                final String value = PluginUtils.getPVMValue(pvm, name)
-                        .toOSString();
-                objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
-                        new OtpErlangString(name), new OtpErlangString(value) });
-            }
-            fCachedPathVars = new OtpErlangList(objects);
+        // if (fCachedPathVars == null) {
+        final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+                .getPathVariableManager();
+        final String[] names = pvm.getPathVariableNames();
+        final OtpErlangObject[] objects = new OtpErlangObject[names.length];
+        for (int i = 0; i < names.length; i++) {
+            final String name = names[i];
+            final String value = PluginUtils.getPVMValue(pvm, name)
+                    .toOSString();
+            objects[i] = new OtpErlangTuple(new OtpErlangObject[] {
+                    new OtpErlangString(name), new OtpErlangString(value) });
         }
+        fCachedPathVars = new OtpErlangList(objects);
+        // }
         return fCachedPathVars;
     }
 
@@ -485,16 +492,6 @@ public class ErlModel extends Openable implements IErlModel {
             final String includePath) throws ErlModelException {
         return findIncludeFromProject(null, includeName, includePath, false,
                 false, IErlElementLocator.Scope.ALL_PROJECTS);
-    }
-
-    private static volatile ErlModel fgErlangModel;
-
-    public static final IErlModel getErlangModel() {
-        if (fgErlangModel == null) {
-            fgErlangModel = new ErlModel();
-            fgErlangModel.buildStructure(null);
-        }
-        return fgErlangModel;
     }
 
     /**
@@ -575,8 +572,9 @@ public class ErlModel extends Openable implements IErlModel {
         if (m == null) {
             final IParent parent2 = parent == null ? this : parent;
             final boolean useCache = false;
-            // TODO kan vi skilja pŒ t.ex. local history och OTP-moduler? de
-            // senare vill vi ha cache fšr, men inte de tidigare, fšr dŒ krockar
+            // TODO kan vi skilja pï¿½ t.ex. local history och OTP-moduler? de
+            // senare vill vi ha cache fï¿½r, men inte de tidigare, fï¿½r dï¿½
+            // krockar
             // det med aktuell fil
             // final boolean useCache = path != null && path.length() > 0;
             m = new ErlModule(parent2, name, initialText, null, path, useCache);
@@ -630,7 +628,7 @@ public class ErlModel extends Openable implements IErlModel {
             if (listenerMask == null || (listenerMask[i] & eventType) != 0) {
                 final IElementChangedListener listener = listeners[i];
                 long start = -1;
-                if (verbose) {
+                if (ModelConfig.verbose) {
                     System.out
                             .print("Listener #" + (i + 1) + "=" + listener.toString());//$NON-NLS-1$//$NON-NLS-2$
                     start = System.currentTimeMillis();
@@ -653,7 +651,7 @@ public class ErlModel extends Openable implements IErlModel {
                         listener.elementChanged(extraEvent);
                     }
                 });
-                if (verbose) {
+                if (ModelConfig.verbose) {
                     System.out
                             .println(" -> " + (System.currentTimeMillis() - start) + "ms"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -851,7 +849,7 @@ public class ErlModel extends Openable implements IErlModel {
         if (root == null) {
             return null;
         }
-        return getErlangModel();
+        return this;
     }
 
     class ResourceChangeListener implements IResourceChangeListener {
@@ -869,7 +867,7 @@ public class ErlModel extends Openable implements IErlModel {
                     @Override
                     public boolean visit(final IResourceDelta delta) {
                         final IResource resource = delta.getResource();
-                        if (verbose) {
+                        if (ModelConfig.verbose) {
                             ErlLogger.debug("delta " + delta.getKind()
                                     + " for " + resource.getLocation());
                         }
@@ -964,10 +962,6 @@ public class ErlModel extends Openable implements IErlModel {
                 remove(rsrc);
             }
         }
-    }
-
-    @Override
-    public void shutdown() {
     }
 
     @Override
@@ -1091,7 +1085,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (includeName != null) {
-            final boolean hasExtension = CommonUtils.hasExtension(includeName);
+            final boolean hasExtension = SystemUtils.hasExtension(includeName);
             for (final IErlModule module2 : includes) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
@@ -1149,7 +1143,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (moduleName != null) {
-            final boolean hasExtension = CommonUtils.hasExtension(moduleName);
+            final boolean hasExtension = SystemUtils.hasExtension(moduleName);
             for (final IErlModule module2 : modules) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
@@ -1190,5 +1184,10 @@ public class ErlModel extends Openable implements IErlModel {
     @Override
     public Object getModelLock() {
         return fModelLock;
+    }
+
+    @Override
+    public ErlangToolkit getToolkit() {
+        return toolkit;
     }
 }

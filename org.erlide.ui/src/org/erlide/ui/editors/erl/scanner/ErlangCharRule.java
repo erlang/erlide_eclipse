@@ -17,27 +17,12 @@ public class ErlangCharRule implements IPredicateRule {
     public IToken evaluate(final ICharacterScanner scanner) {
         int c = scanner.read();
         if (c == '$') {
-            c = scanner.read();
-            if (c == '\\') {
+            final EscapeRule escape = new EscapeRule(token);
+            final IToken tk = escape.evaluate(scanner);
+            if (tk == Token.UNDEFINED) {
                 c = scanner.read();
-                if (c != ICharacterScanner.EOF) {
-                    int octal = 0;
-                    while (c >= '0' && c <= '7') {
-                        octal++;
-                        c = scanner.read();
-                    }
-                    while (octal > 3) {
-                        scanner.unread();
-                        octal--;
-                    }
-                    if (octal > 0) {
-                        scanner.unread();
-                    }
-                    return token;
-                }
-            } else if (c != ICharacterScanner.EOF) {
-                return token;
             }
+            return token;
         }
         scanner.unread();
         return Token.UNDEFINED;

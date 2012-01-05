@@ -30,13 +30,13 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
@@ -231,7 +231,7 @@ public abstract class FindAction extends SelectionDispatchAction {
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();
         final OpenResult res = ErlideOpen.open(b, module, offset, ModelUtils
-                .getImportsAsList(module), "", CoreScope.getModel()
+                .getImportsAsList(module), "",  ErlModelManager.getErlangModel()
                 .getPathVars());
         ErlLogger.debug("find " + res);
         final ErlangSearchPattern ref = SearchUtil

@@ -269,4 +269,8 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         }
     }
 
+    public boolean isStable() {
+        return minor > 0;
+    }
+
 }

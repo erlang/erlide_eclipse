@@ -40,11 +40,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.internal.backend.BackendHelper;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.CompilerPreferences;
@@ -368,7 +368,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         } else {
             final List<IProject> erlProjects = new ArrayList<IProject>();
             final Set<IProject> projectsWithSpecifics = new HashSet<IProject>();
-            final IErlModel model = CoreScope.getModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             try {
                 for (final IErlProject ep : model.getErlangProjects()) {
                     final IProject p = ep.getWorkspaceProject();

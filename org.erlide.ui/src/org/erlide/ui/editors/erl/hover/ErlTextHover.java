@@ -41,15 +41,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendManager;
-import org.erlide.core.common.Util;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.ErlToken;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
@@ -58,6 +56,7 @@ import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.util.Util;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -285,12 +284,12 @@ public class ErlTextHover implements ITextHover,
             final IRpcCallSite b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
-            final IErlModel model = CoreScope.getModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
             r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,
-                    ErlangToolkit.createScannerModuleName(module), fImports,
-                    externalModulesString, model.getPathVars());
+                    module.getScannerName(), fImports, externalModulesString,
+                    model.getPathVars());
             // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
             final OtpErlangTuple t = (OtpErlangTuple) r1;
             if (Util.isOk(t)) {

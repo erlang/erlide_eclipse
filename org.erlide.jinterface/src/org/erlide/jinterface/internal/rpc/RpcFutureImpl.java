@@ -11,7 +11,6 @@
 package org.erlide.jinterface.internal.rpc;
 
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcHelper;
 import org.erlide.jinterface.rpc.RpcMonitor;
@@ -42,7 +41,7 @@ public class RpcFutureImpl implements IRpcFuture {
 
     @Override
     public OtpErlangObject get() throws RpcException {
-        return get(IRpcHelper.INFINITY);
+        return get(RpcHelper.INFINITY);
     }
 
     @Override

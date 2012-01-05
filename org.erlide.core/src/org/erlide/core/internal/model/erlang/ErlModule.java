@@ -23,12 +23,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.root.ErlModel;
-import org.erlide.core.internal.model.root.ErlScanner;
+import org.erlide.core.internal.model.root.ModelConfig;
 import org.erlide.core.internal.model.root.Openable;
-import org.erlide.core.internal.model.root.SourceRange;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlExport;
@@ -36,8 +33,12 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.erlang.IErlTypespec;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlToken;
@@ -45,15 +46,12 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlParser;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IErlScanner;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.model.root.ISourceReference;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -86,11 +84,11 @@ public class ErlModule extends Openable implements IErlModule {
         this.path = path;
         this.initialText = initialText;
         parsed = false;
-        scannerName = ErlangToolkit.createScannerModuleName(this);
+        scannerName = createScannerName();
         scanner = null;
         this.useCaches = useCaches;
         comments = Lists.newArrayList();
-        if (ErlModel.verbose) {
+        if (ModelConfig.verbose) {
             final IErlElement element = (IErlElement) parent;
             final String parentName = element.getName();
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
@@ -405,7 +403,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public String getModuleName() {
-        return CommonUtils.withoutExtension(getName());
+        return SystemUtils.withoutExtension(getName());
     }
 
     public void disposeScanner() {
@@ -419,14 +417,6 @@ public class ErlModule extends Openable implements IErlModule {
         s.dispose();
         setStructureKnown(false);
     }
-
-    // public synchronized void disposeParser() {
-    // final Backend b = ErlangCore.getBackendManager().getIdeBackend();
-    // ErlideNoparse.destroy(b, getModuleName());
-    // disposeScanner();
-    // setStructureKnown(false);
-    // parsed = false;
-    // }
 
     @Override
     public Kind getKind() {
@@ -511,7 +501,9 @@ public class ErlModule extends Openable implements IErlModule {
         if (scanner == null) {
             scanner = getNewScanner();
         }
-        scanner.addRef();
+        if (scanner != null) {
+            scanner.addRef();
+        }
     }
 
     private IErlScanner getNewScanner() {
@@ -522,7 +514,8 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return new ErlScanner(scannerName, initialText, filePath, useCaches);
+        return getModel().getToolkit().createScanner(scannerName, initialText,
+                filePath, useCaches);
     }
 
     @Override
@@ -691,13 +684,6 @@ public class ErlModule extends Openable implements IErlModule {
         return false;
     }
 
-    public String getText() {
-        getScanner();
-        final String s = scanner.getText();
-        disposeScanner();
-        return s;
-    }
-
     @Override
     public boolean exportsAllFunctions() {
         try {
@@ -720,6 +706,30 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public boolean isRealFile() {
         return useCaches;
+    }
+
+    public String createScannerName() {
+        final IResource res = getResource();
+        if (res != null) {
+            return createScannerNameFromResource(res);
+        } else if (getFilePath() != null && isRealFile()) {
+            return "mod" + getFilePath().hashCode() + "__" + getName();
+        }
+        // This is not used more than temporarily, so it's OK to have
+        // a name that's temporary, as long as it's unique
+        return "mod" + hashCode() + "_";
+    }
+
+    private String createScannerNameFromResource(final IResource res) {
+        String resName;
+        resName = "mod" + res.getFullPath().toPortableString().hashCode() + "_"
+                + res.getName();
+        return resName;
+    }
+
+    @Override
+    public String getScannerName() {
+        return scannerName;
     }
 
 }

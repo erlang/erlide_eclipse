@@ -6,16 +6,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.jinterface.util.ListsUtils;
+
 public final class PreferencesUtils {
 
     private static final String SEP = ";";
 
     public static String packList(final Iterable<String> list) {
-        return CommonUtils.packList(list, SEP);
+        return ListsUtils.packList(list, SEP);
     }
 
     public static List<String> unpackList(final String string) {
-        return CommonUtils.unpackList(string, SEP);
+        return ListsUtils.unpackList(string, SEP);
     }
 
     public static String packArray(final String[] strs) {

@@ -12,7 +12,7 @@ package org.erlide.core.backend;
 
 import java.util.Collection;
 
-import org.erlide.core.common.Tuple;
+import org.erlide.jinterface.util.Tuple;
 import org.osgi.framework.Bundle;
 
 public interface ICodeBundle {

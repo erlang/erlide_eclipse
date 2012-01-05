@@ -16,10 +16,10 @@ import java.io.File;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.common.Util;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;

@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.erlide.core;
 
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IBundleGroup;
 import org.eclipse.core.runtime.IBundleGroupProvider;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.erlide.core.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
@@ -62,12 +65,18 @@ public class ErlangPlugin extends Plugin {
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        final CoreScope coreScope = new CoreScope(this, context);
-        core = CoreInjector.injectErlangCore(coreScope);
         super.start(context);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(
-                getBundle().getSymbolicName(), core.getSaveParticipant());
 
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IExtensionRegistry extensionRegistry = Platform
+                .getExtensionRegistry();
+        final String portableString = workspace.getRoot().getLocation()
+                .toPortableString();
+        final ErlangDebugOptionsManager erlangDebugOptionsManager = ErlangDebugOptionsManager
+                .getDefault();
+
+        core = new ErlangCore(this, workspace, extensionRegistry,
+                portableString, erlangDebugOptionsManager);
         core.start(getFeatureVersion());
     }
 
@@ -101,11 +110,14 @@ public class ErlangPlugin extends Plugin {
                     break;
                 }
             }
-            if (version != null) {
+            if (!version.equals("?")) {
                 break;
             }
         }
         return version;
     }
 
+    public ErlangCore getCore() {
+        return core;
+    }
 }

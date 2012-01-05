@@ -96,16 +96,16 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.model.root.ISourceReference;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
@@ -230,7 +230,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
             final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
             if (ec != null) {
-                ec.getContentAssistProcessor().dispose();
+                ec.disposeContentAssistProcessors();
             }
         }
         if (markOccurencesHandler.fActivationListener != null) {
@@ -386,7 +386,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             setAction("Clean Up...", cleanUpAction);
         }
 
-        if (CommonUtils.isTest()) {
+        if (SystemUtils.isTest()) {
             testAction = new TestAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "Test.", this, getModule());
@@ -406,7 +406,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         markAsStateDependentAction("CallHierarchy", true);
         markAsSelectionDependentAction("CallHierarchy", true);
 
-        if (CommonUtils.isClearCacheAvailable()) {
+        if (SystemUtils.isClearCacheAvailable()) {
             clearCacheAction = new ClearCacheAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "ClearCache.", this);
@@ -455,10 +455,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected void editorContextMenuAboutToShow(final IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
 
-        if (CommonUtils.isTest()) {
+        if (SystemUtils.isTest()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         }
-        if (CommonUtils.isClearCacheAvailable()) {
+        if (SystemUtils.isClearCacheAvailable()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
                     clearCacheAction);
         }
@@ -480,8 +480,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IContentOutlinePage.class.equals(required)) {
             if (myOutlinePage == null) {
                 myOutlinePage = createOutlinePage();

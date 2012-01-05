@@ -44,11 +44,6 @@ public class GenericBackendData {
         }
     }
 
-    public GenericBackendData(final ILaunch launch) {
-        this(launch.getLaunchConfiguration(), launch.getLaunchMode());
-        this.launch = launch;
-    }
-
     @SuppressWarnings("rawtypes")
     public void debugPrint() {
         final String mode = debug ? "debug" : "run";

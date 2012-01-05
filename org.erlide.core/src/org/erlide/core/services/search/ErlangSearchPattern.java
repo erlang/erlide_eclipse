@@ -2,15 +2,15 @@ package org.erlide.core.services.search;
 
 import java.util.EnumSet;
 
-import org.erlide.core.common.CommonUtils;
-import org.erlide.core.common.StringUtils;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMacroDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.jinterface.util.StringUtils;
+import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -178,10 +178,18 @@ public abstract class ErlangSearchPattern {
                 new OtpErlangAtom(s) });
     }
 
+    private static final OtpErlangAtom UNDEFINED = new OtpErlangAtom(
+            "undefined");
+
     private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
             final String s, final int a) {
+        if (a >= 0) {
+            return new OtpErlangTuple(new OtpErlangObject[] { atom,
+                    new OtpErlangAtom(s), new OtpErlangLong(a) });
+        }
         return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s), new OtpErlangLong(a) });
+                new OtpErlangAtom(s), UNDEFINED });
+
     }
 
     private static OtpErlangObject make3Tuple(final OtpErlangAtom atom,
@@ -192,9 +200,13 @@ public abstract class ErlangSearchPattern {
 
     private static OtpErlangObject make4Tuple(final OtpErlangAtom atom,
             final String s1, final String s2, final int a) {
+        if (a >= 0) {
+            return new OtpErlangTuple(new OtpErlangObject[] { atom,
+                    new OtpErlangAtom(s1), new OtpErlangAtom(s2),
+                    new OtpErlangLong(a) });
+        }
         return new OtpErlangTuple(new OtpErlangObject[] { atom,
-                new OtpErlangAtom(s1), new OtpErlangAtom(s2),
-                new OtpErlangLong(a) });
+                new OtpErlangAtom(s1), new OtpErlangAtom(s2), UNDEFINED });
     }
 
     public LimitTo getLimitTo() {
@@ -211,7 +223,7 @@ public abstract class ErlangSearchPattern {
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = CommonUtils
+            final String withoutExtension = SystemUtils
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,

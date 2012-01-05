@@ -23,24 +23,30 @@ import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeManager;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
 public class CodeManager implements ICodeManager {
 
-    private final Backend backend;
+    private final IRpcCallSite backend;
+    private final String erlangVersion;
+    private final RuntimeInfo runtimeInfo;
 
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
-
     private final List<ICodeBundle> registeredBundles;
 
-    // only to be called by ErlideBackend
-    public CodeManager(final Backend b) {
+    // only to be called by Backend
+    CodeManager(final IRpcCallSite b, final String erlangVersion,
+            final RuntimeInfo runtimeInfo) {
         backend = b;
+        this.erlangVersion = erlangVersion;
+        this.runtimeInfo = runtimeInfo;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
         registeredBundles = new ArrayList<ICodeBundle>();
@@ -107,7 +113,7 @@ public class CodeManager implements ICodeManager {
 
         final Bundle b = p.getBundle();
         ErlLogger.debug("loading plugin " + b.getSymbolicName() + " in "
-                + backend.getRuntimeInfo().getName());
+                + runtimeInfo.getName());
 
         // TODO Do we have to also check any fragments?
         // see FindSupport.findInFragments
@@ -119,7 +125,7 @@ public class CodeManager implements ICodeManager {
             if ("beam_dir".equals(el.getName())
                     && c.getName().equals(b.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
-                final String ver = backend.getErlangVersion();
+                final String ver = erlangVersion;
                 @SuppressWarnings("rawtypes")
                 Enumeration e = null;
                 if (dir_path != null) {
@@ -196,14 +202,14 @@ public class CodeManager implements ICodeManager {
             final boolean accessible = ErlideUtil.isAccessible(backend,
                     externalPath);
             if (accessible) {
-                ErlLogger.debug("adding %s to code path for %s:: %s",
-                        externalPath, backend, backend.getRuntimeInfo());
+                ErlLogger.debug("adding external %s to code path for %s:: %s",
+                        externalPath, backend, runtimeInfo);
                 ErlangCode.addPathA(backend, externalPath);
                 return;
             } else {
                 ErlLogger.info("external code path %s for %s "
                         + "is not accessible, using plugin code", externalPath,
-                        backend, backend.getRuntimeInfo());
+                        backend, runtimeInfo);
             }
         }
         final Collection<String> ebinDirs = p.getEbinDirs();
@@ -214,12 +220,11 @@ public class CodeManager implements ICodeManager {
                         localDir);
                 if (accessible) {
                     ErlLogger.debug("adding %s to code path for @%s:: %s",
-                            localDir, backend.hashCode(),
-                            backend.getRuntimeInfo());
+                            localDir, backend.hashCode(), runtimeInfo);
                     ErlangCode.addPathA(backend, localDir);
                 } else {
                     ErlLogger.debug("loading %s for %s", p.getBundle()
-                            .getSymbolicName(), backend.getRuntimeInfo());
+                            .getSymbolicName(), runtimeInfo);
                     loadPluginCode(p);
                 }
             }
@@ -252,7 +257,7 @@ public class CodeManager implements ICodeManager {
 
     private void unloadPluginCode(final ICodeBundle p) {
         final Bundle b = p.getBundle();
-        final String ver = backend.getErlangVersion();
+        final String ver = erlangVersion;
         @SuppressWarnings("rawtypes")
         Enumeration e = b.getEntryPaths("/ebin/" + ver);
         if (e == null) {

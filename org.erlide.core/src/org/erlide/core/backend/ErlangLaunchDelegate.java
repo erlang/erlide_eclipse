@@ -33,11 +33,11 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
@@ -68,7 +68,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     protected IBackend doLaunch(final ILaunchConfiguration config,
             final String mode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
-        BackendData data = new BackendData(config, mode);
+        BackendData data = new BackendData(BackendCore.getRuntimeInfoManager(),
+                config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'",
@@ -158,19 +159,21 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         final ProcessBuilder builder = new ProcessBuilder(cmds);
         builder.directory(workingDirectory);
         setEnvironment(data, builder);
-        int code = 0;
         try {
             Process process = builder.start();
             try {
-                code = process.exitValue();
+                final int code = process.exitValue();
+                ErlLogger.error(
+                        "Could not create runtime (exit code = %d): %s", code,
+                        Arrays.toString(cmds));
                 process = null;
             } catch (final IllegalThreadStateException e) {
                 ErlLogger.debug("process is running");
             }
             return process;
         } catch (final IOException e) {
-            ErlLogger.error("Could not create runtime (exit code = %d): %s",
-                    code, Arrays.toString(cmds));
+            ErlLogger.error("Could not create runtime: %s",
+                    Arrays.toString(cmds));
             ErlLogger.error(e);
             return null;
         }
@@ -179,7 +182,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private void setEnvironment(final BackendData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
-        if (!CommonUtils.isOnWindows() && CommonUtils.isEricssonUser()) {
+        if (!SystemUtils.isOnWindows() && SystemUtils.isEricssonUser()) {
             env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
         }
         if (data.getEnv() != null) {

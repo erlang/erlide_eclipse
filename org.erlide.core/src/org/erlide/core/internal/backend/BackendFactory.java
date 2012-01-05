@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendData;
 import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.BackendUtils;
@@ -24,8 +23,8 @@ import org.erlide.core.backend.IBackendFactory;
 import org.erlide.core.backend.IErlRuntime;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 public class BackendFactory implements IBackendFactory {
 
@@ -84,7 +83,7 @@ public class BackendFactory implements IBackendFactory {
         final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             final boolean registerForDebug = data.getLaunch() != null
-                    || CommonUtils.isDeveloper();
+                    || SystemUtils.isDeveloper();
             return launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, registerForDebug);
         } catch (final CoreException e) {
@@ -95,14 +94,14 @@ public class BackendFactory implements IBackendFactory {
 
     private BackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
-        final BackendData result = new BackendData(info);
+        final BackendData result = new BackendData(runtimeInfoManager, info);
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
-        if (CommonUtils.isDeveloper()) {
+        if (SystemUtils.isDeveloper()) {
             result.setConsole(true);
         }
-        if (ErlangCore.hasFeatureEnabled("erlide.monitor.ide")) {
+        if (SystemUtils.hasFeatureEnabled("erlide.monitor.ide")) {
             result.setMonitored(true);
         }
         return result;
@@ -113,7 +112,7 @@ public class BackendFactory implements IBackendFactory {
         myinfo.setNodeName(info.getVersion().asMajor().toString());
         myinfo.setNodeNameSuffix("_" + BackendUtils.getErlideNodeNameTag());
 
-        final BackendData result = new BackendData(myinfo);
+        final BackendData result = new BackendData(runtimeInfoManager, myinfo);
         result.setCookie("erlide");
         result.setDebug(false);
         result.setAutostart(true);
@@ -125,21 +124,16 @@ public class BackendFactory implements IBackendFactory {
         final RuntimeInfo info = RuntimeInfo.copy(
                 runtimeInfoManager.getErlideRuntime(), false);
         if (info != null) {
-            final String defLabel = BackendFactory.getLabelProperty();
-            if (defLabel != null) {
-                info.setNodeName(defLabel);
-            } else {
-                final String nodeName = BackendUtils.getErlideNodeNameTag()
-                        + "_erlide";
-                info.setNodeName(nodeName);
-            }
+            final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
+            final String defLabel = getLabelProperty(dflt);
+            info.setNodeName(defLabel);
             info.setCookie("erlide");
         }
         return info;
     }
 
-    public static String getLabelProperty() {
-        return System.getProperty("erlide.label", null);
+    private static String getLabelProperty(final String dflt) {
+        return System.getProperty("erlide.label", dflt);
     }
 
 }

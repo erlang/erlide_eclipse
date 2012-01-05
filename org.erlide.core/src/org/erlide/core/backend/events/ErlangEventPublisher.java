@@ -148,7 +148,7 @@ public class ErlangEventPublisher implements IBackendListener {
     public static String getFullTopic(final String topic, final IBackend backend) {
         final String subtopic = "*".equals(topic) ? "" : "/"
                 + (backend == null ? "*" : backend.getName()
-                        .replaceAll("@", "__").replaceAll(".", "_"));
+                        .replaceAll("@", "__").replaceAll("\\.", "_"));
         return "erlideEvent/" + topic + subtopic;
     }
 

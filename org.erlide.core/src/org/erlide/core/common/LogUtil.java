@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 public class LogUtil {
 
@@ -25,7 +26,7 @@ public class LogUtil {
     public static String getReportLocation() {
         String s = System.getProperty("erlide.logDirectory");
         if (s == null) {
-            if (CommonUtils.isOnWindows()) {
+            if (SystemUtils.isOnWindows()) {
                 s = "\\\\vhub\\tecsas\\shade\\erlide\\reports";
             } else {
                 s = "/proj/tecsas/SHADE/erlide/reports";

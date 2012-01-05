@@ -28,8 +28,10 @@ public class EUnitEventHandler extends ErlangEventHandler {
     private static final String SUMMARY = "result";
     private static final String SKIPPED = "skipped";
     private static final String ERROR = "error";
-    private static final String MODULE_NOT_FOUND = "module_not_found";
-    private static final String NO_SUCH_FUNCTION = "no_such_finction";
+    private static final OtpErlangAtom MODULE_NOT_FOUND = new OtpErlangAtom(
+            "module_not_found");
+    private static final OtpErlangAtom NO_SUCH_FUNCTION = new OtpErlangAtom(
+            "no_such_function");
 
     private final Logger log; // log
     private final CoverBackend coverBackend; // cover backend (if needed)

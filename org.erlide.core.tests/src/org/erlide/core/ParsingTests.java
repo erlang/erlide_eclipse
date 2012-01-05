@@ -12,12 +12,12 @@ import java.util.List;
 
 import org.erlide.core.erlang.TestingSupport;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model =  ErlModelManager.getErlangModel();
         module = model.getModuleFromText(model, "testing", "", null);
     }
 
@@ -49,10 +49,9 @@ public class ParsingTests {
     }
 
     private boolean parse(final String s) {
-        final String scannerModuleName = ErlangToolkit
-                .createScannerModuleName(module);
+        final String scannerModuleName = module.getScannerName();
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final IErlParser parser = CoreScope.getModel().getParser();
+        final IErlParser parser =  ErlModelManager.getErlangModel().getParser();
         return parser.parse(module, scannerModuleName, false, "", false);
     }
 

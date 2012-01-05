@@ -309,13 +309,19 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 } else if (ctrlPressed && e.keyCode == SWT.ARROW_UP) {
                     history.prev();
                     final String s = history.get();
-                    consoleInput.setText(s);
-                    consoleInput.setSelection(consoleInput.getText().length());
+                    if (s != null) {
+                        consoleInput.setText(s);
+                        consoleInput.setSelection(consoleInput.getText()
+                                .length());
+                    }
                 } else if (ctrlPressed && e.keyCode == SWT.ARROW_DOWN) {
                     history.next();
                     final String s = history.get();
-                    consoleInput.setText(s);
-                    consoleInput.setSelection(consoleInput.getText().length());
+                    if (s != null) {
+                        consoleInput.setText(s);
+                        consoleInput.setSelection(consoleInput.getText()
+                                .length());
+                    }
                 } else if (e.keyCode == SWT.ESC) {
                     consoleInput.setText("");
                 }
@@ -393,8 +399,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class required) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class required) {
         if (IFindReplaceTarget.class.equals(required)) {
             return consoleOutputViewer.getFindReplaceTarget();
         }

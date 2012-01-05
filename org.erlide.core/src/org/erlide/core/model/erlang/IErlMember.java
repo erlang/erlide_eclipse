@@ -11,8 +11,6 @@
 package org.erlide.core.model.erlang;
 
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.ISourceRange;
-import org.erlide.core.model.root.ISourceReference;
 
 public interface IErlMember extends IErlElement, ISourceReference {
 

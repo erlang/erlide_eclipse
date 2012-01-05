@@ -35,13 +35,11 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
 import org.eclipse.ui.progress.IProgressService;
-import org.erlide.core.CoreScope;
-import org.erlide.core.common.StringUtils;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.AcceptFlags;
 import org.erlide.core.model.root.IErlElement.Kind;
@@ -65,6 +63,9 @@ import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
+import org.erlide.jinterface.util.StringUtils;
+import org.erlide.jinterface.util.Util;
+import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.osgi.framework.Bundle;
 
@@ -104,7 +105,7 @@ public class SearchUtil {
             final boolean addOtp) throws CoreException {
         final ErlSearchScope result = new ErlSearchScope();
         final Set<String> externalModulePaths = new HashSet<String>();
-        final IErlModel model = CoreScope.getModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         for (final IProject project : projects) {
             addProjectToScope(project, result);
             if (ErlideUtil.hasErlangNature(project)) {
@@ -121,8 +122,8 @@ public class SearchUtil {
         if (project == null) {
             return;
         }
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         for (final IPath path : sourcePaths) {
             final IFolder folder = project.getFolder(path);
@@ -145,7 +146,8 @@ public class SearchUtil {
     private static void addFileToScope(final IFile file,
             final ErlSearchScope result) {
         if (ModuleKind.hasModuleExtension(file.getName())) {
-            final IErlModule module = CoreScope.getModel().findModule(file);
+            final IErlModule module = ErlModelManager.getErlangModel()
+                    .findModule(file);
             result.addModule(module);
         }
     }
@@ -153,8 +155,8 @@ public class SearchUtil {
     public static ErlSearchScope getWorkspaceScope(final boolean addExternals,
             final boolean addOtp) throws ErlModelException {
         final ErlSearchScope result = new ErlSearchScope();
-        final Collection<IErlProject> erlangProjects = CoreScope.getModel()
-                .getErlangProjects();
+        final Collection<IErlProject> erlangProjects = ErlModelManager
+                .getErlangModel().getErlangProjects();
         for (final IErlProject i : erlangProjects) {
             final Collection<IErlModule> modules = i.getModulesAndIncludes();
             for (final IErlModule j : modules) {
@@ -313,8 +315,7 @@ public class SearchUtil {
                 name = module.getModuleName();
                 if (offset != -1) {
                     final IErlElement e = module.getElementAt(offset);
-                    if (e != null
-                            && (e.getKind() == Kind.TYPESPEC || e.getKind() == Kind.RECORD_DEF)) {
+                    if (OpenAction.isTypeDefOrRecordDef(e, res)) {
                         return new TypeRefPattern(name, res.getFun(), limitTo);
                     }
                 }
@@ -373,8 +374,9 @@ public class SearchUtil {
     public static ErlangSearchPattern getSearchPattern(final IErlModule module,
             final SearchFor searchFor, final String pattern,
             final LimitTo limitTo) {
-        String moduleName = "", name = pattern;
-        int arity = 0;
+        String moduleName = "";
+        String name = pattern;
+        int arity = -1;
         int p = pattern.indexOf(':');
         if (p != -1) {
             moduleName = pattern.substring(0, p);
@@ -477,8 +479,8 @@ public class SearchUtil {
                     o = a.getAdapter(IResource.class);
                     if (o != null) {
                         final IResource resource = (IResource) o;
-                        final IErlElement element = CoreScope.getModel()
-                                .findElement(resource);
+                        final IErlElement element = ErlModelManager
+                                .getErlangModel().findElement(resource);
                         if (element instanceof IParent) {
                             parent = (IParent) element;
                         }

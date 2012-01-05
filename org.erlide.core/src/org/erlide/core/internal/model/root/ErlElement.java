@@ -22,9 +22,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.CoreScope;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.ErlModelStatus;
 import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
@@ -34,6 +33,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.Util;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -171,7 +171,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
      */
     @Override
     public IErlModel getModel() {
-        return CoreScope.getModel();
+        return ErlModelManager.getErlangModel();
     }
 
     /**
@@ -499,22 +499,28 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public void removeChild(final IErlElement child) {
-        clearCaches();
-        fChildren.remove(child);
+        synchronized (getModelLock()) {
+            clearCaches();
+            fChildren.remove(child);
+        }
     }
 
     @Override
     public void addChild(final IErlElement child) {
-        clearCaches();
-        fChildren.add(child);
+        synchronized (getModelLock()) {
+            clearCaches();
+            fChildren.add(child);
+        }
     }
 
     @Override
     public void setChildren(final Collection<? extends IErlElement> children) {
-        clearCaches();
-        fChildren.clear();
-        if (children != null) {
-            fChildren.addAll(children);
+        synchronized (getModelLock()) {
+            clearCaches();
+            fChildren.clear();
+            if (children != null) {
+                fChildren.addAll(children);
+            }
         }
     }
 

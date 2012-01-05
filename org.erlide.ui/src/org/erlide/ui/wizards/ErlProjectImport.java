@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.erlide.core.common.Util;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

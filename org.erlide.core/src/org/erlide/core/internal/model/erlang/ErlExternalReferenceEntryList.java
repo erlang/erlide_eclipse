@@ -7,12 +7,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.CoreScope;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.ErlModelCache;
 import org.erlide.core.internal.model.root.Openable;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
@@ -63,7 +63,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (externalModuleTree == null || externalIncludeTree == null) {
             final IRpcCallSite backend = CoreUtil.getBuildOrIdeBackend(project
                     .getWorkspaceProject());
-            final OtpErlangList pathVars = CoreScope.getModel().getPathVars();
+            final OtpErlangList pathVars = ErlModelManager.getErlangModel()
+                    .getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
                 if (pm != null) {
                     pm.worked(1);

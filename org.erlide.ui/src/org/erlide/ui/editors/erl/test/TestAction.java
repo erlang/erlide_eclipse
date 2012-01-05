@@ -11,7 +11,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.ErlLogger;
 
@@ -40,8 +39,8 @@ public class TestAction extends TextEditorAction {
             final IDocument document = textEditor.getDocumentProvider()
                     .getDocument(textEditor.getEditorInput());
             final String text = document.get();
-            final String s = ErlideScanner.checkAll(
-                    ErlangToolkit.createScannerModuleName(module), text);
+            final String s = ErlideScanner.checkAll(module.getScannerName(),
+                    text);
             ErlLogger.debug("%s", s);
             // return;
         }

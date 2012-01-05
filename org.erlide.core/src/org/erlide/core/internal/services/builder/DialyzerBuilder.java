@@ -13,9 +13,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderMessages;
@@ -32,8 +32,9 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
     // private static final BuilderHelper helper = new BuilderHelper();
 
     @Override
-    protected IProject[] build(final int kind, @SuppressWarnings("rawtypes")
-    final Map args, final IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(final int kind,
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
         DialyzerPreferences prefs;
         try {
@@ -45,7 +46,7 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         if (!prefs.getDialyzeOnCompile()) {
             return null;
         }
-        final IErlElementLocator model = CoreScope.getModel();
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
         final Map<IErlProject, Set<IErlModule>> modules = new HashMap<IErlProject, Set<IErlModule>>();
         DialyzerUtils.addModulesFromResource(model, project, modules);
         if (modules.size() != 0) {

@@ -30,10 +30,11 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.SystemUtils;
 
 import com.google.common.collect.Lists;
 
@@ -41,9 +42,13 @@ public final class BackendData extends GenericBackendData {
 
     public static final String PROJECT_NAME_SEPARATOR = ";";
 
-    public BackendData(final ILaunchConfiguration config, final String mode) {
+    private RuntimeInfoManager runtimeInfoManager;
+
+    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+            final ILaunchConfiguration config, final String mode) {
         super(config, mode);
-        final RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoManager()
+        this.runtimeInfoManager = runtimeInfoManager;
+        final RuntimeInfo runtimeInfo = runtimeInfoManager
                 .getRuntime(getRuntimeName());
         if (runtimeInfo == null) {
             return;
@@ -53,16 +58,14 @@ public final class BackendData extends GenericBackendData {
         }
     }
 
-    public BackendData(final ILaunch launch) {
-        super(launch);
-    }
-
-    public BackendData(final RuntimeInfo info) {
+    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+            final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
         if (info == null) {
             throw new IllegalArgumentException(
                     "BackendData can't be created with null RuntimeInfo");
         }
+        this.runtimeInfoManager = runtimeInfoManager;
         setRuntimeName(info.getName());
         setNodeName(info.getNodeName());
         setCookie(info.getCookie());
@@ -115,7 +118,7 @@ public final class BackendData extends GenericBackendData {
     }
 
     public RuntimeInfo getRuntimeInfo() {
-        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoManager()
+        RuntimeInfo runtimeInfo = runtimeInfoManager
                 .getRuntime(getRuntimeName());
         if (runtimeInfo == null) {
             return null;
@@ -163,7 +166,7 @@ public final class BackendData extends GenericBackendData {
                     info.getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            if (ErlangCore.hasFeatureEnabled("erlide.internal.shortname")) {
+            if (SystemUtils.hasFeatureEnabled("erlide.internal.shortname")) {
                 workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                         false);
                 info.useLongName(false);
@@ -238,8 +241,8 @@ public final class BackendData extends GenericBackendData {
     }
 
     public String getRuntimeName() {
-        return getStringAttribute(ErlLaunchAttributes.RUNTIME_NAME, BackendCore
-                .getRuntimeInfoManager().getDefaultRuntimeName());
+        return getStringAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                runtimeInfoManager.getDefaultRuntimeName());
     }
 
     public void setRuntimeName(final String name) {

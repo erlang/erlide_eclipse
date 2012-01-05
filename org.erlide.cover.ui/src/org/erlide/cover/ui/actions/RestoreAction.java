@@ -17,7 +17,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.erlide.core.CoreScope;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.MD5Checksum;
 import org.erlide.cover.ui.Activator;
@@ -129,7 +129,7 @@ public class RestoreAction extends Action {
     // calculate md5
     private boolean ifMarkAnnotations(final ModuleStats module) {
         try {
-            final File file = new File(CoreScope.getModel()
+            final File file = new File( ErlModelManager.getErlangModel()
                     .findModule(module.getLabel()).getFilePath());
 
             if (module.getMd5().equals(MD5Checksum.getMD5(file))) {

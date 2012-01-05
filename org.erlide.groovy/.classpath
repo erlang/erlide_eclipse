@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path=""/>
-	<classpathentry exported="true" kind="lib" path="groovy-all-1.8.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="gpars-0.12.jar" sourcepath="gpars-src-0.12.zip"/>
-	<classpathentry kind="output" path="bin"/>
-</classpath>

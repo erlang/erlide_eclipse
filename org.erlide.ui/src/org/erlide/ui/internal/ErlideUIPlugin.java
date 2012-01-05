@@ -47,11 +47,11 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.core.ErlangStatus;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.backend.BackendHelper;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -85,7 +85,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     /**
      * The shared instance.
      */
-    private static ErlideUIPlugin plugin;
+    private static volatile ErlideUIPlugin plugin;
 
     /**
      * Resource bundle.
@@ -138,14 +138,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.debug("Starting UI " + Thread.currentThread());
         super.start(context);
 
-        if (CommonUtils.isDeveloper()) {
+        if (SystemUtils.isDeveloper()) {
             BackendManagerPopup.init();
         }
 
         ErlLogger.debug("Started UI");
 
         erlConMan = new ErlConsoleManager();
-        if (CommonUtils.isDeveloper()) {
+        if (SystemUtils.isDeveloper()) {
             try {
                 final IBackend ideBackend = BackendCore.getBackendManager()
                         .getIdeBackend();

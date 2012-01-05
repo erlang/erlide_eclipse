@@ -22,7 +22,7 @@ import org.erlide.test_support.popup.actions.OpenResultsJob;
 import org.erlide.test_support.ui.suites.RegressionResultsView;
 
 public class RegressionLauncher {
-    private static RegressionLauncher instance;
+    private static volatile RegressionLauncher instance;
 
     final String watcherThreadName = "bterl regression watcher";
 

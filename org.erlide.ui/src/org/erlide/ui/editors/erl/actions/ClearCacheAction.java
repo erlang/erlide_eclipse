@@ -8,7 +8,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
@@ -37,11 +36,9 @@ public class ClearCacheAction extends TextEditorAction {
             return;
         }
         for (final String suffix : suffixes) {
-            final String cacheFileOSPath = ErlangPlugin
-                    .getDefault()
+            final String cacheFileOSPath = ErlangPlugin.getDefault()
                     .getStateLocation()
-                    .append(ErlangToolkit.createScannerModuleName(module)
-                            + suffix).toOSString();
+                    .append(module.getScannerName() + suffix).toOSString();
             final File cacheFile = new File(cacheFileOSPath);
             cacheFile.delete();
         }

@@ -11,7 +11,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
@@ -21,6 +20,7 @@ import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IParent;
+import org.erlide.jinterface.util.SystemUtils;
 
 /**
  * Implementation of folder in erlang model
@@ -162,7 +162,7 @@ public class ErlFolder extends Openable implements IErlFolder {
         }
         boolean hasExtension;
         if (name != null) {
-            hasExtension = CommonUtils.hasExtension(name);
+            hasExtension = SystemUtils.hasExtension(name);
             for (final IErlModule module : modules) {
                 final String name2 = module.getName();
                 final String moduleName = hasExtension ? name2 : module

@@ -12,6 +12,8 @@ package org.erlide.jinterface.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
@@ -22,26 +24,36 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
 import com.ericsson.otp.erlang.OtpPatternVariable;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
 
 public class TermParser {
-
-    private TermParser() {
-    }
-
-    private static LRUCache<String, OtpErlangObject> cache = new LRUCache<String, OtpErlangObject>(
-            250);
 
     public static TermParser getParser() {
         return new TermParser();
     }
 
+    private final Cache<String, OtpErlangObject> cache;
+
+    private TermParser() {
+        cache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.HOURS)
+                .maximumSize(250)
+                .build(new CacheLoader<String, OtpErlangObject>() {
+                    @Override
+                    public OtpErlangObject load(final String key)
+                            throws TermParserException {
+                        return parse(scan(key));
+                    }
+                });
+    }
+
     public OtpErlangObject parse(final String s) throws TermParserException {
-        OtpErlangObject value = cache.get(s);
-        if (value == null) {
-            value = parse(scan(s));
-            cache.put(s, value);
+        try {
+            return cache.get(s);
+        } catch (final ExecutionException e) {
+            throw (TermParserException) e.getCause();
         }
-        return value;
     }
 
     private static OtpErlangObject parse(final List<Token> tokens)
@@ -140,18 +152,7 @@ public class TermParser {
     }
 
     private static enum TokenKind {
-        ATOM,
-        VARIABLE,
-        STRING,
-        INTEGER,
-        PLACEHOLDER,
-        TUPLESTART,
-        TUPLEEND,
-        LISTSTART,
-        LISTEND,
-        COMMA,
-        CONS,
-        UNKNOWN;
+        ATOM, VARIABLE, STRING, INTEGER, PLACEHOLDER, TUPLESTART, TUPLEEND, LISTSTART, LISTEND, COMMA, CONS, UNKNOWN;
     }
 
     private static class Token {

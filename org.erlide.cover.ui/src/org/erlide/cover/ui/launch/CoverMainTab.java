@@ -26,9 +26,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.cover.runtime.launch.FrameworkType;
 import org.erlide.cover.runtime.launch.ICoverAttributes;
@@ -99,7 +99,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
         Collection<IErlProject> projects;
         try {
-            projects = CoreScope.getModel().getErlangProjects();
+            projects = ErlModelManager.getErlangModel().getErlangProjects();
             final List<String> ps = new ArrayList<String>();
             for (final IErlProject p : projects) {
                 ps.add(p.getName());
@@ -128,9 +128,10 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             projectMBr.setText(projectName);
 
             if (projectName != null && projectName.length() > 0) {
-                final IErlProject p = CoreScope.getModel().getErlangProject(
-                        ResourcesPlugin.getWorkspace().getRoot()
-                                .getProject(projectName));
+                final IErlProject p = ErlModelManager.getErlangModel()
+                        .getErlangProject(
+                                ResourcesPlugin.getWorkspace().getRoot()
+                                        .getProject(projectName));
                 if (p != null) {
                     moduleDialog.setElements(createModuleArray(p));
                 }
@@ -249,7 +250,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
                 if (projectName != null && projectName.length() > 0) {
-                    final IErlProject p = CoreScope.getModel()
+                    final IErlProject p = ErlModelManager.getErlangModel()
                             .getErlangProject(
                                     ResourcesPlugin.getWorkspace().getRoot()
                                             .getProject(projectName));
@@ -272,8 +273,8 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         try {
             final List<ProjectElement> res = new LinkedList<ProjectElement>();
 
-            final Collection<IErlProject> projects = CoreScope.getModel()
-                    .getErlangProjects();
+            final Collection<IErlProject> projects = ErlModelManager
+                    .getErlangModel().getErlangProjects();
 
             for (final IErlProject p : projects) {
                 final ProjectElement elem = new ProjectElement(p.getName(),

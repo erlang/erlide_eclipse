@@ -17,9 +17,9 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
-import org.erlide.core.CoreScope;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfoManager;
+import org.erlide.core.backend.BackendCore;
 import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 
@@ -81,7 +81,8 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        final String[][] runtimes = RuntimeInfoManager.getAllRuntimesVersions();
+        final String[][] runtimes = BackendCore.getRuntimeInfoManager()
+                .getAllRuntimesVersions();
         addField(new ComboFieldEditor(
                 ProjectPreferencesConstants.RUNTIME_VERSION,
                 "Runtime version:", runtimes, fieldEditorParent));
@@ -100,7 +101,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
     public boolean performOk() {
         final IProject project = (IProject) getElement().getAdapter(
                 IProject.class);
-        final IErlProject erlProject = CoreScope.getModel().getErlangProject(
+        final IErlProject erlProject =  ErlModelManager.getErlangModel().getErlangProject(
                 project);
         erlProject.clearCaches();
         return super.performOk();

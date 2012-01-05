@@ -7,15 +7,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.CoreScope;
 import org.erlide.core.backend.BackendException;
-import org.erlide.core.common.StringUtils;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -25,11 +24,14 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.util.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -57,7 +59,7 @@ public class ModelUtils {
     public static String getExternalModulePath(final IErlModule module) {
         final List<String> result = Lists.newArrayList();
         IErlElement element = module;
-        final IErlElementLocator model = CoreScope.getModel();
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
         while (element != model) {
             if (element instanceof IErlExternal) {
                 final IErlExternal external = (IErlExternal) element;
@@ -67,7 +69,7 @@ public class ModelUtils {
             }
             element = (IErlElement) element.getParent();
         }
-        return StringUtils.join(DELIMITER, Lists.reverse(result));
+        return Joiner.on(DELIMITER).join(Lists.reverse(result));
     }
 
     private static IErlExternal getElementWithExternalName(
@@ -87,8 +89,9 @@ public class ModelUtils {
 
     public static IErlModule getModuleFromExternalModulePath(
             final String modulePath) throws ErlModelException {
-        final List<String> path = StringUtils.split(DELIMITER, modulePath);
-        final IErlModel model = CoreScope.getModel();
+        final List<String> path = Lists.newArrayList(Splitter.on(DELIMITER)
+                .split(modulePath));
+        final IErlModel model = ErlModelManager.getErlangModel();
         model.open(null);
         final IErlElement childNamed = model.getChildNamed(path.get(0));
         ErlLogger.debug(">>childNamed %s", childNamed == null ? "<null>"
@@ -203,7 +206,7 @@ public class ModelUtils {
     public static IErlModule findModule(final IErlProject project,
             final String moduleName, final String modulePath,
             final IErlElementLocator.Scope scope) throws ErlModelException {
-        final IErlElementLocator model = CoreScope.getModel();
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
         if (project != null) {
             return model.findModuleFromProject(project, moduleName, modulePath,
                     scope);

@@ -3,13 +3,15 @@
 -record('REC', {a,b,c}).
 
 -define(myrec, #'REC'{}).
-
+    
 f() ->
 	X=[1,4,6],
 	X.
-
-g() -> 
+ 
+g() -> 'a\1b',
 	dict:new(),
-	f(),
-	[$", $', $\567xxxx]. 
+	f(), "he  ~n ha \b \0123 \xcafa \x{cafe}s he\"j '",
+	[$", $', $\567, $\x{cafe}]. 
 
+  
+  

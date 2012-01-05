@@ -50,6 +50,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
     private static Token t_edocTag;
     private static Token t_htmlTag;
     private static Token t_tildeTag;
+    private static Token t_escapeTag;
 
     protected final IColorManager fColorManager;
     protected List<ErlToken> fTokens;
@@ -68,6 +69,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
         }
         t_string = new Token(getTextAttribute(TokenHighlight.STRING));
         t_tildeTag = new Token(getTextAttribute(TokenHighlight.TILDE_TAG));
+        t_escapeTag = new Token(getTextAttribute(TokenHighlight.ESCAPE_TAG));
         t_keyword = new Token(getTextAttribute(TokenHighlight.KEYWORD));
         t_var = new Token(getTextAttribute(TokenHighlight.VARIABLE));
         t_default = new Token(getTextAttribute(TokenHighlight.DEFAULT));
@@ -143,6 +145,8 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
             return t_string;
         } else if (TokenHighlight.TILDE_TAG.getName().equals(id)) {
             return t_tildeTag;
+        } else if (TokenHighlight.ESCAPE_TAG.getName().equals(id)) {
+            return t_escapeTag;
         } else if (TokenHighlight.VARIABLE.getName().equals(id)) {
             return t_var;
         } else if (TokenHighlight.CHAR.getName().equals(id)) {

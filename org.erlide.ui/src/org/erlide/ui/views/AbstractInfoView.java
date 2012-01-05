@@ -445,7 +445,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
     @Override
     final public void dispose() {
         // cancel possible running computation
-        fComputeCount++;
+        fComputeCount--;
 
         getSite().getWorkbenchWindow().getPartService()
                 .removePartListener(fPartListener);

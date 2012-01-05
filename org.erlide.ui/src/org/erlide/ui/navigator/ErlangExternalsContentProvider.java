@@ -6,9 +6,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlProject;
@@ -49,7 +49,8 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             if (parentElement instanceof IProject) {
                 final IProject project = (IProject) parentElement;
                 if (project.isOpen()) {
-                    parentElement = CoreScope.getModel().findProject(project);
+                    parentElement = ErlModelManager.getErlangModel()
+                            .findProject(project);
                 }
             }
             if (parentElement instanceof IErlModule) {
@@ -80,7 +81,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
             final IErlElement elt = (IErlElement) element;
             IParent parent = elt.getParent();
             final String filePath = elt.getFilePath();
-            if (parent == CoreScope.getModel() && filePath != null) {
+            if (parent == ErlModelManager.getErlangModel() && filePath != null) {
                 // try {
                 // FIXME shouldn't this call be assigned to something!?
                 // ModelUtils.findModule(null, null, filePath,
@@ -107,7 +108,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {
-                element = CoreScope.getModel().findProject(project);
+                element =  ErlModelManager.getErlangModel().findProject(project);
             }
         }
         if (element instanceof IErlModule) {

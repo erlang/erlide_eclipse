@@ -26,6 +26,7 @@ public class ErlangConsoleHistory {
         if (history.size() > 50) {
             history.remove(0);
         }
+        navIndex = -1;
     }
 
     public List<String> getHistory() {
@@ -33,6 +34,9 @@ public class ErlangConsoleHistory {
     }
 
     public String get() {
+        if (history.size() == 0) {
+            return null;
+        }
         return history.get(navIndex);
     }
 

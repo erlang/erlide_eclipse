@@ -35,7 +35,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.core.CoreScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendData;
@@ -59,15 +58,16 @@ import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.rpc.IRpcHelper;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcHelper;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.osgi.framework.Bundle;
 
@@ -82,8 +82,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.OtpNode;
-import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.collect.Lists;
 
@@ -116,7 +114,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         this.runtime = runtime;
         this.data = data;
-        codeManager = new CodeManager(this);
+        codeManager = new CodeManager(this, getErlangVersion(),
+                getRuntimeInfo());
     }
 
     @Override
@@ -253,7 +252,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         ErlLogger.debug(label + ": waiting connection to peer...");
         try {
             wait_for_epmd();
-            eventBox = getNode().createMbox("rex");
+            eventBox = runtime.createMbox("rex");
 
             if (waitForCodeServer()) {
                 ErlLogger.debug("connected!");
@@ -272,19 +271,15 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void dispose() {
-        // runtime.stop();
-
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {
             shellManager.dispose();
         }
 
-        if (getNode() != null) {
-            getNode().close();
-        }
         if (eventDaemon != null) {
             eventDaemon.stop();
         }
+        runtime.stop();
     }
 
     @Override
@@ -329,10 +324,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
-    private synchronized OtpNode getNode() {
-        return runtime.getNode();
-    }
-
     private String getScriptId() throws RpcException {
         OtpErlangObject r;
         r = call("init", "script_id", "");
@@ -362,11 +353,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public boolean isStopped() {
         return stopped;
-    }
-
-    @Override
-    public synchronized void registerStatusHandler(final OtpNodeStatus handler) {
-        getNode().registerStatusHandler(handler);
     }
 
     @Override
@@ -434,18 +420,18 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public OtpMbox createMbox() {
-        return getNode().createMbox();
+        return runtime.createMbox();
     }
 
     @Override
     public OtpMbox createMbox(final String name) {
-        return getNode().createMbox(name);
+        return runtime.createMbox(name);
     }
 
     private static void setDefaultTimeout() {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = IRpcHelper.INFINITY;
+            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
         } else {
             try {
                 DEFAULT_TIMEOUT = Integer.parseInt(t);
@@ -569,7 +555,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void addProjectPath(final IProject project) {
-        final IErlProject eproject = CoreScope.getModel().findProject(project);
+        final IErlProject eproject = ErlModelManager.getErlangModel()
+                .findProject(project);
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -604,7 +591,8 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void removeProjectPath(final IProject project) {
-        final IErlProject eproject = CoreScope.getModel().findProject(project);
+        final IErlProject eproject = ErlModelManager.getErlangModel()
+                .findProject(project);
         if (eproject == null) {
             // can happen if project was removed
             return;
@@ -894,11 +882,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public String getJavaNodeName() {
-        return runtime.getNode().node();
-    }
-
-    @Override
     public void installDeferredBreakpoints() {
         debugTarget.installDeferredBreakpoints();
     }
@@ -906,7 +889,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     public static void loadModuleViaInput(final IBackend b,
             final IProject project, final String module)
             throws ErlModelException, IOException {
-        final IErlProject p = CoreScope.getModel().findProject(project);
+        final IErlProject p = ErlModelManager.getErlangModel().findProject(
+                project);
         final IPath outputLocation = project.getFolder(p.getOutputLocation())
                 .getFile(module + ".beam").getLocation();
         final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,

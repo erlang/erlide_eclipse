@@ -18,13 +18,13 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.common.Util;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.jinterface.util.Util;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -47,30 +47,13 @@ public class IErlModelTest extends ErlModelTestBase {
         model = project.getModel();
     }
 
-    @SuppressWarnings("deprecation")
     @After
     @Override
     public void tearDown() throws Exception {
         ResourcesPlugin.getWorkspace().getPathVariableManager()
-                .setValue(PV, null);
+                .setURIValue(PV, (URI) null);
         super.tearDown();
     }
-
-    // void copy(IErlElement[] elements, IErlElement[] containers,
-    // IErlElement[] siblings, String[] renamings, boolean replace,
-    // IProgressMonitor monitor) throws ErlModelException;
-    // void delete(IErlElement[] elements, boolean force, IProgressMonitor
-    // monitor)
-    // throws ErlModelException;
-    // IErlProject getErlangProject(IProject project);
-    // Collection<IErlProject> getErlangProjects() throws ErlModelException;
-    // IWorkspace getWorkspace();
-    // void move(IErlElement[] elements, IErlElement[] containers,
-    // IErlElement[] siblings, String[] renamings, boolean replace,
-    // IProgressMonitor monitor) throws ErlModelException;
-    // void rename(IErlElement[] elements, IErlElement[] destinations,
-    // String[] names, boolean replace, IProgressMonitor monitor)
-    // throws ErlModelException;
 
     // void addModelChangeListener(IErlModelChangeListener listener);
     // void removeModelChangeListener(IErlModelChangeListener listener);
@@ -224,7 +207,6 @@ public class IErlModelTest extends ErlModelTestBase {
         assertNull(findInclude5);
     }
 
-    // throws ErlModelException;
     // IErlElement innermostThat(final IErlElement el,
     // final IErlangFirstThat firstThat);
 
@@ -232,20 +214,21 @@ public class IErlModelTest extends ErlModelTestBase {
     @Test
     public void getPathVars() throws Exception {
         final OtpErlangList pathVars = model.getPathVars();
-        final IPathVariableManager pathVariableManager = ResourcesPlugin
-                .getWorkspace().getPathVariableManager();
-        final String[] pathVariableNames = pathVariableManager
-                .getPathVariableNames();
-        final URI path = ErlideTestUtils.getTmpURIPath("");
-        pathVariableManager.setURIValue(PV, path);
-        final OtpErlangList pathVars2 = model.getPathVars();
+        final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
+                .getPathVariableManager();
+        final String[] pathVariableNames = pvm.getPathVariableNames();
         final int n = pathVariableNames.length;
+        assertEquals(n, pathVars.arity());
+
+        final URI path = ErlideTestUtils.getTmpURIPath("");
+        pvm.setURIValue(PV, path);
+        final OtpErlangList pathVars2 = model.getPathVars();
+        assertEquals(n + 1, pathVars2.arity());
+
         final OtpErlangTuple t = (OtpErlangTuple) pathVars2.elementAt(0);
         final String name = Util.stringValue(t.elementAt(0));
-        final String value = pathVariableManager.getURIValue(name).getPath();
+        final String value = pvm.getURIValue(name).getPath();
         final String value2 = Util.stringValue(t.elementAt(1));
-        assertEquals(n, pathVars.arity());
-        assertEquals(n + 1, pathVars2.arity());
         assertEquals(value, value2);
     }
 

@@ -12,15 +12,17 @@ package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.CoreScope;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
+import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.util.ErlRange;
 import org.erlide.wrangler.refactoring.util.IErlRange;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -40,13 +42,16 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
      *            textselection from an Erlang editor
      * @param editor
      *            editor, where the text is selected
+     * @throws WranglerException
      */
     public ErlTextMemberSelection(final ITextSelection selection,
-            final ITextEditor editor) {
-        final IFileEditorInput input = (IFileEditorInput) editor
-                .getEditorInput();
+            final ITextEditor editor) throws WranglerException {
+        IEditorInput input = editor.getEditorInput();
+        if (!(input instanceof IFileEditorInput))
+            throw new WranglerException("Can not refactor external modules!");
         document = editor.getDocumentProvider().getDocument(input);
-        final IFile theFile = input.getFile();
+        final IFileEditorInput fileInput = (IFileEditorInput) input;
+        IFile theFile = fileInput.getFile();
         store(selection, theFile, document);
     }
 
@@ -81,7 +86,7 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlElement getErlElement() {
-        final IErlModule module = (IErlModule) CoreScope.getModel()
+        final IErlModule module = (IErlModule) ErlModelManager.getErlangModel()
                 .findElement(file);
 
         try {
@@ -146,6 +151,6 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
 
     @Override
     public IErlModule getErlModule() {
-        return (IErlModule) CoreScope.getModel().findElement(file);
+        return (IErlModule) ErlModelManager.getErlangModel().findElement(file);
     }
 }

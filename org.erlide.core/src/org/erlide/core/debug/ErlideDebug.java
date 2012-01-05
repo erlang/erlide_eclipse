@@ -9,10 +9,10 @@ import org.eclipse.debug.core.DebugException;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.backend.BackendUtils;
 import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.common.Util;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.util.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
