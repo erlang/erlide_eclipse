@@ -36,6 +36,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
+import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
 import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
@@ -57,6 +58,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     private ITextDoubleClickStrategy doubleClickStrategy;
     private ErlReconciler reconciler;
     private ErlContentAssistProcessor contentAssistProcessor;
+    private ErlStringContentAssistProcessor contentAssistProcessorForStrings;
     private final static IAutoEditStrategy[] NO_AUTOEDIT = new IAutoEditStrategy[] {};
 
     /**
@@ -137,12 +139,18 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
             contentAssistant
                     .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
+            final IErlModule module = editor.getModule();
             contentAssistProcessor = new ErlContentAssistProcessor(
-                    sourceViewer, editor.getModule(), contentAssistant);
+                    sourceViewer, module, contentAssistant);
+            contentAssistProcessorForStrings = new ErlStringContentAssistProcessor(
+                    sourceViewer, module, contentAssistant);
 
             contentAssistProcessor.setToPrefs();
             contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                     IDocument.DEFAULT_CONTENT_TYPE);
+            contentAssistant.setContentAssistProcessor(
+                    contentAssistProcessorForStrings,
+                    IErlangPartitions.ERLANG_STRING);
             contentAssistant.enableAutoInsert(true);
             contentAssistant.enablePrefixCompletion(false);
             contentAssistant
@@ -253,8 +261,10 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         return "Press 'Tab' from proposal table or click for focus";
     }
 
-    public ErlContentAssistProcessor getContentAssistProcessor() {
-        return contentAssistProcessor;
+    public void disposeContentAssistProcessors() {
+        contentAssistProcessor.dispose();
+        contentAssistProcessor = null;
+        contentAssistProcessorForStrings = null;
     }
 
 }

@@ -634,7 +634,9 @@ unquote(L) ->
     lists:reverse(unquote_first(lists:reverse(unquote_first(L)))).
 
 unquote_first([$" | Rest]) ->
-    Rest.
+    Rest;
+unquote_first(L) ->
+    L.
 
 remove_rest([], _) -> [];
 remove_rest(Rest, Rest) -> [];

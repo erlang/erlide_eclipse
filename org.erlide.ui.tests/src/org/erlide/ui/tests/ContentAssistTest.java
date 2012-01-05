@@ -2,6 +2,7 @@ package org.erlide.ui.tests;
 
 import junit.framework.Assert;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IAutoIndentStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IEventConsumer;
@@ -31,8 +32,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
+import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -333,16 +336,57 @@ public class ContentAssistTest {
     @Test
     public void recordCompletionLettersTest() throws Exception {
         final String initialText = "-record(aa, {a, b}).\n-record(ab, {a, b}).\n-record(bb, {a, b}).\nf() ->\n#";
-        completionTest(initialText, 3, "a", 2, "aa");
+        completionTestWithoutParsing(initialText, 3, "a", 2, "aa");
     }
 
     @Test
     public void recordCompletionSingleQuoteTest() throws Exception {
         final String initialText = "-record('AA', {a, b}).\n-record('BB', {a, b}).\n-record(ab, {a, b}).\nf() ->\n#";
-        completionTest(initialText, 3, "'", 2, "'AA'");
+        completionTestWithoutParsing(initialText, 3, "'", 2, "'AA'");
     }
 
-    private void completionTest(final String initialText,
+    public void completionTestWithParsing(final IErlProject project,
+            final String name, final String text, final int offset,
+            final String expectedText1,
+            final boolean stringContentAssistProcessor) throws CoreException {
+        final IDocument document = new StringDocument(text);
+        final IErlModule module = ErlideTestUtils.createModule(project, name,
+                text);
+        module.open(null);
+        final MockSourceViewer sourceViewer = new MockSourceViewer(document,
+                offset);
+        final IContentAssistProcessor p = stringContentAssistProcessor ? new ErlStringContentAssistProcessor(
+                sourceViewer, module, null) : new ErlContentAssistProcessor(
+                sourceViewer, module, null);
+        final ICompletionProposal[] completionProposals = p
+                .computeCompletionProposals(sourceViewer, offset);
+        Assert.assertEquals(1, completionProposals.length);
+        final String displayString1 = completionProposals[0].getDisplayString();
+        Assert.assertEquals(expectedText1, displayString1);
+    }
+
+    // http://www.assembla.com/spaces/erlide/tickets/947
+    // completion of include and include_lib
+    @Test
+    public void includeCompletionTest() throws Exception {
+        ErlideTestUtils.initProjects();
+        final String name1 = "testproject1";
+        final IErlProject project = ErlideTestUtils.createProject(
+                ErlideTestUtils.getTmpPath(name1), name1);
+        try {
+            ErlideTestUtils.createInclude(project, "a.hrl", "-define(A, a).\n");
+            // check that quotes are added if needed
+            completionTestWithParsing(project, "a.erl", "-include().\n", 9,
+                    "\"a.hrl\"", false);
+            // check that completion works in strings
+            completionTestWithParsing(project, "b.erl", "-include(\"\").\n",
+                    10, "a.hrl", true);
+        } finally {
+            ErlideTestUtils.deleteProjects();
+        }
+    }
+
+    private void completionTestWithoutParsing(final String initialText,
             final int nTotalExpectedCompletions, final String completionChar,
             final int nExpectedCompletions, final String expectedFirstCompletion)
             throws ErlModelException {
@@ -351,9 +395,6 @@ public class ContentAssistTest {
         IDocument document = new StringDocument(initialText);
         final IErlModule module = ErlideTestUtils
                 .createModuleFromText(initialText);
-        // final IErlModule module = ErlangCore.getModelManager()
-        // .getModuleFromText(null, "test1", initialText,
-        // "test_" + initialText.hashCode());
         final MockSourceViewer sourceViewer = new MockSourceViewer(document,
                 offset);
         final IContentAssistProcessor p = new ErlContentAssistProcessor(

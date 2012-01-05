@@ -230,7 +230,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         if (getSourceViewerConfiguration() instanceof EditorConfiguration) {
             final EditorConfiguration ec = (EditorConfiguration) getSourceViewerConfiguration();
             if (ec != null) {
-                ec.getContentAssistProcessor().dispose();
+                ec.disposeContentAssistProcessors();
             }
         }
         if (markOccurencesHandler.fActivationListener != null) {
