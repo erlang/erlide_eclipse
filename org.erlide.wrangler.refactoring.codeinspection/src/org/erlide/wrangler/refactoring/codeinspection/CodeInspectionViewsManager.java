@@ -32,125 +32,128 @@ import org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView;
  * 
  */
 public class CodeInspectionViewsManager {
-	public static final String GRAPH_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView.VIEW_ID;
-	public static final String CODE_INSPECTION_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView.VIEW_ID;
+    public static final String GRAPH_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView.VIEW_ID;
+    public static final String CODE_INSPECTION_VIEW = org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView.VIEW_ID;
 
-	/**
-	 * Shows the image in the graph view with the given title.
-	 * 
-	 * @param img
-	 *            image
-	 * @param title
-	 *            view title
-	 * @param secondaryID
-	 *            view secondary id
-	 * @param dotFile
-	 *            .dot file which is displayed
-	 */
-	static public void showDotImage(Image img, String title,
-			String secondaryID, File dotFile) {
-		GraphImageView view = (GraphImageView) showView(GRAPH_VIEW, secondaryID);
-		view.setViewTitle(title);
-		view.setImage(img);
-		view.setDotFile(dotFile);
-	}
+    /**
+     * Shows the image in the graph view with the given title.
+     * 
+     * @param img
+     *            image
+     * @param title
+     *            view title
+     * @param secondaryID
+     *            view secondary id
+     * @param dotFile
+     *            .dot file which is displayed
+     */
+    static public void showDotImage(final Image img, final String title,
+            final String secondaryID, final File dotFile) {
+        final GraphImageView view = (GraphImageView) showView(GRAPH_VIEW,
+                secondaryID);
+        view.setViewTitle(title);
+        view.setImage(img);
+        view.setDotFile(dotFile);
+    }
 
-	/**
-	 * Shows Erlang elements in a list view
-	 * 
-	 * @param title
-	 *            view title
-	 * @param e
-	 *            Erlang elements
-	 */
-	static public void showErlElements(String title, ArrayList<IErlElement> e,
-			String secId) {
-		try {
-			CodeInspectionResultsView v = (CodeInspectionResultsView) showView(
-					CODE_INSPECTION_VIEW, secId);
-			v.addElements(e);
-			v.setViewTitle(title);
-			v.refresh();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+    /**
+     * Shows Erlang elements in a list view
+     * 
+     * @param title
+     *            view title
+     * @param e
+     *            Erlang elements
+     */
+    static public void showErlElements(final String title,
+            final ArrayList<IErlElement> e, final String secId) {
+        try {
+            final CodeInspectionResultsView v = (CodeInspectionResultsView) showView(
+                    CODE_INSPECTION_VIEW, secId);
+            v.addElements(e);
+            v.setViewTitle(title);
+            v.refresh();
+        } catch (final Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	/**
-	 * Shows a view.
-	 * 
-	 * @param viewId
-	 *            view id, which is shown
-	 * 
-	 * @return view which is shown
-	 */
-	static public IViewPart showView(String viewId) {
+    /**
+     * Shows a view.
+     * 
+     * @param viewId
+     *            view id, which is shown
+     * 
+     * @return view which is shown
+     */
+    static public IViewPart showView(final String viewId) {
 
-		IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbench workbench = PlatformUI.getWorkbench();
 
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		try {
-			IViewPart view = window.getActivePage().showView(viewId);
-			return view;
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        try {
+            final IViewPart view = window.getActivePage().showView(viewId);
+            return view;
+        } catch (final PartInitException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	/**
-	 * Shows a an instance of a view
-	 * 
-	 * @param viewId
-	 *            view id
-	 * @param secondaryID
-	 *            view secondary id, to handle multiple instances
-	 * @return view object
-	 */
-	static public IViewPart showView(String viewId, String secondaryID) {
-		IWorkbench workbench = PlatformUI.getWorkbench();
+    /**
+     * Shows a an instance of a view
+     * 
+     * @param viewId
+     *            view id
+     * @param secondaryID
+     *            view secondary id, to handle multiple instances
+     * @return view object
+     */
+    static public IViewPart showView(final String viewId,
+            final String secondaryID) {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
 
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		try {
-			IViewPart view = window.getActivePage().showView(viewId,
-					secondaryID, IWorkbenchPage.VIEW_ACTIVATE);
-			return view;
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        try {
+            final IViewPart view = window.getActivePage().showView(viewId,
+                    secondaryID, IWorkbenchPage.VIEW_ACTIVATE);
+            return view;
+        } catch (final PartInitException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	/**
-	 * Hides a view.
-	 * 
-	 * @param viewId
-	 *            view, which will be hidden
-	 */
-	static public void hideView(String viewId) {
-		hideView(viewId, null);
-	}
+    /**
+     * Hides a view.
+     * 
+     * @param viewId
+     *            view, which will be hidden
+     */
+    static public void hideView(final String viewId) {
+        hideView(viewId, null);
+    }
 
-	/**
-	 * Hides an instance of a view
-	 * 
-	 * @param viewId
-	 *            view id
-	 * @param secondaryId
-	 *            secondary id of a view instance
-	 */
-	static public void hideView(String viewId, String secondaryId) {
-		IWorkbench workbench = PlatformUI.getWorkbench();
+    /**
+     * Hides an instance of a view
+     * 
+     * @param viewId
+     *            view id
+     * @param secondaryId
+     *            secondary id of a view instance
+     */
+    static public void hideView(final String viewId, final String secondaryId) {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
 
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		IViewPart view;
-		IViewReference viewr = window.getActivePage().findViewReference(viewId,
-				secondaryId);
-		if (viewr != null) {
-			view = viewr.getView(false);
-			if (view != null)
-				window.getActivePage().hideView(view);
-		}
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        IViewPart view;
+        final IViewReference viewr = window.getActivePage().findViewReference(
+                viewId, secondaryId);
+        if (viewr != null) {
+            view = viewr.getView(false);
+            if (view != null) {
+                window.getActivePage().hideView(view);
+            }
+        }
 
-	}
+    }
 }

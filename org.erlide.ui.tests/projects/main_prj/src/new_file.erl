@@ -10,7 +10,7 @@
 %%
 %% Exported Functions
 %%
--export([]).
+-export([ok/0]).
 
 %%
 %% API Functions
@@ -22,3 +22,6 @@
 %% Local Functions
 %%
 
+ok() ->
+	
+ok.

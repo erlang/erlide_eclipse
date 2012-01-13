@@ -9,6 +9,9 @@ f() ->
 	X.
  
 g() -> 'a\1b',
+	   new_file:ok(),
+navigation:fff(),
+	   
 	dict:new(),
 	f(), "he  ~n ha \b \0123 \xcafa \x{cafe}s he\"j '",
 	[$", $', $\567, $\x{cafe}]. 
