@@ -70,7 +70,7 @@
 		</command>
 		<command
 			id="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
-			name="Improper Inter Module Dependency">
+			name="Module Dependency via Only Internal Functions">
 		</command>
 		<command id="org.erlide.wrangler.refactoring.codeinspection.largemodules"
 			name="Large modules">
@@ -191,7 +191,7 @@
 				</command>
 				<command
 					commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
-					label="Improper Inter Module Dependency..." mnemonic="I" style="push">
+					label="Module Dependency via Only Internal Functions..." mnemonic="I" style="push">
 				</command>
 				<command
 					commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"
