@@ -7,7 +7,8 @@ Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
- guava-10.0.jar
+ guava-10.0.jar,
+ org.eclipse.xtend2.lib-2.2.0.jar
 Export-Package: com.ericsson.otp.erlang,
  com.google.common.annotations,
  com.google.common.base;uses:="new com.google.common.base",
@@ -19,6 +20,9 @@ Export-Package: com.ericsson.otp.erlang,
  com.google.common.net,
  com.google.common.primitives,
  com.google.common.util.concurrent,
+ org.eclipse.xtend2.lib,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xbase.lib.internal;x-internal:=true,
  org.hamcrest,
  org.hamcrest.beans,
  org.hamcrest.collection,
