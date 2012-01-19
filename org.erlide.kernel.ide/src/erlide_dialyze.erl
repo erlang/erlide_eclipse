@@ -622,7 +622,7 @@ do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPL
             %% TODO value below initializes progress monitor. How big should it be? 
             JPid ! {start, 10}
     end,
-    Return = cl_loop(State3),
+    Return = (catch cl_loop(State3)),
     %%     {T2, _} = statistics(wall_clock),
     %%     report_elapsed_time(T1, T2, Options),
     case JPid of
