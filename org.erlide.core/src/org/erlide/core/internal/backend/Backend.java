@@ -62,7 +62,6 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
@@ -116,11 +115,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         this.data = data;
         codeManager = new CodeManager(this, getErlangVersion(),
                 getRuntimeInfo());
-    }
-
-    @Override
-    public IRpcCallSite getCallSite() {
-        return this;
     }
 
     @Override
@@ -441,17 +435,14 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    @Override
     public void removePath(final String path) {
         codeManager.removePath(path);
     }
 
-    @Override
     public void addPath(final boolean usePathZ, final String path) {
         codeManager.addPath(usePathZ, path);
     }
 
-    @Override
     public synchronized void initErlang(final boolean monitor,
             final boolean watch) {
         init(getEventPid(), monitor, watch);
@@ -494,7 +485,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         return data.getLaunch();
     }
 
-    @Override
     public void assignStreamProxyListeners() {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {

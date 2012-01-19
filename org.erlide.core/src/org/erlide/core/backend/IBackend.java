@@ -19,8 +19,6 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IBackend extends IRpcCallSite, IDisposable {
 
-    IRpcCallSite getCallSite();
-
     OtpErlangObject receiveEvent(final long timeout) throws OtpErlangExit,
             OtpErlangDecodeException;
 
@@ -44,19 +42,11 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     OtpMbox createMbox(final String name);
 
-    void removePath(final String path);
-
-    void addPath(final boolean usePathZ, final String path);
-
-    void initErlang(final boolean monitor, final boolean watch);
-
     void register(final ICodeBundle bundle);
 
     void unregister(final Bundle b);
 
     ILaunch getLaunch();
-
-    void assignStreamProxyListeners();
 
     IBackendShell getShell(final String id);
 
