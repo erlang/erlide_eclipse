@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
  */
 public class DebuggerEventDaemon implements IBackendListener {
 
-    private IBackend runtime;
+    private IBackend backend;
     volatile boolean stopped = false;
     private final DebugEventHandler handler;
     private OtpMbox mbox;
@@ -30,10 +30,10 @@ public class DebuggerEventDaemon implements IBackendListener {
             .getProperty("erlide.event.daemon"));
 
     private final class HandlerJob implements Runnable {
-        private final IBackend backend;
+        private final IBackend myBackend;
 
         public HandlerJob(final IBackend backend) {
-            this.backend = backend;
+            this.myBackend = backend;
         }
 
         @Override
@@ -68,7 +68,7 @@ public class DebuggerEventDaemon implements IBackendListener {
                         messages.clear();
                     }
                 } catch (final OtpErlangExit e) {
-                    if (!backend.isStopped()) {
+                    if (!myBackend.isStopped()) {
                         // backend crashed -- restart?
                         ErlLogger.warn(e);
                     }
@@ -80,14 +80,14 @@ public class DebuggerEventDaemon implements IBackendListener {
     }
 
     public DebuggerEventDaemon(final IBackend b, final ErlangDebugTarget target) {
-        runtime = b;
+        backend = b;
         handler = new DebugEventHandler(target);
     }
 
     public synchronized void start() {
         stopped = false;
-        mbox = runtime.createMbox();
-        new Thread(new HandlerJob(runtime)).start();
+        mbox = backend.createMbox();
+        new Thread(new HandlerJob(backend)).start();
     }
 
     public synchronized void stop() {
@@ -100,14 +100,14 @@ public class DebuggerEventDaemon implements IBackendListener {
 
     @Override
     public void runtimeRemoved(final IBackend b) {
-        if (b == runtime) {
+        if (b == backend) {
             stop();
-            runtime = null;
+            backend = null;
         }
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite backend,
+    public void moduleLoaded(final IRpcCallSite aBackend,
             final IProject project, final String moduleName) {
     }
 

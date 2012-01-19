@@ -19,7 +19,7 @@ public interface IBackendListener {
 
     public void runtimeRemoved(IBackend backend);
 
-    public void moduleLoaded(IRpcCallSite backend, IProject project,
+    public void moduleLoaded(IRpcCallSite aBackend, IProject project,
             String moduleName);
 
 }
