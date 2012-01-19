@@ -48,13 +48,13 @@ public class DialyzerUtils {
         helper = h;
     }
 
-    private static final class dialyzerCallback implements IRpcResultCallback {
+    private static final class DialyzerCallback implements IRpcResultCallback {
         IRpcCallSite backend;
         private final SubMonitor monitor;
         private final String projectName;
         private final Object locker;
 
-        dialyzerCallback(final IRpcCallSite backend, final SubMonitor monitor,
+        DialyzerCallback(final IRpcCallSite backend, final SubMonitor monitor,
                 final String projectName, final Object locker) {
             this.backend = backend;
             this.monitor = monitor;
@@ -72,11 +72,11 @@ public class DialyzerUtils {
 
         @Override
         public void start(final OtpErlangObject msg) {
-            final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
             int progressMax;
             try {
+                final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
                 progressMax = progressMaxL.intValue();
-            } catch (final OtpErlangRangeException e) {
+            } catch (final Exception e) {
                 progressMax = 10;
             }
             final SubMonitor child = monitor.newChild(progressMax);
@@ -158,7 +158,7 @@ public class DialyzerUtils {
                 collectFilesAndIncludeDirs(p, modules, project, files, names,
                         includeDirs, fromSource);
                 monitor.subTask("Dialyzing " + getFileNames(names));
-                final IRpcResultCallback callback = new dialyzerCallback(
+                final IRpcResultCallback callback = new DialyzerCallback(
                         backend, SubMonitor.convert(monitor),
                         project.getName(), locker);
                 try {

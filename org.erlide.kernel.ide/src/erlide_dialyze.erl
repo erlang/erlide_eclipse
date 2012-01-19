@@ -619,7 +619,8 @@ do_analysis(Files, FileName, Plt, PltInfo, AnalysisType, IncludeDirs, _NoCheckPL
     case JPid of
         false -> ok;
         _ ->
-            JPid ! {start, self()}
+            %% TODO value below initializes progress monitor. How big should it be? 
+            JPid ! {start, 10}
     end,
     Return = cl_loop(State3),
     %%     {T2, _} = statistics(wall_clock),
