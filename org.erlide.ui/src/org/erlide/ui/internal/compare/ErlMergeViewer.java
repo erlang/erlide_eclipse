@@ -15,6 +15,7 @@ import org.eclipse.compare.CompareConfiguration;
 import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -25,8 +26,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.EditorConfiguration;
+import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
+import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlMergeViewer extends TextMergeViewer {
@@ -38,6 +41,8 @@ public class ErlMergeViewer extends TextMergeViewer {
     private boolean fUseSystemColors;
 
     private ErlangSourceViewerConfiguration fSourceViewerConfiguration;
+
+    private IDocumentPartitioner documentPartitioner = null;
 
     public ErlMergeViewer(final Composite parent, final int styles,
             final CompareConfiguration mp) {
@@ -155,6 +160,21 @@ public class ErlMergeViewer extends TextMergeViewer {
             ((SourceViewer) textViewer)
                     .configure(getSourceViewerConfiguration());
         }
+    }
+
+    @Override
+    protected String getDocumentPartitioning() {
+        return IErlangPartitions.ERLANG_PARTITIONING;
+    }
+
+    @Override
+    protected IDocumentPartitioner getDocumentPartitioner() {
+        if (documentPartitioner == null) {
+            documentPartitioner = ErlangDocumentSetupParticipant
+                    .createDocumentPartitioner();
+        }
+        return documentPartitioner;
+        // return null;
     }
 
 }

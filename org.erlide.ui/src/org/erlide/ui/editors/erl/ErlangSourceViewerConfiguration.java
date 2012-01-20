@@ -57,11 +57,8 @@ public class ErlangSourceViewerConfiguration extends
     public IPresentationReconciler getPresentationReconciler(
             final ISourceViewer sourceViewer) {
         final PresentationReconciler reconciler = new ErlangPresentationReconciler();
-        // FIXME this causes missing highlighting on editors not open on files
-        // (from history). Investigate!
         reconciler
                 .setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-
         DefaultDamagerRepairer dr = new ErlDamagerRepairer(codeScanner);
         reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);

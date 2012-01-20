@@ -34,6 +34,9 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
 
     private IHyperlink[] detectHyperlinks(final IDocument doc, final int offset) {
         final ErlangEditor editor = (ErlangEditor) getAdapter(ErlangEditor.class);
+        if (editor == null) {
+            return null;
+        }
         final IErlModule module = editor.getModule();
         if (module == null) {
             return null;

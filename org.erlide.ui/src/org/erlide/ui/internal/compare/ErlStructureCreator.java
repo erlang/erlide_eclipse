@@ -25,6 +25,7 @@ import org.eclipse.compare.IEditableContent;
 import org.eclipse.compare.IEditableContentExtension;
 import org.eclipse.compare.ISharedDocumentAdapter;
 import org.eclipse.compare.IStreamContentAccessor;
+import org.eclipse.compare.ITypedElement;
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.DocumentRangeNode;
@@ -40,6 +41,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.core.model.erlang.IErlModule;
@@ -50,6 +52,8 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
+import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class ErlStructureCreator extends StructureCreator {
@@ -58,21 +62,9 @@ public class ErlStructureCreator extends StructureCreator {
 
     // private final IErlProject fProject;
 
-    private final String fName;
+    private IDocumentPartitioner documentPartitioner = null;
 
     public ErlStructureCreator() {
-        // this(ErlangCore.getModelManager().createEmptyProject(),
-        // "comptemp.erl");
-        this("comptemp.erl");
-    }
-
-    /**
-     * @param name
-     */
-    public ErlStructureCreator(final String name) {
-        super();
-        // fProject = project;
-        fName = name;
     }
 
     /**
@@ -294,9 +286,16 @@ public class ErlStructureCreator extends StructureCreator {
                 document = new Document(s);
             } catch (final CoreException ex) {
             }
+        } else if (document != null) {
+            s = document.get();
         }
         if (module == null) {
-            module = model.getModuleFromText(model, fName, s, s);
+            String name = "comptemp";
+            if (element instanceof ITypedElement) {
+                final ITypedElement typedElement = (ITypedElement) element;
+                name = typedElement.getName();
+            }
+            module = model.getModuleFromText(model, name, s, s);
         }
         ErlNode root = null;
         if (element != null && document != null) {
@@ -335,5 +334,19 @@ public class ErlStructureCreator extends StructureCreator {
             return args.toArray(new String[args.size()]);
         }
         return null;
+    }
+
+    @Override
+    protected String getDocumentPartitioning() {
+        return IErlangPartitions.ERLANG_PARTITIONING;
+    }
+
+    @Override
+    protected IDocumentPartitioner getDocumentPartitioner() {
+        if (documentPartitioner == null) {
+            documentPartitioner = ErlangDocumentSetupParticipant
+                    .createDocumentPartitioner();
+        }
+        return documentPartitioner;
     }
 }

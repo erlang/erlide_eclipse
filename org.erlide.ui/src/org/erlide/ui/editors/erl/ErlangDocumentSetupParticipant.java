@@ -29,7 +29,7 @@ public class ErlangDocumentSetupParticipant implements
         partitioner.connect(document);
     }
 
-    private IDocumentPartitioner createDocumentPartitioner() {
+    public static IDocumentPartitioner createDocumentPartitioner() {
         return new FastPartitioner(new ErlangPartitionScanner(),
                 IErlangPartitions.LEGAL_PARTITIONS);
     }

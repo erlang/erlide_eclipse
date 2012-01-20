@@ -13,6 +13,8 @@ package org.erlide.ui.editors.util;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -33,9 +35,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.ide.FileStoreEditorInput;
@@ -51,6 +56,8 @@ import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
+
+import com.google.common.collect.Lists;
 
 /**
  * A number of routines for working with JavaElements in editors.
@@ -76,17 +83,26 @@ public class EditorUtility {
      *         editor
      */
     public static IEditorPart isOpenInEditor(final Object inputElement) {
-        IEditorInput input = null;
-
-        input = getEditorInput(inputElement);
-
-        if (input != null) {
-            final IWorkbenchPage p = ErlideUIPlugin.getActivePage();
-            if (p != null) {
-                return p.findEditor(input);
+        final Collection<IEditorPart> allErlangEditors = EditorUtility
+                .getAllErlangEditors();
+        for (final IEditorPart editorPart : allErlangEditors) {
+            if (inputElement instanceof IErlElement) {
+                final IErlElement element = (IErlElement) inputElement;
+                final IErlModule module = element.getModule();
+                final ErlangEditor editor = (ErlangEditor) editorPart;
+                if (module.equals(editor.getModule())) {
+                    return editorPart;
+                }
             }
         }
-
+        final IEditorInput input = getEditorInput(inputElement);
+        if (input != null) {
+            for (final IEditorPart editorPart : allErlangEditors) {
+                if (editorPart.getEditorInput().equals(input)) {
+                    return editorPart;
+                }
+            }
+        }
         return null;
     }
 
@@ -109,6 +125,11 @@ public class EditorUtility {
      */
     public static IEditorPart openInEditor(final Object inputElement,
             final boolean activate) throws PartInitException {
+        final IEditorPart editorPart = isOpenInEditor(inputElement);
+        if (editorPart != null && inputElement instanceof IErlElement) {
+            revealInEditor(editorPart, (IErlElement) inputElement);
+            return editorPart;
+        }
 
         if (inputElement instanceof IFile) {
             return openInEditor((IFile) inputElement, activate);
@@ -408,6 +429,24 @@ public class EditorUtility {
         }
 
         return 0;
+    }
+
+    public static Collection<IEditorPart> getAllErlangEditors() {
+        final List<IEditorPart> result = Lists.newArrayList();
+        final IWorkbench workbench = ErlideUIPlugin.getDefault().getWorkbench();
+        for (final IWorkbenchWindow i : workbench.getWorkbenchWindows()) {
+            for (final IWorkbenchPage j : i.getPages()) {
+                for (final IEditorReference editorReference : j
+                        .getEditorReferences()) {
+                    final IEditorPart editorPart = editorReference
+                            .getEditor(false);
+                    if (editorPart instanceof ErlangEditor) {
+                        result.add(editorPart);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
 }
