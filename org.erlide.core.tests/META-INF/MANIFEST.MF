@@ -7,7 +7,6 @@ Bundle-Vendor: erlide.org
 Fragment-Host: org.erlide.core;bundle-version="0.14.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.core,
- org.erlide.core.bdd,
  org.erlide.core.preferences,
  org.erlide.jinterface.backend,
  org.erlide.test.support,
