@@ -37,7 +37,7 @@ import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.debug.BeamLocator;
 import org.erlide.debug.ErtsProcess;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.SystemUtils;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 

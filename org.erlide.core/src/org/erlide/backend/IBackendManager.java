@@ -9,7 +9,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {

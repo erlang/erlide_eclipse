@@ -25,11 +25,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.backend.BackendUtils;
-import org.erlide.core.common.EncodingUtils;
 import org.erlide.debug.ErlangDebugOptionsManager;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcMonitor;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.EncodingUtils;
+import org.erlide.utils.SystemUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 

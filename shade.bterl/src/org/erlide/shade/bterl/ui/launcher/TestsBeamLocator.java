@@ -11,7 +11,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.debug.BeamLocator;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.SystemUtils;
 
 public class TestsBeamLocator extends BeamLocator {
     private final File workdir;

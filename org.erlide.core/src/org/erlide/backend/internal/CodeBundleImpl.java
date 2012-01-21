@@ -18,7 +18,7 @@ import java.util.List;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;

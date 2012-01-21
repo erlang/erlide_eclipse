@@ -63,11 +63,11 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendEvalResult;
 import org.erlide.backend.internal.BackendHelper;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.ErlUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
+import org.erlide.utils.ErlUtils;
 
 /**
  * @author Vlad Dumitrescu

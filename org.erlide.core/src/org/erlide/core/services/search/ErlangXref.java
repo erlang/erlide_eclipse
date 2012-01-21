@@ -10,7 +10,7 @@ import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.utils.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

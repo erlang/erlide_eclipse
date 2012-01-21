@@ -42,9 +42,9 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ListsUtils;
-import org.erlide.jinterface.util.StringUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.utils.ListsUtils;
+import org.erlide.utils.StringUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

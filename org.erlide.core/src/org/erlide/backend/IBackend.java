@@ -9,7 +9,7 @@ import org.erlide.backend.console.IBackendShell;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.debug.BeamLocator;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.IDisposable;
+import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;

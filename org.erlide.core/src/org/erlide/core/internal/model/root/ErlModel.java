@@ -42,7 +42,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.FunctionRef;
@@ -65,7 +64,8 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.CommonUtils;
+import org.erlide.utils.SystemUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

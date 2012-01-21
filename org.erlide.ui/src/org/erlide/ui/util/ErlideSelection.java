@@ -24,7 +24,7 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.Tuple;
 
 /**
  * Used as 'shortcuts' to document and selection settings.

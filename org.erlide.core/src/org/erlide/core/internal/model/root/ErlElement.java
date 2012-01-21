@@ -33,7 +33,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.Util;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;

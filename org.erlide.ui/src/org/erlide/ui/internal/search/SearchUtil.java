@@ -63,10 +63,10 @@ import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
-import org.erlide.jinterface.util.StringUtils;
-import org.erlide.jinterface.util.Util;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.StringUtils;
+import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

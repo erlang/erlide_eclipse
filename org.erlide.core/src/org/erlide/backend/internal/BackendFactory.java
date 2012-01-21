@@ -24,7 +24,7 @@ import org.erlide.backend.IErlRuntime;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.SystemUtils;
 
 public class BackendFactory implements IBackendFactory {
 

@@ -8,8 +8,8 @@ import org.erlide.backend.BackendException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

@@ -7,7 +7,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util;
+package org.erlide.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

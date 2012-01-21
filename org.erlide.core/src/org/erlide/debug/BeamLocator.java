@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.SystemUtils;
 
 public class BeamLocator {
 

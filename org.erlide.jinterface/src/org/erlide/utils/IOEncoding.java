@@ -1,4 +1,4 @@
-package org.erlide.jinterface.util;
+package org.erlide.utils;
 
 public enum IOEncoding {
     latin1, unicode;

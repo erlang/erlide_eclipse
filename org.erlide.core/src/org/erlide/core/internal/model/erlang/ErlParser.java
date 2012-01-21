@@ -28,9 +28,9 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.TermParserException;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.TermParserException;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

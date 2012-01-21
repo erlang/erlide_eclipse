@@ -14,9 +14,9 @@ import org.erlide.core.model.root.IErlModelChangeListener;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
-import org.erlide.jinterface.util.IDisposable;
-import org.erlide.jinterface.util.LRUCache;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.IDisposable;
+import org.erlide.utils.LRUCache;
+import org.erlide.utils.Tuple;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

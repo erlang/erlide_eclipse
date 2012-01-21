@@ -21,11 +21,11 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.TermParserException;
 import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;

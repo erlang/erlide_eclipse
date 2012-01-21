@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ListsUtils;
 import org.erlide.ui.prefs.PreferenceConstants;
+import org.erlide.utils.ListsUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Sets;

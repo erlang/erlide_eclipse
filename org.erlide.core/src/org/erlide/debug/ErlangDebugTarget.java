@@ -34,7 +34,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.IBackend;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlangFunctionCall;
+import org.erlide.utils.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

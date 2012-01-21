@@ -10,10 +10,10 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.util.Util;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

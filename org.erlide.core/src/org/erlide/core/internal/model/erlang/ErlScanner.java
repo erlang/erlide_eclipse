@@ -13,7 +13,7 @@ package org.erlide.core.internal.model.erlang;
 import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.root.ErlToken;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.IDisposable;
+import org.erlide.utils.IDisposable;
 
 /**
  * Erlang syntax scanner

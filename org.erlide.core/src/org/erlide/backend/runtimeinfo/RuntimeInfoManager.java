@@ -31,8 +31,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.common.PreferencesUtils;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;

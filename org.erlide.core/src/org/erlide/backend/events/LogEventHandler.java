@@ -3,7 +3,7 @@ package org.erlide.backend.events;
 import org.erlide.backend.IBackend;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.utils.ErlUtils;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -44,8 +44,8 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.SystemUtils;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.SystemUtils;
+import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 

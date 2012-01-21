@@ -29,7 +29,7 @@ import org.erlide.backend.ErlLaunchAttributes;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.Util;
 
 public final class CoreUtil {
     /**

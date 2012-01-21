@@ -19,8 +19,8 @@ import java.io.PrintWriter;
 
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
-import org.erlide.core.common.LogUtil;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.LogUtil;
 
 final public class ErtsWatcherRunnable implements Runnable {
     private final Process process;

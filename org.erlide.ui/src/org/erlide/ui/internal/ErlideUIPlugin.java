@@ -51,7 +51,6 @@ import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -65,6 +64,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
+import org.erlide.utils.SystemUtils;
 import org.osgi.framework.BundleContext;
 
 import com.swtdesigner.SWTResourceManager;

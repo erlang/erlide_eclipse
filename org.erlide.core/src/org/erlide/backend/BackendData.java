@@ -34,7 +34,7 @@ import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.utils.SystemUtils;
 
 import com.google.common.collect.Lists;
 

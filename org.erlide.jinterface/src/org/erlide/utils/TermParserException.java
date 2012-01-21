@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.jinterface.util;
+package org.erlide.utils;
 
 public class TermParserException extends Exception {
 

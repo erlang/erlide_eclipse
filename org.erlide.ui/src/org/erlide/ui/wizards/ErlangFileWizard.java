@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.common.CommonUtils;
+import org.erlide.utils.CommonUtils;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the

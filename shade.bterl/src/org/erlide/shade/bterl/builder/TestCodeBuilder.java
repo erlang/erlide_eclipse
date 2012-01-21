@@ -37,9 +37,9 @@ import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.SystemUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

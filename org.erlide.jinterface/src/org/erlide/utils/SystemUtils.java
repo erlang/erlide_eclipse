@@ -1,4 +1,4 @@
-package org.erlide.jinterface.util;
+package org.erlide.utils;
 
 public class SystemUtils {
     private static Boolean fgCacheIsEricssonUser;

@@ -33,12 +33,12 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.debug.BeamLocator;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ListsUtils;
-import org.erlide.jinterface.util.TermParser;
-import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
 import org.erlide.test_support.ui.suites.RegressionResultsView;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.ListsUtils;
+import org.erlide.utils.TermParser;
+import org.erlide.utils.TermParserException;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 

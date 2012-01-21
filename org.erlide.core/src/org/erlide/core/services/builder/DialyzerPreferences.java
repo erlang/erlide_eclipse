@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

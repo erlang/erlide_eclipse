@@ -39,11 +39,11 @@ import org.erlide.debug.ErlangDebugElement;
 import org.erlide.debug.ErlangDebugTarget;
 import org.erlide.debug.ErtsProcess;
 import org.erlide.debug.IErlangDebugNode;
-import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
+import org.erlide.utils.SystemUtils;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking

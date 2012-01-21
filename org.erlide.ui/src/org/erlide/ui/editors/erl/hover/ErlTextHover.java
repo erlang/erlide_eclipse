@@ -56,7 +56,6 @@ import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.Util;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -65,6 +64,7 @@ import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
+import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

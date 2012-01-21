@@ -27,9 +27,9 @@ import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.util.Util;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
