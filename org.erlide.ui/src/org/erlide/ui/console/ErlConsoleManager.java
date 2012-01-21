@@ -12,7 +12,6 @@ import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.util.IDisposable;
 
 public class ErlConsoleManager implements IDisposable, IBackendListener {
@@ -59,7 +58,7 @@ public class ErlConsoleManager implements IDisposable, IBackendListener {
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite backend,
-            final IProject project, final String moduleName) {
+    public void moduleLoaded(final IBackend backend, final IProject project,
+            final String moduleName) {
     }
 }

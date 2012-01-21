@@ -11,7 +11,6 @@
 package org.erlide.core.backend;
 
 import org.eclipse.core.resources.IProject;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 
 public interface IBackendListener {
 
@@ -19,7 +18,7 @@ public interface IBackendListener {
 
     public void runtimeRemoved(IBackend backend);
 
-    public void moduleLoaded(IRpcCallSite aBackend, IProject project,
+    public void moduleLoaded(IBackend aBackend, IProject project,
             String moduleName);
 
 }

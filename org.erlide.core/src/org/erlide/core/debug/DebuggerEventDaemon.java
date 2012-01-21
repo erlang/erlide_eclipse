@@ -6,7 +6,6 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -107,8 +106,8 @@ public class DebuggerEventDaemon implements IBackendListener {
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite aBackend,
-            final IProject project, final String moduleName) {
+    public void moduleLoaded(final IBackend aBackend, final IProject project,
+            final String moduleName) {
     }
 
     public OtpErlangPid getMBox() {

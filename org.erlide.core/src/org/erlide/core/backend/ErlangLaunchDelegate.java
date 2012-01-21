@@ -33,7 +33,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.BeamLocator;
 import org.erlide.core.debug.ErtsProcess;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
@@ -106,6 +106,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     protected void postLaunch(final String mode, final IBackend b,
             final IProgressMonitor monitor) throws CoreException {
+        b.setBeamLocator(new BeamLocator());
     }
 
     /*
@@ -224,8 +225,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
     }
 
-    protected ErlangDebugHelper getDebugHelper() {
-        return new ErlangDebugHelper();
+    protected BeamLocator getDebugHelper() {
+        return new BeamLocator();
     }
 
     public static List<String> addBreakpointProjectsAndModules(

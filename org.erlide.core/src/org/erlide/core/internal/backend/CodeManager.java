@@ -21,19 +21,19 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.BackendUtils;
+import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.ICodeBundle;
 import org.erlide.core.backend.ICodeManager;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 
 public class CodeManager implements ICodeManager {
 
-    private final IRpcCallSite backend;
+    private final IBackend backend;
     private final String erlangVersion;
     private final RuntimeInfo runtimeInfo;
 
@@ -42,7 +42,7 @@ public class CodeManager implements ICodeManager {
     private final List<ICodeBundle> registeredBundles;
 
     // only to be called by Backend
-    CodeManager(final IRpcCallSite b, final String erlangVersion,
+    CodeManager(final IBackend b, final String erlangVersion,
             final RuntimeInfo runtimeInfo) {
         backend = b;
         this.erlangVersion = erlangVersion;

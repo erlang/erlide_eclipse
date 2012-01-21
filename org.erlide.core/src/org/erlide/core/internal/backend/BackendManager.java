@@ -209,22 +209,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             case REMOVED:
                 listener.runtimeRemoved(b);
                 break;
-            default:
-                // ignore
-            }
-        }
-    }
-
-    void notifyBackendChange(final IRpcCallSite b, final BackendEvent type,
-            final IProject project, final String moduleName) {
-        if (listeners == null) {
-            return;
-        }
-
-        final Object[] copiedListeners = listeners.toArray();
-        for (final Object element : copiedListeners) {
-            final IBackendListener listener = (IBackendListener) element;
-            switch (type) {
             case MODULE_LOADED:
                 listener.moduleLoaded(b, project, moduleName);
                 break;
@@ -371,7 +355,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite b, final IProject project,
+    public void moduleLoaded(final IBackend b, final IProject project,
             final String moduleName) {
         notifyBackendChange(b, BackendEvent.MODULE_LOADED, project, moduleName);
     }

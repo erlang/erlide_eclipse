@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -52,10 +53,11 @@ import org.erlide.core.backend.events.ErlangEventPublisher;
 import org.erlide.core.backend.events.ErlangLogEventHandler;
 import org.erlide.core.backend.events.LogEventHandler;
 import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
-import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.BeamLocator;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
+import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
@@ -101,6 +103,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private final ICodeManager codeManager;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
+    private BeamLocator beamLocator;
 
     public Backend(final BackendData data, final IErlRuntime runtime)
             throws BackendException {
@@ -705,8 +708,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             final String[] pms = pm.split(":");
             final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                     .getProject(pms[0]);
-            getDebugHelper()
-                    .interpret(this, project, pms[1], distributed, true);
+            interpret(project, pms[1], distributed, true);
         }
     }
 
@@ -803,10 +805,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         return null;
     }
 
-    private ErlangDebugHelper getDebugHelper() {
-        return new ErlangDebugHelper();
-    }
-
     @Override
     public boolean hasConsole() {
         return getData().hasConsole();
@@ -841,4 +839,35 @@ public abstract class Backend implements IStreamListener, IBackend {
         debugTarget.installDeferredBreakpoints();
     }
 
+    @Override
+    public void interpret(final IProject project, final String moduleName,
+            final boolean distributed, final boolean interpret) {
+        try {
+            final IFile beam = beamLocator.findModuleBeam(project, moduleName);
+            if (beam != null) {
+                if (beam.exists()) {
+                    final String de = interpret ? "" : "de";
+                    ErlLogger.debug(de + "interpret " + beam.getLocation());
+                    boolean b = ErlideDebug.interpret(this, beam.getLocation()
+                            .toString(), distributed, interpret);
+                    b = !b;
+                } else {
+                    ErlLogger.debug("IGNORED MISSING interpret "
+                            + (project == null ? "null" : project.getName())
+                            + ":" + moduleName);
+                }
+            } else {
+                ErlLogger.debug("IGNORED NULL interpret "
+                        + (project == null ? "null" : project.getName()) + ":"
+                        + moduleName);
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.warn(e);
+        }
+    }
+
+    @Override
+    public void setBeamLocator(final BeamLocator locator) {
+        this.beamLocator = locator;
+    }
 }

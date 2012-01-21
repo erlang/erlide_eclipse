@@ -8,7 +8,6 @@ import org.erlide.core.backend.BackendException;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendListener;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -56,8 +55,8 @@ public class ErlangEventPublisher implements IBackendListener {
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite backend,
-            final IProject project, final String moduleName) {
+    public void moduleLoaded(final IBackend backend, final IProject project,
+            final String moduleName) {
     }
 
     private final class HandlerJob implements Runnable {

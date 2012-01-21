@@ -8,20 +8,20 @@ import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.core.debug.BeamLocator;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.SystemUtils;
 
-public class TestDebugHelper extends ErlangDebugHelper {
+public class TestsBeamLocator extends BeamLocator {
     private final File workdir;
 
-    public TestDebugHelper(final File workdir) {
+    public TestsBeamLocator(final File workdir) {
         this.workdir = workdir;
     }
 
     @Override
-    protected IFile findModuleBeam(final IProject project, final String module)
+    public IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
         final String beam = SystemUtils.withoutExtension(module) + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {
