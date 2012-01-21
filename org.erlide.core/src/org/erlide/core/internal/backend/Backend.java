@@ -23,7 +23,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -57,7 +56,6 @@ import org.erlide.core.debug.ErlangDebugHelper;
 import org.erlide.core.debug.ErlangDebugNode;
 import org.erlide.core.debug.ErlangDebugTarget;
 import org.erlide.core.debug.ErlideDebug;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
@@ -559,22 +557,6 @@ public abstract class Backend implements IStreamListener, IBackend {
                 } else {
                     loadBeamsFromDir(outDir);
                 }
-            } else {
-                final File f = new File(outDir);
-                for (final File file : f.listFiles()) {
-                    String name = file.getName();
-                    if (!name.endsWith(".beam")) {
-                        continue;
-                    }
-                    name = name.substring(0, name.length() - 5);
-                    try {
-                        loadModuleViaInput(this, project, name);
-                    } catch (final ErlModelException e) {
-                        e.printStackTrace();
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
     }
@@ -598,23 +580,6 @@ public abstract class Backend implements IStreamListener, IBackend {
                     removePath(outDir);
                 } else {
                     // FIXME unloadBeamsFromDir(outDir);
-                }
-            } else {
-                final File f = new File(outDir);
-                for (final File file : f.listFiles()) {
-                    String name = file.getName();
-                    if (!name.endsWith(".beam")) {
-                        continue;
-                    }
-                    name = name.substring(0, name.length() - 5);
-                    // try {
-                    // // FIXME CoreUtil.unloadModuleViaInput(this, project,
-                    // // name);
-                    // } catch (final ErlModelException e) {
-                    // e.printStackTrace();
-                    // } catch (final IOException e) {
-                    // e.printStackTrace();
-                    // }
                 }
             }
         }
@@ -876,27 +841,4 @@ public abstract class Backend implements IStreamListener, IBackend {
         debugTarget.installDeferredBreakpoints();
     }
 
-    public static void loadModuleViaInput(final IBackend b,
-            final IProject project, final String module)
-            throws ErlModelException, IOException {
-        final IErlProject p = ErlModelManager.getErlangModel().findProject(
-                project);
-        final IPath outputLocation = project.getFolder(p.getOutputLocation())
-                .getFile(module + ".beam").getLocation();
-        final OtpErlangBinary bin = BeamUtil.getBeamBinary(module,
-                outputLocation);
-        if (bin != null) {
-            final String fmt = "code:load_binary(%s, %s, %s).\n";
-            final StringBuffer strBin = new StringBuffer();
-            strBin.append("<<");
-            for (final byte c : bin.binaryValue()) {
-                strBin.append(c).append(',');
-            }
-            strBin.deleteCharAt(strBin.length() - 1);
-            strBin.append(">>");
-            final String cmd = String.format(fmt, module, module,
-                    strBin.toString());
-            b.input(cmd);
-        }
-    }
 }

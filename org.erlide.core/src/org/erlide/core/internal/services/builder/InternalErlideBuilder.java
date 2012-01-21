@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.backend.BackendCore;
 import org.erlide.core.backend.IBackend;
 import org.erlide.core.backend.IBackendManager;
-import org.erlide.core.internal.backend.Backend;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
@@ -66,8 +65,6 @@ public class InternalErlideBuilder {
                 if (b.isDistributed()) {
                     b.call("erlide_builder", "load", "ao", module,
                             b.doLoadOnAllNodes());
-                } else {
-                    Backend.loadModuleViaInput(b, project, module);
                 }
                 backendManager.moduleLoaded(b, project, module);
             }
