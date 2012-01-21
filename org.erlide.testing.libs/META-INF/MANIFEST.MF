@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Testing Support Libraries
 Bundle-SymbolicName: org.erlide.testing.libs;singleton:=true
-Bundle-Version: 0.14.0.qualifier
+Bundle-Version: 1.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: commons-collections-3.2.1.jar,
- commons-io-1.4.jar,
  commons-lang-2.5.jar,
  easymock.jar,
  freemarker.jar,
@@ -58,11 +57,6 @@ Export-Package: freemarker.cache,
  org.apache.commons.collections.list,
  org.apache.commons.collections.map,
  org.apache.commons.collections.set,
- org.apache.commons.io,
- org.apache.commons.io.comparator,
- org.apache.commons.io.filefilter,
- org.apache.commons.io.input,
- org.apache.commons.io.output,
  org.apache.commons.lang,
  org.apache.commons.lang.builder,
  org.apache.commons.lang.enums,

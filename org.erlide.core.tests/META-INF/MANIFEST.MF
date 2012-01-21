@@ -4,7 +4,7 @@ Bundle-Name: erlide core Tests Fragment
 Bundle-SymbolicName: org.erlide.core.tests;singleton:=true
 Bundle-Version: 0.14.0.qualifier
 Bundle-Vendor: erlide.org
-Fragment-Host: org.erlide.core;bundle-version="0.6.0"
+Fragment-Host: org.erlide.core;bundle-version="0.14.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.core,
  org.erlide.core.bdd,
@@ -12,6 +12,7 @@ Export-Package: org.erlide.core,
  org.erlide.jinterface.backend,
  org.erlide.test.support,
  org.erlide.testing.erlang;x-internal:=true
-Require-Bundle: org.erlide.testing.libs;bundle-version="0.8.8",
+Require-Bundle: org.erlide.testing.libs,
  org.junit4
 Eclipse-ExtensibleAPI: true 
+Import-Package: org.apache.commons.io
