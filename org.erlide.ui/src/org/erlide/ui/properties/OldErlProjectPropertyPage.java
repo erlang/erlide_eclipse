@@ -17,7 +17,7 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
-import org.erlide.core.backend.BackendCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;

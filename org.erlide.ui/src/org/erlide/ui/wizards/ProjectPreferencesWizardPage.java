@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.core.backend.BackendCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.internal.model.root.PathSerializer;

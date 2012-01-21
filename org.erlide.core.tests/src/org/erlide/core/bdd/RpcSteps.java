@@ -2,7 +2,7 @@ package org.erlide.core.bdd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.erlide.core.backend.BackendCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.util.TermParser;

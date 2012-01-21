@@ -24,7 +24,7 @@ import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.erlide.core.backend.BackendException;
+import org.erlide.backend.BackendException;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.root.ErlToken;
 import org.erlide.jinterface.ErlLogger;

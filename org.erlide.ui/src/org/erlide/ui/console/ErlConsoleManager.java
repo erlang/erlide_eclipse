@@ -7,10 +7,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.IBackendListener;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendListener;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.IDisposable;
 

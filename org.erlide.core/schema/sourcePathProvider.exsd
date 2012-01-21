@@ -3,7 +3,7 @@
 <schema targetNamespace="org.erlide.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.erlide.core.backend" id="sourcePathProvider" name="sourcePathProvider"/>
+         <meta.schema plugin="org.erlide.backend" id="sourcePathProvider" name="sourcePathProvider"/>
       </appInfo>
       <documentation>
          Points to a class that provides a list of directories (inside the project) to be included in the Erlang model as source folders, but ONLY for the purpose of extra support in the IDE (navigation, completion, etc). The files in these directories aren&apos;t compiled.

@@ -6,14 +6,13 @@ Bundle-Version: 0.14.0.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.erlide.core,
- org.erlide.core.backend,
- org.erlide.core.backend.console,
- org.erlide.core.backend.events,
- org.erlide.core.backend.runtimeinfo,
+Export-Package: org.erlide.backend,
+ org.erlide.backend.console,
+ org.erlide.backend.events,
+ org.erlide.backend.internal;x-friends:="org.erlide.ui,shade.bterl",
+ org.erlide.backend.runtimeinfo,
+ org.erlide.core,
  org.erlide.core.common,
- org.erlide.core.debug,
- org.erlide.core.internal.backend;x-friends:="org.erlide.ui,shade.bterl",
  org.erlide.core.internal.model.erlang;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
  org.erlide.core.internal.model.root;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
  org.erlide.core.internal.services.builder;x-friends:="shade.bterl",
@@ -24,7 +23,8 @@ Export-Package: org.erlide.core,
  org.erlide.core.services.cleanup,
  org.erlide.core.services.codeassist,
  org.erlide.core.services.search,
- org.erlide.core.services.text
+ org.erlide.core.services.text,
+ org.erlide.debug
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,

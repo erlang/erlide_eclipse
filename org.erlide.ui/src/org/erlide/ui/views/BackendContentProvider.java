@@ -14,8 +14,8 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackend;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 
 public class BackendContentProvider implements IStructuredContentProvider {
 

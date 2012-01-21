@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.common.PreferencesUtils;
 import org.erlide.core.internal.model.root.ErlProjectInfo;
 import org.erlide.core.internal.model.root.PathEntry;

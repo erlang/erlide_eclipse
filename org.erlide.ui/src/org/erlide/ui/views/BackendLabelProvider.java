@@ -12,8 +12,8 @@ package org.erlide.ui.views;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 
 public class BackendLabelProvider extends LabelProvider {
 

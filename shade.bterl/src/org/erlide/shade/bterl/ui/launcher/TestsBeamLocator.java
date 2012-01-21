@@ -8,8 +8,8 @@ import java.net.URISyntaxException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.erlide.core.debug.BeamLocator;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.debug.BeamLocator;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.util.SystemUtils;
 

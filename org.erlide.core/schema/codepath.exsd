@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.erlide.core.backend" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.erlide.backend" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.erlide.core.backend" id="codepath" name="codepath"/>
+         <meta.schema plugin="org.erlide.backend" id="codepath" name="codepath"/>
       </appinfo>
       <documentation>
          A plugin can contribute Erlang code by specifying here the directories where the beam files are to be found. The paths are relative to the plugin root and erlIDE can load beam code even from inside jar archives.
