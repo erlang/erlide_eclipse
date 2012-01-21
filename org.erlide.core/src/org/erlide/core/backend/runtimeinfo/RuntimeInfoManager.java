@@ -368,8 +368,9 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                 new DefaultScope().getNode("org.erlide.core").get(
                         "default_runtime", null), "c:/program files",
                 "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
-                System.getProperty("user.home"), "/usr", "/usr/local",
-                "/usr/local/lib", "/Library/Frameworks/erlang/Versions" };
+                System.getProperty("user.home"), "/usr", "/usr/lib",
+                "/usr/local", "/usr/local/lib",
+                "/Library/Frameworks/erlang/Versions" };
         for (final String loc : locations) {
             final Collection<File> roots = findRuntime(loc);
             for (final File root : roots) {
