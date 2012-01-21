@@ -12,7 +12,7 @@ package org.erlide.core.backend.console;
 
 import java.util.regex.Pattern;
 
-import org.erlide.jinterface.Assert;
+import org.eclipse.core.runtime.Assert;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

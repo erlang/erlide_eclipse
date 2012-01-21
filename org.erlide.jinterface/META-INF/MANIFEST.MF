@@ -13,7 +13,8 @@ Export-Package: com.ericsson.otp.erlang,
  org.erlide.jinterface.internal.rpc;x-internal:=true,
  org.erlide.jinterface.rpc,
  org.erlide.jinterface.util
-Require-Bundle: org.erlide.libs
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
