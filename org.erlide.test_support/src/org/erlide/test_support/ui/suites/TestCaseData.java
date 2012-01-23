@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 
 public class TestCaseData {
 
+    //@formatter:off
     enum TestState {
         // order is important!
         NOT_RUN,
@@ -24,6 +25,7 @@ public class TestCaseData {
         RUNNING,
         FAILED
     }
+    //@formatter:on
 
     public class FailLocations {
 

@@ -8,6 +8,7 @@ package org.erlide.tracing.core;
  */
 public enum Images {
 
+    //@formatter:off
     /**
      * checked ckeckbox
      */
@@ -45,6 +46,7 @@ public enum Images {
     ULINK_NODE("treeviewer/ulinkNode.png"), //
     UNREGISTER_NODE("treeviewer/unregisterNode.png"), //
     WRONG_MESSAGE_NODE("treeviewer/wrongMessageNode.png");
+    //@formatter:on
 
     private String fileName;
 

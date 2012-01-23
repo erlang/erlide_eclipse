@@ -11,6 +11,7 @@
 package org.erlide.ui;
 
 public enum ErlideImagePrefix {
+    //@formatter:off
     T_OBJ("obj16"),
     T_OVR("ovr16"),
     T_WIZBAN("wizban"),
@@ -18,6 +19,7 @@ public enum ErlideImagePrefix {
     T_DLCL("dlcl16"),
     T_ETOOL("etool16"),
     T_EVIEW("eview16");
+    //@formatter:on
 
     private String prefix;
 

@@ -7,6 +7,7 @@ package org.erlide.tracing.core;
  * 
  */
 public enum TraceType {
+    //@formatter:off
     CALL,
     EXCEPTION_FROM,
     EXIT,
@@ -26,4 +27,5 @@ public enum TraceType {
     SPAWN,
     UNLINK,
     UNREGISTER;
+    //@formatter:on
 }

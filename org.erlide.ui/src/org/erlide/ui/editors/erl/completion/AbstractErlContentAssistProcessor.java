@@ -98,7 +98,21 @@ public abstract class AbstractErlContentAssistProcessor {
     protected static URL fgStyleSheet;
 
     protected enum Kinds {
-        DECLARED_FUNCTIONS, EXTERNAL_FUNCTIONS, VARIABLES, RECORD_FIELDS, RECORD_DEFS, MODULES, MACRO_DEFS, IMPORTED_FUNCTIONS, AUTO_IMPORTED_FUNCTIONS, ARITY_ONLY, UNEXPORTED_ONLY, INCLUDES, INCLUDE_LIBS
+        //@formatter:off
+        DECLARED_FUNCTIONS, 
+        EXTERNAL_FUNCTIONS, 
+        VARIABLES, 
+        RECORD_FIELDS, 
+        RECORD_DEFS, 
+        MODULES, 
+        MACRO_DEFS, 
+        IMPORTED_FUNCTIONS, 
+        AUTO_IMPORTED_FUNCTIONS, 
+        ARITY_ONLY, 
+        UNEXPORTED_ONLY, 
+        INCLUDES, 
+        INCLUDE_LIBS
+        //@formatter:on
     }
 
     protected static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();

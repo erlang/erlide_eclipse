@@ -8,8 +8,12 @@ package org.erlide.tracing.core.mvc.view;
  */
 public enum NodeColumn {
 
-    ENABLED("Enabled", 60), NODE_NAME("Name", 150), TYPE("Type", 70), COOKIE(
-            "Cookie", 150);
+    //@formatter:off
+    ENABLED("Enabled", 60), 
+    NODE_NAME("Name", 150), 
+    TYPE("Type", 70), 
+    COOKIE("Cookie", 150);
+    //@formatter:on
 
     private final String name;
     private final int width;

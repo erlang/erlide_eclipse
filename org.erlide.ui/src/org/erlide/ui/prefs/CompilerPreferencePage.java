@@ -439,8 +439,11 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     enum OptionStatus {
-        OK, @SuppressWarnings("hiding")
-        ERROR, NO_RUNTIME
+        //@formatter:off
+        OK, 
+        @SuppressWarnings("hiding") ERROR, 
+        NO_RUNTIME
+        //@formatter:off
     }
 
     OptionStatus optionsAreOk(final String string) {
