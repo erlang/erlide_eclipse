@@ -31,7 +31,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcResult;
-import org.erlide.jinterface.util.ErlUtils;
+import org.erlide.utils.ErlUtils;
 import org.erlide.wrangler.refactoring.backend.RefactoringState;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage;
 import org.erlide.wrangler.refactoring.backend.internal.GenFunRefactoringMessage.GenFunReturnParameterName;

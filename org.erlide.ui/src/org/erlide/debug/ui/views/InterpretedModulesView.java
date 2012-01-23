@@ -31,20 +31,19 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
-import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.debug.ErlangDebugElement;
-import org.erlide.core.debug.ErlangDebugHelper;
-import org.erlide.core.debug.ErlangDebugTarget;
-import org.erlide.core.debug.ErtsProcess;
-import org.erlide.core.debug.IErlangDebugNode;
+import org.erlide.backend.ErlDebugConstants;
+import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.SystemUtils;
+import org.erlide.debug.ErlangDebugElement;
+import org.erlide.debug.ErlangDebugTarget;
+import org.erlide.debug.ErtsProcess;
+import org.erlide.debug.IErlangDebugNode;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
+import org.erlide.utils.SystemUtils;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking
@@ -269,13 +268,12 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final IProject project = dti.getItem().getProject()
                 .getWorkspaceProject();
         final boolean interpret = checked;
-        final IRpcCallSite backend = erlangDebugTarget.getBackend();
+        final IBackend backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {
             // FIXME this isn't correct!!!
-            new ErlangDebugHelper().interpret(backend, project, module,
-                    distributed, interpret);
+            backend.interpret(project, module, distributed, interpret);
         }
     }
 }

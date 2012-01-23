@@ -50,7 +50,6 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.debug.core" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.erlide.libs" version="1.2.3" match="greaterOrEqual"/>
       <import plugin="com.abstratt.graphviz.ui"/>
-      <import plugin="org.apache.commons.io"/>
    </requires>
 
    <plugin

@@ -23,13 +23,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.IBackendManager;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.Util;
 
 public final class CoreUtil {
     /**

@@ -3,8 +3,8 @@ package org.erlide.cover.core;
 import java.io.File;
 import java.util.Iterator;
 
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEventHandler;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;

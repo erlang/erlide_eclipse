@@ -1,7 +1,7 @@
 package org.erlide.cover.core;
 
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEventHandler;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.cover.views.model.TestTreeModel;
 import org.erlide.cover.views.model.TestTreeObject;
 import org.osgi.service.event.Event;

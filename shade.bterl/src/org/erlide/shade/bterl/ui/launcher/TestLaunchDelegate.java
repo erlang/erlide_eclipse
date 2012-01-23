@@ -25,20 +25,20 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlangLaunchDelegate;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEventHandler;
-import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.ErlDebugConstants;
+import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.backend.ErlangLaunchDelegate;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.debug.BeamLocator;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ListsUtils;
-import org.erlide.jinterface.util.TermParser;
-import org.erlide.jinterface.util.TermParserException;
 import org.erlide.shade.bterl.Activator;
 import org.erlide.test_support.ui.suites.RegressionResultsView;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.ListsUtils;
+import org.erlide.utils.TermParser;
+import org.erlide.utils.TermParserException;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
@@ -132,7 +132,9 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
     @Override
     protected void postLaunch(final String amode, final IBackend backend,
-            final IProgressMonitor monitor) {
+            final IProgressMonitor monitor) throws CoreException {
+        super.postLaunch(amode, backend, monitor);
+        backend.setBeamLocator(new TestsBeamLocator(workdir));
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
         }
@@ -190,8 +192,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
                 for (final String pm : modules) {
                     ErlLogger.debug("reinterpret:: " + pm);
-                    getDebugHelper()
-                            .interpret(backend, project, pm, true, true);
+                    backend.interpret(project, pm, true, true);
                 }
                 backend.installDeferredBreakpoints();
 
@@ -373,8 +374,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @Override
-    protected ErlangDebugHelper getDebugHelper() {
-        return new TestDebugHelper(workdir);
+    protected BeamLocator getDebugHelper() {
+        return new TestsBeamLocator(workdir);
     }
 
 }

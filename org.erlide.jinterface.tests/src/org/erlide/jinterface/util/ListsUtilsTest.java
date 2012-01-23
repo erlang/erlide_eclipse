@@ -2,6 +2,7 @@ package org.erlide.jinterface.util;
 
 import java.util.List;
 
+import org.erlide.utils.ListsUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

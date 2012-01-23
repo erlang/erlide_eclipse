@@ -13,8 +13,8 @@ package org.erlide.ui.wizards;
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendException;
 import org.erlide.jinterface.TypeConverter;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;

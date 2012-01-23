@@ -47,12 +47,12 @@ import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
 import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
 import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
+import org.erlide.utils.SystemUtils;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well

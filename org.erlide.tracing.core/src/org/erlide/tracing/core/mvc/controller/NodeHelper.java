@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.IBackendManager;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendManager;
 import org.erlide.tracing.core.TraceBackend;
 
 /**

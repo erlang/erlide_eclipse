@@ -7,8 +7,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.TermParserException;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

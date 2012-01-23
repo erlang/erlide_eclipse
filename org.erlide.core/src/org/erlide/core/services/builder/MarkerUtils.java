@@ -29,10 +29,10 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.SystemUtils;
-import org.erlide.jinterface.util.Tuple;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.SystemUtils;
+import org.erlide.utils.Tuple;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;

@@ -13,14 +13,13 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.backend.ErlDebugConstants;
+import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.IBackendListener;
-import org.erlide.core.debug.ErlangDebugHelper;
-import org.erlide.core.debug.ErlangDebugTarget;
-import org.erlide.core.debug.ErlideDebug;
+import org.erlide.debug.ErlangDebugTarget;
+import org.erlide.debug.ErlideDebug;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -37,8 +36,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite backend,
-            final IProject project, final String moduleName) {
+    public void moduleLoaded(final IBackend backend, final IProject project,
+            final String moduleName) {
         try {
             final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend);
             if (erlangDebugTarget != null
@@ -54,8 +53,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                             ErlLaunchAttributes.DEBUG_FLAGS,
                             ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
                     final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
-                    new ErlangDebugHelper().interpret(backend, project,
-                            moduleName, distributed, true);
+                    backend.interpret(project, moduleName, distributed, true);
                 }
             }
         } catch (final CoreException e) {

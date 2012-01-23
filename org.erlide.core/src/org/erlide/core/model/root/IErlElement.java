@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.jinterface.util.IDisposable;
+import org.erlide.utils.IDisposable;
 
 /**
  * Common protocol for all elements provided by the Erlang model. Erlang model

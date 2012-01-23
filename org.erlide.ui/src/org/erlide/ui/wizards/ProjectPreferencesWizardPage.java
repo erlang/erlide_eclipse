@@ -34,12 +34,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.common.PreferencesUtils;
+import org.erlide.backend.BackendCore;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.internal.model.root.PathSerializer;
-import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.PreferencesUtils;
+import org.erlide.utils.SystemUtils;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;

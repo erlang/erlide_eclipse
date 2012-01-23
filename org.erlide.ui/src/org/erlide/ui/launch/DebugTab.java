@@ -41,10 +41,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlangLaunchDelegate;
-import org.erlide.core.common.CommonUtils;
+import org.erlide.backend.ErlDebugConstants;
+import org.erlide.backend.ErlLaunchAttributes;
+import org.erlide.backend.ErlangLaunchDelegate;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntry;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
@@ -59,6 +58,7 @@ import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.util.SWTUtil;
+import org.erlide.utils.CommonUtils;
 
 /**
  * A tab in the Launch Config with erlang debugger parameters: the debug flags
