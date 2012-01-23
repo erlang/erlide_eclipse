@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.util.IDisposable;
 
 /**
@@ -41,24 +42,24 @@ import org.erlide.jinterface.util.IDisposable;
 public interface IErlElement extends IAdaptable, IDisposable {
 
     enum Kind {
-        ERROR,
-        MODEL,
-        PROJECT,
-        MODULE,
-        ATTRIBUTE,
-        FUNCTION,
-        CLAUSE,
-        EXPORT,
-        IMPORT,
-        EXPORTFUNCTION,
-        HEADERCOMMENT,
-        COMMENT,
-        RECORD_DEF,
-        MACRO_DEF,
-        FOLDER,
-        TYPESPEC,
-        EXTERNAL,
-        RECORD_FIELD
+        ERROR, //
+        MODEL, //
+        PROJECT, //
+        MODULE, //
+        ATTRIBUTE, //
+        FUNCTION, //
+        CLAUSE, //
+        EXPORT, //
+        IMPORT, //
+        EXPORTFUNCTION, //
+        HEADERCOMMENT, //
+        COMMENT, //
+        RECORD_DEF, //
+        MACRO_DEF, //
+        FOLDER, //
+        TYPESPEC, //
+        EXTERNAL, //
+        RECORD_FIELD //
     }
 
     /**
@@ -243,4 +244,5 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     Object getModelLock();
 
+    IErlModule getModule();
 }

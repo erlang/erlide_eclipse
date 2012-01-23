@@ -71,6 +71,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -698,9 +699,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     @Override
     protected void doSetInput(final IEditorInput input) throws CoreException {
         final IDocumentProvider provider = getDocumentProvider();
-        IDocument document;
         if (input != getEditorInput()) {
-            document = provider.getDocument(getEditorInput());
+            final IDocument document = provider.getDocument(getEditorInput());
             if (document != null) {
                 // document.removeDocumentListener(scannerListener);
             }
@@ -709,6 +709,12 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
 
         super.doSetInput(input);
+
+        final IDocument document = provider.getDocument(input);
+        if (!(input instanceof IPathEditorInput)) {
+            final ErlangDocumentSetupParticipant setupParticipant = new ErlangDocumentSetupParticipant();
+            setupParticipant.setup(document);
+        }
 
         if (myOutlinePage != null) {
             // TODO should we use model events here?
@@ -719,7 +725,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             fErlangEditorErrorTickUpdater.updateEditorImage(module);
         }
 
-        document = provider.getDocument(input);
         if (document != null) {
             // scannerListener = new ScannerListener();
             // document.addDocumentListener(scannerListener);
