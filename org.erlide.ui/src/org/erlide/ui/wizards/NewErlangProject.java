@@ -215,7 +215,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
             buildPaths(monitor, root, project, bprefs.getSourceDirs());
             buildPaths(monitor, root, project, bprefs.getIncludeDirs());
 
-            final IErlProject erlProject =  ErlModelManager.getErlangModel()
+            final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(project);
             erlProject.setAllProperties(bprefs);
 

@@ -101,8 +101,8 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
     public boolean performOk() {
         final IProject project = (IProject) getElement().getAdapter(
                 IProject.class);
-        final IErlProject erlProject =  ErlModelManager.getErlangModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         erlProject.clearCaches();
         return super.performOk();
     }

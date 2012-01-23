@@ -32,6 +32,7 @@ public interface IErlMember extends IErlElement, ISourceReference {
      * 
      * @return module or null
      */
+    @Override
     IErlModule getModule();
 
     String getModuleName();

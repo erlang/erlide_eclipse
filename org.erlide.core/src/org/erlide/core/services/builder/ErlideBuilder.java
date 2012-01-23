@@ -68,7 +68,7 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject =  ErlModelManager.getErlangModel()
+            final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
@@ -105,9 +105,10 @@ public class ErlideBuilder {
         }
     }
 
-    public IProject[] build(final int kind, @SuppressWarnings("rawtypes")
-    final Map args, final IProgressMonitor monitor,
-            final IResourceDelta resourceDelta) throws CoreException {
+    public IProject[] build(final int kind,
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProgressMonitor monitor, final IResourceDelta resourceDelta)
+            throws CoreException {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
@@ -118,8 +119,8 @@ public class ErlideBuilder {
         ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
                 + " of " + project.getName());
         // }
-        final IErlProject erlProject =  ErlModelManager.getErlangModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         try {
             MarkerUtils.deleteMarkers(project);
             initializeBuilder(monitor);
@@ -255,9 +256,9 @@ public class ErlideBuilder {
     }
 
     private Set<BuildResource> getResourcesToBuild(final int kind,
-            @SuppressWarnings("rawtypes")
-            final Map args, final IProject currentProject,
-            final IResourceDelta resourceDelta) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProject currentProject, final IResourceDelta resourceDelta)
+            throws CoreException {
         Set<BuildResource> resourcesToBuild = Sets.newHashSet();
         final IProgressMonitor submon = new SubProgressMonitor(
                 notifier.fMonitor, 10);

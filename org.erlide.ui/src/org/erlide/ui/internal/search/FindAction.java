@@ -231,7 +231,7 @@ public abstract class FindAction extends SelectionDispatchAction {
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();
         final OpenResult res = ErlideOpen.open(b, module, offset, ModelUtils
-                .getImportsAsList(module), "",  ErlModelManager.getErlangModel()
+                .getImportsAsList(module), "", ErlModelManager.getErlangModel()
                 .getPathVars());
         ErlLogger.debug("find " + res);
         final ErlangSearchPattern ref = SearchUtil

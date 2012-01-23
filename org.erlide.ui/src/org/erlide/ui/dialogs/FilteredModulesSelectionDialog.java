@@ -605,7 +605,8 @@ public class FilteredModulesSelectionDialog extends
             // couldn't we just assume all links in external files should be
             // matchable?
             if (project == resource && accessible) {
-                final IErlElementLocator model =  ErlModelManager.getErlangModel();
+                final IErlElementLocator model = ErlModelManager
+                        .getErlangModel();
                 final IErlProject erlProject = model.findProject(project);
                 final String extMods = erlProject.getExternalModulesString();
                 final List<String> files = new ArrayList<String>();
@@ -665,7 +666,7 @@ public class FilteredModulesSelectionDialog extends
         }
 
         private void addPaths(final IProject project) {
-            final IErlProject erlProject =  ErlModelManager.getErlangModel()
+            final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(project);
             if (erlProject != null) {
                 validPaths.addAll(getFullPaths(project,

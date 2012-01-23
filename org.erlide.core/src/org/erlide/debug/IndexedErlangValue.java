@@ -140,7 +140,7 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final Collection<IProject> projects) {
         final List<IErlProject> result = Lists
                 .newArrayListWithCapacity(projects.size());
-        final IErlModel model =  ErlModelManager.getErlangModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         for (final IProject project : projects) {
             final IErlElement element = model.getChildWithResource(project);
             if (element instanceof IErlProject) {

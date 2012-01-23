@@ -645,6 +645,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return getModel().getModelLock();
     }
 
+    @Override
     public IErlModule getModule() {
         return (IErlModule) getAncestorOfKind(Kind.MODULE);
     }

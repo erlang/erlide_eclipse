@@ -868,6 +868,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void setBeamLocator(final BeamLocator locator) {
-        this.beamLocator = locator;
+        beamLocator = locator;
     }
 }

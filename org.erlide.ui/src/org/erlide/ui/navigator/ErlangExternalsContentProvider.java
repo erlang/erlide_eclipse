@@ -108,7 +108,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
         if (element instanceof IProject) {
             final IProject project = (IProject) element;
             if (project.isOpen()) {
-                element =  ErlModelManager.getErlangModel().findProject(project);
+                element = ErlModelManager.getErlangModel().findProject(project);
             }
         }
         if (element instanceof IErlModule) {

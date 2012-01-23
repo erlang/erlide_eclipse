@@ -56,8 +56,7 @@ public class DummyProcess implements IProcess {
     }
 
     @Override
-    public Object getAdapter(@SuppressWarnings("rawtypes")
-    final Class adapter) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") final Class adapter) {
         ErlLogger.debug("--> adapt as " + adapter.getName());
         return null;
     }

@@ -32,7 +32,7 @@ public class DebuggerEventDaemon implements IBackendListener {
         private final IBackend myBackend;
 
         public HandlerJob(final IBackend backend) {
-            this.myBackend = backend;
+            myBackend = backend;
         }
 
         @Override
