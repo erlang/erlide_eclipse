@@ -22,10 +22,10 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.texteditor.IMarkerUpdater;
 import org.eclipse.ui.texteditor.MarkerUtilities;
-import org.erlide.backend.ErlDebugConstants;
-import org.erlide.debug.ErlangDebugTarget;
+import org.erlide.debug.ErlDebugConstants;
 import org.erlide.debug.ErlangLineBreakpoint;
 import org.erlide.debug.IErlangBreakpoint;
+import org.erlide.debug.model.ErlangDebugTarget;
 import org.erlide.jinterface.ErlLogger;
 
 /**

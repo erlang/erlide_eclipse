@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.debug;
+package org.erlide.debug.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +33,10 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.IBackend;
+import org.erlide.debug.DebuggerEventDaemon;
+import org.erlide.debug.ErlangLineBreakpoint;
+import org.erlide.debug.ErlideDebug;
+import org.erlide.debug.IErlangDebugNode;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlangFunctionCall;
 
@@ -238,7 +242,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
      * Notification we have connected to the VM and it has started. Resume the
      * VM.
      */
-    protected void started() {
+    public void started() {
         fireCreationEvent();
         installDeferredBreakpoints();
         try {
@@ -386,7 +390,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     private static final int META_EXIT_AT = 3;
     private static final int META_TRACE_OUTPUT = 4;
 
-    void handleMetaEvent(final OtpErlangPid metaPid,
+    public void handleMetaEvent(final OtpErlangPid metaPid,
             final OtpErlangTuple metaEvent) {
         ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid + ")");
         final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
@@ -509,7 +513,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return erlangProcess;
     }
 
-    void handleIntEvent(final OtpErlangTuple intEvent) {
+    public void handleIntEvent(final OtpErlangTuple intEvent) {
         final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
         final String event = a.atomValue();
         if (event.equals("new_break")) {

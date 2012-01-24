@@ -4,11 +4,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.backend.ErlangLaunchDelegate;
 import org.erlide.backend.IBackend;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverRunner;
+import org.erlide.debug.ErlangLaunchDelegate;
 
 /**
  * Cover launch configuration

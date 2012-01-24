@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.debug;
+package org.erlide.debug.model;
 
 import java.util.ArrayList;
 import java.util.List;

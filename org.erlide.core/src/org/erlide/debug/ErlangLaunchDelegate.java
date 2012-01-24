@@ -9,7 +9,7 @@
  * Vlad Dumitrescu
  * Jakob Cederlund
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.debug;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +32,12 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
+import org.erlide.backend.IBackend;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.debug.BeamLocator;
-import org.erlide.debug.ErtsProcess;
+import org.erlide.debug.model.ErtsProcess;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SystemUtils;
 

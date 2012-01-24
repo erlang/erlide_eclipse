@@ -1,4 +1,4 @@
-package org.erlide.debug;
+package org.erlide.debug.model;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -8,11 +8,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.debug;
+package org.erlide.debug.model;
 
 import org.eclipse.debug.core.model.DebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
-import org.erlide.backend.ErlDebugConstants;
+import org.erlide.debug.ErlDebugConstants;
+import org.erlide.debug.IErlangDebugNode;
 
 public class ErlangDebugElement extends DebugElement {
 

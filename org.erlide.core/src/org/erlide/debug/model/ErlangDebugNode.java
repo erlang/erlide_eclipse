@@ -1,4 +1,4 @@
-package org.erlide.debug;
+package org.erlide.debug.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.debug.IErlangDebugNode;
 
 /**
  * A debug node is a distributed node connected to the debug target. It is only

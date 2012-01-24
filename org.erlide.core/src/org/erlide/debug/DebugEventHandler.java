@@ -2,6 +2,7 @@ package org.erlide.debug;
 
 import java.util.Collection;
 
+import org.erlide.debug.model.ErlangDebugTarget;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -44,7 +45,7 @@ class DebugEventHandler {
                 if (debugTarget.getMetaFromPid(pid) == null) {
                     final OtpErlangPid self = debugTarget.getEventMBox();
                     final OtpErlangPid metaPid = ErlideDebug.attached(
-                            debugTarget.fBackend, pid, self);
+                            debugTarget.getBackend(), pid, self);
                     ErlLogger.debug("attached: " + pid + ",  meta: " + metaPid);
                     if (metaPid != null) {
                         debugTarget.putMetaPid(metaPid, pid);

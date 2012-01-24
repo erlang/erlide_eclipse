@@ -3,8 +3,8 @@ package org.erlide.backend.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.backend.BackendEvalResult;
 import org.erlide.backend.BackendException;
+import org.erlide.debug.BackendEvalResult;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;

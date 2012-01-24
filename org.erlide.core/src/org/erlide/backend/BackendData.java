@@ -33,6 +33,9 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
+import org.erlide.debug.ErlDebugConstants;
+import org.erlide.debug.ErlLaunchAttributes;
+import org.erlide.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SystemUtils;
 
