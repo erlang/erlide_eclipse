@@ -81,6 +81,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.SignatureException;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
@@ -458,12 +459,12 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void register(final ICodeBundle bundle) {
+    public void registerCodeBundle(final ICodeBundle bundle) {
         codeManager.register(bundle);
     }
 
     @Override
-    public void unregister(final Bundle b) {
+    public void unregisterCodeBundle(final Bundle b) {
         codeManager.unregister(b);
     }
 
@@ -525,7 +526,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean isDistributed() {
-        return !getData().getNodeName().equals("");
+        return !Strings.isNullOrEmpty(getData().getNodeName());
     }
 
     @Override
@@ -820,7 +821,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             connect();
             final IBackendManager bm = BackendCore.getBackendManager();
             for (final ICodeBundle bb : bm.getCodeBundles().values()) {
-                register(bb);
+                registerCodeBundle(bb);
             }
             initErlang(data.isMonitored(), data.isManaged());
 

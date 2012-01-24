@@ -42,9 +42,9 @@ public interface IBackend extends IRpcCallSite, IDisposable {
 
     OtpMbox createMbox(final String name);
 
-    void register(final ICodeBundle bundle);
+    void registerCodeBundle(final ICodeBundle bundle);
 
-    void unregister(final Bundle b);
+    void unregisterCodeBundle(final Bundle b);
 
     ILaunch getLaunch();
 

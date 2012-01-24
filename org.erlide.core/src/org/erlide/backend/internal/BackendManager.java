@@ -315,7 +315,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         forEachBackend(new IErlideBackendVisitor() {
             @Override
             public void visit(final IBackend bb) {
-                bb.register(pp);
+                bb.registerCodeBundle(pp);
             }
         });
     }

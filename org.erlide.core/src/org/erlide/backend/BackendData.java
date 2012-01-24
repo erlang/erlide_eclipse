@@ -47,7 +47,6 @@ public final class BackendData extends GenericBackendData {
     public static final String PROJECT_NAME_SEPARATOR = ";";
 
     private RuntimeInfoManager runtimeInfoManager;
-
     private BeamLocator beamLocator;
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,

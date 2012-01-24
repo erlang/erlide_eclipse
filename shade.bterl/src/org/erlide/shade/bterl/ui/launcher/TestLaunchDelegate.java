@@ -132,9 +132,9 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
     @Override
     protected BackendData configureBackend(final BackendData data,
-            final ILaunchConfiguration config, final String mode,
+            final ILaunchConfiguration config, final String aMode,
             final ILaunch launch) {
-        final BackendData result = super.configureBackend(data, config, mode,
+        final BackendData result = super.configureBackend(data, config, aMode,
                 launch);
         result.setBeamLocator(new TestsBeamLocator(workdir));
         return result;
