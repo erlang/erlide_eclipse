@@ -26,9 +26,9 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.debug.BeamLocator;
 import org.erlide.debug.ErlDebugConstants;
 import org.erlide.debug.ErlLaunchAttributes;
 import org.erlide.debug.ErlangLaunchDelegate;
@@ -131,10 +131,19 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     }
 
     @Override
+    protected BackendData configureBackend(final BackendData data,
+            final ILaunchConfiguration config, final String mode,
+            final ILaunch launch) {
+        final BackendData result = super.configureBackend(data, config, mode,
+                launch);
+        result.setBeamLocator(new TestsBeamLocator(workdir));
+        return result;
+    }
+
+    @Override
     protected void postLaunch(final String amode, final IBackend backend,
             final IProgressMonitor monitor) throws CoreException {
         super.postLaunch(amode, backend, monitor);
-        backend.setBeamLocator(new TestsBeamLocator(workdir));
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
         }
@@ -371,11 +380,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String[] cmdline = cmds.toArray(new String[cmds.size()]);
         System.out.println("---   cmdline (" + theWorkdir.getAbsolutePath()
                 + ")= " + Arrays.toString(cmdline));
-    }
-
-    @Override
-    protected BeamLocator getDebugHelper() {
-        return new TestsBeamLocator(workdir);
     }
 
 }

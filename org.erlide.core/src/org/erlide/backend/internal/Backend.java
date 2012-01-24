@@ -56,7 +56,6 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.debug.BeamLocator;
 import org.erlide.debug.ErlDebugConstants;
 import org.erlide.debug.ErlideDebug;
 import org.erlide.debug.model.ErlangDebugNode;
@@ -103,7 +102,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     private final ICodeManager codeManager;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
-    private BeamLocator beamLocator;
 
     public Backend(final BackendData data, final IErlRuntime runtime)
             throws BackendException {
@@ -843,7 +841,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void interpret(final IProject project, final String moduleName,
             final boolean distributed, final boolean interpret) {
         try {
-            final IFile beam = beamLocator.findModuleBeam(project, moduleName);
+            final IFile beam = data.getBeamLocator().findModuleBeam(project,
+                    moduleName);
             if (beam != null) {
                 if (beam.exists()) {
                     final String de = interpret ? "" : "de";
@@ -866,8 +865,4 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    @Override
-    public void setBeamLocator(final BeamLocator locator) {
-        beamLocator = locator;
-    }
 }

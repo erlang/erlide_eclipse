@@ -108,7 +108,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
     protected void postLaunch(final String mode, final IBackend b,
             final IProgressMonitor monitor) throws CoreException {
-        b.setBeamLocator(new BeamLocator());
     }
 
     /*
@@ -118,6 +117,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final ILaunchConfiguration config, final String mode,
             final ILaunch launch) {
         data.setLaunch(launch);
+        data.setBeamLocator(new BeamLocator());
         return data;
     }
 
@@ -225,10 +225,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             ErlLogger.warn(e);
             return false;
         }
-    }
-
-    protected BeamLocator getDebugHelper() {
-        return new BeamLocator();
     }
 
     public static List<String> addBreakpointProjectsAndModules(
