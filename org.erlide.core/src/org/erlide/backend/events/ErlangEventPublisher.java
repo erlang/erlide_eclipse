@@ -20,50 +20,54 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
-public class ErlangEventPublisher implements IBackendListener {
+public class ErlangEventPublisher {
 
-    private IBackend runtime;
+    private volatile IBackend backend;
     volatile boolean stopped = false;
     private EventAdmin eventAdmin;
+    private final IBackendListener backendListener;
 
     final static boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.event.daemon"));
 
-    public ErlangEventPublisher(final IBackend b) {
-        runtime = b;
+    public ErlangEventPublisher(final IBackend aBackend) {
+        this.backend = aBackend;
+        backendListener = new IBackendListener() {
+
+            @Override
+            public void runtimeAdded(final IBackend b) {
+            }
+
+            @Override
+            public void runtimeRemoved(final IBackend b) {
+                if (b == aBackend) {
+                    stop();
+                    backend = null;
+                }
+            }
+
+            @Override
+            public void moduleLoaded(final IBackend b, final IProject project,
+                    final String moduleName) {
+            }
+
+        };
     }
 
     public synchronized void start() {
         stopped = false;
-        new Thread(new HandlerJob(runtime)).start();
+        new Thread(new HandlerJob(backend)).start();
     }
 
     public synchronized void stop() {
         stopped = true;
     }
 
-    @Override
-    public void runtimeAdded(final IBackend b) {
-    }
-
-    @Override
-    public void runtimeRemoved(final IBackend b) {
-        if (b == runtime) {
-            stop();
-            runtime = null;
-        }
-    }
-
-    @Override
-    public void moduleLoaded(final IBackend backend, final IProject project,
-            final String moduleName) {
-    }
-
     private final class HandlerJob implements Runnable {
-        private final IBackend backend;
+        private final IBackend myBackend;
 
         public HandlerJob(final IBackend backend) {
-            this.backend = backend;
+            this.myBackend = backend;
         }
 
         @Override
@@ -71,7 +75,7 @@ public class ErlangEventPublisher implements IBackendListener {
             OtpErlangObject msg = null;
             do {
                 try {
-                    msg = backend.receiveEvent(200);
+                    msg = myBackend.receiveEvent(200);
                     String topic = null;
                     OtpErlangObject data = null;
                     OtpErlangPid sender = null;
@@ -89,10 +93,10 @@ public class ErlangEventPublisher implements IBackendListener {
                             ErlLogger.debug("MSG: %s", "[" + sender + "::"
                                     + topic + ": " + data + "]");
                         }
-                        publishEvent(backend, topic, data, sender);
+                        publishEvent(myBackend, topic, data, sender);
                     }
                 } catch (final OtpErlangExit e) {
-                    if (!backend.isStopped()) {
+                    if (!myBackend.isStopped()) {
                         // backend crashed -- restart?
                         ErlLogger.warn(e);
                     }
@@ -131,15 +135,15 @@ public class ErlangEventPublisher implements IBackendListener {
         }
     }
 
-    public void publishEvent(final IBackend backend, final String topic,
+    public void publishEvent(final IBackend b, final String topic,
             final OtpErlangObject event, final OtpErlangPid sender) {
 
         final Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("BACKEND", backend);
+        properties.put("BACKEND", b);
         properties.put("DATA", event);
         properties.put("SENDER", sender);
 
-        final Event osgiEvent = new Event(getFullTopic(topic, backend),
+        final Event osgiEvent = new Event(getFullTopic(topic, b),
                 properties);
         getEventAdmin().postEvent(osgiEvent);
     }
@@ -172,6 +176,10 @@ public class ErlangEventPublisher implements IBackendListener {
             result += key + ":" + event.getProperty(key) + ", ";
         }
         return result;
+    }
+
+    public IBackendListener getBackendListener() {
+        return backendListener;
     }
 
 }

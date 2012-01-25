@@ -455,7 +455,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         new LogEventHandler(this).register();
         new ErlangLogEventHandler(this).register();
 
-        BackendCore.getBackendManager().addBackendListener(eventDaemon);
+        BackendCore.getBackendManager().addBackendListener(
+                eventDaemon.getBackendListener());
     }
 
     @Override
