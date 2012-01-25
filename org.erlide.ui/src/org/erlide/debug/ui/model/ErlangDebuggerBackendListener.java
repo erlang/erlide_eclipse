@@ -16,12 +16,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
-import org.erlide.debug.ErlDebugConstants;
-import org.erlide.debug.ErlLaunchAttributes;
-import org.erlide.debug.ErlideDebug;
-import org.erlide.debug.model.ErlangDebugTarget;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.launch.debug.ErlideDebug;
+import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangPid;

@@ -33,11 +33,11 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.debug.BeamLocator;
-import org.erlide.debug.ErlDebugConstants;
-import org.erlide.debug.ErlLaunchAttributes;
-import org.erlide.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.launch.BeamLocator;
+import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.utils.SystemUtils;
 
 import com.google.common.collect.Lists;

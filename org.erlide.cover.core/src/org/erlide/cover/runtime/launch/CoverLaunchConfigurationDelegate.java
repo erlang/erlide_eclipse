@@ -8,7 +8,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.core.CoverBackend;
 import org.erlide.cover.core.CoverRunner;
-import org.erlide.debug.ErlangLaunchDelegate;
+import org.erlide.launch.ErlangLaunchDelegate;
 
 /**
  * Cover launch configuration

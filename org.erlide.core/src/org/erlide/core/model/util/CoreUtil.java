@@ -28,7 +28,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.debug.ErlLaunchAttributes;
+import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.utils.Util;
 
 public final class CoreUtil {

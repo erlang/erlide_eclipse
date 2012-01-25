@@ -23,8 +23,9 @@ Export-Package: org.erlide.backend,
  org.erlide.core.services.codeassist,
  org.erlide.core.services.search,
  org.erlide.core.services.text,
- org.erlide.debug,
- org.erlide.debug.model
+ org.erlide.launch,
+ org.erlide.launch.debug,
+ org.erlide.launch.debug.model
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,

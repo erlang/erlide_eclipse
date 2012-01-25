@@ -21,8 +21,8 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.debug.ErlDebugConstants;
-import org.erlide.debug.ErlangLineBreakpoint;
+import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 public class ErlLineBreakpointAdapter implements IToggleBreakpointsTarget {

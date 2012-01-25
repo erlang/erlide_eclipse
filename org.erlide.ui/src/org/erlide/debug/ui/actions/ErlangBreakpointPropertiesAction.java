@@ -15,7 +15,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyDialogAction;
-import org.erlide.debug.IErlangBreakpoint;
+import org.erlide.launch.debug.IErlangBreakpoint;
 
 public class ErlangBreakpointPropertiesAction implements IObjectActionDelegate {
 

@@ -53,10 +53,10 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
-import org.erlide.debug.ErlDebugConstants;
-import org.erlide.debug.ErlLaunchAttributes;
-import org.erlide.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
 import org.erlide.utils.CommonUtils;
 
