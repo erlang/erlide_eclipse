@@ -289,10 +289,10 @@
          <enabledWhen>
             <or>
                <instanceof
-                     value="org.erlide.debug.IErlangBreakpoint">
+                     value="org.erlide.launch.debug.IErlangBreakpoint">
                </instanceof>
                <adapt
-                     type="org.erlide.debug.IErlangBreakpoint">
+                     type="org.erlide.launch.debug.IErlangBreakpoint">
                </adapt>
             </or>
          </enabledWhen>
@@ -345,7 +345,7 @@
       <objectContribution
             adaptable="false"
             id="org.erlide.runtime.debug.ErlangBreakpointActions"
-            objectClass="org.erlide.debug.ErlangLineBreakpoint">
+            objectClass="org.erlide.launch.debug.ErlangLineBreakpoint">
          <action
                class="org.erlide.debug.ui.actions.ErlangBreakpointPropertiesAction"
                definitionId="org.erlide.ui.debug.breakpoint.properties"
