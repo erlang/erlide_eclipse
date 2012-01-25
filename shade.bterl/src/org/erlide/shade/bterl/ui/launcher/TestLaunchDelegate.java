@@ -24,7 +24,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
@@ -34,7 +33,6 @@ import org.erlide.debug.ErlLaunchAttributes;
 import org.erlide.debug.ErlangLaunchDelegate;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.shade.bterl.Activator;
-import org.erlide.test_support.ui.suites.RegressionResultsView;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.ListsUtils;
 import org.erlide.utils.TermParser;
@@ -92,13 +90,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         testcase = cfg.getAttribute(TestLaunchAttributes.CASE, "");
 
         workdir = new File(wdir);
-        if ("regression".equals(mode)) {
-            final RegressionResultsView rview = (RegressionResultsView) PlatformUI
-                    .getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .showView(RegressionResultsView.VIEW_ID);
-            RegressionLauncher.getInstance().launch(wdir, monitor, rview);
-            return false;
-        }
         return true;
     }
 
@@ -106,7 +97,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     protected IBackend doLaunch(final ILaunchConfiguration config,
             final String amode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
-
         System.out.println("---@> launch " + workdir.getAbsolutePath() + " -> "
                 + suite + ":" + testcase + " (" + mode + ")");
         if (!workdir.exists()) {
@@ -115,18 +105,11 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     workdir.getAbsolutePath());
             return null;
         }
-        if ("regression".equals(mode)) {
-            // regression is handled elsewhere
-            return null;
-        }
         runMakeLinks(monitor);
-
         final ILaunchConfiguration cfg = setupConfiguration(config,
                 projectName, workdir);
-
         final String theMode = ILaunchManager.DEBUG_MODE.equals(amode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
-
         return super.doLaunch(cfg, theMode, launch, monitor);
     }
 

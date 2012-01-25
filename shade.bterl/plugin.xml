@@ -12,6 +12,15 @@
             sourceLocatorId="org.erlide.core.erlangLocatorDirector"
             sourcePathComputerId="org.erlide.core.sourcepathcomputer">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="org.erlide.shade.bterl.ui.launcher.TestRegressionLaunchDelegate"
+            id="org.erlide.test_support.regression.launchConfigurationType"
+            modes="run"
+            name="BTerl test regression"
+            public="false"
+            sourceLocatorId="org.erlide.core.erlangLocatorDirector"
+            sourcePathComputerId="org.erlide.core.sourcepathcomputer">
+      </launchConfigurationType>
    </extension>
 <extension point="org.eclipse.debug.ui.launchShortcuts">
     <shortcut
@@ -44,7 +53,7 @@
           icon="icons/run_bterl.gif"
           id="org.erlide.test_support.run"
           label="BTerl test"
-          modes="run">
+          modes="run,debug">
         <contextualLaunch>
            <enablement>
               <with variable="selection">
@@ -111,40 +120,6 @@
                		    <test
                            forcePluginActivation="true"
                            property="org.erlide.test_support.ui.run.canTrace"/>
-            		</or>
-           		 </iterate>
-              </with>
-              <systemTest
-                    property="shade.bterl.systemTest1"
-                    value="false">
-              </systemTest>
-           </enablement>
-        </contextualLaunch>
-        <configurationType
-             id="org.erlide.test_support.launchConfigurationType">
-       </configurationType>
-        <enablement>
-           <systemTest
-                 property="shade.bterl.systemTest1"
-                 value="false">
-           </systemTest>
-        </enablement>
-    </shortcut>
-    <shortcut
-          class="org.erlide.shade.bterl.ui.launcher.TestLaunchShortcutRun"
-          description="run the BTerl tests"
-          id="org.erlide.test_support.debug"
-          icon="icons/run_bterl.gif"
-          label="BTerl test"
-          modes="debug">
-        <contextualLaunch>
-           <enablement>
-              <with variable="selection">
-           		 <iterate>
-            		<or>
-               		    <test
-                           forcePluginActivation="true"
-                           property="org.erlide.test_support.ui.run.canDebug"/>
             		</or>
            		 </iterate>
               </with>

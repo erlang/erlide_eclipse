@@ -100,7 +100,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         }
     }
 
-    private String getTargetName(final Object target) {
+    protected String getTargetName(final Object target) {
         Object newtarget = target;
         if (target instanceof IEditorPart) {
             newtarget = getEditorTarget(target);

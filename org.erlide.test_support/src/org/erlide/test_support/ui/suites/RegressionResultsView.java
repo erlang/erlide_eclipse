@@ -79,7 +79,7 @@ public class RegressionResultsView extends ViewPart {
                 data.add("" + data.size() + ": " + line);
                 tableViewer.refresh();
                 tableViewer.reveal(data.get(data.size() - 1));
-                tableViewer.refresh();
+                // tableViewer.refresh();
                 control.update();
             }
 
