@@ -2,12 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.6.0
+Bundle-Version: 1.7.0
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
- guava-10.0.jar,
  org.eclipse.xtend2.lib-2.2.0.jar,
  guice-3.0/aopalliance.jar,
  guice-3.0/guice-3.0.jar,
@@ -16,7 +15,8 @@ Bundle-ClassPath: jinterface.jar,
  guice-3.0/guice-multibindings-3.0.jar,
  guice-3.0/guice-throwingproviders-3.0.jar,
  guice-3.0/javax.inject.jar,
- commons-io-1.4.jar
+ commons-io-1.4.jar,
+ guava-11.0.1.jar
 Export-Package: com.ericsson.otp.erlang,
  com.google.common.annotations,
  com.google.common.base;uses:="new com.google.common.base",
@@ -24,7 +24,9 @@ Export-Package: com.ericsson.otp.erlang,
  com.google.common.cache,
  com.google.common.collect;uses:="com.google.common.base,new new com.google.common.collect,new com.google.common.collect",
  com.google.common.eventbus,
+ com.google.common.hash,
  com.google.common.io,
+ com.google.common.math,
  com.google.common.net,
  com.google.common.primitives,
  com.google.common.util.concurrent,
