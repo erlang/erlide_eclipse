@@ -77,7 +77,7 @@ public class ErlStructureCreator extends StructureCreator {
 
     /**
      * A root node for the structure. It is similar to {@link StructureRootNode}
-     * but needed to be a subclass of {@link JavaNode} because of the code used
+     * but needed to be a subclass of {@link ErlNode} because of the code used
      * to build the structure.
      */
     private final class RootErlNode extends ErlNode implements IDisposable {
@@ -319,7 +319,7 @@ public class ErlStructureCreator extends StructureCreator {
             final List<String> args = new ArrayList<String>();
             while (e != null) {
                 // each path component has a name that uses the same
-                // conventions as a JavaNode name
+                // conventions as a ErlNode name
                 final String name = ErlangCompareUtilities.getErlElementID(e);
                 if (name == null) {
                     return null;

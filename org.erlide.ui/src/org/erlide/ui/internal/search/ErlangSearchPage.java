@@ -770,7 +770,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     // --------------- Configuration handling --------------
 
     /**
-     * Returns the page settings for this Java search page.
+     * Returns the page settings for this Erlang search page.
      * 
      * @return the page settings to be used
      */

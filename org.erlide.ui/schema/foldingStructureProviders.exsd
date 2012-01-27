@@ -72,7 +72,7 @@ Extensions may optionally contribute a preference block which will appear on the
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  An implementation of org.eclipse.jdt.ui.text.folding.IJavaFoldingStructureProvider
+                  An implementation of IErlangFoldingStructureProvider
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.jdt.ui.text.folding.IJavaFoldingStructureProvider"/>

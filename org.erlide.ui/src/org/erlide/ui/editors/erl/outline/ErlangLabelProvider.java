@@ -48,9 +48,9 @@ public class ErlangLabelProvider implements ILabelProvider, IColorProvider {
 
     /**
      * @param textFlags
-     *            Flags defined in <code>JavaElementLabels</code>.
+     *            Flags defined in <code>ErlangElementLabels</code>.
      * @param imageFlags
-     *            Flags defined in <code>JavaElementImageProvider</code>.
+     *            Flags defined in <code>ErlangElementImageProvider</code>.
      */
     public ErlangLabelProvider(final long textFlags, final int imageFlags) {
         fImageLabelProvider = new ErlangElementImageProvider();

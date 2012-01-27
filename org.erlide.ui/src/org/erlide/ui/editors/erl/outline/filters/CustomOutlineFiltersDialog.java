@@ -57,7 +57,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
     private final Stack<FilterDescriptor> fFilterDescriptorChangeHistory;
 
     /**
-     * Creates a dialog to customize Java element filters.
+     * Creates a dialog to customize Erlang element filters.
      * 
      * @param shell
      *            the parent shell

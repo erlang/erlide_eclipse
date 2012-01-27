@@ -212,7 +212,6 @@ public class BuildNotifier {
         if (msg.equals(previousSubtask)) {
             return; // avoid refreshing with same one
         }
-        // if (JavaBuilder.DEBUG) ErlLogger.debug(msg);
         if (fMonitor != null) {
             fMonitor.subTask(msg);
         }
@@ -237,7 +236,8 @@ public class BuildNotifier {
     protected void updateProblemCounts(final IMarker[] oldProblems,
             final IProblem[] newProblems) {
         if (newProblems != null) {
-            next: for (final IProblem newProblem : newProblems) {
+            next:
+            for (final IProblem newProblem : newProblems) {
                 if (newProblem.getID() == IProblem.Task) {
                     continue; // skip task
                 }
@@ -269,7 +269,8 @@ public class BuildNotifier {
             }
         }
         if (oldProblems != null) {
-            next: for (final IMarker oldProblem : oldProblems) {
+            next:
+            for (final IMarker oldProblem : oldProblems) {
                 if (oldProblem == null) {
                     continue next; // already matched up with a new problem
                 }

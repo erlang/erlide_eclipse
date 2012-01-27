@@ -20,11 +20,11 @@ import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
- * Wraps a <code>JavaElementSearchActions</code> to find its results in the
+ * Wraps a <code>ErlangElementSearchActions</code> to find its results in the
  * specified working set.
  * <p>
  * The action is applicable to selections and Search view entries representing a
- * Java element.
+ * Erlang element.
  * 
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.
@@ -68,7 +68,7 @@ public class WorkingSetFindAction extends FindAction {
         setImageDescriptor(action.getImageDescriptor());
         setToolTipText(action.getToolTipText());
         // FIXME PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
-        // IJavaHelpContextIds.WORKING_SET_FIND_ACTION);
+        // IErlangHelpContextIds.WORKING_SET_FIND_ACTION);
     }
 
     @Override

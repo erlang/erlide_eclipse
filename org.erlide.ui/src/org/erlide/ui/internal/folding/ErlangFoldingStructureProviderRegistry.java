@@ -26,7 +26,7 @@ public class ErlangFoldingStructureProviderRegistry {
     }
 
     /**
-     * Returns an array of <code>JavaFoldingStructureProviderDescriptor</code>
+     * Returns an array of <code>ErlangFoldingStructureProviderDescriptor</code>
      * describing all extension to the <code>foldingProviders</code> extension
      * point.
      * 

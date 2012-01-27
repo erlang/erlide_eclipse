@@ -46,7 +46,7 @@ public class ErlangAnnotationIterator implements Iterator<Annotation> {
      * @param skipIrrelevants
      *            whether to skip irrelevant annotations
      * @param returnAllAnnotations
-     *            Whether to return non IJavaAnnotations as well
+     *            Whether to return non {@link IErlangAnnotation}s as well
      */
     public ErlangAnnotationIterator(final IAnnotationModel model,
             final boolean skipIrrelevants, final boolean returnAllAnnotations) {

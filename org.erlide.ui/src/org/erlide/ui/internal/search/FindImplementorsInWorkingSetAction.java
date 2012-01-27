@@ -19,7 +19,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
  * Finds references of the selected element in working sets. The action is
- * applicable to selections representing a Java element.
+ * applicable to selections representing a Erlang element.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -65,7 +65,7 @@ public class FindImplementorsInWorkingSetAction extends FindImplementorsAction {
      * this constructor.
      * 
      * @param editor
-     *            the Java editor
+     *            the Erlang editor
      */
     public FindImplementorsInWorkingSetAction(final ErlangEditor editor) {
         this(editor, null);

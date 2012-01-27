@@ -39,7 +39,7 @@ public class ColorManager implements IColorManager {
     private final boolean fAutoDisposeOnDisplayDispose;
 
     /**
-     * Creates a new Java color manager which automatically disposes the
+     * Creates a new Erlang color manager which automatically disposes the
      * allocated colors when the current display gets disposed.
      */
     public ColorManager() {
@@ -47,7 +47,7 @@ public class ColorManager implements IColorManager {
     }
 
     /**
-     * Creates a new Java color manager.
+     * Creates a new Erlang color manager.
      * 
      * @param autoDisposeOnDisplayDispose
      *            if <code>true</code> the color manager automatically disposes

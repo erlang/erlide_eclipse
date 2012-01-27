@@ -13,8 +13,8 @@ import org.eclipse.ui.texteditor.IUpdate;
 import org.erlide.launch.debug.IErlangBreakpoint;
 
 /**
- * Presents the standard properties dialog to configure the attibutes of a Java
- * Breakpoint from the ruler popup menu of a text editor.
+ * Presents the standard properties dialog to configure the attributes of a
+ * Erlang Breakpoint from the ruler popup menu of a text editor.
  */
 public class ErlangBreakpointPropertiesRulerAction extends
         RulerBreakpointAction implements IUpdate {

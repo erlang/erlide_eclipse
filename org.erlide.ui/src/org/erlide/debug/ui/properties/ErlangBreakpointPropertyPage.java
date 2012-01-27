@@ -188,7 +188,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     // // IStatus.ERROR,
     // // MessageFormat
     // // .format(
-    //				//												"JavaBreakpointPage allowed input of invalid string for hit count value: {0}.", new String[] { fHitCountText.getText() }), e)); //$NON-NLS-1$
+    //				//												"ErlangBreakpointPage allowed input of invalid string for hit count value: {0}.", new String[] { fHitCountText.getText() }), e)); //$NON-NLS-1$
     // }
     // }
     // breakpoint.setHitCount(hitCount);
@@ -378,7 +378,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Allows subclasses to add type specific labels to the common Java
+     * Allows subclasses to add type specific labels to the common Erlang
      * breakpoint page.
      * 
      * @param parent
@@ -387,7 +387,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Allows subclasses to add type specific editors to the common Java
+     * Allows subclasses to add type specific editors to the common Erlang
      * breakpoint page.
      * 
      * @param parent
@@ -527,7 +527,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
         } catch (final CoreException e) {
             ErlLogger.error(e);
             // JDIDebugUIPlugin.statusDialog(
-            // PropertyPageMessages.JavaBreakpointPage_9, e.getStatus());
+            // PropertyPageMessages.ErlangBreakpointPage_9, e.getStatus());
         }
         return super.performCancel();
     }

@@ -580,6 +580,7 @@ public class SearchUtil {
     private static LRUWorkingSetsList fgLRUWorkingSets;
 
     // Settings store
+    // FIXME name?
     private static final String DIALOG_SETTINGS_KEY = "JavaElementSearchActions";
     private static final String STORE_LRU_WORKING_SET_NAMES = "lastUsedWorkingSetNames";
 

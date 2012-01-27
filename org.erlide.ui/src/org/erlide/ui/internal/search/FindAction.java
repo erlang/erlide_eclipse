@@ -55,7 +55,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
- * Abstract class for Java search actions.
+ * Abstract class for Erlang search actions.
  * <p>
  * Note: This class is for internal use only. Clients should not use this class.
  * </p>
@@ -65,8 +65,8 @@ import com.google.common.collect.Sets;
 public abstract class FindAction extends SelectionDispatchAction {
 
     // A dummy which can't be selected in the UI
-    // private static final IErlElement RETURN_WITHOUT_BEEP = JavaCore
-    // .create(JavaPlugin.getWorkspace().getRoot());
+    // private static final IErlElement RETURN_WITHOUT_BEEP = ErlangCore
+    // .create(ErlangPlugin.getWorkspace().getRoot());
 
     private ErlangEditor fEditor;
 

@@ -130,7 +130,7 @@ public final class PresenterControlCreator extends
     }
 
     /**
-     * Action that shows the current hover contents in the Javadoc view.
+     * Action that shows the current hover contents in the Edoc view.
      */
     private static final class ShowInEdocViewAction extends Action {
         private final BrowserInformationControl fInfoControl;

@@ -345,8 +345,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     /**
-     * This action toggles whether this Java Outline page links its selection to
-     * the active editor.
+     * This action toggles whether this Erlang Outline page links its selection
+     * to the active editor.
      * 
      * @since 3.0
      */

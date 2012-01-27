@@ -35,7 +35,7 @@ public class ErlideUIDebugImages {
     private static ImageRegistry fgImageRegistry = null;
 
     /*
-     * Available cached Images in the Java debug plug-in image registry.
+     * Available cached Images in the Erlang debug plug-in image registry.
      */
     public static final String IMG_OBJS_EXCEPTION = "IMG_OBJS_EXCEPTION"; //$NON-NLS-1$
 

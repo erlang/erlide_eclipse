@@ -143,7 +143,7 @@ public abstract class SelectionDispatchAction extends Action implements
     // *
     // * @param selection the selection
     // */
-    // public void selectionChanged(JavaTextSelection selection) {
+    // public void selectionChanged(ErlangTextSelection selection) {
     // selectionChanged((ITextSelection)selection);
     // }
     //
@@ -153,7 +153,7 @@ public abstract class SelectionDispatchAction extends Action implements
     // *
     // * @param selection the selection
     // */
-    // public void run(JavaTextSelection selection) {
+    // public void run(ErlangTextSelection selection) {
     // run((ITextSelection)selection);
     // }
 

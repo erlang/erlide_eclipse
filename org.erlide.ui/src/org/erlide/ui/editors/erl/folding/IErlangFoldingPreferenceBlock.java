@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Control;
 public interface IErlangFoldingPreferenceBlock {
 
     /**
-     * Creates the control that will be displayed on the Java &gt; Editor &gt;
+     * Creates the control that will be displayed on the Erlang &gt; Editor &gt;
      * Folding preference page.
      * 
      * @param parent

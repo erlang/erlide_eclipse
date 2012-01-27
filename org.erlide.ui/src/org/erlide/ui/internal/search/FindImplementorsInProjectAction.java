@@ -17,8 +17,8 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
  * Finds references to the selected element in the enclosing project of the
- * selected element. The action is applicable to selections representing a Java
- * element.
+ * selected element. The action is applicable to selections representing a
+ * Erlang element.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -45,7 +45,7 @@ public class FindImplementorsInProjectAction extends FindImplementorsAction {
      * this constructor.
      * 
      * @param editor
-     *            the Java editor
+     *            the Erlang editor
      */
     public FindImplementorsInProjectAction(final ErlangEditor editor) {
         super(editor);

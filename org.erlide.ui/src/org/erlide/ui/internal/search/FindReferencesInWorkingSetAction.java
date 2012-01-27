@@ -20,7 +20,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**
  * Finds references of the selected element in working sets. The action is
- * applicable to selections representing a Java element.
+ * applicable to selections representing a Erlang element.
  * 
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
@@ -66,7 +66,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
      * this constructor.
      * 
      * @param editor
-     *            the Java editor
+     *            the Erlang editor
      */
     public FindReferencesInWorkingSetAction(final ErlangEditor editor) {
         this(editor, null);
@@ -77,7 +77,7 @@ public class FindReferencesInWorkingSetAction extends FindReferencesAction {
      * this constructor.
      * 
      * @param editor
-     *            the Java editor
+     *            the Erlang editor
      * @param workingSets
      *            the working sets to be used in the search
      */

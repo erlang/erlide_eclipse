@@ -17,7 +17,7 @@ public final class FoldingPreferencePage extends
      */
     @Override
     protected String getHelpId() {
-        return ""; // IJavaHelpContextIds.JAVA_EDITOR_PREFERENCE_PAGE;
+        return ""; // IErlangHelpContextIds.JAVA_EDITOR_PREFERENCE_PAGE;
     }
 
     /*
