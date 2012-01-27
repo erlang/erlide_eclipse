@@ -125,7 +125,7 @@ suspend(MetaPid) ->
     erlide_dbg_mon:suspend(MetaPid).
 
 resume(MetaPid) ->
-    erlide_log:logp(">>>> ~p", [MetaPid]),
+    erlide_log:logp("dbg resume >>>> ~p", [MetaPid]),
     erlide_dbg_mon:resume(MetaPid).
 
 bindings(MetaPid) ->

@@ -8,12 +8,13 @@ f() ->
 	X=[1,4,6],
 	X.
  
-g() -> 'a\1b',
-	   new_file:ok(),
-navigation:fff(),
+g() -> 
+	'a\1b',
+	new_file:ok(),
 	   
 	dict:new(),
-	f(), "he  ~n ha \b \0123 \xcafa \x{cafe}s he\"j '",
+	f(), 
+	"he  ~n ha \b \0123 \xcafa \x{cafe}s he\"j '",
 	[$", $', $\567, $\x{cafe}]. 
 
   
