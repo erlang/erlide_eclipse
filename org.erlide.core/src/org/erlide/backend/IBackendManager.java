@@ -26,9 +26,8 @@ public interface IBackendManager {
 
     Collection<IBackend> getAllBackends();
 
-    void addBundle(final Bundle b,
-            final Collection<Tuple<String, CodeContext>> paths,
-            final Collection<Tuple<String, String>> inits);
+    void addBundle(Bundle b, Map<String, CodeContext> paths,
+            Collection<Tuple<String, String>> inits);
 
     void forEachBackend(final IErlideBackendVisitor visitor);
 

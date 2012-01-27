@@ -10,30 +10,31 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.erlide.backend.BackendUtils;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class CodeBundleImpl implements ICodeBundle {
 
     private final Bundle bundle;
-    private final Collection<Tuple<String, CodeContext>> paths;
+    private final Map<String, CodeContext> paths;
     private final Collection<Tuple<String, String>> inits;
 
     public CodeBundleImpl(final Bundle b,
-            final Collection<Tuple<String, CodeContext>> paths,
+            final Map<String, CodeContext> paths2,
             final Collection<Tuple<String, String>> inits) {
         bundle = b;
-        this.paths = Lists.newArrayList(paths);
+        this.paths = Maps.newHashMap(paths2);
         this.inits = inits;
     }
 
@@ -45,35 +46,22 @@ public class CodeBundleImpl implements ICodeBundle {
     @Override
     public Collection<String> getEbinDirs() {
         final List<String> result = Lists.newArrayList();
-        for (final Tuple<String, CodeContext> path : paths) {
-            final Collection<String> myPath = BeamUtil
-                    .getPaths(path.first, bundle);
+        for (final Entry<String, CodeContext> path : paths.entrySet()) {
+            final Collection<String> myPath = BeamUtil.getPaths(path.getKey(),
+                    bundle);
             if (myPath != null) {
                 result.addAll(myPath);
             } else {
                 ErlLogger.warn("Can't access path %s, "
-                        + "erlide plugins may be incorrectly built", path.first);
+                        + "plugin may be incorrectly built", path.getKey());
             }
         }
         return result;
     }
 
     @Override
-    public Collection<String> getPluginCode() {
-        final List<String> result = new ArrayList<String>();
-        for (final Tuple<String, CodeContext> dir : paths) {
-            final String beamModuleName = BackendUtils
-                    .getBeamModuleName(dir.first);
-            if (beamModuleName != null) {
-                result.add(beamModuleName);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public Collection<Tuple<String, CodeContext>> getPaths() {
-        return Collections.unmodifiableCollection(paths);
+    public Map<String, CodeContext> getPaths() {
+        return Collections.unmodifiableMap(paths);
     }
 
     @Override
