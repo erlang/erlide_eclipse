@@ -190,7 +190,7 @@ public class ErlModelCache implements IDisposable {
         if (tuple == null) {
             return null;
         }
-        final List<ExternalTreeEntry> entries = tuple.o2;
+        final List<ExternalTreeEntry> entries = tuple.second;
         if (entries == null) {
             return null;
         }
@@ -261,7 +261,7 @@ public class ErlModelCache implements IDisposable {
         final Set<Entry<String, Tuple<IErlProject, List<ExternalTreeEntry>>>> entrySet = externalTreeCache
                 .entrySet();
         for (final Entry<String, Tuple<IErlProject, List<ExternalTreeEntry>>> entry : entrySet) {
-            if (entry.getValue().o1 == project) {
+            if (entry.getValue().first == project) {
                 keysToRemove.add(entry.getKey());
             }
         }

@@ -47,12 +47,12 @@ public class CodeBundleImpl implements ICodeBundle {
         final List<String> result = Lists.newArrayList();
         for (final Tuple<String, CodeContext> path : paths) {
             final Collection<String> myPath = BeamUtil
-                    .getPaths(path.o1, bundle);
+                    .getPaths(path.first, bundle);
             if (myPath != null) {
                 result.addAll(myPath);
             } else {
                 ErlLogger.warn("Can't access path %s, "
-                        + "erlide plugins may be incorrectly built", path.o1);
+                        + "erlide plugins may be incorrectly built", path.first);
             }
         }
         return result;
@@ -63,7 +63,7 @@ public class CodeBundleImpl implements ICodeBundle {
         final List<String> result = new ArrayList<String>();
         for (final Tuple<String, CodeContext> dir : paths) {
             final String beamModuleName = BackendUtils
-                    .getBeamModuleName(dir.o1);
+                    .getBeamModuleName(dir.first);
             if (beamModuleName != null) {
                 result.add(beamModuleName);
             }

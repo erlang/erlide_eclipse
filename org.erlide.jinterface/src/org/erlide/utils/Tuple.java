@@ -15,17 +15,17 @@ import com.google.common.base.Objects;
 public class Tuple<X, Y> implements Serializable {
 
     private static final long serialVersionUID = 5812091735998675402L;
-    public X o1;
-    public Y o2;
+    public X first;
+    public Y second;
 
     public Tuple(final X o1, final Y o2) {
-        this.o1 = o1;
-        this.o2 = o2;
+        this.first = o1;
+        this.second = o2;
     }
 
     public Tuple(final Tuple<X, Y> other) {
-        this.o1 = other.o1;
-        this.o2 = other.o2;
+        this.first = other.first;
+        this.second = other.second;
     }
 
     @Override
@@ -36,27 +36,27 @@ public class Tuple<X, Y> implements Serializable {
 
         @SuppressWarnings("rawtypes")
         final Tuple t2 = (Tuple) obj;
-        if (o1 == t2.o1 && o2 == t2.o2) { // all the same
+        if (first == t2.first && second == t2.second) { // all the same
             return true;
         }
 
-        if (o1 == null && t2.o1 != null) {
+        if (first == null && t2.first != null) {
             return false;
         }
-        if (o2 == null && t2.o2 != null) {
+        if (second == null && t2.second != null) {
             return false;
         }
-        if (o1 != null && t2.o1 == null) {
+        if (first != null && t2.first == null) {
             return false;
         }
-        if (o2 != null && t2.o2 == null) {
+        if (second != null && t2.second == null) {
             return false;
         }
 
-        if (!o1.equals(t2.o1)) {
+        if (!first.equals(t2.first)) {
             return false;
         }
-        if (!o2.equals(t2.o2)) {
+        if (!second.equals(t2.second)) {
             return false;
         }
         return true;
@@ -64,16 +64,16 @@ public class Tuple<X, Y> implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(o1, o2);
+        return Objects.hashCode(first, second);
     }
 
     @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
         buffer.append("Tuple [");
-        buffer.append(o1);
+        buffer.append(first);
         buffer.append(" -- ");
-        buffer.append(o2);
+        buffer.append(second);
         buffer.append(']');
         return buffer.toString();
     }

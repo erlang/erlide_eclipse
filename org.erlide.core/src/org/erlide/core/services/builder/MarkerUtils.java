@@ -531,11 +531,11 @@ public final class MarkerUtils {
                 }
 
                 for (final Tuple<String, Integer> c : cl) {
-                    mkTaskMarker(resource, c.o2, c.o1, TODO,
+                    mkTaskMarker(resource, c.second, c.first, TODO,
                             IMarker.PRIORITY_NORMAL);
-                    mkTaskMarker(resource, c.o2, c.o1, XXX,
+                    mkTaskMarker(resource, c.second, c.first, XXX,
                             IMarker.PRIORITY_NORMAL);
-                    mkTaskMarker(resource, c.o2, c.o1, FIXME,
+                    mkTaskMarker(resource, c.second, c.first, FIXME,
                             IMarker.PRIORITY_HIGH);
                 }
             } finally {
