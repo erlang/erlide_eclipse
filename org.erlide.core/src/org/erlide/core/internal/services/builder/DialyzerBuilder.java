@@ -10,10 +10,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -40,10 +37,10 @@ public class DialyzerBuilder extends IncrementalProjectBuilder {
         try {
             prefs = DialyzerPreferences.get(project);
         } catch (final RpcException e1) {
-            throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID, e1.toString()));
+            ErlLogger.warn(e1);
+            return null;
         }
-        if (!prefs.getDialyzeOnCompile()) {
+        if (prefs == null || !prefs.getDialyzeOnCompile()) {
             return null;
         }
         final IErlElementLocator model = ErlModelManager.getErlangModel();
