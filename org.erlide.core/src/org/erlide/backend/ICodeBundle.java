@@ -13,7 +13,6 @@ package org.erlide.backend;
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 

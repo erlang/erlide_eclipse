@@ -2204,7 +2204,8 @@ public final class CharOperation {
             segmentStart = 0; // force iName check
         }
         int prefixStart = iName;
-        checkSegment: while (iName < nameEnd) {
+        checkSegment:
+        while (iName < nameEnd) {
             if (iPattern == patternEnd) {
                 iPattern = segmentStart; // mismatch - restart current
                 // segment
@@ -2354,7 +2355,8 @@ public final class CharOperation {
             pSegmentRestart = 0; // force fSegmentStart check
         }
         int fSegmentRestart = fSegmentStart;
-        checkSegment: while (fSegmentStart < fLength) {
+        checkSegment:
+        while (fSegmentStart < fLength) {
 
             if (pSegmentStart >= pLength) {
                 if (freeTrailingDoubleStar) {
@@ -2763,7 +2765,8 @@ public final class CharOperation {
 
         if (!equals(toBeReplaced, replacementChars)) {
 
-            next: for (int i = 0; i < max; i++) {
+            next:
+            for (int i = 0; i < max; i++) {
                 int j = 0;
                 while (j < replacedLength) {
                     if (i + j == max) {
