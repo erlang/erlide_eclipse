@@ -90,8 +90,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          id="org.erlide.test_support"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="shade.bterl"
