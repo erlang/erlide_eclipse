@@ -584,7 +584,8 @@ public final class BuilderHelper {
             return;
         }
         try {
-            completeCompile(project, resource.getResource(), res.get(), b,
+            OtpErlangObject result = res.get();
+            completeCompile(project, resource.getResource(), result, b,
                     compilerOptions);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
