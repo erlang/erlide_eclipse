@@ -33,6 +33,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
@@ -73,17 +74,23 @@ public class ErlideBuilder {
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
             if (bf.exists()) {
-                final IResource[] beams = bf.members();
-                monitor.beginTask("Cleaning Erlang files", beams.length);
-                if (beams.length > 0) {
-                    final float delta = 100.0f / beams.length;
-                    for (final IResource element : beams) {
-                        if ("beam".equals(element.getFileExtension())) {
-                            final IResource source = findCorrespondingSource(element);
-                            if (source != null) {
-                                element.delete(true, monitor);
+                final boolean nukeOutput = new OldErlangProjectProperties(
+                        currentProject).isNukeOutputOnClean();
+                if (nukeOutput) {
+                    bf.delete(true, monitor);
+                } else {
+                    final IResource[] beams = bf.members();
+                    monitor.beginTask("Cleaning Erlang files", beams.length);
+                    if (beams.length > 0) {
+                        final float delta = 100.0f / beams.length;
+                        for (final IResource element : beams) {
+                            if ("beam".equals(element.getFileExtension())) {
+                                final IResource source = findCorrespondingSource(element);
+                                if (source != null) {
+                                    element.delete(true, monitor);
+                                }
+                                notifier.updateProgressDelta(delta);
                             }
-                            notifier.updateProgressDelta(delta);
                         }
                     }
                 }

@@ -47,6 +47,7 @@ public final class OldErlangProjectProperties implements
     private RuntimeVersion runtimeVersion = new RuntimeVersion(
             ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
     private String runtimeName = null;
+    private boolean nukeOutputOnClean = false;
 
     public OldErlangProjectProperties() {
     }
@@ -114,6 +115,8 @@ public final class OldErlangProjectProperties implements
         externalIncludesFile = node.get(
                 ProjectPreferencesConstants.EXTERNAL_INCLUDES,
                 ProjectPreferencesConstants.DEFAULT_EXTERNAL_INCLUDES);
+        setNukeOutputOnClean(node.getBoolean(
+                ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
     }
 
     @Override
@@ -160,6 +163,8 @@ public final class OldErlangProjectProperties implements
             }
             node.put(ProjectPreferencesConstants.PROJECT_EXTERNAL_MODULES,
                     externalModulesFile);
+            node.putBoolean(ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
+                    isNukeOutputOnClean());
 
             node.flush();
         } finally {
@@ -269,6 +274,14 @@ public final class OldErlangProjectProperties implements
     @Override
     public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
         this.runtimeVersion = runtimeVersion;
+    }
+
+    public boolean isNukeOutputOnClean() {
+        return nukeOutputOnClean;
+    }
+
+    public void setNukeOutputOnClean(boolean nukeOutputOnClean) {
+        this.nukeOutputOnClean = nukeOutputOnClean;
     }
 
 }

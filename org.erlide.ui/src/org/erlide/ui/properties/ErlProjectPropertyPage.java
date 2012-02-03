@@ -189,6 +189,16 @@ public class ErlProjectPropertyPage extends PropertyPage {
                 sources_tree.setLayoutData(formData);
             }
         }
+
+        final Button btnWhenCleaningDelete = new Button(sourceComposite,
+                SWT.CHECK);
+        final FormData fd_btnWhenCleaningDelete = new FormData();
+        fd_btnWhenCleaningDelete.top = new FormAttachment(output_text, 6);
+        fd_btnWhenCleaningDelete.left = new FormAttachment(lblSourceFoldersIn,
+                0, SWT.LEFT);
+        btnWhenCleaningDelete.setLayoutData(fd_btnWhenCleaningDelete);
+        btnWhenCleaningDelete
+                .setText("When cleaning, delete the whole output directory (faster)");
         sourceComposite.setTabList(new Control[] { btnFolder, btnSource,
                 btnEdit, btnRemove, btnAllowOutputFolders, output_text,
                 btnBrowse });

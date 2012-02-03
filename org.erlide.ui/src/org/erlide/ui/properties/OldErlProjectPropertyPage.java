@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -86,6 +87,11 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         addField(new ComboFieldEditor(
                 ProjectPreferencesConstants.RUNTIME_VERSION,
                 "Runtime version:", runtimes, fieldEditorParent));
+
+        addField(new BooleanFieldEditor(
+                ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
+                "When cleaning, delete the whole output directories (is faster)",
+                fieldEditorParent));
     }
 
     @Override
