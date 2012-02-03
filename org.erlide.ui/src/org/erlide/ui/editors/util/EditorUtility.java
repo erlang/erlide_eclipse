@@ -115,7 +115,13 @@ public class EditorUtility {
      */
     public static IEditorPart openInEditor(final Object inputElement,
             final boolean activate) throws PartInitException {
-        final IEditorPart editorPart = isOpenInEditor(inputElement);
+        final IEditorInput input = getEditorInput(inputElement);
+        if (input == null) {
+            return null;
+        }
+        final IEditorPart editorPart = openInEditor(input,
+                getEditorID(input, inputElement), activate);
+
         if (editorPart != null && inputElement instanceof IErlElement) {
             revealInEditor(editorPart, (IErlElement) inputElement);
             return editorPart;
@@ -123,12 +129,6 @@ public class EditorUtility {
 
         if (inputElement instanceof IFile) {
             return openInEditor((IFile) inputElement, activate);
-        }
-
-        final IEditorInput input = getEditorInput(inputElement);
-        if (input != null) {
-            return openInEditor(input, getEditorID(input, inputElement),
-                    activate);
         }
 
         return null;
