@@ -15,8 +15,8 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.erlang.IErlModule;
 import org.osgi.service.prefs.BackingStoreException;
 

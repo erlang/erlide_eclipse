@@ -44,12 +44,12 @@ import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.StringUtils;
-import org.erlide.jinterface.util.Util;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
+import org.erlide.utils.StringUtils;
+import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -98,7 +98,21 @@ public abstract class AbstractErlContentAssistProcessor {
     protected static URL fgStyleSheet;
 
     protected enum Kinds {
-        DECLARED_FUNCTIONS, EXTERNAL_FUNCTIONS, VARIABLES, RECORD_FIELDS, RECORD_DEFS, MODULES, MACRO_DEFS, IMPORTED_FUNCTIONS, AUTO_IMPORTED_FUNCTIONS, ARITY_ONLY, UNEXPORTED_ONLY, INCLUDES, INCLUDE_LIBS
+        //@formatter:off
+        DECLARED_FUNCTIONS, 
+        EXTERNAL_FUNCTIONS, 
+        VARIABLES, 
+        RECORD_FIELDS, 
+        RECORD_DEFS, 
+        MODULES, 
+        MACRO_DEFS, 
+        IMPORTED_FUNCTIONS, 
+        AUTO_IMPORTED_FUNCTIONS, 
+        ARITY_ONLY, 
+        UNEXPORTED_ONLY, 
+        INCLUDES, 
+        INCLUDE_LIBS
+        //@formatter:on
     }
 
     protected static final List<ICompletionProposal> EMPTY_COMPLETIONS = new ArrayList<ICompletionProposal>();

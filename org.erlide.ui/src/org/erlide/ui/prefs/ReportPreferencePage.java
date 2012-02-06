@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.common.LogUtil;
-import org.erlide.core.internal.backend.BackendHelper;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.internal.BackendHelper;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.utils.LogUtil;
 
 import com.swtdesigner.SWTResourceManager;
 

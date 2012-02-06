@@ -3,7 +3,7 @@
 <schema targetNamespace="org.erlide.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.erlide.core.backend" id="messageReporter" name="messageReporter"/>
+         <meta.schema plugin="org.erlide.backend" id="messageReporter" name="messageReporter"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]

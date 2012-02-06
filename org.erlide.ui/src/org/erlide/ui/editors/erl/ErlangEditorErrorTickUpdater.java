@@ -19,7 +19,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.IProblemChangedListener;
 
 /**
- * The <code>JavaEditorErrorTickUpdater</code> will register as a
+ * The <code>ErlangEditorErrorTickUpdater</code> will register as a
  * IProblemChangedListener to listen on problem changes of the editor's input.
  * It updates the title images when the annotation model changed.
  */
@@ -58,7 +58,7 @@ public class ErlangEditorErrorTickUpdater implements IProblemChangedListener {
         }
         Image newImage;
         // if (jelement instanceof ICompilationUnit
-        // && !jelement.getJavaProject().isOnClasspath(jelement)) {
+        // && !jelement.getErlProject().isOnClasspath(jelement)) {
         // newImage = fLabelProvider.getImage(jelement.getResource());
         // } else {
         newImage = fLabelProvider.getImage(module);

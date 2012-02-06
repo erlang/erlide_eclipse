@@ -11,8 +11,8 @@
 package org.erlide.core.model.util;
 
 /**
- * An element changed listener receives notification of changes to Java elements
- * maintained by the Java model.
+ * An element changed listener receives notification of changes to Erlang
+ * elements maintained by the Erlang model.
  * <p>
  * This interface may be implemented by clients.
  * </p>
@@ -20,7 +20,7 @@ package org.erlide.core.model.util;
 public interface IElementChangedListener {
 
     /**
-     * Notifies that one or more attributes of one or more Java elements have
+     * Notifies that one or more attributes of one or more Erlang elements have
      * changed. The specific details of the change are described by the given
      * event.
      * 

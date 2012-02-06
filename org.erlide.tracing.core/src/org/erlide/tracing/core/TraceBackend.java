@@ -8,11 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendData;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEventHandler;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.tracing.core.mvc.model.TraceCollections;

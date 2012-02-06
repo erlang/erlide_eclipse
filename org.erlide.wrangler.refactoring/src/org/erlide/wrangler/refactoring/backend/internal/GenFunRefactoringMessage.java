@@ -38,6 +38,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
      * @version %I%, %G%
      */
     public enum GenFunReturnParameterName {
+        //@formatter:off
         parName,
         funName,
         arity,
@@ -48,6 +49,7 @@ public class GenFunRefactoringMessage extends AbstractRefactoringRpcMessage {
         logCmd,
         noOfClauses,
         dupsInClause;
+        //@formatter:on
     }
 
     @Override

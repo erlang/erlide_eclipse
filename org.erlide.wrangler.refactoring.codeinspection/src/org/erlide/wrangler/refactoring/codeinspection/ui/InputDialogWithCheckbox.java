@@ -28,66 +28,67 @@ import org.eclipse.swt.widgets.Shell;
  * 
  */
 public class InputDialogWithCheckbox extends InputDialog {
-	protected String checkBoxText;
-	protected Button checkBox;
-	protected boolean isCheckBoxSelected;
+    protected String checkBoxText;
+    protected Button checkBox;
+    protected boolean isCheckBoxSelected;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param parentShell
-	 *            parent shell
-	 * @param dialogTitle
-	 *            dialog title
-	 * @param dialogMessage
-	 *            dialog message
-	 * @param checkBoxText
-	 *            checkbox text
-	 * @param initialValue
-	 *            initial value
-	 * @param validator
-	 *            validator object
-	 */
-	public InputDialogWithCheckbox(Shell parentShell, String dialogTitle,
-			String dialogMessage, String checkBoxText, String initialValue,
-			IInputValidator validator) {
-		super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
-		this.checkBoxText = checkBoxText;
+    /**
+     * Constructor
+     * 
+     * @param parentShell
+     *            parent shell
+     * @param dialogTitle
+     *            dialog title
+     * @param dialogMessage
+     *            dialog message
+     * @param checkBoxText
+     *            checkbox text
+     * @param initialValue
+     *            initial value
+     * @param validator
+     *            validator object
+     */
+    public InputDialogWithCheckbox(final Shell parentShell,
+            final String dialogTitle, final String dialogMessage,
+            final String checkBoxText, final String initialValue,
+            final IInputValidator validator) {
+        super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
+        this.checkBoxText = checkBoxText;
 
-	}
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		Composite c = (Composite) super.createDialogArea(parent);
-		checkBox = new Button(c, SWT.CHECK);
-		checkBox.setText(checkBoxText);
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        final Composite c = (Composite) super.createDialogArea(parent);
+        checkBox = new Button(c, SWT.CHECK);
+        checkBox.setText(checkBoxText);
 
-		checkBox.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-				| GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.VERTICAL_ALIGN_CENTER));
-		checkBox.addSelectionListener(new SelectionListener() {
+        checkBox.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_CENTER));
+        checkBox.addSelectionListener(new SelectionListener() {
 
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				isCheckBoxSelected = checkBox.getSelection();
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                isCheckBoxSelected = checkBox.getSelection();
 
-			}
+            }
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});
+            @Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
+                widgetSelected(e);
+            }
+        });
 
-		return c;
-	}
+        return c;
+    }
 
-	/**
-	 * Returns the checkbox last value.
-	 * 
-	 * @return true if the checkbox was selected
-	 */
-	public boolean isCheckBoxChecked() {
-		return isCheckBoxSelected;
-	}
+    /**
+     * Returns the checkbox last value.
+     * 
+     * @return true if the checkbox was selected
+     */
+    public boolean isCheckBoxChecked() {
+        return isCheckBoxSelected;
+    }
 }

@@ -75,10 +75,6 @@ public class DefaultErlangFoldingPreferenceBlock implements
         return overlayKeys.toArray(new OverlayKey[overlayKeys.size()]);
     }
 
-    /*
-     * @seeorg.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
-     * createControl(org.eclipse.swt.widgets.Group)
-     */
     @Override
     public Control createControl(final Composite composite) {
         fOverlayStore.load();
@@ -136,42 +132,22 @@ public class DefaultErlangFoldingPreferenceBlock implements
         }
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
-     * #performOk()
-     */
     @Override
     public void performOk() {
         fOverlayStore.propagate();
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
-     * #initialize()
-     */
     @Override
     public void initialize() {
         initializeFields();
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
-     * #performDefaults()
-     */
     @Override
     public void performDefaults() {
         fOverlayStore.loadDefaults();
         initializeFields();
     }
 
-    /*
-     * @see
-     * org.eclipse.jdt.internal.ui.text.folding.AbstractJavaFoldingPreferences
-     * #dispose()
-     */
     @Override
     public void dispose() {
         fOverlayStore.stop();

@@ -71,15 +71,6 @@ public class EdocView extends AbstractInfoView {
 
     private static final boolean WARNING_DIALOG_ENABLED = true;
 
-    // /** Flags used to render a label in the text widget. */
-    // private static final long LABEL_FLAGS=
-    // JavaElementLabels.ALL_FULLY_QUALIFIED
-    // | JavaElementLabels.M_PRE_RETURNTYPE |
-    // JavaElementLabels.M_PARAMETER_TYPES |
-    // JavaElementLabels.M_PARAMETER_NAMES | JavaElementLabels.M_EXCEPTIONS
-    // | JavaElementLabels.F_PRE_TYPE_SIGNATURE |
-    // JavaElementLabels.T_TYPE_PARAMETERS;
-
     /** The HTML widget. */
     private Browser fBrowser;
 
@@ -101,7 +92,7 @@ public class EdocView extends AbstractInfoView {
     private static URL fgStyleSheet;
 
     /**
-     * The Javadoc view's select all action.
+     * The Edoc view's select all action.
      */
     private static class SelectAllAction extends Action {
 
@@ -160,7 +151,7 @@ public class EdocView extends AbstractInfoView {
     }
 
     /**
-     * The Javadoc view's selection provider.
+     * The edoc view's selection provider.
      */
     private static class SelectionProvider implements ISelectionProvider {
 

@@ -92,7 +92,7 @@ public class ReferencesSearchGroup extends ActionGroup {
      * this constructor.
      * 
      * @param editor
-     *            the Java editor
+     *            the Erlang editor
      */
     public ReferencesSearchGroup(final ErlangEditor editor) {
         Assert.isNotNull(editor);

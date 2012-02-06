@@ -25,8 +25,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackend;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
@@ -100,7 +100,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
         }
     }
 
-    private String getTargetName(final Object target) {
+    protected String getTargetName(final Object target) {
         Object newtarget = target;
         if (target instanceof IEditorPart) {
             newtarget = getEditorTarget(target);
@@ -142,8 +142,8 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                 if (sel instanceof ITextSelection && !sel.isEmpty()) {
                     final ITextSelection tsel = (ITextSelection) sel;
                     try {
-                        final IErlModule module =  ErlModelManager.getErlangModel()
-                                .findModule(file);
+                        final IErlModule module = ErlModelManager
+                                .getErlangModel().findModule(file);
                         if (module != null) {
                             result = module.getElementAt(tsel.getOffset());
                             result = getFunction(result);

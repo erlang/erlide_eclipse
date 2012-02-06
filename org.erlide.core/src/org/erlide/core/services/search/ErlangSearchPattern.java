@@ -8,9 +8,9 @@ import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMacroDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.util.StringUtils;
-import org.erlide.jinterface.util.SystemUtils;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.StringUtils;
+import org.erlide.utils.SystemUtils;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

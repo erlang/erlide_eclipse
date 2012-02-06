@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.core.backend.BackendUtils;
+import org.erlide.backend.BackendUtils;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -52,7 +52,7 @@ public class ErlideOpen {
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
                 scanner, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
-        ErlLogger.debug("open: " + res);
+        ErlLogger.debug("open: %s %d = %s", module.getName(), offset, res);
         return new OpenResult(res);
     }
 

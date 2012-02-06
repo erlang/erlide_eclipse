@@ -23,7 +23,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 
 public enum ErlideImage {
 
-    // @formatter:on
+    // @formatter:off
     ALPHAB_SORT(ErlideImagePrefix.T_ELCL, "alphab_sort_co.gif"),
     TEST_RUNNING(ErlideImagePrefix.T_OBJ, "searchm_obj.gif"),
     TEST_SUCCEEDED(ErlideImagePrefix.T_OBJ, "methpub_obj.gif"),

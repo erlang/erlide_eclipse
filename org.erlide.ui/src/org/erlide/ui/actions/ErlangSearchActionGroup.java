@@ -58,8 +58,8 @@ public class ErlangSearchActionGroup extends ActionGroup {
     }
 
     /**
-     * Creates a new <code>JavaSearchActionGroup</code>. The group requires that
-     * the selection provided by the page's selection provider is of type
+     * Creates a new <code>ErlangSearchActionGroup</code>. The group requires
+     * that the selection provided by the page's selection provider is of type
      * <code>org.eclipse.jface.viewers.IStructuredSelection</code>.
      * 
      * @param page
@@ -74,7 +74,7 @@ public class ErlangSearchActionGroup extends ActionGroup {
      * this constructor.
      * 
      * @param editor
-     *            the Java editor
+     *            the Erlang editor
      */
     public ErlangSearchActionGroup(final ErlangEditor editor) {
         Assert.isNotNull(editor);

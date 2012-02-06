@@ -41,10 +41,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlangLaunchDelegate;
-import org.erlide.core.common.CommonUtils;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntry;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
@@ -58,7 +54,11 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.ui.util.SWTUtil;
+import org.erlide.utils.CommonUtils;
 
 /**
  * A tab in the Launch Config with erlang debugger parameters: the debug flags
@@ -204,11 +204,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         public void setChecked(final CheckboxTreeViewer checkboxTreeViewer,
                 final Collection<IErlModule> list) {
             setGrayChecked(checkboxTreeViewer, false, list.contains(item));
-            for (final DebugTreeItem c : children) {
-                c.setChecked(checkboxTreeViewer, list);
-                c.getParent()
-                        .updateMenuCategoryCheckedState(checkboxTreeViewer);
-            }
+            // for (final DebugTreeItem c : children) {
+            // c.setChecked(checkboxTreeViewer, list);
+            // // c.getParent()
+            // // .updateMenuCategoryCheckedState(checkboxTreeViewer);
+            // }
         }
     }
 
@@ -332,7 +332,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();
                 setSubtreeChecked(dti, checked);
-                checkUpwards(checkboxTreeViewer, dti, checked, false);
+                // checkUpwards(checkboxTreeViewer, dti, checked, false);
                 updateLaunchConfigurationDialog();
             }
 
@@ -375,25 +375,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             final DebugTreeItem dti, final boolean checked, final boolean grayed) {
         for (DebugTreeItem parent = dti.getParent(); parent != null; parent = parent
                 .getParent()) {
-            checkParent(parent, ctv);
-        }
-    }
-
-    private static void checkParent(final DebugTreeItem parent,
-            final CheckboxTreeViewer ctv) {
-        int nChecked = 0, nUnchecked = 0;
-        for (final DebugTreeItem i : parent.getChildren()) {
-            if (ctv.getChecked(i)) {
-                ++nChecked;
-            } else {
-                ++nUnchecked;
-            }
-        }
-        final boolean gray = nChecked > 0 && nUnchecked > 0;
-        final boolean check = !gray && nUnchecked == 0;
-        ctv.setGrayChecked(parent, gray);
-        if (check) {
-            ctv.setChecked(parent, true);
+            ctv.setChecked(parent, checked);
         }
     }
 

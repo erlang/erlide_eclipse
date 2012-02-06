@@ -50,7 +50,7 @@ public interface ICodeAssist {
     String[] codeComplete(int offset) throws ErlModelException;
 
     /**
-     * Returns the Java elements corresponding to the given selected text in
+     * Returns the Erlang elements corresponding to the given selected text in
      * this compilation unit. The <code>offset</code> is the 0-based index of
      * the first selected character. The <code>length</code> is the number of
      * selected characters.
@@ -59,11 +59,11 @@ public interface ICodeAssist {
      *            the given offset position
      * @param length
      *            the number of selected characters
-     * @return the Java elements correspondiing to the given selected text
+     * @return the Erlang elements correspondiing to the given selected text
      * 
      * @exception ErlModelException
      *                if code resolve could not be performed. Reasons include:
-     *                <li>This Java element does not exist
+     *                <li>This Erlang element does not exist
      *                (ELEMENT_DOES_NOT_EXIST)</li> <li>The range specified is
      *                not within this element's source range
      *                (INDEX_OUT_OF_BOUNDS) </ul>

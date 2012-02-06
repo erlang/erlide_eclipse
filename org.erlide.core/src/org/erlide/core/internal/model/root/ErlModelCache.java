@@ -14,9 +14,9 @@ import org.erlide.core.model.root.IErlModelChangeListener;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
-import org.erlide.jinterface.util.IDisposable;
-import org.erlide.jinterface.util.LRUCache;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.IDisposable;
+import org.erlide.utils.LRUCache;
+import org.erlide.utils.Tuple;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -190,7 +190,7 @@ public class ErlModelCache implements IDisposable {
         if (tuple == null) {
             return null;
         }
-        final List<ExternalTreeEntry> entries = tuple.o2;
+        final List<ExternalTreeEntry> entries = tuple.second;
         if (entries == null) {
             return null;
         }
@@ -261,7 +261,7 @@ public class ErlModelCache implements IDisposable {
         final Set<Entry<String, Tuple<IErlProject, List<ExternalTreeEntry>>>> entrySet = externalTreeCache
                 .entrySet();
         for (final Entry<String, Tuple<IErlProject, List<ExternalTreeEntry>>> entry : entrySet) {
-            if (entry.getValue().o1 == project) {
+            if (entry.getValue().first == project) {
                 keysToRemove.add(entry.getKey());
             }
         }

@@ -20,7 +20,7 @@ file_export_version=3.0
 /instance/org.erlide.core/runtimes/erl5.6.5/args=
 /instance/org.erlide.core/runtimes/erl5.6.5/codePath=
 # homeDir has to be replaced to a proper value
-/instance/org.erlide.core/runtimes/erl5.6.5/homeDir=#{erlang_R12}
+/instance/org.erlide.core/runtimes/erl5.6.5/homeDir=#{erlang_R13}
 /instance/org.erlide.core/runtimes/erl5.6.5/longName=true
 /instance/org.erlide.core/runtimes/erl5.6.5/managed=false
 /instance/org.erlide.core/runtimes/erl5.6.5/startShell=false

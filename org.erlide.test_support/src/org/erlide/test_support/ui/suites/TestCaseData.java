@@ -5,9 +5,9 @@ import java.util.Collection;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.TermParser;
-import org.erlide.jinterface.util.TermParserException;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.TermParser;
+import org.erlide.utils.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 
 public class TestCaseData {
 
+    //@formatter:off
     enum TestState {
         // order is important!
         NOT_RUN,
@@ -24,6 +25,7 @@ public class TestCaseData {
         RUNNING,
         FAILED
     }
+    //@formatter:on
 
     public class FailLocations {
 

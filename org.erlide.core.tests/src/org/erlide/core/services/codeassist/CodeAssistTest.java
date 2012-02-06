@@ -2,7 +2,7 @@ package org.erlide.core.services.codeassist;
 
 import java.util.Collection;
 
-import org.erlide.core.backend.BackendCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

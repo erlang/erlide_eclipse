@@ -24,7 +24,7 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.Tuple;
+import org.erlide.utils.Tuple;
 
 /**
  * Used as 'shortcuts' to document and selection settings.
@@ -593,11 +593,11 @@ public class ErlideSelection {
     public Tuple<String, Integer> getCurrToken() throws BadLocationException {
         final Tuple<String, Integer> tup = extractActivationToken(doc,
                 getAbsoluteCursorOffset(), false);
-        final String prefix = tup.o1;
+        final String prefix = tup.first;
 
         // ok, now, get the rest of the token, as we already have its prefix
 
-        final int start = tup.o2 - prefix.length();
+        final int start = tup.second - prefix.length();
         int end = start;
         while (doc.getLength() - 1 >= end) {
             final char ch = doc.getChar(end);
@@ -607,7 +607,7 @@ public class ErlideSelection {
                 break;
             }
         }
-        final String post = doc.get(tup.o2, end - tup.o2);
+        final String post = doc.get(tup.second, end - tup.second);
         return new Tuple<String, Integer>(prefix + post, start);
     }
 

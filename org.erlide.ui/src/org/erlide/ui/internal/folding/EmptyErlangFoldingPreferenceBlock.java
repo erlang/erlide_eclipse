@@ -31,7 +31,7 @@ public class EmptyErlangFoldingPreferenceBlock implements
 
         label = new Label(inner, SWT.CENTER);
         // TODO
-        // label.setText(FoldingMessages.EmptyJavaFoldingPreferenceBlock_emptyCaption);
+        // label.setText(FoldingMessages.EmptyErlangFoldingPreferenceBlock_emptyCaption);
         label.setText("");
         gd = new GridData(GridData.CENTER);
         label.setLayoutData(gd);

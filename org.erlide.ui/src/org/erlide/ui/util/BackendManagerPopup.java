@@ -14,11 +14,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.IBackendListener;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendListener;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 
 public class BackendManagerPopup implements IBackendListener {
 
@@ -64,7 +63,7 @@ public class BackendManagerPopup implements IBackendListener {
     }
 
     @Override
-    public void moduleLoaded(final IRpcCallSite backend,
-            final IProject project, final String moduleName) {
+    public void moduleLoaded(final IBackend backend, final IProject project,
+            final String moduleName) {
     }
 }

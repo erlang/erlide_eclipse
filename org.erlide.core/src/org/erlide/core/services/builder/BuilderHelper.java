@@ -29,11 +29,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.services.builder.BuilderVisitor;
 import org.erlide.core.internal.services.builder.InternalErlideBuilder;
@@ -510,17 +507,7 @@ public final class BuilderHelper {
     }
 
     private void createTaskMarkers(final IProject project, final IResource res) {
-        final Job job = new Job("tasks") {
-            @Override
-            protected IStatus run(final IProgressMonitor monitor) {
-                MarkerUtils.createTaskMarkers(project, res);
-                return Status.OK_STATUS;
-            }
-        };
-        job.setSystem(true);
-        job.setPriority(Job.DECORATE);
-        job.setRule(res);
-        job.schedule();
+        BuildQueueProcessor.getInstance().addWork(new BuildWorkerInfo(project, res));
     }
 
     private IPath getBeamForErl(final IResource source) {
@@ -597,7 +584,8 @@ public final class BuilderHelper {
             return;
         }
         try {
-            completeCompile(project, resource.getResource(), res.get(), b,
+            OtpErlangObject result = res.get();
+            completeCompile(project, resource.getResource(), result, b,
                     compilerOptions);
         } catch (final RpcException e) {
             ErlLogger.warn(e);

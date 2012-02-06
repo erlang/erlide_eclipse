@@ -32,14 +32,14 @@ public final class ErlangFoldingStructureProviderDescriptor {
     private String fName;
 
     /**
-     * The class name of the provided <code>IJavaFoldingStructureProvider</code>
-     * .
+     * The class name of the provided
+     * <code>IErlangFoldingStructureProvider</code> .
      */
     private final String fClass;
 
     /**
      * <code>true</code> if the extension specifies a custom
-     * <code>IJavaFoldingPreferenceBlock</code>.
+     * <code>IErlangFoldingPreferenceBlock</code>.
      */
     private boolean fHasPreferences;
 

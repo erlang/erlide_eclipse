@@ -3,6 +3,8 @@ package org.erlide.jinterface.rpc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ericsson.otp.erlang.OtpErlang;
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRef;
 import com.ericsson.otp.erlang.OtpNode;
@@ -29,7 +32,7 @@ public class RpcMonitor {
         public final String node;
         public final String module;
         public final String fun;
-        public final Collection<OtpErlangObject> args;
+        public final SoftReference<Collection<OtpErlangObject>> args;
         public final long size;
 
         public RpcData(final long startTime, final String node,
@@ -39,8 +42,8 @@ public class RpcMonitor {
             this.node = node;
             this.module = module;
             this.fun = fun;
-            this.args = Collections.unmodifiableCollection(Lists
-                    .newArrayList(args));
+            this.args = new SoftReference<Collection<OtpErlangObject>>(
+                    Collections.unmodifiableCollection(Lists.newArrayList(args)));
             this.size = size;
         }
     }
@@ -49,12 +52,13 @@ public class RpcMonitor {
         public final String node;
         public final String module;
         public final String fun;
-        public final Collection<OtpErlangObject> args;
+        public final SoftReference<Collection<OtpErlangObject>> args;
         public final long callSize;
-        public final OtpErlangObject result;
+        public final SoftReference<OtpErlangObject> result;
         public final long answerSize;
         public final long callTime;
         public final long answerTime;
+        private final int argsSize;
 
         public RpcInfo(final RpcData data, final OtpErlangObject result,
                 final long answerTime) {
@@ -62,7 +66,8 @@ public class RpcMonitor {
             module = data.module;
             fun = data.fun;
             args = data.args;
-            this.result = result;
+            argsSize = args.get().size();
+            this.result = new SoftReference<OtpErlangObject>(result);
             callTime = data.startTime;
             this.answerTime = answerTime;
             callSize = data.size;
@@ -70,18 +75,22 @@ public class RpcMonitor {
         }
 
         public void dump(final PrintStream out, final boolean full) {
+            Collection<OtpErlangObject> myArgs = args.get();
+            myArgs = myArgs == null ? new ArrayList<OtpErlangObject>() : myArgs;
             final String argsString = full ? args.toString().replaceAll(
                     "\n|\r", " ") : "...";
-            String resultString = full ? result.toString().replaceAll("\n|\r",
-                    " ") : "...";
+            OtpErlangObject val = result.get();
+            val = val == null ? new OtpErlangAtom("null") : val;
+            String resultString = full ? val.toString()
+                    .replaceAll("\n|\r", " ") : "...";
             if (resultString.length() > 100) {
                 resultString = new String(resultString.substring(0, 99) + "...");
             }
             out.format(
                     "%30s|%25s:%-20s/%d in=%9d, out=%9d, t=%6d, args=%s -> result=%s%n",
                     node.substring(0, Math.min(29, node.length() - 1)), module,
-                    fun, args.size(), callSize, answerSize, answerTime
-                            - callTime, argsString, resultString);
+                    fun, argsSize, callSize, answerSize, answerTime - callTime,
+                    argsString, resultString);
         }
     }
 

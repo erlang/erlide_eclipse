@@ -6,8 +6,8 @@ import org.eclipse.ui.texteditor.AbstractRulerActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
- * Action to open a properties dialog on a Java breakpoint from a ruler context
- * menu.
+ * Action to open a properties dialog on a Erlang breakpoint from a ruler
+ * context menu.
  * <p>
  * This action can also be contributed to a vertical ruler context menu via the
  * <code>popupMenus</code> extension point, by referencing the ruler's context
@@ -20,7 +20,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
  *     id=&quot;example.RulerPopupActions&quot;&gt;
  *       &lt;action
  *         label=&quot;Properties&quot;
- *         class=&quot;org.eclipse.jdt.debug.ui.actions.JavaBreakpointPropertiesRulerActionDelegate&quot;
+ *         class=&quot;org.eclipse.jdt.debug.ui.actions.ErlangBreakpointPropertiesRulerActionDelegate&quot;
  *         menubarPath=&quot;additions&quot;
  *         id=&quot;example.rulerContextMenu.javaBreakpointPropertiesAction&quot;&gt;
  *       &lt;/action&gt;

@@ -16,6 +16,8 @@
 %-record(?MODULE, {aaa, bbb, ccc}).
 
 fff() ->
+	x:g(),
+	
        ?mmm:fff(),
        ?MODULE:fff(),
 

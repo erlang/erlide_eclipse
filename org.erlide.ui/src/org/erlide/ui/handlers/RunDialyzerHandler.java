@@ -145,7 +145,7 @@ public class RunDialyzerHandler extends AbstractHandler implements IHandler {
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             modules.clear();
-            final IErlModel model =  ErlModelManager.getErlangModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             try {
                 model.open(null);
                 for (final Object i : structuredSelection.toList()) {

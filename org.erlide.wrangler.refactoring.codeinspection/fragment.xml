@@ -58,11 +58,11 @@
 	<extension point="org.eclipse.ui.commands">
 		<command
 			id="org.erlide.wrangler.refactoring.codeinspection.cyclicdependencies"
-			name="Detect Cyclic module dependecies...">
+			name="Detect Cyclic module dependecies">
 		</command>
 		<command
 			id="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
-			name="Generate Funcion Callgraph">
+			name="Generate Function Callgraph">
 		</command>
 		<command
 			id="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
@@ -70,10 +70,10 @@
 		</command>
 		<command
 			id="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
-			name="Improper Inter Module Dependency">
+			name="Module Dependency via Only Internal Functions">
 		</command>
 		<command id="org.erlide.wrangler.refactoring.codeinspection.largemodules"
-			name="Large Modules">
+			name="Large modules">
 		</command>
 		<command id="org.erlide.wrangler.refactoring.codeinspection.dependencies"
 			name="Dependencies Of A Module">
@@ -97,7 +97,7 @@
 		</command>
 		<command
 			id="org.erlide.wrangler.refactoring.codeinspection.longfunctions"
-			name="Long functinos">
+			name="Long functions">
 		</command>
 	</extension>
 	<extension point="org.eclipse.ui.handlers">
@@ -179,7 +179,7 @@
 				</command>
 				<command
 					commandId="org.erlide.wrangler.refactoring.codeinspection.generatefunctioncallgraph"
-					label="Generate Funcion Callgraph..." mnemonic="F" style="push">
+					label="Generate Function Callgraph..." mnemonic="F" style="push">
 				</command>
 				<command
 					commandId="org.erlide.wrangler.refactoring.codeinspection.generatemodulegraph"
@@ -191,7 +191,7 @@
 				</command>
 				<command
 					commandId="org.erlide.wrangler.refactoring.codeinspection.improperdependecies"
-					label="Improper Inter Module Dependency..." mnemonic="I" style="push">
+					label="Module Dependency via Only Internal Functions..." mnemonic="I" style="push">
 				</command>
 				<command
 					commandId="org.erlide.wrangler.refactoring.codeinspection.nontailrecursive"

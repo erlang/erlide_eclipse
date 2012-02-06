@@ -13,7 +13,7 @@ package org.erlide.ui.util;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
 /**
- * Constants for menu groups used in context menus for Java views and editors.
+ * Constants for menu groups used in context menus for Erlang views and editors.
  * <p>
  * This interface declares constants only; it is not intended to be implemented.
  * </p>

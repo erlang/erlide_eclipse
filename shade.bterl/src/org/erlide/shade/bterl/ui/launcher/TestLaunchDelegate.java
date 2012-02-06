@@ -24,21 +24,19 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.ErlDebugConstants;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.ErlangLaunchDelegate;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEventHandler;
-import org.erlide.core.debug.ErlangDebugHelper;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.util.ErlUtils;
-import org.erlide.jinterface.util.ListsUtils;
-import org.erlide.jinterface.util.TermParser;
-import org.erlide.jinterface.util.TermParserException;
+import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.shade.bterl.Activator;
-import org.erlide.test_support.ui.suites.RegressionResultsView;
+import org.erlide.utils.ErlUtils;
+import org.erlide.utils.ListsUtils;
+import org.erlide.utils.TermParser;
+import org.erlide.utils.TermParserException;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
@@ -92,13 +90,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         testcase = cfg.getAttribute(TestLaunchAttributes.CASE, "");
 
         workdir = new File(wdir);
-        if ("regression".equals(mode)) {
-            final RegressionResultsView rview = (RegressionResultsView) PlatformUI
-                    .getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .showView(RegressionResultsView.VIEW_ID);
-            RegressionLauncher.getInstance().launch(wdir, monitor, rview);
-            return false;
-        }
         return true;
     }
 
@@ -106,7 +97,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     protected IBackend doLaunch(final ILaunchConfiguration config,
             final String amode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
-
         System.out.println("---@> launch " + workdir.getAbsolutePath() + " -> "
                 + suite + ":" + testcase + " (" + mode + ")");
         if (!workdir.exists()) {
@@ -115,24 +105,28 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
                     workdir.getAbsolutePath());
             return null;
         }
-        if ("regression".equals(mode)) {
-            // regression is handled elsewhere
-            return null;
-        }
         runMakeLinks(monitor);
-
         final ILaunchConfiguration cfg = setupConfiguration(config,
                 projectName, workdir);
-
         final String theMode = ILaunchManager.DEBUG_MODE.equals(amode) ? ILaunchManager.DEBUG_MODE
                 : ILaunchManager.RUN_MODE;
-
         return super.doLaunch(cfg, theMode, launch, monitor);
     }
 
     @Override
+    protected BackendData configureBackend(final BackendData data,
+            final ILaunchConfiguration config, final String aMode,
+            final ILaunch launch) {
+        final BackendData result = super.configureBackend(data, config, aMode,
+                launch);
+        result.setBeamLocator(new TestsBeamLocator(workdir));
+        return result;
+    }
+
+    @Override
     protected void postLaunch(final String amode, final IBackend backend,
-            final IProgressMonitor monitor) {
+            final IProgressMonitor monitor) throws CoreException {
+        super.postLaunch(amode, backend, monitor);
         if (amode.equals("debug")) {
             initDebugger(monitor, backend);
         }
@@ -190,8 +184,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
                 for (final String pm : modules) {
                     ErlLogger.debug("reinterpret:: " + pm);
-                    getDebugHelper()
-                            .interpret(backend, project, pm, true, true);
+                    backend.interpret(project, pm, true, true);
                 }
                 backend.installDeferredBreakpoints();
 
@@ -370,11 +363,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String[] cmdline = cmds.toArray(new String[cmds.size()]);
         System.out.println("---   cmdline (" + theWorkdir.getAbsolutePath()
                 + ")= " + Arrays.toString(cmdline));
-    }
-
-    @Override
-    protected ErlangDebugHelper getDebugHelper() {
-        return new TestDebugHelper(workdir);
     }
 
 }

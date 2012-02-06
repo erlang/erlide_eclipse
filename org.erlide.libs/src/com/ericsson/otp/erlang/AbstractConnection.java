@@ -502,11 +502,13 @@ public abstract class AbstractConnection extends Thread {
         final byte[] tock = { 0, 0, 0, 0 };
 
         try {
-            receive_loop: while (!done) {
+            receive_loop:
+            while (!done) {
                 // don't return until we get a real message
                 // or a failure of some kind (e.g. EXIT)
                 // read length and read buffer must be atomic!
-                tick_loop: do {
+                tick_loop:
+                do {
                     // read 4 bytes - get length of incoming packet
                     // socket.getInputStream().read(lbuf);
                     readSock(socket, lbuf);

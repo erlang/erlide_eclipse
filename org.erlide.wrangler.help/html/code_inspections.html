@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Code Inspections</title>
+	</head><head>
+	<body>
+	<h1>Code Inspections</h1>
+    <h2> Wrangler built-in code inspections </h2>	
+    
+	<h3><a name="Dependencies of a module">Dependencies of a module</a></h3>
+		<p>Reports the names of modules that depend on the current module, as well as modules on which the 
+		current module depends.</p>
+		
+	<h3><a name="Nested If Expressions">Nested <em> if </em> Expressions</a></h3>
+	    <p> Reports all the functions that contain one or more ```if''' expressions that are 
+	    nested the specified number of levels or more. </p>
+	    <p> The whole project is searched if the 'Search in the project' option is selected, otherwise 
+	    only the current Erlang module is searched. </p>
+	    
+	<h3><a name="Nested Case Expressions">Nested <em> case </em> Expressions</a></h3>
+	    <p> Reports all the functions that contain one or more ```case''' expressions that are 
+	    nested the specified number of levels or more. </p>
+	    <p> The whole project is searched if the 'Search in the project' option is selected, otherwise 
+	    only the current Erlang module is searched. </p>
+	   
+	 <h3><a name="Nested Receive Expressions">Nested <em> receive </em> Expressions</a></h3>
+	    <p> Reports all the functions that contain one or more ```receive'' expressions that are 
+	    nested the specified number of levels or more. </p>
+	    <p> The whole project is searched if the 'Search in the project' option is selected, otherwise 
+	    only the current Erlang module is searched. </p>
+	    
+	 <h3><a name="Long Functions">Long Functions</a></h3>
+	    <p> Reports all the functions that has more than the specified number of lines of code, 
+	    	not including comments and white lines.<p>
+	    
+	<h3><a name="Large Modules">Large Modules</a></h3>
+	    <p> Reports all the modules that has more than the specified number of lines of code, not 
+	        including comments and white lines.<p>
+	
+	<h3><a name="Generate Function Callgraph">Generate Function Callgraph</a></h3>
+	    <p> Generates the function callgraph for the current module. Only functions that are defined in 
+	        the current moudle are shown in the callgraph. </p>
+	        
+	<h3><a name="Generate Module Graph">Generate Module Graph</a></h3>
+	    <p> Generates the module graph for the current Erlang project. The user can decide whether the edges 
+	    between modules should be labelled with the functions called. </p>
+	  
+	<h3><a name="Cyclic Module Dependency">Cyclic Module Dependency</a></h3>
+	    <p> Reports the cyclic module dependencies, if there is any, for the current Erlang project. </p>
+
+    <h3><a name="Module Dependency via Only Internal Functions">Module Dependency via Only Internal Functions</a></h3>
+	    <p> Reports the module dependencies in the current Erlang project that are introduced because of the export of 
+	        functions that should be kept internal to its defining module according to Wrangler's analysis. </p>
+	        
+    <h3><a name="Show Non Tail-recursive Servers">Show Non Tail-recursive Servers</a></h3>
+	    <p> The Erlang Programming Rules says: All servers must be tail-recursive, otherwise the server will 
+	    	consume memory until the system runs out of it. This function reports server functions that are not tail-recursive. </p>
+        <p> In Erlang, it is not a good practice to write a server function like this:</p>
+ 	<pre><code>	
+        loop() ->
+           receive
+             {msg1, Msg1} -> 
+                ...,
+                loop();
+             stop ->
+                true;
+             Other ->
+                error_logger:log({error, {process_got_other, self(), Other}}),
+                loop()
+           end,
+           io:format("Server going down").    </code> </pre>           
+                 
+       <p>The above is not tail-recursive. This is a correct solution:</p>
+     <pre><code>
+        loop() ->
+           receive
+             {msg1, Msg1} -> 
+               ...,
+               loop();
+             stop ->
+               io:format("Server going down");
+             Other ->
+               error_logger:log({error, {process_got_other, self(), Other}}),
+               loop()
+           end. 
+      	</code></pre>
+
+	<h3><a name="Incomplete Receive Patterns">Incomplete Receive Patterns</a></h3>
+	<p> Reports functions which has a receive expression that does not flush unknown messages. </p>
+	<p> The Erlang Programming Rules says: Every server should have an Other alternative in at least 
+	    one receive statement. This is to avoid filling up message queues. Example: </p>	
+	     <pre><code>	
+           main_loop() ->
+               receive
+                 {msg1, Msg1} -> 
+                    ...,
+                    main_loop();
+                 {msg2, Msg2} ->
+                    ...,
+                    main_loop();
+                 Other -> % Flushes the message queue.
+                   error_logger:error_msg(
+                      "Error: Process ~w got unknown msg ~w~n.", 
+                       [self(), Other]),
+                   main_loop()
+               end.
+	  </code></pre>
+	</body>
+</html>

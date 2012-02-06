@@ -44,9 +44,9 @@ public class FilterDescriptor implements Comparable<Object>,
     private ViewerFilter fCachedInstance = null;
 
     /**
-     * Returns all contributed Java element filters.
+     * Returns all contributed Erlang element filters.
      * 
-     * @return all contributed Java element filters
+     * @return all contributed Erlang element filters
      */
     public static Collection<FilterDescriptor> getFilterDescriptors() {
         if (fgFilterDescriptors == null) {

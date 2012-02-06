@@ -1,7 +1,7 @@
 package org.erlide.test_support.ui.suites;
 
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.events.ErlangEventHandler;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.events.ErlangEventHandler;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

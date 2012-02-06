@@ -7,10 +7,12 @@ package org.erlide.tracing.core.mvc.view;
  * 
  */
 public enum ProcessColumn {
-    SELECTED("Selected", 60), //
-    INITIAL_CALL("Initial call", 130), //
-    NAME("Process name", 150), //
+    //@formatter:off
+    SELECTED("Selected", 60), 
+    INITIAL_CALL("Initial call", 130), 
+    NAME("Process name", 150), 
     NODE("Process node", 150);
+    //@formatter:on
 
     private final String name;
     private final int width;

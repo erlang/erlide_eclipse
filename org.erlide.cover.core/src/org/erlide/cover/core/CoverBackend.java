@@ -3,11 +3,11 @@ package org.erlide.cover.core;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendData;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;

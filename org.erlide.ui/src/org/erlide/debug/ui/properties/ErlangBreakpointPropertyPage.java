@@ -27,8 +27,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.core.debug.IErlangBreakpoint;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.launch.debug.IErlangBreakpoint;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.PixelConverter;
@@ -188,7 +188,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     // // IStatus.ERROR,
     // // MessageFormat
     // // .format(
-    //				//												"JavaBreakpointPage allowed input of invalid string for hit count value: {0}.", new String[] { fHitCountText.getText() }), e)); //$NON-NLS-1$
+    //				//												"ErlangBreakpointPage allowed input of invalid string for hit count value: {0}.", new String[] { fHitCountText.getText() }), e)); //$NON-NLS-1$
     // }
     // }
     // breakpoint.setHitCount(hitCount);
@@ -378,7 +378,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Allows subclasses to add type specific labels to the common Java
+     * Allows subclasses to add type specific labels to the common Erlang
      * breakpoint page.
      * 
      * @param parent
@@ -387,7 +387,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
     }
 
     /**
-     * Allows subclasses to add type specific editors to the common Java
+     * Allows subclasses to add type specific editors to the common Erlang
      * breakpoint page.
      * 
      * @param parent
@@ -527,7 +527,7 @@ public class ErlangBreakpointPropertyPage extends PropertyPage {
         } catch (final CoreException e) {
             ErlLogger.error(e);
             // JDIDebugUIPlugin.statusDialog(
-            // PropertyPageMessages.JavaBreakpointPage_9, e.getStatus());
+            // PropertyPageMessages.ErlangBreakpointPage_9, e.getStatus());
         }
         return super.performCancel();
     }

@@ -35,7 +35,7 @@ public class ParsingTests {
      */
     @Before
     public void setUp() throws Exception {
-        final IErlModel model =  ErlModelManager.getErlangModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         module = model.getModuleFromText(model, "testing", "", null);
     }
 
@@ -51,7 +51,7 @@ public class ParsingTests {
     private boolean parse(final String s) {
         final String scannerModuleName = module.getScannerName();
         ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final IErlParser parser =  ErlModelManager.getErlangModel().getParser();
+        final IErlParser parser = ErlModelManager.getErlangModel().getParser();
         return parser.parse(module, scannerModuleName, false, "", false);
     }
 

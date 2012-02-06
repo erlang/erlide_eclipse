@@ -15,7 +15,7 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 
 /**
- * Browser input for Javadoc hover.
+ * Browser input for Edoc hover.
  * 
  * @since 3.4
  */
@@ -60,7 +60,7 @@ public class ErlBrowserInformationControlInput extends
     }
 
     // /**
-    // * Returns the Java element.
+    // * Returns the Erlang element.
     // *
     // * @return the element or <code>null</code> if none available
     // */

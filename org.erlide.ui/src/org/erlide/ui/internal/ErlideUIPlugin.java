@@ -44,14 +44,13 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
+import org.erlide.backend.internal.BackendHelper;
 import org.erlide.core.ErlangStatus;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.IBackend;
-import org.erlide.core.internal.backend.BackendHelper;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
-import org.erlide.jinterface.util.SystemUtils;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -65,6 +64,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
+import org.erlide.utils.SystemUtils;
 import org.osgi.framework.BundleContext;
 
 import com.swtdesigner.SWTResourceManager;
@@ -423,7 +423,7 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns a section in the Java plugin's dialog settings. If the section
+     * Returns a section in the Erlang plugin's dialog settings. If the section
      * doesn't exist yet, it is created.
      * 
      * @param name

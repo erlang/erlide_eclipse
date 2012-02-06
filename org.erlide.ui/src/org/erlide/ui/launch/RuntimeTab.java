@@ -35,9 +35,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.ErlLaunchAttributes;
-import org.erlide.core.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.ui.util.SWTUtil;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {

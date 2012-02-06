@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.erlide.core.backend.BackendCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
@@ -26,8 +26,8 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.util.SystemUtils;
-import org.erlide.jinterface.util.Util;
+import org.erlide.utils.SystemUtils;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -48,13 +48,13 @@ public class DialyzerUtils {
         helper = h;
     }
 
-    private static final class dialyzerCallback implements IRpcResultCallback {
+    private static final class DialyzerCallback implements IRpcResultCallback {
         IRpcCallSite backend;
         private final SubMonitor monitor;
         private final String projectName;
         private final Object locker;
 
-        dialyzerCallback(final IRpcCallSite backend, final SubMonitor monitor,
+        DialyzerCallback(final IRpcCallSite backend, final SubMonitor monitor,
                 final String projectName, final Object locker) {
             this.backend = backend;
             this.monitor = monitor;
@@ -72,11 +72,11 @@ public class DialyzerUtils {
 
         @Override
         public void start(final OtpErlangObject msg) {
-            final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
             int progressMax;
             try {
+                final OtpErlangLong progressMaxL = (OtpErlangLong) msg;
                 progressMax = progressMaxL.intValue();
-            } catch (final OtpErlangRangeException e) {
+            } catch (final Exception e) {
                 progressMax = 10;
             }
             final SubMonitor child = monitor.newChild(progressMax);
@@ -158,7 +158,7 @@ public class DialyzerUtils {
                 collectFilesAndIncludeDirs(p, modules, project, files, names,
                         includeDirs, fromSource);
                 monitor.subTask("Dialyzing " + getFileNames(names));
-                final IRpcResultCallback callback = new dialyzerCallback(
+                final IRpcResultCallback callback = new DialyzerCallback(
                         backend, SubMonitor.convert(monitor),
                         project.getName(), locker);
                 try {

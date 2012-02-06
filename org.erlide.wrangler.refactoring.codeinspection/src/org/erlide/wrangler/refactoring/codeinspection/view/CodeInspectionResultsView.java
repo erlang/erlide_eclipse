@@ -40,120 +40,129 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  * 
  */
 public class CodeInspectionResultsView extends ViewPart {
-	public static final String VIEW_ID = "org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview";
+    public static final String VIEW_ID = "org.erlide.wrangler.refactoring.codeinspection.codeinspectionresultview";
 
-	ArrayList<IErlElement> results = new ArrayList<IErlElement>();
+    ArrayList<IErlElement> results = new ArrayList<IErlElement>();
 
-	private TableViewer viewer;
+    private TableViewer viewer;
 
-	class ViewContentProvider implements IStructuredContentProvider {
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
+    class ViewContentProvider implements IStructuredContentProvider {
+        @Override
+        public void inputChanged(final Viewer v, final Object oldInput,
+                final Object newInput) {
+        }
 
-		public void dispose() {
-		}
+        @Override
+        public void dispose() {
+        }
 
-		public Object[] getElements(Object parent) {
-			return results.toArray();
-		}
-	}
+        @Override
+        public Object[] getElements(final Object parent) {
+            return results.toArray();
+        }
+    }
 
-	class ViewLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			IErlElement e = (IErlElement) obj;
-			if (e instanceof IErlModule) {
-				IErlModule m = (IErlModule) e;
-				return m.getModuleName() + "\t\t- "
-						+ e.getResource().getFullPath().toString();
-			} else if (e instanceof IErlFunctionClause) {
-				IErlFunctionClause fc = (IErlFunctionClause) e;
-				return fc.getModule().getModuleName() + ":" + fc.toString();
-			}
-			return e.toString();
-		}
+    class ViewLabelProvider extends LabelProvider implements
+            ITableLabelProvider {
+        @Override
+        public String getColumnText(final Object obj, final int index) {
+            final IErlElement e = (IErlElement) obj;
+            if (e instanceof IErlModule) {
+                final IErlModule m = (IErlModule) e;
+                return m.getModuleName() + "\t\t- "
+                        + e.getResource().getFullPath().toString();
+            } else if (e instanceof IErlFunctionClause) {
+                final IErlFunctionClause fc = (IErlFunctionClause) e;
+                return fc.getModule().getModuleName() + ":" + fc.toString();
+            }
+            return e.toString();
+        }
 
-		public Image getColumnImage(Object obj, int index) {
-			return getImage(obj);
-		}
+        @Override
+        public Image getColumnImage(final Object obj, final int index) {
+            return getImage(obj);
+        }
 
-		public Image getImage(Object obj) {
-			if (obj instanceof IErlModule)
-				return PlatformUI.getWorkbench().getSharedImages().getImage(
-						ISharedImages.IMG_OBJ_FILE);
-			else if (obj instanceof IErlFunctionClause)
-				return PlatformUI.getWorkbench().getSharedImages().getImage(
-						ISharedImages.IMG_OBJ_ELEMENT);
-			else
-				return null;
-		}
-	}
+        @Override
+        public Image getImage(final Object obj) {
+            if (obj instanceof IErlModule) {
+                return PlatformUI.getWorkbench().getSharedImages()
+                        .getImage(ISharedImages.IMG_OBJ_FILE);
+            } else if (obj instanceof IErlFunctionClause) {
+                return PlatformUI.getWorkbench().getSharedImages()
+                        .getImage(ISharedImages.IMG_OBJ_ELEMENT);
+            } else {
+                return null;
+            }
+        }
+    }
 
-	@Override
-	public void createPartControl(Composite parent) {
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setInput(getViewSite());
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
+    @Override
+    public void createPartControl(final Composite parent) {
+        viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+                | SWT.V_SCROLL);
+        viewer.setContentProvider(new ViewContentProvider());
+        viewer.setLabelProvider(new ViewLabelProvider());
+        viewer.setInput(getViewSite());
+        viewer.addDoubleClickListener(new IDoubleClickListener() {
 
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
+            @Override
+            public void doubleClick(final DoubleClickEvent event) {
 
-				IStructuredSelection s = (IStructuredSelection) event
-						.getSelection();
-				Object o = s.getFirstElement();
-				if (o instanceof IErlModule) {
-					IErlModule m = (IErlModule) o;
-					WranglerUtils.openFile((IFile) m.getResource());
-				} else if (o instanceof IErlFunctionClause) {
-					WranglerUtils.highlightSelection((IErlFunctionClause) o);
-				}
+                final IStructuredSelection s = (IStructuredSelection) event
+                        .getSelection();
+                final Object o = s.getFirstElement();
+                if (o instanceof IErlModule) {
+                    final IErlModule m = (IErlModule) o;
+                    WranglerUtils.openFile((IFile) m.getResource());
+                } else if (o instanceof IErlFunctionClause) {
+                    WranglerUtils.highlightSelection((IErlFunctionClause) o);
+                }
 
-			}
+            }
 
-		});
+        });
 
-	}
+    }
 
-	/**
-	 * Passes the focus request to the viewer's control.
-	 */
-	public void setFocus() {
-		viewer.getControl().setFocus();
-	}
+    /**
+     * Passes the focus request to the viewer's control.
+     */
+    @Override
+    public void setFocus() {
+        viewer.getControl().setFocus();
+    }
 
-	/**
-	 * Refresh the view, to show the latest content.
-	 */
-	public void refresh() {
-		try {
-			viewer.refresh();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    /**
+     * Refresh the view, to show the latest content.
+     */
+    public void refresh() {
+        try {
+            viewer.refresh();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
-	/**
-	 * Adds Erlang elements to the view
-	 * 
-	 * @param e
-	 *            Erlang elements' list
-	 */
-	public void addElements(ArrayList<IErlElement> e) {
-		this.results = e;
-	}
+    /**
+     * Adds Erlang elements to the view
+     * 
+     * @param e
+     *            Erlang elements' list
+     */
+    public void addElements(final ArrayList<IErlElement> e) {
+        results = e;
+    }
 
-	/**
-	 * Sets the view title
-	 * 
-	 * @param title
-	 *            title
-	 */
-	public void setViewTitle(String title) {
-		this.setPartName(title);
+    /**
+     * Sets the view title
+     * 
+     * @param title
+     *            title
+     */
+    public void setViewTitle(final String title) {
+        setPartName(title);
 
-	}
+    }
 }

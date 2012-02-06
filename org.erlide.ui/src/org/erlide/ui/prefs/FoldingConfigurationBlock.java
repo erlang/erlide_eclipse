@@ -51,7 +51,7 @@ public class FoldingConfigurationBlock implements IPreferenceConfigurationBlock 
 
         /*
          * @see
-         * org.eclipse.jdt.internal.ui.text.folding.IJavaFoldingPreferences#
+         * org.eclipse.jdt.internal.ui.text.folding.IErlangFoldingPreferences#
          * createControl(org.eclipse.swt.widgets.Group)
          */
         @Override

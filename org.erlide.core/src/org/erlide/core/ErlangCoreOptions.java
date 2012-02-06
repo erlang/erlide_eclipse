@@ -2,8 +2,10 @@ package org.erlide.core;
 
 public enum ErlangCoreOptions {
 
-    COMPILER_TASK_TAGS(ErlangCore.PLUGIN_ID + ".compiler.taskTags"),
+    //@formatter:off
+    COMPILER_TASK_TAGS(ErlangCore.PLUGIN_ID + ".compiler.taskTags"), 
     CORE_ENCODING(ErlangCore.PLUGIN_ID + ".encoding");
+    //@formatter:on
 
     private String value;
 

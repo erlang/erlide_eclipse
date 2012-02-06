@@ -12,12 +12,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.ErlangPlugin;
-import org.erlide.jinterface.util.Base64;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
-import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.service.prefs.BackingStoreException;
 
 public final class PreferencesHelper {
@@ -57,25 +51,7 @@ public final class PreferencesHelper {
     }
 
     public byte[] getByteArray(final String key, final byte[] defaultValue) {
-        final byte[] b = service.getByteArray(qualifier, key, null,
-                loadContexts);
-
-        // bug in PreferenceService.getByteArray 3.5, it doesn't decode
-        // hack around it
-        final BundleContext bc = ErlangPlugin.getDefault().getBundle()
-                .getBundleContext();
-        final ServiceReference ref = bc.getServiceReference(PackageAdmin.class
-                .getName());
-        final PackageAdmin _packageAdmin;
-        if (ref != null) {
-            _packageAdmin = (PackageAdmin) bc.getService(ref);
-            final Version version = _packageAdmin.getBundle(
-                    IPreferencesService.class).getVersion();
-            if (version.compareTo(new Version(3, 3, 0)) < 0) {
-                return b == null ? defaultValue : Base64.decode(b);
-            }
-        }
-        return b;
+        return service.getByteArray(qualifier, key, null, loadContexts);
     }
 
     public double getDouble(final String key, final double defaultValue) {

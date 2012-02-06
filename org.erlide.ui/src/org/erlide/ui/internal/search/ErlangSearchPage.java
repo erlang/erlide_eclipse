@@ -41,7 +41,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.backend.BackendCore;
+import org.erlide.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
@@ -622,9 +622,9 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int offset = textSel.getOffset();
             OpenResult res;
             try {
-                res = ErlideOpen.open(backend, module, offset, ModelUtils
-                        .getImportsAsList(module), "",  ErlModelManager.getErlangModel()
-                        .getPathVars());
+                res = ErlideOpen.open(backend, module, offset,
+                        ModelUtils.getImportsAsList(module), "",
+                        ErlModelManager.getErlangModel().getPathVars());
             } catch (final RpcException e) {
                 res = null;
             }
@@ -770,7 +770,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     // --------------- Configuration handling --------------
 
     /**
-     * Returns the page settings for this Java search page.
+     * Returns the page settings for this Erlang search page.
      * 
      * @return the page settings to be used
      */

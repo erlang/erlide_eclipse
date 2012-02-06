@@ -30,9 +30,10 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.backend.IBackend;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.IBackend;
+import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
@@ -68,22 +69,28 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemsAndTasksFor(currentProject);
-            final IErlProject erlProject =  ErlModelManager.getErlangModel()
+            final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject
                     .getOutputLocation());
             if (bf.exists()) {
-                final IResource[] beams = bf.members();
-                monitor.beginTask("Cleaning Erlang files", beams.length);
-                if (beams.length > 0) {
-                    final float delta = 100.0f / beams.length;
-                    for (final IResource element : beams) {
-                        if ("beam".equals(element.getFileExtension())) {
-                            final IResource source = findCorrespondingSource(element);
-                            if (source != null) {
-                                element.delete(true, monitor);
+                final boolean nukeOutput = new OldErlangProjectProperties(
+                        currentProject).isNukeOutputOnClean();
+                if (nukeOutput) {
+                    bf.delete(true, monitor);
+                } else {
+                    final IResource[] beams = bf.members();
+                    monitor.beginTask("Cleaning Erlang files", beams.length);
+                    if (beams.length > 0) {
+                        final float delta = 100.0f / beams.length;
+                        for (final IResource element : beams) {
+                            if ("beam".equals(element.getFileExtension())) {
+                                final IResource source = findCorrespondingSource(element);
+                                if (source != null) {
+                                    element.delete(true, monitor);
+                                }
+                                notifier.updateProgressDelta(delta);
                             }
-                            notifier.updateProgressDelta(delta);
                         }
                     }
                 }
@@ -105,9 +112,10 @@ public class ErlideBuilder {
         }
     }
 
-    public IProject[] build(final int kind, @SuppressWarnings("rawtypes")
-    final Map args, final IProgressMonitor monitor,
-            final IResourceDelta resourceDelta) throws CoreException {
+    public IProject[] build(final int kind,
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProgressMonitor monitor, final IResourceDelta resourceDelta)
+            throws CoreException {
         final long time = System.currentTimeMillis();
         final IProject project = getProject();
         if (project == null || !project.isAccessible()) {
@@ -118,8 +126,8 @@ public class ErlideBuilder {
         ErlLogger.debug("###** Starting build " + helper.buildKind(kind)
                 + " of " + project.getName());
         // }
-        final IErlProject erlProject =  ErlModelManager.getErlangModel().getErlangProject(
-                project);
+        final IErlProject erlProject = ErlModelManager.getErlangModel()
+                .getErlangProject(project);
         try {
             MarkerUtils.deleteMarkers(project);
             initializeBuilder(monitor);
@@ -255,9 +263,9 @@ public class ErlideBuilder {
     }
 
     private Set<BuildResource> getResourcesToBuild(final int kind,
-            @SuppressWarnings("rawtypes")
-            final Map args, final IProject currentProject,
-            final IResourceDelta resourceDelta) throws CoreException {
+            @SuppressWarnings("rawtypes") final Map args,
+            final IProject currentProject, final IResourceDelta resourceDelta)
+            throws CoreException {
         Set<BuildResource> resourcesToBuild = Sets.newHashSet();
         final IProgressMonitor submon = new SubProgressMonitor(
                 notifier.fMonitor, 10);

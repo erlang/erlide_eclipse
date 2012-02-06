@@ -1,3 +1,12 @@
+List of user visible changes between 0.14.0 and 0.15.0 (20120130)
+
+        834: searching: still problems with search on function call
+c87d14b 956-compare-view-(structure)-shows-wrong-diff 
+        955-editor-doesn-t-support-a-resource-s-history-versions
+6193e6c 989: Dialyzer failing
+adf4a8f 983: include wrangler.codeinspection fragment; requires Graphviz plugin
+09beae1 finished updating minimum requirement to R13
+
 List of user visible changes between 0.13.9 and 0.14.0 (20120105)
 
         947: completion of include and include_lib

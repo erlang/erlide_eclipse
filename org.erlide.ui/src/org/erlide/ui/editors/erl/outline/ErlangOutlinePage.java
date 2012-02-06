@@ -123,7 +123,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     public ErlangOutlinePage(final ErlangEditor editor) {
         // myDocProvider = documentProvider;
         fEditor = editor;
-         ErlModelManager.getErlangModel().addModelChangeListener(this);
+        ErlModelManager.getErlangModel().addModelChangeListener(this);
     }
 
     /**
@@ -272,8 +272,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
          * @see org.eclipse.core.runtime.IAdaptable#getAdapter(Class)
          */
         @Override
-        public Object getAdapter(@SuppressWarnings("rawtypes")
-        final Class clas) {
+        public Object getAdapter(@SuppressWarnings("rawtypes") final Class clas) {
             if (clas == IWorkbenchAdapter.class) {
                 return this;
             }
@@ -302,7 +301,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             fEditor.outlinePageClosed();
             fEditor = null;
         }
-         ErlModelManager.getErlangModel().removeModelChangeListener(this);
+        ErlModelManager.getErlangModel().removeModelChangeListener(this);
 
         super.dispose();
     }
@@ -346,8 +345,8 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     }
 
     /**
-     * This action toggles whether this Java Outline page links its selection to
-     * the active editor.
+     * This action toggles whether this Erlang Outline page links its selection
+     * to the active editor.
      * 
      * @since 3.0
      */

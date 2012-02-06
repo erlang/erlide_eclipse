@@ -40,9 +40,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.core.backend.BackendCore;
-import org.erlide.core.backend.BackendException;
-import org.erlide.core.internal.backend.BackendHelper;
+import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendException;
+import org.erlide.backend.internal.BackendHelper;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
@@ -439,8 +439,11 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     enum OptionStatus {
-        OK, @SuppressWarnings("hiding")
-        ERROR, NO_RUNTIME
+        //@formatter:off
+        OK, 
+        @SuppressWarnings("hiding") ERROR, 
+        NO_RUNTIME
+        //@formatter:off
     }
 
     OptionStatus optionsAreOk(final String string) {

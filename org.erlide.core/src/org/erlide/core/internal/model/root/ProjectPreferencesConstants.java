@@ -59,6 +59,7 @@ public final class ProjectPreferencesConstants {
     // tracing properties
     public static final String TRACING = "tracing";
     public static final String TRACED_MODULES = "modules";
+    public static final String NUKE_OUTPUT_ON_CLEAN = "nukeOutputOnClean";
 
     private ProjectPreferencesConstants() {
     }

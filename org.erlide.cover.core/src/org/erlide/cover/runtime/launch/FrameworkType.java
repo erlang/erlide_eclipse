@@ -8,7 +8,11 @@ package org.erlide.cover.runtime.launch;
  */
 public enum FrameworkType {
 
-    EUNIT("EUnit"), CT("Common Test"), QC("QuickCheck");
+    //@formatter:off
+    EUNIT("EUnit"), 
+    CT("Common Test"), 
+    QC("QuickCheck");
+    //@formatter:on
 
     private final String fullRepr;
 

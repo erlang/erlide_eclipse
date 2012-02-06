@@ -57,7 +57,7 @@ public class ProblemMarkerManager implements IResourceChangeListener,
                     && delta.getKind() == IResourceDelta.CHANGED) {
                 final IProject project = (IProject) res;
                 if (!project.isAccessible()) {
-                    // only track open Java projects
+                    // only track open Erlang projects
                     return false;
                 }
             }

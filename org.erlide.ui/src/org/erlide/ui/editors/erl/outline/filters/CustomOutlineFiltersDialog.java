@@ -32,9 +32,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.erlide.jinterface.util.ListsUtils;
 import org.erlide.ui.editors.erl.outline.FilterDescriptor;
 import org.erlide.ui.util.SWTUtil;
+import org.erlide.utils.ListsUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -57,7 +57,7 @@ public class CustomOutlineFiltersDialog extends SelectionDialog {
     private final Stack<FilterDescriptor> fFilterDescriptorChangeHistory;
 
     /**
-     * Creates a dialog to customize Java element filters.
+     * Creates a dialog to customize Erlang element filters.
      * 
      * @param shell
      *            the parent shell

@@ -6,8 +6,8 @@ import java.util.List;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
-import org.erlide.core.debug.ErlangProcess;
-import org.erlide.core.debug.ErlangStackFrame;
+import org.erlide.launch.debug.model.ErlangProcess;
+import org.erlide.launch.debug.model.ErlangStackFrame;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
