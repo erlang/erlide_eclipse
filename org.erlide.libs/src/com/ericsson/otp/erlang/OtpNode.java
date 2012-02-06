@@ -751,7 +751,8 @@ public class OtpNode extends OtpLocalNode {
 
             localStatus(node, true, null);
 
-            accept_loop: while (!done) {
+            accept_loop:
+            while (!done) {
                 conn = null;
 
                 try {

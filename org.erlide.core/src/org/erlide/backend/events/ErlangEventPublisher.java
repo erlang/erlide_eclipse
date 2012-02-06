@@ -31,7 +31,7 @@ public class ErlangEventPublisher {
             .getProperty("erlide.event.daemon"));
 
     public ErlangEventPublisher(final IBackend aBackend) {
-        this.backend = aBackend;
+        backend = aBackend;
         backendListener = new IBackendListener() {
 
             @Override
@@ -67,7 +67,7 @@ public class ErlangEventPublisher {
         private final IBackend myBackend;
 
         public HandlerJob(final IBackend backend) {
-            this.myBackend = backend;
+            myBackend = backend;
         }
 
         @Override
@@ -143,8 +143,7 @@ public class ErlangEventPublisher {
         properties.put("DATA", event);
         properties.put("SENDER", sender);
 
-        final Event osgiEvent = new Event(getFullTopic(topic, b),
-                properties);
+        final Event osgiEvent = new Event(getFullTopic(topic, b), properties);
         getEventAdmin().postEvent(osgiEvent);
     }
 

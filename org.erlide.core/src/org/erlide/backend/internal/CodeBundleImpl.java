@@ -34,7 +34,7 @@ public class CodeBundleImpl implements ICodeBundle {
             final Map<String, CodeContext> paths2,
             final Collection<Tuple<String, String>> inits) {
         bundle = b;
-        this.paths = Maps.newHashMap(paths2);
+        paths = Maps.newHashMap(paths2);
         this.inits = inits;
     }
 
