@@ -34,7 +34,7 @@ public class BuildQueueProcessor extends Job {
             work = queue.poll();
             if (work == null) {
                 try {
-                    getThread().sleep(100);
+                    Thread.sleep(100);
                 } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }

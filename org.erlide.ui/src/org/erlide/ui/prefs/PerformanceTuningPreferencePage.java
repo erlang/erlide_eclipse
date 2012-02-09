@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.core.ErlangPlugin;
 import org.erlide.ui.util.PerformanceTuning;
 
 public class PerformanceTuningPreferencePage extends PreferencePage implements
@@ -70,8 +69,6 @@ public class PerformanceTuningPreferencePage extends PreferencePage implements
                 false, 3, 1));
         lblNewLabel
                 .setText("In the future, we might add limits for other functions (outline, etc)");
-        final String version = ErlangPlugin.getDefault().getCore()
-                .getFeatureVersion();
 
         return panel;
     }

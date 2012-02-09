@@ -1,8 +1,5 @@
 package org.erlide.ui.util;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
 
@@ -30,13 +27,6 @@ public class PerformanceTuning {
         final PerformanceTuning result = new PerformanceTuning();
         result.setFoldingLimit(DEFAULT_FOLDING_LIMIT);
         return result;
-    }
-
-    private static IEclipsePreferences getNode() {
-        final IScopeContext context = new InstanceScope();
-        final IEclipsePreferences eclipsePreferences = context
-                .getNode(QUALIFIER);
-        return eclipsePreferences;
     }
 
     public PerformanceTuning() {
