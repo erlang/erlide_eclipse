@@ -64,6 +64,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     private Link fChangeWorkspaceSettings;
     private Text text;
     protected ControlEnableState fBlockEnableState;
+    private Group optionsGroup;
 
     public CompilerPreferencePage() {
         super();
@@ -124,7 +125,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         {
             final GridData gridData = new GridData(SWT.LEFT, SWT.FILL, true,
                     true, 1, 1);
-            gridData.widthHint = 386;
+            gridData.widthHint = 400;
             gridData.heightHint = 80;
             text.setLayoutData(gridData);
         }
@@ -133,23 +134,26 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Label label = new Label(prefsComposite, SWT.SEPARATOR
                 | SWT.HORIZONTAL);
         {
-            final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
+            final GridData gridData = new GridData(SWT.FILL, SWT.CENTER, false,
                     false, 1, 1);
-            gridData.widthHint = 399;
+            gridData.widthHint = 400;
             label.setLayoutData(gridData);
         }
 
-        final Group optionsGroup = new Group(prefsComposite, SWT.NONE);
+        optionsGroup = new Group(prefsComposite, SWT.NONE);
         {
-            final GridData gridData = new GridData(SWT.LEFT, SWT.CENTER, false,
-                    false, 1, 1);
-            gridData.widthHint = 397;
-            optionsGroup.setLayoutData(gridData);
+            final GridData gd_optionsGroup = new GridData(SWT.LEFT, SWT.CENTER,
+                    false, false, 1, 1);
+            gd_optionsGroup.widthHint = 400;
+            optionsGroup.setLayoutData(gd_optionsGroup);
         }
-        optionsGroup.setLayout(new GridLayout(2, false));
+        optionsGroup.setLayout(new GridLayout(2, true));
         curGroup = optionsGroup;
-        newCheckButton("Debug info", "Include debug info",
+        final Button b = newCheckButton("Debug info", "Include debug info",
                 CompilerPreferencesConstants.DEBUG_INFO);
+        b.setEnabled(false);
+        b.setSelection(true);
+        b.setToolTipText("Include debug info in BEAM file");
         newCheckButton("Export all", "Export all defined functions",
                 CompilerPreferencesConstants.EXPORT_ALL);
         newCheckButton("Encrypt debug info",
@@ -160,11 +164,11 @@ public class CompilerPreferencePage extends PropertyPage implements
         {
             final GridData gridData = new GridData(SWT.LEFT, SWT.FILL, false,
                     false, 1, 1);
-            gridData.widthHint = 401;
+            gridData.widthHint = 400;
             warningsGroup.setLayoutData(gridData);
         }
         warningsGroup.setText("Warnings");
-        final GridLayout gridLayout = new GridLayout(2, false);
+        final GridLayout gridLayout = new GridLayout(2, true);
         warningsGroup.setLayout(gridLayout);
         curGroup = warningsGroup;
         newCheckButton(
@@ -186,6 +190,7 @@ public class CompilerPreferencePage extends PropertyPage implements
                 CompilerPreferencesConstants.WARN_EXPORT_ALL);
         newCheckButton("Unused Imports", "Unused imported functions",
                 CompilerPreferencesConstants.WARN_UNUSED_IMPORT);
+        new Label(optionsGroup, SWT.NONE);
 
         // final Button variablesExportedOutsideButton = new
         // Button(warningsGroup,
@@ -253,7 +258,10 @@ public class CompilerPreferencePage extends PropertyPage implements
     @Override
     protected Label createDescriptionLabel(final Composite parent) {
         createProjectSpecificSettingsCheckBoxAndLink(parent);
-        return super.createDescriptionLabel(parent);
+        final Label lblSelectTheCompiler = super.createDescriptionLabel(parent);
+        lblSelectTheCompiler
+                .setText("Select the compiler options to be used. At the moment, this page is not entirely functional...");
+        return lblSelectTheCompiler;
     }
 
     protected void enableProjectSpecificSettings(
@@ -410,23 +418,24 @@ public class CompilerPreferencePage extends PropertyPage implements
         return "org.erlide.ui.properties.compilerPreferencePage";
     }
 
-    private void newCheckButtonInvertedOption(final String theText,
+    private Button newCheckButtonInvertedOption(final String theText,
             final String toolTipText, final String optionKey) {
-        newCheckButtonWithInvertOption(theText, toolTipText, optionKey, true);
+        return newCheckButtonWithInvertOption(theText, toolTipText, optionKey,
+                true);
     }
 
-    private void newCheckButton(final String theText, final String toolTipText,
-            final String optionKey) {
-        newCheckButtonWithInvertOption(theText, toolTipText, optionKey, false);
+    private Button newCheckButton(final String theText,
+            final String toolTipText, final String optionKey) {
+        return newCheckButtonWithInvertOption(theText, toolTipText, optionKey,
+                false);
     }
 
-    private void newCheckButtonWithInvertOption(final String theText,
+    private Button newCheckButtonWithInvertOption(final String theText,
             final String toolTipText, final String optionKey,
             final boolean inverted) {
         final Button b = new Button(curGroup, SWT.CHECK);
+        b.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
         b.setText(theText);
-        b.setToolTipText(toolTipText);
-        b.setSelection(prefs.getBooleanOption(optionKey) == !inverted);
         b.setData(optionKey);
         b.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -436,6 +445,7 @@ public class CompilerPreferencePage extends PropertyPage implements
                         button.getSelection() == !inverted);
             }
         });
+        return b;
     }
 
     enum OptionStatus {
