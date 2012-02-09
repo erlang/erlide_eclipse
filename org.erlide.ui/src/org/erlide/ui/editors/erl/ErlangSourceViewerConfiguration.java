@@ -24,9 +24,9 @@ public class ErlangSourceViewerConfiguration extends
     protected final IColorManager colorManager;
     protected ITokenScanner charScanner;
     protected ITokenScanner codeScanner;
-    private final ITokenScanner commentScanner;
-    private final ITokenScanner stringScanner;
-    private final ITokenScanner qatomScanner;
+    protected final ITokenScanner commentScanner;
+    protected final ITokenScanner stringScanner;
+    protected final ITokenScanner qatomScanner;
     private ICharacterPairMatcher fBracketMatcher;
 
     public ErlangSourceViewerConfiguration(final IPreferenceStore store,

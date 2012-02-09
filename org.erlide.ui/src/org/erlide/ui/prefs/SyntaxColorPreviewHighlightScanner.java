@@ -13,14 +13,13 @@ public class SyntaxColorPreviewHighlightScanner extends ErlCodeScanner {
     final Map<TokenHighlight, HighlightStyle> styles;
 
     public class PreviewTextAttribute extends TextAttribute {
-        TokenHighlight th;
+        final TokenHighlight th;
 
         public PreviewTextAttribute(final TokenHighlight th) {
             super(null);
             this.th = th;
         }
 
-        @SuppressWarnings("synthetic-access")
         @Override
         public Color getForeground() {
             return fColorManager.getColor(styles.get(th).getColor());

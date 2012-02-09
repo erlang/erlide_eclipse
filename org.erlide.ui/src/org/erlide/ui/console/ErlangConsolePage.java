@@ -255,7 +255,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         consoleOutputViewer = new SourceViewer(sashForm, null, SWT.V_SCROLL
                 | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
-        consoleText = (StyledText) consoleOutputViewer.getControl();
+        consoleText = consoleOutputViewer.getTextWidget();
         consoleText.setFont(JFaceResources.getTextFont());
         consoleText.addKeyListener(new KeyAdapter() {
             @Override

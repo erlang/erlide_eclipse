@@ -34,10 +34,10 @@ import org.erlide.ui.editors.erl.scanner.ErlCodeScanner;
 import org.erlide.ui.editors.erl.scanner.ErlDamagerRepairer;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
 
-final class ErlangConsoleSourceViewerConfiguration extends
+final public class ErlangConsoleSourceViewerConfiguration extends
         TextSourceViewerConfiguration {
 
-    ErlangConsoleSourceViewerConfiguration() {
+    public ErlangConsoleSourceViewerConfiguration() {
         super();
     }
 
