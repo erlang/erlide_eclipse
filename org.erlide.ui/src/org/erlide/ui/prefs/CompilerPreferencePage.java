@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -60,9 +59,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     private IProject fProject;
     private Button fUseProjectSettings;
     private Link fChangeWorkspaceSettings;
-    private Text text;
     protected ControlEnableState fBlockEnableState;
-    private Group optionsGroup;
     private final List<Button> optionButtons;
 
     public CompilerPreferencePage() {
@@ -78,7 +75,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         final GridLayout gridLayout_1 = new GridLayout();
         prefsComposite.setLayout(gridLayout_1);
 
-        optionsGroup = new Group(prefsComposite, SWT.NONE);
+        final Group optionsGroup = new Group(prefsComposite, SWT.NONE);
         {
             final GridData gd_optionsGroup = new GridData(SWT.LEFT, SWT.CENTER,
                     false, false, 1, 1);

@@ -1,6 +1,5 @@
 package org.erlide.core.services.builder;
 
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -16,7 +15,6 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
 
 public class CompilerOptionTest {
-    private Collection<CompilerOption> options;
 
     @Test
     public void testFind() {

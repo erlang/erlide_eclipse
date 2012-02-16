@@ -178,18 +178,12 @@ public abstract class CompilerOption {
     private final String name;
     private final String description;
     private final String tooltip;
-    private boolean configurable;
 
     private CompilerOption(final String name, final String description,
             final String tooltip) {
         this.name = name;
-        this.configurable = true;
         this.description = description;
         this.tooltip = tooltip;
-    }
-
-    protected void setConfigurable(final boolean configurable) {
-        this.configurable = configurable;
     }
 
     public static CompilerOption find(final String data) {
@@ -204,10 +198,6 @@ public abstract class CompilerOption {
 
     public String getName() {
         return name;
-    }
-
-    public boolean isConfigurable() {
-        return configurable;
     }
 
     public String getDescription() {
