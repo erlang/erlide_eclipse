@@ -70,7 +70,7 @@ public class Tuple<X, Y> implements Serializable {
     @Override
     public String toString() {
         final StringBuffer buffer = new StringBuffer();
-        buffer.append("Tuple [");
+        buffer.append("Tuple[");
         buffer.append(first);
         buffer.append(" -- ");
         buffer.append(second);

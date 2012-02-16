@@ -172,7 +172,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         final Composite group = prefsComposite;// new Composite(prefsComposite,
                                                // SWT.NONE);
         group.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-        group.setLayout(new GridLayout(1, false));
+        // group.setLayout(new GridLayout(1, false));
         createDialyzeCheckbox(group);
         createPltSelection(group);
         createPltCheck(group);
@@ -286,6 +286,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         fEditButton = new Button(buttons, SWT.PUSH);
         fEditButton.setText("Change...");
+        gd = new GridData();
+        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
         fEditButton.setLayoutData(gd);
         fEditButton.addListener(SWT.Selection, new Listener() {
             @Override
@@ -296,6 +298,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         fRemoveButton = new Button(buttons, SWT.PUSH);
         fRemoveButton.setText("Remove");
+        gd = new GridData();
+        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
         fRemoveButton.setLayoutData(gd);
         fRemoveButton.addListener(SWT.Selection, new Listener() {
             @Override

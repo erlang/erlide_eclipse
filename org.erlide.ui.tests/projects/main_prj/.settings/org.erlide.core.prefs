@@ -1,16 +1,5 @@
-#Thu Sep 09 12:10:48 CEST 2010
+#Thu Feb 16 12:57:47 CET 2012
 backend_version=R13B
-compiler/allOptions=debug
-compiler/debug_info=false
-compiler/encrypt_debug_info=false
-compiler/export_all=false
-compiler/nowarn_bif_clash=false
-compiler/nowarn_deprecated_functions=false
-compiler/nowarn_shadow_vars=false
-compiler/warnFormat=true
-compiler/warn_export_all=false
-compiler/warn_obsolete_guard=false
-compiler/warn_unused_import=false
 eclipse.preferences.version=1
 external_includes=
 external_modules=
