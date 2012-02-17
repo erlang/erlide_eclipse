@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.outline;
+package org.erlide.ui.editors.erl.outline.filters;
 
 import java.util.Collection;
 import java.util.Map;
@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.ui.editors.erl.outline.ErlangLabelProvider;
 
 import com.google.common.collect.Maps;
 

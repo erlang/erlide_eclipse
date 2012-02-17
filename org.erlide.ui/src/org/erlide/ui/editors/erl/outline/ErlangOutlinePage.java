@@ -10,6 +10,7 @@
 
 package org.erlide.ui.editors.erl.outline;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +37,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchCommandConstants;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
@@ -61,6 +64,9 @@ import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+import org.erlide.ui.editors.erl.outline.filters.FilterDescriptor;
+import org.erlide.ui.editors.erl.outline.filters.OutlineFilterUtils;
+import org.erlide.ui.editors.erl.outline.filters.PatternFilter;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.PreferenceConstants;
@@ -87,6 +93,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
     private OpenAndLinkWithEditorHelper fOpenAndLinkWithEditorHelper;
     private ToggleLinkingAction fToggleLinkingAction;
     private final PatternFilter fPatternFilter = new PatternFilter();
+    private IPartListener fPartListener;
 
     @Override
     public Control getControl() {
@@ -139,7 +146,19 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             if (fModule != null) {
                 fModule.open(null);
             }
+            addFilters();
         } catch (final CoreException e) {
+        }
+    }
+
+    private void addFilters() {
+        final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
+        final Collection<FilterDescriptor> filterDescriptors = FilterDescriptor
+                .getFilterDescriptors();
+        for (final FilterDescriptor filterDescriptor : filterDescriptors) {
+            final String filterId = filterDescriptor.getId();
+            final boolean value = prefsNode.getBoolean(filterId, false);
+            OutlineFilterUtils.addFilter(filterId, value, this);
         }
     }
 
@@ -246,6 +265,31 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         handlerService.activateHandler(
                 IWorkbenchCommandConstants.NAVIGATE_TOGGLE_LINK_WITH_EDITOR,
                 new ActionHandler(fToggleLinkingAction));
+        fPartListener = new IPartListener() {
+
+            @Override
+            public void partOpened(final IWorkbenchPart part) {
+                addFilters(); // JC borde filter-metoden ovan räcka?
+            }
+
+            @Override
+            public void partDeactivated(final IWorkbenchPart part) {
+            }
+
+            @Override
+            public void partClosed(final IWorkbenchPart part) {
+            }
+
+            @Override
+            public void partBroughtToTop(final IWorkbenchPart part) {
+            }
+
+            @Override
+            public void partActivated(final IWorkbenchPart part) {
+                addFilters();
+            }
+        };
+        getSite().getPage().addPartListener(fPartListener);
     }
 
     protected void contextMenuAboutToShow(final IMenuManager menu) {
@@ -297,6 +341,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
     @Override
     public void dispose() {
+        getSite().getPage().removePartListener(fPartListener);
         if (fEditor != null) {
             fEditor.outlinePageClosed();
             fEditor = null;
