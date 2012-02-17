@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.outline;
+package org.erlide.ui.editors.erl.outline.filters;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,8 +6,11 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.utils.ListsUtils;
 import org.osgi.service.prefs.BackingStoreException;
@@ -15,7 +18,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 
-class OutlineFilterUtils {
+public class OutlineFilterUtils {
 
     private static final String SEPARATOR = ",";
 
@@ -107,6 +110,33 @@ class OutlineFilterUtils {
             }
         } else {
             viewer.refresh();
+        }
+    }
+
+    public static void addFilter(final String filterId, final boolean value,
+            final Object activePart) {
+        final FilterDescriptor desc = FilterDescriptor
+                .getFilterDescriptor(filterId);
+        final ViewerFilter filter = desc.getViewerFilter();
+        if (filter == null) {
+            return;
+        }
+        final ErlangOutlinePage erlangOutlinePage;
+        if (activePart instanceof ErlangOutlinePage) {
+            erlangOutlinePage = (ErlangOutlinePage) activePart;
+        } else {
+            final ContentOutline outline = (ContentOutline) activePart;
+            erlangOutlinePage = (ErlangOutlinePage) outline
+                    .getAdapter(ErlangOutlinePage.class);
+        }
+        final TreeViewer viewer = erlangOutlinePage.getTreeViewer();
+        if (viewer == null) {
+            return;
+        }
+        if (value) {
+            viewer.addFilter(filter);
+        } else {
+            viewer.removeFilter(filter);
         }
     }
 

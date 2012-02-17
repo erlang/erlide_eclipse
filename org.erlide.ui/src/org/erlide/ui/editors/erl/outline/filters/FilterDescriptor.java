@@ -1,4 +1,4 @@
-package org.erlide.ui.editors.erl.outline;
+package org.erlide.ui.editors.erl.outline.filters;
 
 import java.text.Collator;
 import java.util.Collection;

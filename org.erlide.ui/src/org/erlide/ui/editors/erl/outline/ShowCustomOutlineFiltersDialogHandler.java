@@ -14,6 +14,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.erlide.ui.editors.erl.outline.filters.CustomOutlineFiltersDialog;
+import org.erlide.ui.editors.erl.outline.filters.OutlineFilterUtils;
+import org.erlide.ui.editors.erl.outline.filters.PatternFilter;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

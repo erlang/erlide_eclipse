@@ -51,6 +51,7 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.outline.filters.FilterDescriptor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.util.StringMatcher;
