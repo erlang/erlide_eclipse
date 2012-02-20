@@ -140,7 +140,9 @@ public final class PreferencesHelper {
     public void putString(final String key, final String value) {
         final String def = service
                 .getString(qualifier, key, null, nextContexts);
-        if (def == null || !def.equals(value)) {
+        if (value == null) {
+            storeContext.getNode(qualifier).remove(key);
+        } else if (def == null || !def.equals(value)) {
             storeContext.getNode(qualifier).put(key, value);
         }
     }

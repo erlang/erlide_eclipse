@@ -21,13 +21,11 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -41,6 +39,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -51,14 +50,17 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Scrollable;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.erlide.core.ErlangCoreOptions;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ColorManager;
+import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
 import org.erlide.ui.editors.erl.SyntaxColorPreviewEditorConfiguration;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.HighlightStyle;
@@ -75,6 +77,8 @@ import org.erlide.ui.util.PixelConverter;
  */
 public class ColoringPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
+    public ColoringPreferencePage() {
+    }
 
     private static final String COMPILER_TASK_TAGS = ErlangCoreOptions.COMPILER_TASK_TAGS
             .getValue();
@@ -83,9 +87,6 @@ public class ColoringPreferencePage extends PreferencePage implements
             + "/editor/colors/";
 
     final String fErlangCategory = PreferencesMessages.ErlEditorPreferencePage_coloring_category_erlang;
-
-    // final String fEdocCategory =
-    // PreferencesMessages.ErlEditorPreferencePage_coloring_category_edoc;
 
     ColorSelector fSyntaxForegroundColorEditor;
     Label fColorEditorLabel;
@@ -209,7 +210,6 @@ public class ColoringPreferencePage extends PreferencePage implements
     @Override
     public void dispose() {
         fColorManager.dispose();
-
         super.dispose();
     }
 
@@ -277,8 +277,7 @@ public class ColoringPreferencePage extends PreferencePage implements
 
         final GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true,
                 false);
-        gridData.widthHint = 150; // only expand further if anyone else
-        // requires it
+        gridData.widthHint = 150;
         gridData.horizontalSpan = 2;
         link.setLayoutData(gridData);
 
@@ -300,6 +299,11 @@ public class ColoringPreferencePage extends PreferencePage implements
         editorComposite.setLayoutData(gd);
 
         fListViewer = new TreeViewer(editorComposite, SWT.SINGLE | SWT.BORDER);
+        final Tree tree = fListViewer.getTree();
+        final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, false, false,
+                1, 1);
+        gd_tree.widthHint = 100;
+        tree.setLayoutData(gd_tree);
         fListViewer.setLabelProvider(new ColorListLabelProvider());
         fListViewer.setContentProvider(new ColorListContentProvider());
         fListViewer.setInput(fColors);
@@ -368,6 +372,7 @@ public class ColoringPreferencePage extends PreferencePage implements
                 .getButton();
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         foregroundColorButton.setLayoutData(gd);
+        new Label(stylesComposite, SWT.NONE);
 
         fBoldCheckBox = new Button(stylesComposite, SWT.CHECK);
         fBoldCheckBox.setText(PreferencesMessages.ErlEditorPreferencePage_bold);
@@ -401,18 +406,20 @@ public class ColoringPreferencePage extends PreferencePage implements
         fUnderlineCheckBox.setLayoutData(gd);
 
         label = new Label(colorComposite, SWT.LEFT);
-        label.setText(PreferencesMessages.ErlEditorPreferencePage_preview);
-        final GridData gd_label = new GridData(SWT.FILL, SWT.FILL, true, false);
-        label.setLayoutData(gd_label);
+        label.setText(PreferencesMessages.ErlEditorPreferencePage_preview
+                + "\n  - Currently the preview doesn't work, but this dialog does."
+                + "\n  - Open files need to be reopened to refresh the coloring.");
+        label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
         final String content = loadPreviewContentFromFile(getClass(),
                 "ColorSettingPreviewCode.txt"); //$NON-NLS-1$
-        fPreviewViewer = createErlangPreviewer(parent, fColorManager, fColors,
-                content);
+        fPreviewViewer = createErlangPreviewer(colorComposite, fColorManager,
+                fColors, content);
         final Control previewer = fPreviewViewer.getControl();
         gd = new GridData(GridData.FILL_BOTH);
         gd.widthHint = convertWidthInCharsToPixels(20);
         gd.heightHint = convertHeightInCharsToPixels(5);
+        gd.grabExcessHorizontalSpace = true;
         previewer.setLayoutData(gd);
 
         fListViewer
@@ -435,6 +442,9 @@ public class ColoringPreferencePage extends PreferencePage implements
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
+                if (data == null) {
+                    return;
+                }
                 data.setColor(fSyntaxForegroundColorEditor.getColorValue());
                 fPreviewViewer.invalidateTextPresentation();
             }
@@ -450,6 +460,9 @@ public class ColoringPreferencePage extends PreferencePage implements
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
+                if (data == null) {
+                    return;
+                }
                 data.setStyle(SWT.BOLD, fBoldCheckBox.getSelection());
                 fPreviewViewer.invalidateTextPresentation();
             }
@@ -465,6 +478,9 @@ public class ColoringPreferencePage extends PreferencePage implements
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
+                if (data == null) {
+                    return;
+                }
                 data.setStyle(SWT.ITALIC, fItalicCheckBox.getSelection());
                 fPreviewViewer.invalidateTextPresentation();
             }
@@ -479,6 +495,9 @@ public class ColoringPreferencePage extends PreferencePage implements
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
+                if (data == null) {
+                    return;
+                }
                 data.setStyle(TextAttribute.STRIKETHROUGH,
                         fStrikethroughCheckBox.getSelection());
                 fPreviewViewer.invalidateTextPresentation();
@@ -495,6 +514,9 @@ public class ColoringPreferencePage extends PreferencePage implements
             public void widgetSelected(final SelectionEvent e) {
                 final TokenHighlight item = getHighlight();
                 final HighlightStyle data = fColors.get(item);
+                if (data == null) {
+                    return;
+                }
                 data.setStyle(TextAttribute.UNDERLINE,
                         fUnderlineCheckBox.getSelection());
                 fPreviewViewer.invalidateTextPresentation();
@@ -559,30 +581,33 @@ public class ColoringPreferencePage extends PreferencePage implements
         final IPreferenceStore generalTextStore = EditorsUI
                 .getPreferenceStore();
         final IPreferenceStore store = new ChainedPreferenceStore(
-                new IPreferenceStore[] { createTemporaryCorePreferenceStore(),
+                new IPreferenceStore[] {
+                        ErlideUIPlugin.getDefault().getPreferenceStore(),
                         generalTextStore });
-        final SourceViewer v = new ProjectionViewer(parent, null, null, false,
+
+        final SourceViewer viewer = new SourceViewer(parent, null, null, false,
                 SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
-        final SyntaxColorPreviewEditorConfiguration configuration = new SyntaxColorPreviewEditorConfiguration(
+        final IDocument document = new Document(content);
+        viewer.setDocument(document);
+
+        final ErlangDocumentSetupParticipant setupParticipant = new ErlangDocumentSetupParticipant();
+        setupParticipant.setup(document);
+
+        final TextSourceViewerConfiguration configuration = new SyntaxColorPreviewEditorConfiguration(
                 store, colorManager, colors);
-        v.configure(configuration);
+        viewer.configure(configuration);
 
         final Font font = JFaceResources
                 .getFont(PreferenceConstants.EDITOR_TEXT_FONT);
-        v.getTextWidget().setFont(font);
-        new ErlangSourceViewerUpdater(v, configuration, store);
-        v.setEditable(false);
+        viewer.getTextWidget().setFont(font);
+        new ErlangSourceViewerUpdater(viewer, configuration, store);
+        viewer.setEditable(false);
 
-        final IDocument document = new Document(content);
-        v.setDocument(document);
+        final Cursor arrowCursor = viewer.getTextWidget().getDisplay()
+                .getSystemCursor(SWT.CURSOR_ARROW);
+        viewer.getTextWidget().setCursor(arrowCursor);
 
-        return v;
-    }
-
-    private static IPreferenceStore createTemporaryCorePreferenceStore() {
-        final IPreferenceStore result = new PreferenceStore();
-        result.setValue(COMPILER_TASK_TAGS, "TASK,TODO"); //$NON-NLS-1$
-        return result;
+        return viewer;
     }
 
     public static String loadPreviewContentFromFile(final Class<?> clazz,

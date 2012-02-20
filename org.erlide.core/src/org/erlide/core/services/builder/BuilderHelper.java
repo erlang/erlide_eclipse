@@ -507,7 +507,8 @@ public final class BuilderHelper {
     }
 
     private void createTaskMarkers(final IProject project, final IResource res) {
-        BuildQueueProcessor.getInstance().addWork(new BuildWorkerInfo(project, res));
+        BuildQueueProcessor.getInstance().addWork(
+                new BuildWorkerInfo(project, res));
     }
 
     private IPath getBeamForErl(final IResource source) {
@@ -584,7 +585,7 @@ public final class BuilderHelper {
             return;
         }
         try {
-            OtpErlangObject result = res.get();
+            final OtpErlangObject result = res.get();
             completeCompile(project, resource.getResource(), result, b,
                     compilerOptions);
         } catch (final RpcException e) {

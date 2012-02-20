@@ -143,8 +143,8 @@ public class ErlideBuilder {
                 }
             }
 
-            final OtpErlangList compilerOptions = CompilerPreferences
-                    .get(project);
+            final OtpErlangList compilerOptions = CompilerOptions.get(project);
+            ErlLogger.debug(">>> compiler options ::: " + compilerOptions);
 
             final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
                     kind, args, project, resourceDelta);

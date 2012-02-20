@@ -1931,4 +1931,5 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
         return stateDirCached;
     }
+
 }

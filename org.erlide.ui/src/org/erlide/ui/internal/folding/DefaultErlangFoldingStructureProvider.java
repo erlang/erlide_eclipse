@@ -45,7 +45,6 @@ import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementDelta;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -55,6 +54,7 @@ import org.erlide.ui.internal.DocumentCharacterIterator;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.ui.util.PerformanceTuning;
 
 public class DefaultErlangFoldingStructureProvider implements
         IProjectionListener, IErlangFoldingStructureProvider,
@@ -159,28 +159,6 @@ public class DefaultErlangFoldingStructureProvider implements
             }
             return false;
         }
-    }
-
-    class ElementChangedListener implements IElementChangedListener {
-
-        /*
-         * @see
-         * org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse
-         * .jdt.core.ElementChangedEvent)
-         */
-        @Override
-        public void elementChanged(final ElementChangedEvent e) {
-            IErlElementDelta delta = e.getDelta();
-            if (delta == null) {
-                return;
-            }
-            delta = delta.findElement(fModule);
-            if (delta == null) {
-                return;
-            }
-            processDelta(delta);
-        }
-
     }
 
     /**
@@ -557,9 +535,6 @@ public class DefaultErlangFoldingStructureProvider implements
 
         initialize();
         if (fEditor instanceof ErlangEditor && fModule != null) {
-            fElementListener = new ElementChangedListener();
-            ErlModelManager.getErlangModel().addElementChangedListener(
-                    fElementListener);
             boolean structureKnown = false;
             try {
                 structureKnown = fModule.isStructureKnown();
@@ -792,12 +767,14 @@ public class DefaultErlangFoldingStructureProvider implements
         final IDocumentProvider provider = fEditor.getDocumentProvider();
 
         try {
-
-            fCachedDocument = provider.getDocument(fEditor.getEditorInput());
             fCachedModel = model;
-
-            // fFirstType= null;
-            // fHasHeaderComment = false;
+            fCachedDocument = provider.getDocument(fEditor.getEditorInput());
+            if (fCachedDocument.getNumberOfLines() > PerformanceTuning.get()
+                    .getFoldingLimit()) {
+                // disable folding for files larger than this
+                model.removeAllAnnotations();
+                return;
+            }
 
             final Map<ErlangProjectionAnnotation, Position> additions = new HashMap<ErlangProjectionAnnotation, Position>();
             final List<ErlangProjectionAnnotation> deletions = new ArrayList<ErlangProjectionAnnotation>();
@@ -1087,7 +1064,6 @@ public class DefaultErlangFoldingStructureProvider implements
 
     @Override
     public void elementChanged(final IErlElement element) {
-        // TODO fixa elementchangelistener n?n g?ng
         if (fEditor == null) {
             return;
         }

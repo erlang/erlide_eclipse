@@ -280,7 +280,7 @@ public final class OldErlangProjectProperties implements
         return nukeOutputOnClean;
     }
 
-    public void setNukeOutputOnClean(boolean nukeOutputOnClean) {
+    public void setNukeOutputOnClean(final boolean nukeOutputOnClean) {
         this.nukeOutputOnClean = nukeOutputOnClean;
     }
 

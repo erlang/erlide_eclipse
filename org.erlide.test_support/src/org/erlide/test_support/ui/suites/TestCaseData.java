@@ -16,16 +16,16 @@ import com.google.common.collect.Lists;
 
 public class TestCaseData {
 
-    //@formatter:off
     enum TestState {
         // order is important!
+        //@formatter:off
         NOT_RUN,
         SUCCESS,
         SKIPPED,
         RUNNING,
         FAILED
+        //@formatter:on
     }
-    //@formatter:on
 
     public class FailLocations {
 

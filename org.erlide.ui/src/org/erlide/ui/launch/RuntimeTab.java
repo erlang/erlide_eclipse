@@ -32,13 +32,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.ui.util.SWTUtil;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
@@ -66,15 +64,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final GridLayout topLayout = new GridLayout();
         comp.setLayout(topLayout);
 
-        final Group runtimeGroup = SWTUtil.createGroup(comp, "Backend", 3,
-                GridData.FILL_HORIZONTAL);
-
-        final GridData gd_runtimeGroup = new GridData(SWT.FILL, SWT.CENTER,
-                false, false);
-        gd_runtimeGroup.heightHint = 250;
-        runtimeGroup.setLayoutData(gd_runtimeGroup);
-
-        final Label runtimeLabel = new Label(runtimeGroup, SWT.NONE);
+        final Label runtimeLabel = new Label(comp, SWT.NONE);
         runtimeLabel.setText("Name");
 
         final List<String> rtl = new ArrayList<String>();
@@ -87,7 +77,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
                 defaultRuntime.getName());
 
-        runtimesCombo = new Combo(runtimeGroup, SWT.READ_ONLY);
+        runtimesCombo = new Combo(comp, SWT.READ_ONLY);
         runtimesCombo.setLayoutData(new GridData(174, SWT.DEFAULT));
         runtimesCombo.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
@@ -98,12 +88,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         });
         runtimesCombo.setItems(rts);
         runtimesCombo.select(db);
-        new Label(runtimeGroup, SWT.NONE);
+        new Label(comp, SWT.NONE);
 
-        final Label nodeNameLabel = new Label(runtimeGroup, SWT.NONE);
+        final Label nodeNameLabel = new Label(comp, SWT.NONE);
         nodeNameLabel.setText("Node name");
 
-        nameText = new Text(runtimeGroup, SWT.BORDER);
+        nameText = new Text(comp, SWT.BORDER);
         final GridData gd_nameText = new GridData(SWT.FILL, SWT.CENTER, false,
                 false, 2, 1);
         gd_nameText.widthHint = 333;
@@ -133,9 +123,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
             }
         });
-        new Label(runtimeGroup, SWT.NONE);
+        new Label(comp, SWT.NONE);
 
-        longNameButton = new Button(runtimeGroup, SWT.RADIO);
+        longNameButton = new Button(comp, SWT.RADIO);
         longNameButton.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
             @Override
@@ -146,14 +136,14 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         longNameButton.setSelection(true);
         longNameButton.setText("long name (-name)");
 
-        shortNameButton = new Button(runtimeGroup, SWT.RADIO);
+        shortNameButton = new Button(comp, SWT.RADIO);
         shortNameButton.setText("short name (-sname)");
 
-        final Label cookieLabel = new Label(runtimeGroup, SWT.NONE);
+        final Label cookieLabel = new Label(comp, SWT.NONE);
         cookieLabel.setToolTipText("Leave empty to use default one");
         cookieLabel.setText("Cookie");
 
-        cookieText = new Text(runtimeGroup, SWT.BORDER);
+        cookieText = new Text(comp, SWT.BORDER);
         final GridData gd_cookieText = new GridData(SWT.FILL, SWT.CENTER,
                 false, false, 2, 1);
         gd_cookieText.widthHint = 232;
@@ -166,9 +156,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             }
         });
         cookieText.setToolTipText("Leave empty to use default one");
-        new Label(runtimeGroup, SWT.NONE);
+        new Label(comp, SWT.NONE);
 
-        startNodeCheckbox = new Button(runtimeGroup, SWT.CHECK);
+        startNodeCheckbox = new Button(comp, SWT.CHECK);
         startNodeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
                 false, false, 2, 1));
         startNodeCheckbox.setSelection(true);
@@ -182,10 +172,10 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             }
         });
 
-        final Label workingDirectoryLabel = new Label(runtimeGroup, SWT.NONE);
+        final Label workingDirectoryLabel = new Label(comp, SWT.NONE);
         workingDirectoryLabel.setText("Working directory");
 
-        workingDirText = new Text(runtimeGroup, SWT.BORDER);
+        workingDirText = new Text(comp, SWT.BORDER);
         workingDirText.setToolTipText("may be relative to the workspace");
         workingDirText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                 false, 2, 1));
@@ -197,10 +187,10 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             }
         });
 
-        final Label extraArgumentsLabel = new Label(runtimeGroup, SWT.NONE);
+        final Label extraArgumentsLabel = new Label(comp, SWT.NONE);
         extraArgumentsLabel.setText("Extra arguments");
 
-        argsText = new Text(runtimeGroup, SWT.BORDER);
+        argsText = new Text(comp, SWT.BORDER);
         argsText.setToolTipText("as on the command line\nBe careful about proper quoting!");
         argsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
                 2, 1));
@@ -211,13 +201,13 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
             }
         });
-        final Label extraArgumentsLabel2 = new Label(runtimeGroup, SWT.NONE);
+        final Label extraArgumentsLabel2 = new Label(comp, SWT.NONE);
         extraArgumentsLabel2.setText("(overrides runtime setting)");
         extraArgumentsLabel2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
                 true, false, 3, 1));
 
-        new Label(runtimeGroup, SWT.NONE);
-        distributedLoadCheck = createCheckButton(runtimeGroup,
+        new Label(comp, SWT.NONE);
+        distributedLoadCheck = createCheckButton(comp,
                 "Load code on all connected nodes");
         distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
                 false, false, 2, 1));

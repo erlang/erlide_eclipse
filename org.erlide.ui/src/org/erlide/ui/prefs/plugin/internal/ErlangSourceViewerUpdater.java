@@ -20,7 +20,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
-import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 /**
@@ -41,20 +41,16 @@ public class ErlangSourceViewerUpdater {
      *            the preference store
      */
     public ErlangSourceViewerUpdater(final ISourceViewer viewer,
-            final ErlangSourceViewerConfiguration configuration,
+            final TextSourceViewerConfiguration configuration,
             final IPreferenceStore preferenceStore) {
         Assert.isNotNull(viewer);
         Assert.isNotNull(configuration);
         Assert.isNotNull(preferenceStore);
         final IPropertyChangeListener fontChangeListener = new IPropertyChangeListener() {
 
-            /*
-             * @see
-             * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
-             * (org.eclipse.jface.util.PropertyChangeEvent)
-             */
             @Override
             public void propertyChange(final PropertyChangeEvent event) {
+                System.out.println("property change");
                 if (PreferenceConstants.EDITOR_TEXT_FONT.equals(event
                         .getProperty())) {
                     final Font font = JFaceResources
@@ -65,13 +61,9 @@ public class ErlangSourceViewerUpdater {
         };
         final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 
-            /*
-             * @see
-             * org.eclipse.jface.util.IPropertyChangeListener#propertyChange
-             * (org.eclipse.jface.util.PropertyChangeEvent)
-             */
             @Override
             public void propertyChange(final PropertyChangeEvent event) {
+                System.out.println("ok");
                 // if (configuration.affectsTextPresentation(event)) {
                 // configuration.handlePropertyChangeEvent(event);
                 // viewer.invalidateTextPresentation();
@@ -80,11 +72,6 @@ public class ErlangSourceViewerUpdater {
         };
         viewer.getTextWidget().addDisposeListener(new DisposeListener() {
 
-            /*
-             * @see
-             * org.eclipse.swt.events.DisposeListener#widgetDisposed(org.eclipse
-             * .swt.events.DisposeEvent)
-             */
             @Override
             public void widgetDisposed(final DisposeEvent e) {
                 preferenceStore
