@@ -1,3 +1,12 @@
+List of user visible changes between 0.15.0 and 0.15.1 (20120220)
+
+2c1b3b1 fix layout for runtime tab
+9b9a2d9 http://www.assembla.com/spaces/erlide/tickets/890-outline-filters-not-effective-when-opening-file
+c5ff4ac 64: Compiler can't be configured
+62b649b fixed color settings preview to display the colors
+5a203e4 999: disable compiler options that don't have any function yet
+8454b32 977: less functionality for large files for better performance; for folding only
+
 List of user visible changes between 0.14.0 and 0.15.0 (20120130)
 
         834: searching: still problems with search on function call
