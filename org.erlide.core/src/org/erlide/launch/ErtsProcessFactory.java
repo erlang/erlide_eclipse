@@ -11,7 +11,8 @@ public class ErtsProcessFactory implements IProcessFactory {
 
     @Override
     public IProcess newProcess(final ILaunch launch, final Process process,
-            final String label, final Map attributes) {
+            final String label,
+            @SuppressWarnings("rawtypes") final Map attributes) {
         final String nodeName = (String) attributes.get("NodeName");
         final String workingDir = (String) attributes.get("WorkingDir");
         return new ErtsProcess(launch, process, nodeName, workingDir);
