@@ -12,20 +12,21 @@ package org.erlide.launch.debug.model;
 import java.io.IOException;
 
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
-import org.erlide.backend.BackendData;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErtsWatcher;
 
 public class ErtsProcess extends RuntimeProcess {
 
-    public ErtsProcess(final Process process, final BackendData data) {
-        super(data.getLaunch(), process, data.getNodeName(), null);
-        ErlLogger.debug("# create ErtsProcess: " + data.getNodeName());
+    public ErtsProcess(final ILaunch launch, final Process process,
+            final String nodeName, final String workingDir) {
+        super(launch, process, nodeName, null);
+        ErlLogger.debug("# create ErtsProcess: " + nodeName);
 
-        startWatcher(data, process);
+        startWatcher(nodeName, workingDir, process);
     }
 
     /**
@@ -95,9 +96,9 @@ public class ErtsProcess extends RuntimeProcess {
         super.terminate();
     }
 
-    private void startWatcher(final BackendData data, final Process process) {
-        final Runnable watcher = new ErtsWatcher(data.getNodeName(),
-                data.getWorkingDir(), process);
+    private void startWatcher(final String nodeName, final String workingDir,
+            final Process process) {
+        final Runnable watcher = new ErtsWatcher(nodeName, workingDir, process);
         final Thread thread = new Thread(null, watcher, "ErtsProcess watcher");
         thread.setDaemon(true);
         thread.setPriority(Thread.MIN_PRIORITY);
