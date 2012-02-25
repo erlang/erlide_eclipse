@@ -1,5 +1,6 @@
 -module(x).
 -compile(export_all).
+-foo x.
 -record('REC', {a,b,c}).
 
 -define(myrec, #'REC'{}).
