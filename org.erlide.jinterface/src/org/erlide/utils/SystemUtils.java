@@ -1,33 +1,61 @@
 package org.erlide.utils;
 
 public class SystemUtils {
-    private static Boolean fgCacheIsEricssonUser;
 
-    public static boolean isDeveloper() {
-        final String dev = System.getProperty("erlide.devel");
-        return dev != null && Boolean.parseBoolean(dev);
+    private static SystemUtils instance = new SystemUtils();
+
+    public static SystemUtils getInstance() {
+        return instance;
     }
 
-    public static boolean isClearCacheAvailable() {
-        final String test = System.getProperty("erlide.clearCacheAvailable");
-        return test != null && Boolean.parseBoolean(test);
+    private final boolean mustDefineTclLib;
+    private boolean developer;
+    private boolean clearCacheAvailable;
+    private boolean test;
+    private final boolean onWindows;
+    private boolean monitoringIdeBackend;
+    private int monitoringInterval = 300;
+
+    private SystemUtils() {
+        mustDefineTclLib = hasFeatureEnabled("erlide.ericsson.user");
+        developer = hasFeatureEnabled("erlide.devel");
+        test = hasFeatureEnabled("erlide.test");
+        clearCacheAvailable = hasFeatureEnabled("erlide.clearCacheAvailable");
+        onWindows = System.getProperty("os.name").toLowerCase()
+                .contains("windows");
+        monitoringIdeBackend = hasFeatureEnabled("erlide.monitor.ide");
     }
 
-    public static boolean isEricssonUser() {
-        if (fgCacheIsEricssonUser == null) {
-            final String dev = System.getProperty("erlide.ericsson.user");
-            fgCacheIsEricssonUser = Boolean.valueOf(dev);
-        }
-        return fgCacheIsEricssonUser.booleanValue();
+    public boolean isDeveloper() {
+        return developer;
     }
 
-    public static boolean isTest() {
-        final String test = System.getProperty("erlide.test");
-        return test != null && Boolean.parseBoolean(test);
+    public void setDeveloper(final boolean developer) {
+        this.developer = developer;
     }
 
-    public static boolean isOnWindows() {
-        return System.getProperty("os.name").toLowerCase().contains("windows");
+    public boolean isClearCacheAvailable() {
+        return clearCacheAvailable;
+    }
+
+    public void setClearCacheAvailable(final boolean clearCacheAvailable) {
+        this.clearCacheAvailable = clearCacheAvailable;
+    }
+
+    public boolean hasSpecialTclLib() {
+        return mustDefineTclLib;
+    }
+
+    public boolean isTest() {
+        return test;
+    }
+
+    public void setTest(final boolean test) {
+        this.test = test;
+    }
+
+    public boolean isOnWindows() {
+        return onWindows;
     }
 
     public static boolean hasExtension(final String name) {
@@ -43,8 +71,26 @@ public class SystemUtils {
         return name.substring(0, i);
     }
 
-    public static boolean hasFeatureEnabled(final String feature) {
+    // only to be used internally
+    @Deprecated
+    public boolean hasFeatureEnabled(final String feature) {
         return Boolean.parseBoolean(System.getProperty(feature));
+    }
+
+    public boolean isMonitoringIdeBackend() {
+        return monitoringIdeBackend;
+    }
+
+    public void setMonitoringIdeBackend(final boolean value) {
+        monitoringIdeBackend = value;
+    }
+
+    public int getMonitoringInterval() {
+        return monitoringInterval;
+    }
+
+    public void setMonitoringInterval(final int value) {
+        monitoringInterval = value;
     }
 
 }

@@ -71,10 +71,10 @@ public final class ErlangCore {
     public void start(final String version) throws CoreException {
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ") ";
-        if (SystemUtils.isDeveloper()) {
+        if (SystemUtils.getInstance().isDeveloper()) {
             dev += " developer version ***";
         }
-        if (SystemUtils.isTest()) {
+        if (SystemUtils.getInstance().isTest()) {
             dev += " test ***";
         }
         final String versionBanner = "*** starting Erlide v" + version

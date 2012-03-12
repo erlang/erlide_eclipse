@@ -148,7 +148,7 @@ handle_cast({subscribe, Pid}, #state{subscribers=Subs}=State) ->
 handle_cast({unsubscribe, Pid}, #state{subscribers=Subs}=State) ->
 	Subs1 = lists:delete(Pid, Subs),
 	{noreply, State#state{subscribers=Subs1}};
-handle_cast({configure, poll_interval, Val}, State) ->
+handle_cast({configure, poll_interval, Val}, State) when is_integer(Val) ->
 	{noreply, State#state{poll_interval=Val}};
 handle_cast({configure, Key, Val}, State) ->
 	erlide_log:logp("monitor:: unrecognized configure option: ~p", [{Key, Val}]),	
@@ -164,6 +164,8 @@ handle_cast(Msg, State) ->
 %%          {noreply, State, Timeout} |
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
+handle_info(take_snapshot, #state{subscribers=[]}=State) ->
+    {noreply, State};
 handle_info(take_snapshot, #state{new_snapshot=Snap, diffs=Diffs}=State) ->
 	NewSnap = take_snapshot(State#state.ignored_processes, State#state.ignored_ets),
 	Diff = diff_snapshot(Snap, NewSnap),

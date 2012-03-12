@@ -1,45 +1,32 @@
 -module(erlide_kernel_common).
 
 -export([
-     init/3
+     init/3,
+     set_monitoring/1,
+     set_monitoring_interval/1
     ]).
 
 init(JRex, Monitor, Watch) ->
-  spawn(fun()->
-          case Monitor of
-            true ->
-              %% must be first so that only system processes are ignored
+  spawn(fun () ->
+                 startup(JRex, Monitor, Watch)
+        end).
 
-              Mon = spawn(fun monitor/0),
-              erlide_monitor:start(),
-              erlide_monitor:subscribe(Mon),
-              ok;
-            _ ->
-              ok
-          end,
-          erlide_jrpc:init(JRex),
-          watch_eclipse(node(JRex), Watch),
+startup(JRex, Monitor, Watch)->
+    %% must be first so that only system processes are ignored
+    erlide_monitor:start(),
+    set_monitoring(Monitor), 
 
-          erlide_batch:start(erlide_builder),
+    erlide_jrpc:init(JRex),
+    watch_eclipse(node(JRex), Watch),
+    
+    erlide_batch:start(erlide_builder),
+    ok.
 
-          ok
-      end),
-  ok.
-
-%% it's uncertain if this is needed anymore, but it doesn't hurt
 watch_eclipse(JavaNode, Watch) ->
   spawn(fun() ->
           monitor_node(JavaNode, true),
-          File = "safe_erlide.log",
-          file:delete(File),
           receive
-            {nodedown, _JavaNode} ->
-              Fmt = "This file can safely be removed! ~n~n"
-                  ++ "~p: eclipse node ~p went down  /~p~n",
-              Msg = io_lib:format(Fmt,
-                        [calendar:local_time(),
-                         JavaNode, _JavaNode]),
-              file:write_file(File,	Msg),
+            {nodedown, JavaNode} ->
               case Watch of
                 true ->
                   init:stop();
@@ -64,3 +51,16 @@ shutdown() ->
   L = [V  || V = "erlide_" ++ _  <- [atom_to_list(X) || X <- registered()]],
   [exit(whereis(list_to_atom(X)), kill) || X <- L],
   ok.
+
+set_monitoring(true) ->
+    erlide_log:log("start ide monitoring"),
+    Mon = spawn(fun monitor/0),
+    erlide_monitor:subscribe(Mon);
+set_monitoring(false) ->
+    erlide_log:log("stop ide monitoring"),
+    ok.
+
+set_monitoring_interval(N) ->
+    erlide_monitor:configure(poll_interval, N*1000),
+    erlide_monitor ! take_snapshot.
+

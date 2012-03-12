@@ -193,7 +193,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private void setEnvironment(final BackendData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
-        if (!SystemUtils.isOnWindows() && SystemUtils.isEricssonUser()) {
+        if (!SystemUtils.getInstance().isOnWindows()
+                && SystemUtils.getInstance().hasSpecialTclLib()) {
             env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
         }
         if (data.getEnv() != null) {

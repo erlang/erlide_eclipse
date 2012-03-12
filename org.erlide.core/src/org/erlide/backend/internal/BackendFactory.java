@@ -83,7 +83,7 @@ public class BackendFactory implements IBackendFactory {
         final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             final boolean registerForDebug = data.getLaunch() != null
-                    || SystemUtils.isDeveloper();
+                    || SystemUtils.getInstance().isDeveloper();
             return launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, registerForDebug);
         } catch (final CoreException e) {
@@ -98,10 +98,10 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
-        if (SystemUtils.isDeveloper()) {
+        if (SystemUtils.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
-        if (SystemUtils.hasFeatureEnabled("erlide.monitor.ide")) {
+        if (SystemUtils.getInstance().isMonitoringIdeBackend()) {
             result.setMonitored(true);
         }
         return result;
