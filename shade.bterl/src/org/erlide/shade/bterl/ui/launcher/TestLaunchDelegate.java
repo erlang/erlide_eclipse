@@ -317,7 +317,8 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         String bterlPath;
         try {
             bterlPath = getPluginPath().append("ebin").toString();
-            // FIXME use real bterl path
+
+            // bterlPath = "/proj/uz/erlide/erlang_bt_tool_work/ebin";
             bterlPath = "/proj/uz/shade/erlang_bt_tool/ebin";
         } catch (final IOException e) {
             e.printStackTrace();
