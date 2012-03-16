@@ -1,3 +1,9 @@
+List of user visible changes between 0.15.1 and 0.15.2 (20120315)
+
+97a46a5 made internal features configurable at runtime
+302b472 added debug for ticket 1017
+58dcf67 1014: make font size configurable for hover popups
+
 List of user visible changes between 0.15.0 and 0.15.1 (20120220)
 
 2c1b3b1 fix layout for runtime tab
