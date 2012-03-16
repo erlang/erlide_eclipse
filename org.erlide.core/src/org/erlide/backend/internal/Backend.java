@@ -867,4 +867,22 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    @Override
+    public void setMonitoring(final boolean on) {
+        try {
+            call("erlide_kernel_common", "set_monitoring", "o", on);
+        } catch (final RpcException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setMonitoringInterval(final int monitoringInterval) {
+        try {
+            call("erlide_kernel_common", "set_monitoring_interval", "i",
+                    monitoringInterval);
+        } catch (final RpcException e) {
+            e.printStackTrace();
+        }
+    }
 }

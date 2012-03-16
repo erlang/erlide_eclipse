@@ -127,7 +127,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         new ErlangEventHandler("*", null) {
             @Override
             public void handleEvent(final Event event) {
-                if (SystemUtils.hasFeatureEnabled("erlide.eventhandler.debug")) {
+                if (SystemUtils.getInstance().hasFeatureEnabled(
+                        "erlide.eventhandler.debug")) {
                     ErlLogger.info("erlang event : "
                             + ErlangEventPublisher.dumpEvent(event));
                 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -30,7 +31,9 @@ public class ErlProjectImport {
         l = (OtpErlangList) t.elementAt(2);
         includeDirs = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());
+        ErlLogger.debug(">>> %s", t);
         beamDir = Util.stringValue(t.elementAt(3));
+        ErlLogger.debug(">>> %s", beamDir);
         l = (OtpErlangList) t.elementAt(4);
         directories = (List<String>) erlangStringList2Collection(l,
                 new ArrayList<String>());

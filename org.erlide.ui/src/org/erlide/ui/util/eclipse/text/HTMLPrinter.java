@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.FontData;
@@ -29,11 +30,8 @@ import org.eclipse.swt.widgets.Display;
  */
 public class HTMLPrinter {
 
-    static RGB BG_COLOR_RGB = new RGB(255, 255, 225); // RGB value of
-    // info bg color
-    // on WindowsXP
-    static RGB FG_COLOR_RGB = new RGB(0, 0, 0); // RGB value of info fg
-    // color on WindowsXP
+    static RGB BG_COLOR_RGB = new RGB(255, 255, 225);
+    static RGB FG_COLOR_RGB = new RGB(0, 0, 0);
 
     static {
         final Display display = Display.getDefault();
@@ -213,19 +211,26 @@ public class HTMLPrinter {
 
     public static void insertPageProlog(final StringBuffer buffer,
             final int position) {
-        final StringBuffer pageProlog = new StringBuffer(60);
-        pageProlog.append("<html>"); //$NON-NLS-1$
-        appendColors(pageProlog, FG_COLOR_RGB, BG_COLOR_RGB);
-        buffer.insert(position, pageProlog.toString());
+        insertPageProlog(buffer, position, null, null, null);
     }
 
     public static void insertPageProlog(final StringBuffer buffer,
             final int position, final URL styleSheetURL) {
         final StringBuffer pageProlog = new StringBuffer(300);
         pageProlog.append("<html>"); //$NON-NLS-1$
-        appendStyleSheetURL(pageProlog, styleSheetURL);
+        if (styleSheetURL != null) {
+            appendStyleSheetURL(pageProlog, styleSheetURL);
+        }
+        appendFontSize(pageProlog);
         appendColors(pageProlog, FG_COLOR_RGB, BG_COLOR_RGB);
         buffer.insert(position, pageProlog.toString());
+    }
+
+    private static void appendFontSize(final StringBuffer buffer) {
+        final int fontSize = JFaceResources.getDialogFont().getFontData()[0]
+                .getHeight();
+        buffer.append("<style type=\"text/css\">html {font-size:")
+                .append(fontSize).append("pt; }</style>");
     }
 
     public static void insertPageProlog(final StringBuffer buffer,

@@ -132,4 +132,11 @@
         </adapter>
      </factory>
   </extension>
+  <extension
+        point="org.eclipse.debug.core.processFactories">
+     <processFactory
+           class="org.erlide.launch.ErtsProcessFactory"
+           id="org.erlide.core.ertsProcessFactory">
+     </processFactory>
+  </extension>
 </plugin>

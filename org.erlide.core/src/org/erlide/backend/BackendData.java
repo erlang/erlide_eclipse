@@ -163,6 +163,9 @@ public final class BackendData extends GenericBackendData {
             workingCopy = type.newInstance(null, name);
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
                     "ISO-8859-1");
+            workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
+                    "org.erlide.core.ertsProcessFactory");
+
             workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
                     info.getNodeName());
             workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
@@ -171,7 +174,8 @@ public final class BackendData extends GenericBackendData {
                     info.getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            if (SystemUtils.hasFeatureEnabled("erlide.internal.shortname")) {
+            if (SystemUtils.getInstance().hasFeatureEnabled(
+                    "erlide.internal.shortname")) {
                 workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                         false);
                 info.useLongName(false);

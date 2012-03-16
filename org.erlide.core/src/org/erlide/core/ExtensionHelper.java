@@ -1,6 +1,5 @@
 package org.erlide.core;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,28 +20,21 @@ public class ExtensionHelper {
      */
     public static Map<String, List<Object>> testingParticipants;
 
-    private static Map<String, IExtension[]> extensionsCache = new HashMap<String, IExtension[]>();
-
-    public static final String EDITOR_LISTENER = "org.erlide.editor_listener";
-
     public static IExtension[] getExtensions(final String type) {
-        IExtension[] extensions = extensionsCache.get(type);
-        if (extensions == null) {
-            final IExtensionRegistry registry = Platform.getExtensionRegistry();
-            if (registry != null) { // we may not be in eclipse env when testing
-                try {
-                    final IExtensionPoint extensionPoint = registry
-                            .getExtensionPoint(type);
-                    extensions = extensionPoint.getExtensions();
-                    extensionsCache.put(type, extensions);
-                } catch (final Exception e) {
-                    ErlLogger.error("Error getting extension for:" + type
-                            + " -- " + e.getMessage());
-                    throw new RuntimeException(e);
-                }
-            } else {
-                extensions = new IExtension[0];
+        IExtension[] extensions;
+        final IExtensionRegistry registry = Platform.getExtensionRegistry();
+        if (registry != null) { // we may not be in eclipse env when testing
+            try {
+                final IExtensionPoint extensionPoint = registry
+                        .getExtensionPoint(type);
+                extensions = extensionPoint.getExtensions();
+            } catch (final Exception e) {
+                ErlLogger.error("Error getting extension for:" + type + " -- "
+                        + e.getMessage());
+                throw new RuntimeException(e);
             }
+        } else {
+            extensions = new IExtension[0];
         }
         return extensions;
     }
@@ -54,18 +46,14 @@ public class ExtensionHelper {
         if (participants.size() == 1) {
             return participants.get(0);
         }
-
         if (participants.size() == 0) {
             return null;
         }
-
         if (participants.size() > 1) {
             throw new RuntimeException(
                     "More than one participant is registered for type:" + type);
         }
-
         throw new RuntimeException("Should never get here!");
-
     }
 
     /**

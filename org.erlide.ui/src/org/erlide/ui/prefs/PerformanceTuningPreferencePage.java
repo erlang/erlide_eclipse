@@ -26,14 +26,13 @@ import org.erlide.ui.util.PerformanceTuning;
 public class PerformanceTuningPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
     private Text foldingText;
+    private PerformanceTuning pt;
 
     public PerformanceTuningPreferencePage() {
     }
 
     @Override
     protected Control createContents(final Composite parent) {
-        final PerformanceTuning pt = PerformanceTuning.get();
-
         final Composite panel = new Composite(parent, SWT.NONE);
         panel.setLayout(new GridLayout(1, false));
 
@@ -75,17 +74,16 @@ public class PerformanceTuningPreferencePage extends PreferencePage implements
 
     @Override
     public void init(final IWorkbench workbench) {
+        pt = PerformanceTuning.get();
     }
 
     @Override
     protected void performDefaults() {
-        final PerformanceTuning pt = PerformanceTuning.getDefault();
         foldingText.setText(Integer.toString(pt.getFoldingLimit()));
     }
 
     @Override
     public boolean performOk() {
-        final PerformanceTuning pt = PerformanceTuning.getDefault();
         pt.setFoldingLimit(Integer.parseInt(foldingText.getText()));
         pt.store();
         return true;

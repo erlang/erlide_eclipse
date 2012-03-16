@@ -32,6 +32,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
@@ -39,8 +40,9 @@ import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.utils.SystemUtils;
+
+import com.google.common.collect.Maps;
 
 public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
@@ -95,7 +97,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
 
         if (data.isManaged()) {
             setCaptureOutput(launch);
-            startErtsProcess(data);
+            startErtsProcess(launch, data);
         } else {
             ErlLogger.info("Node %s exists already.", data.getNodeName());
         }
@@ -122,13 +124,18 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return data;
     }
 
-    private void startErtsProcess(final BackendData data) {
+    private void startErtsProcess(final ILaunch launch, final BackendData data) {
         final Process process = startRuntimeProcess(data);
         if (process == null) {
             ErlLogger.debug("Error starting process");
             return;
         }
-        final ErtsProcess erts = new ErtsProcess(process, data);
+        final Map<String, String> map = Maps.newHashMap();
+        map.put("NodeName", data.getNodeName());
+        map.put("workingDir", data.getWorkingDir());
+        // final ErtsProcess erts = new ErtsProcess(process, data);
+        final IProcess erts = DebugPlugin.newProcess(launch, process,
+                data.getNodeName(), map);
 
         ErlLogger.debug("Started erts: %s >> %s", erts.getLabel(),
                 data.getNodeName());
@@ -186,7 +193,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private void setEnvironment(final BackendData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
-        if (!SystemUtils.isOnWindows() && SystemUtils.isEricssonUser()) {
+        if (!SystemUtils.getInstance().isOnWindows()
+                && SystemUtils.getInstance().hasSpecialTclLib()) {
             env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
         }
         if (data.getEnv() != null) {

@@ -1634,8 +1634,14 @@ public final class Util {
             if (result == null) {
                 result = decode(b.binaryValue(), "ISO-8859-1");
             }
+            if (result == null) {
+                ErlLogger
+                        .warn("bad binary value in stringValue (can't decode): "
+                                + o);
+            }
             return result;
         }
+        ErlLogger.warn("bad value in stringValue: " + o);
         return null;
     }
 

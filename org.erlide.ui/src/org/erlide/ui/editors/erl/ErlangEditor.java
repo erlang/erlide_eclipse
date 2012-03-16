@@ -387,7 +387,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             setAction("Clean Up...", cleanUpAction);
         }
 
-        if (SystemUtils.isTest()) {
+        if (SystemUtils.getInstance().isTest()) {
             testAction = new TestAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "Test.", this, getModule());
@@ -407,7 +407,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         markAsStateDependentAction("CallHierarchy", true);
         markAsSelectionDependentAction("CallHierarchy", true);
 
-        if (SystemUtils.isClearCacheAvailable()) {
+        if (SystemUtils.getInstance().isClearCacheAvailable()) {
             clearCacheAction = new ClearCacheAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "ClearCache.", this);
@@ -456,10 +456,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected void editorContextMenuAboutToShow(final IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
 
-        if (SystemUtils.isTest()) {
+        if (SystemUtils.getInstance().isTest()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         }
-        if (SystemUtils.isClearCacheAvailable()) {
+        if (SystemUtils.getInstance().isClearCacheAvailable()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
                     clearCacheAction);
         }

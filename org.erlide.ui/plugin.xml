@@ -163,6 +163,12 @@
             id="org.erlide.ui.performancetuning"
             name="Performance tuning">
       </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.InternalSettingsPreferencePage"
+            id="org.erlide.ui.internalSettings"
+            name="Internal settings">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">

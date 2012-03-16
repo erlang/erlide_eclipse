@@ -138,14 +138,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.debug("Starting UI " + Thread.currentThread());
         super.start(context);
 
-        if (SystemUtils.isDeveloper()) {
+        if (SystemUtils.getInstance().isDeveloper()) {
             BackendManagerPopup.init();
         }
 
         ErlLogger.debug("Started UI");
 
         erlConMan = new ErlConsoleManager();
-        if (SystemUtils.isDeveloper()) {
+        if (SystemUtils.getInstance().isDeveloper()) {
             try {
                 final IBackend ideBackend = BackendCore.getBackendManager()
                         .getIdeBackend();

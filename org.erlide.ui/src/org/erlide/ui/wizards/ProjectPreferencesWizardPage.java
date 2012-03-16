@@ -194,7 +194,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
         runtimeVersion.addListener(SWT.Modify, nameModifyListener);
 
         new Label(composite, SWT.NONE);
-        if (SystemUtils.isTest()) {
+        if (SystemUtils.getInstance().isTest()) {
             createExternalModuleEditor(composite);
             createExternalIncludeEditor(composite);
         }

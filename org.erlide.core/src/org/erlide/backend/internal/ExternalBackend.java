@@ -17,7 +17,6 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IErlRuntime;
-import org.erlide.launch.debug.model.ErtsProcess;
 
 public class ExternalBackend extends Backend {
 
@@ -42,7 +41,7 @@ public class ExternalBackend extends Backend {
     @Override
     public IStreamsProxy getStreamsProxy() {
         {
-            final ErtsProcess p = getErtsProcess();
+            final IProcess p = getErtsProcess();
             if (p == null) {
                 return null;
             }
@@ -50,12 +49,12 @@ public class ExternalBackend extends Backend {
         }
     }
 
-    private ErtsProcess getErtsProcess() {
+    private IProcess getErtsProcess() {
         final IProcess[] ps = getLaunch().getProcesses();
         if (ps == null || ps.length == 0) {
             return null;
         }
-        return (ErtsProcess) ps[0];
+        return ps[0];
     }
 
 }

@@ -473,7 +473,7 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        if (SystemUtils.hasFeatureEnabled("erlide.skip.tasks")) {
+        if (SystemUtils.getInstance().hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
         final IErlProject p = ErlModelManager.getErlangModel().findProject(
