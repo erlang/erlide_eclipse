@@ -21,17 +21,6 @@ import com.google.common.collect.Lists;
 
 public class ErlideOpen {
 
-    public static String getIncludeLib(final IRpcCallSite backend, String s)
-            throws RpcException {
-        final OtpErlangObject t = backend.call("erlide_open",
-                "get_include_lib", "s", s);
-        if (t instanceof OtpErlangTuple) {
-            final OtpErlangObject es = ((OtpErlangTuple) t).elementAt(1);
-            s = ((OtpErlangString) es).stringValue();
-        }
-        return s;
-    }
-
     public static OtpErlangObject getSourceFromModule(
             final IRpcCallSite backend, final OtpErlangList pathVars,
             final String mod, final String externalModules) throws RpcException {
