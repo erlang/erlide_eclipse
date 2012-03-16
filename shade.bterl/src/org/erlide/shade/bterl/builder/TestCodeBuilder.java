@@ -41,6 +41,7 @@ import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemUtils;
 
+import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.google.common.collect.Lists;
@@ -176,10 +177,12 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 final IResource resource = bres.getResource();
                 resource.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_ZERO);
 
-                // FIXME use real bterl path!!
-                final OtpErlangList compilerOptions = (OtpErlangList) ErlUtils
-                        .format("[{i, ~s}]", TestLaunchDelegate.getBterlPath()
-                                + "/../bt_tool");
+                final List<OtpErlangObject> incs = Lists.newArrayList();
+                for (final String path : TestLaunchDelegate.getBterlPath()) {
+                    incs.add(ErlUtils.format("{i, ~s}", path));
+                }
+                final OtpErlangList compilerOptions = OtpErlang.mkList(incs
+                        .toArray(new OtpErlangObject[incs.size()]));
 
                 final String outputDir = bres.getResource().getParent()
                         .getProjectRelativePath().toString();

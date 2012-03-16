@@ -3,6 +3,8 @@ List of user visible changes between 0.15.1 and 0.15.2 (20120315)
 97a46a5 made internal features configurable at runtime
 302b472 added debug for ticket 1017
 58dcf67 1014: make font size configurable for hover popups
+a53e800 fix shade #2451: use official bterl tool from cc
+8c10c48 890: outline filters not effective when opening file
 
 List of user visible changes between 0.15.0 and 0.15.1 (20120220)
 
