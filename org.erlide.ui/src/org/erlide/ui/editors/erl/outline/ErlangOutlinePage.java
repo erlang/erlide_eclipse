@@ -155,11 +155,15 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         final IEclipsePreferences prefsNode = ErlangOutlinePage.getPrefsNode();
         final Collection<FilterDescriptor> filterDescriptors = FilterDescriptor
                 .getFilterDescriptors();
+        final List<FilterDescriptor> descs = Lists.newArrayList();
         for (final FilterDescriptor filterDescriptor : filterDescriptors) {
             final String filterId = filterDescriptor.getId();
             final boolean value = prefsNode.getBoolean(filterId, false);
-            OutlineFilterUtils.addFilter(filterId, value, this);
+            if (value) {
+                descs.add(filterDescriptor);
+            }
         }
+        OutlineFilterUtils.setFilters(descs, this);
     }
 
     public void refresh() {
