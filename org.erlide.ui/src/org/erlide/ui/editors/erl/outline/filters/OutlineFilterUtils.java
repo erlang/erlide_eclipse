@@ -1,5 +1,6 @@
 package org.erlide.ui.editors.erl.outline.filters;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.utils.ListsUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 
@@ -138,6 +140,33 @@ public class OutlineFilterUtils {
         } else {
             viewer.removeFilter(filter);
         }
+    }
+
+    public static void setFilters(
+            final Collection<FilterDescriptor> filterDescs,
+            final Object activePart) {
+        final List<ViewerFilter> filters = Lists
+                .newArrayListWithCapacity(filterDescs.size());
+        for (final FilterDescriptor desc : filterDescs) {
+            final ViewerFilter filter = desc.getViewerFilter();
+            if (filter == null) {
+                continue;
+            }
+            filters.add(filter);
+        }
+        final ErlangOutlinePage erlangOutlinePage;
+        if (activePart instanceof ErlangOutlinePage) {
+            erlangOutlinePage = (ErlangOutlinePage) activePart;
+        } else {
+            final ContentOutline outline = (ContentOutline) activePart;
+            erlangOutlinePage = (ErlangOutlinePage) outline
+                    .getAdapter(ErlangOutlinePage.class);
+        }
+        final TreeViewer viewer = erlangOutlinePage.getTreeViewer();
+        if (viewer == null) {
+            return;
+        }
+        viewer.setFilters(filters.toArray(new ViewerFilter[filters.size()]));
     }
 
 }
