@@ -60,7 +60,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.internal.BackendHelper;
+import org.erlide.backend.BackendHelper;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.launch.debug.BackendEvalResult;
 import org.erlide.ui.ErlideUIConstants;

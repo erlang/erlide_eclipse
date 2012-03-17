@@ -38,6 +38,7 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;

@@ -1,9 +1,8 @@
-package org.erlide.backend.internal;
+package org.erlide.backend;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.backend.BackendException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
