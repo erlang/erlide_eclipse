@@ -1483,77 +1483,82 @@ public final class Util {
         reader = encoding == null ? new InputStreamReader(stream)
                 : new InputStreamReader(stream, encoding);
         char[] contents;
-        if (length == -1) {
-            contents = CharOperation.NO_CHAR;
-            int contentsLength = 0;
-            int amountRead = -1;
-            do {
-                final int amountRequested = Math.max(stream.available(),
-                        DEFAULT_READING_SIZE); // read
-                // at
-                // least
-                // 8K
+        try {
+            if (length == -1) {
+                contents = CharOperation.NO_CHAR;
+                int contentsLength = 0;
+                int amountRead = -1;
+                do {
+                    final int amountRequested = Math.max(stream.available(),
+                            DEFAULT_READING_SIZE); // read
+                    // at
+                    // least
+                    // 8K
 
-                // resize contents if needed
-                if (contentsLength + amountRequested > contents.length) {
+                    // resize contents if needed
+                    if (contentsLength + amountRequested > contents.length) {
+                        final char[] old = contents;
+                        contents = new char[contentsLength + amountRequested];
+                        System.arraycopy(old, 0, contents, 0, contentsLength);
+                    }
+
+                    // read as many chars as possible
+                    amountRead = reader.read(contents, contentsLength,
+                            amountRequested);
+
+                    if (amountRead > 0) {
+                        // remember length of contents
+                        contentsLength += amountRead;
+                    }
+                } while (amountRead != -1);
+
+                // Do not keep first character for UTF-8 BOM encoding
+                int start = 0;
+                if ("UTF-8".equals(encoding)) { //$NON-NLS-1$
+                    if (contents[0] == 0xFEFF) { // if BOM char then skip
+                        contentsLength--;
+                        start = 1;
+                    }
+                }
+                // resize contents if necessary
+                if (contentsLength < contents.length) {
                     final char[] old = contents;
-                    contents = new char[contentsLength + amountRequested];
-                    System.arraycopy(old, 0, contents, 0, contentsLength);
+                    contents = new char[contentsLength];
+                    System.arraycopy(old, start, contents, 0, contentsLength);
                 }
-
-                // read as many chars as possible
-                amountRead = reader.read(contents, contentsLength,
-                        amountRequested);
-
-                if (amountRead > 0) {
-                    // remember length of contents
-                    contentsLength += amountRead;
+            } else {
+                contents = new char[length];
+                int len = 0;
+                int readSize = 0;
+                while (readSize != -1 && len != length) {
+                    // See PR 1FMS89U
+                    // We record first the read size. In this case len is the
+                    // actual
+                    // read size.
+                    len += readSize;
+                    readSize = reader.read(contents, len, length - len);
                 }
-            } while (amountRead != -1);
-
-            // Do not keep first character for UTF-8 BOM encoding
-            int start = 0;
-            if ("UTF-8".equals(encoding)) { //$NON-NLS-1$
-                if (contents[0] == 0xFEFF) { // if BOM char then skip
-                    contentsLength--;
-                    start = 1;
+                // Do not keep first character for UTF-8 BOM encoding
+                int start = 0;
+                if ("UTF-8".equals(encoding)) { //$NON-NLS-1$
+                    if (contents[0] == 0xFEFF) { // if BOM char then skip
+                        len--;
+                        start = 1;
+                    }
                 }
-            }
-            // resize contents if necessary
-            if (contentsLength < contents.length) {
-                final char[] old = contents;
-                contents = new char[contentsLength];
-                System.arraycopy(old, start, contents, 0, contentsLength);
-            }
-        } else {
-            contents = new char[length];
-            int len = 0;
-            int readSize = 0;
-            while (readSize != -1 && len != length) {
                 // See PR 1FMS89U
-                // We record first the read size. In this case len is the actual
-                // read size.
-                len += readSize;
-                readSize = reader.read(contents, len, length - len);
-            }
-            // Do not keep first character for UTF-8 BOM encoding
-            int start = 0;
-            if ("UTF-8".equals(encoding)) { //$NON-NLS-1$
-                if (contents[0] == 0xFEFF) { // if BOM char then skip
-                    len--;
-                    start = 1;
+                // Now we need to resize in case the default encoding used more
+                // than
+                // one byte for each
+                // character
+                if (len != length) {
+                    contents = new char[len];
+                    System.arraycopy(contents, start, contents, 0, len);
                 }
             }
-            // See PR 1FMS89U
-            // Now we need to resize in case the default encoding used more than
-            // one byte for each
-            // character
-            if (len != length) {
-                contents = new char[len];
-                System.arraycopy(contents, start, contents, 0, len);
-            }
+        } finally {
+            reader.close();
         }
-
         return contents;
     }
 

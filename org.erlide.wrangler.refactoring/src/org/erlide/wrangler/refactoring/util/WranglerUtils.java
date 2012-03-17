@@ -407,13 +407,18 @@ public final class WranglerUtils {
         try {
             final InputStream in = file.getContents();
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
-            final byte[] buf = new byte[1024];
-            int read = in.read(buf);
-            while (read > 0) {
-                out.write(buf, 0, read);
-                read = in.read(buf);
+            try {
+                final byte[] buf = new byte[1024];
+                int read = in.read(buf);
+                while (read > 0) {
+                    out.write(buf, 0, read);
+                    read = in.read(buf);
+                }
+                return out.toString();
+            } finally {
+                in.close();
+                out.close();
             }
-            return out.toString();
         } catch (final CoreException e) {
             e.printStackTrace();
         } catch (final IOException e) {
@@ -468,7 +473,7 @@ public final class WranglerUtils {
      */
     public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
 
-        final IErlModel model =  ErlModelManager.getErlangModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         for (final ChangedFile f : changedFiles) {
             IFile file;
             try {

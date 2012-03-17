@@ -104,6 +104,7 @@ public class ReportFinder {
                 }
                 return result.toString();
             } finally {
+                inputStream.close();
                 is.close();
             }
         } catch (final CoreException e) {
