@@ -12,15 +12,11 @@ package org.erlide.core;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IBundleGroup;
-import org.eclipse.core.runtime.IBundleGroupProvider;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -77,44 +73,7 @@ public class ErlangPlugin extends Plugin {
 
         core = new ErlangCore(this, workspace, extensionRegistry,
                 portableString, erlangDebugOptionsManager);
-        core.start(getFeatureVersion());
-    }
-
-    private String getFeatureVersion() {
-        String version = "?";
-        try {
-            final IBundleGroupProvider[] providers = Platform
-                    .getBundleGroupProviders();
-            if (providers != null) {
-                version = findErlideFeatureVersion(providers);
-            } else {
-                ErlLogger.debug("***: no bundle group providers");
-            }
-        } catch (final Throwable e) {
-            // ignore
-        }
-        final Version coreVersion = getBundle().getVersion();
-        version = version + " (core=" + coreVersion.toString() + ")";
-        return version;
-    }
-
-    private String findErlideFeatureVersion(
-            final IBundleGroupProvider[] providers) {
-        String version = "?";
-        for (final IBundleGroupProvider provider : providers) {
-            final IBundleGroup[] bundleGroups = provider.getBundleGroups();
-            for (final IBundleGroup group : bundleGroups) {
-                final String id = group.getIdentifier();
-                if ("org.erlide".equals(id) || "org.erlide.headless".equals(id)) {
-                    version = group.getVersion();
-                    break;
-                }
-            }
-            if (!version.equals("?")) {
-                break;
-            }
-        }
-        return version;
+        core.start();
     }
 
     public ErlangCore getCore() {
