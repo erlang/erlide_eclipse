@@ -6,7 +6,7 @@ import org.erlide.utils.Tuple;
 import org.junit.Test;
 
 public class CompilerOptionsTest {
-    private static final String DEF_VALUES = "nowarn_bif_clash,nowarn_export_all,nowarn_export_vars,nowarn_shadow_vars,warn_unused_function,warn_deprecated_function,nowarn_obsolete_guard,nowarn_unused_import,warn_unused_vars,warn_unused_record";
+    private static final String DEF_VALUES = "nowarn_export_all,nowarn_export_vars,nowarn_shadow_vars,warn_unused_function,warn_deprecated_function,nowarn_obsolete_guard,nowarn_unused_import,warn_unused_vars,warn_unused_record";
 
     @Test
     public void test_0() {
@@ -70,7 +70,7 @@ public class CompilerOptionsTest {
         final CompilerOptions prefs = new CompilerOptions();
         prefs.setBooleanOption(CompilerOption.WARN_UNUSED_FUNCTION, false);
         final String actual = prefs.export().toString();
-        final String expect = "[nowarn_bif_clash,nowarn_export_all,nowarn_export_vars,nowarn_shadow_vars,nowarn_unused_function,warn_deprecated_function,nowarn_obsolete_guard,nowarn_unused_import,warn_unused_vars,warn_unused_record]";
+        final String expect = "[nowarn_export_all,nowarn_export_vars,nowarn_shadow_vars,nowarn_unused_function,warn_deprecated_function,nowarn_obsolete_guard,nowarn_unused_import,warn_unused_vars,warn_unused_record]";
         Assert.assertEquals(expect, actual);
     }
 
@@ -89,7 +89,7 @@ public class CompilerOptionsTest {
     @Test
     public void test_8() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setBooleanOption(CompilerOption.WARN_BIF_CLASH, true);
+        prefs.setBooleanOption(CompilerOption.WARN_EXPORT_ALL, true);
         final String actual = prefs.export().toString();
         final String expect = "[" + DEF_VALUES.substring(2) + "]";
         Assert.assertEquals(expect, actual);
@@ -98,7 +98,7 @@ public class CompilerOptionsTest {
     @Test
     public void test_9() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setBooleanOption(CompilerOption.WARN_BIF_CLASH, false);
+        prefs.setBooleanOption(CompilerOption.WARN_EXPORT_ALL, false);
         final String actual = prefs.export().toString();
         final String expect = "[" + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);

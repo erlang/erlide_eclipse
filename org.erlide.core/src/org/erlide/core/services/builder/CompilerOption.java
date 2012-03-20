@@ -59,12 +59,6 @@ public abstract class CompilerOption {
     public static final WarningOption WARN_EXPORT_ALL = new WarningOption(
             "warn_export_all", false, "Use of export_all",
             "The compiler option export_all");
-    public static final WarningOption WARN_BIF_CLASH = new WarningOption(
-            "warn_bif_clash",
-            false,
-            "Name clashes with BIFs",
-            "an exported function with the same name as an auto-imported BIF (such as size/1)\n"
-                    + " AND there is a call to it without a qualifying module name.");
 
     public static class BooleanOption extends CompilerOption {
         private final boolean defaultValue;
@@ -147,7 +141,6 @@ public abstract class CompilerOption {
     //@formatter:off    
     public static final Collection<WarningOption> WARNINGS = 
             Lists.newArrayList(
-                    WARN_BIF_CLASH,
                     WARN_EXPORT_ALL,
                     WARN_EXPORT_VARS,
                     WARN_SHADOW_VARS,
@@ -163,7 +156,6 @@ public abstract class CompilerOption {
                     DEBUG_INFO,
                     ENCRYPT_DEBUG_INFO,
                     DEFINE,
-                    WARN_BIF_CLASH,
                     WARN_EXPORT_ALL,
                     WARN_EXPORT_VARS,
                     WARN_SHADOW_VARS,
