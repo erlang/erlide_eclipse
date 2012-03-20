@@ -924,6 +924,14 @@
     <handler
           class="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler"
           commandId="org.erlide.ui.command.showOutlineFilterDialog">
+       <activeWhen>
+          <with
+                variable="activeEditorId">
+             <equals
+                   value="org.erlide.ui.editors.erl.ErlangEditor">
+             </equals>
+          </with>
+       </activeWhen>
     </handler>
     <handler
           class="org.erlide.ui.editors.erl.outline.filters.ToolbarFilterHandler"
