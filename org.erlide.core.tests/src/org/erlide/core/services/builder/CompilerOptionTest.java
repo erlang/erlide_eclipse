@@ -18,24 +18,24 @@ public class CompilerOptionTest {
 
     @Test
     public void testFind() {
-        final CompilerOption option = CompilerOption.WARN_BIF_CLASH;
-        Assert.assertEquals("warn_bif_clash", option.getName());
+        final CompilerOption option = CompilerOption.WARN_EXPORT_ALL;
+        Assert.assertEquals("warn_export_all", option.getName());
         Assert.assertEquals(WarningOption.class, option.getClass());
     }
 
     @Test
     public void testToTerm_1() throws TermParserException {
-        final BooleanOption option = CompilerOption.WARN_BIF_CLASH;
+        final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(true);
-        final String expected = "warn_bif_clash";
+        final String expected = "warn_export_all";
         Assert.assertEquals(expected, actual.toString());
     }
 
     @Test
     public void testToTerm_2() throws TermParserException {
-        final BooleanOption option = CompilerOption.WARN_BIF_CLASH;
+        final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(false);
-        final String expected = "nowarn_bif_clash";
+        final String expected = "nowarn_export_all";
         Assert.assertEquals(expected, actual.toString());
     }
 
@@ -79,9 +79,9 @@ public class CompilerOptionTest {
 
     @Test
     public void testToTerm_6() throws TermParserException {
-        final BooleanOption option = CompilerOption.WARN_BIF_CLASH;
+        final BooleanOption option = CompilerOption.WARN_EXPORT_ALL;
         final OtpErlangObject actual = option.toTerm(false);
-        final String expected = "nowarn_bif_clash";
+        final String expected = "nowarn_export_all";
         Assert.assertEquals(expected, actual.toString());
     }
 
