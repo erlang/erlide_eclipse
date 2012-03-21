@@ -1,6 +1,7 @@
 package org.erlide.core.services.builder;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.erlide.utils.TermParser;
@@ -11,6 +12,9 @@ import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -59,6 +63,33 @@ public abstract class CompilerOption {
     public static final WarningOption WARN_EXPORT_ALL = new WarningOption(
             "warn_export_all", false, "Use of export_all",
             "The compiler option export_all");
+    public static final PathsOption INCLUDE_DIRS = new PathsOption("i",
+            "Additional include dirs", "Comma-separated list of paths");
+
+    public static class PathsOption extends CompilerOption {
+        public PathsOption(final String name, final String description,
+                final String tooltip) {
+            super(name, description, tooltip);
+        }
+
+        public OtpErlangObject toTerm(final Iterable<String> value) {
+            final List<OtpErlangObject> result = Lists.newArrayList();
+            for (final String path : value) {
+                result.add(new OtpErlangString(path));
+            }
+            return OtpErlang.mkTuple(new OtpErlangAtom(getName()),
+                    OtpErlang.mkList(result));
+        }
+
+        public static String toString(final Iterable<String> value) {
+            return Joiner.on(',').join(value);
+        }
+
+        public static Iterable<String> fromString(final String string) {
+            return Splitter.on(',').trimResults().omitEmptyStrings()
+                    .split(string);
+        }
+    }
 
     public static class BooleanOption extends CompilerOption {
         private final boolean defaultValue;
@@ -152,10 +183,11 @@ public abstract class CompilerOption {
                     WARN_UNUSED_RECORD);
     public static final Collection<CompilerOption> ALL_OPTIONS = 
             Lists.newArrayList(
+                    INCLUDE_DIRS,
+                    DEFINE,
                     COMPRESSED,
                     DEBUG_INFO,
                     ENCRYPT_DEBUG_INFO,
-                    DEFINE,
                     WARN_EXPORT_ALL,
                     WARN_EXPORT_VARS,
                     WARN_SHADOW_VARS,
