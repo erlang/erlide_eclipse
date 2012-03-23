@@ -458,7 +458,12 @@ escape_char($d) -> $\d;                %\d = DEL
 escape_char(C) -> C.
 
 utf8_str_length(List) ->
-    get_length(List, 0).
+    case get_length(List, 0) of
+        -1 ->
+            length(List);
+        Int ->
+            Int
+    end.
 
 get_length([], Len) ->
     Len;
@@ -476,12 +481,7 @@ get_length(_Bad, _Len) ->
 scan_string([$"|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$"|S] = reverse(Stack),
     {VS, SS} = unstack(S),
-    Len = case utf8_str_length(SS) of
-              -1 ->
-               length(SS);
-              V ->
-                  V
-          end,
+    Len = utf8_str_length(SS),
     %%io:format("the ss: ~p and length :~p ~n", [SS, Len]),
     scan(Cs, [], [{string,{StartPos, Len+2},VS,[$"|SS]++[$"]}|Toks], inc(Pos,Len+2), State, Errors);
 scan_string([$\n|Cs]=_ACs, Stack, Toks, Pos, State, Errors) ->
@@ -640,23 +640,13 @@ scan_exponent(Cs, Stack, Toks, Pos, State, Errors) ->
 
 scan_comment([$\r|Cs], Stack, Toks, Pos, State, Errors) ->
     L = lists:reverse(Stack),
-    Len = case utf8_str_length(L) of
-              -1 ->
-                  length(Stack);
-              V ->
-                  V
-          end,
+    Len = utf8_str_length(L),
     %%io:format("the comment :~p and length :~p ~n" , [L, Len]),
     scan([$\r|Cs], [], [{comment, {Pos, Len}, lists:reverse(Stack)}|Toks], inc(Pos,Len), State, Errors);
 scan_comment([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
     L = lists:reverse(Stack),
-    Len = case utf8_str_length(L) of
-              -1 ->
-                  length(Stack);
-              V ->
-                  V
-          end,
-    io:format("the comment :~p and length :~p ~n" , [L, Len]),
+    Len = utf8_str_length(L),
+    %%io:format("the comment :~p and length :~p ~n" , [L, Len]),
     scan([$\n|Cs], [], [{comment, {Pos, Len}, lists:reverse(Stack)}|Toks], inc(Pos, Len), State, Errors);
 scan_comment([C|Cs], Stack, Toks, Pos, State, Errors) ->
     scan_comment(Cs, [C|Stack], Toks, Pos, State, Errors);
