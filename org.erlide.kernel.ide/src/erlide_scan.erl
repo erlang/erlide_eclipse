@@ -82,6 +82,10 @@ string_thing(_) -> "string".
 %%  Returns:
 %%    {ok,[Tok]}
 %%    {error,{ErrorPos,?MODULE,What},EndPos}
+
+
+%% TODO if for syntax: not filtered; otherwise, yes.
+
 string(Cs) ->
     case string_ws(Cs) of
         {ok, Toks, Pos} ->
@@ -94,6 +98,7 @@ string_ws(Cs) ->
     string(Cs, {1, 1}).
 
 string(Cs, Pos) when is_list(Cs) ->
+    %%S = unicode:characters_to_list(Cs),
     scan(Cs, [], [], Pos, [], []).
 
 %% tokens(Continuation, CharList, StartPos) ->
@@ -208,6 +213,9 @@ scan([C|Cs], _Stack, Toks, Pos, State, Errors)
     sub_scan_name(Cs, [C,fun scan_atom/6], Toks, Pos, State, Errors);
 scan([C|Cs], _Stack, Toks, Pos, State, Errors)
   when C >= $A, C =< $Z ->                              % Variables
+    sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
+scan([C|Cs], _Stack, Toks, Pos, State, Errors)
+  when C >= $À, C =< $Þ, C =/= $× ->                     % Variables
     sub_scan_name(Cs, [C,fun scan_variable/6], Toks, Pos, State, Errors);
 scan([$_|Cs], _Stack, Toks, Pos, State, Errors) ->      % _Variables
     sub_scan_name(Cs, [$_,fun scan_variable/6], Toks, Pos, State, Errors);
@@ -449,11 +457,33 @@ escape_char($s) -> $\s;                %\s = SPC
 escape_char($d) -> $\d;                %\d = DEL
 escape_char(C) -> C.
 
+utf8_str_length(List) ->
+    get_length(List, 0).
+
+get_length([], Len) ->
+    Len;
+get_length([C|Rest], Len) when C <16#80 ->
+    get_length(Rest, Len +1);
+get_length([C1,C2|Rest], Len) when C1 =< 16#FF, C2 =< 16#FF, C1 band 16#E0 =:= 16#C0, C2 band 16#C0 =:= 16#80 ->
+    get_length(Rest, Len+1);
+get_length([C1,C2,C3|Rest], Len) when C1 =< 16#FF, C1 band 16#F0 =:= 16#E0 ->
+    get_length(Rest, Len +1);
+get_length([C1,C2,C3,C4|Rest], Len) when C1 =< 16#FF, C1 band 16#F8 =:= 16#F0 ->
+    get_length(Rest, Len +1);
+get_length(_Bad, _Len) ->
+    -1.
 
 scan_string([$"|Cs], Stack, Toks, Pos, State, Errors) ->
     [StartPos,$"|S] = reverse(Stack),
     {VS, SS} = unstack(S),
-    scan(Cs, [], [{string,{StartPos, length(SS)+2},VS,[$"|SS]++[$"]}|Toks], inc(Pos,length(SS)+2), State, Errors);
+    Len = case utf8_str_length(SS) of
+              -1 ->
+               length(SS);
+              V ->
+                  V
+          end,
+    %%io:format("the ss: ~p and length :~p ~n", [SS, Len]),
+    scan(Cs, [], [{string,{StartPos, Len+2},VS,[$"|SS]++[$"]}|Toks], inc(Pos,Len+2), State, Errors);
 scan_string([$\n|Cs]=_ACs, Stack, Toks, Pos, State, Errors) ->
     scan_string(Cs, [{$\n,"\n"}|Stack], Toks, incrow0(Pos), State, Errors);
 %%     [StartPos, $"|S] = reverse(Stack),
@@ -609,9 +639,25 @@ scan_exponent(Cs, Stack, Toks, Pos, State, Errors) ->
 
 
 scan_comment([$\r|Cs], Stack, Toks, Pos, State, Errors) ->
-    scan([$\r|Cs], [], [{comment, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
+    L = lists:reverse(Stack),
+    Len = case utf8_str_length(L) of
+              -1 ->
+                  length(Stack);
+              V ->
+                  V
+          end,
+    %%io:format("the comment :~p and length :~p ~n" , [L, Len]),
+    scan([$\r|Cs], [], [{comment, {Pos, Len}, lists:reverse(Stack)}|Toks], inc(Pos,Len), State, Errors);
 scan_comment([$\n|Cs], Stack, Toks, Pos, State, Errors) ->
-    scan([$\n|Cs], [], [{comment, {Pos, length(Stack)}, lists:reverse(Stack)}|Toks], inc(Pos,length(Stack)), State, Errors);
+    L = lists:reverse(Stack),
+    Len = case utf8_str_length(L) of
+              -1 ->
+                  length(Stack);
+              V ->
+                  V
+          end,
+    io:format("the comment :~p and length :~p ~n" , [L, Len]),
+    scan([$\n|Cs], [], [{comment, {Pos, Len}, lists:reverse(Stack)}|Toks], inc(Pos, Len), State, Errors);
 scan_comment([C|Cs], Stack, Toks, Pos, State, Errors) ->
     scan_comment(Cs, [C|Stack], Toks, Pos, State, Errors);
 scan_comment([], Stack, Toks, Pos, State, Errors) ->
