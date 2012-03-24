@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.preferences.IDebugPreferenceConstants;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -257,6 +259,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 | SWT.H_SCROLL | SWT.MULTI | SWT.READ_ONLY);
         consoleText = consoleOutputViewer.getTextWidget();
         consoleText.setFont(JFaceResources.getTextFont());
+        final Color bgcolor = DebugUIPlugin
+                .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
+        consoleText.setBackground(bgcolor);
         consoleText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
@@ -281,6 +286,21 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                 consoleInput.setFocus();
             }
         });
+        DebugUIPlugin.getDefault().getPreferenceStore()
+                .addPropertyChangeListener(new IPropertyChangeListener() {
+                    @Override
+                    public void propertyChange(final PropertyChangeEvent event) {
+                        if (event
+                                .getProperty()
+                                .equals(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
+                            final Color bgcolor = DebugUIPlugin
+                                    .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
+                            consoleText.setBackground(bgcolor);
+                            consoleInput.setBackground(bgcolor);
+                        }
+                    }
+                });
+
         consoleOutputViewer.setDocument(fDoc);
         consoleOutputViewer
                 .configure(new ErlangConsoleSourceViewerConfiguration());
@@ -291,6 +311,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInputViewer
                 .configure(new ErlangConsoleSourceViewerConfiguration());
         consoleInput = (StyledText) consoleInputViewer.getControl();
+        consoleInput.setBackground(bgcolor);
 
         sashForm.setWeights(new int[] { 2, 1 });
 
