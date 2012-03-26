@@ -63,6 +63,14 @@ public class ErlangPlugin extends Plugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
 
+        // final Bundle b = Platform.getBundle("org.eclipse.equinox.event");
+        // if (b != null && b.getState() == Bundle.RESOLVED) {
+        // try {
+        // b.start();
+        // } catch (final BundleException e) {
+        // }
+        // }
+
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
         final IExtensionRegistry extensionRegistry = Platform
                 .getExtensionRegistry();

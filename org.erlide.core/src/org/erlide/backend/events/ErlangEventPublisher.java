@@ -56,11 +56,37 @@ public class ErlangEventPublisher {
 
     public synchronized void start() {
         stopped = false;
+        setEventAdmin();
         new Thread(new HandlerJob(backend)).start();
+    }
+
+    public void setEventAdmin() {
+        final BundleContext ctx = FrameworkUtil.getBundle(
+                ErlangEventPublisher.class).getBundleContext();
+        final ServiceReference ref = ctx.getServiceReference(EventAdmin.class
+                .getName());
+        if (ref == null) {
+            ErlLogger.error("No event admin ???");
+        } else {
+            eventAdmin = (EventAdmin) ctx.getService(ref);
+        }
     }
 
     public synchronized void stop() {
         stopped = true;
+        unsetEventAdmin();
+    }
+
+    public void unsetEventAdmin() {
+        final BundleContext ctx = FrameworkUtil.getBundle(
+                ErlangEventPublisher.class).getBundleContext();
+        final ServiceReference ref = ctx.getServiceReference(EventAdmin.class
+                .getName());
+        if (ref == null) {
+            ErlLogger.error("No event admin ???");
+        } else {
+            ctx.ungetService(ref);
+        }
     }
 
     private final class HandlerJob implements Runnable {
@@ -144,7 +170,7 @@ public class ErlangEventPublisher {
         properties.put("SENDER", sender);
 
         final Event osgiEvent = new Event(getFullTopic(topic, b), properties);
-        getEventAdmin().postEvent(osgiEvent);
+        eventAdmin.postEvent(osgiEvent);
     }
 
     public static String getFullTopic(final String topic, final IBackend backend) {
@@ -152,21 +178,6 @@ public class ErlangEventPublisher {
                 + (backend == null ? "*" : backend.getName()
                         .replaceAll("@", "__").replaceAll("\\.", "_"));
         return "erlideEvent/" + topic + subtopic;
-    }
-
-    private EventAdmin getEventAdmin() {
-        if (eventAdmin == null) {
-            final BundleContext ctx = FrameworkUtil.getBundle(
-                    ErlangEventPublisher.class).getBundleContext();
-            final ServiceReference ref = ctx
-                    .getServiceReference(EventAdmin.class.getName());
-            if (ref == null) {
-                ErlLogger.error("No event admin ???");
-            } else {
-                eventAdmin = (EventAdmin) ctx.getService(ref);
-            }
-        }
-        return eventAdmin;
     }
 
     public static String dumpEvent(final Event event) {
