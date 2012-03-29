@@ -6,7 +6,6 @@ import java.util.List;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.launch.debug.BackendEvalResult;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 
@@ -149,32 +148,6 @@ public class BackendHelper {
                     + "\": " + e.getMessage());
         }
         return ((OtpErlangString) r1).stringValue();
-    }
-
-    public static BackendEvalResult eval(final IRpcCallSite b,
-            final String string, final OtpErlangObject bindings) {
-        final BackendEvalResult result = new BackendEvalResult();
-        try {
-            OtpErlangObject r1;
-            // ErlLogger.debug("eval %s %s", string, bindings);
-            if (bindings == null) {
-                r1 = b.call("erlide_backend", "eval", "s", string);
-            } else {
-                r1 = b.call("erlide_backend", "eval", "sx", string, bindings);
-            }
-            // value may be something else if exception is thrown...
-            final OtpErlangTuple t = (OtpErlangTuple) r1;
-            final boolean ok = !"error".equals(((OtpErlangAtom) t.elementAt(0))
-                    .atomValue());
-            if (ok) {
-                result.setValue(t.elementAt(1), t.elementAt(2));
-            } else {
-                result.setError(t.elementAt(1));
-            }
-        } catch (final Exception e) {
-            result.setError("rpc failed");
-        }
-        return result;
     }
 
     public static boolean loadBeam(final IRpcCallSite backend,
