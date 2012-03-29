@@ -34,9 +34,9 @@ import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.launch.BeamLocator;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
+import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.utils.SystemUtils;
 
@@ -47,7 +47,7 @@ public final class BackendData extends GenericBackendData {
     public static final String PROJECT_NAME_SEPARATOR = ";";
 
     private RuntimeInfoManager runtimeInfoManager;
-    private BeamLocator beamLocator;
+    private IBeamLocator beamLocator;
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,
             final ILaunchConfiguration config, final String mode) {
@@ -330,11 +330,11 @@ public final class BackendData extends GenericBackendData {
         config.setAttribute(key, value);
     }
 
-    public void setBeamLocator(final BeamLocator beamLocator) {
+    public void setBeamLocator(final IBeamLocator beamLocator) {
         this.beamLocator = beamLocator;
     }
 
-    public BeamLocator getBeamLocator() {
+    public IBeamLocator getBeamLocator() {
         return beamLocator;
     }
 }
