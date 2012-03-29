@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.ErlToken;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;

@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.Assert;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.root.ErlToken;
+import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.utils.ErlUtils;
