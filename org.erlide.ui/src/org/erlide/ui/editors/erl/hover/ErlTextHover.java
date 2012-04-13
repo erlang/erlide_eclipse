@@ -293,7 +293,9 @@ public class ErlTextHover implements ITextHover,
             // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
             final OtpErlangTuple t = (OtpErlangTuple) r1;
             if (Util.isOk(t)) {
-                final String docStr = Util.stringValue(t.elementAt(1));
+                String docStr = Util.stringValue(t.elementAt(1));
+                byte[] s = docStr.getBytes(Charset.forName("ISO-8859-1"));
+                docStr = new String(s, Charset.forName("UTF-8"));
                 final OpenResult or = new OpenResult(t.elementAt(2));
                 result.append(docStr);
                 element = or;
