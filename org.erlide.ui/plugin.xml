@@ -221,13 +221,15 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.erlide.ui.perspectives.ErlangPerspective">
          <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
-         <perspectiveShortcut id="org.erlide.ui.perspectives.ErlangPerspective"/>
          <actionSet
                id="org.eclipse.debug.ui.debugActionSet">
          </actionSet>
          <actionSet
                id="org.eclipse.debug.ui.launchActionSet">
          </actionSet>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.erlide.ui.perspectives.ErlangPerspective">
+         <perspectiveShortcut id="org.erlide.ui.perspectives.ErlangPerspective"/>
       </perspectiveExtension>
    </extension>
    <extension
