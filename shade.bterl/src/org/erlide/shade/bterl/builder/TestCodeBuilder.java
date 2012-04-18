@@ -37,6 +37,7 @@ import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemUtils;
@@ -57,8 +58,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
     private static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.test_builder.debug"));
-    private static final boolean DISABLED = Boolean.parseBoolean(System
-            .getProperty("erlide.test_builder.disabled"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -78,9 +77,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     @Override
     protected IProject[] build(final int kind, final Map args,
             final IProgressMonitor monitor) throws CoreException {
-        if (DISABLED) {
-            return null;
-        }
         final IProject project = getProject();
         if (DEBUG) {
             ErlLogger.info("##### start test builder (%s) %s",
@@ -107,9 +103,6 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     @Override
     protected void clean(final IProgressMonitor monitor) throws CoreException {
-        if (DISABLED) {
-            return;
-        }
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
@@ -170,6 +163,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 // IMarker.SEVERITY_ERROR);
                 throw new BackendException(message);
             }
+            registerBterlBeams(backend);
             for (final BuildResource bres : resourcesToBuild) {
                 if (monitor.isCanceled()) {
                     return;
@@ -186,8 +180,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
                 final String outputDir = bres.getResource().getParent()
                         .getProjectRelativePath().toString();
-                final IRpcFuture f = helper.startCompileErl(project, bres,
-                        outputDir, backend, compilerOptions, false);
+                IRpcFuture f = null;
+                f = helper.startCompileErl(project, bres, outputDir, backend,
+                        compilerOptions, false);
                 if (f != null) {
                     results.put(f, resource);
                 }
@@ -219,6 +214,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 waiting.removeAll(done);
                 done.clear();
             }
+            unregisterBterlBeams(backend);
 
         } catch (final OperationCanceledException e) {
             if (BuilderHelper.isDebugging()) {
@@ -232,6 +228,22 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             // e.getLocalizedMessage());
             // MarkerHelper.addProblemMarker(project, null, msg, 0,
             // IMarker.SEVERITY_ERROR);
+        }
+    }
+
+    public void registerBterlBeams(final IRpcCallSite backend)
+            throws CoreException, RpcException {
+        final String[] bterl_beams = TestLaunchDelegate.getBterlPath();
+        for (final String bterl_beam : bterl_beams) {
+            backend.call("code", "add_path", "s", bterl_beam);
+        }
+    }
+
+    public void unregisterBterlBeams(final IRpcCallSite backend)
+            throws CoreException, RpcException {
+        final String[] bterl_beams = TestLaunchDelegate.getBterlPath();
+        for (final String bterl_beam : bterl_beams) {
+            backend.call("code", "del_path", "s", bterl_beam);
         }
     }
 
