@@ -2,19 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.7.2
+Bundle-Version: 1.7.4
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
  org.eclipse.xtend2.lib-2.2.0.jar,
- guice-3.0/aopalliance.jar,
- guice-3.0/guice-3.0.jar,
- guice-3.0/guice-assistedinject-3.0.jar,
- guice-3.0/guice-grapher-3.0.jar,
- guice-3.0/guice-multibindings-3.0.jar,
- guice-3.0/guice-throwingproviders-3.0.jar,
- guice-3.0/javax.inject.jar,
  commons-io-1.4.jar,
  guava-11.0.1.jar
 Export-Package: com.ericsson.otp.erlang,
@@ -30,26 +23,6 @@ Export-Package: com.ericsson.otp.erlang,
  com.google.common.net,
  com.google.common.primitives,
  com.google.common.util.concurrent,
- com.google.inject,
- com.google.inject.assistedinject,
- com.google.inject.binder,
- com.google.inject.grapher,
- com.google.inject.grapher.graphviz,
- com.google.inject.internal;x-internal:=true,
- com.google.inject.internal.asm;x-internal:=true,
- com.google.inject.internal.cglib.core;x-internal:=true,
- com.google.inject.internal.cglib.proxy;x-internal:=true,
- com.google.inject.internal.cglib.reflect;x-internal:=true,
- com.google.inject.internal.util;x-internal:=true,
- com.google.inject.matcher,
- com.google.inject.multibindings,
- com.google.inject.name,
- com.google.inject.spi,
- com.google.inject.throwingproviders,
- com.google.inject.util,
- javax.inject,
- org.aopalliance.aop,
- org.aopalliance.intercept,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,

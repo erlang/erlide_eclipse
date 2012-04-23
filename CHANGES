@@ -1,3 +1,12 @@
+List of user visible changes between 0.15.2 and 0.15.3 (20120423)
+
+2c4b506 1031-shade-bterl--builder-is-disabled-because-of-bt_parse-transform
+fd557c6 1024/51: otp edoc shows strange chars
+6a1e0be 1027 import project: error when no beam files exist
+2018191 1026: console: can't choose colors
+b81eff6 added a simple function to get the length of utf8 encoding strings which contain characters other than ascii chars.
+457f3c1 1022 outline: "Filter..." menu is added even to the Java outline
+
 List of user visible changes between 0.15.1 and 0.15.2 (20120315)
 
 97a46a5 made internal features configurable at runtime
