@@ -332,7 +332,7 @@ public class StringUtils {
             return list;
         }
         final int prefixLength = getLongestPrefix(list).length();
-        if (prefixLength == 0 || prefixLength == list.get(0).length()) {
+        if (prefixLength == 0) {
             return list;
         }
         final List<String> result = Lists.newArrayList();
