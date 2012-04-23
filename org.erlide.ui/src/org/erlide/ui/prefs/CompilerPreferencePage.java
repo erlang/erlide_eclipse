@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -32,18 +34,20 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.internal.BackendHelper;
+import org.erlide.backend.BackendHelper;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.CompilerOption;
+import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOptions;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallSite;
@@ -61,6 +65,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     private Link fChangeWorkspaceSettings;
     protected ControlEnableState fBlockEnableState;
     private final List<Button> optionButtons;
+    private Text text;
 
     public CompilerPreferencePage() {
         super();
@@ -73,12 +78,13 @@ public class CompilerPreferencePage extends PropertyPage implements
     protected Control createContents(final Composite parent) {
         prefsComposite = new Composite(parent, SWT.NONE);
         final GridLayout gridLayout_1 = new GridLayout();
+        gridLayout_1.numColumns = 2;
         prefsComposite.setLayout(gridLayout_1);
 
         final Group optionsGroup = new Group(prefsComposite, SWT.NONE);
         {
-            final GridData gd_optionsGroup = new GridData(SWT.LEFT, SWT.CENTER,
-                    false, false, 1, 1);
+            final GridData gd_optionsGroup = new GridData(SWT.FILL, SWT.CENTER,
+                    false, false, 2, 1);
             gd_optionsGroup.widthHint = 400;
             optionsGroup.setLayoutData(gd_optionsGroup);
         }
@@ -89,10 +95,26 @@ public class CompilerPreferencePage extends PropertyPage implements
         newCheckButton(optionsGroup, CompilerOption.ENCRYPT_DEBUG_INFO);
         newCheckButton(optionsGroup, CompilerOption.COMPRESSED);
 
+        final Label lblNewLabel = new Label(prefsComposite, SWT.NONE);
+        lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+                false, 1, 1));
+        lblNewLabel.setText(CompilerOption.INCLUDE_DIRS.getDescription());
+
+        text = new Text(prefsComposite, SWT.BORDER);
+        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        text.setToolTipText(CompilerOption.INCLUDE_DIRS.getTooltip());
+        text.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
+                        PathsOption.fromString(text.getText()));
+            }
+        });
+
         final Group warningsGroup = new Group(prefsComposite, SWT.NONE);
         {
-            final GridData gridData = new GridData(SWT.LEFT, SWT.FILL, false,
-                    false, 1, 1);
+            final GridData gridData = new GridData(SWT.FILL, SWT.FILL, false,
+                    false, 2, 1);
             gridData.widthHint = 400;
             warningsGroup.setLayoutData(gridData);
         }
@@ -378,6 +400,10 @@ public class CompilerPreferencePage extends PropertyPage implements
         for(final Button b: optionButtons){
             final CompilerOption key = (CompilerOption) b.getData();
             b.setSelection(prefs.getBooleanOption(key));
+        }
+        final Iterable<String> paths = prefs.getPathsOption(CompilerOption.INCLUDE_DIRS);
+        if(paths!=null) {
+            text.setText(PathsOption.toString(paths));
         }
     }
 

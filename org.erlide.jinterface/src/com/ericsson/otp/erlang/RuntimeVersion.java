@@ -189,9 +189,13 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         final File boot = new File(path + "/bin/start.boot");
         try {
             final FileInputStream is = new FileInputStream(boot);
-            is.skip(14);
-            readstring(is);
-            result = readstring(is);
+            try {
+                is.skip(14);
+                readstring(is);
+                result = readstring(is);
+            } finally {
+                is.close();
+            }
         } catch (final IOException e) {
         }
         return result;

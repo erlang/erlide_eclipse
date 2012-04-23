@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.15.2.qualifier
+Bundle-Version: 0.15.3.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -30,9 +30,9 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
+ org.eclipse.osgi.services,
  org.erlide.jinterface,
- org.erlide.libs,
- org.eclipse.osgi.services;bundle-version="3.2.100"
+ org.erlide.libs
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

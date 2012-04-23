@@ -102,24 +102,31 @@ public class ErlangTextEditorAction extends TextEditorAction {
                     if (e1 instanceof ISourceReference) {
                         final ISourceReference ref1 = (ISourceReference) e1;
                         final ISourceRange r1 = ref1.getSourceRange();
+                        final int offset = r1.getOffset();
+                        int length = r1.getLength();
                         if (e1 == e2) {
+                            int docLength = document.getLength();
+                            if (offset + length > docLength) {
+                                length = docLength - offset;
+                            }
                             return extendSelectionToWholeLines(document,
-                                    new TextSelection(document, r1.getOffset(),
-                                            r1.getLength()));
+                                    new TextSelection(document, offset, length));
                         } else if (e2 == null) {
                             return extendSelectionToWholeLines(
                                     document,
-                                    new TextSelection(document, r1.getOffset(),
+                                    new TextSelection(document, offset,
                                             selection.getLength()
                                                     + selection.getOffset()
-                                                    - r1.getOffset()));
+                                                    - offset));
                         } else if (e2 instanceof ISourceReference) {
                             final ISourceReference ref2 = (ISourceReference) e2;
                             final ISourceRange r2 = ref2.getSourceRange();
-                            return extendSelectionToWholeLines(document,
-                                    new TextSelection(document, r1.getOffset(),
-                                            r2.getOffset() - r1.getOffset()
-                                                    + r2.getLength()));
+                            return extendSelectionToWholeLines(
+                                    document,
+                                    new TextSelection(document, offset, r2
+                                            .getOffset()
+                                            - offset
+                                            + r2.getLength()));
                         }
                     }
                 } catch (final ErlModelException e) {

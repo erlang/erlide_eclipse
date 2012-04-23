@@ -10,8 +10,9 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.utils.SystemUtils;
 
-public class BeamLocator {
+public class BeamLocator implements IBeamLocator {
 
+    @Override
     public IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
         final IErlProject erlProject = ErlModelManager.getErlangModel()

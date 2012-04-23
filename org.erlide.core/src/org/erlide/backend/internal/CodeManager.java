@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendHelper;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.ICodeBundle;

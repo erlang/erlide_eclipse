@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.ui.console.actions;
 
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -61,7 +61,7 @@ public abstract class ShowWhenContentChangesAction extends Action implements
      * @return
      */
     private IPreferenceStore getPreferenceStore() {
-        return DebugUIPlugin.getDefault().getPreferenceStore();
+        return DebugUITools.getPreferenceStore();
     }
 
     @Override

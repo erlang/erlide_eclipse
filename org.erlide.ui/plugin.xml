@@ -221,13 +221,15 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.erlide.ui.perspectives.ErlangPerspective">
          <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
-         <perspectiveShortcut id="org.erlide.ui.perspectives.ErlangPerspective"/>
          <actionSet
                id="org.eclipse.debug.ui.debugActionSet">
          </actionSet>
          <actionSet
                id="org.eclipse.debug.ui.launchActionSet">
          </actionSet>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.erlide.ui.perspectives.ErlangPerspective">
+         <perspectiveShortcut id="org.erlide.ui.perspectives.ErlangPerspective"/>
       </perspectiveExtension>
    </extension>
    <extension
@@ -751,6 +753,14 @@
              icon="icons/full/elcl16/filter_ps.gif"
              label="Filters..."
              style="push">
+          <visibleWhen>
+             <with
+                   variable="activeEditorId">
+                <equals
+                      value="org.erlide.ui.editors.erl.ErlangEditor">
+                </equals>
+             </with>
+          </visibleWhen>
        </command>
     </menuContribution>
     <menuContribution

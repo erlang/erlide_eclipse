@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.internal.BackendHelper;
+import org.erlide.backend.BackendHelper;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlAttribute;

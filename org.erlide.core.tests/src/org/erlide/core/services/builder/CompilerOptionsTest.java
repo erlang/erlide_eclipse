@@ -5,6 +5,8 @@ import junit.framework.Assert;
 import org.erlide.utils.Tuple;
 import org.junit.Test;
 
+import com.google.common.base.Splitter;
+
 public class CompilerOptionsTest {
     private static final String DEF_VALUES = "nowarn_export_all,nowarn_export_vars,nowarn_shadow_vars,warn_unused_function,warn_deprecated_function,nowarn_obsolete_guard,nowarn_unused_import,warn_unused_vars,warn_unused_record";
 
@@ -103,4 +105,39 @@ public class CompilerOptionsTest {
         final String expect = "[" + DEF_VALUES + "]";
         Assert.assertEquals(expect, actual);
     }
+
+    private Iterable<String> parseIncludes(final String s) {
+        return Splitter.on(',').trimResults().omitEmptyStrings().split(s);
+    }
+
+    @Test
+    public void test_10() {
+        final CompilerOptions prefs = new CompilerOptions();
+        prefs.setPathOption(CompilerOption.INCLUDE_DIRS, parseIncludes(""));
+        final String actual = prefs.export().toString();
+        final String expect = "[" + DEF_VALUES + "]";
+        Assert.assertEquals(expect, actual);
+    }
+
+    @Test
+    public void test_11() {
+        final CompilerOptions prefs = new CompilerOptions();
+        prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
+                parseIncludes("/tmp/x"));
+        final String actual = prefs.export().toString();
+        final String expect = "[{i,[\"/tmp/x\"]}," + DEF_VALUES + "]";
+        Assert.assertEquals(expect, actual);
+    }
+
+    @Test
+    public void test_12() {
+        final CompilerOptions prefs = new CompilerOptions();
+        prefs.setPathOption(CompilerOption.INCLUDE_DIRS,
+                parseIncludes("/tmp/x,/tmp/y"));
+        final String actual = prefs.export().toString();
+        final String expect = "[{i,[\"/tmp/x\",\"/tmp/y\"]}," + DEF_VALUES
+                + "]";
+        Assert.assertEquals(expect, actual);
+    }
+
 }

@@ -28,7 +28,7 @@ import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.erlide.backend.BackendException;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
-import org.erlide.core.model.root.ErlToken;
+import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.jinterface.ErlLogger;
 
 class ErlangEditorBracketInserter implements VerifyKeyListener,

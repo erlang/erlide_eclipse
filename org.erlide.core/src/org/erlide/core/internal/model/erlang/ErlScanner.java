@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.erlide.core.internal.model.erlang;
 
+import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.core.model.erlang.IErlScanner;
-import org.erlide.core.model.root.ErlToken;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.IDisposable;
 

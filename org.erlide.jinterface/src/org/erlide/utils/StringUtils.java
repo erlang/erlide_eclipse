@@ -297,7 +297,7 @@ public class StringUtils {
     public static String getLongestPrefix(final List<String> list) {
         final StringBuilder b = new StringBuilder();
         int i = 0;
-        while (true) {
+        for (;;) {
             final Character c = checkCharAt(i, list);
             if (c == null) {
                 break;
@@ -328,6 +328,9 @@ public class StringUtils {
     }
 
     public static List<String> removeCommonPrefixes(final List<String> list) {
+        if (list.size() <= 1) {
+            return list;
+        }
         final int prefixLength = getLongestPrefix(list).length();
         if (prefixLength == 0) {
             return list;

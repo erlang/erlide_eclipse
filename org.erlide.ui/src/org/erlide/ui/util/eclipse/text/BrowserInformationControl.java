@@ -496,6 +496,11 @@ public class BrowserInformationControl extends AbstractInformationControl
             text = reader.getString();
         } catch (final IOException e) {
             text = ""; //$NON-NLS-1$
+        } finally {
+            try {
+                reader.close();
+            } catch (final IOException e) {
+            }
         }
 
         fTextLayout.setText(text);

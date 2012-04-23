@@ -44,11 +44,11 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
+import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.ErlToken;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
@@ -293,7 +293,9 @@ public class ErlTextHover implements ITextHover,
             // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
             final OtpErlangTuple t = (OtpErlangTuple) r1;
             if (Util.isOk(t)) {
-                final String docStr = Util.stringValue(t.elementAt(1));
+                String docStr = Util.stringValue(t.elementAt(1));
+                final byte[] s = docStr.getBytes(Charset.forName("ISO-8859-1"));
+                docStr = new String(s, Charset.forName("UTF-8"));
                 final OpenResult or = new OpenResult(t.elementAt(2));
                 result.append(docStr);
                 element = or;

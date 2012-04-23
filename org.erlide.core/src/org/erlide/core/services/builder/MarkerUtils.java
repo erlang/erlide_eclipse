@@ -540,6 +540,7 @@ public final class MarkerUtils {
                 }
             } finally {
                 reader.close();
+                input.close();
             }
         } catch (final CoreException e) {
             e.printStackTrace();

@@ -146,7 +146,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             if (fModule != null) {
                 fModule.open(null);
             }
-            addFilters();
+            // addFilters();
         } catch (final CoreException e) {
         }
     }
@@ -164,6 +164,18 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
             }
         }
         OutlineFilterUtils.setFilters(descs, this);
+        final List<String> userDefinedPatterns = Lists.newArrayList();
+        final Set<String> enabledFilterIDs = Sets.newHashSet();
+        final List<String> emptyList = Lists.newArrayList();
+        final Set<String> emptySet = Sets.newHashSet();
+        final boolean userFiltersEnabled = OutlineFilterUtils.loadViewDefaults(
+                userDefinedPatterns, enabledFilterIDs);
+        if (!userFiltersEnabled) {
+            userDefinedPatterns.clear();
+        }
+        OutlineFilterUtils.updateViewerFilters(getTreeViewer(), emptyList,
+                emptySet, userDefinedPatterns, enabledFilterIDs,
+                getPatternFilter());
     }
 
     public void refresh() {
@@ -197,18 +209,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
         fOutlineViewer.setLabelProvider(fEditor.createOutlineLabelProvider());
         fOutlineViewer.addPostSelectionChangedListener(this);
         fOutlineViewer.setInput(fModule);
-        final List<String> userDefinedPatterns = Lists.newArrayList();
-        final Set<String> enabledFilterIDs = Sets.newHashSet();
-        final boolean userFiltersEnabled = OutlineFilterUtils.loadViewDefaults(
-                userDefinedPatterns, enabledFilterIDs);
-        final List<String> emptyList = Lists.newArrayList();
-        final Set<String> emptySet = Sets.newHashSet();
-        if (!userFiltersEnabled) {
-            userDefinedPatterns.clear();
-        }
-        OutlineFilterUtils.updateViewerFilters(getTreeViewer(), emptyList,
-                emptySet, userDefinedPatterns, enabledFilterIDs,
-                getPatternFilter());
         fOpenAndLinkWithEditorHelper = new OpenAndLinkWithEditorHelper(
                 fOutlineViewer) {
 
