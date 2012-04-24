@@ -49,4 +49,14 @@ Export-Package:
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.erlide.wrangler.refactoring.util
+Import-Package: org.erlide.wrangler.refactoring.util,
+ com.google.common.annotations,
+ com.google.common.base,
+ com.google.common.base.internal,
+ com.google.common.cache,
+ com.google.common.collect,
+ com.google.common.eventbus,
+ com.google.common.io,
+ com.google.common.net,
+ com.google.common.primitives,
+ com.google.common.util.concurrent

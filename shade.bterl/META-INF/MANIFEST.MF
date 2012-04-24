@@ -34,4 +34,14 @@ Export-Package: org.erlide.shade.bterl,
  org.erlide.shade.bterl.builder,
  org.erlide.shade.bterl.ui,
  org.erlide.shade.bterl.ui.launcher
-Import-Package: org.erlide.shade.bterl
+Import-Package: org.erlide.shade.bterl,
+ com.google.common.annotations,
+ com.google.common.base,
+ com.google.common.base.internal,
+ com.google.common.cache,
+ com.google.common.collect,
+ com.google.common.eventbus,
+ com.google.common.io,
+ com.google.common.net,
+ com.google.common.primitives,
+ com.google.common.util.concurrent
