@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
-import org.erlide.core.MessageReporter;
-import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.LogUtil;
 
@@ -55,16 +53,6 @@ final public class ErtsWatcher implements Runnable {
                 if (shouldCreateReport(v)) {
                     ErlLogger.error(msg);
                     report = createReport(v, msg);
-                    final String reportMsg = report != null ? "\n\n"
-                            + "An error log has been created at "
-                            + report
-                            + ".\nPlease report the problem so that we can fix it."
-                            : "";
-                    final String bigMsg = msg
-                            + "\n\n"
-                            + "This error is not recoverable, please restart your Eclipse instance."
-                            + reportMsg;
-                    MessageReporter.showError(bigMsg, ReporterPosition.MODAL);
                 } else {
                     ErlLogger.info(msg);
                 }

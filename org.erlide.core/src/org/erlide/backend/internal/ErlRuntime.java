@@ -13,6 +13,8 @@ package org.erlide.backend.internal;
 import java.io.IOException;
 
 import org.erlide.backend.IErlRuntime;
+import org.erlide.core.MessageReporter;
+import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
@@ -44,6 +46,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
     private final String cookie;
+    private boolean reported;
 
     public ErlRuntime(final String name, final String cookie) {
         state = State.DISCONNECTED;
@@ -194,6 +197,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         synchronized (connectLock) {
             switch (state) {
             case DISCONNECTED:
+                reported = false;
                 if (connectRetry()) {
                     state = State.CONNECTED;
                 } else {
@@ -203,9 +207,24 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             case CONNECTED:
                 break;
             case DOWN:
-                final String msg = "Backend '%s' is down";
-                // XXX restart it??
-                throw new RpcException(String.format(msg, peerName));
+                final String fmt = "Backend '%s' is down";
+                final String msg = String.format(fmt, peerName);
+                if (!reported) {
+                    final String user = System.getProperty("user.name");
+                    final String bigMsg = msg
+                            + "\n\n"
+                            + "This error is not recoverable, please restart the application."
+                            + "\n\n"
+                            + "If an error report "
+                            + user
+                            + "_<timestamp>.txt has been created in your home directory, "
+                            + "please consider atttaching it to an issue "
+                            + "@ http://www.assembla.com/spaces/erlide/support/tickets";
+                    MessageReporter.showError(bigMsg, ReporterPosition.MODAL);
+                    // reported = true;
+                }
+                // TODO restart it??
+                throw new RpcException(msg);
             }
         }
     }
