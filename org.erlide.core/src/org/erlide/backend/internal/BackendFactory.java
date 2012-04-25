@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
@@ -67,8 +68,10 @@ public class BackendFactory implements IBackendFactory {
             if (launch == null) {
                 launch = launchPeer(data);
             }
+            final IProcess mainProcess = launch.getProcesses().length == 0 ? null
+                    : launch.getProcesses()[0];
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    info.getCookie());
+                    info.getCookie(), mainProcess);
             b = internal ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.initialize();
