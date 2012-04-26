@@ -12,6 +12,7 @@ package org.erlide.core.internal.model.erlang;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.root.IErlElement;
@@ -19,7 +20,6 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -27,7 +27,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ModelInternalUtils {
 
-    public static ISourceRange findVariable(final IRpcCallSite backend,
+    public static ISourceRange findVariable(final IBackend backend,
             final ISourceRange range, final String variableName,
             final String elementText) throws OtpErlangRangeException {
         final OtpErlangTuple res2 = ErlideOpen.findFirstVar(backend,

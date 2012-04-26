@@ -1,8 +1,8 @@
 package org.erlide.core.services.search;
 
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.utils.Util;
@@ -36,7 +36,7 @@ public class ErlideSearchServer {
                         new OtpErlangString(path) });
     }
 
-    public static void startFindRefs(final IRpcCallSite backend,
+    public static void startFindRefs(final IBackend backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir, final IRpcResultCallback callback)
             throws RpcException {
@@ -48,7 +48,7 @@ public class ErlideSearchServer {
                 stateDir);
     }
 
-    public static OtpErlangObject findRefs(final IRpcCallSite backend,
+    public static OtpErlangObject findRefs(final IBackend backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir) throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
@@ -63,7 +63,7 @@ public class ErlideSearchServer {
         return null;
     }
 
-    public static void cancelSearch(final IRpcCallSite backend,
+    public static void cancelSearch(final IBackend backend,
             final OtpErlangPid searchDeamonPid) throws RpcException {
         backend.call("erlide_search_server", "cancel_find_refs", "x",
                 searchDeamonPid);

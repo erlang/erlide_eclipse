@@ -60,7 +60,6 @@ import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.utils.CommonUtils;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
@@ -188,7 +187,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
-                final IRpcCallSite backend = CoreUtil
+                final IBackend backend = CoreUtil
                         .getBuildOrIdeBackend(fProject);
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());

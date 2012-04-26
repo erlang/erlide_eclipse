@@ -37,8 +37,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendHelper;
+import org.erlide.backend.IBackend;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.utils.LogUtil;
 
 import com.swtdesigner.SWTResourceManager;
@@ -189,7 +189,7 @@ public class ReportPreferencePage extends PreferencePage implements
     }
 
     private static void fetchErlangSystemInfo() {
-        final IRpcCallSite ideBackend = BackendCore.getBackendManager()
+        final IBackend ideBackend = BackendCore.getBackendManager()
                 .getIdeBackend();
         final String info = BackendHelper.getSystemInfo(ideBackend);
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);

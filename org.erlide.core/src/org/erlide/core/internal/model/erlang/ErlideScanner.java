@@ -6,10 +6,12 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcTimeoutException;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 
@@ -28,21 +30,29 @@ public class ErlideScanner {
             final String initialText, final boolean useCaches) {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
         try {
-            BackendCore
-                    .getBackendManager()
-                    .getIdeBackend()
-                    .call(ERLIDE_SCANNER, "initialScan", "assso", module, path,
-                            initialText, stateDir, useCaches);
+            backend.call(ERLIDE_SCANNER, "initialScan", "assso", module, path,
+                    initialText, stateDir, useCaches);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
     }
 
     public static void destroy(final String module) {
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
         try {
-            BackendCore.getBackendManager().getIdeBackend()
-                    .call(ERLIDE_SCANNER, "destroy", "a", module);
+            backend.call(ERLIDE_SCANNER, "destroy", "a", module);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
@@ -76,19 +86,23 @@ public class ErlideScanner {
     @SuppressWarnings("boxing")
     public static void replaceText(final String module, final int offset,
             final int removeLength, final String newText) {
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
         try {
             // ErlLogger.debug("replaceText %s %d %d <length %d>", module,
             // offset,
             // removeLength, newTextLen);
             // ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
             // removeLength, newText);
-            final OtpErlangObject r = BackendCore
-                    .getBackendManager()
-                    .getIdeBackend()
-                    .call(ERLIDE_SCANNER, "replaceText", "aiis", module,
-                            offset, removeLength, newText);
+            final OtpErlangObject r = backend.call(ERLIDE_SCANNER,
+                    "replaceText", "aiis", module, offset, removeLength,
+                    newText);
             if (r instanceof OtpErlangTuple) {
                 ErlLogger.error("GOT::" + r.toString());
+            }
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
             }
         } catch (final RpcException e) {
             ErlLogger.debug(e);
@@ -104,12 +118,11 @@ public class ErlideScanner {
     public static List<ErlToken> lightScanString(final String string,
             final int offset) throws BackendException {
         OtpErlangObject r1 = null;
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
         try {
-            r1 = BackendCore
-                    .getBackendManager()
-                    .getIdeBackend()
-                    .call("erlide_scanner", "light_scan_string", "ba", string,
-                            ENCODING);
+            r1 = backend.call("erlide_scanner", "light_scan_string", "ba",
+                    string, ENCODING);
         } catch (final Exception e) {
             throw new BackendException("Could not parse string \"" + string
                     + "\": " + e.getMessage());

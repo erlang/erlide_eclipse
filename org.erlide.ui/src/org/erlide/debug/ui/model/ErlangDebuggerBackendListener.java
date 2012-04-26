@@ -17,7 +17,6 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
@@ -61,7 +60,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         }
     }
 
-    private ErlangDebugTarget debugTargetOfBackend(final IRpcCallSite backend) {
+    private ErlangDebugTarget debugTargetOfBackend(final IBackend backend) {
         final IDebugTarget[] debugTargets = DebugPlugin.getDefault()
                 .getLaunchManager().getDebugTargets();
         for (final IDebugTarget debugTarget : debugTargets) {
@@ -125,7 +124,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
 
     private boolean isModuleRunningInInterpreter(
             final ErlangDebugTarget erlangDebugTarget,
-            final IRpcCallSite backend, final String moduleName) {
+            final IBackend backend, final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug
                     .getAllModulesOnStack(backend, metaPid);

@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -28,7 +29,6 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemUtils;
 import org.erlide.utils.Tuple;
@@ -378,7 +378,7 @@ public final class MarkerUtils {
     }
 
     public static void addDialyzerWarningMarkersFromResultList(
-            final IRpcCallSite backend, final OtpErlangList result) {
+            final IBackend backend, final OtpErlangList result) {
         if (result == null) {
             return;
         }

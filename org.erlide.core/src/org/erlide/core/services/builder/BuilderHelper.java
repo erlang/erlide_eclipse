@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.services.builder.BuilderVisitor;
 import org.erlide.core.internal.services.builder.InternalErlideBuilder;
@@ -42,7 +43,6 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.RpcException;
 
@@ -166,7 +166,7 @@ public final class BuilderHelper {
         return result;
     }
 
-    public void checkForClashes(final IRpcCallSite backend,
+    public void checkForClashes(final IBackend backend,
             final IProject project) {
         try {
             final OtpErlangList res = InternalErlideBuilder
@@ -362,7 +362,7 @@ public final class BuilderHelper {
 
     public void completeCompile(final IProject project, final IResource source,
             final OtpErlangObject compilationResult,
-            final IRpcCallSite backend, final OtpErlangList compilerOptions) {
+            final IBackend backend, final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
             MarkerUtils.addProblemMarker(source, null, null,
                     "Could not compile file", 0, IMarker.SEVERITY_ERROR);
@@ -418,7 +418,7 @@ public final class BuilderHelper {
     }
 
     private void completeCompileForYrl(final IProject project,
-            final IResource source, final IRpcCallSite backend,
+            final IResource source, final IBackend backend,
             final OtpErlangList compilerOptions) {
         final IPath erl = getErlForYrl(source);
         if (erl != null) {
@@ -442,7 +442,7 @@ public final class BuilderHelper {
 
     public IRpcFuture startCompileErl(final IProject project,
             final BuildResource bres, final String outputDir0,
-            final IRpcCallSite backend, final OtpErlangList compilerOptions,
+            final IBackend backend, final OtpErlangList compilerOptions,
             final boolean force) {
         final IPath projectPath = project.getLocation();
         final IResource res = bres.getResource();
@@ -525,7 +525,7 @@ public final class BuilderHelper {
     }
 
     public IRpcFuture startCompileYrl(final IProject project,
-            final IResource resource, final IRpcCallSite backend,
+            final IResource resource, final IBackend backend,
             final OtpErlangList compilerOptions) {
         // final IPath projectPath = project.getLocation();
         // final OldErlangProjectProperties prefs = new
@@ -576,7 +576,7 @@ public final class BuilderHelper {
 
     public void compileErl(final IProject project,
             final BuildResource resource, final String outputDir,
-            final IRpcCallSite b, final OtpErlangList compilerOptions) {
+            final IBackend b, final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileErl(project, resource, outputDir, b,
                 compilerOptions, true);
         if (res == null) {
@@ -594,7 +594,7 @@ public final class BuilderHelper {
     }
 
     public void compileYrl(final IProject project,
-            final BuildResource resource, final IRpcCallSite b,
+            final BuildResource resource, final IBackend b,
             final OtpErlangList compilerOptions) {
         final IRpcFuture res = startCompileYrl(project, resource.getResource(),
                 b, compilerOptions);

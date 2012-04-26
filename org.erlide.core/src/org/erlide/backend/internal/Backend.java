@@ -341,7 +341,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean isStopped() {
-        return stopped;
+        return stopped || !runtime.isAvailable();
     }
 
     @Override
@@ -880,4 +880,5 @@ public abstract class Backend implements IStreamListener, IBackend {
             e.printStackTrace();
         }
     }
+
 }

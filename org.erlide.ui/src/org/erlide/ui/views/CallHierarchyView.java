@@ -35,12 +35,12 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.editors.util.EditorUtility;
 
 public class CallHierarchyView extends ViewPart {
@@ -98,7 +98,7 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final IRpcCallSite b = BackendCore.getBackendManager()
+            final IBackend b = BackendCore.getBackendManager()
                     .getIdeBackend();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
@@ -135,7 +135,7 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
         ErlangXref.start(b);
     }
 
@@ -159,7 +159,7 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final IRpcCallSite b = BackendCore
+                            final IBackend b = BackendCore
                                     .getBackendManager().getIdeBackend();
                             ErlangXref.update(b);
                             treeViewer.refresh();
@@ -197,7 +197,7 @@ public class CallHierarchyView extends ViewPart {
 
     @Override
     public void dispose() {
-        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
         ErlangXref.stop(b);
         super.dispose();
     }

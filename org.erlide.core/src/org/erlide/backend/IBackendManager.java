@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.jinterface.epmd.EpmdWatcher;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 
@@ -44,7 +43,7 @@ public interface IBackendManager {
 
     void loadCodepathExtensions();
 
-    IRpcCallSite getByName(final String nodeName);
+    IBackend getByName(final String nodeName);
 
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
