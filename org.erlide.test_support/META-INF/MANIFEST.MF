@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.browser,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors,
- org.eclipse.osgi.services;bundle-version="3.2.100"
+ org.eclipse.osgi.services;bundle-version="3.2.100",
+ com.google.guava;bundle-version="11.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.test_support,
@@ -33,14 +34,4 @@ Export-Package: org.erlide.test_support,
  org.erlide.test_support.ui,
  org.erlide.test_support.ui.suites
 Bundle-ClassPath: .
-Import-Package: com.google.common.annotations,
- com.google.common.base,
- com.google.common.base.internal,
- com.google.common.cache,
- com.google.common.collect,
- com.google.common.eventbus,
- com.google.common.io,
- com.google.common.net,
- com.google.common.primitives,
- com.google.common.util.concurrent
 
