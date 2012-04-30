@@ -71,7 +71,7 @@ public class BackendFactory implements IBackendFactory {
             final IProcess mainProcess = launch.getProcesses().length == 0 ? null
                     : launch.getProcesses()[0];
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    info.getCookie(), mainProcess);
+                    info.getCookie(), mainProcess, !data.isTransient());
             b = internal ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.initialize();

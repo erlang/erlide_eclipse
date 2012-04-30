@@ -613,11 +613,13 @@ public class TraceBackend {
     }
 
     private BackendData getBackendData(final RuntimeInfo rinfo) {
-        final BackendData backendData = new BackendData(BackendCore.getRuntimeInfoManager(), rinfo);
+        final BackendData backendData = new BackendData(
+                BackendCore.getRuntimeInfoManager(), rinfo);
         final String nodeName = Activator.getDefault().getPreferenceStore()
                 .getString(PreferenceNames.NODE_NAME);
         backendData.setNodeName(nodeName);
         backendData.setConsole(false);
+        backendData.setTransient(true);
         return backendData;
     }
 
