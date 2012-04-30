@@ -66,6 +66,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     protected ControlEnableState fBlockEnableState;
     private final List<Button> optionButtons;
     private Text text;
+    private Text text_1;
 
     public CompilerPreferencePage() {
         super();
@@ -125,6 +126,23 @@ public class CompilerPreferencePage extends PropertyPage implements
             newCheckButton(warningsGroup, option);
         }
         new Label(optionsGroup, SWT.NONE);
+
+        final Label lblNewLabel_1 = new Label(prefsComposite, SWT.NONE);
+        lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+                false, 1, 1));
+        lblNewLabel_1.setText(CompilerOption.PARSE_TRANSFORM.getDescription());
+
+        text_1 = new Text(prefsComposite, SWT.BORDER);
+        text_1.setToolTipText(CompilerOption.PARSE_TRANSFORM.getTooltip());
+        text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                1));
+        text_1.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                prefs.setSimpleOption(CompilerOption.PARSE_TRANSFORM,
+                        text_1.getText());
+            }
+        });
 
         if (isProjectPreferencePage()) {
             final boolean useProjectSettings = hasProjectSpecificOptions(fProject);
@@ -404,6 +422,10 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Iterable<String> paths = prefs.getPathsOption(CompilerOption.INCLUDE_DIRS);
         if(paths!=null) {
             text.setText(PathsOption.toString(paths));
+        }
+        final String parseTransform = prefs.getSimpleOption(CompilerOption.PARSE_TRANSFORM);
+        if(parseTransform!=null) {
+            text_1.setText(parseTransform);
         }
     }
 
