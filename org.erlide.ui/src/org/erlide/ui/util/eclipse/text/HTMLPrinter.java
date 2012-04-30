@@ -32,6 +32,7 @@ public class HTMLPrinter {
 
     static RGB BG_COLOR_RGB = new RGB(255, 255, 225);
     static RGB FG_COLOR_RGB = new RGB(0, 0, 0);
+    private static Object fontSize;
 
     static {
         final Display display = Display.getDefault();
@@ -227,10 +228,26 @@ public class HTMLPrinter {
     }
 
     private static void appendFontSize(final StringBuffer buffer) {
-        final int fontSize = JFaceResources.getDialogFont().getFontData()[0]
-                .getHeight();
+        updateDialogFontSize();
         buffer.append("<style type=\"text/css\">html {font-size:")
                 .append(fontSize).append("pt; }</style>");
+    }
+
+    public static void updateDialogFontSize() {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                fontSize = JFaceResources.getDialogFont().getFontData()[0]
+                        .getHeight();
+            }
+        };
+        final Display display = Display.getDefault();
+        // have to execute in UI thread only
+        if (display.getThread() != Thread.currentThread()) {
+            display.syncExec(runnable);
+        } else {
+            runnable.run();
+        }
     }
 
     public static void insertPageProlog(final StringBuffer buffer,

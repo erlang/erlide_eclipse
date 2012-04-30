@@ -47,7 +47,6 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IErlideBackendVisitor;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 import org.osgi.service.event.Event;
@@ -233,7 +232,7 @@ public class ProcessListView extends ViewPart {
         t.setHeaderVisible(true);
 
         // TODO this is wrong - all backends should be inited
-        final IRpcCallSite ideBackend = BackendCore.getBackendManager()
+        final IBackend ideBackend = BackendCore.getBackendManager()
                 .getIdeBackend();
         if (ideBackend != null) {
             ErlideProclist.processListInit(ideBackend);

@@ -55,6 +55,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     private ElementListSelectionDialog moduleDialog;
 
+    @Override
     public void createControl(final Composite parent) {
         final ScrolledComposite scrolled = new ScrolledComposite(parent,
                 SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
@@ -109,6 +110,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         }
     }
 
+    @Override
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ICoverAttributes.PROJECT, "");
         config.setAttribute(ICoverAttributes.MODULE, "");
@@ -118,6 +120,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ICoverAttributes.COMBO, "0");
     }
 
+    @Override
     public void initializeFrom(final ILaunchConfiguration config) {
 
         try {
@@ -205,6 +208,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     }
 
+    @Override
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
 
         LaunchType type;
@@ -221,6 +225,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ICoverAttributes.COMBO, testCombo.getText());
     }
 
+    @Override
     public String getName() {
         return "Cover";
     }
@@ -246,6 +251,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
         projectMBr = browserWithLabel(comp, "Project:", projectDialog);
         projectMBr.addModifyListener(new ModifyListener() {
 
+            @Override
             public void modifyText(final ModifyEvent e) {
                 updateLaunchConfigurationDialog();
                 final String projectName = projectMBr.getText();
@@ -352,6 +358,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
     }
 
     private final ModifyListener basicModifyListener = new ModifyListener() {
+        @Override
         @SuppressWarnings("synthetic-access")
         public void modifyText(final ModifyEvent evt) {
             updateLaunchConfigurationDialog();
@@ -360,6 +367,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
 
     private final SelectionListener radioSelectionListener = new SelectionListener() {
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
 
             updateLaunchConfigurationDialog();
@@ -375,6 +383,7 @@ public class CoverMainTab extends AbstractLaunchConfigurationTab {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
 
         }

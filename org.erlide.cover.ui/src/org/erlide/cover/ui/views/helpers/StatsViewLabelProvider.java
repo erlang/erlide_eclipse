@@ -28,6 +28,7 @@ import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 public class StatsViewLabelProvider extends LabelProvider implements
         ITableLabelProvider {
 
+    @Override
     public Image getColumnImage(final Object element, final int columnIndex) {
         Image img = null;
 
@@ -76,6 +77,7 @@ public class StatsViewLabelProvider extends LabelProvider implements
         return img;
     }
 
+    @Override
     public String getColumnText(final Object element, final int columnIndex) {
         final ICoverageObject statsEl = (ICoverageObject) element;
         String text = "";

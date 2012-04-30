@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 
 public class ErlangLineBreakpoint extends Breakpoint implements
@@ -98,7 +98,7 @@ public class ErlangLineBreakpoint extends Breakpoint implements
     }
 
     private void createRequest(final int request) {
-        final IRpcCallSite b = target.getBackend();
+        final IBackend b = target.getBackend();
         int line = -1;
         try {
             line = getLineNumber();

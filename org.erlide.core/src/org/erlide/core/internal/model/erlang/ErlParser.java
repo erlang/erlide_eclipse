@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendHelper;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -27,7 +28,6 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 import org.erlide.utils.Util;
@@ -54,7 +54,7 @@ public final class ErlParser implements IErlParser {
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
             final boolean useCaches) {
-        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null || module == null) {
             return false;
         }

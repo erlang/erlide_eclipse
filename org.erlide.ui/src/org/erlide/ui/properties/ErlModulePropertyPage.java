@@ -11,11 +11,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.TypeConverter;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.swtdesigner.SWTResourceManager;
@@ -49,7 +49,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
             final IFile beam = project.getWorkspaceProject().getFile(beamPath);
 
             // TODO should it be the build backend?
-            final IRpcCallSite backend = BackendCore.getBackendManager()
+            final IBackend backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             try {
                 final OtpErlangObject info = backend.call("erlide_backend",

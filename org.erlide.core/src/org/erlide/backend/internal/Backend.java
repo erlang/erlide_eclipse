@@ -206,9 +206,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void send(final OtpErlangPid pid, final Object msg) {
-        if (!runtime.isAvailable()) {
-            return;
-        }
         try {
             runtime.send(pid, msg);
         } catch (final SignatureException e) {
@@ -220,9 +217,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void send(final String name, final Object msg) {
-        if (!runtime.isAvailable()) {
-            return;
-        }
         try {
             runtime.send(getFullNodeName(), name, msg);
         } catch (final SignatureException e) {
@@ -347,7 +341,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean isStopped() {
-        return stopped;
+        return stopped || !runtime.isAvailable();
     }
 
     @Override
@@ -886,4 +880,5 @@ public abstract class Backend implements IStreamListener, IBackend {
             e.printStackTrace();
         }
     }
+
 }

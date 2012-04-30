@@ -67,6 +67,14 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void removeCommonPrefixTest_3() {
+        final List<String> input = Lists.newArrayList("beta");
+        final List<String> expected = input;
+        final List<String> actual = StringUtils.removeCommonPrefixes(input);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
     public void withoutInterrogationMark_1() {
         final String input = "?hello";
         final String expected = "hello";

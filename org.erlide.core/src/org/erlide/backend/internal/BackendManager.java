@@ -43,7 +43,6 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.launch.EpmdWatchJob;
 import org.erlide.utils.SystemUtils;
 import org.erlide.utils.Tuple;
@@ -127,8 +126,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         new ErlangEventHandler("*", null) {
             @Override
             public void handleEvent(final Event event) {
-                if (SystemUtils.getInstance().hasFeatureEnabled(
-                        "erlide.eventhandler.debug")) {
+                if (SystemUtils.hasFeatureEnabled("erlide.eventhandler.debug")) {
                     ErlLogger.info("erlang event : "
                             + ErlangEventPublisher.dumpEvent(event));
                 }
@@ -338,7 +336,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IRpcCallSite getByName(final String nodeName) {
+    public IBackend getByName(final String nodeName) {
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getName().equals(nodeName)) {

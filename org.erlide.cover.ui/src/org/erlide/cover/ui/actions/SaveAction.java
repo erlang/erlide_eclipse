@@ -58,6 +58,7 @@ public class SaveAction extends Action {
                 "Enter the name for saving coverage results",
                 statName.toString(), new IInputValidator() {
 
+                    @Override
                     public String isValid(final String newText) {
 
                         final String[] names = dir.list();

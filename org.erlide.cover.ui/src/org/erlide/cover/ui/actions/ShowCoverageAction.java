@@ -79,7 +79,7 @@ public class ShowCoverageAction extends CoverageAction {
     // calculate md5
     private boolean ifMarkAnnotations(final ModuleStats module) {
         try {
-            final File file = new File( ErlModelManager.getErlangModel()
+            final File file = new File(ErlModelManager.getErlangModel()
                     .findModule(module.getLabel()).getFilePath());
 
             if (module.getMd5().equals(MD5Checksum.getMD5(file))) {

@@ -42,6 +42,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendHelper;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
@@ -50,7 +51,6 @@ import org.erlide.core.services.builder.CompilerOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOptions;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
@@ -66,6 +66,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     protected ControlEnableState fBlockEnableState;
     private final List<Button> optionButtons;
     private Text text;
+    private Text text_1;
 
     public CompilerPreferencePage() {
         super();
@@ -125,6 +126,23 @@ public class CompilerPreferencePage extends PropertyPage implements
             newCheckButton(warningsGroup, option);
         }
         new Label(optionsGroup, SWT.NONE);
+
+        final Label lblNewLabel_1 = new Label(prefsComposite, SWT.NONE);
+        lblNewLabel_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+                false, 1, 1));
+        lblNewLabel_1.setText(CompilerOption.PARSE_TRANSFORM.getDescription());
+
+        text_1 = new Text(prefsComposite, SWT.BORDER);
+        text_1.setToolTipText(CompilerOption.PARSE_TRANSFORM.getTooltip());
+        text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+                1));
+        text_1.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                prefs.setSimpleOption(CompilerOption.PARSE_TRANSFORM,
+                        text_1.getText());
+            }
+        });
 
         if (isProjectPreferencePage()) {
             final boolean useProjectSettings = hasProjectSpecificOptions(fProject);
@@ -352,7 +370,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     }
 
     OptionStatus optionsAreOk(final String string) {
-        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
         if (b == null) {
             return OptionStatus.NO_RUNTIME;
         }
@@ -404,6 +422,10 @@ public class CompilerPreferencePage extends PropertyPage implements
         final Iterable<String> paths = prefs.getPathsOption(CompilerOption.INCLUDE_DIRS);
         if(paths!=null) {
             text.setText(PathsOption.toString(paths));
+        }
+        final String parseTransform = prefs.getSimpleOption(CompilerOption.PARSE_TRANSFORM);
+        if(parseTransform!=null) {
+            text_1.setText(parseTransform);
         }
     }
 

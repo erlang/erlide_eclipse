@@ -85,6 +85,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private final ISelectionChangedListener viewerSelectionChanged = new ISelectionChangedListener() {
 
+        @Override
         public void selectionChanged(final SelectionChangedEvent event) {
             event.getSelection();
             final ISelection selection = viewer.getSelection();
@@ -219,6 +220,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         final MenuManager menuMgr = new MenuManager("#PopupMenu");
         menuMgr.setRemoveAllWhenShown(true);
         menuMgr.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager manager) {
                 CoverStatsView.this.fillContextMenu(manager);
             }
@@ -348,6 +350,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
 
     private void hookDoubleClickAction() {
         viewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
             public void doubleClick(final DoubleClickEvent event) {
                 doubleClickAction.run();
             }
@@ -362,12 +365,14 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         viewer.getControl().setFocus();
     }
 
+    @Override
     public void eventOccured(final ICoverEvent e) {
 
         switch (e.getType()) {
         case UPDATE:
 
             Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
                     viewer.refresh();
                 }

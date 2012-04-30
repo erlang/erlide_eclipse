@@ -3,6 +3,7 @@
 	<name>org.erlide.core</name>
 	<comment></comment>
 	<projects>
+		<project>com.google.guava</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

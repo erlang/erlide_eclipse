@@ -7,10 +7,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.erlide.backend.BackendUtils;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcTimeoutException;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -23,7 +24,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 public class ErlideDebug {
 
     @SuppressWarnings("boxing")
-    public static OtpErlangList getProcesses(final IRpcCallSite backend,
+    public static OtpErlangList getProcesses(final IBackend backend,
             final boolean showSystemProcesses, final boolean showErlideProcesses) {
         OtpErlangList procs = null;
         try {
@@ -37,7 +38,7 @@ public class ErlideDebug {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangPid startDebug(final IRpcCallSite backend,
+    public static OtpErlangPid startDebug(final IBackend backend,
             final int debugFlags) throws DebugException {
         OtpErlangObject res = null;
         try {
@@ -69,7 +70,7 @@ public class ErlideDebug {
      *            java pseudo-pid
      * @return pid of meta process
      */
-    public static OtpErlangPid attached(final IRpcCallSite backend,
+    public static OtpErlangPid attached(final IBackend backend,
             final OtpErlangPid pid, final OtpErlangPid jpid) {
         OtpErlangObject res = null;
         try {
@@ -86,7 +87,7 @@ public class ErlideDebug {
         return null;
     }
 
-    public static OtpErlangObject getProcessInfo(final IRpcCallSite backend,
+    public static OtpErlangObject getProcessInfo(final IBackend backend,
             final OtpErlangPid pid, final String item) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug",
@@ -101,7 +102,7 @@ public class ErlideDebug {
         return null;
     }
 
-    public static boolean isErlideProcess(final IRpcCallSite backend,
+    public static boolean isErlideProcess(final IBackend backend,
             final OtpErlangPid pid) {
         boolean res = false;
         try {
@@ -114,7 +115,7 @@ public class ErlideDebug {
     }
 
     @SuppressWarnings("boxing")
-    public static boolean interpret(final IRpcCallSite backend,
+    public static boolean interpret(final IBackend backend,
             final String module, final boolean distributed,
             final boolean interpret) {
         try {
@@ -135,7 +136,7 @@ public class ErlideDebug {
         return false;
     }
 
-    public static boolean isSystemProcess(final IRpcCallSite backend,
+    public static boolean isSystemProcess(final IBackend backend,
             final OtpErlangPid pid) {
         boolean res = false;
         try {
@@ -148,85 +149,113 @@ public class ErlideDebug {
     }
 
     @SuppressWarnings("boxing")
-    public static void addDeleteLineBreakpoint(final IRpcCallSite backend,
+    public static void addDeleteLineBreakpoint(final IBackend backend,
             final String module, final int line, final int action) {
         try {
             final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
                     : "delete";
             backend.call("erlide_debug", "line_breakpoint", "sia", module,
                     line, a);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static void sendStarted(final IRpcCallSite backend,
+    public static void sendStarted(final IBackend backend,
             final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "send_started", "x", meta);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static void resume(final IRpcCallSite backend,
-            final OtpErlangPid meta) {
+    public static void resume(final IBackend backend, final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "resume", "x", meta);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static void suspend(final IRpcCallSite backend,
-            final OtpErlangPid meta) {
+    public static void suspend(final IBackend backend, final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "suspend", "x", meta);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static OtpErlangList getBindings(final IRpcCallSite backend,
+    public static OtpErlangList getBindings(final IBackend backend,
             final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug",
                     "bindings", "x", meta);
             return (OtpErlangList) res;
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return null;
     }
 
-    public static void stepOver(final IRpcCallSite backend,
-            final OtpErlangPid meta) {
+    public static void stepOver(final IBackend backend, final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "step_over", "x", meta);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static void stepReturn(final IRpcCallSite backend,
+    public static void stepReturn(final IBackend backend,
             final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "step_return", "x", meta);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static void stepInto(final IRpcCallSite backend,
-            final OtpErlangPid meta) {
+    public static void stepInto(final IBackend backend, final OtpErlangPid meta) {
         try {
             backend.call("erlide_debug", "step_into", "x", meta);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
     }
 
-    public static OtpErlangTuple getAllStackframes(final IRpcCallSite backend,
+    public static OtpErlangTuple getAllStackframes(final IBackend backend,
             final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug",
@@ -240,7 +269,7 @@ public class ErlideDebug {
         return null;
     }
 
-    public static List<String> getAllModulesOnStack(final IRpcCallSite backend,
+    public static List<String> getAllModulesOnStack(final IBackend backend,
             final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug",
@@ -263,7 +292,7 @@ public class ErlideDebug {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangTuple tracing(final IRpcCallSite backend,
+    public static OtpErlangTuple tracing(final IBackend backend,
             final boolean trace, final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug", "tracing",
@@ -277,7 +306,7 @@ public class ErlideDebug {
         return null;
     }
 
-    public static OtpErlangObject eval(final IRpcCallSite backend,
+    public static OtpErlangObject eval(final IBackend backend,
             final String expression, final OtpErlangPid meta) {
         try {
             final OtpErlangObject res = backend.call("erlide_debug", "eval",
@@ -297,7 +326,7 @@ public class ErlideDebug {
     public static final OtpErlangAtom OK = new OtpErlangAtom("ok");
 
     @SuppressWarnings("boxing")
-    public static String setVariableValue(final IRpcCallSite backend,
+    public static String setVariableValue(final IBackend backend,
             final String name, final String value, final int stackFrameNo,
             final OtpErlangPid meta) {
         try {
@@ -335,7 +364,7 @@ public class ErlideDebug {
     }
 
     public static OtpErlangObject distributeDebuggerCode(
-            final IRpcCallSite backend, final List<OtpErlangTuple> modules) {
+            final IBackend backend, final List<OtpErlangTuple> modules) {
         try {
             final OtpErlangObject o = backend.call("erlide_debug",
                     "distribute_debugger_code", "lx", modules);
@@ -346,7 +375,7 @@ public class ErlideDebug {
         return null;
     }
 
-    public static OtpErlangList nodes(final IRpcCallSite backend) {
+    public static OtpErlangList nodes(final IBackend backend) {
         try {
             final OtpErlangObject o = backend.call("erlide_debug", "nodes", "");
             if (o instanceof OtpErlangList) {
@@ -358,7 +387,7 @@ public class ErlideDebug {
         return null;
     }
 
-    public static boolean dropToFrame(final IRpcCallSite backend,
+    public static boolean dropToFrame(final IBackend backend,
             final OtpErlangPid metaPid, final int stackFrameNo) {
         try {
             final OtpErlangObject o = backend.call("erlide_debug",

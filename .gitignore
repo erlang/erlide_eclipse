@@ -1,7 +1,7 @@
 *.beam
 *.class
 workspaces
-bin
+bin/
 *.orig
 hs_err*.log
 safe_erlide.log
@@ -23,3 +23,5 @@ ttb_last_config
 .nfs*
 .~lock.*
 .recommenders
+*._trace
+

@@ -6,13 +6,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.Openable;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 
 public class ErlOtpExternalReferenceEntryList extends Openable implements
         IErlExternal {
@@ -30,7 +30,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IRpcCallSite backend = CoreUtil.getBuildOrIdeBackend(getProject()
+        final IBackend backend = CoreUtil.getBuildOrIdeBackend(getProject()
                 .getWorkspaceProject());
         final List<String> libList = ErlideOpen.getLibDirs(backend);
         addExternalEntries(pm, libList, backend);
@@ -38,7 +38,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     }
 
     private void addExternalEntries(final IProgressMonitor pm,
-            final List<String> libList, final IRpcCallSite backend) {
+            final List<String> libList, final IBackend backend) {
         for (final String libDir : libList) {
             final List<String> srcInclude = ErlideOpen.getLibSrcInclude(
                     backend, libDir);

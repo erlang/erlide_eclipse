@@ -116,6 +116,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final BackendData result = super.configureBackend(data, config, aMode,
                 launch);
         result.setBeamLocator(new TestsBeamLocator(workdir));
+        result.setTransient(true);
         return result;
     }
 

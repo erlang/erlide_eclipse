@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
@@ -22,7 +23,6 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.core.services.builder.CompilerOptions;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -46,7 +46,7 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final IRpcCallSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();

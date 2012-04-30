@@ -64,7 +64,10 @@ public abstract class CompilerOption {
             "warn_export_all", false, "Use of export_all",
             "The compiler option export_all");
     public static final PathsOption INCLUDE_DIRS = new PathsOption("i",
-            "Additional include dirs", "Comma-separated list of paths");
+            "Additional include dirs: ", "Comma-separated list of paths");
+    public static final ModuleOption PARSE_TRANSFORM = new ModuleOption(
+            "parse_transform", "Global parse transform module: ",
+            "Specify a module to be useda as a global parse transform");
 
     public static class PathsOption extends CompilerOption {
         public PathsOption(final String name, final String description,
@@ -88,6 +91,26 @@ public abstract class CompilerOption {
         public static Iterable<String> fromString(final String string) {
             return Splitter.on(',').trimResults().omitEmptyStrings()
                     .split(string);
+        }
+    }
+
+    public static class ModuleOption extends CompilerOption {
+        public ModuleOption(final String name, final String description,
+                final String tooltip) {
+            super(name, description, tooltip);
+        }
+
+        public OtpErlangObject toTerm(final String value) {
+            return OtpErlang.mkTuple(new OtpErlangAtom(getName()),
+                    new OtpErlangAtom(value));
+        }
+
+        public static String toString(final String value) {
+            return value;
+        }
+
+        public static String fromString(final String string) {
+            return string;
         }
     }
 
@@ -184,6 +207,7 @@ public abstract class CompilerOption {
     public static final Collection<CompilerOption> ALL_OPTIONS = 
             Lists.newArrayList(
                     INCLUDE_DIRS,
+                    PARSE_TRANSFORM,
                     DEFINE,
                     COMPRESSED,
                     DEBUG_INFO,

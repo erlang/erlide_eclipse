@@ -86,7 +86,8 @@ public class OpenItemAction extends Action {
 
             IErlModule module;
             try {
-                module =  ErlModelManager.getErlangModel().findModule(moduleName);
+                module = ErlModelManager.getErlangModel()
+                        .findModule(moduleName);
 
                 final IErlFunction f = module.findFunction(new ErlangFunction(
                         fs.getLabel(), fs.getArity()));
@@ -108,7 +109,7 @@ public class OpenItemAction extends Action {
 
         IErlModule module;
         try {
-            module =  ErlModelManager.getErlangModel().findModule(name);
+            module = ErlModelManager.getErlangModel().findModule(name);
         } catch (final ErlModelException e1) {
             e1.printStackTrace();
             return null;

@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
@@ -23,7 +24,6 @@ import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.utils.SystemUtils;
@@ -49,12 +49,12 @@ public class DialyzerUtils {
     }
 
     private static final class DialyzerCallback implements IRpcResultCallback {
-        IRpcCallSite backend;
+        IBackend backend;
         private final SubMonitor monitor;
         private final String projectName;
         private final Object locker;
 
-        DialyzerCallback(final IRpcCallSite backend, final SubMonitor monitor,
+        DialyzerCallback(final IBackend backend, final SubMonitor monitor,
                 final String projectName, final Object locker) {
             this.backend = backend;
             this.monitor = monitor;
@@ -150,7 +150,7 @@ public class DialyzerUtils {
                 final boolean fromSource = prefs.getFromSource();
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
                 MarkerUtils.removeDialyzerMarkers(project);
-                final IRpcCallSite backend = BackendCore.getBackendManager()
+                final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();

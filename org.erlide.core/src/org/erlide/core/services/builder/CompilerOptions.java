@@ -13,6 +13,7 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.services.builder.CompilerOption.BooleanOption;
 import org.erlide.core.services.builder.CompilerOption.DefineOption;
+import org.erlide.core.services.builder.CompilerOption.ModuleOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.jinterface.ErlLogger;
@@ -83,12 +84,23 @@ public class CompilerOptions {
                     final Iterable<String> avalue = (Iterable<String>) value;
                     helper.putString(option.getName(),
                             PathsOption.toString(avalue));
+                } else {
+                    helper.remove(option.getName());
+                }
+            } else if (option instanceof ModuleOption) {
+                if (value != null) {
+                    final String avalue = (String) value;
+                    helper.putString(option.getName(), avalue);
+                } else {
+                    helper.remove(option.getName());
                 }
             } else {
                 if (value != null) {
                     @SuppressWarnings("unchecked")
                     final Collection<Tuple<String, String>> val = (Collection<Tuple<String, String>>) value;
                     helper.putString(option.getName(), val.toString());
+                } else {
+                    helper.remove(option.getName());
                 }
             }
         }
@@ -105,6 +117,10 @@ public class CompilerOptions {
             } else if (option instanceof PathsOption) {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, PathsOption.fromString(value));
+                }
+            } else if (option instanceof ModuleOption) {
+                if (!Strings.isNullOrEmpty(value)) {
+                    options.put(option, value);
                 }
             } else {
                 if (value != null) {
@@ -132,6 +148,11 @@ public class CompilerOptions {
                 } else if (option instanceof PathsOption) {
                     final Iterable<String> value = (Iterable<String>) optionValue;
                     final OtpErlangObject val = ((PathsOption) option)
+                            .toTerm(value);
+                    result.add(val);
+                } else if (option instanceof ModuleOption) {
+                    final String value = (String) optionValue;
+                    final OtpErlangObject val = ((ModuleOption) option)
                             .toTerm(value);
                     result.add(val);
                 } else {
@@ -177,6 +198,15 @@ public class CompilerOptions {
         }
     }
 
+    public void setSimpleOption(final CompilerOption opt, String value) {
+        value = value.trim();
+        if (Strings.isNullOrEmpty(value)) {
+            removeOption(opt);
+        } else {
+            options.put(opt, value);
+        }
+    }
+
     public void setListOption(final CompilerOption opt,
             final List<Tuple<String, String>> value) {
         if (value == null || value.size() == 0) {
@@ -214,4 +244,9 @@ public class CompilerOptions {
     public Iterable<String> getPathsOption(final PathsOption option) {
         return (Iterable<String>) options.get(option);
     }
+
+    public String getSimpleOption(final ModuleOption option) {
+        return (String) options.get(option);
+    }
+
 }

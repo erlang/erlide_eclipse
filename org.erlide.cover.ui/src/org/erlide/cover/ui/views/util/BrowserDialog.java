@@ -150,6 +150,7 @@ public class BrowserDialog extends Dialog {
 
     private final SelectionListener prevListener = new SelectionListener() {
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
                 final ICoverageObject sib = object.getParent()
@@ -167,6 +168,7 @@ public class BrowserDialog extends Dialog {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
@@ -174,6 +176,7 @@ public class BrowserDialog extends Dialog {
 
     private final SelectionListener nextListener = new SelectionListener() {
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
                 final ICoverageObject sib = object.getParent()
@@ -190,6 +193,7 @@ public class BrowserDialog extends Dialog {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
@@ -197,6 +201,7 @@ public class BrowserDialog extends Dialog {
 
     private final SelectionListener upListener = new SelectionListener() {
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
             if (object.getParent() != null) {
                 setObject(object.getParent());
@@ -212,6 +217,7 @@ public class BrowserDialog extends Dialog {
             }
         }
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
@@ -219,6 +225,7 @@ public class BrowserDialog extends Dialog {
 
     private final SelectionListener homeListener = new SelectionListener() {
 
+        @Override
         public void widgetSelected(final SelectionEvent e) {
             setObject(StatsTreeModel.getInstance().getRoot());
             browser.setUrl(url);
@@ -226,6 +233,7 @@ public class BrowserDialog extends Dialog {
             prev.setEnabled(false);
         }
 
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
         }
 
@@ -233,10 +241,12 @@ public class BrowserDialog extends Dialog {
 
     private final LocationListener locationListener = new LocationListener() {
 
+        @Override
         public void changing(final LocationEvent event) {
 
         }
 
+        @Override
         public void changed(final LocationEvent event) {
             if (object == null) {
                 return;

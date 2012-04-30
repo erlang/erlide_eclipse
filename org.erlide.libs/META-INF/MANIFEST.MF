@@ -2,27 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.7.4
+Bundle-Version: 1.8.0
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
  org.eclipse.xtend2.lib-2.2.0.jar,
- commons-io-1.4.jar,
- guava-11.0.1.jar
+ commons-io-1.4.jar
 Export-Package: com.ericsson.otp.erlang,
- com.google.common.annotations,
- com.google.common.base;uses:="new com.google.common.base",
- com.google.common.base.internal,
- com.google.common.cache,
- com.google.common.collect;uses:="com.google.common.base,new new com.google.common.collect,new com.google.common.collect",
- com.google.common.eventbus,
- com.google.common.hash,
- com.google.common.io,
- com.google.common.math,
- com.google.common.net,
- com.google.common.primitives,
- com.google.common.util.concurrent,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,

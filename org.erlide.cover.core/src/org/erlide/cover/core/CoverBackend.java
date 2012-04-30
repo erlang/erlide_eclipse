@@ -228,9 +228,11 @@ public class CoverBackend implements ICoverBackend {
     }
 
     private BackendData getBackendData(final RuntimeInfo rinfo) {
-        final BackendData backendData = new BackendData(BackendCore.getRuntimeInfoManager(), rinfo);
+        final BackendData backendData = new BackendData(
+                BackendCore.getRuntimeInfoManager(), rinfo);
         backendData.setConsole(true);
         backendData.setLongName(false);
+        backendData.setTransient(true);
         return backendData;
     }
 

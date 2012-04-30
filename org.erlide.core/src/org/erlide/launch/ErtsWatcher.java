@@ -21,6 +21,7 @@ import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.LogUtil;
+import org.erlide.utils.SystemUtils;
 
 final public class ErtsWatcher implements Runnable {
     private final Process process;
@@ -58,7 +59,10 @@ final public class ErtsWatcher implements Runnable {
                     final String reportMsg = report != null ? "\n\n"
                             + "An error log has been created at "
                             + report
-                            + ".\nPlease report the problem so that we can fix it."
+                            + ".\nPlease report the problem so that we can fix it.\n"
+                            + (SystemUtils
+                                    .hasFeatureEnabled("erlide.ericsson.user") ? ""
+                                    : "http://www.assembla.com/spaces/erlide/support/tickets")
                             : "";
                     final String bigMsg = msg
                             + "\n\n"

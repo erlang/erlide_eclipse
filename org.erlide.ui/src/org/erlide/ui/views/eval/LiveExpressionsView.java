@@ -60,7 +60,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
-import org.erlide.jinterface.rpc.IRpcCallSite;
+import org.erlide.backend.IBackend;
 import org.erlide.launch.debug.BackendEvalResult;
 import org.erlide.launch.debug.DebugHelper;
 import org.erlide.ui.ErlideUIConstants;
@@ -105,8 +105,7 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final IRpcCallSite b = BackendCore.getBackendManager()
-                    .getIdeBackend();
+            final IBackend b = BackendCore.getBackendManager().getIdeBackend();
             final BackendEvalResult r = DebugHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();

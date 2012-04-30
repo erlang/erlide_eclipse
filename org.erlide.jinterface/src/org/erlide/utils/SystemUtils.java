@@ -73,7 +73,7 @@ public class SystemUtils {
 
     // only to be used internally
     @Deprecated
-    public boolean hasFeatureEnabled(final String feature) {
+    public static boolean hasFeatureEnabled(final String feature) {
         return Boolean.parseBoolean(System.getProperty(feature));
     }
 

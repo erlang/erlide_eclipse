@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
@@ -45,8 +46,8 @@ import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.rpc.RpcTimeoutException;
 import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
@@ -94,7 +95,7 @@ public class MarkOccurencesHandler {
 
         private void findRefs(final IErlModule theModule,
                 final ITextSelection aSelection, final boolean hasChanged) {
-            final IRpcCallSite ideBackend = BackendCore.getBackendManager()
+            final IBackend ideBackend = BackendCore.getBackendManager()
                     .getIdeBackend();
             fRefs = null;
 
@@ -125,6 +126,10 @@ public class MarkOccurencesHandler {
                         fRefs = erlangEditor.markOccurencesHandler
                                 .getErlangRefs(theModule, findRefs);
                     }
+                }
+            } catch (final RpcTimeoutException e) {
+                if (!ideBackend.isStopped()) {
+                    ErlLogger.warn(e);
                 }
             } catch (final RpcException e) {
                 ErlLogger.debug(e);

@@ -18,9 +18,9 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 public class ClearCacheAction extends TextEditorAction {
 
     private final ErlangEditor erlangEditor;
-    private final String NOPARSE_CACHE_SUFFIX = ".noparse";
-    private final String SCANNER_CACHE_SUFFIX = ".scan";
-    private final String suffixes[] = { NOPARSE_CACHE_SUFFIX,
+    private static final String NOPARSE_CACHE_SUFFIX = ".noparse";
+    private static final String SCANNER_CACHE_SUFFIX = ".scan";
+    private static final String suffixes[] = { NOPARSE_CACHE_SUFFIX,
             SCANNER_CACHE_SUFFIX };
 
     public ClearCacheAction(final ResourceBundle bundle, final String prefix,
@@ -31,6 +31,10 @@ public class ClearCacheAction extends TextEditorAction {
 
     @Override
     public void run() {
+        resetCacheForEditor(erlangEditor);
+    }
+
+    public static void resetCacheForEditor(final ErlangEditor erlangEditor) {
         final IErlModule module = erlangEditor.getModule();
         if (module == null) {
             return;

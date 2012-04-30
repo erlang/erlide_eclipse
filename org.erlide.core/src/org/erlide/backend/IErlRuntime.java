@@ -34,7 +34,7 @@ public interface IErlRuntime {
 
     void stop();
 
-    // RPC stuff; TODO why duplicate IRpcCallSite?
+    // RPC stuff; TODO why duplicate IBackend?
 
     void makeAsyncResultCall(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object[] args)

@@ -58,10 +58,12 @@ public class Activator extends AbstractUIPlugin implements Logger {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
+    @Override
     public void info(final Object msg) {
         LogUtils.log(this, IStatus.INFO, msg, 1);
     }
 
+    @Override
     public void error(final Object msg) {
         LogUtils.log(this, IStatus.ERROR, msg, 1);
     }

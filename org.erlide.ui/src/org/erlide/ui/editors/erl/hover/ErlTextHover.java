@@ -55,7 +55,6 @@ import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcCallSite;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -281,7 +280,7 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IRpcCallSite b = erlProject == null ? ide : backendManager
+            final IBackend b = erlProject == null ? ide : backendManager
                     .getBuildBackend(project);
 
             final IErlModel model = ErlModelManager.getErlangModel();
