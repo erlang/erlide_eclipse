@@ -445,8 +445,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         }
                     }
                 };
-                if (SystemUtils.getInstance().hasFeatureEnabled(
-                        "erlide.make_links.snoop")) {
+                if (SystemUtils.hasFeatureEnabled("erlide.make_links.snoop")) {
                     proxy.getOutputStreamMonitor().addListener(listener);
                     proxy.getErrorStreamMonitor().addListener(listener);
                 }

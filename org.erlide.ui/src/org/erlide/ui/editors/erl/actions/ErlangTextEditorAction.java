@@ -105,7 +105,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
                         final int offset = r1.getOffset();
                         int length = r1.getLength();
                         if (e1 == e2) {
-                            int docLength = document.getLength();
+                            final int docLength = document.getLength();
                             if (offset + length > docLength) {
                                 length = docLength - offset;
                             }

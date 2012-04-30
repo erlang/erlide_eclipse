@@ -105,8 +105,7 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final IBackend b = BackendCore.getBackendManager()
-                    .getIdeBackend();
+            final IBackend b = BackendCore.getBackendManager().getIdeBackend();
             final BackendEvalResult r = DebugHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();

@@ -23,6 +23,7 @@ public class StatsViewContentProvider implements IStructuredContentProvider,
         this.viewSite = viewSite;
     }
 
+    @Override
     public void inputChanged(final Viewer v, final Object oldInput,
             final Object newInput) {
         if (newInput instanceof StatsTreeModel) {
@@ -31,10 +32,12 @@ public class StatsViewContentProvider implements IStructuredContentProvider,
 
     }
 
+    @Override
     public void dispose() {
 
     }
 
+    @Override
     public Object[] getElements(final Object parent) {
         if (parent.equals(viewSite) && model != null || parent.equals(model)) {
             return new ICoverageObject[] { model.getRoot() };
@@ -43,6 +46,7 @@ public class StatsViewContentProvider implements IStructuredContentProvider,
         return getChildren(parent);
     }
 
+    @Override
     public Object getParent(final Object child) {
         if (child instanceof ICoverageObject) {
             return ((ICoverageObject) child).getParent();
@@ -50,6 +54,7 @@ public class StatsViewContentProvider implements IStructuredContentProvider,
         return null;
     }
 
+    @Override
     public Object[] getChildren(final Object parent) {
         if (parent instanceof ICoverageObject
                 && ((ICoverageObject) parent).hasChildren()) {
@@ -58,6 +63,7 @@ public class StatsViewContentProvider implements IStructuredContentProvider,
         return new Object[0];
     }
 
+    @Override
     public boolean hasChildren(final Object parent) {
         if (parent instanceof ICoverageObject) {
             return ((ICoverageObject) parent).hasChildren();

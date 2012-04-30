@@ -59,8 +59,7 @@ public final class ErlangCode {
         return result;
     }
 
-    public static void delete(final IBackend fBackend,
-            final String moduleName) {
+    public static void delete(final IBackend fBackend, final String moduleName) {
         try {
             fBackend.call("code", "delete", "a", moduleName);
         } catch (final Exception e) {

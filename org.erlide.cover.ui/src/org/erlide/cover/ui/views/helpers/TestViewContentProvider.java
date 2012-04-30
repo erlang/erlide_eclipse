@@ -23,9 +23,11 @@ public class TestViewContentProvider implements ITreeContentProvider,
         this.viewSite = viewSite;
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         if (newInput instanceof TestTreeModel) {
@@ -33,6 +35,7 @@ public class TestViewContentProvider implements ITreeContentProvider,
         }
     }
 
+    @Override
     public Object[] getElements(final Object parent) {
         if (parent.equals(viewSite) && model != null || parent.equals(model)) {
             return model.getRootLevel().toArray();
@@ -41,6 +44,7 @@ public class TestViewContentProvider implements ITreeContentProvider,
         return getChildren(parent);
     }
 
+    @Override
     public Object[] getChildren(final Object parent) {
         if (parent instanceof TestTreeObject
                 && ((TestTreeObject) parent).hasChildren()) {
@@ -49,6 +53,7 @@ public class TestViewContentProvider implements ITreeContentProvider,
         return new Object[0];
     }
 
+    @Override
     public Object getParent(final Object child) {
         if (child instanceof TestTreeObject) {
             return ((TestTreeObject) child).getParent();
@@ -56,6 +61,7 @@ public class TestViewContentProvider implements ITreeContentProvider,
         return null;
     }
 
+    @Override
     public boolean hasChildren(final Object parent) {
         if (parent instanceof TestTreeObject) {
             return ((TestTreeObject) parent).hasChildren();

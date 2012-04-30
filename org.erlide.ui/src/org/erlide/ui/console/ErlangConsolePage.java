@@ -293,10 +293,10 @@ public class ErlangConsolePage extends Page implements IAdaptable,
                         if (event
                                 .getProperty()
                                 .equals(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR)) {
-                            final Color bgcolor = DebugUIPlugin
+                            final Color color = DebugUIPlugin
                                     .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
-                            consoleText.setBackground(bgcolor);
-                            consoleInput.setBackground(bgcolor);
+                            consoleText.setBackground(color);
+                            consoleInput.setBackground(color);
                         }
                     }
                 });

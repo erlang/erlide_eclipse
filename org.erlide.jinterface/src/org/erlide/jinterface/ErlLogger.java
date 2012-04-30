@@ -117,7 +117,6 @@ public class ErlLogger {
     }
 
     private ErlLogger() {
-        final ErlSimpleFormatter erlSimpleFormatter = new ErlSimpleFormatter();
         logger = Logger.getLogger("org.erlide");
         logger.setUseParentHandlers(false);
         logger.setLevel(java.util.logging.Level.FINEST);

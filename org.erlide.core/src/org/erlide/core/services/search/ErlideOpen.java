@@ -21,9 +21,9 @@ import com.google.common.collect.Lists;
 
 public class ErlideOpen {
 
-    public static OtpErlangObject getSourceFromModule(
-            final IBackend backend, final OtpErlangList pathVars,
-            final String mod, final String externalModules) throws RpcException {
+    public static OtpErlangObject getSourceFromModule(final IBackend backend,
+            final OtpErlangList pathVars, final String mod,
+            final String externalModules) throws RpcException {
         final OtpErlangObject res2 = backend.call("erlide_open",
                 "get_source_from_module", "ax", mod,
                 mkContext(externalModules, null, pathVars, null, null));
@@ -255,8 +255,8 @@ public class ErlideOpen {
         return null;
     }
 
-    public static Collection<String> getIncludesInDir(
-            final IBackend backend, final String directory) {
+    public static Collection<String> getIncludesInDir(final IBackend backend,
+            final String directory) {
         try {
             final OtpErlangObject res = backend.call("erlide_open",
                     "get_includes_in_dir", "s", directory);

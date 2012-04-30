@@ -72,16 +72,20 @@ public class EUnitView extends ViewPart implements IEUnitObserver {
         viewer.getControl().setFocus();
     }
 
+    @Override
     public void treeChanged() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 viewer.refresh();
             }
         });
     }
 
+    @Override
     public void labelChanged() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 final TestTreeModel model = TestTreeModel.getInstance();
                 resultsLabel.setText(String

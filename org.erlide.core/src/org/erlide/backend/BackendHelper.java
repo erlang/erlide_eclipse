@@ -195,8 +195,7 @@ public class BackendHelper {
         return res;
     }
 
-    public static void startTracer(final IBackend b,
-            final OtpErlangPid tracer) {
+    public static void startTracer(final IBackend b, final OtpErlangPid tracer) {
         try {
             ErlLogger.debug("Start tracer to %s", tracer);
             b.call("erlide_backend", "start_tracer", "ps", tracer);

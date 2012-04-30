@@ -123,8 +123,8 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private boolean isModuleRunningInInterpreter(
-            final ErlangDebugTarget erlangDebugTarget,
-            final IBackend backend, final String moduleName) {
+            final ErlangDebugTarget erlangDebugTarget, final IBackend backend,
+            final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug
                     .getAllModulesOnStack(backend, metaPid);

@@ -98,8 +98,7 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final IBackend b = BackendCore.getBackendManager()
-                    .getIdeBackend();
+            final IBackend b = BackendCore.getBackendManager().getIdeBackend();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
                 return new Object[0];
@@ -159,8 +158,8 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final IBackend b = BackendCore
-                                    .getBackendManager().getIdeBackend();
+                            final IBackend b = BackendCore.getBackendManager()
+                                    .getIdeBackend();
                             ErlangXref.update(b);
                             treeViewer.refresh();
                         }

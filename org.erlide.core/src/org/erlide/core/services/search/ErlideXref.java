@@ -47,8 +47,7 @@ public class ErlideXref {
         return result;
     }
 
-    public static void setScope(final IBackend backend,
-            final List<String> scope) {
+    public static void setScope(final IBackend backend, final List<String> scope) {
         final List<String> mods = modules(backend);
         removeModules(backend, mods);
         addDirs(backend, scope);

@@ -21,6 +21,7 @@ import org.erlide.ui.launch.DebugTab;
  */
 public class CoverTabGroup extends AbstractLaunchConfigurationTabGroup {
 
+    @Override
     public void createTabs(final ILaunchConfigurationDialog dialog,
             final String mode) {
         final List<ILaunchConfigurationTab> tabs = new ArrayList<ILaunchConfigurationTab>(

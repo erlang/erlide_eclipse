@@ -166,8 +166,7 @@ public final class BuilderHelper {
         return result;
     }
 
-    public void checkForClashes(final IBackend backend,
-            final IProject project) {
+    public void checkForClashes(final IBackend backend, final IProject project) {
         try {
             final OtpErlangList res = InternalErlideBuilder
                     .getCodeClashes(backend);
@@ -361,8 +360,8 @@ public final class BuilderHelper {
     }
 
     public void completeCompile(final IProject project, final IResource source,
-            final OtpErlangObject compilationResult,
-            final IBackend backend, final OtpErlangList compilerOptions) {
+            final OtpErlangObject compilationResult, final IBackend backend,
+            final OtpErlangList compilerOptions) {
         if (compilationResult == null) {
             MarkerUtils.addProblemMarker(source, null, null,
                     "Could not compile file", 0, IMarker.SEVERITY_ERROR);

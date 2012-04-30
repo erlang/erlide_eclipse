@@ -77,6 +77,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
     /**
      * Marks coverage of all tested modules (if they are opened)
      */
+    @Override
     public void addAnnotations() {
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
@@ -330,6 +331,7 @@ public class EditorTracker implements ICoverAnnotationMarker {
     /**
      * clears coverage annotations from all files opened in the editor
      */
+    @Override
     public void clearAllAnnotations() {
         final IWorkbenchWindow[] windows = workbench.getWorkbenchWindows();
 
@@ -371,17 +373,21 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     private final IWindowListener windowListener = new IWindowListener() {
 
+        @Override
         public void windowOpened(final IWorkbenchWindow window) {
             window.getPartService().addPartListener(partListener);
         }
 
+        @Override
         public void windowClosed(final IWorkbenchWindow window) {
             window.getPartService().removePartListener(partListener);
         }
 
+        @Override
         public void windowActivated(final IWorkbenchWindow window) {
         }
 
+        @Override
         public void windowDeactivated(final IWorkbenchWindow window) {
         }
 
@@ -389,28 +395,36 @@ public class EditorTracker implements ICoverAnnotationMarker {
 
     private final IPartListener2 partListener = new IPartListener2() {
 
+        @Override
         public void partOpened(final IWorkbenchPartReference partref) {
             annotateEditor(partref.getPart(false));
         }
 
+        @Override
         public void partActivated(final IWorkbenchPartReference partref) {
         }
 
+        @Override
         public void partBroughtToTop(final IWorkbenchPartReference partref) {
         }
 
+        @Override
         public void partVisible(final IWorkbenchPartReference partref) {
         }
 
+        @Override
         public void partInputChanged(final IWorkbenchPartReference partref) {
         }
 
+        @Override
         public void partClosed(final IWorkbenchPartReference partref) {
         }
 
+        @Override
         public void partDeactivated(final IWorkbenchPartReference partref) {
         }
 
+        @Override
         public void partHidden(final IWorkbenchPartReference partref) {
         }
     };

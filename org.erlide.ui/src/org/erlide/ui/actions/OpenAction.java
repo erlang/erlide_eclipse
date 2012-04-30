@@ -168,8 +168,8 @@ public class OpenAction extends SelectionDispatchAction {
     }
 
     public static void openOpenResult(final ErlangEditor editor,
-            final IErlModule module, final IBackend backend,
-            final int offset, final IErlProject erlProject, final OpenResult res)
+            final IErlModule module, final IBackend backend, final int offset,
+            final IErlProject erlProject, final OpenResult res)
             throws CoreException, ErlModelException, PartInitException,
             BadLocationException, OtpErlangRangeException, BackendException,
             RpcException {

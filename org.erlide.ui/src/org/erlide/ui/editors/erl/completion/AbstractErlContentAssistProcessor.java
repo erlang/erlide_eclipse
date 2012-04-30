@@ -436,9 +436,8 @@ public abstract class AbstractErlContentAssistProcessor {
         return result;
     }
 
-    List<ICompletionProposal> getVariables(final IBackend b,
-            final int offset, final String prefix) throws ErlModelException,
-            BadLocationException {
+    List<ICompletionProposal> getVariables(final IBackend b, final int offset,
+            final String prefix) throws ErlModelException, BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         // get variables
         final IErlElement el = getElementAt(offset);
@@ -554,8 +553,8 @@ public abstract class AbstractErlContentAssistProcessor {
         }
     }
 
-    List<ICompletionProposal> getAutoImportedFunctions(
-            final IBackend backend, final int offset, final String prefix) {
+    List<ICompletionProposal> getAutoImportedFunctions(final IBackend backend,
+            final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
         final OtpErlangObject res = ErlideDoc.getProposalsWithDoc(backend,
