@@ -51,13 +51,15 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private final String cookie;
     private boolean reported;
     private final IProcess process;
+    private final boolean reportWhenDown;
 
     public ErlRuntime(final String name, final String cookie,
-            final IProcess process) {
+            final IProcess process, final boolean reportWhenDown) {
         state = State.DISCONNECTED;
         peerName = name;
         this.cookie = cookie;
         this.process = process;
+        this.reportWhenDown = reportWhenDown;
         startLocalNode();
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
@@ -215,11 +217,12 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             case DOWN:
                 final String fmt = "Backend '%s' is down";
                 final String msg = String.format(fmt, peerName);
-                if (!reported) {
+                if (reportWhenDown && !reported) {
                     final String user = System.getProperty("user.name");
                     final String bigMsg = msg
                             + "\n\n"
-                            + "This error is not recoverable, please restart the application."
+                            + "If you didn't shut it down on purpose, it is an "
+                            + "unrecoverable error, please restart the application."
                             + "\n\n"
                             + "If an error report "
                             + user

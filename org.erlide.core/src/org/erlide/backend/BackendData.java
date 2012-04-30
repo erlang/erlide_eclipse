@@ -48,6 +48,7 @@ public final class BackendData extends GenericBackendData {
 
     private RuntimeInfoManager runtimeInfoManager;
     private IBeamLocator beamLocator;
+    private boolean fTransient = false;
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,
             final ILaunchConfiguration config, final String mode) {
@@ -335,5 +336,13 @@ public final class BackendData extends GenericBackendData {
 
     public IBeamLocator getBeamLocator() {
         return beamLocator;
+    }
+
+    public boolean isTransient() {
+        return fTransient;
+    }
+
+    public void setTransient(final boolean value) {
+        fTransient = value;
     }
 }
