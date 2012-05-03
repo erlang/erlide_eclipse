@@ -101,6 +101,32 @@ spec_test_() ->
                   "          {ok, pid()}.",
     ?Test_indent(SIndent, S).
 
+spec_2_test_() ->
+    S = ""++
+            "-spec start_link(config()) ->\n"++
+            "{ok, pid()}.\n"++
+            "f()->\n"++
+            "ok.",
+    SIndent = ""++
+                  "-spec start_link(config()) ->\n"++
+                  "          {ok, pid()}.\n"++
+                  "f()->\n"++
+                  "    ok.",
+    ?Test_indent(SIndent, S).
+
+spec_3_test_() ->
+    S = ""++
+            "-spec(start_link(config()) ->\n"++
+            "{ok, pid()}).\n"++
+            "f()->\n"++
+            "ok.",
+    SIndent = ""++
+                  "-spec()start_link(config()) ->\n"++
+                  "          {ok, pid()}).\n"++
+                  "f()->\n"++
+                  "    ok.",
+    ?Test_indent(SIndent, S).
+
 export_test_() ->
     S = ""++
             "-export([f/1,\n"++
