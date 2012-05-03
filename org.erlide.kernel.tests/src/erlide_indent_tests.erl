@@ -121,7 +121,7 @@ spec_3_test_() ->
             "f()->\n"++
             "ok.",
     SIndent = ""++
-                  "-spec()start_link(config()) ->\n"++
+                  "-spec(start_link(config()) ->\n"++
                   "          {ok, pid()}).\n"++
                   "f()->\n"++
                   "    ok.",

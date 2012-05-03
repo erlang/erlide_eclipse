@@ -714,14 +714,15 @@ i_form(R0, I) ->
             i_declaration(R1, I);
         _ ->
             R2 = i_clause(R1, I),
-            case i_sniff(R2) of
-                dot ->
-                    i_kind(dot, R2, I);
-                ';' ->
-                    i_kind(';', R2, I);
-                _ ->
-                    R2
-            end
+            i_dot_or_semi(R2, I)
+    end.
+
+i_dot_or_semi(R, I) ->
+    case i_sniff(R) of
+        DS when DS==dot; DS==';' ->
+            i_kind(DS, R, I);
+        _ ->
+            R
     end.
 
 i_declaration(R0, I) ->
@@ -730,7 +731,15 @@ i_declaration(R0, I) ->
     case skip_comments(R1) of
         [#token{kind='spec'} | _] ->
             R2 = i_kind('spec', R1, I),
-            i_form(R2, I);
+            case i_sniff(R2) of
+                '(' ->
+                    R3 = i_kind('(', R2, I),
+                    R4 = i_form(R3, I),
+                    R5 = i_kind(')', R4, I),
+                    i_dot_or_semi(R5, I);
+                _ ->
+                    i_form(R2, I)
+            end;
         [#token{kind=atom, value='type'} | _] ->
             R2 = i_kind(atom, R1, I),
             i_type(R2, I);
