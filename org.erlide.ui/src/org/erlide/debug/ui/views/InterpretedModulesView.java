@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
 import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.IErlangDebugNode;
@@ -97,6 +98,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 }
             }
             if (erlangDebugTarget == null) {
+                ErlLogger.debug("no debug target found for " + selection);
                 return;
             }
             final ILaunchConfiguration launchConfiguration = erlangDebugTarget
@@ -157,6 +159,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
             final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
                     .getContentProvider()).getRoot();
             if (root == null) {
+                return;
+            }
+            if (erlangDebugTarget == null) {
+                ErlLogger.warn("erlangDebugTarget is null ?!?!");
                 return;
             }
             final Set<String> interpret = erlangDebugTarget
@@ -263,6 +269,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
     private void interpretOrDeinterpret(final DebugTab.DebugTreeItem dti,
             final boolean checked) {
+        if (erlangDebugTarget == null) {
+            ErlLogger.warn("erlangDebugTarget is null ?!?!");
+            return;
+        }
         final String module = dti.getItem().getName();
         final String moduleWoExtension = SystemUtils.withoutExtension(module);
         final IProject project = dti.getItem().getProject()
