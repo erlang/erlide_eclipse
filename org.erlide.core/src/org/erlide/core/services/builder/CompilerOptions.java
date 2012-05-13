@@ -94,7 +94,7 @@ public class CompilerOptions {
                 } else {
                     helper.remove(option.getName());
                 }
-            } else {
+            } else if (option instanceof DefineOption) {
                 if (value != null) {
                     @SuppressWarnings("unchecked")
                     final Collection<Tuple<String, String>> val = (Collection<Tuple<String, String>>) value;
@@ -122,11 +122,11 @@ public class CompilerOptions {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, value);
                 }
-            } else {
+            } else if (option instanceof DefineOption) {
                 if (value != null) {
-                    // final String[] str = value.split(SEPARATOR);
-                    // options.put(option, new Tuple<String, String>(str[0],
-                    // str[1]));
+                    final String[] str = value.split(",");
+                    options.put(option, new Tuple<String, String>(str[0],
+                            str[1]));
                 }
             }
         }
@@ -155,7 +155,7 @@ public class CompilerOptions {
                     final OtpErlangObject val = ((ModuleOption) option)
                             .toTerm(value);
                     result.add(val);
-                } else {
+                } else if (option instanceof DefineOption) {
                     try {
                         final OtpErlangList val = ((DefineOption) option)
                                 .toTerm((List<Tuple<String, String>>) optionValue);
@@ -247,6 +247,11 @@ public class CompilerOptions {
 
     public String getSimpleOption(final ModuleOption option) {
         return (String) options.get(option);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Tuple<String, String>> getListOption(final DefineOption option) {
+        return (List<Tuple<String, String>>) options.get(option);
     }
 
 }

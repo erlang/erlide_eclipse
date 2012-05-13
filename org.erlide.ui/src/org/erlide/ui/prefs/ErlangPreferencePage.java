@@ -25,10 +25,9 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.wb.swt.ResourceManager;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.ui.internal.ErlideUIPlugin;
-
-import com.swtdesigner.ResourceManager;
 
 public class ErlangPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -44,8 +43,8 @@ public class ErlangPreferencePage extends PreferencePage implements
         final Label img = new Label(panel, SWT.NONE);
         final GridData gd_img = new GridData(79, SWT.DEFAULT);
         img.setLayoutData(gd_img);
-        img.setImage(ResourceManager.getPluginImage(
-                ErlideUIPlugin.getDefault(), "icons/full/obj16/erlang058.gif"));
+        img.setImage(ResourceManager.getPluginImage(ErlideUIPlugin.PLUGIN_ID,
+                "icons/full/obj16/erlang058.gif"));
 
         final Group composite = new Group(panel, SWT.NONE);
         final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,
