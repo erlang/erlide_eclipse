@@ -23,15 +23,17 @@ is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
    <requires>
+      <import plugin="org.erlide.tracing.erlang" version="0.2.0" match="greaterOrEqual"/>
+      <import plugin="org.erlide.tracing.ttbe" version="0.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.erlide.tracing.erlang" version="0.2.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.tracing.ttbe" version="0.1.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.core" version="0.8.4" match="greaterOrEqual"/>
       <import plugin="org.erlide.jinterface" version="0.8.4" match="greaterOrEqual"/>
+      <import plugin="org.erlide.core" version="0.8.4" match="greaterOrEqual"/>
       <import plugin="org.erlide.ui" version="0.8.4" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services" version="3.2.100" match="greaterOrEqual"/>
+      <import plugin="org.erlide.core" version="0.9.5" match="greaterOrEqual"/>
    </requires>
 
    <plugin
