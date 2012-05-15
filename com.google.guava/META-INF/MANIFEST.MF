@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Google Guava library
 Bundle-SymbolicName: com.google.guava
-Bundle-Version: 11.0.1.qualifier
+Bundle-Version: 11.0.1
 Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: guava-11.0.1.jar
