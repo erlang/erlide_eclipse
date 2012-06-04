@@ -87,7 +87,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         loadCodepathExtensions();
 
-        tryStartEpmdProcess();
+        //tryStartEpmdProcess();
         startEpmdWatcher();
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
@@ -119,7 +119,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         epmdWatcher = new EpmdWatcher();
         epmdWatcher.addEpmdListener(this);
         epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
-        epmdWatcherJob.schedule(100);
+        epmdWatcherJob.schedule(1000);
     }
 
     private void registerGlobalEventhandlers() {
