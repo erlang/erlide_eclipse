@@ -64,7 +64,6 @@ public class BackendFactory implements IBackendFactory {
             nodeName = hasHost ? nodeName : nodeName + "@"
                     + RuntimeInfo.getHost();
             ILaunch launch = data.getLaunch();
-            final boolean internal = launch == null;
             if (launch == null) {
                 launch = launchPeer(data);
             }
@@ -72,7 +71,7 @@ public class BackendFactory implements IBackendFactory {
                     : launch.getProcesses()[0];
             final IErlRuntime runtime = new ErlRuntime(nodeName,
                     info.getCookie(), mainProcess, !data.isTransient());
-            b = internal ? new InternalBackend(data, runtime)
+            b = data.isInternal() ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.initialize();
             return b;

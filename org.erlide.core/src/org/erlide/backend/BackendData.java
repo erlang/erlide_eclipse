@@ -345,4 +345,8 @@ public final class BackendData extends GenericBackendData {
     public void setTransient(final boolean value) {
         fTransient = value;
     }
+
+    public boolean isInternal() {
+        return launch == null;
+    }
 }
