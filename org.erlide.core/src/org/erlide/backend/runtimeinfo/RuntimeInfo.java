@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -100,14 +99,6 @@ public class RuntimeInfo {
         }
     }
 
-    public List<String> getPathA() {
-        return getPathA(DEFAULT_MARKER);
-    }
-
-    public List<String> getPathZ() {
-        return getPathZ(DEFAULT_MARKER);
-    }
-
     @Override
     public String toString() {
         return String.format("Backend<%s/%s (%s) %s [%s]>", getName(),
@@ -122,16 +113,10 @@ public class RuntimeInfo {
             erl = "\"" + erl + "\"";
         }
         result.add(erl);
-        for (final String pathA : getPathA()) {
-            if (!empty(pathA)) {
+        for (final String path : getCodePath()) {
+            if (!empty(path)) {
                 result.add("-pa");
-                result.add(pathA);
-            }
-        }
-        for (final String pathZ : getPathZ()) {
-            if (!empty(pathZ)) {
-                result.add("-pz");
-                result.add(pathZ);
+                result.add(path);
             }
         }
         if (!startShell) {
@@ -209,30 +194,6 @@ public class RuntimeInfo {
 
     public void setCodePath(final List<String> path) {
         codePath = path;
-    }
-
-    protected List<String> getPathA(final String marker) {
-        if (codePath != null) {
-            final List<String> list = codePath;
-            final int i = list.indexOf(marker);
-            if (i < 0) {
-                return list;
-            }
-            return list.subList(0, i);
-        }
-        return Collections.emptyList();
-    }
-
-    protected List<String> getPathZ(final String marker) {
-        if (codePath != null) {
-            final List<String> list = codePath;
-            final int i = list.indexOf(marker);
-            if (i < 0) {
-                return Collections.emptyList();
-            }
-            return list.subList(i + 1, codePath.size());
-        }
-        return Collections.emptyList();
     }
 
     public static boolean validateNodeName(final String name) {
