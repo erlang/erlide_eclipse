@@ -21,8 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -114,9 +112,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                     + RuntimeInfoLoader.ARGS, "", null));
             final String wd = ps.getString(DEFAULT_ID, "default_"
                     + RuntimeInfoLoader.WORKING_DIR, "", null);
-            if (wd.length() != 0) {
-                rt.setWorkingDir(wd);
-            }
             addRuntime(rt);
         }
         defaultRuntimeName = defName;
@@ -375,10 +370,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                 final RuntimeInfo rt = new RuntimeInfo();
                 rt.setOtpHome(root.getPath());
                 rt.setName(root.getName());
-                final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace()
-                        .getRoot();
-                final String location = wroot.getLocation().toPortableString();
-                rt.setWorkingDir(location);
                 result.add(rt);
             }
         }

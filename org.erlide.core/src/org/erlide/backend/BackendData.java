@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.backend;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +19,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -78,11 +78,16 @@ public final class BackendData extends GenericBackendData {
         setLongName(info.getLongName());
 
         setAutostart(true);
-        setWorkingDir(info.getWorkingDir());
+        setWorkingDir(getDefaultWorkingDir());
         setExtraArgs(info.getArgs());
 
         setConsole(true);
         setLoadAllNodes(false);
+    }
+
+    private String getDefaultWorkingDir() {
+        final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
+        return wroot.getLocation().toPortableString();
     }
 
     private List<IProject> gatherProjects(final String[] projectNames) {
@@ -134,14 +139,6 @@ public final class BackendData extends GenericBackendData {
         runtimeInfo.setCookie(getCookie());
 
         runtimeInfo.setStartShell(true);
-        final File d = new File(getWorkingDir());
-        if (d.isAbsolute()) {
-            runtimeInfo.setWorkingDir(getWorkingDir());
-        } else {
-            final String wspace = ResourcesPlugin.getWorkspace().getRoot()
-                    .getLocation().toPortableString();
-            runtimeInfo.setWorkingDir(wspace + "/" + getWorkingDir());
-        }
         runtimeInfo.setArgs(getExtraArgs());
         runtimeInfo.useLongName(isLongName());
         return runtimeInfo;
@@ -347,5 +344,10 @@ public final class BackendData extends GenericBackendData {
 
     public boolean isInternal() {
         return launch == null;
+    }
+
+    public String[] getCmdLine() {
+        // TODO Auto-generated method stub
+        return getRuntimeInfo().getCmdLine();
     }
 }

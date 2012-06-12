@@ -154,10 +154,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     private Process startRuntimeProcess(final BackendData data) {
-        final RuntimeInfo info = data.getRuntimeInfo();
-
-        final String[] cmds = info.getCmdLine();
-        final File workingDirectory = new File(info.getWorkingDir());
+        final String[] cmds = data.getCmdLine();
+        final File workingDirectory = new File(data.getWorkingDir());
 
         try {
             ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "

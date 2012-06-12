@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
-import com.google.common.base.Strings;
 
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";
@@ -35,7 +34,6 @@ public class RuntimeInfo {
 
     private String cookie = "";
     private String nodeName = "";
-    private String workingDir = "";
     private RuntimeVersion version;
     private String suffix = "";
     private boolean longName = true;
@@ -59,7 +57,6 @@ public class RuntimeInfo {
         rt.args = o.args;
         rt.codePath = new ArrayList<String>(o.codePath);
         rt.homeDir = o.homeDir;
-        rt.workingDir = o.workingDir;
         rt.nodeName = o.nodeName;
         rt.version = o.version;
         rt.longName = o.longName;
@@ -109,14 +106,6 @@ public class RuntimeInfo {
 
     public List<String> getPathZ() {
         return getPathZ(DEFAULT_MARKER);
-    }
-
-    public String getWorkingDir() {
-        return workingDir;
-    }
-
-    public void setWorkingDir(final String workingDir) {
-        this.workingDir = Strings.isNullOrEmpty(workingDir) ? "." : workingDir;
     }
 
     @Override
