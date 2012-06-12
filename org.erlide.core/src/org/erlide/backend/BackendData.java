@@ -144,7 +144,6 @@ public final class BackendData extends GenericBackendData {
         }
         runtimeInfo.setArgs(getExtraArgs());
         runtimeInfo.useLongName(isLongName());
-        runtimeInfo.setLoadAllNodes(isLoadAllNodes());
         return runtimeInfo;
     }
 

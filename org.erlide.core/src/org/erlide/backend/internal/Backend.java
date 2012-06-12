@@ -616,7 +616,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean doLoadOnAllNodes() {
-        return getRuntimeInfo().loadOnAllNodes();
+        return getData().isLoadAllNodes();
     }
 
     @Override

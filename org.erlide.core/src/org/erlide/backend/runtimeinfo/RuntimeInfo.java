@@ -41,7 +41,6 @@ public class RuntimeInfo {
     private boolean longName = true;
     private boolean startShell = false;
     private boolean console = true;
-    private boolean loadAllNodes = false;
 
     public RuntimeInfo() {
         super();
@@ -66,7 +65,6 @@ public class RuntimeInfo {
         rt.version = o.version;
         rt.longName = o.longName;
         rt.startShell = o.startShell;
-        rt.loadAllNodes = o.loadAllNodes;
         return rt;
     }
 
@@ -343,14 +341,6 @@ public class RuntimeInfo {
 
     public boolean hasConsole() {
         return console;
-    }
-
-    public void setLoadAllNodes(final boolean loadAllNodes) {
-        this.loadAllNodes = loadAllNodes;
-    }
-
-    public boolean loadOnAllNodes() {
-        return loadAllNodes;
     }
 
     public static String buildLocalNodeName(final String label,
