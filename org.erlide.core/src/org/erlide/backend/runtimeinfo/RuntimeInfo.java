@@ -16,8 +16,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.erlide.jinterface.ErlLogger;
 
@@ -103,72 +101,6 @@ public class RuntimeInfo {
     public String toString() {
         return String.format("Backend<%s/%s (%s) %s [%s]>", getName(),
                 getNodeName(), getOtpHome(), version, getArgs());
-    }
-
-    public String[] getCmdLine() {
-        final List<String> result = new ArrayList<String>();
-
-        String erl = getOtpHome() + "/bin/erl";
-        if (erl.indexOf(' ') >= 0) {
-            erl = "\"" + erl + "\"";
-        }
-        result.add(erl);
-        for (final String path : getCodePath()) {
-            if (!empty(path)) {
-                result.add("-pa");
-                result.add(path);
-            }
-        }
-        if (!startShell) {
-            result.add("-noshell");
-        }
-
-        final boolean globalLongName = System.getProperty("erlide.longname",
-                "false").equals("true");
-        final String nameTag = longName || globalLongName ? "-name" : "-sname";
-        String nameOption = "";
-        if (!getNodeName().equals("")) {
-            nameOption = RuntimeInfo
-                    .buildLocalNodeName(getNodeName(), longName);
-            result.add(nameTag);
-            result.add(nameOption);
-            final String cky = getCookie();
-            if (cky != null) {
-                result.add("-setcookie");
-                result.add(cky);
-            }
-        }
-        final String gotArgs = getArgs();
-        if (!empty(gotArgs)) {
-            final String[] xargs = split(gotArgs);
-            for (final String a : xargs) {
-                result.add(a);
-            }
-        }
-        return result.toArray(new String[result.size()]);
-    }
-
-    /**
-     * split on spaces but respect quotes
-     * 
-     * @param theArgs
-     * @return
-     */
-    private String[] split(final String theArgs) {
-        final Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
-        final Matcher m = p.matcher(theArgs);
-        final List<String> tokens = new ArrayList<String>();
-        while (m.find()) {
-            tokens.add(m.group(1));
-        }
-        return tokens.toArray(new String[tokens.size()]);
-    }
-
-    private boolean empty(final String str) {
-        if (str == null || str.length() == 0) {
-            return true;
-        }
-        return false;
     }
 
     public String getOtpHome() {

@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -40,6 +42,7 @@ import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.utils.SystemUtils;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public final class BackendData extends GenericBackendData {
@@ -348,6 +351,61 @@ public final class BackendData extends GenericBackendData {
 
     public String[] getCmdLine() {
         // TODO Auto-generated method stub
-        return getRuntimeInfo().getCmdLine();
+        final RuntimeInfo r = getRuntimeInfo();
+        final List<String> result = new ArrayList<String>();
+
+        String erl = r.getOtpHome() + "/bin/erl";
+        if (erl.indexOf(' ') >= 0) {
+            erl = "\"" + erl + "\"";
+        }
+        result.add(erl);
+        for (final String path : r.getCodePath()) {
+            if (!Strings.isNullOrEmpty(path)) {
+                result.add("-pa");
+                result.add(path);
+            }
+        }
+        if (!r.isStartShell()) {
+            result.add("-noshell");
+        }
+
+        final boolean globalLongName = System.getProperty("erlide.longname",
+                "false").equals("true");
+        final String nameTag = r.getLongName() || globalLongName ? "-name"
+                : "-sname";
+        String nameOption = "";
+        if (!r.getNodeName().equals("")) {
+            nameOption = RuntimeInfo.buildLocalNodeName(r.getNodeName(),
+                    r.getLongName());
+            result.add(nameTag);
+            result.add(nameOption);
+            final String cky = r.getCookie();
+            if (cky != null) {
+                result.add("-setcookie");
+                result.add(cky);
+            }
+        }
+        final String gotArgs = r.getArgs();
+        if (!Strings.isNullOrEmpty(gotArgs)) {
+            result.addAll(splitQuoted(gotArgs));
+        }
+        return result.toArray(new String[result.size()]);
     }
+
+    /**
+     * split on spaces but respect quotes
+     * 
+     * @param theArgs
+     * @return
+     */
+    private Collection<String> splitQuoted(final String theArgs) {
+        final Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
+        final Matcher m = p.matcher(theArgs);
+        final List<String> tokens = new ArrayList<String>();
+        while (m.find()) {
+            tokens.add(m.group(1));
+        }
+        return tokens;
+    }
+
 }
