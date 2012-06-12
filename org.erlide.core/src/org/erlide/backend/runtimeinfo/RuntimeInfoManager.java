@@ -117,8 +117,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             if (wd.length() != 0) {
                 rt.setWorkingDir(wd);
             }
-            rt.setManaged(ps.getBoolean(DEFAULT_ID, "default_"
-                    + RuntimeInfoLoader.MANAGED, true, null));
             addRuntime(rt);
         }
         defaultRuntimeName = defName;

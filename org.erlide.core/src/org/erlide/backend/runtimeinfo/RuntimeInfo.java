@@ -36,7 +36,6 @@ public class RuntimeInfo {
     private String cookie = "";
     private String nodeName = "";
     private String workingDir = "";
-    private boolean managed; // will it be started/stopped by us?
     private RuntimeVersion version;
     private String suffix = "";
     private boolean longName = true;
@@ -61,7 +60,6 @@ public class RuntimeInfo {
         }
         rt.args = o.args;
         rt.codePath = new ArrayList<String>(o.codePath);
-        rt.managed = o.managed;
         rt.homeDir = o.homeDir;
         rt.workingDir = o.workingDir;
         rt.nodeName = o.nodeName;
@@ -106,14 +104,6 @@ public class RuntimeInfo {
             // TODO this still can create a name that isn't valid
             this.nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
         }
-    }
-
-    public boolean isManaged() {
-        return managed;
-    }
-
-    public void setManaged(final boolean managed) {
-        this.managed = managed;
     }
 
     public List<String> getPathA() {
