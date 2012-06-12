@@ -40,7 +40,6 @@ public class RuntimeInfo {
     private String suffix = "";
     private boolean longName = true;
     private boolean startShell = false;
-    private boolean console = true;
 
     public RuntimeInfo() {
         super();
@@ -333,14 +332,6 @@ public class RuntimeInfo {
 
     public boolean isStartShell() {
         return startShell;
-    }
-
-    public void setHasConsole(final boolean console) {
-        this.console = console;
-    }
-
-    public boolean hasConsole() {
-        return console;
     }
 
     public static String buildLocalNodeName(final String label,
