@@ -24,14 +24,13 @@ import com.ericsson.otp.erlang.RuntimeVersion;
 public class RuntimeInfo {
     public static final String DEFAULT_MARKER = "*DEFAULT*";
 
+    private String name;
     private String homeDir = "";
     private String args = "";
-    private String name;
     private List<String> codePath;
-
-    private String cookie = "";
-    private String nodeName = "";
     private RuntimeVersion version;
+
+    private String nodeName = "";
     private String suffix = "";
     private boolean longName = true;
     private boolean startShell = false;
@@ -69,17 +68,6 @@ public class RuntimeInfo {
         this.args = args.trim();
     }
 
-    public String getCookie() {
-        if ("".equals(cookie)) {
-            cookie = null;
-        }
-        return cookie;
-    }
-
-    public void setCookie(final String cookie) {
-        this.cookie = cookie.trim();
-    }
-
     public String getNodeName() {
         return nodeName + suffix;
     }
@@ -99,7 +87,7 @@ public class RuntimeInfo {
 
     @Override
     public String toString() {
-        return String.format("Backend<%s/%s (%s) %s [%s]>", getName(),
+        return String.format("Runtime<%s/%s (%s) %s [%s]>", getName(),
                 getNodeName(), getOtpHome(), version, getArgs());
     }
 

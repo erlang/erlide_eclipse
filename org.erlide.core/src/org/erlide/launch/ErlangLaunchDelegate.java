@@ -83,8 +83,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
         ErlLogger.debug("doLaunch runtime %s (%s)", data.getRuntimeName(), data
                 .getRuntimeInfo().getName());
-        ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(), data
-                .getRuntimeInfo().getCookie());
+        ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
+                data.getCookie());
         final boolean nodeExists = BackendCore.getBackendManager()
                 .getEpmdWatcher().hasLocalNode(data.getNodeName());
         data.setManaged(!nodeExists);

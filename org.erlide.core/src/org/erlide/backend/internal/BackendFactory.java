@@ -70,7 +70,7 @@ public class BackendFactory implements IBackendFactory {
             final IProcess mainProcess = launch.getProcesses().length == 0 ? null
                     : launch.getProcesses()[0];
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    info.getCookie(), mainProcess, !data.isTransient());
+                    data.getCookie(), mainProcess, !data.isTransient());
             b = data.isInternal() ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.initialize();
@@ -129,7 +129,6 @@ public class BackendFactory implements IBackendFactory {
             final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
             final String defLabel = getLabelProperty(dflt);
             info.setNodeName(defLabel);
-            info.setCookie("erlide");
         }
         return info;
     }

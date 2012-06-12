@@ -77,7 +77,7 @@ public final class BackendData extends GenericBackendData {
         this.runtimeInfoManager = runtimeInfoManager;
         setRuntimeName(info.getName());
         setNodeName(info.getNodeName());
-        setCookie(info.getCookie());
+        setCookie("erlide");
         setLongName(info.getLongName());
 
         setAutostart(true);
@@ -139,7 +139,6 @@ public final class BackendData extends GenericBackendData {
         }
         runtimeInfo = RuntimeInfo.copy(runtimeInfo, false);
         runtimeInfo.setNodeName(getNodeName());
-        runtimeInfo.setCookie(getCookie());
 
         runtimeInfo.setStartShell(true);
         runtimeInfo.setArgs(getExtraArgs());
@@ -170,8 +169,7 @@ public final class BackendData extends GenericBackendData {
                     info.getNodeName());
             workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
                     info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
-                    info.getCookie());
+            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
             if (SystemUtils.hasFeatureEnabled("erlide.internal.shortname")) {
@@ -379,7 +377,7 @@ public final class BackendData extends GenericBackendData {
                     r.getLongName());
             result.add(nameTag);
             result.add(nameOption);
-            final String cky = r.getCookie();
+            final String cky = getCookie();
             if (cky != null) {
                 result.add("-setcookie");
                 result.add(cky);
