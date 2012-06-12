@@ -204,11 +204,11 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         public void setChecked(final CheckboxTreeViewer checkboxTreeViewer,
                 final Collection<IErlModule> list) {
             setGrayChecked(checkboxTreeViewer, false, list.contains(item));
-            // for (final DebugTreeItem c : children) {
-            // c.setChecked(checkboxTreeViewer, list);
-            // // c.getParent()
-            // // .updateMenuCategoryCheckedState(checkboxTreeViewer);
-            // }
+            for (final DebugTreeItem c : children) {
+                c.setChecked(checkboxTreeViewer, list);
+                c.getParent()
+                        .updateMenuCategoryCheckedState(checkboxTreeViewer);
+            }
         }
     }
 
