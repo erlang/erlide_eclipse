@@ -111,8 +111,8 @@ public class BackendFactory implements IBackendFactory {
 
     private BackendData getBuildBackendData(final RuntimeInfo info) {
         final RuntimeInfo myinfo = RuntimeInfo.copy(info, false);
-        myinfo.setNodeName(info.getVersion().asMajor().toString());
-        myinfo.setNodeNameSuffix("_" + BackendUtils.getErlideNodeNameTag());
+        myinfo.setNodeName(info.getVersion().asMajor().toString() + "_"
+                + BackendUtils.getErlideNodeNameTag());
 
         final BackendData result = new BackendData(runtimeInfoManager, myinfo);
         result.setCookie("erlide");

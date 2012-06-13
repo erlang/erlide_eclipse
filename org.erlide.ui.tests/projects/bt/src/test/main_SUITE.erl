@@ -6,3 +6,4 @@ test1(doc) ->
 	ok;
 test1(suite) ->
 	ok.
+ 

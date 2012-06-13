@@ -31,7 +31,6 @@ public class RuntimeInfo {
     private RuntimeVersion version;
 
     private String nodeName = "";
-    private String suffix = "";
     private boolean longName = true;
 
     public RuntimeInfo() {
@@ -67,11 +66,7 @@ public class RuntimeInfo {
     }
 
     public String getNodeName() {
-        return nodeName + suffix;
-    }
-
-    public void setNodeNameSuffix(final String suffix) {
-        this.suffix = suffix;
+        return nodeName;
     }
 
     public void setNodeName(final String nodeName) {
