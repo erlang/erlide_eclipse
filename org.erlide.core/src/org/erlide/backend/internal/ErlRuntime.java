@@ -257,6 +257,10 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         return "jerlide_" + fUniqueId;
     }
 
+    public static String createJavaNodeName(final String hostName) {
+        return createJavaNodeName() + "@" + hostName;
+    }
+
     static String getTimeSuffix() {
         String fUniqueId;
         fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
@@ -289,9 +293,6 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     @Override
     public void send(final String fullNodeName, final String name,
             final Object msg) throws SignatureException, RpcException {
-        // XXX
-        state = State.DOWN;
-        //
         tryConnect();
         rpcHelper.send(localNode, fullNodeName, name, msg);
     }
