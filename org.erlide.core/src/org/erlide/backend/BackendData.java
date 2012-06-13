@@ -77,7 +77,7 @@ public final class BackendData extends GenericBackendData {
         this.runtimeInfoManager = runtimeInfoManager;
         setRuntimeName(info.getName());
         setCookie("erlide");
-        setLongName(info.getLongName());
+        setLongName(true);
 
         setAutostart(true);
         setWorkingDir(getDefaultWorkingDir());
@@ -138,7 +138,6 @@ public final class BackendData extends GenericBackendData {
         }
         runtimeInfo = RuntimeInfo.copy(runtimeInfo, false);
         runtimeInfo.setArgs(getExtraArgs());
-        runtimeInfo.useLongName(isLongName());
         return runtimeInfo;
     }
 
@@ -168,10 +167,11 @@ public final class BackendData extends GenericBackendData {
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
+            // FIXME this doesn't feel ok - should be elsewhere
             if (SystemUtils.hasFeatureEnabled("erlide.internal.shortname")) {
                 workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                         false);
-                info.useLongName(false);
+                setLongName(false);
             }
             return workingCopy;
         } catch (final CoreException e) {
@@ -382,12 +382,12 @@ public final class BackendData extends GenericBackendData {
 
         final boolean globalLongName = System.getProperty("erlide.longname",
                 "false").equals("true");
-        final String nameTag = r.getLongName() || globalLongName ? "-name"
+        final String nameTag = isLongName() || globalLongName ? "-name"
                 : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
             nameOption = RuntimeInfo.buildLocalNodeName(getNodeName(),
-                    r.getLongName());
+                    isLongName());
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();

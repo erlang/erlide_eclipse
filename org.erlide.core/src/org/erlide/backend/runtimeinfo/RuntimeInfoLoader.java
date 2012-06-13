@@ -17,10 +17,6 @@ public class RuntimeInfoLoader {
     static final String CODE_PATH = "codePath";
     static final String HOME_DIR = "homeDir";
     static final String ARGS = "args";
-    static final String WORKING_DIR = "workingDir";
-    static final String MANAGED = "managed";
-    static final String LONG_NAME = "longName";
-    static final String START_SHELL = "startShell";
 
     private final RuntimeInfo info;
 
@@ -34,7 +30,6 @@ public class RuntimeInfoLoader {
         node.put(CODE_PATH, code);
         node.put(HOME_DIR, info.getOtpHome());
         node.put(ARGS, info.getArgs());
-        node.putBoolean(LONG_NAME, info.getLongName());
     }
 
     public void load(final Preferences node) {
@@ -43,7 +38,6 @@ public class RuntimeInfoLoader {
         info.setCodePath(PreferencesUtils.unpackList(path));
         info.setOtpHome(node.get(HOME_DIR, ""));
         info.setArgs(node.get(ARGS, ""));
-        info.useLongName(node.getBoolean(LONG_NAME, true));
     }
 
 }

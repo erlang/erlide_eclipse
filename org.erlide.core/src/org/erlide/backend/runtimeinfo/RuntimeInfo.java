@@ -30,8 +30,6 @@ public class RuntimeInfo {
     private List<String> codePath;
     private RuntimeVersion version;
 
-    private boolean longName = true;
-
     public RuntimeInfo() {
         super();
         codePath = new ArrayList<String>();
@@ -51,7 +49,6 @@ public class RuntimeInfo {
         rt.codePath = new ArrayList<String>(o.codePath);
         rt.homeDir = o.homeDir;
         rt.version = o.version;
-        rt.longName = o.longName;
         return rt;
     }
 
@@ -158,15 +155,6 @@ public class RuntimeInfo {
 
     public RuntimeVersion getVersion() {
         return version;
-    }
-
-    public void useLongName(final boolean useLongName) {
-        longName = useLongName;
-    }
-
-    public boolean getLongName() {
-        return longName;
-
     }
 
     public static String buildLocalNodeName(final String label,
