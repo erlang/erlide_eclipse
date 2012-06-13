@@ -41,18 +41,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntry;
-import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
-import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
@@ -98,117 +92,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         @Override
         public Image getImage(final Object element) {
             return null;
-        }
-    }
-
-    public static class DebugTreeItem {
-        final IErlElement item;
-        final DebugTreeItem parent;
-        final List<DebugTreeItem> children = new ArrayList<DebugTreeItem>();
-
-        public DebugTreeItem(final IErlElement item, final DebugTreeItem parent) {
-            this.item = item;
-            this.parent = parent;
-        }
-
-        public DebugTreeItem getParent() {
-            return parent;
-        }
-
-        public IErlElement getItem() {
-            return item;
-        }
-
-        public List<DebugTreeItem> getChildren() {
-            return children;
-        }
-
-        public boolean areChildrenChecked(final CheckboxTreeViewer tree) {
-            for (final DebugTreeItem i : children) {
-                if (!tree.getChecked(i) || tree.getGrayed(i)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public boolean areChildrenUnchecked(final CheckboxTreeViewer tree) {
-            for (final DebugTreeItem i : children) {
-                if (tree.getChecked(i) || tree.getGrayed(i)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        boolean addAllErlangModules(final IErlElement elem) {
-            if (elem instanceof IErlModule) {
-                children.add(new DebugTreeItem(elem, this));
-                return true;
-            } else if (elem instanceof ErlOtpExternalReferenceEntryList) {
-                return false;
-            } else if (elem instanceof ErlExternalReferenceEntryList) {
-                return false;
-            } else if (elem instanceof ErlExternalReferenceEntry) {
-                return false;
-            } else if (elem instanceof IParent) {
-                try {
-                    if (elem instanceof IErlFolder) {
-                        final IErlFolder f = (IErlFolder) elem;
-                        if (!f.isSourcePathParent()) {
-                            return false;
-                        }
-                    }
-                    if (elem instanceof IOpenable) {
-                        final IOpenable o = (IOpenable) elem;
-                        o.open(null);
-                    }
-                    final DebugTreeItem dti = new DebugTreeItem(elem, this);
-                    final IParent p = (IParent) elem;
-                    boolean addedAny = false;
-                    for (final IErlElement i : p.getChildren()) {
-                        addedAny |= dti.addAllErlangModules(i);
-                    }
-                    if (addedAny) {
-                        children.add(dti);
-                    }
-                    return true;
-                } catch (final ErlModelException e) {
-                    ErlLogger.warn(e);
-                }
-            }
-            return false;
-        }
-
-        private void setGrayChecked(
-                final CheckboxTreeViewer checkboxTreeViewer,
-                final boolean grayed, final boolean checked) {
-            checkboxTreeViewer.setGrayed(this, grayed);
-            checkboxTreeViewer.setChecked(this, checked);
-        }
-
-        private void updateMenuCategoryCheckedState(
-                final CheckboxTreeViewer checkboxTreeViewer) {
-            if (areChildrenUnchecked(checkboxTreeViewer)) {
-                setGrayChecked(checkboxTreeViewer, false, false);
-            } else if (areChildrenChecked(checkboxTreeViewer)) {
-                setGrayChecked(checkboxTreeViewer, false, true);
-            } else {
-                setGrayChecked(checkboxTreeViewer, true, true);
-            }
-            if (getParent() != null) {
-                getParent().updateMenuCategoryCheckedState(checkboxTreeViewer);
-            }
-        }
-
-        public void setChecked(final CheckboxTreeViewer checkboxTreeViewer,
-                final Collection<IErlModule> list) {
-            setGrayChecked(checkboxTreeViewer, false, list.contains(item));
-            for (final DebugTreeItem c : children) {
-                c.setChecked(checkboxTreeViewer, list);
-                c.getParent()
-                        .updateMenuCategoryCheckedState(checkboxTreeViewer);
-            }
         }
     }
 
@@ -327,7 +210,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             @Override
             @SuppressWarnings("synthetic-access")
             public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
+                final DebugTreeItem dti = (DebugTreeItem) event
                         .getElement();
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();

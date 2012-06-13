@@ -42,8 +42,8 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
+import org.erlide.ui.launch.DebugTreeItem;
 import org.erlide.utils.SystemUtils;
 
 /**
@@ -195,7 +195,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final ICheckStateListener checkStateListener = new ICheckStateListener() {
             @Override
             public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
+                final DebugTreeItem dti = (DebugTreeItem) event
                         .getElement();
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();
@@ -215,8 +215,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 final StructuredSelection ss = (StructuredSelection) event
                         .getSelection();
                 final Object o = ss.getFirstElement();
-                if (o instanceof DebugTab.DebugTreeItem) {
-                    final DebugTab.DebugTreeItem item = (DebugTab.DebugTreeItem) o;
+                if (o instanceof DebugTreeItem) {
+                    final DebugTreeItem item = (DebugTreeItem) o;
                     try {
                         EditorUtility.openInEditor(item.getItem());
                     } catch (final PartInitException e) {
@@ -267,7 +267,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         contextActivated(selection);
     }
 
-    private void interpretOrDeinterpret(final DebugTab.DebugTreeItem dti,
+    private void interpretOrDeinterpret(final DebugTreeItem dti,
             final boolean checked) {
         if (erlangDebugTarget == null) {
             ErlLogger.warn("erlangDebugTarget is null ?!?!");

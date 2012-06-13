@@ -19,9 +19,9 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
+import org.erlide.ui.launch.DebugTreeItem;
 import org.erlide.ui.properties.ErlTracingPropertyPage;
 
 public class ErlangTracingDialog extends Dialog {
@@ -84,7 +84,7 @@ public class ErlangTracingDialog extends Dialog {
             @Override
             @SuppressWarnings("synthetic-access")
             public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
+                final DebugTreeItem dti = (DebugTreeItem) event
                         .getElement();
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();
