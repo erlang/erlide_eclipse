@@ -35,7 +35,6 @@ public class RuntimeInfoLoader {
         node.put(HOME_DIR, info.getOtpHome());
         node.put(ARGS, info.getArgs());
         node.putBoolean(LONG_NAME, info.getLongName());
-        node.putBoolean(START_SHELL, info.isStartShell());
     }
 
     public void load(final Preferences node) {
@@ -45,7 +44,6 @@ public class RuntimeInfoLoader {
         info.setOtpHome(node.get(HOME_DIR, ""));
         info.setArgs(node.get(ARGS, ""));
         info.useLongName(node.getBoolean(LONG_NAME, true));
-        info.setStartShell(node.getBoolean(START_SHELL, false));
     }
 
 }

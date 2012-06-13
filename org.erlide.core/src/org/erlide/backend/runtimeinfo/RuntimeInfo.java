@@ -33,7 +33,6 @@ public class RuntimeInfo {
     private String nodeName = "";
     private String suffix = "";
     private boolean longName = true;
-    private boolean startShell = false;
 
     public RuntimeInfo() {
         super();
@@ -56,7 +55,6 @@ public class RuntimeInfo {
         rt.nodeName = o.nodeName;
         rt.version = o.version;
         rt.longName = o.longName;
-        rt.startShell = o.startShell;
         return rt;
     }
 
@@ -194,14 +192,6 @@ public class RuntimeInfo {
     public boolean getLongName() {
         return longName;
 
-    }
-
-    public void setStartShell(final boolean startShell) {
-        this.startShell = startShell;
-    }
-
-    public boolean isStartShell() {
-        return startShell;
     }
 
     public static String buildLocalNodeName(final String label,

@@ -140,7 +140,6 @@ public final class BackendData extends GenericBackendData {
         runtimeInfo = RuntimeInfo.copy(runtimeInfo, false);
         runtimeInfo.setNodeName(getNodeName());
 
-        runtimeInfo.setStartShell(true);
         runtimeInfo.setArgs(getExtraArgs());
         runtimeInfo.useLongName(isLongName());
         return runtimeInfo;
@@ -214,6 +213,14 @@ public final class BackendData extends GenericBackendData {
 
     public void setAutostart(final boolean autostart) {
         config.setAttribute(ErlLaunchAttributes.AUTOSTART, autostart);
+    }
+
+    public boolean useStartShell() {
+        return getBooleanAttribute(ErlLaunchAttributes.SHELL, true);
+    }
+
+    public void setUseStartShell(final boolean shell) {
+        config.setAttribute(ErlLaunchAttributes.SHELL, shell);
     }
 
     public boolean hasConsole() {
@@ -363,7 +370,7 @@ public final class BackendData extends GenericBackendData {
                 result.add(path);
             }
         }
-        if (!r.isStartShell()) {
+        if (!useStartShell()) {
             result.add("-noshell");
         }
 
