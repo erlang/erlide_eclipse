@@ -198,10 +198,10 @@ public class CoverBackend implements ICoverBackend {
 
 	// creates erlang backend
 	private IBackend createBackend() throws BackendException {
-		final RuntimeInfo rt0 = RuntimeInfo.copy(BackendCore
+		final RuntimeInfo info = RuntimeInfo.copy(BackendCore
 				.getRuntimeInfoManager().getErlideRuntime(), false);
 
-		if (rt0 == null) {
+		if (info == null) {
 			log.error(String.format("Could not find runtime %s", BackendCore
 					.getRuntimeInfoManager().getErlideRuntime().getVersion()));
 			handleError("Could not find runtime");
@@ -209,10 +209,10 @@ public class CoverBackend implements ICoverBackend {
 
 		log.info("create backend");
 
-		final RuntimeInfo info = buildRuntimeInfo(rt0);
 		if (info != null) {
 			try {
 				final BackendData data = getBackendData(info);
+				data.setNodeName(NODE_NAME);
 				data.setUseStartShell(true);
 				final IBackend b = BackendCore.getBackendManager()
 						.createExecutionBackend(data);
@@ -233,13 +233,6 @@ public class CoverBackend implements ICoverBackend {
 		backendData.setLongName(false);
 		backendData.setTransient(true);
 		return backendData;
-	}
-
-	// creates runtime info
-	private RuntimeInfo buildRuntimeInfo(final RuntimeInfo rt0) {
-		final RuntimeInfo rt = RuntimeInfo.copy(rt0, false);
-		rt.setNodeName(NODE_NAME);
-		return rt;
 	}
 
 }

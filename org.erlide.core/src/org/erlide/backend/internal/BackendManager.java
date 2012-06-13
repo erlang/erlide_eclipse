@@ -87,7 +87,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         loadCodepathExtensions();
 
-        //tryStartEpmdProcess();
+        // tryStartEpmdProcess();
         startEpmdWatcher();
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
@@ -239,7 +239,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             for (final Entry<IProject, Set<IBackend>> e : executionBackends
                     .entrySet()) {
                 for (final IBackend be : e.getValue()) {
-                    final String bnode = be.getRuntimeInfo().getNodeName();
+                    final String bnode = be.getData().getNodeName();
                     if (RuntimeInfo.buildLocalNodeName(bnode, true)
                             .equals(node)) {
                         removeExecutionBackend(e.getKey(), be);

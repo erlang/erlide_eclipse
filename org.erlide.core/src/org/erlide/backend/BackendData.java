@@ -76,7 +76,6 @@ public final class BackendData extends GenericBackendData {
         }
         this.runtimeInfoManager = runtimeInfoManager;
         setRuntimeName(info.getName());
-        setNodeName(info.getNodeName());
         setCookie("erlide");
         setLongName(info.getLongName());
 
@@ -138,8 +137,6 @@ public final class BackendData extends GenericBackendData {
             return null;
         }
         runtimeInfo = RuntimeInfo.copy(runtimeInfo, false);
-        runtimeInfo.setNodeName(getNodeName());
-
         runtimeInfo.setArgs(getExtraArgs());
         runtimeInfo.useLongName(isLongName());
         return runtimeInfo;
@@ -157,7 +154,7 @@ public final class BackendData extends GenericBackendData {
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final RuntimeInfo info = getRuntimeInfo();
-            final String name = info.getNodeName();
+            final String name = getNodeName();
             workingCopy = type.newInstance(null, name);
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
                     "ISO-8859-1");
@@ -165,7 +162,7 @@ public final class BackendData extends GenericBackendData {
                     "org.erlide.core.ertsProcessFactory");
 
             workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
-                    info.getNodeName());
+                    getNodeName());
             workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
                     info.getName());
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
@@ -266,8 +263,17 @@ public final class BackendData extends GenericBackendData {
         return getStringAttribute(ErlLaunchAttributes.NODE_NAME, "");
     }
 
-    public void setNodeName(final String name) {
-        config.setAttribute(ErlLaunchAttributes.NODE_NAME, name);
+    public void setNodeName(String nodeName) {
+        if (!validateNodeName(nodeName)) {
+            // TODO this still can create a name that isn't valid
+            nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
+        }
+        config.setAttribute(ErlLaunchAttributes.NODE_NAME, nodeName);
+    }
+
+    public static boolean validateNodeName(final String name) {
+        return name != null
+                && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
     public boolean isLongName() {
@@ -379,8 +385,8 @@ public final class BackendData extends GenericBackendData {
         final String nameTag = r.getLongName() || globalLongName ? "-name"
                 : "-sname";
         String nameOption = "";
-        if (!r.getNodeName().equals("")) {
-            nameOption = RuntimeInfo.buildLocalNodeName(r.getNodeName(),
+        if (!getNodeName().equals("")) {
+            nameOption = RuntimeInfo.buildLocalNodeName(getNodeName(),
                     r.getLongName());
             result.add(nameTag);
             result.add(nameOption);

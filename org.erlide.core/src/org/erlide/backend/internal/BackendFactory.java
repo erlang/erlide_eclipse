@@ -58,8 +58,7 @@ public class BackendFactory implements IBackendFactory {
 
         final IBackend b;
         try {
-            final RuntimeInfo info = data.getRuntimeInfo();
-            String nodeName = info.getNodeName();
+            String nodeName = data.getNodeName();
             final boolean hasHost = nodeName.contains("@");
             nodeName = hasHost ? nodeName : nodeName + "@"
                     + RuntimeInfo.getHost();
@@ -97,6 +96,7 @@ public class BackendFactory implements IBackendFactory {
     private BackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
         final BackendData result = new BackendData(runtimeInfoManager, info);
+        result.setNodeName(getIdeNodeName());
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
@@ -111,10 +111,10 @@ public class BackendFactory implements IBackendFactory {
 
     private BackendData getBuildBackendData(final RuntimeInfo info) {
         final RuntimeInfo myinfo = RuntimeInfo.copy(info, false);
-        myinfo.setNodeName(info.getVersion().asMajor().toString() + "_"
-                + BackendUtils.getErlideNodeNameTag());
 
         final BackendData result = new BackendData(runtimeInfoManager, myinfo);
+        result.setNodeName(info.getVersion().asMajor().toString() + "_"
+                + BackendUtils.getErlideNodeNameTag());
         result.setCookie("erlide");
         result.setDebug(false);
         result.setAutostart(true);
@@ -125,12 +125,12 @@ public class BackendFactory implements IBackendFactory {
     private RuntimeInfo getIdeRuntimeInfo() {
         final RuntimeInfo info = RuntimeInfo.copy(
                 runtimeInfoManager.getErlideRuntime(), false);
-        if (info != null) {
-            final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
-            final String defLabel = getLabelProperty(dflt);
-            info.setNodeName(defLabel);
-        }
         return info;
+    }
+
+    private String getIdeNodeName() {
+        final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
+        return getLabelProperty(dflt);
     }
 
     private static String getLabelProperty(final String dflt) {

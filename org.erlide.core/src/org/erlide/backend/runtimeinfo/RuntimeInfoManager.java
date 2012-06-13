@@ -202,9 +202,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     }
 
     private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
-        if (runtime != null) {
-            runtime.setNodeName("erlide");
-        }
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;

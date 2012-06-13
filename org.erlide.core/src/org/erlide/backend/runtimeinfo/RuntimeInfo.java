@@ -30,7 +30,6 @@ public class RuntimeInfo {
     private List<String> codePath;
     private RuntimeVersion version;
 
-    private String nodeName = "";
     private boolean longName = true;
 
     public RuntimeInfo() {
@@ -51,7 +50,6 @@ public class RuntimeInfo {
         rt.args = o.args;
         rt.codePath = new ArrayList<String>(o.codePath);
         rt.homeDir = o.homeDir;
-        rt.nodeName = o.nodeName;
         rt.version = o.version;
         rt.longName = o.longName;
         return rt;
@@ -65,23 +63,10 @@ public class RuntimeInfo {
         this.args = args.trim();
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(final String nodeName) {
-        if (validateNodeName(nodeName)) {
-            this.nodeName = nodeName;
-        } else {
-            // TODO this still can create a name that isn't valid
-            this.nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
-        }
-    }
-
     @Override
     public String toString() {
-        return String.format("Runtime<%s/%s (%s) %s [%s]>", getName(),
-                getNodeName(), getOtpHome(), version, getArgs());
+        return String.format("Runtime<%s (%s) %s [%s]>", getName(),
+                getOtpHome(), version, getArgs());
     }
 
     public String getOtpHome() {
@@ -107,11 +92,6 @@ public class RuntimeInfo {
 
     public void setCodePath(final List<String> path) {
         codePath = path;
-    }
-
-    public static boolean validateNodeName(final String name) {
-        return name != null
-                && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
     public static boolean validateLocation(final String path) {
