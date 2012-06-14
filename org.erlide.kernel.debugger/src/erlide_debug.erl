@@ -42,11 +42,10 @@
 	 nodes/0,
 	 process_info/2,
          processes/2,
-	 drop_to_frame/2]).
+	 drop_to_frame/2,
+         is_erlide_process/1]).
 
 -export([log/1]).
-
-%% -compile(export_all).
 
 %%
 %% API Functions
@@ -64,10 +63,15 @@ fix_flags(N) ->
 fix_flag(N, F, A) when N band F =/= 0 -> [A];
 fix_flag(_, _, _) -> [].
 
+local_global(N) when N band 1 =/= 0 ->
+    global;
+local_global(_) ->
+    local.
+
 start_debug(Flags) ->
-	group_leader(whereis(init), self()),
-	{ok, Pid} = erlide_dbg_mon:start(local, fix_flags(Flags)),
-	Pid.
+    group_leader(whereis(init), self()),
+    {ok, Pid} = erlide_dbg_mon:start(local_global(Flags), fix_flags(Flags)),
+    Pid.
 
 send_started(JPid) ->
     JPid ! {started, whereis(erlide_dbg_mon)}.
@@ -92,20 +96,18 @@ processes(ShowSys, ShowErlide) ->
             L
     end.
 
-is_erlide_process(Pid) when is_pid(Pid)->
-    Started = case erlang:process_info(Pid, initial_call) of
-                  undefined -> 
-                      false;
+is_erlide_process(Pid) -> % when is_pid(Pid)->
+    Started = case (catch erlang:process_info(Pid, initial_call)) of
                   {initial_call, {M1, _, _}} ->
-                      lists:prefix("erlide_", atom_to_list(M1))
-              %%                       string:equal(string:sub_string(atom_to_list(M1), 1, 7), "erlide_")
+                      lists:prefix("erlide_", atom_to_list(M1));
+                  _ -> 
+                      false
               end,
-    Current = case erlang:process_info(Pid, current_function) of
-                  undefined ->
-                      false;
+    Current = case (catch erlang:process_info(Pid, current_function)) of
                   {current_function, {M2, _, _}} ->
-                      lists:prefix("erlide_", atom_to_list(M2))
-              %%                       string:equal(string:sub_string(atom_to_list(M2), 1, 7), "erlide_")
+                      lists:prefix("erlide_", atom_to_list(M2));
+                  _ ->
+                      false
               end,
     Started or Current.
 
@@ -159,8 +161,8 @@ set_variable_value(Variable, Value, SP, MetaPid) ->
     erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
 
 distribute_debugger_code(Modules) ->
-    [rpc:multicall(code, load_binary, [Module, Filename, Binary]) ||
-     {Module, Filename, Binary} <- Modules].
+    [rpc:multicall(code, load_binary, [Module, Filename, Binary])
+       || {Module, Filename, Binary} <- Modules].
 
 nodes() ->
     [node() | erlang:nodes()].
