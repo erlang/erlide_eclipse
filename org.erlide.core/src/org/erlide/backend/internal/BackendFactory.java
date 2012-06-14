@@ -102,6 +102,7 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
+        result.setLongName(false);
         if (SystemUtils.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
@@ -121,6 +122,7 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
+        result.setLongName(false);
         return result;
     }
 

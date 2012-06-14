@@ -40,7 +40,6 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.utils.SystemUtils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -191,12 +190,9 @@ public final class BackendData extends GenericBackendData {
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            // FIXME this doesn't feel ok - should be elsewhere
-            if (SystemUtils.hasFeatureEnabled("erlide.internal.shortname")) {
-                workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                        false);
-                setLongName(false);
-            }
+            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+                    isLongName());
+
             return workingCopy;
         } catch (final CoreException e) {
             e.printStackTrace();
@@ -404,17 +400,14 @@ public final class BackendData extends GenericBackendData {
             result.add("-noshell");
         }
 
-        final boolean globalLongName = System.getProperty("erlide.longname",
-                "false").equals("true");
-        final String nameTag = isLongName() || globalLongName ? "-name"
-                : "-sname";
+        final String nameTag = isLongName() ? "-name" : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
             nameOption = getNodeName();
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();
-            if (cky != null) {
+            if (!Strings.isNullOrEmpty(cky)) {
                 result.add("-setcookie");
                 result.add(cky);
             }

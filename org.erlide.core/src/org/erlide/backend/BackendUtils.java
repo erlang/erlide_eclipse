@@ -188,4 +188,8 @@ public class BackendUtils {
         return longName ? erlangLongName : erlangShortName;
     }
 
+    public static boolean longNamesDontWork() {
+        return getErlangHostName(true).equals(getErlangHostName(false));
+    }
+
 }
