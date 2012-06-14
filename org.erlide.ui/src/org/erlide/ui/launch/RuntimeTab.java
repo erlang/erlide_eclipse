@@ -36,6 +36,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
+import org.erlide.backend.BackendUtils;
+import org.erlide.backend.NodeHostClassifier;
+import org.erlide.backend.NodeHostClassifier.HostnameType;
+import org.erlide.backend.NodeHostClassifier.NodeType;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.ErlLaunchAttributes;
 
@@ -63,6 +67,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final Composite comp = new Composite(parent, SWT.NONE);
         setControl(comp);
         final GridLayout topLayout = new GridLayout();
+        topLayout.numColumns = 2;
         comp.setLayout(topLayout);
 
         final Label runtimeLabel = new Label(comp, SWT.NONE);
@@ -90,37 +95,20 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         runtimesCombo.setItems(rts);
         runtimesCombo.select(db);
         new Label(comp, SWT.NONE);
+        new Label(comp, SWT.NONE);
 
         final Label nodeNameLabel = new Label(comp, SWT.NONE);
         nodeNameLabel.setText("Node name");
 
         nameText = new Text(comp, SWT.BORDER);
         final GridData gd_nameText = new GridData(SWT.FILL, SWT.CENTER, false,
-                false, 2, 1);
+                false, 1, 1);
         gd_nameText.widthHint = 333;
         nameText.setLayoutData(gd_nameText);
         nameText.addModifyListener(new ModifyListener() {
             @Override
             @SuppressWarnings("synthetic-access")
             public void modifyText(final ModifyEvent e) {
-                final boolean isRemote = nameText.getText().contains("@");
-                startNodeCheckbox.setEnabled(!isRemote);
-                if (isRemote) {
-                    startNodeCheckbox.setSelection(false);
-                }
-                final boolean isNotDistributed = nameText.getText().trim()
-                        .equals("");
-                longNameButton.setEnabled(!isNotDistributed);
-                shortNameButton.setEnabled(!isNotDistributed);
-                cookieText.setEnabled(!isNotDistributed);
-                startNodeCheckbox.setEnabled(isNotDistributed);
-                if (isNotDistributed) {
-                    setMessage("NOTE: The Erlang node will be started as not distributed. "
-                            + "The integrated debugger won't work, use the OTP one instead.\n"
-                            + "If you want a distributed node, enter a node name in the field below.");
-                } else {
-                    setMessage(null);
-                }
                 updateLaunchConfigurationDialog();
             }
         });
@@ -136,6 +124,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         });
         longNameButton.setSelection(true);
         longNameButton.setText("long name (-name)");
+        new Label(comp, SWT.NONE);
 
         shortNameButton = new Button(comp, SWT.RADIO);
         shortNameButton.setText("short name (-sname)");
@@ -146,7 +135,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
         cookieText = new Text(comp, SWT.BORDER);
         final GridData gd_cookieText = new GridData(SWT.FILL, SWT.CENTER,
-                false, false, 2, 1);
+                false, false, 1, 1);
         gd_cookieText.widthHint = 232;
         cookieText.setLayoutData(gd_cookieText);
         cookieText.addModifyListener(new ModifyListener() {
@@ -157,7 +146,6 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             }
         });
         cookieText.setToolTipText("Leave empty to use default one");
-        new Label(comp, SWT.NONE);
 
         startNodeCheckbox = new Button(comp, SWT.CHECK);
         startNodeCheckbox.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
@@ -176,10 +164,17 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         final Label workingDirectoryLabel = new Label(comp, SWT.NONE);
         workingDirectoryLabel.setText("Working directory");
 
+        if (BackendUtils.longNamesDontWork()) {
+            shortNameButton.setSelection(true);
+            longNameButton.setSelection(false);
+            longNameButton.setEnabled(false);
+            setMessage("This machine doesn't have a FQDN. Long names can't be used.");
+        }
+
         workingDirText = new Text(comp, SWT.BORDER);
         workingDirText.setToolTipText("may be relative to the workspace");
         workingDirText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                false, 2, 1));
+                false, 1, 1));
         workingDirText.addModifyListener(new ModifyListener() {
             @Override
             @SuppressWarnings("synthetic-access")
@@ -189,12 +184,16 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
         });
 
         final Label extraArgumentsLabel = new Label(comp, SWT.NONE);
+        extraArgumentsLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP,
+                false, false, 1, 1));
         extraArgumentsLabel.setText("Extra arguments");
 
-        argsText = new Text(comp, SWT.BORDER);
+        argsText = new Text(comp, SWT.BORDER | SWT.MULTI);
         argsText.setToolTipText("as on the command line\nBe careful about proper quoting!");
-        argsText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-                2, 1));
+        final GridData gd_argsText = new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1);
+        gd_argsText.heightHint = 35;
+        argsText.setLayoutData(gd_argsText);
         argsText.addModifyListener(new ModifyListener() {
             @Override
             @SuppressWarnings("synthetic-access")
@@ -202,14 +201,14 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
             }
         });
-        final Label extraArgumentsLabel2 = new Label(comp, SWT.NONE);
-        extraArgumentsLabel2.setText("(overrides runtime setting)");
-        extraArgumentsLabel2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-                true, false, 3, 1));
-
         new Label(comp, SWT.NONE);
-        distributedLoadCheck = createCheckButton(comp,
-                "Load code on all connected nodes");
+        final Label extraArgumentsLabel2 = new Label(comp, SWT.NONE);
+        extraArgumentsLabel2.setText("(overrides runtime settings)");
+        extraArgumentsLabel2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, false, 1, 1));
+        distributedLoadCheck = new Button(comp, SWT.CHECK);
+        distributedLoadCheck
+                .setText("Load project code on all connected nodes");
         distributedLoadCheck.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
                 false, false, 2, 1));
         distributedLoadCheck.addSelectionListener(new SelectionListener() {
@@ -224,6 +223,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             }
         });
 
+        updateLaunchConfigurationDialog();
     }
 
     @Override
@@ -334,6 +334,12 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             setErrorMessage(String.format("Node name '%s' is invalid.", name));
             return false;
         }
+        final NodeHostClassifier state = new NodeHostClassifier(name);
+        if ((state.mode == NodeType.LOCAL_DISTRIBUTED)
+                && BackendUtils.longNamesDontWork()) {
+            setMessage("This machine doesn't have a proper fully qualified name. "
+                    + "Long names can't be used.");
+        }
         String workingDir = workingDirText.getText();
         File d = new File(workingDir);
         if (d.isAbsolute()) {
@@ -354,5 +360,53 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             }
         }
         return true;
+    }
+
+    @Override
+    protected void updateLaunchConfigurationDialog() {
+        updateDialogStatus();
+        super.updateLaunchConfigurationDialog();
+    }
+
+    private void updateDialogStatus() {
+        setMessage(null);
+        final NodeHostClassifier state = new NodeHostClassifier(nameText.getText().trim());
+
+        longNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
+                && (state.host == HostnameType.NONE));
+        shortNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
+                && (state.host == HostnameType.NONE));
+        if (BackendUtils.longNamesDontWork()) {
+            longNameButton.setEnabled(false);
+            shortNameButton.setEnabled(false);
+            longNameButton.setSelection(false);
+            shortNameButton.setSelection(true);
+        } else {
+            if (state.host == HostnameType.LONG) {
+                longNameButton.setSelection(true);
+            }
+            if (state.host == HostnameType.SHORT) {
+                shortNameButton.setSelection(true);
+            }
+        }
+
+        cookieText.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
+        startNodeCheckbox.setEnabled(!(state.mode == NodeType.REMOTE));
+        workingDirText.setEnabled(!(state.mode == NodeType.REMOTE)
+                && startNodeCheckbox.getSelection());
+        argsText.setEnabled(!(state.mode == NodeType.REMOTE)
+                && startNodeCheckbox.getSelection());
+        distributedLoadCheck
+                .setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
+
+        if (state.mode == NodeType.LOCAL_STANDALONE) {
+            setMessage("NOTE: The Erlang node will be started as not distributed. "
+                    + "Some functionality (like Eclipse debugger) won't work. "
+                    + "If you want a distributed node, enter a node name in the field below.");
+        } else if ((state.mode == NodeType.LOCAL_DISTRIBUTED)
+                && BackendUtils.longNamesDontWork()) {
+            setMessage("This machine doesn't have a proper fully qualified name. "
+                    + "Long names can't be used.");
+        }
     }
 }

@@ -78,8 +78,7 @@ public final class BackendData extends GenericBackendData {
         boolean isLocal = atSignIndex < 0;
         if (atSignIndex > 0) {
             final String hostname = name.substring(atSignIndex + 1);
-            if (hostname.equals(BackendUtils.getErlangHostName(true))
-                    || hostname.equals(BackendUtils.getErlangHostName(false))) {
+            if (BackendUtils.isThisHost(hostname)) {
                 isLocal = true;
             }
         }

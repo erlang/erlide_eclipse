@@ -192,4 +192,9 @@ public class BackendUtils {
         return getErlangHostName(true).equals(getErlangHostName(false));
     }
 
+    public static boolean isThisHost(final String host) {
+        return getErlangHostName(true).equals(host)
+                || getErlangHostName(false).equals(host);
+    }
+
 }
