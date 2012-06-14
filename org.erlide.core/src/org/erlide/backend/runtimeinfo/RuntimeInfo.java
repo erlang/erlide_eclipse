@@ -11,13 +11,9 @@
 package org.erlide.backend.runtimeinfo;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 
@@ -155,37 +151,6 @@ public class RuntimeInfo {
 
     public RuntimeVersion getVersion() {
         return version;
-    }
-
-    public static String buildLocalNodeName(final String label,
-            final boolean longName) {
-        if (label.indexOf('@') > 0) {
-            // ignore unique here?
-            return label;
-        }
-        if (longName) {
-            final String host = getHost();
-            return label + "@" + host;
-        } else {
-            return label;
-        }
-    }
-
-    public static String getHost() {
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostName();
-            if (System.getProperty("erlide.host") != null) {
-                final int dot = host.indexOf(".");
-                if (dot != -1) {
-                    host = host.substring(0, dot);
-                }
-            }
-        } catch (final IOException e) {
-            host = "localhost";
-            ErlLogger.error(e);
-        }
-        return host;
     }
 
 }

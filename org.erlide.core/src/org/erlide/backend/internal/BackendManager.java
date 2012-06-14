@@ -240,8 +240,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
                     .entrySet()) {
                 for (final IBackend be : e.getValue()) {
                     final String bnode = be.getData().getNodeName();
-                    if (RuntimeInfo.buildLocalNodeName(bnode, true)
-                            .equals(node)) {
+                    if (bnode.equals(node)) {
                         removeExecutionBackend(e.getKey(), be);
                         break;
                     }

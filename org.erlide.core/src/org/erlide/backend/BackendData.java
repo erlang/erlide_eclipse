@@ -386,8 +386,7 @@ public final class BackendData extends GenericBackendData {
                 : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
-            nameOption = RuntimeInfo.buildLocalNodeName(getNodeName(),
-                    isLongName());
+            nameOption = getNodeName();
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();

@@ -57,11 +57,12 @@ public class BackendFactory implements IBackendFactory {
         }
 
         final IBackend b;
+        final String erlangHostName = BackendUtils.getErlangHostName(data
+                .isLongName());
         try {
             String nodeName = data.getNodeName();
             final boolean hasHost = nodeName.contains("@");
-            nodeName = hasHost ? nodeName : nodeName + "@"
-                    + RuntimeInfo.getHost();
+            nodeName = hasHost ? nodeName : nodeName + "@" + erlangHostName;
             ILaunch launch = data.getLaunch();
             if (launch == null) {
                 launch = launchPeer(data);
@@ -69,7 +70,8 @@ public class BackendFactory implements IBackendFactory {
             final IProcess mainProcess = launch.getProcesses().length == 0 ? null
                     : launch.getProcesses()[0];
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    data.getCookie(), mainProcess, !data.isTransient());
+                    data.getCookie(), mainProcess, !data.isTransient(),
+                    data.isLongName());
             b = data.isInternal() ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.initialize();
