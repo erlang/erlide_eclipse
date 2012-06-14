@@ -169,7 +169,7 @@ public class BackendUtils {
         return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
     }
 
-    public static String detectErlangHostName(final boolean longName) {
+    private static String detectErlangHostName(final boolean longName) {
         InetAddress addr;
         try {
             addr = InetAddress.getLocalHost();
