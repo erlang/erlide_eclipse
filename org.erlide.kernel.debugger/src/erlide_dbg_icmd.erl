@@ -491,7 +491,7 @@ parse_cmd(Cmd, LineNo) ->
 %%====================================================================
 
 tell_attached(Msg) ->
-    erlang:display({tell, get(attached), Msg}),
+    %%erlang:display({tell, get(attached), Msg}),
     case get(attached) of
 	undefined -> ignore;
 	AttPid ->

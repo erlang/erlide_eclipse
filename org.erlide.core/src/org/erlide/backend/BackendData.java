@@ -380,7 +380,6 @@ public final class BackendData extends GenericBackendData {
     }
 
     public String[] getCmdLine() {
-        // TODO Auto-generated method stub
         final RuntimeInfo r = getRuntimeInfo();
         final List<String> result = new ArrayList<String>();
 
@@ -399,11 +398,11 @@ public final class BackendData extends GenericBackendData {
             result.add("-noshell");
         }
 
-        final boolean useLongName = isLongName()
-                && !BackendUtils.longNamesDontWork();
-        final String nameTag = useLongName ? "-name" : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
+            final boolean useLongName = isLongName()
+                    && !BackendUtils.longNamesDontWork();
+            final String nameTag = useLongName ? "-name" : "-sname";
             nameOption = getNodeName();
             result.add(nameTag);
             result.add(nameOption);
