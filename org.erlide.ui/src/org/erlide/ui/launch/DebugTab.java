@@ -286,14 +286,16 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             IErlModule module = null;
             if (pm.length > 1) {
                 final IErlProject p = (IErlProject) model.getChildNamed(pm[0]);
-                final String mName = pm[1];
-                try {
-                    final String s = CommonUtils
-                            .isErlangFileContentFileName(mName) ? mName : mName
-                            + ".erl";
-                    module = p.getModule(s);
-                } catch (final ErlModelException e) {
-                    ErlLogger.warn(e);
+                if (p != null) {
+                    final String mName = pm[1];
+                    try {
+                        final String s = CommonUtils
+                                .isErlangFileContentFileName(mName) ? mName
+                                : mName + ".erl";
+                        module = p.getModule(s);
+                    } catch (final ErlModelException e) {
+                        ErlLogger.warn(e);
+                    }
                 }
             } else {
                 try {
