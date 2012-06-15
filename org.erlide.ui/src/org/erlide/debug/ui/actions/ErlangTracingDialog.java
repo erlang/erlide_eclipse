@@ -84,8 +84,7 @@ public class ErlangTracingDialog extends Dialog {
             @Override
             @SuppressWarnings("synthetic-access")
             public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTreeItem dti = (DebugTreeItem) event
-                        .getElement();
+                final DebugTreeItem dti = (DebugTreeItem) event.getElement();
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();
                 ErlTracingPropertyPage.setSubtreeChecked(dti, checked,

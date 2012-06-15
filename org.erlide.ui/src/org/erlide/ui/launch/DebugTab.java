@@ -210,8 +210,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             @Override
             @SuppressWarnings("synthetic-access")
             public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTreeItem dti = (DebugTreeItem) event
-                        .getElement();
+                final DebugTreeItem dti = (DebugTreeItem) event.getElement();
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();
                 setSubtreeChecked(dti, checked);

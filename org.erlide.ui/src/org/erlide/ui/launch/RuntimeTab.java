@@ -335,7 +335,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             return false;
         }
         final NodeHostClassifier state = new NodeHostClassifier(name);
-        if ((state.mode == NodeType.LOCAL_DISTRIBUTED)
+        if (state.mode == NodeType.LOCAL_DISTRIBUTED
                 && BackendUtils.longNamesDontWork()) {
             setMessage("This machine doesn't have a proper fully qualified name. "
                     + "Long names can't be used.");
@@ -374,9 +374,9 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 .getText().trim());
 
         longNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
-                && (state.host == HostnameType.NONE));
+                && state.host == HostnameType.NONE);
         shortNameButton.setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE)
-                && (state.host == HostnameType.NONE));
+                && state.host == HostnameType.NONE);
         if (BackendUtils.longNamesDontWork()) {
             longNameButton.setEnabled(false);
             shortNameButton.setEnabled(false);
@@ -406,7 +406,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             setMessage("NOTE: The Erlang node will be started as not distributed. "
                     + "Some functionality (like Eclipse debugger) won't work. "
                     + "If you want a distributed node, enter a node name in the field below.");
-        } else if ((state.mode == NodeType.LOCAL_DISTRIBUTED)
+        } else if (state.mode == NodeType.LOCAL_DISTRIBUTED
                 && BackendUtils.longNamesDontWork()) {
             setMessage("This machine doesn't have a proper fully qualified name. "
                     + "Long names can't be used.");
