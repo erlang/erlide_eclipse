@@ -57,22 +57,22 @@ public class BackendFactory implements IBackendFactory {
         }
 
         final IBackend b;
+        final String erlangHostName = BackendUtils.getErlangHostName(data
+                .isLongName());
         try {
-            final RuntimeInfo info = data.getRuntimeInfo();
-            String nodeName = info.getNodeName();
+            String nodeName = data.getNodeName();
             final boolean hasHost = nodeName.contains("@");
-            nodeName = hasHost ? nodeName : nodeName + "@"
-                    + RuntimeInfo.getHost();
+            nodeName = hasHost ? nodeName : nodeName + "@" + erlangHostName;
             ILaunch launch = data.getLaunch();
-            final boolean internal = launch == null;
             if (launch == null) {
                 launch = launchPeer(data);
             }
             final IProcess mainProcess = launch.getProcesses().length == 0 ? null
                     : launch.getProcesses()[0];
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    info.getCookie(), mainProcess, !data.isTransient());
-            b = internal ? new InternalBackend(data, runtime)
+                    data.getCookie(), mainProcess, !data.isTransient(),
+                    data.isLongName());
+            b = data.isInternal() ? new InternalBackend(data, runtime)
                     : new ExternalBackend(data, runtime);
             b.initialize();
             return b;
@@ -98,9 +98,11 @@ public class BackendFactory implements IBackendFactory {
     private BackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
         final BackendData result = new BackendData(runtimeInfoManager, info);
+        result.setNodeName(getIdeNodeName());
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
+        result.setLongName(false);
         if (SystemUtils.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
@@ -112,27 +114,27 @@ public class BackendFactory implements IBackendFactory {
 
     private BackendData getBuildBackendData(final RuntimeInfo info) {
         final RuntimeInfo myinfo = RuntimeInfo.copy(info, false);
-        myinfo.setNodeName(info.getVersion().asMajor().toString());
-        myinfo.setNodeNameSuffix("_" + BackendUtils.getErlideNodeNameTag());
 
         final BackendData result = new BackendData(runtimeInfoManager, myinfo);
+        result.setNodeName(info.getVersion().asMajor().toString() + "_"
+                + BackendUtils.getErlideNodeNameTag());
         result.setCookie("erlide");
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
+        result.setLongName(false);
         return result;
     }
 
     private RuntimeInfo getIdeRuntimeInfo() {
         final RuntimeInfo info = RuntimeInfo.copy(
                 runtimeInfoManager.getErlideRuntime(), false);
-        if (info != null) {
-            final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
-            final String defLabel = getLabelProperty(dflt);
-            info.setNodeName(defLabel);
-            info.setCookie("erlide");
-        }
         return info;
+    }
+
+    private String getIdeNodeName() {
+        final String dflt = BackendUtils.getErlideNodeNameTag() + "_erlide";
+        return getLabelProperty(dflt);
     }
 
     private static String getLabelProperty(final String dflt) {

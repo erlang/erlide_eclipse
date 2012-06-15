@@ -11,6 +11,8 @@ package org.erlide.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import com.google.common.collect.Lists;
 
@@ -340,6 +342,18 @@ public class StringUtils {
             result.add(s.substring(prefixLength));
         }
         return result;
+    }
+
+    public static String convertStreamToString(final java.io.InputStream is) {
+        try {
+            final Scanner scanner = new Scanner(is).useDelimiter("\\A");
+            if (scanner.hasNext()) {
+                return scanner.next();
+            }
+            return "";
+        } catch (final NoSuchElementException e) {
+            return "";
+        }
     }
 
 }

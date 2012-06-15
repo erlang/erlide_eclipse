@@ -10,16 +10,18 @@
  *******************************************************************************/
 package org.erlide.backend;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -38,8 +40,8 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.utils.SystemUtils;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public final class BackendData extends GenericBackendData {
@@ -62,6 +64,29 @@ public final class BackendData extends GenericBackendData {
         if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
+        setManaged(shouldManageNode());
+    }
+
+    private boolean shouldManageNode() {
+        final String name = getNodeName();
+        final int atSignIndex = name.indexOf('@');
+        String shortName = name;
+        if (atSignIndex > 0) {
+            shortName = name.substring(0, atSignIndex);
+        }
+
+        boolean isLocal = atSignIndex < 0;
+        if (atSignIndex > 0) {
+            final String hostname = name.substring(atSignIndex + 1);
+            if (BackendUtils.isThisHost(hostname)) {
+                isLocal = true;
+            }
+        }
+
+        final boolean isRunning = BackendCore.getBackendManager()
+                .getEpmdWatcher().hasLocalNode(shortName);
+        final boolean result = isLocal && !isRunning;
+        return result;
     }
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,
@@ -73,16 +98,20 @@ public final class BackendData extends GenericBackendData {
         }
         this.runtimeInfoManager = runtimeInfoManager;
         setRuntimeName(info.getName());
-        setNodeName(info.getNodeName());
-        setCookie(info.getCookie());
-        setLongName(info.getLongName());
+        setCookie("erlide");
+        setLongName(true);
 
         setAutostart(true);
-        setWorkingDir(info.getWorkingDir());
+        setWorkingDir(getDefaultWorkingDir());
         setExtraArgs(info.getArgs());
 
         setConsole(true);
         setLoadAllNodes(false);
+    }
+
+    private String getDefaultWorkingDir() {
+        final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
+        return wroot.getLocation().toPortableString();
     }
 
     private List<IProject> gatherProjects(final String[] projectNames) {
@@ -130,21 +159,7 @@ public final class BackendData extends GenericBackendData {
             return null;
         }
         runtimeInfo = RuntimeInfo.copy(runtimeInfo, false);
-        runtimeInfo.setNodeName(getNodeName());
-        runtimeInfo.setCookie(getCookie());
-
-        runtimeInfo.setStartShell(true);
-        final File d = new File(getWorkingDir());
-        if (d.isAbsolute()) {
-            runtimeInfo.setWorkingDir(getWorkingDir());
-        } else {
-            final String wspace = ResourcesPlugin.getWorkspace().getRoot()
-                    .getLocation().toPortableString();
-            runtimeInfo.setWorkingDir(wspace + "/" + getWorkingDir());
-        }
         runtimeInfo.setArgs(getExtraArgs());
-        runtimeInfo.useLongName(isLongName());
-        runtimeInfo.setLoadAllNodes(isLoadAllNodes());
         return runtimeInfo;
     }
 
@@ -160,7 +175,7 @@ public final class BackendData extends GenericBackendData {
         ILaunchConfigurationWorkingCopy workingCopy;
         try {
             final RuntimeInfo info = getRuntimeInfo();
-            final String name = info.getNodeName();
+            final String name = getNodeName();
             workingCopy = type.newInstance(null, name);
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
                     "ISO-8859-1");
@@ -168,18 +183,15 @@ public final class BackendData extends GenericBackendData {
                     "org.erlide.core.ertsProcessFactory");
 
             workingCopy.setAttribute(ErlLaunchAttributes.NODE_NAME,
-                    info.getNodeName());
+                    getNodeName());
             workingCopy.setAttribute(ErlLaunchAttributes.RUNTIME_NAME,
                     info.getName());
-            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE,
-                    info.getCookie());
+            workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            if (SystemUtils.hasFeatureEnabled("erlide.internal.shortname")) {
-                workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                        false);
-                info.useLongName(false);
-            }
+            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+                    isLongName());
+
             return workingCopy;
         } catch (final CoreException e) {
             e.printStackTrace();
@@ -217,6 +229,14 @@ public final class BackendData extends GenericBackendData {
 
     public void setAutostart(final boolean autostart) {
         config.setAttribute(ErlLaunchAttributes.AUTOSTART, autostart);
+    }
+
+    public boolean useStartShell() {
+        return getBooleanAttribute(ErlLaunchAttributes.SHELL, true);
+    }
+
+    public void setUseStartShell(final boolean shell) {
+        config.setAttribute(ErlLaunchAttributes.SHELL, shell);
     }
 
     public boolean hasConsole() {
@@ -262,8 +282,17 @@ public final class BackendData extends GenericBackendData {
         return getStringAttribute(ErlLaunchAttributes.NODE_NAME, "");
     }
 
-    public void setNodeName(final String name) {
-        config.setAttribute(ErlLaunchAttributes.NODE_NAME, name);
+    public void setNodeName(String nodeName) {
+        if (!validateNodeName(nodeName)) {
+            // TODO this still can create a name that isn't valid
+            nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
+        }
+        config.setAttribute(ErlLaunchAttributes.NODE_NAME, nodeName);
+    }
+
+    public static boolean validateNodeName(final String name) {
+        return name != null
+                && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
     public boolean isLongName() {
@@ -345,4 +374,66 @@ public final class BackendData extends GenericBackendData {
     public void setTransient(final boolean value) {
         fTransient = value;
     }
+
+    public boolean isInternal() {
+        return launch == null;
+    }
+
+    public String[] getCmdLine() {
+        // TODO Auto-generated method stub
+        final RuntimeInfo r = getRuntimeInfo();
+        final List<String> result = new ArrayList<String>();
+
+        String erl = r.getOtpHome() + "/bin/erl";
+        if (erl.indexOf(' ') >= 0) {
+            erl = "\"" + erl + "\"";
+        }
+        result.add(erl);
+        for (final String path : r.getCodePath()) {
+            if (!Strings.isNullOrEmpty(path)) {
+                result.add("-pa");
+                result.add(path);
+            }
+        }
+        if (!useStartShell()) {
+            result.add("-noshell");
+        }
+
+        final boolean useLongName = isLongName()
+                && !BackendUtils.longNamesDontWork();
+        final String nameTag = useLongName ? "-name" : "-sname";
+        String nameOption = "";
+        if (!getNodeName().equals("")) {
+            nameOption = getNodeName();
+            result.add(nameTag);
+            result.add(nameOption);
+            final String cky = getCookie();
+            if (!Strings.isNullOrEmpty(cky)) {
+                result.add("-setcookie");
+                result.add(cky);
+            }
+        }
+        final String gotArgs = r.getArgs();
+        if (!Strings.isNullOrEmpty(gotArgs)) {
+            result.addAll(splitQuoted(gotArgs));
+        }
+        return result.toArray(new String[result.size()]);
+    }
+
+    /**
+     * split on spaces but respect quotes
+     * 
+     * @param theArgs
+     * @return
+     */
+    private Collection<String> splitQuoted(final String theArgs) {
+        final Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
+        final Matcher m = p.matcher(theArgs);
+        final List<String> tokens = new ArrayList<String>();
+        while (m.find()) {
+            tokens.add(m.group(1));
+        }
+        return tokens;
+    }
+
 }
