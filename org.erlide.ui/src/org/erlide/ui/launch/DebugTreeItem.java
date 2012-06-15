@@ -117,18 +117,22 @@ public class DebugTreeItem {
     }
 
     public void setChecked(final CheckboxTreeViewer checkboxTreeViewer,
-            final Collection<IErlModule> list) {
+            final Collection<IErlModule> modules) {
         final Control tree = checkboxTreeViewer.getControl();
         tree.setRedraw(false);
         try {
-            setGrayChecked(checkboxTreeViewer, false, list.contains(item));
-            for (final DebugTreeItem c : children) {
-                c.setChecked(checkboxTreeViewer, list);
-                c.getParent()
-                        .updateMenuCategoryCheckedState(checkboxTreeViewer);
-            }
+            doSetChecked(checkboxTreeViewer, modules);
         } finally {
             tree.setRedraw(true);
+        }
+    }
+
+    private void doSetChecked(final CheckboxTreeViewer checkboxTreeViewer,
+            final Collection<IErlModule> modules) {
+        setGrayChecked(checkboxTreeViewer, false, modules.contains(item));
+        for (final DebugTreeItem c : children) {
+            c.setChecked(checkboxTreeViewer, modules);
+            c.getParent().updateMenuCategoryCheckedState(checkboxTreeViewer);
         }
     }
 }

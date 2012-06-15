@@ -289,9 +289,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 if (p != null) {
                     final String mName = pm[1];
                     try {
-                        final String s = CommonUtils
-                                .isErlangFileContentFileName(mName) ? mName
-                                : mName + ".erl";
+                        final boolean isErlangFile = CommonUtils
+                                .isErlangFileContentFileName(mName);
+                        final String s = isErlangFile ? mName : mName + ".erl";
                         module = p.getModule(s);
                     } catch (final ErlModelException e) {
                         ErlLogger.warn(e);
