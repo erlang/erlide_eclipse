@@ -399,7 +399,9 @@ public final class BackendData extends GenericBackendData {
             result.add("-noshell");
         }
 
-        final String nameTag = isLongName() ? "-name" : "-sname";
+        final boolean useLongName = isLongName()
+                && !BackendUtils.longNamesDontWork();
+        final String nameTag = useLongName ? "-name" : "-sname";
         String nameOption = "";
         if (!getNodeName().equals("")) {
             nameOption = getNodeName();
