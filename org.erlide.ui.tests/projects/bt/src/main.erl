@@ -1,4 +1,6 @@
 -module(main).
 
--export([]).
+-export([foo/0]).
 
+foo() ->
+	oki.

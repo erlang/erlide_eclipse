@@ -616,7 +616,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean doLoadOnAllNodes() {
-        return getRuntimeInfo().loadOnAllNodes();
+        return getData().isLoadAllNodes();
     }
 
     @Override
@@ -763,7 +763,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         final String ver = getErlangVersion();
         for (final IConfigurationElement el : els) {
             final IContributor c = el.getContributor();
-            if (c.getName().equals(bundle.getSymbolicName())) {
+            final String name = c.getName();
+            if (name.equals(bundle.getSymbolicName())) {
                 final String dir_path = el.getAttribute("path");
                 Enumeration<?> e = bundle.getEntryPaths(dir_path + "/" + ver);
                 if (e == null || !e.hasMoreElements()) {
@@ -777,7 +778,9 @@ public abstract class Backend implements IStreamListener, IBackend {
                 while (e.hasMoreElements()) {
                     final String s = (String) e.nextElement();
                     final Path path = new Path(s);
-                    return getBeamFromBundlePath(bundle, beamname, s, path);
+                    if (path.lastSegment().equals(beamname)) {
+                        return getBeamFromBundlePath(bundle, beamname, s, path);
+                    }
                 }
             }
         }
@@ -786,18 +789,16 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private OtpErlangBinary getBeamFromBundlePath(final Bundle bundle,
             final String beamname, final String s, final Path path) {
-        if (path.lastSegment().equals(beamname)) {
-            if (path.getFileExtension() != null
-                    && "beam".compareTo(path.getFileExtension()) == 0) {
-                final String m = path.removeFileExtension().lastSegment();
-                try {
-                    return BeamUtil.getBeamBinary(m, bundle.getEntry(s));
-                } catch (final Exception ex) {
-                    ErlLogger.warn(ex);
-                }
-            }
+        if (!path.lastSegment().equals(beamname)) {
+            return null; // Shouln't happen
         }
-        return null;
+        final String m = path.removeFileExtension().lastSegment();
+        try {
+            return BeamUtil.getBeamBinary(m, bundle.getEntry(s));
+        } catch (final Exception ex) {
+            ErlLogger.warn(ex);
+            return null;
+        }
     }
 
     @Override

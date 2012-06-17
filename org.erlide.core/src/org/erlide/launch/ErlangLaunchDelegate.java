@@ -83,11 +83,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
         ErlLogger.debug("doLaunch runtime %s (%s)", data.getRuntimeName(), data
                 .getRuntimeInfo().getName());
-        ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(), data
-                .getRuntimeInfo().getCookie());
-        final boolean nodeExists = BackendCore.getBackendManager()
-                .getEpmdWatcher().hasLocalNode(data.getNodeName());
-        data.setManaged(!nodeExists);
+        ErlLogger.debug("doLaunch cookie %s (%s)", data.getCookie(),
+                data.getCookie());
 
         data = configureBackend(data, config, mode, launch);
 
@@ -128,6 +125,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         final Process process = startRuntimeProcess(data);
         if (process == null) {
             ErlLogger.debug("Error starting process");
+            data.setManaged(false);
             return;
         }
         final Map<String, String> map = Maps.newHashMap();
@@ -154,10 +152,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     }
 
     private Process startRuntimeProcess(final BackendData data) {
-        final RuntimeInfo info = data.getRuntimeInfo();
-
-        final String[] cmds = info.getCmdLine();
-        final File workingDirectory = new File(info.getWorkingDir());
+        final String[] cmds = data.getCmdLine();
+        final File workingDirectory = new File(data.getWorkingDir());
 
         try {
             ErlLogger.debug("START node :> " + Arrays.toString(cmds) + " *** "
