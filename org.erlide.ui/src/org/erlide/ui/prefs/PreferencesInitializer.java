@@ -9,15 +9,7 @@
  *******************************************************************************/
 package org.erlide.ui.prefs;
 
-import static org.erlide.ui.prefs.PreferenceConstants.DEFAULT_PRINT_MARGIN;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_CLAUSES;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_COMMENTS;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_ENABLED;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_HEADER_COMMENTS;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_FOLDING_PROVIDER;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_MATCHING_BRACKETS;
-import static org.erlide.ui.prefs.PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-import static org.erlide.ui.prefs.PreferenceConstants.PRINT_MARGIN;
+import static org.erlide.ui.prefs.PreferenceConstants.*;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
