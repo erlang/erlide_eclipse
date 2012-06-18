@@ -9,6 +9,7 @@ public class BackendCore {
 
     private static RuntimeInfoManager runtimeInfoManager;
     private static IBackendManager backendManager;
+    private static BackendFactory backendFactory;
 
     public static final RuntimeInfoManager getRuntimeInfoManager() {
         if (runtimeInfoManager == null) {
@@ -21,10 +22,10 @@ public class BackendCore {
         if (backendManager == null) {
             final RuntimeInfo erlideRuntime = getRuntimeInfoManager()
                     .getErlideRuntime();
-            final BackendFactory backendFactory = new BackendFactory(
-                    getRuntimeInfoManager());
+            backendFactory = new BackendFactory(getRuntimeInfoManager());
             backendManager = new BackendManager(erlideRuntime, backendFactory);
         }
         return backendManager;
     }
+
 }

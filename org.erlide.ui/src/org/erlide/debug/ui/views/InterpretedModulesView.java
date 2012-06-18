@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
 import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.IErlangDebugNode;
@@ -41,8 +42,8 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTab.DebugTreeItem;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
+import org.erlide.ui.launch.DebugTreeItem;
 import org.erlide.utils.SystemUtils;
 
 /**
@@ -97,6 +98,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 }
             }
             if (erlangDebugTarget == null) {
+                ErlLogger.debug("no debug target found for " + selection);
                 return;
             }
             final ILaunchConfiguration launchConfiguration = erlangDebugTarget
@@ -159,6 +161,10 @@ public class InterpretedModulesView extends AbstractDebugView implements
             if (root == null) {
                 return;
             }
+            if (erlangDebugTarget == null) {
+                ErlLogger.warn("erlangDebugTarget is null ?!?!");
+                return;
+            }
             final Set<String> interpret = erlangDebugTarget
                     .getInterpretedModules();
             final Set<IErlModule> interpretedModules = new HashSet<IErlModule>(
@@ -189,8 +195,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         final ICheckStateListener checkStateListener = new ICheckStateListener() {
             @Override
             public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTab.DebugTreeItem dti = (DebugTreeItem) event
-                        .getElement();
+                final DebugTreeItem dti = (DebugTreeItem) event.getElement();
                 checkboxTreeViewer.setGrayed(dti, false);
                 final boolean checked = event.getChecked();
                 setSubtreeChecked(dti, checked);
@@ -209,8 +214,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 final StructuredSelection ss = (StructuredSelection) event
                         .getSelection();
                 final Object o = ss.getFirstElement();
-                if (o instanceof DebugTab.DebugTreeItem) {
-                    final DebugTab.DebugTreeItem item = (DebugTab.DebugTreeItem) o;
+                if (o instanceof DebugTreeItem) {
+                    final DebugTreeItem item = (DebugTreeItem) o;
                     try {
                         EditorUtility.openInEditor(item.getItem());
                     } catch (final PartInitException e) {
@@ -261,8 +266,12 @@ public class InterpretedModulesView extends AbstractDebugView implements
         contextActivated(selection);
     }
 
-    private void interpretOrDeinterpret(final DebugTab.DebugTreeItem dti,
+    private void interpretOrDeinterpret(final DebugTreeItem dti,
             final boolean checked) {
+        if (erlangDebugTarget == null) {
+            ErlLogger.warn("erlangDebugTarget is null ?!?!");
+            return;
+        }
         final String module = dti.getItem().getName();
         final String moduleWoExtension = SystemUtils.withoutExtension(module);
         final IProject project = dti.getItem().getProject()

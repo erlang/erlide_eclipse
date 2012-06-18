@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
+import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IErlRuntime;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
@@ -32,6 +33,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.ericsson.otp.erlang.OtpNode;
 import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
+import com.google.common.base.Strings;
 
 public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private static final int MAX_RETRIES = 20;
@@ -52,14 +54,18 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private boolean reported;
     private final IProcess process;
     private final boolean reportWhenDown;
+    private final boolean longName;
 
     public ErlRuntime(final String name, final String cookie,
-            final IProcess process, final boolean reportWhenDown) {
+            final IProcess process, final boolean reportWhenDown,
+            final boolean longName) {
         state = State.DISCONNECTED;
         peerName = name;
         this.cookie = cookie;
         this.process = process;
         this.reportWhenDown = reportWhenDown;
+        this.longName = longName;
+
         startLocalNode();
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
@@ -73,7 +79,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             do {
                 try {
                     i++;
-                    localNode = ErlRuntime.createOtpNode(cookie);
+                    localNode = ErlRuntime.createOtpNode(cookie, longName);
                     localNode.registerStatusHandler(this);
                     nodeCreated = true;
                 } catch (final IOException e) {
@@ -257,26 +263,34 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         return "jerlide_" + fUniqueId;
     }
 
+    public static String createJavaNodeName(final String hostName) {
+        return createJavaNodeName() + "@" + hostName;
+    }
+
     static String getTimeSuffix() {
         String fUniqueId;
         fUniqueId = Long.toHexString(System.currentTimeMillis() & 0xFFFFFFF);
         return fUniqueId;
     }
 
-    public static OtpNode createOtpNode(final String cookie) throws IOException {
+    public static OtpNode createOtpNode(final String cookie,
+            final boolean longName) throws IOException {
         OtpNode node;
-        if (cookie == null) {
-            node = new OtpNode(createJavaNodeName());
+        final String hostName = BackendUtils.getErlangHostName(longName);
+        if (Strings.isNullOrEmpty(cookie)) {
+            node = new OtpNode(createJavaNodeName(hostName));
         } else {
-            node = new OtpNode(createJavaNodeName(), cookie);
+            node = new OtpNode(createJavaNodeName(hostName), cookie);
         }
-        final String nodeCookie = node.cookie();
-        final int len = nodeCookie.length();
-        final String trimmed = len > 7 ? nodeCookie.substring(0, 7)
-                : nodeCookie;
+        debugPrintCookie(node.cookie());
+        return node;
+    }
+
+    private static void debugPrintCookie(final String cookie) {
+        final int len = cookie.length();
+        final String trimmed = len > 7 ? cookie.substring(0, 7) : cookie;
         ErlLogger.debug("using cookie '%s...'%d (info: '%s')", trimmed, len,
                 cookie);
-        return node;
     }
 
     @Override
@@ -289,9 +303,6 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     @Override
     public void send(final String fullNodeName, final String name,
             final Object msg) throws SignatureException, RpcException {
-        // XXX
-        state = State.DOWN;
-        //
         tryConnect();
         rpcHelper.send(localNode, fullNodeName, name, msg);
     }

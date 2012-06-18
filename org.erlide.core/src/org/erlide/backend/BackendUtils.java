@@ -1,5 +1,7 @@
 package org.erlide.backend;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,6 +27,8 @@ import com.google.common.collect.Lists;
 
 public class BackendUtils {
 
+    private static String erlangLongName;
+    private static String erlangShortName;
     private static Collection<SourcePathProvider> sourcePathProviders = null;
 
     public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
@@ -163,6 +167,38 @@ public class BackendUtils {
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
         return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
+    }
+
+    private static String detectErlangHostName(final boolean longName) {
+        InetAddress addr;
+        try {
+            addr = InetAddress.getLocalHost();
+            return longName ? addr.getCanonicalHostName() : addr.getHostName();
+        } catch (final UnknownHostException e1) {
+            e1.printStackTrace();
+            return "localhost";
+        }
+    }
+
+    public static String getErlangHostName(final boolean longName) {
+        if (erlangLongName == null) {
+            erlangLongName = BackendUtils.detectErlangHostName(true);
+            erlangShortName = BackendUtils.detectErlangHostName(false);
+        }
+        return longName ? erlangLongName : erlangShortName;
+    }
+
+    public static boolean longNamesDontWork() {
+        return !getErlangHostName(true).contains(".");
+    }
+
+    public static boolean shortNamesDontWork() {
+        return getErlangHostName(false).contains(".");
+    }
+
+    public static boolean isThisHost(final String host) {
+        return getErlangHostName(true).equals(host)
+                || getErlangHostName(false).equals(host);
     }
 
 }

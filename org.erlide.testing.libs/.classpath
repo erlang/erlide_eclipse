@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="jdepend-2.9.1.jar" sourcepath="jdepend.zip"/>
-	<classpathentry exported="true" kind="lib" path="quickcheck-0.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="quickcheck-src-generator-0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="mockito-all-1.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="log4j-1.2.16.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-lang-2.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="easymock.jar"/>
-	<classpathentry exported="true" kind="lib" path="freemarker.jar"/>
 	<classpathentry exported="true" kind="lib" path="jbehave-core-3.0.jar" sourcepath="jbehave-core-3.0-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>

@@ -505,6 +505,7 @@ load({Mod, Src, Beam, Exp, Abst}, Dist) ->
 	       fun() ->
 		       code:purge(Mod),
 		       erts_debug:breakpoint({Mod,'_','_'}, false),
+                       %%erlang:display({load, Mod, node()}),
 		       {module,Mod} = code:load_abs(filename:rootname(Beam),
 						    Mod)
 	       end),
@@ -519,12 +520,15 @@ load({Mod, Src, Beam, Exp, Abst}, Dist) ->
 	       end),
     {module, Mod};
 load({Mod, Beam, Exp, Abst}, Dist) ->
+    %%X = everywhere(Dist, fun() -> erlang:display({lo2, node(), is_alive()}) end),
+    %%erlang:display({x, X}),
     everywhere(Dist,
                fun() ->
                        code:purge(Mod),
                        erts_debug:breakpoint({Mod,'_','_'}, false),
                        {module,Mod} = code:load_abs(filename:rootname(Beam),
                                                     Mod),
+                       %%erlang:display({load2, Mod, node()}),
                        {module,Mod}
                end),
     {ok, BeamBin} = file:read_file(Beam),

@@ -12,8 +12,8 @@ package org.erlide.ui.views;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 
 public class BackendLabelProvider extends LabelProvider {
 
@@ -25,12 +25,12 @@ public class BackendLabelProvider extends LabelProvider {
     @Override
     public String getText(final Object element) {
         final IBackend b = (IBackend) element;
-        final RuntimeInfo info = b.getRuntimeInfo();
-        final String s = info.getName();
+        final BackendData data = b.getData();
+        final String s = data.getRuntimeName();
         // if (s == null) {
         // return "<default>";
         // }
-        return s + ": " + info.getNodeName();
+        return s + ": " + data.getNodeName();
     }
 
 }
