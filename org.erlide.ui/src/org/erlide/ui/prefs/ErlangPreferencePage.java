@@ -22,9 +22,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.erlide.backend.BackendUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -32,6 +34,10 @@ import com.swtdesigner.ResourceManager;
 
 public class ErlangPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
+    private Text txtLocalErlangNodes;
+
+    public ErlangPreferencePage() {
+    }
 
     @Override
     protected Control createContents(final Composite parent) {
@@ -42,8 +48,7 @@ public class ErlangPreferencePage extends PreferencePage implements
         panel.setLayout(layout);
 
         final Label img = new Label(panel, SWT.NONE);
-        final GridData gd_img = new GridData(79, SWT.DEFAULT);
-        img.setLayoutData(gd_img);
+        img.setLayoutData(new GridData(79, SWT.DEFAULT));
         img.setImage(ResourceManager.getPluginImage(
                 ErlideUIPlugin.getDefault(), "icons/full/obj16/erlang058.gif"));
 
@@ -73,7 +78,6 @@ public class ErlangPreferencePage extends PreferencePage implements
         new Label(panel, SWT.NONE);
 
         final Button reportButton = new Button(panel, SWT.NONE);
-        reportButton.setLayoutData(new GridData());
         reportButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
@@ -82,6 +86,18 @@ public class ErlangPreferencePage extends PreferencePage implements
             }
         });
         reportButton.setText("Report problems");
+        new Label(panel, SWT.NONE);
+
+        txtLocalErlangNodes = new Text(panel, SWT.BORDER | SWT.READ_ONLY
+                | SWT.MULTI);
+        txtLocalErlangNodes
+                .setText("This machine supports local Erlang nodes with only short names \nbecause of its hostname configuration. \n\nTo enable long names locally, make sure that the machine \nhas a proper FQDN on the network. ");
+        final GridData gd_txtLocalErlangNodes = new GridData(SWT.FILL,
+                SWT.CENTER, true, false, 1, 1);
+        gd_txtLocalErlangNodes.widthHint = 339;
+        gd_txtLocalErlangNodes.heightHint = 87;
+        txtLocalErlangNodes.setLayoutData(gd_txtLocalErlangNodes);
+        txtLocalErlangNodes.setVisible(BackendUtils.longNamesDontWork());
 
         return panel;
     }
@@ -89,5 +105,4 @@ public class ErlangPreferencePage extends PreferencePage implements
     @Override
     public void init(final IWorkbench workbench) {
     }
-
 }
