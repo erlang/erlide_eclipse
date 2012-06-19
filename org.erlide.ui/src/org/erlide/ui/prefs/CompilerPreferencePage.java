@@ -67,6 +67,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     private final List<Button> optionButtons;
     private Text text;
     private Text text_1;
+    private Text text_2;
 
     public CompilerPreferencePage() {
         super();
@@ -141,6 +142,24 @@ public class CompilerPreferencePage extends PropertyPage implements
             public void modifyText(final ModifyEvent e) {
                 prefs.setSimpleOption(CompilerOption.PARSE_TRANSFORM,
                         text_1.getText());
+            }
+        });
+
+        new Label(prefsComposite, SWT.NONE);
+        new Label(prefsComposite, SWT.NONE);
+
+        final Label lblNewLabel_2 = new Label(prefsComposite, SWT.NONE);
+        lblNewLabel_2.setText("Custom options:");
+
+        text_2 = new Text(prefsComposite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+        final GridData gd_text_2 = new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1);
+        gd_text_2.heightHint = 60;
+        text_2.setLayoutData(gd_text_2);
+        text_2.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(final ModifyEvent e) {
+                prefs.setSimpleOption(CompilerOption.CUSTOM, text_2.getText());
             }
         });
 
@@ -426,6 +445,10 @@ public class CompilerPreferencePage extends PropertyPage implements
         final String parseTransform = prefs.getSimpleOption(CompilerOption.PARSE_TRANSFORM);
         if(parseTransform!=null) {
             text_1.setText(parseTransform);
+        }
+        final String custom = prefs.getSimpleOption(CompilerOption.CUSTOM);
+        if(custom!=null) {
+            text_2.setText(custom);
         }
     }
 

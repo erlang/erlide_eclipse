@@ -67,7 +67,12 @@ public abstract class CompilerOption {
             "Additional include dirs: ", "Comma-separated list of paths");
     public static final ModuleOption PARSE_TRANSFORM = new ModuleOption(
             "parse_transform", "Global parse transform module: ",
-            "Specify a module to be useda as a global parse transform");
+            "Specify a module to be used as a global parse transform");
+
+    public static final RawOption CUSTOM = new RawOption(
+            "raw",
+            "Other options: ",
+            "A list of compiler options as Erlang terms (the list brackets can be omitted).");
 
     public static class PathsOption extends CompilerOption {
         public PathsOption(final String name, final String description,
@@ -103,6 +108,38 @@ public abstract class CompilerOption {
         public OtpErlangObject toTerm(final String value) {
             return OtpErlang.mkTuple(new OtpErlangAtom(getName()),
                     new OtpErlangAtom(value));
+        }
+
+        public static String toString(final String value) {
+            return value;
+        }
+
+        public static String fromString(final String string) {
+            return string;
+        }
+    }
+
+    public static class RawOption extends CompilerOption {
+        public RawOption(final String name, final String description,
+                final String tooltip) {
+            super(name, description, tooltip);
+        }
+
+        public OtpErlangObject toTerm(final String value) {
+            final TermParser parser = TermParser.getParser();
+            OtpErlangObject result;
+            try {
+                String val;
+                if (value.charAt(0) != '[') {
+                    val = "[" + value + "]";
+                } else {
+                    val = value;
+                }
+                result = parser.parse(val);
+            } catch (final Exception e) {
+                result = OtpErlang.mkList();
+            }
+            return result;
         }
 
         public static String toString(final String value) {
@@ -206,6 +243,7 @@ public abstract class CompilerOption {
                     WARN_UNUSED_RECORD);
     public static final Collection<CompilerOption> ALL_OPTIONS = 
             Lists.newArrayList(
+                    CUSTOM, 
                     INCLUDE_DIRS,
                     PARSE_TRANSFORM,
                     DEFINE,
