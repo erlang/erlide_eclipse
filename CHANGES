@@ -1,3 +1,9 @@
+List of user visible changes between 0.16.0 and 0.16.1 (20120617)
+
+f1a6396 fix 91-distributed-debugging
+ebe6cde don't start epmd, it might hang up eclipse
+53a7535 1032-indent-(ctrl-i)-fails-if-file-contains---spec--statements
+
 List of user visible changes between 0.15.3 and 0.16.0 (20120430)
 
 11769c9 1046: Add back parse_transform in compiler options page

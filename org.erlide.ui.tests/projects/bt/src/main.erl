@@ -3,4 +3,6 @@
 -export([foo/0]).
 
 foo() ->
-	oki.
+	io:format("kakak~n"),
+	oki.  
+

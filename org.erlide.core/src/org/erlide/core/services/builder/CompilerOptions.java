@@ -15,6 +15,7 @@ import org.erlide.core.services.builder.CompilerOption.BooleanOption;
 import org.erlide.core.services.builder.CompilerOption.DefineOption;
 import org.erlide.core.services.builder.CompilerOption.ModuleOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
+import org.erlide.core.services.builder.CompilerOption.RawOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.TermParserException;
@@ -94,7 +95,14 @@ public class CompilerOptions {
                 } else {
                     helper.remove(option.getName());
                 }
-            } else if (option instanceof DefineOption) {
+            } else if (option instanceof RawOption) {
+                if (value != null) {
+                    final String avalue = (String) value;
+                    helper.putString(option.getName(), avalue);
+                } else {
+                    helper.remove(option.getName());
+                }
+            } else {
                 if (value != null) {
                     @SuppressWarnings("unchecked")
                     final Collection<Tuple<String, String>> val = (Collection<Tuple<String, String>>) value;
@@ -122,7 +130,11 @@ public class CompilerOptions {
                 if (!Strings.isNullOrEmpty(value)) {
                     options.put(option, value);
                 }
-            } else if (option instanceof DefineOption) {
+            } else if (option instanceof RawOption) {
+                if (!Strings.isNullOrEmpty(value)) {
+                    options.put(option, value);
+                }
+            } else {
                 if (value != null) {
                     final String[] str = value.split(",");
                     options.put(option, new Tuple<String, String>(str[0],
@@ -155,7 +167,14 @@ public class CompilerOptions {
                     final OtpErlangObject val = ((ModuleOption) option)
                             .toTerm(value);
                     result.add(val);
-                } else if (option instanceof DefineOption) {
+                } else if (option instanceof RawOption) {
+                    final String value = (String) optionValue;
+                    final OtpErlangList val = (OtpErlangList) ((RawOption) option)
+                            .toTerm(value);
+                    for (final OtpErlangObject item : val.elements()) {
+                        result.add(item);
+                    }
+                } else {
                     try {
                         final OtpErlangList val = ((DefineOption) option)
                                 .toTerm((List<Tuple<String, String>>) optionValue);
@@ -249,9 +268,8 @@ public class CompilerOptions {
         return (String) options.get(option);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Tuple<String, String>> getListOption(final DefineOption option) {
-        return (List<Tuple<String, String>>) options.get(option);
+    public String getSimpleOption(final RawOption option) {
+        return (String) options.get(option);
     }
 
 }

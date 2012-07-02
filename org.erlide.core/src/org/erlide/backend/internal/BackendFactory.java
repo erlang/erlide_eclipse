@@ -109,6 +109,7 @@ public class BackendFactory implements IBackendFactory {
         if (SystemUtils.getInstance().isMonitoringIdeBackend()) {
             result.setMonitored(true);
         }
+        result.setInternal(true);
         return result;
     }
 
@@ -123,6 +124,7 @@ public class BackendFactory implements IBackendFactory {
         result.setAutostart(true);
         result.setConsole(false);
         result.setLongName(false);
+        result.setInternal(true);
         return result;
     }
 

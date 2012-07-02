@@ -45,6 +45,7 @@ import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.utils.SystemUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -279,8 +280,7 @@ public final class BuilderHelper {
     }
 
     public static boolean samePath(final String p1, final String p2) {
-        final boolean WINDOWS = java.io.File.separatorChar == '\\';
-        if (WINDOWS) {
+        if (SystemUtils.getInstance().isOnWindows()) {
             return p1.equalsIgnoreCase(p2);
         } else {
             return p1.equals(p2);

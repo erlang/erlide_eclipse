@@ -11,7 +11,6 @@
 package org.erlide.ui.prefs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,11 +19,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.ControlEnableState;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -42,16 +39,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.wb.swt.ResourceManager;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendHelper;
@@ -79,7 +71,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     private final List<Button> optionButtons;
     private Text text;
     private Text text_1;
-    private Table table;
+    private Text text_2;
 
     public CompilerPreferencePage() {
         super();
@@ -156,83 +148,21 @@ public class CompilerPreferencePage extends PropertyPage implements
                         text_1.getText());
             }
         });
+        new Label(prefsComposite, SWT.NONE);
+        new Label(prefsComposite, SWT.NONE);
 
-        final Composite composite = new Composite(prefsComposite, SWT.NONE);
-        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
-                1, 1));
-        composite.setLayout(new GridLayout(1, false));
+        final Label lblNewLabel_2 = new Label(prefsComposite, SWT.NONE);
+        lblNewLabel_2.setText("Custom options:");
 
-        final Label lblMacroDefinitions = new Label(composite, SWT.NONE);
-        lblMacroDefinitions.setAlignment(SWT.RIGHT);
-        final GridData gd_lblMacroDefinitions = new GridData(SWT.FILL,
-                SWT.CENTER, false, false, 1, 1);
-        gd_lblMacroDefinitions.widthHint = 164;
-        lblMacroDefinitions.setLayoutData(gd_lblMacroDefinitions);
-        lblMacroDefinitions.setText("Macro definitions: ");
-        new Label(composite, SWT.NONE);
-
-        final ToolBar toolBar = new ToolBar(composite, SWT.FLAT | SWT.WRAP
-                | SWT.RIGHT | SWT.VERTICAL);
-        toolBar.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-                1, 1));
-
-        final ToolItem tltmAdd = new ToolItem(toolBar, SWT.NONE);
-        tltmAdd.setText("Add");
-        tltmAdd.setToolTipText("Add a new macro definition");
-        tltmAdd.addSelectionListener(new SelectionAdapter() {
+        text_2 = new Text(prefsComposite, SWT.BORDER | SWT.WRAP | SWT.MULTI);
+        final GridData gd_text_2 = new GridData(SWT.FILL, SWT.CENTER, true,
+                false, 1, 1);
+        gd_text_2.heightHint = 60;
+        text_2.setLayoutData(gd_text_2);
+        text_2.addModifyListener(new ModifyListener() {
             @Override
-            public void widgetSelected(final SelectionEvent e) {
-            }
-        });
-        tltmAdd.setImage(ResourceManager.getPluginImage("org.erlide.ui",
-                "icons/full/obj16/add_correction.gif"));
-
-        final ToolItem tltmDelete = new ToolItem(toolBar, SWT.NONE);
-        tltmDelete.setText("Delete");
-        tltmDelete.setToolTipText("Remove selected definition");
-        tltmDelete.setImage(ResourceManager.getPluginImage("org.erlide.ui",
-                "/icons/full/obj16/remove_correction.gif"));
-
-        final ToolItem tltmEdit = new ToolItem(toolBar, SWT.NONE);
-        tltmEdit.setToolTipText("Modify selected definition");
-        tltmEdit.setImage(ResourceManager.getPluginImage("org.erlide.ui",
-                "/icons/full/elcl16/refresh_nav.gif"));
-        tltmEdit.setText("Edit");
-
-        final CheckboxTableViewer checkboxTableViewer = CheckboxTableViewer
-                .newCheckList(prefsComposite, SWT.BORDER | SWT.FULL_SELECTION);
-        checkboxTableViewer.setAllChecked(false);
-        table = checkboxTableViewer.getTable();
-        table.setHeaderVisible(true);
-        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
-        final TableViewerColumn tableViewerColumn_2 = new TableViewerColumn(
-                checkboxTableViewer, SWT.NONE);
-        final TableColumn tableColumn = tableViewerColumn_2.getColumn();
-        tableColumn.setWidth(22);
-
-        final TableViewerColumn tableViewerColumn = new TableViewerColumn(
-                checkboxTableViewer, SWT.NONE);
-        final TableColumn tblclmnName = tableViewerColumn.getColumn();
-        tblclmnName.setWidth(123);
-        tblclmnName.setText("Name");
-
-        final TableViewerColumn tableViewerColumn_1 = new TableViewerColumn(
-                checkboxTableViewer, SWT.NONE);
-        final TableColumn tblclmnValue = tableViewerColumn_1.getColumn();
-        tblclmnValue.setWidth(182);
-        tblclmnValue.setText("Value");
-        checkboxTableViewer.setLabelProvider(new MacrosTableLabelProvider());
-        checkboxTableViewer
-                .setContentProvider(new MacrosTableContentProvider());
-        checkboxTableViewer
-                .setInput(prefs.getListOption(CompilerOption.DEFINE));
-
-        tltmDelete.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(final SelectionEvent e) {
-                System.out.println(Arrays.toString(checkboxTableViewer
-                        .getCheckedElements()));
+            public void modifyText(final ModifyEvent e) {
+                prefs.setSimpleOption(CompilerOption.CUSTOM, text_2.getText());
             }
         });
 
@@ -518,6 +448,10 @@ public class CompilerPreferencePage extends PropertyPage implements
         final String parseTransform = prefs.getSimpleOption(CompilerOption.PARSE_TRANSFORM);
         if(parseTransform!=null) {
             text_1.setText(parseTransform);
+        }
+        final String custom = prefs.getSimpleOption(CompilerOption.CUSTOM);
+        if(custom!=null) {
+            text_2.setText(custom);
         }
     }
 

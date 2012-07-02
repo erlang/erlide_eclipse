@@ -189,7 +189,11 @@ public class BackendUtils {
     }
 
     public static boolean longNamesDontWork() {
-        return getErlangHostName(true).equals(getErlangHostName(false));
+        return !getErlangHostName(true).contains(".");
+    }
+
+    public static boolean shortNamesDontWork() {
+        return getErlangHostName(false).contains(".");
     }
 
     public static boolean isThisHost(final String host) {
