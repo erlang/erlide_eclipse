@@ -3,8 +3,10 @@ package org.erlide.backend.internal;
 import java.io.File;
 
 import org.erlide.backend.IBackend;
+import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -103,6 +105,20 @@ public final class ErlangCode {
             if (f != null) {
                 f.delete();
             }
+        }
+        return false;
+    }
+
+    public static boolean isEmbedded(final IBackend backend) {
+        try {
+            final OtpErlangObject r = backend.call("code", "ensure_loaded",
+                    "a", "funny_module_name_that_nobody_would_use");
+            final Bindings b = ErlUtils.match("{error, What}", r);
+            if (b.getAtom("What").equals("embedded")) {
+                return true;
+            }
+        } catch (final Exception e) {
+            // ignore errors
         }
         return false;
     }

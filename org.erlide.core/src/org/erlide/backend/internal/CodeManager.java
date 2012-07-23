@@ -219,7 +219,8 @@ public class CodeManager implements ICodeManager {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
                 final boolean accessible = ErlideUtil.isAccessible(backend,
                         localDir);
-                if (accessible) {
+                final boolean embedded = ErlangCode.isEmbedded(backend);
+                if (accessible && !embedded) {
                     ErlLogger.debug("adding %s to code path for @%s:: %s",
                             localDir, backend.hashCode(), runtimeInfo);
                     ErlangCode.addPathA(backend, localDir);
