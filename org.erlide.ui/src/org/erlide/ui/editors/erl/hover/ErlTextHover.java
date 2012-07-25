@@ -11,9 +11,6 @@
 package org.erlide.ui.editors.erl.hover;
 
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -292,9 +289,7 @@ public class ErlTextHover implements ITextHover,
             // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
             final OtpErlangTuple t = (OtpErlangTuple) r1;
             if (Util.isOk(t)) {
-                String docStr = Util.stringValue(t.elementAt(1));
-                final byte[] s = docStr.getBytes(Charset.forName("ISO-8859-1"));
-                docStr = new String(s, Charset.forName("UTF-8"));
+                final String docStr = Util.stringValue(t.elementAt(1));
                 final OpenResult or = new OpenResult(t.elementAt(2));
                 result.append(docStr);
                 element = or;
@@ -304,11 +299,10 @@ public class ErlTextHover implements ITextHover,
                         b, erlProject, or, offset);
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    String comment = function.getComment();
+                    final String comment = function.getComment();
                     if (comment == null) {
                         return null;
                     }
-                    comment = fixEncoding(comment);
                     result.append(comment);
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
@@ -318,25 +312,13 @@ public class ErlTextHover implements ITextHover,
         } catch (final Exception e) {
             ErlLogger.warn(e);
         }
+        String strResult = "";
         if (result.length() > 0) {
-            HTMLPrinter.insertPageProlog(result, 0, fgStyleSheet);
-            HTMLPrinter.addPageEpilog(result);
+            strResult = HTMLPrinter.docAsHtml(result.toString());
         }
         // TODO set element
-        return new ErlBrowserInformationControlInput(null, element,
-                result.toString(), 20);
+        return new ErlBrowserInformationControlInput(null, element, strResult,
+                20);
     }
 
-    private static String fixEncoding(final String comment) {
-        try {
-            final byte[] bytes = comment.getBytes("ISO8859-1");
-            final ByteBuffer bb = ByteBuffer.wrap(bytes);
-            final CharBuffer cb = Charset.forName("UTF-8").newDecoder()
-                    .decode(bb);
-            return cb.toString();
-        } catch (final Exception e) {
-            // it was Latin-1
-        }
-        return comment;
-    }
 }

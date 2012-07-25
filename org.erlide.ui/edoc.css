@@ -1,5 +1,5 @@
 /* Font definitions */
-html         { font-family: sans-serif; font-style: normal; font-weight: normal; }
+html         { font-family: Arial,Helvetica,sans-serif; font-style: normal; font-weight: normal; }
 body, h1, h2, h3, h4, h5, h6, p, table, td, caption, th, ul, ol, dl, li, dd, dt { font-size:1em; }
 pre				{ font-family: monospace; }
 
@@ -24,9 +24,10 @@ dt	         { margin-top: 0px; margin-bottom: 0px; font-weight: bold; }
 dd	         { margin-top: 0px; margin-bottom: 0px; }
 
 /* Styles and colors */
+a            { text-decoration: underline; }
 a:link	     { color: #0000FF; }
 a:hover	     { color: #000080; }
-a:visited    { text-decoration: underline; }
+a:visited    { }
 h4           { font-style: italic; }
 strong	     { font-weight: bold; }
 em	         { font-style: italic; }

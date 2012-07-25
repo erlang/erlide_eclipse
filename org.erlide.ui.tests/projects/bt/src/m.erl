@@ -8,7 +8,7 @@
 %% Exported Functions
 %%
 
-%% called from Java
+%% called from Java 
 -export([initial_parse/5, reparse/1, remove_cache_files/2]).
 
 %% called from Erlang
@@ -41,12 +41,12 @@
 
 
 %%
-%% API Functions
+%% API Functions дце
 %%
 
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
               UpdateSearchServer) ->
-    try
+    try ini
         %%         ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",

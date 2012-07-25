@@ -13,6 +13,9 @@ package org.erlide.ui.util.eclipse.text;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -20,6 +23,7 @@ import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.erlide.ui.editors.erl.completion.AbstractErlContentAssistProcessor;
 
 /**
  * Provides a set of convenience methods for creating HTML pages.
@@ -190,7 +194,7 @@ public class HTMLPrinter {
             return;
         }
 
-        buffer.append("<head><style CHARSET=\"ISO-8859-1\" TYPE=\"text/css\">"); //$NON-NLS-1$
+        buffer.append("<head><style charset=\"ISO-8859-1\" type=\"text/css\">"); //$NON-NLS-1$
         buffer.append(styleSheet);
         buffer.append("</style></head>"); //$NON-NLS-1$
     }
@@ -203,9 +207,9 @@ public class HTMLPrinter {
 
         buffer.append("<head>"); //$NON-NLS-1$
 
-        buffer.append("<LINK REL=\"stylesheet\" HREF= \""); //$NON-NLS-1$
+        buffer.append("<link rel=\"stylesheet\" href= \""); //$NON-NLS-1$
         buffer.append(styleSheetURL);
-        buffer.append("\" CHARSET=\"ISO-8859-1\" TYPE=\"text/css\">"); //$NON-NLS-1$
+        buffer.append("\" charset=\"ISO-8859-1\" type=\"text/css\">"); //$NON-NLS-1$
 
         buffer.append("</head>"); //$NON-NLS-1$
     }
@@ -260,7 +264,7 @@ public class HTMLPrinter {
     }
 
     public static void addPageEpilog(final StringBuffer buffer) {
-        buffer.append("</font></body></html>"); //$NON-NLS-1$
+        buffer.append("</body></html>"); //$NON-NLS-1$
     }
 
     public static void startBulletList(final StringBuffer buffer) {
@@ -350,5 +354,29 @@ public class HTMLPrinter {
                 .replaceFirst(
                         "(html\\s*\\{.*(?:\\s|;)font-family:\\s*).+?(;.*\\})", "$1" + family + "$2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return styles;
+    }
+
+    public static String fixEncoding(final String comment) {
+        try {
+            final byte[] bytes = comment.getBytes("ISO8859-1");
+            final ByteBuffer bb = ByteBuffer.wrap(bytes);
+            final CharBuffer cb = Charset.forName("UTF-8").newDecoder()
+                    .decode(bb);
+            return cb.toString();
+        } catch (final Exception e) {
+            // it was Latin-1
+            System.out.println(e);
+        }
+        return comment;
+    }
+
+    public static String docAsHtml(final String doc) {
+        final StringBuffer sb = new StringBuffer(doc); // fixEncoding(doc));
+        if (sb.length() > 0) {
+            insertPageProlog(sb, 0,
+                    AbstractErlContentAssistProcessor.fgStyleSheet);
+            addPageEpilog(sb);
+        }
+        return sb.toString();
     }
 }

@@ -95,7 +95,7 @@ public abstract class AbstractErlContentAssistProcessor {
 
     protected final ISourceViewer sourceViewer;
     protected final IErlModule module;
-    protected static URL fgStyleSheet;
+    public static URL fgStyleSheet;
 
     protected enum Kinds {
         //@formatter:off
@@ -619,13 +619,7 @@ public abstract class AbstractErlContentAssistProcessor {
                 if (f.arity() > 3) {
                     final OtpErlangObject elt = f.elementAt(3);
                     if (elt instanceof OtpErlangString) {
-                        final StringBuffer sb = new StringBuffer(
-                                Util.stringValue(elt));
-                        if (sb.length() > 0) {
-                            HTMLPrinter.insertPageProlog(sb, 0, fgStyleSheet);
-                            HTMLPrinter.addPageEpilog(sb);
-                        }
-                        docStr = sb.toString();
+                        docStr = HTMLPrinter.docAsHtml(Util.stringValue(elt));
                     }
                 }
 
@@ -752,8 +746,8 @@ public abstract class AbstractErlContentAssistProcessor {
             String funWithParameters = arityOnly ? funWithArity
                     : getNameWithParameters(function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
-            addFunctionCompletion(offset, result, funWithArity, comment,
-                    funWithParameters, offsetsAndLengths);
+            addFunctionCompletion(offset, result, funWithArity,
+                    HTMLPrinter.docAsHtml(comment), funWithParameters, offsetsAndLengths);
         }
     }
 
