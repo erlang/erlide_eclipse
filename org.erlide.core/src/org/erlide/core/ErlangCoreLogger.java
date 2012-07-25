@@ -2,6 +2,7 @@ package org.erlide.core;
 
 import java.util.logging.Level;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
@@ -84,7 +85,8 @@ public class ErlangCoreLogger {
         if (s != null) {
             dir = s;
         } else {
-            dir = System.getProperty("user.home");
+            dir = ResourcesPlugin.getWorkspace().getRoot().getLocation()
+                    .toString();
         }
         return dir;
     }
