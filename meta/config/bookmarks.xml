@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bookmarks>
+   <site url="http://download.eclipse.org/tools/buckminster/updates-3.7" selected="true" name="Buckminster"/>
+   <site url="http://erlide.org/update" selected="true" name="Erlide Test Site"/>
+   <site url="http://erlide.org/update_beta" selected="true" name="Erlide Test Site"/>
+   <site url="http://erlide.org/update_nightly" selected="true" name="Erlide Test Site"/>
+   <site url="http://shibumi.erlide.org/updates/graphviz" selected="true" name="http://erlide.org/update/graphviz/ - metadata"/>
+   <site url="http://download.eclipse.org/tools/orbit/downloads/drops/R20120626062928/repository/" selected="true" name="Orbit"/>
+   <site url="http://xtext-utils.eclipselabs.org.codespot.com/git.distribution/releases/unittesting-0.9.x" selected="true" name="unittesting-repo"/>
+   <site url="http://findbugs.cs.umd.edu/eclipse" selected="true" name="update site: http://findbugs.cs.umd.edu/eclipse"/>
+   <site url="http://update.eclemma.org/" selected="true" name="update site: http://update.eclemma.org/"/>
+   <site url="http://dl.google.com/eclipse/inst/windowtester/beta/3.7" selected="true" name="WindowTesterPro Update Site"/>
+   <site url="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/" selected="true" name="Xtext All In One - Releases"/>
+</bookmarks>
