@@ -14,6 +14,7 @@ import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
+import com.google.common.base.Charsets;
 
 public class UtilTest {
 
@@ -162,7 +163,7 @@ public class UtilTest {
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
-        Assert.assertArrayEquals(expected, actual.getBytes("ISO-8859-1"));
+        Assert.assertArrayEquals(expected, actual.getBytes(Charsets.ISO_8859_1));
     }
 
     @Test
@@ -172,7 +173,7 @@ public class UtilTest {
         final OtpErlangObject input = new OtpErlangBinary(bytes);
         final byte[] expected = bytes;
         final String actual = Util.stringValue(input);
-        Assert.assertArrayEquals(expected, actual.getBytes("UTF-8"));
+        Assert.assertArrayEquals(expected, actual.getBytes(Charsets.UTF_8));
     }
 
     @Test

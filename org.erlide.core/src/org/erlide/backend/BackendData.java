@@ -42,6 +42,7 @@ import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.utils.SystemUtils;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -179,7 +180,7 @@ public final class BackendData extends GenericBackendData {
             final String name = getNodeName();
             workingCopy = type.newInstance(null, name);
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-                    "ISO-8859-1");
+                    Charsets.ISO_8859_1.name());
             workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
                     "org.erlide.core.ertsProcessFactory");
 
@@ -192,8 +193,8 @@ public final class BackendData extends GenericBackendData {
             // !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                     isLongName());
-            workingCopy.setAttribute(ErlLaunchAttributes.INTERNAL,
-                    isInternal());
+            workingCopy
+                    .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
             return workingCopy;
         } catch (final CoreException e) {
@@ -382,7 +383,7 @@ public final class BackendData extends GenericBackendData {
         return getBooleanAttribute(ErlLaunchAttributes.INTERNAL, false);
     }
 
-    public void setInternal(boolean value) {
+    public void setInternal(final boolean value) {
         config.setAttribute(ErlLaunchAttributes.INTERNAL, value);
     }
 

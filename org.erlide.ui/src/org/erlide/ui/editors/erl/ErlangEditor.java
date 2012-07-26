@@ -1183,8 +1183,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
     }
 
-    /**
-     */
     private ErlangEditorBracketInserter getBracketInserter() {
         if (fBracketInserter == null) {
             fBracketInserter = new ErlangEditorBracketInserter(this,

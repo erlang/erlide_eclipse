@@ -15,7 +15,6 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -24,6 +23,8 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.erlide.ui.editors.erl.completion.AbstractErlContentAssistProcessor;
+
+import com.google.common.base.Charsets;
 
 /**
  * Provides a set of convenience methods for creating HTML pages.
@@ -358,20 +359,18 @@ public class HTMLPrinter {
 
     public static String fixEncoding(final String comment) {
         try {
-            final byte[] bytes = comment.getBytes("ISO8859-1");
+            final byte[] bytes = comment.getBytes(Charsets.ISO_8859_1);
             final ByteBuffer bb = ByteBuffer.wrap(bytes);
-            final CharBuffer cb = Charset.forName("UTF-8").newDecoder()
-                    .decode(bb);
+            final CharBuffer cb = Charsets.UTF_8.newDecoder().decode(bb);
             return cb.toString();
         } catch (final Exception e) {
             // it was Latin-1
-            System.out.println(e);
         }
         return comment;
     }
 
     public static String docAsHtml(final String doc) {
-        final StringBuffer sb = new StringBuffer(doc); // fixEncoding(doc));
+        final StringBuffer sb = new StringBuffer(doc);
         if (sb.length() > 0) {
             insertPageProlog(sb, 0,
                     AbstractErlContentAssistProcessor.fgStyleSheet);
