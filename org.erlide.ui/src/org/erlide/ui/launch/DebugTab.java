@@ -193,16 +193,16 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         attachOnExitCheck.addSelectionListener(fBasicSelectionListener);
 
         final Group interpretedModulesGroup = new Group(comp, SWT.NONE);
+        interpretedModulesGroup.setLayoutData(new GridData(SWT.FILL,
+                SWT.CENTER, false, false, 1, 1));
         interpretedModulesGroup.setText("Interpreted modules");
-        final GridData gd_interpretedModulesGroup = new GridData();
-        interpretedModulesGroup.setLayoutData(gd_interpretedModulesGroup);
         interpretedModulesGroup.setLayout(new GridLayout());
 
         final Label anyModuleHavingLabel = new Label(interpretedModulesGroup,
                 SWT.WRAP);
         anyModuleHavingLabel.setLayoutData(new GridData(279, SWT.DEFAULT));
         anyModuleHavingLabel
-                .setText("Any module having breakpoints enabled will be dynamically added to the list.");
+                .setText("Any module having breakpoints enabled will be dynamically added to the list.\n\nThis widget is disabled for now, it takes 100%CPU for large projects. If you need to use \"attach on first call\" or \"attach on exit\", please mark the modules by setting a dummy breakpoint in them. Sorry for the inconvenience!");
 
         checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
                 SWT.BORDER);
@@ -222,6 +222,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
         checkboxTreeViewer.setContentProvider(new TreeContentProvider());
         final Tree tree = checkboxTreeViewer.getTree();
+        tree.setEnabled(false);
         final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd_tree.minimumWidth = 250;
         gd_tree.minimumHeight = 120;
