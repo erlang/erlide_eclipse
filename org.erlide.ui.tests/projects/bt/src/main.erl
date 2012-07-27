@@ -12,4 +12,7 @@ foo() ->
 	ok.
 
 bar() ->
-	fo.
+	fo,
+	supervisor:start_child(1, 2),
+	lists:reverse([]).
+

@@ -297,6 +297,7 @@ public class ErlTextHover implements ITextHover,
                 final OpenResult or = new OpenResult(t);
                 final Object found = OpenAction.findOpenResult(editor, module,
                         b, erlProject, or, offset);
+                // ErlLogger.debug("found:" + found);
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
                     final String comment = function.getComment();
@@ -320,5 +321,4 @@ public class ErlTextHover implements ITextHover,
         return new ErlBrowserInformationControlInput(null, element, strResult,
                 20);
     }
-
 }

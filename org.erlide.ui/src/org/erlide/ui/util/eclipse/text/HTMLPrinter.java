@@ -175,23 +175,13 @@ public class HTMLPrinter {
     }
 
     private static void appendStyleSheetURL(final StringBuffer buffer,
-            final String styleSheet) {
-        if (styleSheet == null) {
-            return;
-        }
-
-        buffer.append("<head><style charset=\"ISO-8859-1\" type=\"text/css\">"); //$NON-NLS-1$
-        buffer.append(styleSheet);
-        buffer.append("</style></head>"); //$NON-NLS-1$
-    }
-
-    private static void appendStyleSheetURL(final StringBuffer buffer,
             final URL styleSheetURL) {
         if (styleSheetURL == null) {
             return;
         }
 
         buffer.append("<head>"); //$NON-NLS-1$
+        buffer.append("<meta charset='utf-8'>");
 
         buffer.append("<link rel=\"stylesheet\" href= \""); //$NON-NLS-1$
         buffer.append(styleSheetURL);
@@ -215,21 +205,17 @@ public class HTMLPrinter {
 
     private static void appendFontData(final StringBuffer buffer) {
         final String size = Integer.toString(fontData.getHeight())
-                + ("carbon".equals(SWT.getPlatform()) ? "px" : "pt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        final boolean bold = (fontData.getStyle() & SWT.BOLD) != 0;
-        final boolean italic = (fontData.getStyle() & SWT.ITALIC) != 0;
+                + ("carbon".equals(SWT.getPlatform()) ? "px" : "pt");
         buffer.append("<style type=\"text/css\">body {font-size:").append(size)
                 .append("; font-family:'").append(fontData.getName())
-                .append("',Arial,serif;font-weight: ")
-                .append(bold ? "bold" : "normal").append("; font-style: ")
-                .append(italic ? "italic" : "normal").append(";}</style>");
+                .append("',serif;}</style>");
     }
 
     public static void updateDialogFontData() {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                fontData = JFaceResources.getDialogFont().getFontData()[0];
+                fontData = JFaceResources.getTextFont().getFontData()[0];
             }
         };
         final Display display = Display.getDefault();
@@ -285,55 +271,6 @@ public class HTMLPrinter {
         }
     }
 
-    /**
-     * Replaces the following style attributes of the font definition of the
-     * <code>html</code> element:
-     * <ul>
-     * <li>font-size</li>
-     * <li>font-weight</li>
-     * <li>font-style</li>
-     * <li>font-family</li>
-     * </ul>
-     * The font's name is used as font family, a <code>sans-serif</code> default
-     * font family is appended for the case that the given font name is not
-     * available.
-     * <p>
-     * If the listed font attributes are not contained in the passed style list,
-     * nothing happens.
-     * </p>
-     * 
-     * @param styles
-     *            CSS style definitions
-     * @param fontData
-     *            the font information to use
-     * @return the modified style definitions
-     * @since 3.3
-     */
-    public static String convertTopLevelFont(String styles,
-            final FontData fontData) {
-        final boolean bold = (fontData.getStyle() & SWT.BOLD) != 0;
-        final boolean italic = (fontData.getStyle() & SWT.ITALIC) != 0;
-
-        // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=155993
-        final String size = Integer.toString(fontData.getHeight())
-                + ("carbon".equals(SWT.getPlatform()) ? "px" : "pt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-        final String family = "'" + fontData.getName() + "',sans-serif"; //$NON-NLS-1$ //$NON-NLS-2$
-        styles = styles
-                .replaceFirst(
-                        "(html\\s*\\{.*(?:\\s|;)font-size:\\s*)\\d+pt(\\;?.*\\})", "$1" + size + "$2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        styles = styles
-                .replaceFirst(
-                        "(html\\s*\\{.*(?:\\s|;)font-weight:\\s*)\\w+(\\;?.*\\})", "$1" + (bold ? "bold" : "normal") + "$2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        styles = styles
-                .replaceFirst(
-                        "(html\\s*\\{.*(?:\\s|;)font-style:\\s*)\\w+(\\;?.*\\})", "$1" + (italic ? "italic" : "normal") + "$2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        styles = styles
-                .replaceFirst(
-                        "(html\\s*\\{.*(?:\\s|;)font-family:\\s*).+?(;.*\\})", "$1" + family + "$2"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        return styles;
-    }
-
     public static String fixEncoding(final String comment) {
         try {
             final byte[] bytes = comment.getBytes(Charsets.ISO_8859_1);
@@ -352,7 +289,8 @@ public class HTMLPrinter {
             insertPageProlog(sb, 0, fgStyleSheet);
             addPageEpilog(sb);
         }
-        return sb.toString();
+        final String result = sb.toString().replace("\u00C2\u00A0", "&nbsp;");
+        return result;
     }
 
     private static void initStyleSheet() {
