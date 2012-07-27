@@ -314,7 +314,7 @@ public class ErlTextHover implements ITextHover,
         }
         String strResult = "";
         if (result.length() > 0) {
-            strResult = HTMLPrinter.docAsHtml(result.toString());
+            strResult = HTMLPrinter.asHtml(result.toString());
         }
         // TODO set element
         return new ErlBrowserInformationControlInput(null, element, strResult,

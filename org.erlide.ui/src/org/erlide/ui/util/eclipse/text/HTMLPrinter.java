@@ -16,13 +16,16 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.erlide.ui.editors.erl.completion.AbstractErlContentAssistProcessor;
+import org.erlide.ui.internal.ErlideUIPlugin;
+import org.osgi.framework.Bundle;
 
 import com.google.common.base.Charsets;
 
@@ -37,7 +40,8 @@ public class HTMLPrinter {
 
     static RGB BG_COLOR_RGB = new RGB(255, 255, 225);
     static RGB FG_COLOR_RGB = new RGB(0, 0, 0);
-    private static Object fontSize;
+    private static FontData fontData;
+    private static URL fgStyleSheet;
 
     static {
         final Display display = Display.getDefault();
@@ -62,6 +66,7 @@ public class HTMLPrinter {
                 }
             }
         }
+        initStyleSheet();
     }
 
     private HTMLPrinter() {
@@ -112,26 +117,6 @@ public class HTMLPrinter {
         }
 
         return null;
-    }
-
-    public static void insertPageProlog(final StringBuffer buffer,
-            final int position, RGB fgRGB, RGB bgRGB, final String styleSheet) {
-        if (fgRGB == null) {
-            fgRGB = FG_COLOR_RGB;
-        }
-        if (bgRGB == null) {
-            bgRGB = BG_COLOR_RGB;
-        }
-
-        final StringBuffer pageProlog = new StringBuffer(300);
-
-        pageProlog.append("<html>"); //$NON-NLS-1$
-
-        appendStyleSheetURL(pageProlog, styleSheet);
-
-        appendColors(pageProlog, fgRGB, bgRGB);
-
-        buffer.insert(position, pageProlog.toString());
     }
 
     private static void appendColors(final StringBuffer pageProlog,
@@ -216,34 +201,35 @@ public class HTMLPrinter {
     }
 
     public static void insertPageProlog(final StringBuffer buffer,
-            final int position) {
-        insertPageProlog(buffer, position, null, null, null);
-    }
-
-    public static void insertPageProlog(final StringBuffer buffer,
             final int position, final URL styleSheetURL) {
         final StringBuffer pageProlog = new StringBuffer(300);
+        updateDialogFontData();
         pageProlog.append("<html>"); //$NON-NLS-1$
         if (styleSheetURL != null) {
             appendStyleSheetURL(pageProlog, styleSheetURL);
         }
-        appendFontSize(pageProlog);
+        appendFontData(pageProlog);
         appendColors(pageProlog, FG_COLOR_RGB, BG_COLOR_RGB);
         buffer.insert(position, pageProlog.toString());
     }
 
-    private static void appendFontSize(final StringBuffer buffer) {
-        updateDialogFontSize();
-        buffer.append("<style type=\"text/css\">html {font-size:")
-                .append(fontSize).append("pt; }</style>");
+    private static void appendFontData(final StringBuffer buffer) {
+        final String size = Integer.toString(fontData.getHeight())
+                + ("carbon".equals(SWT.getPlatform()) ? "px" : "pt"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final boolean bold = (fontData.getStyle() & SWT.BOLD) != 0;
+        final boolean italic = (fontData.getStyle() & SWT.ITALIC) != 0;
+        buffer.append("<style type=\"text/css\">body {font-size:").append(size)
+                .append("; font-family:'").append(fontData.getName())
+                .append("',Arial,serif;font-weight: ")
+                .append(bold ? "bold" : "normal").append("; font-style: ")
+                .append(italic ? "italic" : "normal").append(";}</style>");
     }
 
-    public static void updateDialogFontSize() {
+    public static void updateDialogFontData() {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                fontSize = JFaceResources.getDialogFont().getFontData()[0]
-                        .getHeight();
+                fontData = JFaceResources.getDialogFont().getFontData()[0];
             }
         };
         final Display display = Display.getDefault();
@@ -253,15 +239,6 @@ public class HTMLPrinter {
         } else {
             runnable.run();
         }
-    }
-
-    public static void insertPageProlog(final StringBuffer buffer,
-            final int position, final String styleSheet) {
-        insertPageProlog(buffer, position, null, null, styleSheet);
-    }
-
-    public static void addPageProlog(final StringBuffer buffer) {
-        insertPageProlog(buffer, buffer.length());
     }
 
     public static void addPageEpilog(final StringBuffer buffer) {
@@ -369,13 +346,24 @@ public class HTMLPrinter {
         return comment;
     }
 
-    public static String docAsHtml(final String doc) {
-        final StringBuffer sb = new StringBuffer(doc);
+    public static String asHtml(final String string) {
+        final StringBuffer sb = new StringBuffer(string);
         if (sb.length() > 0) {
-            insertPageProlog(sb, 0,
-                    AbstractErlContentAssistProcessor.fgStyleSheet);
+            insertPageProlog(sb, 0, fgStyleSheet);
             addPageEpilog(sb);
         }
         return sb.toString();
     }
+
+    private static void initStyleSheet() {
+        final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
+        fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
+        if (fgStyleSheet != null) {
+            try {
+                fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
+            } catch (final Exception e) {
+            }
+        }
+    }
+
 }

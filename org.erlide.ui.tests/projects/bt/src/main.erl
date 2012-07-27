@@ -2,10 +2,14 @@
 
 -export([foo/0]).
 
-%% Здравствуйте 
+%% Здравствуйте
+%% 汉语/漢語 中文 ff
 foo() ->
 	io:format("kakak~n"),
-	oki.  
+	oki, "ok",
+	ok, 
+	fun() -> ok end,
+	ok.
 
 bar() ->
-	fo
+	fo.
