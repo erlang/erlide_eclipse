@@ -1,3 +1,14 @@
+List of user visible changes between 0.17.0 and 0.17.1 (20120731)
+
+9f655ec 1066: mark occurrences: not working when file is just opened
+94c41f7 fix NPE in module search when there are symbolic links
+d759f85 272: debugger - still problems with "debugged" tab in launch config. dialog
+8dd00fb use standard OTP css to display edocs
+8ac2b05 1060: handling of utf-8 comments and strings
+d01a3fb 1057: cannot load code on nodes started in embedded mode
+fe6db94 1056 erlang compare - NPE when pasting in compare editor
+822ed8c add option to start backend with an external "full" console; no gui yet, use -Derlide.backend.detached=true
+
 List of user visible changes between 0.16.0 and 0.16.1 (20120617)
 
 f1a6396 fix 91-distributed-debugging
