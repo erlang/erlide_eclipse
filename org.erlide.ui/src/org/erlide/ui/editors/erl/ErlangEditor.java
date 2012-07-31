@@ -1156,7 +1156,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 markOccurencesHandler.fActivationListener);
 
         if (markOccurencesHandler.isMarkingOccurrences()) {
-            markOccurencesHandler.installOccurrencesFinder(false);
+            markOccurencesHandler.installOccurrencesFinder(true);
         }
     }
 
