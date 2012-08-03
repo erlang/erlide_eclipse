@@ -191,8 +191,9 @@ public final class BackendData extends GenericBackendData {
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                    isLongName());
+            // XXX raden nedan funkar inte på mac! varför?
+            // workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+            // isLongName());
             workingCopy
                     .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
