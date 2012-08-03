@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Erlide Common Libraries
 Bundle-SymbolicName: org.erlide.libs;singleton:=true
-Bundle-Version: 1.8.0
+Bundle-Version: 1.8.1
 Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
- org.eclipse.xtend2.lib-2.2.0.jar,
- commons-io-1.4.jar
+ commons-io-1.4.jar,
+ org.eclipse.xtend.lib-2.3.0.jar,
+ org.eclipse.xtext.xbase.lib-2.3.0.jar
 Export-Package: com.ericsson.otp.erlang,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
@@ -16,9 +17,11 @@ Export-Package: com.ericsson.otp.erlang,
  org.apache.commons.io.input,
  org.apache.commons.io.output,
  org.eclipse.jdt.annotation,
+ org.eclipse.xtend.lib,
  org.eclipse.xtend2.lib,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.xbase.lib.internal;x-internal:=true,
+ org.eclipse.xtext.xbase.lib.util,
  org.hamcrest,
  org.hamcrest.beans,
  org.hamcrest.collection,

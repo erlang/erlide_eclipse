@@ -61,7 +61,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
             throws BadLocationException {
         final int offset = c.offset;
         String txt = null;
-        fEditor.reconcileNow();
+        if (fEditor != null) {
+            fEditor.reconcileNow();
+        }
         final IErlMember member = getMemberNearOffset(offset);
         if (member != null) {
             final int start = member.getSourceRange().getOffset();
@@ -98,6 +100,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
     }
 
     private IErlMember getMemberNearOffset(final int offset) {
+        if (fEditor == null) {
+            return null;
+        }
         final IErlElement element = fEditor.getElementAt(offset, false);
         IErlMember member = (IErlMember) element;
         final IErlModule module = fEditor.getModule();

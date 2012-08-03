@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UTFDataFormatException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -45,6 +44,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Charsets;
 
 /**
  * Provides convenient utility methods to other types in this package.
@@ -949,7 +949,7 @@ public final class Util {
      * Returns the given bytes as a char array using a given encoding (null
      * means platform default).
      */
-    public static char[] bytesToChar(final byte[] bytes, final String encoding)
+    public static char[] bytesToChar(final byte[] bytes, final Charset encoding)
             throws IOException {
         return getInputStreamAsCharArray(new ByteArrayInputStream(bytes),
                 bytes.length, encoding);
@@ -985,7 +985,7 @@ public final class Util {
      *             if a problem occured reading the file.
      */
     public static char[] getFileCharContent(final File file,
-            final String encoding) throws IOException {
+            final Charset encoding) throws IOException {
         InputStream stream = null;
         try {
             stream = new BufferedInputStream(new FileInputStream(file));
@@ -1003,7 +1003,7 @@ public final class Util {
     }
 
     public static char[] getFileCharContent(final String path,
-            final String encoding) throws IOException {
+            final Charset encoding) throws IOException {
         InputStream stream = null;
         try {
             stream = new BufferedInputStream(new FileInputStream(path));
@@ -1119,7 +1119,7 @@ public final class Util {
      *             if a problem occured reading the stream.
      */
     public static char[] getInputStreamAsCharArray(final InputStream stream,
-            final int length, final String encoding) throws IOException {
+            final int length, final Charset encoding) throws IOException {
         InputStreamReader reader = null;
         reader = encoding == null ? new InputStreamReader(stream)
                 : new InputStreamReader(stream, encoding);
@@ -1155,7 +1155,7 @@ public final class Util {
 
                 // Do not keep first character for UTF-8 BOM encoding
                 int start = 0;
-                if ("UTF-8".equals(encoding)) { //$NON-NLS-1$
+                if (Charsets.UTF_8.equals(encoding)) {
                     if (contents[0] == 0xFEFF) { // if BOM char then skip
                         contentsLength--;
                         start = 1;
@@ -1181,7 +1181,7 @@ public final class Util {
                 }
                 // Do not keep first character for UTF-8 BOM encoding
                 int start = 0;
-                if ("UTF-8".equals(encoding)) { //$NON-NLS-1$
+                if (Charsets.UTF_8.equals(encoding)) {
                     if (contents[0] == 0xFEFF) { // if BOM char then skip
                         len--;
                         start = 1;
@@ -1276,9 +1276,9 @@ public final class Util {
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
             String result;
-            result = decode(b.binaryValue(), "UTF-8");
+            result = decode(b.binaryValue(), Charsets.UTF_8);
             if (result == null) {
-                result = decode(b.binaryValue(), "ISO-8859-1");
+                result = decode(b.binaryValue(), Charsets.ISO_8859_1);
             }
             if (result == null) {
                 ErlLogger.error("bad binary value in stringValue"
@@ -1290,8 +1290,7 @@ public final class Util {
         return null;
     }
 
-    public static String decode(final byte[] binaryValue, final String encoding) {
-        final Charset charset = Charset.forName(encoding);
+    public static String decode(final byte[] binaryValue, final Charset charset) {
         final CharsetDecoder decoder = charset.newDecoder();
         try {
             final ByteBuffer bbuf = ByteBuffer.wrap(binaryValue);
@@ -1415,11 +1414,8 @@ public final class Util {
             }
         } else if (o instanceof OtpErlangBinary) {
             final OtpErlangBinary b = (OtpErlangBinary) o;
-            try {
-                final String s = new String(b.binaryValue(), "ISO-8859-1");
-                sb.append(s);
-            } catch (final UnsupportedEncodingException e) {
-            }
+            final String s = new String(b.binaryValue(), Charsets.ISO_8859_1);
+            sb.append(s);
         } else if (o != null) {
             sb.append(o.toString());
         }

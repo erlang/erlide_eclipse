@@ -1156,7 +1156,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                 markOccurencesHandler.fActivationListener);
 
         if (markOccurencesHandler.isMarkingOccurrences()) {
-            markOccurencesHandler.installOccurrencesFinder(false);
+            markOccurencesHandler.installOccurrencesFinder(true);
         }
     }
 
@@ -1183,8 +1183,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
     }
 
-    /**
-     */
     private ErlangEditorBracketInserter getBracketInserter() {
         if (fBracketInserter == null) {
             fBracketInserter = new ErlangEditorBracketInserter(this,

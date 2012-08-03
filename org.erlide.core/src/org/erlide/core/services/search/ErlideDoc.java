@@ -43,12 +43,12 @@ public class ErlideDoc {
             final String module, final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
-        ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
+        // ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
         try {
             final OtpErlangObject input = ide.call("erlide_open", "open",
                     "aix", module, offset, ErlideOpen.mkContext(
                             externalModules, null, pathVars, null, imports));
-            ErlLogger.debug("%s", input.toString());
+            // ErlLogger.debug("%s", input.toString());
             res = b.call("erlide_otp_doc", "get_doc", "sxs", module, input,
                     stateDir);
         } catch (final RpcException e) {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.jinterface;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;

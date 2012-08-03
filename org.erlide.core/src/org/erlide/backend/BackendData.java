@@ -40,7 +40,9 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.utils.SystemUtils;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -67,6 +69,26 @@ public final class BackendData extends GenericBackendData {
         setManaged(shouldManageNode());
     }
 
+    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+            final RuntimeInfo info) {
+        super(null, ILaunchManager.RUN_MODE);
+        if (info == null) {
+            throw new IllegalArgumentException(
+                    "BackendData can't be created with null RuntimeInfo");
+        }
+        this.runtimeInfoManager = runtimeInfoManager;
+        setRuntimeName(info.getName());
+        setCookie("erlide");
+        setLongName(true);
+
+        setAutostart(true);
+        setWorkingDir(getDefaultWorkingDir());
+        setExtraArgs(info.getArgs());
+
+        setConsole(true);
+        setLoadAllNodes(false);
+    }
+
     private boolean shouldManageNode() {
         final String name = getNodeName();
         final int atSignIndex = name.indexOf('@');
@@ -87,26 +109,6 @@ public final class BackendData extends GenericBackendData {
                 .getEpmdWatcher().hasLocalNode(shortName);
         final boolean result = isLocal && !isRunning;
         return result;
-    }
-
-    public BackendData(final RuntimeInfoManager runtimeInfoManager,
-            final RuntimeInfo info) {
-        super(null, ILaunchManager.RUN_MODE);
-        if (info == null) {
-            throw new IllegalArgumentException(
-                    "BackendData can't be created with null RuntimeInfo");
-        }
-        this.runtimeInfoManager = runtimeInfoManager;
-        setRuntimeName(info.getName());
-        setCookie("erlide");
-        setLongName(true);
-
-        setAutostart(true);
-        setWorkingDir(getDefaultWorkingDir());
-        setExtraArgs(info.getArgs());
-
-        setConsole(true);
-        setLoadAllNodes(false);
     }
 
     private String getDefaultWorkingDir() {
@@ -178,7 +180,7 @@ public final class BackendData extends GenericBackendData {
             final String name = getNodeName();
             workingCopy = type.newInstance(null, name);
             workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING,
-                    "ISO-8859-1");
+                    Charsets.ISO_8859_1.name());
             workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
                     "org.erlide.core.ertsProcessFactory");
 
@@ -191,6 +193,8 @@ public final class BackendData extends GenericBackendData {
             // !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
                     isLongName());
+            workingCopy
+                    .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
             return workingCopy;
         } catch (final CoreException e) {
@@ -376,12 +380,28 @@ public final class BackendData extends GenericBackendData {
     }
 
     public boolean isInternal() {
-        return launch == null;
+        return getBooleanAttribute(ErlLaunchAttributes.INTERNAL, false);
+    }
+
+    public void setInternal(final boolean value) {
+        config.setAttribute(ErlLaunchAttributes.INTERNAL, value);
     }
 
     public String[] getCmdLine() {
         final RuntimeInfo r = getRuntimeInfo();
         final List<String> result = new ArrayList<String>();
+
+        if (hasDetachedConsole() && !isInternal()) {
+            if (SystemUtils.getInstance().isOnWindows()) {
+                result.add("cmd.exe");
+                result.add("/c");
+                result.add("start");
+            } else {
+                final String command = System.getenv().get("TERM");
+                result.add(command);
+                result.add("-e");
+            }
+        }
 
         String erl = r.getOtpHome() + "/bin/erl";
         if (erl.indexOf(' ') >= 0) {
@@ -417,6 +437,11 @@ public final class BackendData extends GenericBackendData {
             result.addAll(splitQuoted(gotArgs));
         }
         return result.toArray(new String[result.size()]);
+    }
+
+    private boolean hasDetachedConsole() {
+        // TODO add GUI for "detached console"
+        return "true".equals(System.getProperty("erlide.backend.detached"));
     }
 
     /**

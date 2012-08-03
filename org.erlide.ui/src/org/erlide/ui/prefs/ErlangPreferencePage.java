@@ -26,11 +26,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.wb.swt.ResourceManager;
 import org.erlide.backend.BackendUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.ui.internal.ErlideUIPlugin;
-
-import com.swtdesigner.ResourceManager;
 
 public class ErlangPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {

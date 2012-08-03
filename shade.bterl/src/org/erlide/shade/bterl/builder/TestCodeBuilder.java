@@ -45,6 +45,7 @@ import org.erlide.utils.SystemUtils;
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -434,7 +435,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                 final Process makeLinks = DebugPlugin.exec(
                         new String[] { "./make_links" }, dir);
                 final StreamsProxy proxy = new StreamsProxy(makeLinks,
-                        "ISO-8859-1");
+                        Charsets.ISO_8859_1.name());
                 final IStreamListener listener = new IStreamListener() {
                     @Override
                     public void streamAppended(final String text,

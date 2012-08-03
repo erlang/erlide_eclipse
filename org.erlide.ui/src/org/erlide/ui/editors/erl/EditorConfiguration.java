@@ -72,9 +72,9 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
      *            the color manager
      */
     public EditorConfiguration(final IPreferenceStore store,
-            final ErlangEditor leditor, final IColorManager colorManager) {
+            final ErlangEditor editor, final IColorManager colorManager) {
         super(store, colorManager);
-        editor = leditor;
+        this.editor = editor;
     }
 
     /**

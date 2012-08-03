@@ -35,13 +35,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.LogUtil;
-
-import com.swtdesigner.SWTResourceManager;
 
 public class ReportPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {

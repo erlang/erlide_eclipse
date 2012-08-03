@@ -52,6 +52,7 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
@@ -77,7 +78,6 @@ import org.erlide.utils.SystemUtils;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Lists;
-import com.swtdesigner.SWTResourceManager;
 
 /**
  * The main plugin class to be used in the desktop.

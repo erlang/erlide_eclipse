@@ -1,6 +1,5 @@
 package org.erlide.launch.debug.model;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -34,6 +33,7 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
 public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
@@ -55,12 +55,8 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
         if (theValue instanceof OtpErlangString) {
             final OtpErlangString os = (OtpErlangString) theValue;
             final String s = os.stringValue();
-            try {
-                final byte[] b = s.getBytes("ISO-8859-1");
-                if (!looksLikeAscii(b)) {
-                    return new OtpErlangList(s);
-                }
-            } catch (final UnsupportedEncodingException e) {
+            final byte[] b = s.getBytes(Charsets.ISO_8859_1);
+            if (!looksLikeAscii(b)) {
                 return new OtpErlangList(s);
             }
         }
@@ -249,11 +245,10 @@ public class IndexedErlangValue extends ErlangValue implements IIndexedValue {
             final byte[] bytes = b.binaryValue();
             CharBuffer cb = null;
             if (looksLikeAscii(bytes)) {
-                final String[] css = { "UTF-8", "ISO-8859-1" };
-                final String[] tryCharsets = css;
-                for (final String csName : tryCharsets) {
-                    final CharsetDecoder cd = Charset.forName(csName)
-                            .newDecoder();
+                final Charset[] css = { Charsets.UTF_8, Charsets.ISO_8859_1 };
+                final Charset[] tryCharsets = css;
+                for (final Charset cset : tryCharsets) {
+                    final CharsetDecoder cd = cset.newDecoder();
                     cd.onMalformedInput(CodingErrorAction.REPORT);
                     cd.onUnmappableCharacter(CodingErrorAction.REPORT);
                     try {

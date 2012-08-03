@@ -13,6 +13,7 @@ package org.erlide.core.model.util;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,9 +65,9 @@ public final class CoreUtil {
     public static char[] getResourceContentsAsCharArray(final IFile file)
             throws IOException, CoreException {
         // Get encoding from file
-        String encoding = null;
+        Charset encoding = null;
         try {
-            encoding = file.getCharset();
+            encoding = Charset.forName(file.getCharset());
         } catch (final CoreException ce) {
             // do not use any encoding
         }
@@ -74,7 +75,7 @@ public final class CoreUtil {
     }
 
     public static char[] getResourceContentsAsCharArray(final IFile file,
-            final String encoding) throws IOException, CoreException {
+            final Charset encoding) throws IOException, CoreException {
         // Get resource contents
         InputStream stream = null;
         stream = new BufferedInputStream(file.getContents(true));

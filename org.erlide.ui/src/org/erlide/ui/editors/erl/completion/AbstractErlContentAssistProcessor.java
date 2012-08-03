@@ -1,6 +1,5 @@
 package org.erlide.ui.editors.erl.completion;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,8 +11,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -50,7 +47,6 @@ import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.utils.StringUtils;
 import org.erlide.utils.Util;
-import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -95,7 +91,6 @@ public abstract class AbstractErlContentAssistProcessor {
 
     protected final ISourceViewer sourceViewer;
     protected final IErlModule module;
-    protected static URL fgStyleSheet;
 
     protected enum Kinds {
         //@formatter:off
@@ -124,7 +119,6 @@ public abstract class AbstractErlContentAssistProcessor {
         this.sourceViewer = sourceViewer;
         this.module = module;
         this.contentAssistant = contentAssistant;
-        initStyleSheet();
     }
 
     protected List<ICompletionProposal> getModules(final IBackend backend,
@@ -158,17 +152,6 @@ public abstract class AbstractErlContentAssistProcessor {
     }
 
     protected abstract String quoted(String string, Kinds kind);
-
-    private void initStyleSheet() {
-        final Bundle bundle = Platform.getBundle(ErlideUIPlugin.PLUGIN_ID);
-        fgStyleSheet = bundle.getEntry("/edoc.css"); //$NON-NLS-1$
-        if (fgStyleSheet != null) {
-            try {
-                fgStyleSheet = FileLocator.toFileURL(fgStyleSheet);
-            } catch (final Exception e) {
-            }
-        }
-    }
 
     public ICompletionProposal[] computeCompletionProposals(
             final ITextViewer viewer, final int offset) {
@@ -619,13 +602,7 @@ public abstract class AbstractErlContentAssistProcessor {
                 if (f.arity() > 3) {
                     final OtpErlangObject elt = f.elementAt(3);
                     if (elt instanceof OtpErlangString) {
-                        final StringBuffer sb = new StringBuffer(
-                                Util.stringValue(elt));
-                        if (sb.length() > 0) {
-                            HTMLPrinter.insertPageProlog(sb, 0, fgStyleSheet);
-                            HTMLPrinter.addPageEpilog(sb);
-                        }
-                        docStr = sb.toString();
+                        docStr = HTMLPrinter.asHtml(Util.stringValue(elt));
                     }
                 }
 
@@ -752,8 +729,9 @@ public abstract class AbstractErlContentAssistProcessor {
             String funWithParameters = arityOnly ? funWithArity
                     : getNameWithParameters(function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
-            addFunctionCompletion(offset, result, funWithArity, comment,
-                    funWithParameters, offsetsAndLengths);
+            addFunctionCompletion(offset, result, funWithArity,
+                    HTMLPrinter.asHtml(comment), funWithParameters,
+                    offsetsAndLengths);
         }
     }
 

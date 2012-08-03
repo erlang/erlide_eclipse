@@ -114,8 +114,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         this.runtime = runtime;
         this.data = data;
-        codeManager = new CodeManager(this, getErlangVersion(),
-                getRuntimeInfo());
+        codeManager = new CodeManager(this, getRuntimeInfo());
     }
 
     @Override
