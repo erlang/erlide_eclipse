@@ -74,7 +74,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 .getContentProvider();
         contentProvider.setRoot(new DebugTreeItem(null, null));
         erlangDebugTarget = null;
-        final List<IErlModule> interpretedModules = new ArrayList<IErlModule>();
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             final Object o = structuredSelection.getFirstElement();
@@ -113,14 +112,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             } catch (final CoreException e1) {
                 distributed = false;
             }
-            DebugTab.addModules(erlangDebugTarget.getInterpretedModules(),
-                    interpretedModules);
         }
         checkboxTreeViewer.refresh();
-        final DebugTreeItem root = contentProvider.getRoot();
-        if (root != null) {
-            root.setChecked(checkboxTreeViewer, interpretedModules);
-        }
         showViewer();
 
         // updateAction(VARIABLES_FIND_ELEMENT_ACTION);
