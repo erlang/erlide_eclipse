@@ -210,7 +210,7 @@ public final class BuilderHelper {
                         .stringValue();
                 MarkerUtils.addMarker(project, null, project,
                         "Duplicated module name in " + f1 + " and " + f2, 0,
-                        IMarker.SEVERITY_ERROR, "");
+                        IMarker.SEVERITY_WARNING, "");
             }
         } catch (final Exception e) {
             ErlLogger.debug(e);
