@@ -59,6 +59,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     private static final String MARKER_TYPE = "org.erlide.test_support.bterlProblem";
     private static final boolean DEBUG = Boolean.parseBoolean(System
             .getProperty("erlide.test_builder.debug"));
+    private static final boolean DISABLED = Boolean.parseBoolean(System
+            .getProperty("erlide.test_builder.disabled"));
 
     static void addMarker(final IResource file, final String message,
             int lineNumber, final int severity) {
@@ -79,6 +81,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
     protected IProject[] build(final int kind, final Map args,
             final IProgressMonitor monitor) throws CoreException {
         final IProject project = getProject();
+        if (DISABLED) {
+            return null;
+        }
         if (DEBUG) {
             ErlLogger.info("##### start test builder (%s) %s",
                     helper.buildKind(kind), project.getName());
@@ -104,6 +109,9 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
 
     @Override
     protected void clean(final IProgressMonitor monitor) throws CoreException {
+        if (DISABLED) {
+            return;
+        }
         final IProject project = getProject();
         project.deleteMarkers(MARKER_TYPE, true, IResource.DEPTH_INFINITE);
         final Set<BuildResource> resourcesToBuild = getResourcesToBuild(
