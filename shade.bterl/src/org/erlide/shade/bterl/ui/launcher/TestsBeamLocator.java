@@ -11,7 +11,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.BeamLocator;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 public class TestsBeamLocator extends BeamLocator {
     private final File workdir;
@@ -23,7 +23,7 @@ public class TestsBeamLocator extends BeamLocator {
     @Override
     public IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
-        final String beam = SystemUtils.withoutExtension(module) + ".beam";
+        final String beam = SystemConfiguration.withoutExtension(module) + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(final File dir, final String name) {

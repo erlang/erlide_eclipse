@@ -25,7 +25,7 @@ import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PropertiesUtils;
 import org.erlide.core.model.root.IOldErlangProjectProperties;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
@@ -66,7 +66,7 @@ public final class OldErlangProjectProperties implements
             return;
         }
 
-        if (SystemUtils.hasFeatureEnabled("erlide.newprops")) {
+        if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
             try {
                 final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();
                 final ErlProjectInfo npp = builder
@@ -126,7 +126,7 @@ public final class OldErlangProjectProperties implements
         }
         final IEclipsePreferences node = new ProjectScope(project)
                 .getNode(ErlangCore.PLUGIN_ID);
-        if (SystemUtils.hasFeatureEnabled("erlide.newprops")) {
+        if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
             try {
                 final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
                 final ErlProjectInfoBuilder builder = new ErlProjectInfoBuilder();

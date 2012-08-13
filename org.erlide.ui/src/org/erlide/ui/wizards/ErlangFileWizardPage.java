@@ -52,7 +52,7 @@ import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
 import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
 import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -332,7 +332,7 @@ public class ErlangFileWizardPage extends WizardPage {
             final TemplateContextType contextType) {
         String s = getFileName();
         if (ModuleKind.hasModuleExtension(s)) {
-            s = SystemUtils.withoutExtension(s);
+            s = SystemConfiguration.withoutExtension(s);
         }
         ModuleVariableResolver.getDefault().setModule(s);
 

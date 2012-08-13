@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 public class BeamLocator implements IBeamLocator {
 
@@ -22,7 +22,7 @@ public class BeamLocator implements IBeamLocator {
             r.refreshLocal(IResource.DEPTH_ONE, null);
         } catch (final CoreException e) {
         }
-        final String beam = SystemUtils.withoutExtension(module) + ".beam";
+        final String beam = SystemConfiguration.withoutExtension(module) + ".beam";
         return r.getFile(beam);
     }
 

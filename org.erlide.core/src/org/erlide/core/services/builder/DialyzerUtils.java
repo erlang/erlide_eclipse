@@ -26,7 +26,7 @@ import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -211,7 +211,7 @@ public class DialyzerUtils {
                     final IResource resource = m.getResource();
                     files.add(resource.getLocation().toPortableString());
                 } else {
-                    final String moduleName = SystemUtils
+                    final String moduleName = SystemConfiguration
                             .withoutExtension(name);
                     final String beamName = moduleName + ".beam";
                     final IResource beam = ebin.findMember(beamName);

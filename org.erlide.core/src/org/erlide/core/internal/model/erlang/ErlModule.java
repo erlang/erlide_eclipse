@@ -51,7 +51,7 @@ import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -403,7 +403,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public String getModuleName() {
-        return SystemUtils.withoutExtension(getName());
+        return SystemConfiguration.withoutExtension(getName());
     }
 
     public void disposeScanner() {

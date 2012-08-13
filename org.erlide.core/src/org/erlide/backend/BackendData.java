@@ -40,7 +40,7 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
@@ -392,7 +392,7 @@ public final class BackendData extends GenericBackendData {
         final List<String> result = new ArrayList<String>();
 
         if (hasDetachedConsole() && !isInternal()) {
-            if (SystemUtils.getInstance().isOnWindows()) {
+            if (SystemConfiguration.getInstance().isOnWindows()) {
                 result.add("cmd.exe");
                 result.add("/c");
                 result.add("start");

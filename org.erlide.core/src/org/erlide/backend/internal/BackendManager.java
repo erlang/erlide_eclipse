@@ -44,7 +44,7 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.launch.EpmdWatchJob;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
@@ -126,7 +126,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         new ErlangEventHandler("*", null) {
             @Override
             public void handleEvent(final Event event) {
-                if (SystemUtils.hasFeatureEnabled("erlide.eventhandler.debug")) {
+                if (SystemConfiguration.hasFeatureEnabled("erlide.eventhandler.debug")) {
                     ErlLogger.info("erlang event : "
                             + ErlangEventPublisher.dumpEvent(event));
                 }

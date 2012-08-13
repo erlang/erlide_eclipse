@@ -74,7 +74,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.collect.Lists;
@@ -148,14 +148,14 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         ErlLogger.debug("Starting UI " + Thread.currentThread());
         super.start(context);
 
-        if (SystemUtils.getInstance().isDeveloper()) {
+        if (SystemConfiguration.getInstance().isDeveloper()) {
             BackendManagerPopup.init();
         }
 
         ErlLogger.debug("Started UI");
 
         erlConMan = new ErlConsoleManager();
-        if (SystemUtils.getInstance().isDeveloper()) {
+        if (SystemConfiguration.getInstance().isDeveloper()) {
             try {
                 final IBackend ideBackend = BackendCore.getBackendManager()
                         .getIdeBackend();

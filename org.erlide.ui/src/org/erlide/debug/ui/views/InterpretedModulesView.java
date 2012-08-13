@@ -44,7 +44,7 @@ import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTreeItem;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking
@@ -273,7 +273,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
             return;
         }
         final String module = dti.getItem().getName();
-        final String moduleWoExtension = SystemUtils.withoutExtension(module);
+        final String moduleWoExtension = SystemConfiguration.withoutExtension(module);
         final IProject project = dti.getItem().getProject()
                 .getWorkspaceProject();
         final boolean interpret = checked;

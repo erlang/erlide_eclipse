@@ -9,7 +9,7 @@ import org.erlide.core.model.erlang.IErlMacroDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.utils.StringUtils;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -223,7 +223,7 @@ public abstract class ErlangSearchPattern {
             final IErlElement element, final LimitTo limitTo) {
         if (element instanceof IErlFunction) {
             final IErlFunction function = (IErlFunction) element;
-            final String withoutExtension = SystemUtils
+            final String withoutExtension = SystemConfiguration
                     .withoutExtension(function.getModuleName());
             return new FunctionPattern(withoutExtension,
                     function.getFunctionName(), function.getArity(), limitTo,

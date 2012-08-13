@@ -27,7 +27,7 @@ import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -278,7 +278,7 @@ public class ModelUtilsTests {
             // we should find it iff we check externals
             assertEquals(0, moduleNames0.size());
             assertEquals(1, modules1.size());
-            assertEquals(SystemUtils.withoutExtension(externalFileName),
+            assertEquals(SystemConfiguration.withoutExtension(externalFileName),
                     modules1.get(0));
             assertEquals(1, listModules.size());
             assertEquals("lists", listModules.get(0));

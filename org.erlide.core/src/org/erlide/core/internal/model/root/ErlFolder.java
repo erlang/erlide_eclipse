@@ -20,7 +20,7 @@ import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IParent;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 /**
  * Implementation of folder in erlang model
@@ -162,7 +162,7 @@ public class ErlFolder extends Openable implements IErlFolder {
         }
         boolean hasExtension;
         if (name != null) {
-            hasExtension = SystemUtils.hasExtension(name);
+            hasExtension = SystemConfiguration.hasExtension(name);
             for (final IErlModule module : modules) {
                 final String name2 = module.getName();
                 final String moduleName = hasExtension ? name2 : module

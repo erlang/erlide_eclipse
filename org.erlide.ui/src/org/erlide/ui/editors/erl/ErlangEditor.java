@@ -135,7 +135,7 @@ import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 /**
  * The actual editor itself
@@ -387,7 +387,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             setAction("Clean Up...", cleanUpAction);
         }
 
-        if (SystemUtils.getInstance().isTest()) {
+        if (SystemConfiguration.getInstance().isTest()) {
             testAction = new TestAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "Test.", this, getModule());
@@ -407,7 +407,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         markAsStateDependentAction("CallHierarchy", true);
         markAsSelectionDependentAction("CallHierarchy", true);
 
-        if (SystemUtils.getInstance().isClearCacheAvailable()) {
+        if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
             clearCacheAction = new ClearCacheAction(
                     ErlangEditorMessages.getBundleForConstructedKeys(),
                     "ClearCache.", this);
@@ -456,10 +456,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected void editorContextMenuAboutToShow(final IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
 
-        if (SystemUtils.getInstance().isTest()) {
+        if (SystemConfiguration.getInstance().isTest()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         }
-        if (SystemUtils.getInstance().isClearCacheAvailable()) {
+        if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
                     clearCacheAction);
         }

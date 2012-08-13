@@ -65,7 +65,7 @@ import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.CommonUtils;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -1085,7 +1085,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (includeName != null) {
-            final boolean hasExtension = SystemUtils.hasExtension(includeName);
+            final boolean hasExtension = SystemConfiguration.hasExtension(includeName);
             for (final IErlModule module2 : includes) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
@@ -1143,7 +1143,7 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (moduleName != null) {
-            final boolean hasExtension = SystemUtils.hasExtension(moduleName);
+            final boolean hasExtension = SystemConfiguration.hasExtension(moduleName);
             for (final IErlModule module2 : modules) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
