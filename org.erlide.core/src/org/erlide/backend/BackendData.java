@@ -420,12 +420,16 @@ public final class BackendData extends GenericBackendData {
             result.add("-noshell");
         }
 
-        String nameOption = "";
         if (!getNodeName().equals("")) {
-            final boolean useLongName = isLongName()
-                    && !BackendUtils.longNamesDontWork();
-            final String nameTag = useLongName ? "-name" : "-sname";
-            nameOption = getNodeName();
+            String nameTag = "-name";
+            String nameOption = getNodeName();
+            if (SystemConfiguration.getInstance().useLongShortNameHack()) {
+                nameOption += "@localhost";
+            } else {
+                final boolean useLongName = isLongName()
+                        && !BackendUtils.longNamesDontWork();
+                nameTag = useLongName ? "-name" : "-sname";
+            }
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();
