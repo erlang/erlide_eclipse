@@ -21,6 +21,10 @@ if [ $? != 0 ]; then
 	exit $?
 fi
 
+pushd $IN
+zip -r $OUT/org.erlide.site.zip *
+popd
+
 # if DEST=path, copy OUT to DEST
 if [ -d "${DESTINATION}" ]; then
 	# rm -rf ${DESTINATION}/*  # TODO option to clean?
