@@ -1,19 +1,20 @@
-%% ``The contents of this file are subject to the Erlang Public License,
+%%
+%% %CopyrightBegin%
+%% 
+%% Copyright Ericsson AB 1998-2012. All Rights Reserved.
+%% 
+%% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
+%% retrieved online at http://www.erlang.org/.
 %% 
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
 %% 
-%% The Initial Developer of the Original Code is Ericsson Utvecklings AB.
-%% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
-%% AB. All Rights Reserved.''
-%% 
-%%     $Id$
+%% %CopyrightEnd%
 %%
 -module(erlide_dbg_iserver).
 -behaviour(gen_server).
@@ -96,12 +97,10 @@ ensure_started() ->
 %%
 %% Key                        Value
 %% ---                        -----
-%% attributes                 Attr
-%% exports                    Exp
 %% defs                       []
 %% mod_bin                    Binary
+%% mod_raw                    Raw Binary
 %% mod_file                   File
-%% module                     Mod
 %% {Mod,Name,Arity,Exported}  Cs
 %% {'fun',Mod,Index,Uniq}     {Name,Arity,Cs}
 %% Line                       {Pos,PosNL}
@@ -115,7 +114,7 @@ init([]) ->
     process_flag(trap_exit, true),
     global:register_name(?MODULE, self()),
     Db = ets:new(?MODULE, [ordered_set, protected]),
-    {ok, #state{db=Db, auto=false, stack=all}}.
+    {ok, #state{db=Db, auto=false, stack=no_tail}}.
 
 %% Attaching to a process
 handle_call({attached, AttPid, Pid}, _From, State) ->
@@ -153,14 +152,9 @@ handle_call(get_stack_trace, _From, State) ->
 
 %% Retrieving information
 handle_call(snapshot, _From, State) ->
-    Reply = lists:map(fun(Proc) ->
-			      {Proc#proc.pid, Proc#proc.function,
-			       Proc#proc.status, Proc#proc.info}
-		      end,
-		      State#state.procs),
+    Reply = [{Proc#proc.pid, Proc#proc.function,
+	      Proc#proc.status, Proc#proc.info} || Proc <- State#state.procs],
     {reply, Reply, State};
-handle_call(dump, _From, State) ->
-    {reply, {record_info(fields, state), State}, State};
 handle_call({get_meta, Pid}, _From, State) ->
     Reply = case get_proc({pid, Pid}, State#state.procs) of
 		{true, Proc} ->
@@ -169,32 +163,37 @@ handle_call({get_meta, Pid}, _From, State) ->
 		    {error, not_interpreted}
 	    end,
     {reply, Reply, State};
+handle_call({get_attpid, Pid}, _From, State) ->
+    Reply = case get_proc({pid, Pid}, State#state.procs) of
+		{true, Proc} ->
+		    {ok, Proc#proc.attpid};
+		false ->
+		    {error, not_interpreted}
+	    end,
+    {reply, Reply, State};
+    
 
 %% Breakpoint handling
 handle_call({new_break, Point, Options}, _From, State) ->
-    case lists:keysearch(Point, 1, State#state.breaks) of
+    case lists:keymember(Point, 1, State#state.breaks) of
 	false ->
 	    Break = {Point, Options},
 	    send_all([subscriber, meta, attached],
 		     {new_break, Break}, State),
 	    Breaks = keyinsert(Break, 1, State#state.breaks),
 	    {reply, ok, State#state{breaks=Breaks}};
-	{value, _Break} ->
+	true ->
 	    {reply, {error, break_exists}, State}
     end;
 handle_call(all_breaks, _From, State) ->
     {reply, State#state.breaks, State};
 handle_call({all_breaks, Mod}, _From, State) ->
-    Reply = lists:filter(fun({{M,_L}, _Options}) ->
-				 if M==Mod -> true; true -> false end
-			 end,
-			 State#state.breaks),
+    Reply = [Break || Break = {{M, _},_} <- State#state.breaks, M =:= Mod],
     {reply, Reply, State};
 
 %% From Meta process
 handle_call({new_process, Pid, Meta, Function}, _From, State) ->
     link(Meta),
-    log({new_process, {pid, Pid}, {meta, Meta}, Function}),
 
     %% A new, debugged process has been started. Return its status,
     %% ie running (running as usual) or break (stop)
@@ -268,7 +267,7 @@ handle_call({contents, Mod, Pid}, _From, State) ->
     Db = State#state.db,
     [{{Mod, refs}, ModDbs}] = ets:lookup(Db, {Mod, refs}),
     ModDb = if
-		Pid==any -> hd(ModDbs);
+		Pid =:= any -> hd(ModDbs);
 		true ->
 		    lists:foldl(fun(T, not_found) ->
 					[{T, Pids}] = ets:lookup(Db, T),
@@ -282,6 +281,25 @@ handle_call({contents, Mod, Pid}, _From, State) ->
 				ModDbs)
 	    end,
     [{mod_bin, Bin}] = ets:lookup(ModDb, mod_bin),
+    {reply, {ok, Bin}, State};
+handle_call({raw_contents, Mod, Pid}, _From, State) ->
+    Db = State#state.db,
+    [{{Mod, refs}, ModDbs}] = ets:lookup(Db, {Mod, refs}),
+    ModDb = if
+		Pid =:= any -> hd(ModDbs);
+		true ->
+		    lists:foldl(fun(T, not_found) ->
+					[{T, Pids}] = ets:lookup(Db, T),
+					case lists:member(Pid, Pids) of
+					    true -> T;
+					    false -> not_found
+					end;
+				   (_T, T) -> T
+				end,
+				not_found,
+				ModDbs)
+	    end,
+    [{mod_raw, Bin}] = ets:lookup(ModDb, mod_raw),
     {reply, {ok, Bin}, State};
 handle_call({is_interpreted, Mod, Name, Arity}, _From, State) ->
     Db = State#state.db,
@@ -315,7 +333,7 @@ handle_cast({subscribe, Sub}, State) ->
 
 %% Attaching to a process
 handle_cast({attach, Pid, {Mod, Func, Args}}, State) ->
-    %% Simply spawn process, which should call erlide_int:attached(Pid)
+    %% Simply spawn process, which should call int:attached(Pid)
     spawn(Mod, Func, [Pid | Args]),
     {noreply, State};
 
@@ -333,15 +351,15 @@ handle_cast({set_stack_trace, Flag}, State) ->
 %% Retrieving information
 handle_cast(clear, State) ->
     Procs = lists:filter(fun(#proc{status=Status}) ->
-				 if Status==exit -> false; true -> true end
+				 Status =/= exit
 			 end,
 			 State#state.procs),
     {noreply, State#state{procs=Procs}};
 
 %% Breakpoint handling
 handle_cast({delete_break, Point}, State) ->
-    case lists:keysearch(Point, 1, State#state.breaks) of
-	{value, _Break} ->
+    case lists:keymember(Point, 1, State#state.breaks) of
+	true ->
 	    send_all([subscriber, meta, attached],
 		     {delete_break, Point}, State),
 	    Breaks = lists:keydelete(Point, 1, State#state.breaks),
@@ -350,8 +368,8 @@ handle_cast({delete_break, Point}, State) ->
 	    {noreply, State}
     end;
 handle_cast({break_option, Point, Option, Value}, State) ->
-    case lists:keysearch(Point, 1, State#state.breaks) of
-	{value, {Point, Options}} ->
+    case lists:keyfind(Point, 1, State#state.breaks) of
+	{Point, Options} ->
 	    N = case Option of
 		    status -> 1;
 		    action -> 2;
@@ -372,7 +390,7 @@ handle_cast(no_break, State) ->
 handle_cast({no_break, Mod}, State) ->
     send_all([subscriber, meta, attached], {no_break, Mod}, State),
     Breaks = lists:filter(fun({{M, _L}, _O}) ->
-				  if M==Mod -> false; true -> true end
+				  M =/= Mod
 			  end,
 			  State#state.breaks),
     {noreply, State#state{breaks=Breaks}};
@@ -382,7 +400,7 @@ handle_cast({set_status, Meta, Status, Info}, State) ->
     {true, Proc} = get_proc({meta, Meta}, State#state.procs),
     send_all(subscriber, {new_status, Proc#proc.pid, Status, Info}, State),
     if
-	Status==break ->
+	Status =:= break ->
 	    auto_attach(break, State#state.auto, Proc);
 	true -> ignore
     end,
@@ -397,14 +415,13 @@ handle_cast({set_exit_info, Meta, ExitInfo}, State) ->
 
 %% Code loading
 handle_cast({delete, Mod}, State) ->
-    log({delete, Mod}),
+
     %% Remove the ETS table with information about the module
     Db = State#state.db,
     case ets:lookup(Db, {Mod, refs}) of
 	[] -> % Mod is not interpreted
 	    {noreply, State};
 	[{{Mod, refs}, ModDbs}] ->
-            log(deleting),
 	    ets:delete(Db, {Mod, refs}),
 	    AllPids = lists:foldl(
 			fun(ModDb, PidsAcc) ->
@@ -500,11 +517,10 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal functions
 %%====================================================================
 
-auto_attach(Why, Auto, Proc) when is_record(Proc, proc) ->
-    case Proc#proc.attpid of
-	AttPid when is_pid(AttPid) -> ignore;
-	undefined ->
-	    auto_attach(Why, Auto, Proc#proc.pid)
+auto_attach(Why, Auto, #proc{attpid = Attpid, pid = Pid}) ->
+    case Attpid of
+	undefined -> auto_attach(Why, Auto, Pid);
+	_ when is_pid(Attpid) -> ignore
     end;
 auto_attach(Why, Auto, Pid) when is_pid(Pid) ->
     case Auto of
@@ -519,7 +535,7 @@ auto_attach(Why, Auto, Pid) when is_pid(Pid) ->
 
 keyinsert(Tuple1, N, [Tuple2|Tuples]) ->
     if
-	element(N, Tuple1)<element(N, Tuple2) ->
+	element(N, Tuple1) < element(N, Tuple2) ->
 	    [Tuple1, Tuple2|Tuples];
 	true ->
 	    [Tuple2 | keyinsert(Tuple1, N, Tuples)]
@@ -550,7 +566,7 @@ send_all([], _Msg, _State) -> ok;
 send_all(subscriber, Msg, State) ->
     send_all(State#state.subs, Msg);
 send_all(meta, Msg, State) ->
-    Metas = lists:map(fun(Proc) -> Proc#proc.meta end, State#state.procs),
+    Metas = [Proc#proc.meta || Proc <- State#state.procs],
     send_all(Metas, Msg);
 send_all(attached, Msg, State) ->
     AttPids= mapfilter(fun(Proc) ->
@@ -574,12 +590,7 @@ get_proc({Type, Pid}, Procs) ->
 		meta -> #proc.meta;
 		attpid -> #proc.attpid
 	    end,
-    case lists:keysearch(Pid, Index, Procs) of
-	{value, Proc} -> {true, Proc};
-	false -> false
+    case lists:keyfind(Pid, Index, Procs) of
+	false -> false;
+	Proc -> {true, Proc}
     end.
-
-log(_) ->
-    ok.
-%% log(E) ->
-%%     erlide_debug:log(E).
