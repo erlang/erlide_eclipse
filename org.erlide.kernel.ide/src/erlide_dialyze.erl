@@ -18,6 +18,7 @@
 -export([dialyze/5, format_warning/1, check_plt/1, get_plt_files/1, update_plt_with_additional_paths/2,
          start_dialyze/6, start_update_plt_with_additional_paths/3]).
 
+-compile({no_auto_import, [error/1, error/2]}).
 
 %%
 %% API Functions
