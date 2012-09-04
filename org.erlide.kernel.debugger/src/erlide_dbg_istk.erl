@@ -54,12 +54,14 @@ all_frames() ->
     all_frames(get(?STACK)).
 
 all_frames(Stack) -> 
-    Stack. %    [erlide_frame(E) || E <- Stack].
+    [erlide_frame(E) || E <- Stack].
 
 erlide_frame(#e{mfa={M, F, As}, line=Wh, bindings=Bs, level=Lvl}) ->
     {{M, F, args2arity(As)}, Wh, erl_eval:bindings(Bs), Lvl};
 erlide_frame(#e{mfa={F, As}, line=Wh, bindings=Bs, level=Lvl}) ->
-    {{F, args2arity(As)}, Wh, erl_eval:binding(Bs), Lvl}.
+    {{F, args2arity(As)}, Wh, erl_eval:binding(Bs), Lvl};
+erlide_frame(E) ->
+    E.
 
 all_modules_on_stack() ->
     all_modules_on_stack(get(stack)).
