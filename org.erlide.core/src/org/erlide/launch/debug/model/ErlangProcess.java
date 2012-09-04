@@ -243,44 +243,46 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
     }
 
     public void setStackFrames(final String module, final int line,
-            final OtpErlangList erlStackFrames, OtpErlangList bs) {
+            final OtpErlangList erlStackFrames, final OtpErlangList bs) {
         stackFrames = new ArrayList<IStackFrame>();
         final IDebugTarget target = getDebugTarget();
         stackFrames.add(new ErlangStackFrame(module, this, target, line, null,
                 bs, 0));
         for (final OtpErlangObject o : erlStackFrames) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
-            final OtpErlangTuple ml;
-            if (t.elementAt(0) instanceof OtpErlangTuple) {
-                ml = (OtpErlangTuple) t.elementAt(0);
-            } else if (t.elementAt(1) instanceof OtpErlangTuple) {
-                ml = (OtpErlangTuple) t.elementAt(1);
+            final OtpErlangTuple mfa;
+            final OtpErlangObject el0 = t.elementAt(0);
+            final OtpErlangObject el1 = t.elementAt(1);
+            if (el0 instanceof OtpErlangTuple) {
+                mfa = (OtpErlangTuple) el0;
+            } else if (el1 instanceof OtpErlangTuple) {
+                mfa = (OtpErlangTuple) el1;
             } else {
-                ml = t;
+                mfa = t;
             }
-            final OtpErlangObject ml0 = ml.elementAt(0);
             int stackFrameNo;
-            if (!(ml0 instanceof OtpErlangAtom)) {
-                ErlLogger.debug("%s", ml0);
+            final OtpErlangObject mfa0 = mfa.elementAt(0);
+            if (!(mfa0 instanceof OtpErlangAtom)) {
+                ErlLogger.debug("%s", mfa0);
             }
-            final OtpErlangAtom m = (OtpErlangAtom) ml0;
-            final OtpErlangLong l = (OtpErlangLong) ml.elementAt(1);
+            final OtpErlangAtom m = (OtpErlangAtom) mfa0;
+            final OtpErlangLong l = (OtpErlangLong) t.elementAt(1);
+            final OtpErlangList bindings = (OtpErlangList) t.elementAt(2);
             final OtpErlangLong n = (OtpErlangLong) t.elementAt(3);
-            try {
-                stackFrameNo = n.intValue();
-            } catch (final OtpErlangRangeException e) {
-                stackFrameNo = -1;
-            }
-            bs = (OtpErlangList) t.elementAt(2);
-            final String mod = m.atomValue();
             int lin;
             try {
                 lin = l.intValue();
             } catch (final OtpErlangRangeException e) {
                 lin = -1;
             }
+            final String mod = m.atomValue();
+            try {
+                stackFrameNo = n.intValue();
+            } catch (final OtpErlangRangeException e) {
+                stackFrameNo = -1;
+            }
             stackFrames.add(new ErlangStackFrame(mod, this, target, lin, null,
-                    bs, stackFrameNo));
+                    bindings, stackFrameNo));
         }
     }
 
