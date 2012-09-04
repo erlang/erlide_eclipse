@@ -69,12 +69,8 @@ all_modules_on_stack() ->
 all_modules_on_stack(Stack) ->
     [M || {_X, {{M, _F, _As}, _Wh, _Bs}} <- Stack].
 
-args2arity([{M,F,As}|Entries]) when is_list(As) ->
-    [{M,F,length(As)}|args2arity(Entries)];
-args2arity([Entry|Entries]) ->
-    [Entry|args2arity(Entries)];
-args2arity([]) ->
-    [].
+args2arity(As) when is_list(As) ->
+    length(As).
 
 
 
