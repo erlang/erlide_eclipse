@@ -252,9 +252,6 @@ debugged_cmd(Cmd, Bs, Ieval) ->
     Debugged ! {sys, self(), {command,Cmd}},
     meta_loop(Debugged, Bs, Ieval).
 
-max(A, B) when A < B ->B;
-max(A, _) -> A.
-
 meta_loop(Debugged, Bs, #ieval{level=Le} = Ieval) ->
     receive
 
