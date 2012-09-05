@@ -37,7 +37,7 @@
 %% loaded. This is achieved as this function is called from
 %% erlide_dbg_iserver. We are suspended until the module has been loaded.
 %%--------------------------------------------------------------------
--spec load_mod(Mod, file:filename(), binary(), tid()) ->
+-spec load_mod(Mod, file:filename(), binary(), ets:tid()) ->
         {'ok', Mod} when is_subtype(Mod, atom()).
 
 load_mod(Mod, File, Binary, Db) ->
@@ -49,7 +49,7 @@ load_mod(Mod, File, Binary, Db) ->
 	    What
     end.
 
--spec load_mod1(atom(), file:filename(), binary(), tid()) -> no_return().
+-spec load_mod1(atom(), file:filename(), binary(), ets:tid()) -> no_return().
 
 load_mod1(Mod, File, Binary, Db) ->
     store_module(Mod, File, Binary, Db),
