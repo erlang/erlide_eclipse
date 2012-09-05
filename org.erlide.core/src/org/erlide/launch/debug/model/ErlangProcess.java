@@ -222,7 +222,7 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         final OtpErlangTuple t = (OtpErlangTuple) savedStackTrace.elementAt(2);
         final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(1);
         final OtpErlangList stackTrace = (OtpErlangList) t2.elementAt(1);
-        for (int i = 1, n = stackTrace.arity(); i < n; ++i) {
+        for (int i = 2, n = stackTrace.arity(); i < n; ++i) {
             final OtpErlangTuple frame = (OtpErlangTuple) stackTrace
                     .elementAt(i);
             final OtpErlangAtom m = (OtpErlangAtom) frame.elementAt(0);
@@ -242,32 +242,47 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
         stackFrames = new ArrayList<IStackFrame>();
     }
 
-    public void setStackFrames(String module, int line,
-            final OtpErlangList erlStackFrames, OtpErlangList bs) {
+    public void setStackFrames(final String module, final int line,
+            final OtpErlangList erlStackFrames, final OtpErlangList bs) {
         stackFrames = new ArrayList<IStackFrame>();
         final IDebugTarget target = getDebugTarget();
+        stackFrames.add(new ErlangStackFrame(module, this, target, line, null,
+                bs, 0));
         for (final OtpErlangObject o : erlStackFrames) {
             final OtpErlangTuple t = (OtpErlangTuple) o;
-            final OtpErlangTuple ml = (OtpErlangTuple) t.elementAt(1);
-            final OtpErlangObject ml0 = ml.elementAt(0);
+            final OtpErlangTuple mfa;
+            final OtpErlangObject el0 = t.elementAt(0);
+            final OtpErlangObject el1 = t.elementAt(1);
+            if (el0 instanceof OtpErlangTuple) {
+                mfa = (OtpErlangTuple) el0;
+            } else if (el1 instanceof OtpErlangTuple) {
+                mfa = (OtpErlangTuple) el1;
+            } else {
+                mfa = t;
+            }
             int stackFrameNo;
-            final OtpErlangAtom m = (OtpErlangAtom) ml0;
-            final OtpErlangLong l = (OtpErlangLong) ml.elementAt(1);
+            final OtpErlangObject mfa0 = mfa.elementAt(0);
+            if (!(mfa0 instanceof OtpErlangAtom)) {
+                ErlLogger.debug("%s", mfa0);
+            }
+            final OtpErlangAtom m = (OtpErlangAtom) mfa0;
+            final OtpErlangLong l = (OtpErlangLong) t.elementAt(1);
+            final OtpErlangList bindings = (OtpErlangList) t.elementAt(2);
             final OtpErlangLong n = (OtpErlangLong) t.elementAt(3);
+            int lin;
+            try {
+                lin = l.intValue();
+            } catch (final OtpErlangRangeException e) {
+                lin = -1;
+            }
+            final String mod = m.atomValue();
             try {
                 stackFrameNo = n.intValue();
             } catch (final OtpErlangRangeException e) {
                 stackFrameNo = -1;
             }
-            stackFrames.add(new ErlangStackFrame(module, this, target, line,
-                    null, bs, stackFrameNo));
-            bs = (OtpErlangList) t.elementAt(2);
-            module = m.atomValue();
-            try {
-                line = l.intValue();
-            } catch (final OtpErlangRangeException e) {
-                line = -1;
-            }
+            stackFrames.add(new ErlangStackFrame(mod, this, target, lin, null,
+                    bindings, stackFrameNo));
         }
     }
 
@@ -331,30 +346,33 @@ public class ErlangProcess extends ErlangDebugElement implements IThread {
 
     @Override
     public IBreakpoint[] getBreakpoints() {
-        if (!stackFrames.isEmpty()) {
-            final IStackFrame f = stackFrames.get(0);
-            if (f instanceof ErlangStackFrame) {
-                final ErlangStackFrame topFrame = (ErlangStackFrame) f;
-                final IBreakpointManager breakpointManager = DebugPlugin
-                        .getDefault().getBreakpointManager();
-                final IBreakpoint[] breakpoints = breakpointManager
-                        .getBreakpoints();
+        IStackFrame top = null;
+        try {
+            top = getTopStackFrame();
+        } catch (final DebugException e1) {
+            ; // can never happen
+        }
+        if (top instanceof ErlangStackFrame) {
+            final ErlangStackFrame topFrame = (ErlangStackFrame) top;
+            final IBreakpointManager breakpointManager = DebugPlugin
+                    .getDefault().getBreakpointManager();
+            final IBreakpoint[] breakpoints = breakpointManager
+                    .getBreakpoints();
 
-                for (final IBreakpoint breakpoint : breakpoints) {
-                    if (breakpoint instanceof ErlangLineBreakpoint) {
-                        final ErlangLineBreakpoint lineBreakpoint = (ErlangLineBreakpoint) breakpoint;
-                        try {
-                            if (lineBreakpoint.getModule().equals(
-                                    topFrame.getModule())
-                                    && lineBreakpoint.getLineNumber() == topFrame
-                                            .getLineNumber()) {
-                                return new IBreakpoint[] { lineBreakpoint };
-                            }
-                        } catch (final DebugException e) {
-                            ErlLogger.warn(e);
-                        } catch (final CoreException e) {
-                            ErlLogger.warn(e);
+            for (final IBreakpoint breakpoint : breakpoints) {
+                if (breakpoint instanceof ErlangLineBreakpoint) {
+                    final ErlangLineBreakpoint lineBreakpoint = (ErlangLineBreakpoint) breakpoint;
+                    try {
+                        if (lineBreakpoint.getModule().equals(
+                                topFrame.getModule())
+                                && lineBreakpoint.getLineNumber() == topFrame
+                                        .getLineNumber()) {
+                            return new IBreakpoint[] { lineBreakpoint };
                         }
+                    } catch (final DebugException e) {
+                        ErlLogger.warn(e);
+                    } catch (final CoreException e) {
+                        ErlLogger.warn(e);
                     }
                 }
             }

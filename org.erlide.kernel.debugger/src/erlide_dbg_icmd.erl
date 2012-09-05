@@ -1,19 +1,20 @@
-%% ``The contents of this file are subject to the Erlang Public License,
+%%
+%% %CopyrightBegin%
+%% 
+%% Copyright Ericsson AB 1998-2011. All Rights Reserved.
+%% 
+%% The contents of this file are subject to the Erlang Public License,
 %% Version 1.1, (the "License"); you may not use this file except in
 %% compliance with the License. You should have received a copy of the
 %% Erlang Public License along with this software. If not, it can be
-%% retrieved via the world wide web at http://www.erlang.org/.
+%% retrieved online at http://www.erlang.org/.
 %% 
 %% Software distributed under the License is distributed on an "AS IS"
 %% basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 %% the License for the specific language governing rights and limitations
 %% under the License.
 %% 
-%% The Initial Developer of the Original Code is Ericsson Utvecklings AB.
-%% Portions created by Ericsson are Copyright 1999, Ericsson Utvecklings
-%% AB. All Rights Reserved.''
-%% 
-%%     $Id$
+%% %CopyrightEnd%
 %%
 -module(erlide_dbg_icmd).
 
@@ -22,12 +23,11 @@
 
 %% User control of process execution and settings
 -export([step/1, next/1, continue/1, finish/1, skip/1, timeout/1,
-	 stop/1, drop_to_frame/2]).
+	 stop/1]).
 -export([eval/2]).
 -export([set_variable_value/4]).
 -export([set/3, get/3]).
 -export([handle_msg/4]).
-
 
 %% Library functions for attached process handling
 -export([tell_attached/1]).
@@ -49,12 +49,16 @@
 %%                  | Le
 %% specifies if the process should break.
 %%--------------------------------------------------------------------
+
+%% Common Test adaptation
+cmd({call_remote,0,ct_line,line,_As}, Bs, _Ieval) -> 
+    Bs;
+
 cmd(Expr, Bs, Ieval) ->
     cmd(Expr, Bs, get(next_break), Ieval).
 
 %% Evaluation should break
 cmd(Expr, Bs, break, Ieval) ->
-    log({break0}),
     break(Expr, Bs, Ieval);
 %% Evaluation should continue, unless there is a breakpoint at
 %% the current line
@@ -62,8 +66,7 @@ cmd(Expr, Bs, running, #ieval{level=Le,module=M}=Ieval) ->
     Line = element(2, Expr),
     case break_p(M, Line, Le, Bs) of
 	true ->
-            log({icmd_break_true, M, Line, Le, Bs}),
-	    put_next_break(break),
+	    put(next_break, break),
 	    break(Expr, Bs, Ieval);
 	false ->
 	    handle_cmd(Bs, running, Ieval)
@@ -77,8 +80,7 @@ cmd(Expr, Bs, Next, #ieval{level=Le}=Ieval) when is_integer(Next),
 %% Evaluation has returned to call level Next, break
 cmd(Expr, Bs, Next, #ieval{level=Le}=Ieval) when is_integer(Next),
                                                  Next>=Le ->
-    log({break1}),
-    put_next_break(break),
+    put(next_break, break),
     break(Expr, Bs, Ieval).
 
 %% break_p(Mod, Line, Le, Bs) -> true | false
@@ -88,12 +90,12 @@ break_p(Mod, Line, Le, Bs) ->
     case lists:keysearch({Mod, Line}, 1, get(breakpoints)) of
 	{value, {_Point, [active, Action, _, Cond]}} ->
 	    case get(user_eval) of
-                [{Line, Le}|_] -> false;
+		[{Line, Le}|_] -> false;
 		_ ->
 		    Bool = case Cond of
 			       null -> true;
 			       {CM, CN} ->
-				   try apply(CM, CN, [Bs]) of
+				   try CM:CN(Bs) of
 				       true -> true;
 				       false -> false;
 				       _Term -> false
@@ -127,7 +129,6 @@ break_p(Mod, Line, Le, Bs) ->
 %% Called whenever evaluation enters break mode, informs attached
 %% process and erlide_dbg_iserver
 break(Expr, Bs, #ieval{level=Le,module=M}=Ieval) ->
-    log({icmd_break, Expr, Bs, Ieval, erlang:get_stacktrace()}),
     Line = element(2, Expr),
     erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{M,Line}}),
     tell_attached({break_at,M,Line,Le}),
@@ -147,11 +148,10 @@ handle_cmd(Bs, break, #ieval{level=Le}=Ieval) ->
 	    tell_attached(running),
 	    case Cmd of
 		step -> Bs;
-		next -> log({break, ?LINE}), put_next_break(Le), Bs;
-		continue -> log({break, ?LINE}), put_next_break(running), Bs;
-		finish -> log({break, ?LINE}), put_next_break(Le-1), Bs;
-		skip -> {skip, Bs};
-		{drop_down, Level} -> {drop_down, Level}
+		next -> put(next_break, Le), Bs;
+		continue -> put(next_break, running), Bs;
+		finish -> put(next_break, Le-1), Bs;
+		skip -> {skip, Bs}
 	    end;
 	{user, {eval, Cmd}} ->
 	    Bs1 = eval_nonrestricted(Cmd, Bs, Ieval),
@@ -167,7 +167,7 @@ handle_cmd(Bs, Status, Ieval) ->
 	    erlide_dbg_ieval:check_exit_msg(Msg, Bs, Ieval),
 	    handle_msg(Msg, Status, Bs, Ieval),
 	    handle_cmd(Bs, Status, Ieval)
-    after 0 ->
+    after 0 -> 
 	    Bs
     end.
 
@@ -180,12 +180,10 @@ next(Meta) ->     Meta ! {user, {cmd, next}}.
 continue(Meta) -> Meta ! {user, {cmd, continue}}.
 finish(Meta) ->   Meta ! {user, {cmd, finish}}.
 skip(Meta) ->     Meta ! {user, {cmd, skip}}.
+
 timeout(Meta) ->  Meta ! {user, timeout}.
 
 stop(Meta) ->     Meta ! {user, {cmd, stop}}.
-
-drop_to_frame(Meta, StackFrameNum) -> 
-    Meta ! {user, {cmd, drop_to_frame, StackFrameNum}}.
 
 set_variable_value(Meta, Variable, Value, SP) ->
     eval(Meta, {no_module, Variable++"="++Value, SP}),
@@ -254,12 +252,11 @@ handle_int_msg({attached, AttPid}, Status, _Bs,
 
     %% Update process dictionary
     put(attached, AttPid),
-    log({break, ?LINE, AttPid}),
-    put_next_break(break),
+    put(next_break, break),
 
     %% Tell attached process in which module evalution is located
     if
-	Le==1 ->
+	Le =:= 1 ->
 	    tell_attached({attached, undefined, -1, get(trace)});
 	true ->
 	    tell_attached({attached, M, Line, get(trace)}),
@@ -278,16 +275,16 @@ handle_int_msg({attached, AttPid}, Status, _Bs,
 handle_int_msg(detached, _Status, _Bs, _Ieval) ->
     %% Update process dictionary
     put(attached, undefined),
-    put_next_break(running),
+    put(next_break, running),
     put(trace, false); % no need for tracing if there is no AttPid
 handle_int_msg({old_code,Mod}, Status, Bs,
 	       #ieval{level=Le,module=M}=Ieval) ->
     if
-	Status==idle, Le==1 ->
+	Status =:= idle, Le =:= 1 ->
 	    erase([Mod|db]),
 	    put(cache, []);
 	true ->
-	    case erlide_dbg_ieval:in_use_p(Mod, M) of
+	    case erlide_dbg_istk:in_use_p(Mod, M) of
 		true ->
 		    %% A call to Mod is on the stack (or might be),
 		    %% so we must terminate.
@@ -326,11 +323,9 @@ handle_int_msg(stop, exit_at, _Bs, _Ieval) ->
 handle_user_msg({cmd, stop}, Status, _Bs, _Ieval) ->
     case lists:member(Status, [running, wait_at, wait_after_at]) of
 	true ->
-            log({break02, Status}),
-	    put_next_break(break);
+	    put(next_break, break);
 	false when is_integer(Status); is_tuple(Status) ->
-            log({break03, Status}),
-	    put_next_break(break);
+	    put(next_break, break);
 	false -> % idle | exit_at (| break)
 	    ignore
     end;
@@ -338,7 +333,7 @@ handle_user_msg({cmd, continue}, Status, _Bs, _Ieval) ->
     %% Allow leaving break mode when waiting in a receive
     case lists:member(Status, [wait_at, wait_after_at]) of
 	true ->
-	    put_next_break(running);
+	    put(next_break, running);
 	false ->
 	    ignore
     end;
@@ -362,11 +357,13 @@ handle_user_msg({get, all_modules_on_stack, From, _}, _Status, _Bs, _Ieval) ->
 handle_user_msg({get,bindings,From,SP}, _Status, Bs, _Ieval) ->
     reply(From, bindings, bindings(Bs, SP));
 handle_user_msg({get,stack_frame,From,{Dir,SP}}, _Status, _Bs,_Ieval) ->
-    reply(From, stack_frame, erlide_dbg_ieval:stack_frame(Dir, SP));
+    reply(From, stack_frame, erlide_dbg_istk:stack_frame(Dir, SP));
 handle_user_msg({get,messages,From,_}, _Status, _Bs, _Ieval) ->
     reply(From, messages, messages());
-handle_user_msg({get,backtrace,From,N}, _Status, _Bs, _Ieval) ->
-    reply(From, backtrace, erlide_dbg_ieval:backtrace(N)).
+handle_user_msg({get,backtrace,From,N}, _Status, _Bs, Ieval) ->
+    reply(From, backtrace, erlide_dbg_istk:backtrace(N, Ieval));
+handle_user_msg(A, _, _, _) ->
+    erlang:display({handle_user_msg, A}).
 
 all_modules_on_stack() ->
     erlide_dbg_ieval:all_modules_on_stack().
@@ -378,9 +375,9 @@ set_stack_trace(true) ->
     set_stack_trace(all);
 set_stack_trace(Flag) ->    
     if
-	Flag==false ->
+	Flag =:= false ->
 	    put(stack, []);
-	Flag==no_tail; Flag==all ->
+	Flag =:= no_tail; Flag =:= all ->
 	    ignore
     end,
     put(trace_stack, Flag),
@@ -392,17 +389,16 @@ reply(From, Tag, Reply) ->
 bindings(Bs, nostack) ->
     Bs;
 bindings(Bs, SP) ->
-    case erlide_dbg_ieval:stack_level() of
-	Le when SP>Le ->
+    case erlide_dbg_istk:stack_level() of
+	Le when SP > Le ->
 	    Bs;
 	_ ->
-	    erlide_dbg_ieval:bindings(SP)
+	    erlide_dbg_istk:bindings(SP)
     end.
 
 messages() ->
     {messages, Msgs} = erlang:process_info(get(self), messages),
     Msgs.
-
 
 %%====================================================================
 %% Evaluating expressions within process context
@@ -411,20 +407,20 @@ messages() ->
 eval_restricted({From,_Mod,Cmd,SP}, Bs) ->
     case catch parse_cmd(Cmd, 1) of
 	{'EXIT', _Reason} ->
-	    From ! {self(), {eval_rsp, {error, 'Parse error'}}};
+	    From ! {self(), {eval_rsp, 'Parse error'}};
 	[{var,_,Var}] ->
 	    Bs2 = bindings(Bs, SP),
 	    Res = case get_binding(Var, Bs2) of
 		      {value, Value} -> Value;
-		      unbound -> {error, unbound}
+		      unbound -> unbound
 		  end,
 	    From ! {self(), {eval_rsp, Res}};
 	_Forms ->
 	    Rsp = 'Only possible to inspect variables',
-	    From ! {self(), {eval_rsp, {error, Rsp}}}
+	    From ! {self(), {eval_rsp, Rsp}}
     end.
 
-eval_nonrestricted({From,Mod,Cmd,SP}, Bs, #ieval{level=Le}) when SP<Le->
+eval_nonrestricted({From,Mod,Cmd,SP}, Bs, #ieval{level=Le}) when SP < Le->
     %% Evaluate in stack
     eval_restricted({From, Mod, Cmd, SP}, Bs),
     Bs;
@@ -449,33 +445,32 @@ eval_nonrestricted({From, _Mod, Cmd, _SP}, Bs,
 
 eval_nonrestricted_1({match,_,{var,_,Var},Expr}, Bs, Ieval) ->
     {value,Res,Bs2} = 
-	erlide_dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{last_call=false}),
-    Bs3 = case lists:keysearch(Var, 1, Bs) of
-	      {value, {Var,_Value}} ->
+	erlide_dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{top=false}),
+    Bs3 = case lists:keyfind(Var, 1, Bs) of
+	      {Var,_Value} ->
 		  lists:keyreplace(Var, 1, Bs2, {Var,Res});
 	      false -> [{Var,Res} | Bs2]
 	  end,
     {Res,Bs3};
 eval_nonrestricted_1({var,_,Var}, Bs, _Ieval) ->
-    Res = case lists:keysearch(Var, 1, Bs) of
-	      {value, {Var, Value}} -> Value;
+    Res = case lists:keyfind(Var, 1, Bs) of
+	      {Var, Value} -> Value;
 	      false -> unbound
 	  end,
     {Res,Bs};
 eval_nonrestricted_1(Expr, Bs, Ieval) ->
     {value,Res,Bs2} = 
-	erlide_dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{last_call=false}),
+	erlide_dbg_ieval:eval_expr(Expr, Bs, Ieval#ieval{top=false}),
     {Res,Bs2}.
 
 mark_running(LineNo, Le) ->
-    put_next_break(running),
+    put(next_break, running),
     put(user_eval, [{LineNo, Le} | get(user_eval)]),
     erlide_dbg_iserver:cast(get(int), {set_status, self(), running, {}}),
     tell_attached(running).
 
 mark_break(Cm, LineNo, Le) ->
-    log({break04, Cm, LineNo, Le}),
-    put_next_break(break),
+    put(next_break, break),
     put(user_eval, tl(get(user_eval))),
     tell_attached({break_at, Cm, LineNo, Le}),
     erlide_dbg_iserver:cast(get(int), {set_status,self(),break,{Cm,LineNo}}).
@@ -485,13 +480,11 @@ parse_cmd(Cmd, LineNo) ->
     {ok,Forms} = erl_parse:parse_exprs(Tokens),
     Forms.
 
-
 %%====================================================================
 %% Library functions for attached process handling
 %%====================================================================
 
 tell_attached(Msg) ->
-    %%erlang:display({tell, get(attached), Msg}),
     case get(attached) of
 	undefined -> ignore;
 	AttPid ->
@@ -503,20 +496,7 @@ tell_attached(Msg) ->
 %%====================================================================
 
 get_binding(Var, Bs) ->
-    case lists:keysearch(Var, 1, Bs) of
-	{value, {Var, Value}} -> {value, Value};
+    case lists:keyfind(Var, 1, Bs) of
+	{Var, Value} -> {value, Value};
 	false -> unbound
     end.
-
-put_next_break(V) ->
-    put(next_break, V).
-
-log(_) ->
-    ok.
-%% log(E) ->
-%%     erlide_debug:log(E).
-
-
-
-
-
