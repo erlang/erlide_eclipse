@@ -12,7 +12,7 @@ package org.erlide.wrangler.refactoring.backend;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
@@ -86,7 +86,7 @@ public class ChangedFile {
         final TextFileChange change = new TextFileChange(oldPath, eclipseRep);
         // change.setSaveMode(TextFileChange.FORCE_SAVE);
         final File tf = new File(oldPath);
-        final ArrayList<TextEdit> edits = ChangesetMaker.createEdits(tf,
+        final List<TextEdit> edits = ChangesetMaker.createEdits(tf,
                 newFileContent);
         final MultiTextEdit multiEdit = new MultiTextEdit();
         if (edits.size() != 0) {

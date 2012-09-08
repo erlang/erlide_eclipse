@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.erlide.wrangler.refactoring.backend;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Interface for handling RpcMessages which contains information about a
@@ -26,6 +26,6 @@ public interface IRefactoringRpcMessage extends IRpcMessage {
      * 
      * @return changed files list
      */
-    public ArrayList<ChangedFile> getRefactoringChangeset();
+    public List<ChangedFile> getRefactoringChangeset();
 
 }

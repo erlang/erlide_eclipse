@@ -11,7 +11,7 @@
 package org.erlide.wrangler.refactoring.core;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,12 +36,12 @@ import org.erlide.wrangler.refactoring.util.WranglerUtils;
  * @version %I%, %G%
  */
 public abstract class WranglerRefactoring extends Refactoring {
-    protected ArrayList<ChangedFile> changedFiles;
+    protected List<ChangedFile> changedFiles;
 
     /**
      * @return the changed files by the refactoring
      */
-    public ArrayList<ChangedFile> getChangedFiles() {
+    public List<ChangedFile> getChangedFiles() {
         return changedFiles;
     }
 

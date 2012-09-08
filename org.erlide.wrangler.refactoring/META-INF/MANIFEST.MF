@@ -44,8 +44,7 @@ Export-Package:
  org.erlide.wrangler.refactoring.ui.validator,
  org.erlide.wrangler.refactoring.ui.wizard,
  org.erlide.wrangler.refactoring.ui.wizardpages;x-internal:=true,
- org.erlide.wrangler.refactoring.util,
- org.incava.util.diff;x-internal:=true
+ org.erlide.wrangler.refactoring.util
 Bundle-Localization: plugin
 Bundle-Vendor: UKC
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
