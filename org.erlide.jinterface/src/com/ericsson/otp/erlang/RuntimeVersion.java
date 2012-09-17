@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
+import org.erlide.jinterface.ErlLogger;
 
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 
@@ -188,11 +189,14 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
         String result = null;
         final File boot = new File(path + "/bin/start.boot");
         try {
+            ErlLogger.debug("reading " + boot.getAbsolutePath());
             final FileInputStream is = new FileInputStream(boot);
             try {
                 is.skip(14);
-                readstring(is);
+                final String tmp = readstring(is);
+                ErlLogger.debug("tmp = " + tmp);
                 result = readstring(is);
+                ErlLogger.debug("result = " + result);
             } finally {
                 is.close();
             }
@@ -253,8 +257,11 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public static RuntimeVersion getVersion(final String homeDir) {
+        ErlLogger.debug("get version from " + homeDir);
         final String label = RuntimeVersion.getRuntimeVersion(homeDir);
+        ErlLogger.debug("label=" + label);
         final String micro = RuntimeVersion.getMicroRuntimeVersion(homeDir);
+        ErlLogger.debug("micro=" + micro);
         return new RuntimeVersion(label, micro);
     }
 

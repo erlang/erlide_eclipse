@@ -202,6 +202,8 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
+            ErlLogger.debug("set erlide runtime: " + runtime.getName() + " "
+                    + runtime.getVersion());
             erlideRuntime = runtime;
             notifyListeners();
             // this creates infinite recursion!
@@ -332,18 +334,22 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         });
         if (list.size() > 0) {
             final String firstName = list.get(0).getName();
+            ErlLogger.debug("default runtime = " + defaultRuntimeName);
             if (defaultRuntimeName == null) {
                 setDefaultRuntime(firstName);
+                ErlLogger.debug("default runtime * = " + defaultRuntimeName);
             }
 
             // the erlide backend is the most recent stable version
             for (final RuntimeInfo info : list) {
                 if (info.getVersion().isStable()) {
+                    ErlLogger.debug("erlide runtime = " + info.getName());
                     setErlideRuntime(info);
                     break;
                 }
             }
             if (erlideRuntime == null) {
+                ErlLogger.debug("erlide runtime * = " + defaultRuntimeName);
                 setErlideRuntime(getDefaultRuntime());
             }
         }
