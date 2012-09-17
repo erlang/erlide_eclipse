@@ -729,9 +729,10 @@ public abstract class AbstractErlContentAssistProcessor {
             String funWithParameters = arityOnly ? funWithArity
                     : getNameWithParameters(function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
-            addFunctionCompletion(offset, result, funWithArity,
-                    HTMLPrinter.asHtml(comment), funWithParameters,
-                    offsetsAndLengths);
+            final String htmlComment = comment != null ? HTMLPrinter
+                    .asHtml(comment) : "";
+            addFunctionCompletion(offset, result, funWithArity, htmlComment,
+                    funWithParameters, offsetsAndLengths);
         }
     }
 

@@ -32,8 +32,10 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
             throws ErlModelException {
         final IBackend backend = CoreUtil.getBuildOrIdeBackend(getProject()
                 .getWorkspaceProject());
-        final List<String> libList = ErlideOpen.getLibDirs(backend);
-        addExternalEntries(pm, libList, backend);
+        if (backend != null) {
+            final List<String> libList = ErlideOpen.getLibDirs(backend);
+            addExternalEntries(pm, libList, backend);
+        }
         return true;
     }
 

@@ -40,7 +40,7 @@ import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
 import org.erlide.utils.ErlUtils;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -454,7 +454,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
                         }
                     }
                 };
-                if (SystemUtils.hasFeatureEnabled("erlide.make_links.snoop")) {
+                if (SystemConfiguration.hasFeatureEnabled("erlide.make_links.snoop")) {
                     proxy.getOutputStreamMonitor().addListener(listener);
                     proxy.getErrorStreamMonitor().addListener(listener);
                 }

@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SourcePathProvider;
+import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -184,6 +185,11 @@ public class BackendUtils {
         if (erlangLongName == null) {
             erlangLongName = BackendUtils.detectErlangHostName(true);
             erlangShortName = BackendUtils.detectErlangHostName(false);
+            ErlLogger.debug("detected longName=" + erlangLongName
+                    + "  shortName=" + erlangShortName);
+        }
+        if (SystemConfiguration.getInstance().useLongShortNameHack()) {
+            return "localhost";
         }
         return longName ? erlangLongName : erlangShortName;
     }

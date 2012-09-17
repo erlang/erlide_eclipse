@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -182,7 +183,7 @@ public final class WranglerUtils {
     }
 
     static private void findModulesRecursively(final IResource res,
-            final ArrayList<IFile> files) throws CoreException {
+            final List<IFile> files) throws CoreException {
         if (res instanceof IContainer) {
             final IContainer c = (IContainer) res;
             for (final IResource r : c.members()) {
@@ -471,7 +472,7 @@ public final class WranglerUtils {
      * @param changedFiles
      *            changed files
      */
-    public static void notifyErlide(final ArrayList<ChangedFile> changedFiles) {
+    public static void notifyErlide(final List<ChangedFile> changedFiles) {
 
         final IErlModel model = ErlModelManager.getErlangModel();
         for (final ChangedFile f : changedFiles) {

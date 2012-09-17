@@ -44,7 +44,7 @@ import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
 import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTreeItem;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking
@@ -74,7 +74,6 @@ public class InterpretedModulesView extends AbstractDebugView implements
                 .getContentProvider();
         contentProvider.setRoot(new DebugTreeItem(null, null));
         erlangDebugTarget = null;
-        final List<IErlModule> interpretedModules = new ArrayList<IErlModule>();
         if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             final Object o = structuredSelection.getFirstElement();
@@ -113,14 +112,8 @@ public class InterpretedModulesView extends AbstractDebugView implements
             } catch (final CoreException e1) {
                 distributed = false;
             }
-            DebugTab.addModules(erlangDebugTarget.getInterpretedModules(),
-                    interpretedModules);
         }
         checkboxTreeViewer.refresh();
-        final DebugTreeItem root = contentProvider.getRoot();
-        if (root != null) {
-            root.setChecked(checkboxTreeViewer, interpretedModules);
-        }
         showViewer();
 
         // updateAction(VARIABLES_FIND_ELEMENT_ACTION);
@@ -273,7 +266,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
             return;
         }
         final String module = dti.getItem().getName();
-        final String moduleWoExtension = SystemUtils.withoutExtension(module);
+        final String moduleWoExtension = SystemConfiguration.withoutExtension(module);
         final IProject project = dti.getItem().getProject()
                 .getWorkspaceProject();
         final boolean interpret = checked;

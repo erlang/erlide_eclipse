@@ -202,6 +202,8 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
+            ErlLogger.debug("set erlide runtime: " + runtime.getName() + " "
+                    + runtime.getVersion());
             erlideRuntime = runtime;
             notifyListeners();
             // this creates infinite recursion!

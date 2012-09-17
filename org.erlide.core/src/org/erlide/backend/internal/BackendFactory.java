@@ -25,7 +25,7 @@ import org.erlide.backend.IErlRuntime;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
 
@@ -86,7 +86,7 @@ public class BackendFactory implements IBackendFactory {
         final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             final boolean registerForDebug = data.getLaunch() != null
-                    || SystemUtils.getInstance().isDeveloper();
+                    || SystemConfiguration.getInstance().isDeveloper();
             return launchConfig.launch(ILaunchManager.RUN_MODE,
                     new NullProgressMonitor(), false, registerForDebug);
         } catch (final CoreException e) {
@@ -103,10 +103,10 @@ public class BackendFactory implements IBackendFactory {
         result.setAutostart(true);
         result.setConsole(false);
         result.setLongName(false);
-        if (SystemUtils.getInstance().isDeveloper()) {
+        if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
-        if (SystemUtils.getInstance().isMonitoringIdeBackend()) {
+        if (SystemConfiguration.getInstance().isMonitoringIdeBackend()) {
             result.setMonitored(true);
         }
         result.setInternal(true);

@@ -1,3 +1,16 @@
+List of user visible changes between 0.17.1 and 0.17.2 (20120913)
+
+1281950 fix NPE in autocompletion (#74)
+cd5d7be fix wrangler stuff; usage of ArrayList and extra incava.Diff classes
+c25ace7 correct spec to use ets:tid() instead of tid()
+e81d25f Debugger from R15B01 merged into erlide
+670fbd1 fix NPE when erl fil is not in a project (shade 2577)
+745bb69 update minimum supported Erlang version to R14
+4e9b467 avoid NPE at shutdown after debugging
+e7fe1da use 'localhost' as hostname when erlide.longshort.hack is defined
+887603e add back check for erlide.test_builder.disabled, that had been removed by mistake
+3e00c28 having duplicate module names is now a warning
+
 List of user visible changes between 0.17.0 and 0.17.1 (20120731)
 
 9f655ec 1066: mark occurrences: not working when file is just opened

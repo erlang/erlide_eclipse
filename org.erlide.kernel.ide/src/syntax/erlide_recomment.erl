@@ -710,11 +710,6 @@ tree_node_attrs(#tree{attrs = Attrs}) ->
 %% =====================================================================
 %% General utility functions
 
-%% Just the generic "maximum" function
-
-max(X, Y) when X > Y -> X;
-max(_, Y) -> Y.
-
 %% Return the least positive integer of X and Y, or zero if none of them
 %% are positive. (This is necessary for computing minimum source line
 %% numbers, since zero (or negative) numbers may occur, but they

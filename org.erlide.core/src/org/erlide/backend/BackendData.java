@@ -40,7 +40,7 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
@@ -191,8 +191,10 @@ public final class BackendData extends GenericBackendData {
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                    isLongName());
+            if (!SystemConfiguration.getInstance().useLongShortNameHack()) {
+                workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+                        isLongName());
+            }
             workingCopy
                     .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
@@ -392,7 +394,7 @@ public final class BackendData extends GenericBackendData {
         final List<String> result = new ArrayList<String>();
 
         if (hasDetachedConsole() && !isInternal()) {
-            if (SystemUtils.getInstance().isOnWindows()) {
+            if (SystemConfiguration.getInstance().isOnWindows()) {
                 result.add("cmd.exe");
                 result.add("/c");
                 result.add("start");
@@ -418,12 +420,16 @@ public final class BackendData extends GenericBackendData {
             result.add("-noshell");
         }
 
-        String nameOption = "";
         if (!getNodeName().equals("")) {
-            final boolean useLongName = isLongName()
-                    && !BackendUtils.longNamesDontWork();
-            final String nameTag = useLongName ? "-name" : "-sname";
-            nameOption = getNodeName();
+            String nameTag = "-name";
+            String nameOption = getNodeName();
+            if (SystemConfiguration.getInstance().useLongShortNameHack()) {
+                nameOption += "@localhost";
+            } else {
+                final boolean useLongName = isLongName()
+                        && !BackendUtils.longNamesDontWork();
+                nameTag = useLongName ? "-name" : "-sname";
+            }
             result.add(nameTag);
             result.add(nameOption);
             final String cky = getCookie();

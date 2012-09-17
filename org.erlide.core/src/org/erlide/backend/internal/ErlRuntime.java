@@ -24,7 +24,7 @@ import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcHelper;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -234,7 +234,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                             + user
                             + "_<timestamp>.txt has been created in your home directory, "
                             + "please consider reporting the problem. \n"
-                            + (SystemUtils
+                            + (SystemConfiguration
                                     .hasFeatureEnabled("erlide.ericsson.user") ? ""
                                     : "http://www.assembla.com/spaces/erlide/support/tickets");
                     MessageReporter.showError(bigMsg, ReporterPosition.MODAL);

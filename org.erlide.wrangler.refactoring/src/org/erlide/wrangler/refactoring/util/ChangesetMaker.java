@@ -36,9 +36,9 @@ public final class ChangesetMaker {
     static private File inFile;
     // static private File outFile;
 
-    static Diff algorithm;
-    static private ArrayList<Character> inFileCharArray;
-    static private ArrayList<Character> outFileCharArray;
+    static Diff<Character> algorithm;
+    static private List<Character> inFileCharArray;
+    static private List<Character> outFileCharArray;
     static private List<Difference> differencesList;
 
     /**
@@ -48,9 +48,9 @@ public final class ChangesetMaker {
      * @return list of chars
      */
     @SuppressWarnings("boxing")
-    private static ArrayList<Character> convertArrayToArrayList(
+    private static List<Character> convertArrayToArrayList(
             final char[] charArray) {
-        final ArrayList<Character> result = new ArrayList<Character>();
+        final List<Character> result = new ArrayList<Character>();
         for (final char c : charArray) {
             result.add(c);
         }
@@ -121,12 +121,11 @@ public final class ChangesetMaker {
      * @throws IOException
      *             if the file could not be read
      */
-    @SuppressWarnings("unchecked")
-    static public ArrayList<TextEdit> createEdits(final File in,
-            final String out) throws IOException {
+    static public List<TextEdit> createEdits(final File in, final String out)
+            throws IOException {
         inFile = in;
 
-        final ArrayList<TextEdit> edits = new ArrayList<TextEdit>();
+        final List<TextEdit> edits = new ArrayList<TextEdit>();
         inFileCharArray = null;
         outFileCharArray = null;
 
@@ -134,7 +133,7 @@ public final class ChangesetMaker {
         outFileCharArray = new ArrayList<Character>();
         outFileCharArray = convertArrayToArrayList(out.toCharArray());
 
-        algorithm = new Diff(inFileCharArray, outFileCharArray);
+        algorithm = new Diff<Character>(inFileCharArray, outFileCharArray);
 
         differencesList = algorithm.diff();
         for (final Difference d : differencesList) {
@@ -207,10 +206,9 @@ public final class ChangesetMaker {
      *             if any i/o error occurs this exception is raised.
      */
     @SuppressWarnings("boxing")
-    static private ArrayList<Character> readFile(final File file)
-            throws IOException {
+    static private List<Character> readFile(final File file) throws IOException {
 
-        final ArrayList<Character> result = new ArrayList<Character>();
+        final List<Character> result = new ArrayList<Character>();
         final BufferedReader input = new BufferedReader(new FileReader(file));
 
         try {

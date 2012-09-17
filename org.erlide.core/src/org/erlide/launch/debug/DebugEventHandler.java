@@ -28,7 +28,7 @@ class DebugEventHandler {
     private void handleMessage(final OtpErlangObject message) throws Exception {
         // TODO More events from erlide_dbg_mon...
 
-        // System.out.println("@@@>> " + message);
+        ErlLogger.debug("@@@>> " + message);
         final OtpErlangTuple t = (OtpErlangTuple) message;
         final OtpErlangObject el0 = t.elementAt(0);
         if (el0 instanceof OtpErlangAtom) {

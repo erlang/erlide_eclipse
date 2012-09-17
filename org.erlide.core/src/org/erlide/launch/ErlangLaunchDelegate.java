@@ -40,7 +40,7 @@ import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 import com.google.common.collect.Maps;
 
@@ -189,8 +189,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     private void setEnvironment(final BackendData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
-        if (!SystemUtils.getInstance().isOnWindows()
-                && SystemUtils.getInstance().hasSpecialTclLib()) {
+        if (!SystemConfiguration.getInstance().isOnWindows()
+                && SystemConfiguration.getInstance().hasSpecialTclLib()) {
             env.put("TCL_LIBRARY", "/usr/share/tcl/tcl8.4/");
         }
         if (data.getEnv() != null) {

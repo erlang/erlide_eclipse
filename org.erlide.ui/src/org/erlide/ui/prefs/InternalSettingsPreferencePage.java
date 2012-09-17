@@ -12,12 +12,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.backend.BackendCore;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 
 public class InternalSettingsPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
 
-    private SystemUtils su;
+    private SystemConfiguration su;
     private Button btnMonitorIdeBackend;
     private Button btnTestMode;
     private Button btnDeveloperMode;
@@ -30,7 +30,7 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
 
     @Override
     public void init(final IWorkbench workbench) {
-        su = SystemUtils.getInstance();
+        su = SystemConfiguration.getInstance();
     }
 
     @Override

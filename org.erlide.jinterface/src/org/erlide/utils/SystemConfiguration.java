@@ -1,10 +1,10 @@
 package org.erlide.utils;
 
-public class SystemUtils {
+public class SystemConfiguration {
 
-    private static SystemUtils instance = new SystemUtils();
+    private static SystemConfiguration instance = new SystemConfiguration();
 
-    public static SystemUtils getInstance() {
+    public static SystemConfiguration getInstance() {
         return instance;
     }
 
@@ -15,8 +15,9 @@ public class SystemUtils {
     private final boolean onWindows;
     private boolean monitoringIdeBackend;
     private int monitoringInterval = 300;
+    private boolean useLongShortNameHack = false;
 
-    private SystemUtils() {
+    private SystemConfiguration() {
         mustDefineTclLib = hasFeatureEnabled("erlide.ericsson.user");
         developer = hasFeatureEnabled("erlide.devel");
         test = hasFeatureEnabled("erlide.test");
@@ -24,6 +25,7 @@ public class SystemUtils {
         onWindows = System.getProperty("os.name").toLowerCase()
                 .contains("windows");
         monitoringIdeBackend = hasFeatureEnabled("erlide.monitor.ide");
+        useLongShortNameHack = hasFeatureEnabled("erlide.longshort.hack");
     }
 
     public boolean isDeveloper() {
@@ -69,6 +71,10 @@ public class SystemUtils {
             return name;
         }
         return name.substring(0, i);
+    }
+
+    public boolean useLongShortNameHack() {
+        return this.useLongShortNameHack;
     }
 
     // only to be used internally

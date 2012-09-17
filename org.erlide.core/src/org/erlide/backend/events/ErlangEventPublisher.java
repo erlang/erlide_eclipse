@@ -80,6 +80,9 @@ public class ErlangEventPublisher {
     public void unsetEventAdmin() {
         final BundleContext ctx = FrameworkUtil.getBundle(
                 ErlangEventPublisher.class).getBundleContext();
+        if (ctx == null) {
+            return;
+        }
         final ServiceReference ref = ctx.getServiceReference(EventAdmin.class
                 .getName());
         if (ref == null) {

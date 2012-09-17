@@ -30,7 +30,7 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlUtils;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Tuple;
 import org.erlide.utils.Util;
 
@@ -473,7 +473,7 @@ public final class MarkerUtils {
 
     public static void createTaskMarkers(final IProject project,
             final IResource resource) {
-        if (SystemUtils.hasFeatureEnabled("erlide.skip.tasks")) {
+        if (SystemConfiguration.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
         final IErlProject p = ErlModelManager.getErlangModel().findProject(

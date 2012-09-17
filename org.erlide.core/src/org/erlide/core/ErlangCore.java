@@ -32,7 +32,7 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcMonitor;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
 import org.erlide.utils.EncodingUtils;
-import org.erlide.utils.SystemUtils;
+import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.osgi.service.prefs.BackingStoreException;
@@ -76,10 +76,10 @@ public final class ErlangCore {
 
         ErlLogger.debug("Starting CORE " + Thread.currentThread());
         String dev = "(" + EncodingUtils.getEncoding() + ") ";
-        if (SystemUtils.getInstance().isDeveloper()) {
+        if (SystemConfiguration.getInstance().isDeveloper()) {
             dev += " developer version ***";
         }
-        if (SystemUtils.getInstance().isTest()) {
+        if (SystemConfiguration.getInstance().isTest()) {
             dev += " test ***";
         }
         final String versionBanner = "*** starting Erlide v" + version
