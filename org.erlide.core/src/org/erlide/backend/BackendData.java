@@ -191,10 +191,8 @@ public final class BackendData extends GenericBackendData {
             workingCopy.setAttribute(ErlLaunchAttributes.COOKIE, getCookie());
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
-            if (!SystemConfiguration.getInstance().useLongShortNameHack()) {
-                workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                        isLongName());
-            }
+            workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+                    isLongName());
             workingCopy
                     .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
@@ -421,14 +419,11 @@ public final class BackendData extends GenericBackendData {
         }
 
         if (!getNodeName().equals("")) {
-            String nameTag = "-name";
+            final String nameTag = isLongName() ? "-name" : "-sname";
             String nameOption = getNodeName();
-            if (SystemConfiguration.getInstance().useLongShortNameHack()) {
-                nameOption += "@localhost";
-            } else {
-                final boolean useLongName = isLongName()
-                        && !BackendUtils.longNamesDontWork();
-                nameTag = useLongName ? "-name" : "-sname";
+            if (!nameOption.contains("@")) {
+                nameOption += "@"
+                        + BackendUtils.getErlangHostName(isLongName());
             }
             result.add(nameTag);
             result.add(nameOption);
