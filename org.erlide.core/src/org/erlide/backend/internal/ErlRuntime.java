@@ -237,7 +237,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                             + (SystemConfiguration
                                     .hasFeatureEnabled("erlide.ericsson.user") ? ""
                                     : "http://www.assembla.com/spaces/erlide/support/tickets");
-                    MessageReporter.showError(bigMsg, ReporterPosition.MODAL);
+                    MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
                     reported = true;
                 }
                 try {
