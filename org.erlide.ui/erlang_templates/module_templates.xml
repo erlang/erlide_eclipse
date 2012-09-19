@@ -3,6 +3,7 @@
 
 -module(${module}).
 -behaviour(application).
+-export([start/2, stop/1]).
 
 %% ====================================================================
 %% API functions
@@ -14,19 +15,21 @@ ${exported_functions}
 %% ====================================================================
 %% Behavioural functions
 %% ====================================================================
--export([start/2, stop/1]).
 
 %% start/2
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/apps/kernel/application.html#Module:start-2&quot;&gt;application:start/2&lt;/a&gt;
--spec start(Type :: normal | {takeover, Node} | {failover, Node}, Args :: term()) -&gt; {ok, Pid :: pid()} | {ok, Pid :: pid(), State :: term()} | {error, Reason :: term()}.
+-spec start(Type :: normal | {takeover, Node} | {failover, Node}, Args :: term()) -&gt;
+	{ok, Pid :: pid()}
+	| {ok, Pid :: pid(), State :: term()}
+	| {error, Reason :: term()}.
 %% ====================================================================
 start(Type, StartArgs) -&gt;
     case &apos;TopSupervisor&apos;:start_link(StartArgs) of
-        {ok, Pid} -&gt;
-            {ok, Pid};
-        Error -&gt;
-            Error
+		{ok, Pid} -&gt;
+			{ok, Pid};
+		Error -&gt;
+			Error
     end.
 
 %% stop/1
@@ -59,6 +62,7 @@ ${local_functions}
 
 -module(${module}).
 -behaviour(gen_event).
+-export([init/1, handle_event/2, handle_call/2, handle_info/2, terminate/2, code_change/3]).
 
 %% ====================================================================
 %% API functions
@@ -71,16 +75,17 @@ ${exported_functions}
 %% Behavioural functions 
 %% ====================================================================
 -record(state, {}).
--export([init/1, handle_event/2, handle_call/2, handle_info/2, terminate/2, code_change/3]).
 
 %% init/1
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_event.html#Module:init-1&quot;&gt;gen_event:init/1&lt;/a&gt;
 -spec init(InitArgs) -&gt; Result when
-    InitArgs :: Args | {Args, Term :: term()},
-    Args :: term(),
-    Result :: {ok, State} | {ok, State, hibernate} | {error, Reason :: term()},
-    State :: term().
+	InitArgs :: Args | {Args, Term :: term()},
+	Args :: term(),
+	Result :: {ok, State}
+			| {ok, State, hibernate}
+			| {error, Reason :: term()},
+	State :: term().
 %% ====================================================================
 init([]) -&gt;
     {ok, #state{}}.
@@ -90,10 +95,13 @@ init([]) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_event.html#Module:handle_event-2&quot;&gt;gen_event:handle_event/2&lt;/a&gt;
 -spec handle_event(Event :: term(), State :: term()) -&gt; Result when
-    Result :: {ok, NewState} | {ok, NewState, hibernate} | {swap_handlers, Args1, NewState, Handler2, Args2} | remove_handler,
-    NewState :: term(), Args1 :: term(), Args2 :: term(),
-    Handler2 :: Module2 | {Module2, Id :: term()},
-    Module2 :: atom().
+	Result :: {ok, NewState}
+			| {ok, NewState, hibernate}
+			| {swap_handlers, Args1, NewState, Handler2, Args2}
+			| remove_handler,
+	NewState :: term(), Args1 :: term(), Args2 :: term(),
+	Handler2 :: Module2 | {Module2, Id :: term()},
+	Module2 :: atom().
 %% ====================================================================
 handle_event(Event, State) -&gt;
     {ok, State}.
@@ -103,11 +111,14 @@ handle_event(Event, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_event.html#Module:handle_call-2&quot;&gt;gen_event:handle_call/2&lt;/a&gt;
 -spec handle_call(Request :: term(), State :: term()) -&gt; Result when
-    Result :: {ok, Reply, NewState} | {ok, Reply, NewState, hibernate} | {swap_handler, Reply, Args1, NewState, Handler2, Args2} | {remove_handler, Reply},
-    Reply :: term(),
-    NewState :: term(), Args1 :: term(), Args2 :: term(),
-    Handler2 :: Module2 | {Module2, Id :: term()},
-    Module2 :: atom().
+	Result :: {ok, Reply, NewState}
+			| {ok, Reply, NewState, hibernate}
+			| {swap_handler, Reply, Args1, NewState, Handler2, Args2}
+			| {remove_handler, Reply},
+	Reply :: term(),
+	NewState :: term(), Args1 :: term(), Args2 :: term(),
+	Handler2 :: Module2 | {Module2, Id :: term()},
+	Module2 :: atom().
 %% ====================================================================
 handle_call(Request, State) -&gt;
     Reply = ok,
@@ -118,10 +129,13 @@ handle_call(Request, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_event.html#Module:handle_info-2&quot;&gt;gen_event:handle_info/2&lt;/a&gt;
 -spec handle_info(Info :: term(), State :: term()) -&gt; Result when
-    Result :: {ok, NewState} | {ok, NewState, hibernate} | {swap_handler, Args1, NewState, Handler2, Args2} | remove_handler,
-    NewState :: term(), Args1 :: term(), Args2 :: term(),
-    Handler2 :: Module2 | {Module2, Id :: term()},
-    Module2 :: atom().
+	Result :: {ok, NewState}
+			| {ok, NewState, hibernate}
+			| {swap_handler, Args1, NewState, Handler2, Args2}
+			| remove_handler,
+	NewState :: term(), Args1 :: term(), Args2 :: term(),
+	Handler2 :: Module2 | {Module2, Id :: term()},
+	Module2 :: atom().
 %% ====================================================================
 handle_info(Info, State) -&gt;
     {ok, State}.
@@ -131,8 +145,13 @@ handle_info(Info, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_event.html#Module:terminate-2&quot;&gt;gen_event:terminate/2&lt;/a&gt;
 -spec terminate(Arg, State :: term()) -&gt; term() when
-    Arg :: Args | {stop, Reason} | stop | remove_handler | {error, {&apos;EXIT&apos;, Reason}} | {error, Term :: term()},
-    Args :: term(), Reason :: term().
+	Arg :: Args
+		| {stop, Reason}
+		| stop
+		| remove_handler
+		| {error, {&apos;EXIT&apos;, Reason}}
+		| {error, Term :: term()},
+	Args :: term(), Reason :: term().
 %% ====================================================================
 terminate(Arg, State) -&gt;
     ok.
@@ -142,8 +161,8 @@ terminate(Arg, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_event.html#Module:code_change-3&quot;&gt;gen_event:code_change/3&lt;/a&gt;
 -spec code_change(OldVsn, State :: term(), Extra :: term()) -&gt; {ok, NewState :: term()} when
-    OldVsn :: Vsn | {down, Vsn},
-    Vsn :: term().
+	OldVsn :: Vsn | {down, Vsn},
+	Vsn :: term().
 %% ====================================================================
 code_change(OldVsn, State, Extra) -&gt;
     {ok, State}.
@@ -158,6 +177,7 @@ ${local_functions}
 
 -module(${module}).
 -behaviour(gen_fsm).
+-export([init/1, state_name/2, state_name/3, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 
 %% ====================================================================
 %% API functions
@@ -170,17 +190,20 @@ ${exported_functions}
 %% Behavioural functions
 %% ====================================================================
 -record(state, {}).
--export([init/1, state_name/2, state_name/3, handle_event/3, handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 
 %% init/1
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:init-1&quot;&gt;gen_fsm:init/1&lt;/a&gt;
 -spec init(Args :: term()) -&gt; Result when
-    Result :: {ok, StateName, StateData} | {ok, StateName, StateData, Timeout} | {ok, StateName, StateData, hibernate} | {stop, Reason} | ignore,
-    StateName :: atom(),
-    StateData :: term(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: term().
+	Result :: {ok, StateName, StateData}
+			| {ok, StateName, StateData, Timeout}
+			| {ok, StateName, StateData, hibernate}
+			| {stop, Reason}
+			| ignore,
+	StateName :: atom(),
+	StateData :: term(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: term().
 %% ====================================================================
 init([]) -&gt;
     {ok, state_name, #state{}}.
@@ -190,11 +213,14 @@ init([]) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:StateName-2&quot;&gt;gen_fsm:StateName/2&lt;/a&gt;
 -spec state_name(Event :: timeout | term(), StateData :: term()) -&gt; Result when
-    Result :: {next_state, NextStateName, NewStateData} | {next_state, NextStateName, NewStateData, Timeout} | {next_state, NextStateName, NewStateData, hibernate} | {stop, Reason, NewStateData},
-    NextStateName :: atom(),
-    NewStateData :: term(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: term().
+	Result :: {next_state, NextStateName, NewStateData}
+			| {next_state, NextStateName, NewStateData, Timeout}
+			| {next_state, NextStateName, NewStateData, hibernate}
+			| {stop, Reason, NewStateData},
+	NextStateName :: atom(),
+	NewStateData :: term(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: term().
 %% ====================================================================
 % @todo implement actual state
 state_name(Event, StateData) -&gt;
@@ -205,14 +231,19 @@ state_name(Event, StateData) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:StateName-3&quot;&gt;gen_fsm:StateName/3&lt;/a&gt;
 -spec state_name(Event :: term(), From :: {pid(), Tag :: term()}, StateData :: term()) -&gt; Result when
-    Result :: {reply, Reply, NextStateName, NewStateData} | {reply, Reply, NextStateName, NewStateData, Timeout} | {reply, Reply, NextStateName, NewStateData, hibernate} |
-        {next_state, NextStateName, NewStateData} | {next_state, NextStateName, NewStateData, Timeout} | {next_state, NextStateName, NewStateData, hibernate} |
-        {stop, Reason, Reply, NewStateData} | {stop, Reason, NewStateData},
-    Reply :: term(),
-    NextStateName :: atom(),
-    NewStateData :: atom(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: normal | term().
+	Result :: {reply, Reply, NextStateName, NewStateData}
+			| {reply, Reply, NextStateName, NewStateData, Timeout}
+			| {reply, Reply, NextStateName, NewStateData, hibernate}
+			| {next_state, NextStateName, NewStateData}
+			| {next_state, NextStateName, NewStateData, Timeout}
+			| {next_state, NextStateName, NewStateData, hibernate}
+			| {stop, Reason, Reply, NewStateData}
+			| {stop, Reason, NewStateData},
+	Reply :: term(),
+	NextStateName :: atom(),
+	NewStateData :: atom(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: normal | term().
 %% ====================================================================
 state_name(Event, From, StateData) -&gt;
     Reply = ok,
@@ -223,12 +254,14 @@ state_name(Event, From, StateData) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:handle_event-3&quot;&gt;gen_fsm:handle_event/3&lt;/a&gt;
 -spec handle_event(Event :: term(), StateName :: atom(), StateData :: term()) -&gt; Result when
-    Result :: {next_state, NextStateName, NewStateData} | {next_state, NextStateName, NewStateData, Timeout} | {next_state, NextStateName, NewStateData, hibernate} |
-        {stop, Reason, NewStateData},
-    NextStateName :: atom(),
-    NewStateData :: term(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: term().
+	Result :: {next_state, NextStateName, NewStateData}
+			| {next_state, NextStateName, NewStateData, Timeout}
+			| {next_state, NextStateName, NewStateData, hibernate}
+			| {stop, Reason, NewStateData},
+	NextStateName :: atom(),
+	NewStateData :: term(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: term().
 %% ====================================================================
 handle_event(Event, StateName, StateData) -&gt;
     {next_state, StateName, StateData}.
@@ -238,14 +271,19 @@ handle_event(Event, StateName, StateData) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:handle_sync_event-4&quot;&gt;gen_fsm:handle_sync_event/4&lt;/a&gt;
 -spec handle_sync_event(Event :: term(), From :: {pid(), Tag :: term()}, StateName :: atom(), StateData :: term()) -&gt; Result when
-    Result :: {reply, Reply, NextStateName, NewStateData} | {reply, Reply, NextStateName, NewStateData, Timeout} | {reply, Reply, NextStateName, NewStateData, hibernate} |
-        {next_state, NextStateName, NewStateData} | {next_state, NextStateName, NewStateData, Timeout} | {next_state, NextStateName, NewStateData, hibernate} |
-        {stop, Reason, Reply, NewStateData} | {stop, Reason, NewStateData},
-    Reply :: term(),
-    NextStateName :: atom(),
-    NewStateData :: term(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: term().
+	Result :: {reply, Reply, NextStateName, NewStateData}
+			| {reply, Reply, NextStateName, NewStateData, Timeout}
+			| {reply, Reply, NextStateName, NewStateData, hibernate}
+			| {next_state, NextStateName, NewStateData}
+			| {next_state, NextStateName, NewStateData, Timeout}
+			| {next_state, NextStateName, NewStateData, hibernate}
+			| {stop, Reason, Reply, NewStateData}
+			| {stop, Reason, NewStateData},
+	Reply :: term(),
+	NextStateName :: atom(),
+	NewStateData :: term(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: term().
 %% ====================================================================
 handle_sync_event(Event, From, StateName, StateData) -&gt;
     Reply = ok,
@@ -256,12 +294,14 @@ handle_sync_event(Event, From, StateName, StateData) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:handle_info-3&quot;&gt;gen_fsm:handle_info/3&lt;/a&gt;
 -spec handle_info(Info :: term(), StateName :: atom(), StateData :: term()) -&gt; Result when
-    Result :: {next_state, NextStateName, NewStateData} | {next_state, NextStateName, NewStateData, Timeout} | {next_state, NextStateName, NewStateData, hibernate} |
-        {stop, Reason, NewStateData},
-    NextStateName :: atom(),
-    NewStateData :: term(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: normal | term().
+	Result :: {next_state, NextStateName, NewStateData}
+			| {next_state, NextStateName, NewStateData, Timeout}
+			| {next_state, NextStateName, NewStateData, hibernate}
+			| {stop, Reason, NewStateData},
+	NextStateName :: atom(),
+	NewStateData :: term(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: normal | term().
 %% ====================================================================
 handle_info(Info, StateName, StateData) -&gt;
     {next_state, StateName, StateData}.
@@ -271,7 +311,10 @@ handle_info(Info, StateName, StateData) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:terminate-3&quot;&gt;gen_fsm:terminate/3&lt;/a&gt;
 -spec terminate(Reason, StateName :: atom(), StateData :: term()) -&gt; Result :: term() when
-    Reason :: normal | shutdown | {shutdown, term()} | term().
+	Reason :: normal
+			| shutdown
+			| {shutdown, term()}
+			| term().
 %% ====================================================================
 terminate(Reason, StateName, StatData) -&gt;
     ok.
@@ -281,8 +324,8 @@ terminate(Reason, StateName, StatData) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_fsm.html#Module:code_change-4&quot;&gt;gen_fsm:code_change/4&lt;/a&gt;
 -spec code_change(OldVsn, StateName :: atom(), StateData :: term(), Extra :: term()) -&gt; {ok, NextStateName :: atom(), NewStateData :: term()} when
-    OldVsn :: Vsn | {down, Vsn},
-    Vsn :: term().
+	OldVsn :: Vsn | {down, Vsn},
+	Vsn :: term().
 %% ====================================================================
 code_change(OldVsn, StateName, StateData, Extra) -&gt;
     {ok, StateName, StateData}.
@@ -297,6 +340,7 @@ ${local_functions}
 
 -module(${module}).
 -behaviour(gen_server).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 %% ====================================================================
 %% API functions
@@ -309,15 +353,18 @@ ${exported_functions}
 %% Behavioural functions 
 %% ====================================================================
 -record(state, {}).
--export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 %% init/1
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_server.html#Module:init-1&quot;&gt;gen_server:init/1&lt;/a&gt;
 -spec init(Args :: term()) -&gt; Result when
-    Result :: {ok, State} | {ok, State, Timeout} | {ok, State, hibernate} | {stop, Reason :: term()} | ignore,
-    State :: term(),
-    Timeout :: non_neg_integer() | infinity.
+	Result :: {ok, State}
+			| {ok, State, Timeout}
+			| {ok, State, hibernate}
+			| {stop, Reason :: term()}
+			| ignore,
+	State :: term(),
+	Timeout :: non_neg_integer() | infinity.
 %% ====================================================================
 init([]) -&gt;
     {ok, #state{}}.
@@ -327,13 +374,18 @@ init([]) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_server.html#Module:handle_call-3&quot;&gt;gen_server:handle_call/3&lt;/a&gt;
 -spec handle_call(Request :: term(), From :: {pid(), Tag :: term()}, State :: term()) -&gt; Result when
-    Result :: {reply, Reply, NewState} | {reply, Reply, NewState, Timeout} | {reply, Reply, NewState, hibernate} |
-        {noreply, NewState} | {noreply, NewState, Timeout} | {noreply, NewState, hibernate} |
-        {stop, Reason, Reply, NewState} | {stop, Reason, NewState},
-    Reply :: term(),
-    NewState :: term(),
-    Timeout :: non_neg_integer() | infinity,
-    Reason :: term().
+	Result :: {reply, Reply, NewState}
+			| {reply, Reply, NewState, Timeout}
+			| {reply, Reply, NewState, hibernate}
+			| {noreply, NewState}
+			| {noreply, NewState, Timeout}
+			| {noreply, NewState, hibernate}
+			| {stop, Reason, Reply, NewState}
+			| {stop, Reason, NewState},
+	Reply :: term(),
+	NewState :: term(),
+	Timeout :: non_neg_integer() | infinity,
+	Reason :: term().
 %% ====================================================================
 handle_call(Request, From, State) -&gt;
     Reply = ok,
@@ -344,9 +396,12 @@ handle_call(Request, From, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_server.html#Module:handle_cast-2&quot;&gt;gen_server:handle_cast/2&lt;/a&gt;
 -spec handle_cast(Request :: term(), State :: term()) -&gt; Result when
-    Result :: {noreply, NewState} | {noreply, NewState, Timeout} | {noreply, NewState, hibernate} | {stop, Reason :: term(), NewState},
-    NewState :: term(),
-    Timeout :: non_neg_integer() | infinity.
+	Result :: {noreply, NewState}
+			| {noreply, NewState, Timeout}
+			| {noreply, NewState, hibernate}
+			| {stop, Reason :: term(), NewState},
+	NewState :: term(),
+	Timeout :: non_neg_integer() | infinity.
 %% ====================================================================
 handle_cast(Msg, State) -&gt;
     {noreply, State}.
@@ -356,9 +411,12 @@ handle_cast(Msg, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_server.html#Module:handle_info-2&quot;&gt;gen_server:handle_info/2&lt;/a&gt;
 -spec handle_info(Info :: timeout | term(), State :: term()) -&gt; Result when
-    Result :: {noreply, NewState} | {noreply, NewState, Timeout} | {noreply, NewState, hibernate} | {stop, Reason :: term(), NewState},
-    NewState :: term(),
-    Timeout :: non_neg_integer() | infinity.
+	Result :: {noreply, NewState}
+			| {noreply, NewState, Timeout}
+			| {noreply, NewState, hibernate}
+			| {stop, Reason :: term(), NewState},
+	NewState :: term(),
+	Timeout :: non_neg_integer() | infinity.
 %% ====================================================================
 handle_info(Info, State) -&gt;
     {noreply, State}.
@@ -368,7 +426,10 @@ handle_info(Info, State) -&gt;
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_server.html#Module:terminate-2&quot;&gt;gen_server:terminate/2&lt;/a&gt;
 -spec terminate(Reason, State :: term()) -&gt; Any :: term() when
-    Reason :: normal | shutdown | {shutdown, term()} | term().
+	Reason :: normal
+			| shutdown
+			| {shutdown, term()}
+			| term().
 %% ====================================================================
 terminate(Reason, State) -&gt;
     ok.
@@ -377,9 +438,10 @@ terminate(Reason, State) -&gt;
 %% code_change/3
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/gen_server.html#Module:code_change-3&quot;&gt;gen_server:code_change/3&lt;/a&gt;
--spec code_change(OldVsn, State :: term(), Extra :: term()) -&gt; {ok, NewState :: term()} | {error, Reason :: term()} when
-    OldVsn :: Vsn | {down, Vsn},
-    Vsn :: term().
+-spec code_change(OldVsn, State :: term(), Extra :: term()) -&gt; Result when
+	Result :: {ok, NewState :: term()} | {error, Reason :: term()},
+	OldVsn :: Vsn | {down, Vsn},
+	Vsn :: term().
 %% ====================================================================
 code_change(OldVsn, State, Extra) -&gt;
     {ok, State}.
@@ -410,6 +472,7 @@ ${local_functions}
 
 -module(${module}).
 -behaviour(supervisor_bridge).
+-export([init/1, terminate/2]).
 
 %% ====================================================================
 %% API functions
@@ -421,21 +484,21 @@ ${exported_functions}
 %% ====================================================================
 %% Behavioural functions 
 %% ====================================================================
--export([init/1, terminate/2]).
-
 -record(state, {}).
 
 %% init/1 
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/supervisor_bridge.html#Module:init-1&quot;&gt;supervisor_bridge:init/1&lt;/a&gt;
--spec init(Args :: term()) -&gt; Result :: {ok, Pid :: pid(), State :: term()} | ignore | {error, Error :: term()}. 
+-spec init(Args :: term()) -&gt; Result :: {ok, Pid :: pid(), State :: term()}
+										| ignore
+										| {error, Error :: term()}. 
 %% ====================================================================
 init([]) -&gt;
     case &apos;AModule&apos;:start_link() of
-    {ok, Pid} -&gt;
-        {ok, Pid, #state{}};
-    Error -&gt;
-        Error
+	{ok, Pid} -&gt;
+	    {ok, Pid, #state{}};
+	Error -&gt;
+	    Error
     end.
 
 %% terminate/2
@@ -456,6 +519,7 @@ ${local_functions}
 
 -module(${module}).
 -behaviour(supervisor).
+-export([init/1]).
 
 %% ====================================================================
 %% API functions
@@ -467,23 +531,27 @@ ${exported_functions}
 %% ====================================================================
 %% Behavioural functions 
 %% ====================================================================
--export([init/1]).
 
 %% init/1
 %% ====================================================================
 %% @doc &lt;a href=&quot;http://www.erlang.org/doc/man/supervisor.html#Module:init-1&quot;&gt;supervisor:init/1&lt;/a&gt;
 -spec init(Args :: term()) -&gt; Result when
-    Result :: {ok, {SupervisionPolicy, [ChildSpec]}} | ignore,
-    SupervisionPolicy :: {RestartStrategy, MaxR :: non_neg_integer(), MaxT :: pos_integer()},
-    RestartStrategy :: one_for_all | one_for_one | rest_for_one | simple_one_for_one,
-    ChildSpec :: {Id :: term(), StartFunc, RestartPolicy, Type :: worker | supervisor, Modules},
-    StartFunc :: {M :: module(), F :: atom(), A :: [term()] | undefined},
-    RestartPolicy :: permanent | transient | temporary,
-    Modules :: [module()] | dynamic.
+	Result :: {ok, {SupervisionPolicy, [ChildSpec]}} | ignore,
+	SupervisionPolicy :: {RestartStrategy, MaxR :: non_neg_integer(), MaxT :: pos_integer()},
+	RestartStrategy :: one_for_all
+					 | one_for_one
+					 | rest_for_one
+					 | simple_one_for_one,
+	ChildSpec :: {Id :: term(), StartFunc, RestartPolicy, Type :: worker | supervisor, Modules},
+	StartFunc :: {M :: module(), F :: atom(), A :: [term()] | undefined},
+	RestartPolicy :: permanent
+				   | transient
+				   | temporary,
+	Modules :: [module()] | dynamic.
 %% ====================================================================
 init([]) -&gt;
     AChild = {&apos;AName&apos;,{&apos;AModule&apos;,start_link,[]},
-          permanent,2000,worker,[&apos;AModule&apos;]},
+	      permanent,2000,worker,[&apos;AModule&apos;]},
     {ok,{{one_for_all,0,1}, [AChild]}}.
 
 %% ====================================================================
