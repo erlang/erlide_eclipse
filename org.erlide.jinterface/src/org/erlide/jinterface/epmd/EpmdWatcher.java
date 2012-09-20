@@ -196,7 +196,8 @@ public final class EpmdWatcher {
 
     public boolean hasLocalNode(final String nodeName) {
         try {
-            final String[] names = OtpEpmd.lookupNames();
+            final String[] names = OtpEpmd.lookupNames(InetAddress
+                    .getByName("localhost"));
             final List<String> labels = EpmdWatcher.clean(Arrays.asList(names));
             return labels.contains(nodeName);
         } catch (final IOException e) {

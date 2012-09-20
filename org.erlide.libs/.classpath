@@ -9,11 +9,5 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="hamcrest-all-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="commons-io-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="org.eclipse.xtend.lib-2.3.0.jar" sourcepath="org.eclipse.xtend.lib-2.3.0-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="org.eclipse.xtext.xbase.lib-2.3.0.jar" sourcepath="org.eclipse.xtext.xbase.lib-2.3.0-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/org.erlide.libs/org.eclipse.xtext.xbase.lib-2.3.0-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

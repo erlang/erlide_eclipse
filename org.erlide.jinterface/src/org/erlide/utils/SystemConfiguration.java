@@ -15,7 +15,6 @@ public class SystemConfiguration {
     private final boolean onWindows;
     private boolean monitoringIdeBackend;
     private int monitoringInterval = 300;
-    private boolean useLongShortNameHack = false;
 
     private SystemConfiguration() {
         mustDefineTclLib = hasFeatureEnabled("erlide.ericsson.user");
@@ -25,7 +24,6 @@ public class SystemConfiguration {
         onWindows = System.getProperty("os.name").toLowerCase()
                 .contains("windows");
         monitoringIdeBackend = hasFeatureEnabled("erlide.monitor.ide");
-        useLongShortNameHack = hasFeatureEnabled("erlide.longshort.hack");
     }
 
     public boolean isDeveloper() {
@@ -71,10 +69,6 @@ public class SystemConfiguration {
             return name;
         }
         return name.substring(0, i);
-    }
-
-    public boolean useLongShortNameHack() {
-        return this.useLongShortNameHack;
     }
 
     // only to be used internally

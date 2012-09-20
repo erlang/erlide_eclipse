@@ -27,7 +27,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wb.swt.ResourceManager;
-import org.erlide.backend.BackendUtils;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -96,7 +95,7 @@ public class ErlangPreferencePage extends PreferencePage implements
         gd_txtLocalErlangNodes.widthHint = 339;
         gd_txtLocalErlangNodes.heightHint = 87;
         txtLocalErlangNodes.setLayoutData(gd_txtLocalErlangNodes);
-        txtLocalErlangNodes.setVisible(BackendUtils.longNamesDontWork());
+        txtLocalErlangNodes.setVisible(false);
 
         return panel;
     }

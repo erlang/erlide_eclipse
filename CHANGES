@@ -1,3 +1,16 @@
+List of user visible changes between 0.17.2 and 0.17.3 (20120920)
+
+499d4f0 updated module_templates, nicer formatting
+457092f use localhost as name for the current machine when checking epmd
+27da904 make "backend died" message non-modal, which is less intrusive
+a22f614 1075: fix problems with hostname on osx
+2b86436 removed xtend libraries
+6e00a43 update jinterface to R15
+d166d56 v0.17.2
+3883895 add debug printout when setting erlide runtime
+74cd591 update editor templates #77 (thanks to Bjoern Kortuemm)
+dadae74 add contributors file
+
 List of user visible changes between 0.17.1 and 0.17.2 (20120913)
 
 1281950 fix NPE in autocompletion (#74)

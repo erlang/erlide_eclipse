@@ -1,7 +1,5 @@
 package org.erlide.backend;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,7 +17,6 @@ import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SourcePathProvider;
-import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -28,8 +25,8 @@ import com.google.common.collect.Lists;
 
 public class BackendUtils {
 
-    private static String erlangLongName;
-    private static String erlangShortName;
+    private static String erlangLongName = "127.0.0.1";
+    private static String erlangShortName = "localhost";
     private static Collection<SourcePathProvider> sourcePathProviders = null;
 
     public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
@@ -170,36 +167,8 @@ public class BackendUtils {
         return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
     }
 
-    private static String detectErlangHostName(final boolean longName) {
-        InetAddress addr;
-        try {
-            addr = InetAddress.getLocalHost();
-            return longName ? addr.getCanonicalHostName() : addr.getHostName();
-        } catch (final UnknownHostException e1) {
-            e1.printStackTrace();
-            return "localhost";
-        }
-    }
-
     public static String getErlangHostName(final boolean longName) {
-        if (erlangLongName == null) {
-            erlangLongName = BackendUtils.detectErlangHostName(true);
-            erlangShortName = BackendUtils.detectErlangHostName(false);
-            ErlLogger.debug("detected longName=" + erlangLongName
-                    + "  shortName=" + erlangShortName);
-        }
-        if (SystemConfiguration.getInstance().useLongShortNameHack()) {
-            return "localhost";
-        }
         return longName ? erlangLongName : erlangShortName;
-    }
-
-    public static boolean longNamesDontWork() {
-        return !getErlangHostName(true).contains(".");
-    }
-
-    public static boolean shortNamesDontWork() {
-        return getErlangHostName(false).contains(".");
     }
 
     public static boolean isThisHost(final String host) {
