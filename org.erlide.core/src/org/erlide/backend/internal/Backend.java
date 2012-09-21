@@ -721,9 +721,13 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     private void distributeDebuggerCode() {
+        // TODO get all modules from the debugger plugin
+        // This list can get outdated...
         final String[] debuggerModules = { "erlide_dbg_debugged",
                 "erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
-                "erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int" };
+                "erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int",
+                "erlide_dbg_istk", "erlide_dbg_mon", "erlide_dbg",
+                "erlide_tracer" };
         final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
                 debuggerModules.length);
         for (final String module : debuggerModules) {
