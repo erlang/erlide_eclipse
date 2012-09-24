@@ -734,6 +734,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(
                         module), filename, b);
                 modules.add(t);
+            } else {
+                ErlLogger.warn("Could not find debugger module %s", module);
             }
         }
         ErlideDebug.distributeDebuggerCode(this, modules);
