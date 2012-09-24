@@ -98,6 +98,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
     public static class TreeContentProvider implements
             IStructuredContentProvider, ITreeContentProvider {
         private DebugTreeItem root;
+        final boolean DISABLED = true;
 
         public TreeContentProvider() {
             super();
@@ -108,6 +109,9 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 final Object newInput) {
             try {
                 setRoot(new DebugTreeItem(null, null));
+                if (DISABLED) {
+                    return;
+                }
                 if (newInput instanceof ILaunchConfiguration) {
                     final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
                     final String projs = input.getAttribute(
@@ -193,8 +197,10 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         attachOnExitCheck.addSelectionListener(fBasicSelectionListener);
 
         final Group interpretedModulesGroup = new Group(comp, SWT.NONE);
-        interpretedModulesGroup.setLayoutData(new GridData(SWT.FILL,
-                SWT.CENTER, false, false, 1, 1));
+        final GridData gd_interpretedModulesGroup = new GridData(SWT.FILL,
+                SWT.CENTER, false, false, 1, 1);
+        gd_interpretedModulesGroup.widthHint = 387;
+        interpretedModulesGroup.setLayoutData(gd_interpretedModulesGroup);
         interpretedModulesGroup.setText("Interpreted modules");
         interpretedModulesGroup.setLayout(new GridLayout());
 
