@@ -62,7 +62,8 @@ class DebugEventHandler {
                 final OtpErlangTuple metaEventTuple = (OtpErlangTuple) metaEvent;
                 debugTarget.handleMetaEvent(pid, metaEventTuple);
             }
+        } else {
+            ErlLogger.warn("Unknown message: " + message);
         }
     }
-
 }
