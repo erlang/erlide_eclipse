@@ -183,7 +183,10 @@ public class ErlModel extends Openable implements IErlModel {
         if (e instanceof IErlProject) {
             return (IErlProject) e;
         }
-        return makeErlangProject(project);
+        if (ErlideUtil.hasErlangNature(project)) {
+            return makeErlangProject(project);
+        }
+        return null;
     }
 
     public IErlProject makeErlangProject(final IProject project) {
@@ -1085,7 +1088,8 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (includeName != null) {
-            final boolean hasExtension = SystemConfiguration.hasExtension(includeName);
+            final boolean hasExtension = SystemConfiguration
+                    .hasExtension(includeName);
             for (final IErlModule module2 : includes) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();
@@ -1143,7 +1147,8 @@ public class ErlModel extends Openable implements IErlModel {
             }
         }
         if (moduleName != null) {
-            final boolean hasExtension = SystemConfiguration.hasExtension(moduleName);
+            final boolean hasExtension = SystemConfiguration
+                    .hasExtension(moduleName);
             for (final IErlModule module2 : modules) {
                 final String name = hasExtension ? module2.getName() : module2
                         .getModuleName();

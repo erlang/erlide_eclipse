@@ -124,10 +124,12 @@ public class SearchUtil {
         }
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .getErlangProject(project);
-        final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
-        for (final IPath path : sourcePaths) {
-            final IFolder folder = project.getFolder(path);
-            addFolderToScope(folder, result);
+        if (erlProject != null) {
+            final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
+            for (final IPath path : sourcePaths) {
+                final IFolder folder = project.getFolder(path);
+                addFolderToScope(folder, result);
+            }
         }
     }
 
