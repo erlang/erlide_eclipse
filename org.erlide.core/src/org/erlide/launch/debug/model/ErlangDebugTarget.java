@@ -519,65 +519,101 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         if (event.equals("new_break")) {
             // TODO should we do anything here?
         } else if (event.equals("new_status")) {
-            ErlLogger.info("new status " + intEvent);
-            final OtpErlangPid pid = (OtpErlangPid) intEvent.elementAt(1);
-            ErlangProcess erlangProcess = getErlangProcess(pid);
-            if (erlangProcess == null) {
-                erlangProcess = createErlangProcess(pid);
-            }
-            final OtpErlangAtom sa = (OtpErlangAtom) intEvent.elementAt(2);
-            final String status = sa.atomValue();
-            if (status.equals("break")) {
-                erlangProcess.setStatus(status);
-                if (!erlangProcess.isStepping()) {
-                    erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
-                }
-            } else if (status.equals("exit")) {
-                erlangProcess.setStatus(status);
-                final OtpErlangObject esa = intEvent.elementAt(3);
-                erlangProcess.setExitStatus(esa.toString());
-                erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-            } else if (status.equals("running")) {
-                erlangProcess.setStatus(status);
-                if (erlangProcess.isStepping()) {
-                    erlangProcess.fireResumeEvent(DebugEvent.STEP_OVER);
-                } else {
-                    erlangProcess.fireResumeEvent(DebugEvent.RESUME);
-                }
-            } else {
-                if (status.equals("idle")) {
-                    // FIXME: this must be cleaned, but the status messages seem
-                    // to come out of order...
-                    // erlangProcess.removeStackFrames();
-                }
-                erlangProcess.setStatus(status);
-                erlangProcess.fireChangeEvent(DebugEvent.STATE
-                        | DebugEvent.CHANGE);
-            }
+            handleNewStatus(intEvent);
         } else if (event.equals("new_process")) {
-            final OtpErlangTuple t = (OtpErlangTuple) intEvent.elementAt(1);
-            final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
-            ErlangProcess erlangProcess = getErlangProcess(pid);
-            if (erlangProcess == null) {
-                erlangProcess = createErlangProcess(pid);
-            }
-            final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
-            final String status = statusA.atomValue();
-            erlangProcess.setStatus(status);
-            final OtpErlangTuple initialCall = (OtpErlangTuple) t.elementAt(1);
-            erlangProcess.setInitialCall(new ErlangFunctionCall(initialCall));
-            erlangProcess.fireCreationEvent();
+            handleNewProcess(intEvent);
         } else if (event.equals("interpret")) {
-            final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
-            interpretedModules.add(m.atomValue());
-            fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
-                    INTERPRETED_MODULES_CHANGED));
+            handleInterpret(intEvent);
         } else if (event.equals("no_interpret")) {
-            final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
-            interpretedModules.remove(m.atomValue());
-            fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
-                    INTERPRETED_MODULES_CHANGED));
+            handleNoInterpret(intEvent);
         }
+    }
+
+    private void handleNewProcess(final OtpErlangTuple intEvent) {
+        final OtpErlangTuple t = (OtpErlangTuple) intEvent.elementAt(1);
+        final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
+        ErlangProcess erlangProcess = getErlangProcess(pid);
+        if (erlangProcess == null) {
+            erlangProcess = createErlangProcess(pid);
+        }
+        final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
+        final String status = statusA.atomValue();
+        erlangProcess.setStatus(status);
+        final OtpErlangTuple initialCall = (OtpErlangTuple) t.elementAt(1);
+        erlangProcess.setInitialCall(new ErlangFunctionCall(initialCall));
+        erlangProcess.fireCreationEvent();
+    }
+
+    private void handleNewStatus(final OtpErlangTuple intEvent) {
+        ErlLogger.info("new status " + intEvent);
+        final OtpErlangPid pid = (OtpErlangPid) intEvent.elementAt(1);
+        ErlangProcess erlangProcess = getErlangProcess(pid);
+        if (erlangProcess == null) {
+            erlangProcess = createErlangProcess(pid);
+        }
+        final OtpErlangAtom sa = (OtpErlangAtom) intEvent.elementAt(2);
+        final String status = sa.atomValue();
+        if (status.equals("break")) {
+            handleBreakStatus(erlangProcess, status);
+        } else if (status.equals("exit")) {
+            handleExitStatus(intEvent, erlangProcess, status);
+        } else if (status.equals("running")) {
+            handleRunningStatus(erlangProcess, status);
+        } else if (status.equals("idle")) {
+            handleIdleStatus(erlangProcess, status);
+        } else {
+            erlangProcess.setStatus(status);
+            erlangProcess.fireChangeEvent(DebugEvent.STATE | DebugEvent.CHANGE);
+        }
+    }
+
+    private void handleIdleStatus(final ErlangProcess erlangProcess,
+            final String status) {
+        // FIXME: this must be cleaned, but the status messages seem
+        // to come out of order...
+        // erlangProcess.removeStackFrames();
+        erlangProcess.setStatus(status);
+        erlangProcess.fireChangeEvent(DebugEvent.STATE | DebugEvent.CHANGE);
+    }
+
+    private void handleRunningStatus(final ErlangProcess erlangProcess,
+            final String status) {
+        erlangProcess.setStatus(status);
+        if (erlangProcess.isStepping()) {
+            erlangProcess.fireResumeEvent(DebugEvent.STEP_OVER);
+        } else {
+            erlangProcess.fireResumeEvent(DebugEvent.RESUME);
+        }
+    }
+
+    private void handleExitStatus(final OtpErlangTuple intEvent,
+            final ErlangProcess erlangProcess, final String status) {
+        erlangProcess.setStatus(status);
+        final OtpErlangObject esa = intEvent.elementAt(3);
+        erlangProcess.setExitStatus(esa.toString());
+        erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
+    }
+
+    private void handleBreakStatus(final ErlangProcess erlangProcess,
+            final String status) {
+        erlangProcess.setStatus(status);
+        if (!erlangProcess.isStepping()) {
+            erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
+        }
+    }
+
+    private void handleNoInterpret(final OtpErlangTuple intEvent) {
+        final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
+        interpretedModules.remove(m.atomValue());
+        fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
+                INTERPRETED_MODULES_CHANGED));
+    }
+
+    private void handleInterpret(final OtpErlangTuple intEvent) {
+        final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
+        interpretedModules.add(m.atomValue());
+        fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
+                INTERPRETED_MODULES_CHANGED));
     }
 
     public Set<String> getInterpretedModules() {
