@@ -4,17 +4,16 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 
-public class IntEvent implements DebuggerEvent {
+public class NewBreakEvent extends IntEvent {
 
-    protected final OtpErlangObject[] cmds;
-
-    public IntEvent(final OtpErlangObject[] cmds) {
-        this.cmds = cmds;
+    public NewBreakEvent(final OtpErlangObject[] cmds) {
+        super(cmds);
     }
 
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
-        // debugTarget.handleIntEvent(cmd);
+        // TODO Auto-generated method stub
+
     }
 
 }

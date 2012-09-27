@@ -5,6 +5,7 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -82,6 +83,7 @@ public class DebuggerEventFactory {
             }
         } catch (final Throwable e) {
         }
+        // this is a default event that does nothing
         return new MetaEvent(pid, event);
     }
 
@@ -95,7 +97,25 @@ public class DebuggerEventFactory {
     }
 
     private static DebuggerEvent buildIntEvent(final Bindings b) {
-        return new IntEvent(b.get("Cmd"));
+        try {
+            final OtpErlangObject[] cmds = b.getTuple("Cmd");
+            if (cmds[0].equals("new_break")) {
+                return new NewBreakEvent(cmds);
+            } else if (cmds[0].toString().equals("new_status")) {
+                return new NewStatusEvent(cmds);
+            } else if (cmds[0].toString().equals("new_process")) {
+                return new NewProcessEvent(cmds);
+            } else if (cmds[0].toString().equals("interpret")) {
+                return new InterpretEvent(cmds);
+            } else if (cmds[0].toString().equals("no_interpret")) {
+                return new NoInterpretEvent(cmds);
+            } else {
+                return new IntEvent(cmds);
+            }
+        } catch (final Exception e) {
+            return new IntEvent(
+                    new OtpErlangObject[] { new OtpErlangAtom("nop") });
+        }
     }
 
     private static DebuggerEvent buildTerminatedEvent(final Bindings b)

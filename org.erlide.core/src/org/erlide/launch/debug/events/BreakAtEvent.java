@@ -30,7 +30,7 @@ public class BreakAtEvent extends MetaEvent {
         }
 
         final ErlangProcess erlangProcess = debugTarget
-                .getOrCreateErlangProcessFromMeta(getPid(debugTarget));
+                .getOrCreateErlangProcess(getPid(debugTarget));
         // FIXME can't get stack in wait...
         // should be possible according to dbg_ui_trace_win....
         erlangProcess.getStackAndBindings(module, line);

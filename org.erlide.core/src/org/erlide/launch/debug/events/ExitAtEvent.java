@@ -59,7 +59,7 @@ public class ExitAtEvent extends MetaEvent {
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
         final ErlangProcess erlangProcess = debugTarget
-                .getOrCreateErlangProcessFromMeta(getPid(debugTarget));
+                .getOrCreateErlangProcess(getPid(debugTarget));
 
         if (module == null || line == -1) {
             erlangProcess.removeStackFrames();
