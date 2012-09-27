@@ -397,89 +397,124 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         final String event = a.atomValue();
         final int what = getMetaWhat(event);
         if (what == META_TRACE_OUTPUT) {
-            final OtpErlangObject o = metaEvent.elementAt(1);
-            // final String s = CoreUtil.ioListToString(o).trim();
-            // final String s = o.toString();
-            addToTraceList((OtpErlangTuple) o);
-            final DebugEvent traceChangedEvent = new DebugEvent(this,
-                    DebugEvent.MODEL_SPECIFIC, TRACE_CHANGED);
-            final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
-                    metaEvent, what);
-            final TraceChangedEventData data = new TraceChangedEventData(
-                    TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
-                    p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
-            traceChangedEvent.setData(data);
-            fireEvent(traceChangedEvent);
-            // ErlLogger.info("Trace: " + s);
+            handleMetaTrace(metaPid, metaEvent, what);
         } else if (what != META_UNKNOWN) {
-            OtpErlangAtom mod = null;
-            OtpErlangLong lineL = null;
-            if (what == META_EXIT_AT) {
-                final OtpErlangObject o = metaEvent.elementAt(1);
-                if (o instanceof OtpErlangTuple) {
-                    final OtpErlangTuple t = (OtpErlangTuple) o;
-                    mod = (OtpErlangAtom) t.elementAt(0);
-                    lineL = (OtpErlangLong) t.elementAt(1);
-                }
-            } else {
-                mod = (OtpErlangAtom) metaEvent.elementAt(1);
-                lineL = (OtpErlangLong) metaEvent.elementAt(2);
+            handleMetaBreakWaitExit(metaPid, metaEvent, what);
+        }
+    }
+
+    private String parseMetaModule(final OtpErlangTuple metaEvent,
+            final int what) {
+        OtpErlangAtom mod = null;
+        if (what == META_EXIT_AT) {
+            final OtpErlangObject o = metaEvent.elementAt(1);
+            if (o instanceof OtpErlangTuple) {
+                final OtpErlangTuple t = (OtpErlangTuple) o;
+                mod = (OtpErlangAtom) t.elementAt(0);
             }
-            int line = -1;
-            if (lineL != null) {
-                try {
-                    line = lineL.intValue();
-                } catch (final OtpErlangRangeException e1) {
-                    ErlLogger.warn(e1);
-                }
+        } else {
+            mod = (OtpErlangAtom) metaEvent.elementAt(1);
+        }
+        String module = null;
+        if (mod != null) {
+            module = mod.atomValue();
+        }
+        return module;
+    }
+
+    private int parseMetaLine(final OtpErlangTuple metaEvent, final int what) {
+        OtpErlangLong lineL = null;
+        int line = -1;
+        if (what == META_EXIT_AT) {
+            final OtpErlangObject o = metaEvent.elementAt(1);
+            if (o instanceof OtpErlangTuple) {
+                final OtpErlangTuple t = (OtpErlangTuple) o;
+                lineL = (OtpErlangLong) t.elementAt(1);
             }
-            String module = null;
-            if (mod != null) {
-                module = mod.atomValue();
-            }
-            final OtpErlangPid pid;
-            if (what == META_EXIT_AT) {
-                pid = (OtpErlangPid) metaEvent.elementAt(4);
-            } else {
-                pid = getPidFromMeta(metaPid);
-            }
-            // ErlLogger.debug("  pid " + pid);
-            ErlangProcess erlangProcess = getOrCreateErlangProcessFromMeta(
-                    metaPid, metaEvent, what);
-            if (erlangProcess == null) {
-                erlangProcess = createErlangProcess(pid);
-            }
-            if (module != null && line != -1) {
-                if (what == META_BREAK_AT) {
-                    // FIXME can't get stack in wait...
-                    // should be possible according to dbg_ui_trace_win....
-                    erlangProcess.getStackAndBindings(module, line);
-                    if (erlangProcess.isStepping()) {
-                        erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
-                    } else {
-                        erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
-                    }
-                    erlangProcess.setNotStepping();
-                } else if (what == META_EXIT_AT) {
-                    if (metaEvent.arity() > 4) {
-                        final OtpErlangList erlStackFrames = (OtpErlangList) metaEvent
-                                .elementAt(5);
-                        final OtpErlangList bs = (OtpErlangList) metaEvent
-                                .elementAt(6);
-                        erlangProcess.setStackFrames(module, line,
-                                erlStackFrames, bs);
-                    }
-                    erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-                    // TODO redundant? we have this in int, status too
-                }
-            } else {
-                if (what == META_EXIT_AT) {
-                    erlangProcess.removeStackFrames();
-                    erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-                    // TODO redundant? we have this in int, status too
-                }
+        } else {
+            lineL = (OtpErlangLong) metaEvent.elementAt(2);
+        }
+        if (lineL != null) {
+            try {
+                line = lineL.intValue();
+            } catch (final OtpErlangRangeException e1) {
+                ErlLogger.warn(e1);
             }
         }
+        return line;
+    }
+
+    private void handleMetaBreakWaitExit(final OtpErlangPid metaPid,
+            final OtpErlangTuple metaEvent, final int what) {
+        final String module = parseMetaModule(metaEvent, what);
+        final int line = parseMetaLine(metaEvent, what);
+        final OtpErlangPid pid = parseMetaPid(metaPid, metaEvent, what);
+
+        // ErlLogger.debug("  pid " + pid);
+        ErlangProcess erlangProcess = getOrCreateErlangProcessFromMeta(metaPid,
+                metaEvent, what);
+        if (erlangProcess == null) {
+            erlangProcess = createErlangProcess(pid);
+        }
+        if (module != null && line != -1) {
+            if (what == META_BREAK_AT) {
+                // FIXME can't get stack in wait...
+                // should be possible according to dbg_ui_trace_win....
+                erlangProcess.getStackAndBindings(module, line);
+                if (erlangProcess.isStepping()) {
+                    erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
+                } else {
+                    erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
+                }
+                erlangProcess.setNotStepping();
+            } else if (what == META_EXIT_AT) {
+                if (metaEvent.arity() > 4) {
+                    final OtpErlangList erlStackFrames = (OtpErlangList) metaEvent
+                            .elementAt(5);
+                    final OtpErlangList bs = (OtpErlangList) metaEvent
+                            .elementAt(6);
+                    erlangProcess.setStackFrames(module, line, erlStackFrames,
+                            bs);
+                }
+                erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
+                // TODO redundant? we have this in int, status too
+            }
+        } else {
+            if (what == META_EXIT_AT) {
+                erlangProcess.removeStackFrames();
+                erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
+                // TODO redundant? we have this in int, status too
+            }
+        }
+    }
+
+    private OtpErlangPid parseMetaPid(final OtpErlangPid metaPid,
+            final OtpErlangTuple metaEvent, final int what) {
+        final OtpErlangPid pid;
+        if (what == META_EXIT_AT) {
+            pid = (OtpErlangPid) metaEvent.elementAt(4);
+        } else {
+            pid = getPidFromMeta(metaPid);
+        }
+        return pid;
+    }
+
+    private void handleMetaTrace(final OtpErlangPid metaPid,
+            final OtpErlangTuple metaEvent, final int what) {
+        final OtpErlangObject o = metaEvent.elementAt(1);
+        // final String s = CoreUtil.ioListToString(o).trim();
+        // final String s = o.toString();
+        addToTraceList((OtpErlangTuple) o);
+        final DebugEvent traceChangedEvent = new DebugEvent(this,
+                DebugEvent.MODEL_SPECIFIC, TRACE_CHANGED);
+        final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
+                metaEvent, what);
+        final TraceChangedEventData data = new TraceChangedEventData(
+                TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
+                p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
+        traceChangedEvent.setData(data);
+        fireEvent(traceChangedEvent);
+        // ErlLogger.info("Trace: " + s);
     }
 
     private int getMetaWhat(final String event) {
@@ -499,12 +534,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     private ErlangProcess getOrCreateErlangProcessFromMeta(
             final OtpErlangPid metaPid, final OtpErlangTuple metaEvent,
             final int what) {
-        final OtpErlangPid pid;
-        if (what == META_EXIT_AT) {
-            pid = (OtpErlangPid) metaEvent.elementAt(4);
-        } else {
-            pid = getPidFromMeta(metaPid);
-        }
+        final OtpErlangPid pid = parseMetaPid(metaPid, metaEvent, what);
         // ErlLogger.debug("  pid " + pid);
         ErlangProcess erlangProcess = getErlangProcess(pid);
         if (erlangProcess == null) {
