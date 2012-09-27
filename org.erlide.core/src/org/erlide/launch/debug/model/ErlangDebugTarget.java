@@ -54,47 +54,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
 
-    public static class TraceChangedEventData {
-        public static final int ADDED = 1;
-        private final int what;
-        private final ILaunch launch;
-        private final IDebugTarget node;
-        private final OtpErlangPid pid;
-        private final OtpErlangTuple[] events;
-
-        public ILaunch getLaunch() {
-            return launch;
-        }
-
-        public IDebugTarget getNode() {
-            return node;
-        }
-
-        public TraceChangedEventData(final int what, final ILaunch launch,
-                final IDebugTarget node, final OtpErlangPid pid,
-                final OtpErlangTuple[] events) {
-            super();
-            this.what = what;
-            this.launch = launch;
-            this.node = node;
-            this.pid = pid;
-            this.events = events;
-        }
-
-        public int getWhat() {
-            return what;
-        }
-
-        public OtpErlangTuple[] getEvents() {
-            return events;
-        }
-
-        public OtpErlangPid getPid() {
-            return pid;
-        }
-
-    }
-
     public static final IThread[] NO_PROCS = new IThread[] {};
 
     public static final int INTERPRETED_MODULES_CHANGED = 0;
@@ -117,8 +76,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<OtpErlangPid, OtpErlangPid>();
 
     private final String fNodeName;
-
-    private ArrayList<OtpErlangTuple> fTraceList;
 
     private final DebuggerEventDaemon debuggerDaemon;
 
@@ -388,17 +345,18 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     private static final int META_BREAK_AT = 1;
     private static final int META_WAIT_AT = 2;
     private static final int META_EXIT_AT = 3;
-    private static final int META_TRACE_OUTPUT = 4;
 
     public void handleMetaEvent(final OtpErlangPid metaPid,
             final OtpErlangTuple metaEvent) {
         ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid + ")");
+        if (metaEvent == null) {
+            // FIXME temporary until event classes are ok
+            return;
+        }
         final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
         final String event = a.atomValue();
         final int what = getMetaWhat(event);
-        if (what == META_TRACE_OUTPUT) {
-            handleMetaTrace(metaPid, metaEvent, what);
-        } else if (what != META_UNKNOWN) {
+        if (what != META_UNKNOWN) {
             handleMetaBreakWaitExit(metaPid, metaEvent, what);
         }
     }
@@ -499,24 +457,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return pid;
     }
 
-    private void handleMetaTrace(final OtpErlangPid metaPid,
-            final OtpErlangTuple metaEvent, final int what) {
-        final OtpErlangObject o = metaEvent.elementAt(1);
-        // final String s = CoreUtil.ioListToString(o).trim();
-        // final String s = o.toString();
-        addToTraceList((OtpErlangTuple) o);
-        final DebugEvent traceChangedEvent = new DebugEvent(this,
-                DebugEvent.MODEL_SPECIFIC, TRACE_CHANGED);
-        final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
-                metaEvent, what);
-        final TraceChangedEventData data = new TraceChangedEventData(
-                TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
-                p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
-        traceChangedEvent.setData(data);
-        fireEvent(traceChangedEvent);
-        // ErlLogger.info("Trace: " + s);
-    }
-
     private int getMetaWhat(final String event) {
         if (event.equals("break_at")) {
             return META_BREAK_AT;
@@ -524,8 +464,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             return META_WAIT_AT;
         } else if (event.equals("exit_at")) {
             return META_EXIT_AT;
-        } else if (event.equals("trace_output")) {
-            return META_TRACE_OUTPUT;
         } else {
             return META_UNKNOWN;
         }
@@ -729,20 +667,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     @Override
     public ErlangDebugTarget getErlangDebugTarget() {
         return this;
-    }
-
-    public List<OtpErlangTuple> getTraceList() {
-        if (fTraceList == null) {
-            fTraceList = new ArrayList<OtpErlangTuple>();
-        }
-        return fTraceList;
-    }
-
-    private void addToTraceList(final OtpErlangTuple traceTuple) {
-        if (fTraceList == null) {
-            fTraceList = new ArrayList<OtpErlangTuple>();
-        }
-        fTraceList.add(traceTuple);
     }
 
     public Collection<OtpErlangPid> getAllMetaPids() {

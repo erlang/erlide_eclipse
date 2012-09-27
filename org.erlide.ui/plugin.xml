@@ -1525,14 +1525,6 @@
       </view>
       <view
             allowMultiple="false"
-            category="org.eclipse.debug.ui"
-            class="org.erlide.debug.ui.views.DebuggerTraceView"
-            icon="icons/full/obj16/file.gif"
-            id="org.erlide.debug.ui.views.debuggerTraceView"
-            name="Debugger Trace">
-      </view>
-      <view
-            allowMultiple="false"
             category="org.erlide.views"
             class="org.erlide.ui.views.CallHierarchyView"
             id="org.erlide.ui.callhierarchy"

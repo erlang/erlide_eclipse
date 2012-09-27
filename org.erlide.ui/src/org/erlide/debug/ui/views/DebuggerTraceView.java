@@ -50,7 +50,7 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.debug.ui.tracing.DebugTraceEvent;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
-import org.erlide.launch.debug.model.ErlangDebugTarget.TraceChangedEventData;
+import org.erlide.launch.debug.model.TraceChangedEventData;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
