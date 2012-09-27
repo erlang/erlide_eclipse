@@ -1,28 +1,39 @@
 package org.erlide.launch.debug.events;
 
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class MetaEvent implements DebuggerEvent {
 
     private final OtpErlangObject event;
-    private final OtpErlangPid pid;
+    private final OtpErlangPid metaPid;
 
-    public MetaEvent(final OtpErlangPid pid, final OtpErlangObject event) {
-        this.pid = pid;
+    // private final OtpErlangPid pid;
+
+    public MetaEvent(final OtpErlangPid metaPid, final OtpErlangObject event) {
+        this.metaPid = metaPid;
         this.event = event;
     }
 
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
-        if (event instanceof OtpErlangTuple) {
-            debugTarget.handleMetaEvent(pid, (OtpErlangTuple) event);
-        } else {
-            // TODO ??
-        }
+        ErlLogger
+                .debug("unhandled meta event: %s %s", getMetaPid(), getEvent());
+    }
+
+    public OtpErlangPid getMetaPid() {
+        return metaPid;
+    }
+
+    public OtpErlangObject getEvent() {
+        return event;
+    }
+
+    public OtpErlangPid getPid(final ErlangDebugTarget debugTarget) {
+        return debugTarget.getPidFromMeta(metaPid);
     }
 
 }

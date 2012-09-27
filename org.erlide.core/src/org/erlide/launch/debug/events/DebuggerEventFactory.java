@@ -6,7 +6,9 @@ import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 
 public class DebuggerEventFactory {
 
@@ -47,7 +49,40 @@ public class DebuggerEventFactory {
 
     private static DebuggerEvent buildMetaEvent(final Bindings b)
             throws OtpErlangException {
-        return new MetaEvent(b.getPid("Meta"), b.get("Event"));
+        return parseMeta(b.getPid("Meta"), b.get("Event"));
+    }
+
+    private static MetaEvent parseMeta(final OtpErlangPid pid,
+            final OtpErlangObject event) {
+        try {
+            Bindings b = ErlUtils
+                    .match("{break_at, Mod:a, Line:i, Crt}", event);
+            if (b != null) {
+                return new BreakAtEvent(pid, b.getAtom("Mod"),
+                        b.getInt("Line"), b.get("Crt"));
+            }
+            b = ErlUtils.match("{exit_at, Pos, Reason, Le, OrigPid:p}", event);
+            if (b != null) {
+                return new ExitAtEvent(pid, b.get("Pos"), b.get("Reason"),
+                        b.get("Le"), b.getPid("OrigPid"));
+            }
+            b = ErlUtils.match(
+                    "{exit_at, Pos, Reason, Le, OrigPid:p, Stack:l, Binds:l}",
+                    event);
+            if (b != null) {
+                return new ExitAtEvent(pid, b.get("Pos"), b.get("Reason"),
+                        b.get("Le"), b.getPid("OrigPid"),
+                        (OtpErlangList) b.get("Stack"),
+                        (OtpErlangList) b.get("Binds"));
+            }
+            b = ErlUtils.match("{wait_at, Mod:a, Line:i, Crt}", event);
+            if (b != null) {
+                return new WaitAtEvent(pid, b.getAtom("Mod"), b.getInt("Line"),
+                        b.get("Crt"));
+            }
+        } catch (final Throwable e) {
+        }
+        return new MetaEvent(pid, event);
     }
 
     private static DebuggerEvent buildUnknownEvent(final OtpErlangObject message) {
