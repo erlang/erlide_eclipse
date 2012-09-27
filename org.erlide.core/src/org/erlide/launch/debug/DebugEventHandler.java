@@ -2,6 +2,7 @@ package org.erlide.launch.debug;
 
 import java.util.Collection;
 
+import org.eclipse.debug.core.DebugException;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.events.DebuggerEvent;
 import org.erlide.launch.debug.events.DebuggerEventFactory;
@@ -20,18 +21,18 @@ class DebugEventHandler {
     public void handleMessages(final Collection<OtpErlangObject> messages)
             throws Exception {
         for (final OtpErlangObject message : messages) {
-            handleMessage(message);
+            try {
+                handleMessage(message);
+            } catch (final Throwable e) {
+                ErlLogger.info(e);
+            }
         }
     }
 
-    private void handleMessage(final OtpErlangObject message) throws Exception {
-        // TODO More events from erlide_dbg_mon...
+    private void handleMessage(final OtpErlangObject message)
+            throws DebugException {
         ErlLogger.debug("@@@>> " + message);
-        try {
-            final DebuggerEvent event = DebuggerEventFactory.parse(message);
-            event.execute(debugTarget);
-        } catch (final Throwable e) {
-            ErlLogger.info(e);
-        }
+        final DebuggerEvent event = DebuggerEventFactory.parse(message);
+        event.execute(debugTarget);
     }
 }

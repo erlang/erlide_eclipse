@@ -2,7 +2,6 @@ package org.erlide.launch.debug.events;
 
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 
@@ -11,15 +10,8 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class DebuggerEventFactory {
 
-    public static class BadEvent implements DebuggerEvent {
-
-        @Override
-        public void execute(final ErlangDebugTarget debugTarget) {
-            // do nothing
-        }
-    }
-
     public static DebuggerEvent parse(final OtpErlangObject message) {
+        // TODO More events from erlide_dbg_mon...
         try {
             Bindings b = ErlUtils.match("{started, Pid:p}", message);
             if (b != null) {
@@ -39,7 +31,7 @@ public class DebuggerEventFactory {
             }
             b = ErlUtils.match("{Other:a, Cmd}", message);
             if (b != null) {
-                return buildUnknownEvent(b);
+                return buildUnknownEvent(message);
             }
             b = ErlUtils.match("{Meta:p, Event}", message);
             if (b != null) {
@@ -50,7 +42,7 @@ public class DebuggerEventFactory {
         } catch (final OtpErlangException e) {
             ErlLogger.error(e);
         }
-        return new BadEvent();
+        return new UnknownEvent(message);
     }
 
     private static DebuggerEvent buildMetaEvent(final Bindings b)
@@ -58,8 +50,8 @@ public class DebuggerEventFactory {
         return new MetaEvent(b.getPid("Meta"), b.get("Event"));
     }
 
-    private static DebuggerEvent buildUnknownEvent(final Bindings b) {
-        return new UnknownEvent(b);
+    private static DebuggerEvent buildUnknownEvent(final OtpErlangObject message) {
+        return new UnknownEvent(message);
     }
 
     private static DebuggerEvent buildAttachedEvent(final Bindings b)

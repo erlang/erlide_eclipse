@@ -1,22 +1,20 @@
 package org.erlide.launch.debug.events;
 
-import org.eclipse.debug.core.DebugException;
-import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 
+import com.ericsson.otp.erlang.OtpErlangObject;
+
 public class UnknownEvent implements DebuggerEvent {
 
-    private final Bindings b;
+    private final OtpErlangObject message;
 
-    public UnknownEvent(final Bindings b) {
-        this.b = b;
+    public UnknownEvent(final OtpErlangObject message) {
+        this.message = message;
     }
 
     @Override
-    public void execute(final ErlangDebugTarget debugTarget)
-            throws DebugException {
-        ErlLogger.warn("Unknown debugger event: %s", b.toString());
+    public void execute(final ErlangDebugTarget debugTarget) {
+        ErlLogger.warn("Unknown debugger event: %s)", message);
     }
-
 }
