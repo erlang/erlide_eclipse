@@ -5,38 +5,35 @@ import java.util.Map;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.SignatureException;
 
 public interface Bindings {
 
-    public abstract OtpErlangObject get(final String name);
+    OtpErlangObject get(final String name);
 
-    public abstract int getInt(final String name) throws OtpErlangException;
+    int getInt(final String name) throws OtpErlangException;
 
-    public abstract long getLong(final String name) throws OtpErlangException;
+    long getLong(final String name) throws OtpErlangException;
 
-    public abstract String getAtom(final String name) throws OtpErlangException;
+    String getAtom(final String name) throws OtpErlangException;
 
-    public abstract String getQuotedAtom(final String name)
+    String getQuotedAtom(final String name) throws OtpErlangException;
+
+    String getString(final String name) throws OtpErlangException;
+
+    Collection<OtpErlangObject> getList(final String name)
             throws OtpErlangException;
 
-    public abstract String getString(final String name)
-            throws OtpErlangException;
+    OtpErlangObject[] getTuple(final String name) throws OtpErlangException;
 
-    public abstract Collection<OtpErlangObject> getList(final String name)
-            throws OtpErlangException;
+    OtpErlangPid getPid(final String name) throws OtpErlangException;
 
-    public abstract OtpErlangObject[] getTuple(final String name)
-            throws OtpErlangException;
-
-    public abstract <T> T getAs(final String name, final Class<T> cls)
+    <T> T getAs(final String name, final Class<T> cls)
             throws SignatureException;
 
-    public abstract void put(final String name, final OtpErlangObject value);
+    void put(final String name, final OtpErlangObject value);
 
-    public abstract Map<String, OtpErlangObject> getAll();
-
-    @Override
-    public abstract String toString();
+    Map<String, OtpErlangObject> getAll();
 
 }

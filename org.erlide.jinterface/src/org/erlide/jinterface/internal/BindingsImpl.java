@@ -23,6 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.SignatureException;
@@ -113,6 +114,15 @@ public final class BindingsImpl implements Bindings {
             return ((OtpErlangTuple) r).elements();
         }
         throw new OtpErlangException("value is not a tuple");
+    }
+
+    @Override
+    public OtpErlangPid getPid(final String name) throws OtpErlangException {
+        final OtpErlangObject r = get(name);
+        if (r instanceof OtpErlangPid) {
+            return (OtpErlangPid) r;
+        }
+        throw new OtpErlangException("value is not a pid");
     }
 
     @Override
