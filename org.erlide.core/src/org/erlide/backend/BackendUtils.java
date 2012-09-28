@@ -1,5 +1,7 @@
 package org.erlide.backend;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.List;
 
@@ -174,6 +176,45 @@ public class BackendUtils {
     public static boolean isThisHost(final String host) {
         return getErlangHostName(true).equals(host)
                 || getErlangHostName(false).equals(host);
+    }
+
+    public static String getJavaLongHostName() {
+        InetAddress addr;
+        try {
+            addr = InetAddress.getLocalHost();
+            return addr.getCanonicalHostName();
+        } catch (final UnknownHostException e1) {
+            ErlLogger.warn("Could not retrieve long host name, "
+                    + "defaulting to 127.0.0.1");
+            return "127.0.0.1";
+        }
+    }
+
+    public static String getJavaShortHostName() {
+        InetAddress addr;
+        try {
+            addr = InetAddress.getLocalHost();
+            return addr.getHostName();
+        } catch (final UnknownHostException e1) {
+            ErlLogger.warn("Could not retrieve short host name, "
+                    + "defaulting to localhost");
+            return "localhost";
+        }
+    }
+
+    public static void detectHostNames() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public static String getErlangLongHostName() {
+        // TODO Auto-generated method stub
+        return erlangLongName;
+    }
+
+    public static String getErlangShortHostName() {
+        // TODO Auto-generated method stub
+        return erlangShortName;
     }
 
 }

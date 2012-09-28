@@ -169,6 +169,12 @@
             id="org.erlide.ui.internalSettings"
             name="Internal settings">
       </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.NetworkPreferencePage"
+            id="org.erlide.ui.network"
+            name="Network">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">
