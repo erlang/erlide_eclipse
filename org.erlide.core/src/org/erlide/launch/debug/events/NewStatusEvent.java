@@ -1,7 +1,6 @@
 package org.erlide.launch.debug.events;
 
 import org.eclipse.debug.core.DebugEvent;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErlangProcess;
 
@@ -17,7 +16,6 @@ public class NewStatusEvent extends IntEvent {
 
     @Override
     public void execute(final ErlangDebugTarget debugTarget) {
-        ErlLogger.info("¤¤¤ new status " + cmds);
         final OtpErlangPid pid = (OtpErlangPid) cmds[1];
         final ErlangProcess erlangProcess = debugTarget
                 .getOrCreateErlangProcess(pid);

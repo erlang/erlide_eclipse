@@ -15,6 +15,7 @@
 %%
 %% Include files
 %%
+
 %% -define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
 %% -define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
 %% -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
@@ -127,7 +128,6 @@ suspend(MetaPid) ->
     erlide_dbg_mon:suspend(MetaPid).
 
 resume(MetaPid) ->
-    erlide_log:logp("dbg resume >>>> ~p", [MetaPid]),
     erlide_dbg_mon:resume(MetaPid).
 
 bindings(MetaPid) ->

@@ -339,7 +339,6 @@ meta_cmd({stack_trace, Flag}, State) ->
 
 meta_cmd({trace_output, Str}, State) ->
 %%     dbg_ui_trace_win:trace_output(Str),
-    io:format("trace_output ~p\n", [Str]),
     State;
 
 %% Reply on a user command
