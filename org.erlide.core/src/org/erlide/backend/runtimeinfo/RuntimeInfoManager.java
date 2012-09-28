@@ -357,7 +357,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                         "default_runtime", null), "c:/program files",
                 "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
                 System.getProperty("user.home"), "/usr", "/usr/lib",
-                "/usr/local", "/usr/local/lib",
+                "/usr/lib64", "/usr/local", "/usr/local/lib",
                 "/Library/Frameworks/erlang/Versions" };
         for (final String loc : locations) {
             final Collection<File> roots = findRuntime(loc);
