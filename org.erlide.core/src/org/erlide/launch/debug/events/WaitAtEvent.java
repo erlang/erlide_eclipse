@@ -8,6 +8,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public class WaitAtEvent extends MetaEvent {
     private final String module;
     private final int line;
+    @SuppressWarnings("unused")
     private final OtpErlangPid metaPid;
 
     public WaitAtEvent(final OtpErlangPid metaPid, final String module,

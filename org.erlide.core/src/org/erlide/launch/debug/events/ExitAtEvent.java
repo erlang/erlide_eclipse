@@ -16,6 +16,7 @@ public class ExitAtEvent extends MetaEvent {
 
     private final String module;
     private final int line;
+    @SuppressWarnings("unused")
     private final OtpErlangPid metaPid;
     private final OtpErlangPid pid;
     private final OtpErlangList bindings;

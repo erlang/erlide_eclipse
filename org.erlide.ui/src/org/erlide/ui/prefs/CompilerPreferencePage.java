@@ -386,7 +386,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     enum OptionStatus {
         //@formatter:off
         OK, 
-        @SuppressWarnings("hiding") ERROR, 
+        ERROR, 
         NO_RUNTIME
         //@formatter:off
     }

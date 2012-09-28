@@ -12,6 +12,7 @@ public class BreakAtEvent extends MetaEvent {
 
     private final String module;
     private final int line;
+    @SuppressWarnings("unused")
     private final OtpErlangObject le;
 
     public BreakAtEvent(final OtpErlangPid pid, final String module,

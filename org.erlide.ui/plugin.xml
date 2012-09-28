@@ -1532,7 +1532,7 @@
             restorable="true">
       </view>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
             id="org.erlide.debug.ui.views.DebuggerTraceViewActions"
@@ -1553,7 +1553,7 @@
             </enablement>
          </action>
       </viewContribution>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
@@ -1601,11 +1601,11 @@
                relative="org.eclipse.debug.ui.DebugView"
                visible="true">
          </view>
-         <view
+         <!--view
                id="org.erlide.debug.ui.views.debuggerTraceView"
                relationship="stack"
                visible="true">
-         </view>
+         </view-->
       </perspectiveExtension>
    </extension>
    <extension

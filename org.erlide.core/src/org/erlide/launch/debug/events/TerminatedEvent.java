@@ -7,6 +7,7 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 
 public class TerminatedEvent implements DebuggerEvent {
 
+    @SuppressWarnings("unused")
     private final OtpErlangPid pid;
 
     public TerminatedEvent(final OtpErlangPid pid) {
