@@ -16,6 +16,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.backend.internal.ErlangHostnameRetriever;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SourcePathProvider;
@@ -27,8 +29,11 @@ import com.google.common.collect.Lists;
 
 public class BackendUtils {
 
-    private static String erlangLongName = "127.0.0.1";
-    private static String erlangShortName = "localhost";
+    private static final String erlangLongNameFallback = "127.0.0.1";
+    private static final String erlangShortNameFallback = "localhost";
+
+    private static String erlangLongName = erlangLongNameFallback;
+    private static String erlangShortName = erlangShortNameFallback;
     private static Collection<SourcePathProvider> sourcePathProviders = null;
 
     public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
@@ -185,8 +190,8 @@ public class BackendUtils {
             return addr.getCanonicalHostName();
         } catch (final UnknownHostException e1) {
             ErlLogger.warn("Could not retrieve long host name, "
-                    + "defaulting to 127.0.0.1");
-            return "127.0.0.1";
+                    + "defaulting to " + erlangLongNameFallback);
+            return erlangLongNameFallback;
         }
     }
 
@@ -197,23 +202,35 @@ public class BackendUtils {
             return addr.getHostName();
         } catch (final UnknownHostException e1) {
             ErlLogger.warn("Could not retrieve short host name, "
-                    + "defaulting to localhost");
-            return "localhost";
+                    + "defaulting to " + erlangShortNameFallback);
+            return erlangShortNameFallback;
         }
     }
 
+    /**
+     * Start erlang nodes and find out how they resolve the long/short host
+     * names.
+     */
     public static void detectHostNames() {
-        // TODO Auto-generated method stub
-
+        final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever();
+        final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
+                .getErlideRuntime();
+        if (runtime != null) {
+            erlangLongName = retriever.checkHostName(Lists.newArrayList(
+                    runtime.getOtpHome() + "/bin/erl", "-name", "foo"));
+            erlangShortName = retriever.checkHostName(Lists.newArrayList(
+                    runtime.getOtpHome() + "/bin/erl", "-sname", "foo"));
+        } else {
+            erlangLongName = getJavaLongHostName();
+            erlangShortName = getJavaShortHostName();
+        }
     }
 
     public static String getErlangLongHostName() {
-        // TODO Auto-generated method stub
         return erlangLongName;
     }
 
     public static String getErlangShortHostName() {
-        // TODO Auto-generated method stub
         return erlangShortName;
     }
 

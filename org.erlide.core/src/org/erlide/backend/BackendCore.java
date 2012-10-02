@@ -22,6 +22,7 @@ public class BackendCore {
         if (backendManager == null) {
             final RuntimeInfo erlideRuntime = getRuntimeInfoManager()
                     .getErlideRuntime();
+            BackendUtils.detectHostNames();
             backendFactory = new BackendFactory(getRuntimeInfoManager());
             backendManager = new BackendManager(erlideRuntime, backendFactory);
         }
