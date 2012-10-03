@@ -34,7 +34,7 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.erlide.jinterface,
  com.google.guava;bundle-version="11.0.1",
  org.erlide.libs
-Bundle-ActivationPolicy: lazy
+Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .
 Eclipse-ExtensibleAPI: true
