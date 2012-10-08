@@ -310,7 +310,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                     ErlLaunchAttributes.LOAD_ALL_NODES, false);
             distributedLoadCheck.setSelection(loadAll);
         } catch (final CoreException e) {
-            distributedLoadCheck.setSelection(false);
+            distributedLoadCheck.setSelection(true);
         }
     }
 
@@ -408,6 +408,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 && startNodeCheckbox.getSelection());
         distributedLoadCheck
                 .setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
+        distributedLoadCheck.setSelection(true);
 
         if (state.mode == NodeType.LOCAL_STANDALONE) {
             setMessage("NOTE: The Erlang node will be started as not distributed. "
