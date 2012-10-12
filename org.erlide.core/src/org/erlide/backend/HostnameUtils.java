@@ -89,7 +89,14 @@ public class HostnameUtils {
     }
 
     public static boolean canUseShortNames() {
-        return erlangShortName != null && !erlangShortName.contains(".");
+        boolean resolvable;
+        try {
+            final InetAddress addr = InetAddress.getByName(erlangShortName);
+            resolvable = addr != null;
+        } catch (final UnknownHostException e) {
+            resolvable = false;
+        }
+        return erlangShortName != null && resolvable;
     }
 
 }
