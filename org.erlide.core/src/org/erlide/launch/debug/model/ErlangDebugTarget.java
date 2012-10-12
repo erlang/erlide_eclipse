@@ -165,13 +165,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             return;
         }
 
-        fTerminated = true;
         fBackend.send("erlide_dbg_mon", new OtpErlangAtom("stop"));
-
         final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
         }
+        fBackend.stop();
+        fTerminated = true;
 
         final ILaunch launch = getLaunch();
         if (launch != null) {

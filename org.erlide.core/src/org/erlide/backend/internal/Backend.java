@@ -346,6 +346,9 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void stop() {
+        if (data.isDebug()) {
+            unloadDebuggerCode();
+        }
         stopped = true;
     }
 
@@ -739,6 +742,11 @@ public abstract class Backend implements IStreamListener, IBackend {
             }
         }
         ErlideDebug.distributeDebuggerCode(this, modules);
+    }
+
+    private void unloadDebuggerCode() {
+        final List<String> debuggerModules = getDebuggerModules();
+        ErlideDebug.unloadDebuggerCode(this, debuggerModules);
     }
 
     private List<String> getDebuggerModules() {
