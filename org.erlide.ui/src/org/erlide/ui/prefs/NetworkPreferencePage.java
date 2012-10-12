@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.erlide.backend.BackendUtils;
+import org.erlide.backend.HostnameUtils;
 
 public class NetworkPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -119,7 +119,7 @@ public class NetworkPreferencePage extends PreferencePage implements
                     parent.setCursor(cursor);
                     parent.setEnabled(false);
 
-                    BackendUtils.detectHostNames();
+                    HostnameUtils.detectHostNames();
                     updateHostNames();
                 } finally {
                     parent.setCursor(null);
@@ -177,9 +177,9 @@ public class NetworkPreferencePage extends PreferencePage implements
     }
 
     private void updateHostNames() {
-        shortNameText.setText(BackendUtils.getErlangShortHostName());
-        longNameText.setText(BackendUtils.getErlangLongHostName());
-        javaShortNameText.setText(BackendUtils.getJavaShortHostName());
-        javaLongNameText.setText(BackendUtils.getJavaLongHostName());
+        shortNameText.setText(HostnameUtils.getErlangShortHostName());
+        longNameText.setText(HostnameUtils.getErlangLongHostName());
+        javaShortNameText.setText(HostnameUtils.getJavaShortHostName());
+        javaLongNameText.setText(HostnameUtils.getJavaLongHostName());
     }
 }

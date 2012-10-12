@@ -1,7 +1,5 @@
 package org.erlide.backend;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,8 +14,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.erlide.backend.internal.ErlangHostnameRetriever;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SourcePathProvider;
@@ -29,11 +25,6 @@ import com.google.common.collect.Lists;
 
 public class BackendUtils {
 
-    private static final String erlangLongNameFallback = "127.0.0.1";
-    private static final String erlangShortNameFallback = "localhost";
-
-    private static String erlangLongName = erlangLongNameFallback;
-    private static String erlangShortName = erlangShortNameFallback;
     private static Collection<SourcePathProvider> sourcePathProviders = null;
 
     public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
@@ -172,66 +163,6 @@ public class BackendUtils {
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
         return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
-    }
-
-    public static String getErlangHostName(final boolean longName) {
-        return longName ? erlangLongName : erlangShortName;
-    }
-
-    public static boolean isThisHost(final String host) {
-        return getErlangHostName(true).equals(host)
-                || getErlangHostName(false).equals(host);
-    }
-
-    public static String getJavaLongHostName() {
-        InetAddress addr;
-        try {
-            addr = InetAddress.getLocalHost();
-            return addr.getCanonicalHostName();
-        } catch (final UnknownHostException e1) {
-            ErlLogger.warn("Could not retrieve long host name, "
-                    + "defaulting to " + erlangLongNameFallback);
-            return erlangLongNameFallback;
-        }
-    }
-
-    public static String getJavaShortHostName() {
-        InetAddress addr;
-        try {
-            addr = InetAddress.getLocalHost();
-            return addr.getHostName();
-        } catch (final UnknownHostException e1) {
-            ErlLogger.warn("Could not retrieve short host name, "
-                    + "defaulting to " + erlangShortNameFallback);
-            return erlangShortNameFallback;
-        }
-    }
-
-    /**
-     * Start erlang nodes and find out how they resolve the long/short host
-     * names.
-     */
-    public static void detectHostNames() {
-        final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever();
-        final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
-                .getErlideRuntime();
-        if (runtime != null) {
-            erlangLongName = retriever.checkHostName(Lists.newArrayList(
-                    runtime.getOtpHome() + "/bin/erl", "-name", "foo"));
-            erlangShortName = retriever.checkHostName(Lists.newArrayList(
-                    runtime.getOtpHome() + "/bin/erl", "-sname", "foo"));
-        } else {
-            erlangLongName = getJavaLongHostName();
-            erlangShortName = getJavaShortHostName();
-        }
-    }
-
-    public static String getErlangLongHostName() {
-        return erlangLongName;
-    }
-
-    public static String getErlangShortHostName() {
-        return erlangShortName;
     }
 
 }

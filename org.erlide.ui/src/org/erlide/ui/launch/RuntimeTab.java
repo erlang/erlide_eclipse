@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
-import org.erlide.backend.BackendUtils;
+import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.NodeHostClassifier;
 import org.erlide.backend.NodeHostClassifier.HostnameType;
 import org.erlide.backend.NodeHostClassifier.NodeType;
@@ -396,7 +396,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
         final boolean isLong = longNameButton.getSelection();
         if (state.host == HostnameType.NONE) {
-            nodeHostLabel.setText("@" + BackendUtils.getErlangHostName(isLong));
+            nodeHostLabel
+                    .setText("@" + HostnameUtils.getErlangHostName(isLong));
         } else {
             nodeHostLabel.setText("");
         }

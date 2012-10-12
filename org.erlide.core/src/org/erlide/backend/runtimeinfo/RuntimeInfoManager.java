@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.backend.HostnameUtils;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.PreferencesUtils;
@@ -204,6 +205,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
             notifyListeners();
+            HostnameUtils.detectHostNames(runtime);
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
         }

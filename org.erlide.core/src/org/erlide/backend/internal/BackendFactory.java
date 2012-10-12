@@ -19,6 +19,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
+import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IErlRuntime;
@@ -57,7 +58,7 @@ public class BackendFactory implements IBackendFactory {
         }
 
         final IBackend b;
-        final String erlangHostName = BackendUtils.getErlangHostName(data
+        final String erlangHostName = HostnameUtils.getErlangHostName(data
                 .isLongName());
         try {
             String nodeName = data.getNodeName();
@@ -102,7 +103,7 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
-        result.setLongName(false);
+        result.setLongName(HostnameUtils.canUseLongNames());
         if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
@@ -123,7 +124,7 @@ public class BackendFactory implements IBackendFactory {
         result.setDebug(false);
         result.setAutostart(true);
         result.setConsole(false);
-        result.setLongName(false);
+        result.setLongName(HostnameUtils.canUseLongNames());
         result.setInternal(true);
         return result;
     }
