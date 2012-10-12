@@ -4,6 +4,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -112,8 +113,19 @@ public class NetworkPreferencePage extends PreferencePage implements
         btnNewButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                BackendUtils.detectHostNames();
-                updateHostNames();
+                final Cursor cursor = new Cursor(parent.getDisplay(),
+                        SWT.CURSOR_WAIT);
+                try {
+                    parent.setCursor(cursor);
+                    parent.setEnabled(false);
+
+                    BackendUtils.detectHostNames();
+                    updateHostNames();
+                } finally {
+                    parent.setCursor(null);
+                    parent.setEnabled(true);
+                    cursor.dispose();
+                }
             }
 
         });
