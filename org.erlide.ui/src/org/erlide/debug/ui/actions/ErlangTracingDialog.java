@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
 import org.erlide.ui.launch.DebugTreeItem;
 import org.erlide.ui.properties.ErlTracingPropertyPage;
@@ -94,7 +94,7 @@ public class ErlangTracingDialog extends Dialog {
 
         });
         checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
-        checkboxTreeViewer.setContentProvider(new TreeContentProvider());
+        checkboxTreeViewer.setContentProvider(new ModuleListContentProvider());
         final Tree tree = checkboxTreeViewer.getTree();
         final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd_tree.minimumWidth = 250;
@@ -138,7 +138,7 @@ public class ErlangTracingDialog extends Dialog {
 
         if (checkboxTreeViewer != null) {
             // checkboxTreeViewer.setInput(config);
-            final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
+            final DebugTreeItem root = ((ModuleListContentProvider) checkboxTreeViewer
                     .getContentProvider()).getRoot();
             root.setChecked(checkboxTreeViewer, tracedModules);
             checkboxTreeViewer.expandAll();

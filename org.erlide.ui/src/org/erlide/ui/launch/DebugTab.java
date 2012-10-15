@@ -26,10 +26,8 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -47,6 +45,7 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
@@ -63,28 +62,20 @@ import org.erlide.utils.CommonUtils;
  */
 public class DebugTab extends AbstractLaunchConfigurationTab {
 
-    CheckboxTreeViewer checkboxTreeViewer;
+    ListViewer listViewer;
     private Button attachOnFirstCallCheck;
     private Button attachOnBreakpointCheck;
     private Button attachOnExitCheck;
     private Button distributedDebugCheck;
     private List<IErlModule> interpretedModules;
 
-    public static class TreeLabelProvider extends LabelProvider {
-        public TreeLabelProvider() {
-            super();
-        }
+    public static class ListLabelProvider extends LabelProvider {
 
         @Override
         public String getText(final Object element) {
-            if (element instanceof DebugTreeItem) {
-                final IErlElement item = ((DebugTreeItem) element).item;
-                if (item == null) {
-                    ErlLogger.warn("Null item in DebugTreeItem %s",
-                            element.toString());
-                    return "---";
-                }
-                return item.getName();
+            if (element instanceof IErlElement) {
+                final IErlElement erlElement = (IErlElement) element;
+                return erlElement.getName();
             }
             return "!" + super.getText(element);
         }
@@ -92,79 +83,6 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         @Override
         public Image getImage(final Object element) {
             return null;
-        }
-    }
-
-    public static class TreeContentProvider implements
-            IStructuredContentProvider, ITreeContentProvider {
-        private DebugTreeItem root;
-        final boolean DISABLED = true;
-
-        public TreeContentProvider() {
-            super();
-        }
-
-        @Override
-        public void inputChanged(final Viewer viewer, final Object oldInput,
-                final Object newInput) {
-            try {
-                setRoot(new DebugTreeItem(null, null));
-                if (DISABLED) {
-                    return;
-                }
-                if (newInput instanceof ILaunchConfiguration) {
-                    final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
-                    final String projs = input.getAttribute(
-                            ErlLaunchAttributes.PROJECTS, "").trim();
-                    if (projs.length() == 0) {
-                        return;
-                    }
-                    final String[] projNames = projs.split(";");
-                    if (projNames == null) {
-                        return;
-                    }
-                    final IErlModel model = ErlModelManager.getErlangModel();
-                    for (final String projName : projNames) {
-                        final IErlElement prj = model.getChildNamed(projName);
-                        getRoot().addAllErlangModules(prj);
-                    }
-                }
-            } catch (final CoreException e1) {
-            }
-        }
-
-        @Override
-        public void dispose() {
-        }
-
-        @Override
-        public Object[] getElements(final Object inputElement) {
-            return getChildren(getRoot());
-        }
-
-        @Override
-        public Object[] getChildren(final Object parentElement) {
-            final DebugTreeItem dti = (DebugTreeItem) parentElement;
-            return dti.children.toArray();
-        }
-
-        @Override
-        public Object getParent(final Object element) {
-            final DebugTreeItem dti = (DebugTreeItem) element;
-            return dti.getParent();
-        }
-
-        @Override
-        public boolean hasChildren(final Object element) {
-            return getChildren(element).length > 0;
-        }
-
-        public DebugTreeItem getRoot() {
-            return root;
-        }
-
-        public void setRoot(final DebugTreeItem root) {
-            this.root = root;
         }
     }
 
@@ -210,8 +128,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         anyModuleHavingLabel
                 .setText("Any module having breakpoints enabled will be dynamically added to the list.\n\nThis widget is disabled for now, it takes 100%CPU for large projects. If you need to use \"attach on first call\" or \"attach on exit\", please mark the modules by setting a dummy breakpoint in them. Sorry for the inconvenience!");
 
-        checkboxTreeViewer = new CheckboxTreeViewer(interpretedModulesGroup,
-                SWT.BORDER);
+        listViewer = new ListViewer(parent, SWT.BORDER);
         checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
             @Override
             @SuppressWarnings("synthetic-access")
@@ -226,7 +143,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
         });
         checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
-        checkboxTreeViewer.setContentProvider(new TreeContentProvider());
+        checkboxTreeViewer.setContentProvider(new ModuleListContentProvider());
         final Tree tree = checkboxTreeViewer.getTree();
         tree.setEnabled(false);
         final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -361,7 +278,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
 
         if (checkboxTreeViewer != null) {
             checkboxTreeViewer.setInput(config);
-            final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
+            final DebugTreeItem root = ((ModuleListContentProvider) checkboxTreeViewer
                     .getContentProvider()).getRoot();
             root.setChecked(checkboxTreeViewer, interpretedModules);
             checkboxTreeViewer.expandAll();

@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTab.TreeContentProvider;
 import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
 import org.erlide.ui.launch.DebugTreeItem;
 
@@ -100,7 +100,7 @@ public class ErlTracingPropertyPage extends PropertyPage implements
 
         });
         checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
-        checkboxTreeViewer.setContentProvider(new TreeContentProvider());
+        checkboxTreeViewer.setContentProvider(new ModuleListContentProvider());
         final Tree tree = checkboxTreeViewer.getTree();
         final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd_tree.minimumWidth = 250;
