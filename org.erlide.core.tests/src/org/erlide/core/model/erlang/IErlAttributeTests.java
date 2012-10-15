@@ -10,7 +10,6 @@ import com.ericsson.otp.erlang.OtpErlangString;
 
 public class IErlAttributeTests extends ErlModelTestBase {
 
-    // public OtpErlangObject getValue();
     @Test
     public void getValue() throws Exception {
         module.open(null);
