@@ -9,7 +9,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.commands.IHandlerListener;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -18,7 +17,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -114,12 +112,12 @@ public final class OpenModuleHandler extends Action implements IHandler,
 
     private void promptForFiles(final List<IFile> files, final Object[] result) {
         if (result != null) {
-            for (int i = 0; i < result.length; i++) {
-                if (result[i] instanceof IFile) {
-                    files.add((IFile) result[i]);
-                } else if (result[i] instanceof String) {
+            for (final Object o : result) {
+                if (o instanceof IFile) {
+                    files.add((IFile) o);
+                } else if (o instanceof String) {
                     try {
-                        final String path = (String) result[i];
+                        final String path = (String) o;
                         final IFile[] cons = ResourcesPlugin.getWorkspace()
                                 .getRoot()
                                 .findFilesForLocationURI(new URI(path));
@@ -158,10 +156,7 @@ public final class OpenModuleHandler extends Action implements IHandler,
         if (window == null) {
             return null;
         }
-        final Shell parent = window.getShell();
-        final IContainer input = ResourcesPlugin.getWorkspace().getRoot();
-
-        final OpenModuleDialog dialog = new OpenModuleDialog(parent, input);
+        final OpenModuleDialog dialog = new OpenModuleDialog(window.getShell());
         final int resultCode = dialog.open();
         if (resultCode != IDialogConstants.OK_ID) {
             return null;
