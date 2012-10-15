@@ -86,6 +86,9 @@ public final class BuilderHelper {
             final Collection<IPath> includeDirs) {
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .getErlangProject(project);
+        if (erlProject == null) {
+            return includeDirs;
+        }
         final Collection<IPath> projectIncludeDirs = erlProject
                 .getIncludeDirs();
         final IPathVariableManager pvm = ResourcesPlugin.getWorkspace()
