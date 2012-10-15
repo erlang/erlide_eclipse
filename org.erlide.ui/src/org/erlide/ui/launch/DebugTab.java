@@ -23,9 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.SWT;
@@ -36,15 +33,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Tree;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
@@ -129,47 +127,46 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 .setText("Any module having breakpoints enabled will be dynamically added to the list.\n\nThis widget is disabled for now, it takes 100%CPU for large projects. If you need to use \"attach on first call\" or \"attach on exit\", please mark the modules by setting a dummy breakpoint in them. Sorry for the inconvenience!");
 
         listViewer = new ListViewer(parent, SWT.BORDER);
-        checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
-            @Override
-            @SuppressWarnings("synthetic-access")
-            public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTreeItem dti = (DebugTreeItem) event.getElement();
-                checkboxTreeViewer.setGrayed(dti, false);
-                final boolean checked = event.getChecked();
-                setSubtreeChecked(dti, checked);
-                // checkUpwards(checkboxTreeViewer, dti, checked, false);
-                updateLaunchConfigurationDialog();
-            }
-
-        });
-        checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
-        checkboxTreeViewer.setContentProvider(new ModuleListContentProvider());
-        final Tree tree = checkboxTreeViewer.getTree();
-        tree.setEnabled(false);
-        final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
-        gd_tree.minimumWidth = 250;
-        gd_tree.minimumHeight = 120;
-        gd_tree.widthHint = 256;
-        gd_tree.heightHint = 220;
-        tree.setLayoutData(gd_tree);
+        // checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+        // @Override
+        // @SuppressWarnings("synthetic-access")
+        // public void checkStateChanged(final CheckStateChangedEvent event) {
+        // final DebugTreeItem dti = (DebugTreeItem) event.getElement();
+        // checkboxTreeViewer.setGrayed(dti, false);
+        // final boolean checked = event.getChecked();
+        // setSubtreeChecked(dti, checked);
+        // // checkUpwards(checkboxTreeViewer, dti, checked, false);
+        // updateLaunchConfigurationDialog();
+        // }
+        //
+        // });
+        listViewer.setLabelProvider(new ModuleItemLabelProvider());
+        listViewer.setContentProvider(new ModuleListContentProvider());
+        final Control control = listViewer.getControl();
+        control.setEnabled(false);
+        final GridData gd_list = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd_list.minimumWidth = 250;
+        gd_list.minimumHeight = 120;
+        gd_list.widthHint = 256;
+        gd_list.heightHint = 220;
+        control.setLayoutData(gd_list);
     }
 
-    protected void setSubtreeChecked(final DebugTreeItem dti,
-            final boolean checked) {
-        final List<DebugTreeItem> children = dti.getChildren();
-        if (children == null || children.size() == 0) {
-            interpretOrDeinterpret(dti, checked);
-            return;
-        }
-        for (final DebugTreeItem i : children) {
-            checkboxTreeViewer.setChecked(i, checked);
-            setSubtreeChecked(i, checked);
-        }
-    }
+    // protected void setSubtreeChecked(final DebugTreeItem dti,
+    // final boolean checked) {
+    // final List<DebugTreeItem> children = dti.getChildren();
+    // if (children == null || children.size() == 0) {
+    // interpretOrDeinterpret(dti, checked);
+    // return;
+    // }
+    // for (final DebugTreeItem i : children) {
+    // checkboxTreeViewer.setChecked(i, checked);
+    // setSubtreeChecked(i, checked);
+    // }
+    // }
 
-    private void interpretOrDeinterpret(final DebugTreeItem dti,
+    private void interpretOrDeinterpret(final IErlModule m,
             final boolean checked) {
-        final IErlModule m = (IErlModule) dti.getItem();
         if (checked) {
             interpretedModules.add(m);
         } else {
@@ -177,13 +174,14 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
     }
 
-    public static void checkUpwards(final CheckboxTreeViewer ctv,
-            final DebugTreeItem dti, final boolean checked, final boolean grayed) {
-        for (DebugTreeItem parent = dti.getParent(); parent != null; parent = parent
-                .getParent()) {
-            ctv.setChecked(parent, checked);
-        }
-    }
+    // public static void checkUpwards(final CheckboxTreeViewer ctv,
+    // final DebugTreeItem dti, final boolean checked, final boolean grayed) {
+    // for (DebugTreeItem parent = dti.getParent(); parent != null; parent =
+    // parent
+    // .getParent()) {
+    // ctv.setChecked(parent, checked);
+    // }
+    // }
 
     @Override
     public void setDefaults(final ILaunchConfigurationWorkingCopy config) {
@@ -276,12 +274,13 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         }
         setFlagCheckboxes(debugFlags);
 
-        if (checkboxTreeViewer != null) {
-            checkboxTreeViewer.setInput(config);
-            final DebugTreeItem root = ((ModuleListContentProvider) checkboxTreeViewer
-                    .getContentProvider()).getRoot();
-            root.setChecked(checkboxTreeViewer, interpretedModules);
-            checkboxTreeViewer.expandAll();
+        if (listViewer != null) {
+            listViewer.setInput(config);
+            // final DebugTreeItem root = ((ModuleListContentProvider)
+            // checkboxTreeViewer
+            // .getContentProvider()).getRoot();
+            // root.setChecked(checkboxTreeViewer, interpretedModules);
+            // checkboxTreeViewer.expandAll();
         }
     }
 

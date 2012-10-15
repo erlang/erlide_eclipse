@@ -9,6 +9,7 @@ import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.erlide.core.model.root.IErlElement;
 
 /**
  * A label provider for ResourceDecorator objects. It creates labels with a
@@ -30,39 +31,46 @@ public class ModuleItemLabelProvider extends LabelProvider implements
 
     @Override
     public Image getImage(final Object element) {
-        if (!(element instanceof IResource)) {
+        final IResource resource = getElementResource(element);
+        if (resource == null) {
             return super.getImage(element);
         }
 
-        final IResource res = (IResource) element;
+        return provider.getImage(resource);
+    }
 
-        return provider.getImage(res);
+    protected IResource getElementResource(final Object element) {
+        if (element instanceof IResource) {
+            return (IResource) element;
+        }
+        if (element instanceof IErlElement) {
+            final IErlElement erlElement = (IErlElement) element;
+            return erlElement.getCorrespondingResource();
+        }
+        return null;
     }
 
     @Override
     public String getText(final Object element) {
-        if (!(element instanceof IResource)) {
+        final IResource res = getElementResource(element);
+        if (res == null) {
             return super.getText(element);
         }
-        final IResource res = (IResource) element;
         final String name = res.getName();
         if (showFullPath(element)) {
             return name
                     + " - " + res.getParent().getFullPath().makeRelative().toString(); //$NON-NLS-1$
         }
-
         return name;
     }
 
     @Override
     public StyledString getStyledText(final Object element) {
-        if (!(element instanceof IResource)) {
+        if (getElementResource(element) == null) {
             return new StyledString(super.getText(element));
         }
-
         final String text = getText(element);
         final StyledString str = new StyledString(text);
-
         final int index = text.indexOf(" - ");
         if (index != -1) {
             str.setStyle(index, text.length() - index,

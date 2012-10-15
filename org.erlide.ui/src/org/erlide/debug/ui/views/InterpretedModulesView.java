@@ -42,8 +42,6 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTreeItem;
-import org.erlide.utils.SystemConfiguration;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking
@@ -242,24 +240,22 @@ public class InterpretedModulesView extends AbstractDebugView implements
         contextActivated(selection);
     }
 
-    private void interpretOrDeinterpret(final DebugTreeItem dti,
+    private void interpretOrDeinterpret(final IErlModule module,
             final boolean checked) {
         if (erlangDebugTarget == null) {
             ErlLogger.warn("erlangDebugTarget is null ?!?!");
             return;
         }
-        final String module = dti.getItem().getName();
-        final String moduleWoExtension = SystemConfiguration
-                .withoutExtension(module);
-        final IProject project = dti.getItem().getProject()
-                .getWorkspaceProject();
+        final String moduleWoExtension = module.getModuleName();
+        final IProject project = module.getProject().getWorkspaceProject();
         final boolean interpret = checked;
         final IBackend backend = erlangDebugTarget.getBackend();
 
         if (erlangDebugTarget.getInterpretedModules().contains(
                 moduleWoExtension) != interpret) {
             // FIXME this isn't correct!!!
-            backend.interpret(project, module, distributed, interpret);
+            backend.interpret(project, moduleWoExtension, distributed,
+                    interpret);
         }
     }
 }

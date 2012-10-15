@@ -1,47 +1,63 @@
 package org.erlide.debug.ui.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.ui.launch.DebugTreeItem;
 
-public class ModuleListContentProvider implements
-        IStructuredContentProvider {
-    final boolean DISABLED = true;
+import com.google.common.collect.Lists;
+
+public class ModuleListContentProvider implements IStructuredContentProvider {
+    private static final List<IErlModule> EMPTY = Lists.newArrayList();
+
+    final boolean DISABLED = !true;
+
+    List<IErlModule> modules = EMPTY;
 
     public ModuleListContentProvider() {
         super();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput,
             final Object newInput) {
         try {
-            setRoot(new DebugTreeItem(null, null));
+            // setRoot(new DebugTreeItem(null, null));
             if (DISABLED) {
                 return;
             }
             if (newInput instanceof ILaunchConfiguration) {
-                final ILaunchConfiguration input = (ILaunchConfiguration) newInput;
-                final String projs = input.getAttribute(
-                        ErlLaunchAttributes.PROJECTS, "").trim();
-                if (projs.length() == 0) {
-                    return;
+                final ILaunchConfiguration launchConfiguration = (ILaunchConfiguration) newInput;
+                List<String> interpret;
+                try {
+                    interpret = launchConfiguration.getAttribute(
+                            ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+                            new ArrayList<String>());
+                } catch (final CoreException e1) {
+                    interpret = new ArrayList<String>();
                 }
-                final String[] projNames = projs.split(";");
-                if (projNames == null) {
-                    return;
-                }
+                modules = Lists.newArrayListWithCapacity(interpret.size());
                 final IErlModel model = ErlModelManager.getErlangModel();
-                for (final String projName : projNames) {
-                    final IErlElement prj = model.getChildNamed(projName);
-                    getRoot().addAllErlangModules(prj);
+                for (final String projectColonModule : interpret) {
+                    final String[] projectModule = projectColonModule
+                            .split(":");
+                    final IErlProject project = (IErlProject) model
+                            .getChildNamed(projectModule[0]);
+                    final IErlModule module = project
+                            .getModule(projectModule[1]);
+                    modules.add(module);
                 }
+            } else {
+                modules = Lists.newArrayList();
             }
         } catch (final CoreException e1) {
         }
@@ -53,31 +69,7 @@ public class ModuleListContentProvider implements
 
     @Override
     public Object[] getElements(final Object inputElement) {
-        return getChildren(getRoot());
+        return modules.toArray();
     }
 
-    @Override
-    public Object[] getChildren(final Object parentElement) {
-        final DebugTreeItem dti = (DebugTreeItem) parentElement;
-        return dti.children.toArray();
-    }
-
-    @Override
-    public Object getParent(final Object element) {
-        final DebugTreeItem dti = (DebugTreeItem) element;
-        return dti.getParent();
-    }
-
-    @Override
-    public boolean hasChildren(final Object element) {
-        return getChildren(element).length > 0;
-    }
-
-    public DebugTreeItem getRoot() {
-        return root;
-    }
-
-    public void setRoot(final DebugTreeItem root) {
-        this.root = root;
-    }
 }
