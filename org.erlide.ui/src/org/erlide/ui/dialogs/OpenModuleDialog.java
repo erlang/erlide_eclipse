@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.erlide.ui.dialogs;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
@@ -33,10 +33,11 @@ public class OpenModuleDialog extends FilteredModulesSelectionDialog {
      * @param typesMask
      *            the types mask
      */
-    public OpenModuleDialog(final Shell parentShell, final IContainer container) {
-        super(parentShell, true, container, IResource.FILE);
+    public OpenModuleDialog(final Shell shell) {
+        super(shell, true, ResourcesPlugin.getWorkspace().getRoot(),
+                IResource.FILE, true);
         setTitle("Open module");
         PlatformUI.getWorkbench().getHelpSystem()
-                .setHelp(parentShell, IErlangHelpContextIds.OPEN_MODULE_DIALOG);
+                .setHelp(shell, IErlangHelpContextIds.OPEN_MODULE_DIALOG);
     }
 }

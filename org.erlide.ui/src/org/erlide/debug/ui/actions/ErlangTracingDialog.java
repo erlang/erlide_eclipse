@@ -1,12 +1,7 @@
 package org.erlide.debug.ui.actions;
 
-import java.util.ArrayList;
-
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -14,20 +9,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
-import org.erlide.ui.launch.DebugTab;
-import org.erlide.ui.launch.DebugTab.TreeContentProvider;
-import org.erlide.ui.launch.DebugTab.TreeLabelProvider;
-import org.erlide.ui.launch.DebugTreeItem;
-import org.erlide.ui.properties.ErlTracingPropertyPage;
 
 public class ErlangTracingDialog extends Dialog {
 
-    private ArrayList<IErlModule> tracedModules;
-    private CheckboxTreeViewer checkboxTreeViewer;
+    // private ArrayList<IErlModule> tracedModules;
+
+    // private CheckboxTreeViewer checkboxTreeViewer;
 
     protected ErlangTracingDialog(final Shell parentShell) {
         super(parentShell);
@@ -67,7 +56,7 @@ public class ErlangTracingDialog extends Dialog {
     protected Control createDialogArea(final Composite parent) {
         // create composite
         final Composite comp = (Composite) super.createDialogArea(parent);
-        tracedModules = new ArrayList<IErlModule>();
+        // tracedModules = new ArrayList<IErlModule>();
 
         final GridLayout topLayout = new GridLayout();
         comp.setLayout(topLayout);
@@ -78,30 +67,31 @@ public class ErlangTracingDialog extends Dialog {
         tracedModulesGroup.setLayoutData(gd_interpretedModulesGroup);
         tracedModulesGroup.setLayout(new GridLayout());
 
-        checkboxTreeViewer = new CheckboxTreeViewer(tracedModulesGroup,
-                SWT.BORDER);
-        checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
-            @Override
-            @SuppressWarnings("synthetic-access")
-            public void checkStateChanged(final CheckStateChangedEvent event) {
-                final DebugTreeItem dti = (DebugTreeItem) event.getElement();
-                checkboxTreeViewer.setGrayed(dti, false);
-                final boolean checked = event.getChecked();
-                ErlTracingPropertyPage.setSubtreeChecked(dti, checked,
-                        tracedModules, checkboxTreeViewer);
-                DebugTab.checkUpwards(checkboxTreeViewer, dti, checked, false);
-            }
-
-        });
-        checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
-        checkboxTreeViewer.setContentProvider(new TreeContentProvider());
-        final Tree tree = checkboxTreeViewer.getTree();
+        // checkboxTreeViewer = new CheckboxTreeViewer(tracedModulesGroup,
+        // SWT.BORDER);
+        // checkboxTreeViewer.addCheckStateListener(new ICheckStateListener() {
+        // @Override
+        // @SuppressWarnings("synthetic-access")
+        // public void checkStateChanged(final CheckStateChangedEvent event) {
+        // // final DebugTreeItem dti = (DebugTreeItem) event.getElement();
+        // // checkboxTreeViewer.setGrayed(dti, false);
+        // // final boolean checked = event.getChecked();
+        // // ErlTracingPropertyPage.setSubtreeChecked(dti, checked,
+        // // tracedModules, checkboxTreeViewer);
+        // // DebugTab.checkUpwards(checkboxTreeViewer, dti, checked, false);
+        // }
+        //
+        // });
+        // checkboxTreeViewer.setLabelProvider(new TreeLabelProvider());
+        // checkboxTreeViewer.setContentProvider(new
+        // ModuleListContentProvider());
+        // final Tree tree = checkboxTreeViewer.getTree();
         final GridData gd_tree = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd_tree.minimumWidth = 250;
         gd_tree.minimumHeight = 120;
         gd_tree.widthHint = 256;
         gd_tree.heightHint = 220;
-        tree.setLayoutData(gd_tree);
+        // tree.setLayoutData(gd_tree);
 
         applyDialogFont(comp);
         return comp;
@@ -132,16 +122,17 @@ public class ErlangTracingDialog extends Dialog {
         // projects.add(project);
         // }
 
-        tracedModules = new ArrayList<IErlModule>();
+        // tracedModules = new ArrayList<IErlModule>();
 
         // DebugTab.addModules(trace, tracedModules);
 
-        if (checkboxTreeViewer != null) {
-            // checkboxTreeViewer.setInput(config);
-            final DebugTreeItem root = ((TreeContentProvider) checkboxTreeViewer
-                    .getContentProvider()).getRoot();
-            root.setChecked(checkboxTreeViewer, tracedModules);
-            checkboxTreeViewer.expandAll();
-        }
+        // if (checkboxTreeViewer != null) {
+        // // checkboxTreeViewer.setInput(config);
+        // final DebugTreeItem root = ((ModuleListContentProvider)
+        // checkboxTreeViewer
+        // .getContentProvider()).getRoot();
+        // root.setChecked(checkboxTreeViewer, tracedModules);
+        // checkboxTreeViewer.expandAll();
+        // }
     }
 }
