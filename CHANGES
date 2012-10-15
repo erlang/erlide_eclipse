@@ -1,3 +1,16 @@
+List of user visible changes between 0.17.3 and 0.17.4 (20121015)
+
+9925b25 1080: debugger: doesn't shut down on remote targets
+e9c8cc1 use long names by default for internal backends; if not possible, try short names
+fc2db91 by default, load project code on all nodes
+956c026 added experimental support for -encoding(E) attribute, with E=latin1|utf8
+40b19e7 retrieve real erlang host names
+c5f2010 add NetworkPreferencePage
+7a6acab add /usr/lib64 to the list of default runtime locations
+6335edd better handling of unknown debugger messages
+bed80dc automatically detect all debugger modules to be distributed to other nodes
+a2cfee0 use better way to get the loopback interface's ip address
+
 List of user visible changes between 0.17.2 and 0.17.3 (20120920)
 
 499d4f0 updated module_templates, nicer formatting
