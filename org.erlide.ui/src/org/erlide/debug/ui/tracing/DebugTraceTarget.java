@@ -18,7 +18,9 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 public class DebugTraceTarget extends DebugTraceElement implements IDebugTarget {
 
     private final ILaunch launch;
+    @SuppressWarnings("unused")
     private final ILaunch parentLaunch;
+    @SuppressWarnings("unused")
     private final IDebugTarget node;
     private final List<DebugTraceProcess> processes;
     private final List<DebugTraceEvent> events;

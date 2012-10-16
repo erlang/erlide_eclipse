@@ -386,7 +386,7 @@ public class CompilerPreferencePage extends PropertyPage implements
     enum OptionStatus {
         //@formatter:off
         OK, 
-        @SuppressWarnings("hiding") ERROR, 
+        ERROR, 
         NO_RUNTIME
         //@formatter:off
     }
@@ -466,6 +466,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         performDefaults();
     }
 
+    @SuppressWarnings("unused")
     private static class MacrosTableContentProvider implements IStructuredContentProvider {
         @Override
         public Object[] getElements(final Object inputElement) {
@@ -482,6 +483,7 @@ public class CompilerPreferencePage extends PropertyPage implements
         }
     }
 
+    @SuppressWarnings("unused")
     private class MacrosTableLabelProvider extends LabelProvider implements ITableLabelProvider {
         @Override
         public Image getColumnImage(final Object element, final int columnIndex) {

@@ -62,7 +62,6 @@ public class DebuggerEventDaemon implements IBackendListener {
                                 ErlLogger.debug("MSG: %s", message);
                             }
                         }
-
                         handler.handleMessages(messages);
 
                         messages.clear();

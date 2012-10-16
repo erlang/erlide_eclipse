@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -38,62 +37,15 @@ import org.erlide.launch.debug.DebuggerEventDaemon;
 import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
-import org.erlide.utils.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlangDebugTarget extends ErlangDebugElement implements
         IDebugTarget, IErlangDebugNode {
 
     private static final OtpErlangAtom PARENT_ATOM = new OtpErlangAtom("parent");
-
-    public static class TraceChangedEventData {
-        public static final int ADDED = 1;
-        private final int what;
-        private final ILaunch launch;
-        private final IDebugTarget node;
-        private final OtpErlangPid pid;
-        private final OtpErlangTuple[] events;
-
-        public ILaunch getLaunch() {
-            return launch;
-        }
-
-        public IDebugTarget getNode() {
-            return node;
-        }
-
-        public TraceChangedEventData(final int what, final ILaunch launch,
-                final IDebugTarget node, final OtpErlangPid pid,
-                final OtpErlangTuple[] events) {
-            super();
-            this.what = what;
-            this.launch = launch;
-            this.node = node;
-            this.pid = pid;
-            this.events = events;
-        }
-
-        public int getWhat() {
-            return what;
-        }
-
-        public OtpErlangTuple[] getEvents() {
-            return events;
-        }
-
-        public OtpErlangPid getPid() {
-            return pid;
-        }
-
-    }
 
     public static final IThread[] NO_PROCS = new IThread[] {};
 
@@ -117,8 +69,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     private final Map<OtpErlangPid, OtpErlangPid> pidsFromMeta = new TreeMap<OtpErlangPid, OtpErlangPid>();
 
     private final String fNodeName;
-
-    private ArrayList<OtpErlangTuple> fTraceList;
 
     private final DebuggerEventDaemon debuggerDaemon;
 
@@ -215,13 +165,13 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             return;
         }
 
-        fTerminated = true;
         fBackend.send("erlide_dbg_mon", new OtpErlangAtom("stop"));
-
         final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);
         }
+        fBackend.stop();
+        fTerminated = true;
 
         final ILaunch launch = getLaunch();
         if (launch != null) {
@@ -384,200 +334,12 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         fShowSystemProcesses = showSystemProcesses;
     }
 
-    private static final int META_UNKNOWN = 0;
-    private static final int META_BREAK_AT = 1;
-    private static final int META_WAIT_AT = 2;
-    private static final int META_EXIT_AT = 3;
-    private static final int META_TRACE_OUTPUT = 4;
-
-    public void handleMetaEvent(final OtpErlangPid metaPid,
-            final OtpErlangTuple metaEvent) {
-        ErlLogger.debug("handleMetaEvent " + metaEvent + " (" + metaPid + ")");
-        final OtpErlangAtom a = (OtpErlangAtom) metaEvent.elementAt(0);
-        final String event = a.atomValue();
-        final int what = getMetaWhat(event);
-        if (what == META_TRACE_OUTPUT) {
-            final OtpErlangObject o = metaEvent.elementAt(1);
-            // final String s = CoreUtil.ioListToString(o).trim();
-            // final String s = o.toString();
-            addToTraceList((OtpErlangTuple) o);
-            final DebugEvent traceChangedEvent = new DebugEvent(this,
-                    DebugEvent.MODEL_SPECIFIC, TRACE_CHANGED);
-            final ErlangProcess p = getOrCreateErlangProcessFromMeta(metaPid,
-                    metaEvent, what);
-            final TraceChangedEventData data = new TraceChangedEventData(
-                    TraceChangedEventData.ADDED, fLaunch, p.getDebugTarget(),
-                    p.getPid(), new OtpErlangTuple[] { (OtpErlangTuple) o });
-            traceChangedEvent.setData(data);
-            fireEvent(traceChangedEvent);
-            // ErlLogger.info("Trace: " + s);
-        } else if (what != META_UNKNOWN) {
-            OtpErlangAtom mod = null;
-            OtpErlangLong lineL = null;
-            if (what == META_EXIT_AT) {
-                final OtpErlangObject o = metaEvent.elementAt(1);
-                if (o instanceof OtpErlangTuple) {
-                    final OtpErlangTuple t = (OtpErlangTuple) o;
-                    mod = (OtpErlangAtom) t.elementAt(0);
-                    lineL = (OtpErlangLong) t.elementAt(1);
-                }
-            } else {
-                mod = (OtpErlangAtom) metaEvent.elementAt(1);
-                lineL = (OtpErlangLong) metaEvent.elementAt(2);
-            }
-            int line = -1;
-            if (lineL != null) {
-                try {
-                    line = lineL.intValue();
-                } catch (final OtpErlangRangeException e1) {
-                    ErlLogger.warn(e1);
-                }
-            }
-            String module = null;
-            if (mod != null) {
-                module = mod.atomValue();
-            }
-            final OtpErlangPid pid;
-            if (what == META_EXIT_AT) {
-                pid = (OtpErlangPid) metaEvent.elementAt(4);
-            } else {
-                pid = getPidFromMeta(metaPid);
-            }
-            // ErlLogger.debug("  pid " + pid);
-            ErlangProcess erlangProcess = getOrCreateErlangProcessFromMeta(
-                    metaPid, metaEvent, what);
-            if (erlangProcess == null) {
-                erlangProcess = createErlangProcess(pid);
-            }
-            if (module != null && line != -1) {
-                if (what == META_BREAK_AT) {
-                    // FIXME can't get stack in wait...
-                    // should be possible according to dbg_ui_trace_win....
-                    erlangProcess.getStackAndBindings(module, line);
-                    if (erlangProcess.isStepping()) {
-                        erlangProcess.fireSuspendEvent(DebugEvent.STEP_END);
-                    } else {
-                        erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
-                    }
-                    erlangProcess.setNotStepping();
-                } else if (what == META_EXIT_AT) {
-                    if (metaEvent.arity() > 4) {
-                        final OtpErlangList erlStackFrames = (OtpErlangList) metaEvent
-                                .elementAt(5);
-                        final OtpErlangList bs = (OtpErlangList) metaEvent
-                                .elementAt(6);
-                        erlangProcess.setStackFrames(module, line,
-                                erlStackFrames, bs);
-                    }
-                    erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-                    // TODO redundant? we have this in int, status too
-                }
-            } else {
-                if (what == META_EXIT_AT) {
-                    erlangProcess.removeStackFrames();
-                    erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-                    // TODO redundant? we have this in int, status too
-                }
-            }
-        }
-    }
-
-    private int getMetaWhat(final String event) {
-        if (event.equals("break_at")) {
-            return META_BREAK_AT;
-        } else if (event.equals("wait_at")) {
-            return META_WAIT_AT;
-        } else if (event.equals("exit_at")) {
-            return META_EXIT_AT;
-        } else if (event.equals("trace_output")) {
-            return META_TRACE_OUTPUT;
-        } else {
-            return META_UNKNOWN;
-        }
-    }
-
-    private ErlangProcess getOrCreateErlangProcessFromMeta(
-            final OtpErlangPid metaPid, final OtpErlangTuple metaEvent,
-            final int what) {
-        final OtpErlangPid pid;
-        if (what == META_EXIT_AT) {
-            pid = (OtpErlangPid) metaEvent.elementAt(4);
-        } else {
-            pid = getPidFromMeta(metaPid);
-        }
-        // ErlLogger.debug("  pid " + pid);
+    public ErlangProcess getOrCreateErlangProcess(final OtpErlangPid pid) {
         ErlangProcess erlangProcess = getErlangProcess(pid);
         if (erlangProcess == null) {
             erlangProcess = createErlangProcess(pid);
         }
         return erlangProcess;
-    }
-
-    public void handleIntEvent(final OtpErlangTuple intEvent) {
-        final OtpErlangAtom a = (OtpErlangAtom) intEvent.elementAt(0);
-        final String event = a.atomValue();
-        if (event.equals("new_break")) {
-            // TODO should we do anything here?
-        } else if (event.equals("new_status")) {
-            ErlLogger.info("new status " + intEvent);
-            final OtpErlangPid pid = (OtpErlangPid) intEvent.elementAt(1);
-            ErlangProcess erlangProcess = getErlangProcess(pid);
-            if (erlangProcess == null) {
-                erlangProcess = createErlangProcess(pid);
-            }
-            final OtpErlangAtom sa = (OtpErlangAtom) intEvent.elementAt(2);
-            final String status = sa.atomValue();
-            if (status.equals("break")) {
-                erlangProcess.setStatus(status);
-                if (!erlangProcess.isStepping()) {
-                    erlangProcess.fireSuspendEvent(DebugEvent.BREAKPOINT);
-                }
-            } else if (status.equals("exit")) {
-                erlangProcess.setStatus(status);
-                final OtpErlangObject esa = intEvent.elementAt(3);
-                erlangProcess.setExitStatus(esa.toString());
-                erlangProcess.fireSuspendEvent(DebugEvent.TERMINATE);
-            } else if (status.equals("running")) {
-                erlangProcess.setStatus(status);
-                if (erlangProcess.isStepping()) {
-                    erlangProcess.fireResumeEvent(DebugEvent.STEP_OVER);
-                } else {
-                    erlangProcess.fireResumeEvent(DebugEvent.RESUME);
-                }
-            } else {
-                if (status.equals("idle")) {
-                    // FIXME: this must be cleaned, but the status messages seem
-                    // to come out of order...
-                    // erlangProcess.removeStackFrames();
-                }
-                erlangProcess.setStatus(status);
-                erlangProcess.fireChangeEvent(DebugEvent.STATE
-                        | DebugEvent.CHANGE);
-            }
-        } else if (event.equals("new_process")) {
-            final OtpErlangTuple t = (OtpErlangTuple) intEvent.elementAt(1);
-            final OtpErlangPid pid = (OtpErlangPid) t.elementAt(0);
-            ErlangProcess erlangProcess = getErlangProcess(pid);
-            if (erlangProcess == null) {
-                erlangProcess = createErlangProcess(pid);
-            }
-            final OtpErlangAtom statusA = (OtpErlangAtom) t.elementAt(2);
-            final String status = statusA.atomValue();
-            erlangProcess.setStatus(status);
-            final OtpErlangTuple initialCall = (OtpErlangTuple) t.elementAt(1);
-            erlangProcess.setInitialCall(new ErlangFunctionCall(initialCall));
-            erlangProcess.fireCreationEvent();
-        } else if (event.equals("interpret")) {
-            final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
-            interpretedModules.add(m.atomValue());
-            fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
-                    INTERPRETED_MODULES_CHANGED));
-        } else if (event.equals("no_interpret")) {
-            final OtpErlangAtom m = (OtpErlangAtom) intEvent.elementAt(1);
-            interpretedModules.remove(m.atomValue());
-            fireEvent(new DebugEvent(this, DebugEvent.MODEL_SPECIFIC,
-                    INTERPRETED_MODULES_CHANGED));
-        }
     }
 
     public Set<String> getInterpretedModules() {
@@ -609,7 +371,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         return p;
     }
 
-    private ErlangProcess getErlangProcess(final OtpErlangPid pid) {
+    public ErlangProcess getErlangProcess(final OtpErlangPid pid) {
         for (int i = 0; i < fAllProcesses.size(); ++i) {
             final ErlangProcess p = fAllProcesses.get(i);
             if (p.getPid().equals(pid)) {
@@ -663,20 +425,6 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     @Override
     public ErlangDebugTarget getErlangDebugTarget() {
         return this;
-    }
-
-    public List<OtpErlangTuple> getTraceList() {
-        if (fTraceList == null) {
-            fTraceList = new ArrayList<OtpErlangTuple>();
-        }
-        return fTraceList;
-    }
-
-    private void addToTraceList(final OtpErlangTuple traceTuple) {
-        if (fTraceList == null) {
-            fTraceList = new ArrayList<OtpErlangTuple>();
-        }
-        fTraceList.add(traceTuple);
     }
 
     public Collection<OtpErlangPid> getAllMetaPids() {

@@ -71,6 +71,7 @@ public final class PropertiesUtils {
         return result;
     }
 
+    @SuppressWarnings("unused")
     private static List<PathEntry> makeSourceLocations(
             final List<String> externalModules) {
         // FIXME!!!
@@ -112,6 +113,7 @@ public final class PropertiesUtils {
         return result;
     }
 
+    @SuppressWarnings("unused")
     private static List<PathEntry> mkSources(final Collection<IPath> list) {
         final List<PathEntry> result = Lists.newArrayList();
         // for (final IPath src : list) {

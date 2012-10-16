@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
-import org.erlide.backend.BackendUtils;
+import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.NodeHostClassifier;
 import org.erlide.backend.NodeHostClassifier.HostnameType;
 import org.erlide.backend.NodeHostClassifier.NodeType;
@@ -310,7 +310,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                     ErlLaunchAttributes.LOAD_ALL_NODES, false);
             distributedLoadCheck.setSelection(loadAll);
         } catch (final CoreException e) {
-            distributedLoadCheck.setSelection(false);
+            distributedLoadCheck.setSelection(true);
         }
     }
 
@@ -396,7 +396,8 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
         final boolean isLong = longNameButton.getSelection();
         if (state.host == HostnameType.NONE) {
-            nodeHostLabel.setText("@" + BackendUtils.getErlangHostName(isLong));
+            nodeHostLabel
+                    .setText("@" + HostnameUtils.getErlangHostName(isLong));
         } else {
             nodeHostLabel.setText("");
         }
@@ -408,6 +409,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
                 && startNodeCheckbox.getSelection());
         distributedLoadCheck
                 .setEnabled(!(state.mode == NodeType.LOCAL_STANDALONE));
+        distributedLoadCheck.setSelection(true);
 
         if (state.mode == NodeType.LOCAL_STANDALONE) {
             setMessage("NOTE: The Erlang node will be started as not distributed. "

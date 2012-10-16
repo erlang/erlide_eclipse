@@ -25,8 +25,6 @@ import com.google.common.collect.Lists;
 
 public class BackendUtils {
 
-    private static String erlangLongName = "127.0.0.1";
-    private static String erlangShortName = "localhost";
     private static Collection<SourcePathProvider> sourcePathProviders = null;
 
     public static synchronized Collection<SourcePathProvider> getSourcePathProviders()
@@ -165,15 +163,6 @@ public class BackendUtils {
     public static IExtensionPoint getCodepathExtension() {
         final IExtensionRegistry reg = Platform.getExtensionRegistry();
         return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
-    }
-
-    public static String getErlangHostName(final boolean longName) {
-        return longName ? erlangLongName : erlangShortName;
-    }
-
-    public static boolean isThisHost(final String host) {
-        return getErlangHostName(true).equals(host)
-                || getErlangHostName(false).equals(host);
     }
 
 }

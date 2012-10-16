@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
-import org.erlide.backend.BackendUtils;
+import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.IErlRuntime;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
@@ -276,7 +276,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public static OtpNode createOtpNode(final String cookie,
             final boolean longName) throws IOException {
         OtpNode node;
-        final String hostName = BackendUtils.getErlangHostName(longName);
+        final String hostName = HostnameUtils.getErlangHostName(longName);
         if (Strings.isNullOrEmpty(cookie)) {
             node = new OtpNode(createJavaNodeName(hostName));
         } else {

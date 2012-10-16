@@ -100,7 +100,7 @@ public final class BackendData extends GenericBackendData {
         boolean isLocal = atSignIndex < 0;
         if (atSignIndex > 0) {
             final String hostname = name.substring(atSignIndex + 1);
-            if (BackendUtils.isThisHost(hostname)) {
+            if (HostnameUtils.isThisHost(hostname)) {
                 isLocal = true;
             }
         }
@@ -423,7 +423,7 @@ public final class BackendData extends GenericBackendData {
             String nameOption = getNodeName();
             if (!nameOption.contains("@")) {
                 nameOption += "@"
-                        + BackendUtils.getErlangHostName(isLongName());
+                        + HostnameUtils.getErlangHostName(isLongName());
             }
             result.add(nameTag);
             result.add(nameOption);

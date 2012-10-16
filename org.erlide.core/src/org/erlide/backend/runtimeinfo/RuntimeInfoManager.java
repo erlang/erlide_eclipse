@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.erlide.backend.HostnameUtils;
 import org.erlide.core.ErlangCore;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.PreferencesUtils;
@@ -202,10 +203,9 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
     private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
-            ErlLogger.debug("set erlide runtime: " + runtime.getName() + " "
-                    + runtime.getVersion());
             erlideRuntime = runtime;
             notifyListeners();
+            HostnameUtils.detectHostNames(runtime);
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
         }
@@ -334,22 +334,18 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
         });
         if (list.size() > 0) {
             final String firstName = list.get(0).getName();
-            ErlLogger.debug("default runtime = " + defaultRuntimeName);
             if (defaultRuntimeName == null) {
                 setDefaultRuntime(firstName);
-                ErlLogger.debug("default runtime * = " + defaultRuntimeName);
             }
 
             // the erlide backend is the most recent stable version
             for (final RuntimeInfo info : list) {
                 if (info.getVersion().isStable()) {
-                    ErlLogger.debug("erlide runtime = " + info.getName());
                     setErlideRuntime(info);
                     break;
                 }
             }
             if (erlideRuntime == null) {
-                ErlLogger.debug("erlide runtime * = " + defaultRuntimeName);
                 setErlideRuntime(getDefaultRuntime());
             }
         }
@@ -363,7 +359,7 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
                         "default_runtime", null), "c:/program files",
                 "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
                 System.getProperty("user.home"), "/usr", "/usr/lib",
-                "/usr/local", "/usr/local/lib",
+                "/usr/lib64", "/usr/local", "/usr/local/lib",
                 "/Library/Frameworks/erlang/Versions" };
         for (final String loc : locations) {
             final Collection<File> roots = findRuntime(loc);

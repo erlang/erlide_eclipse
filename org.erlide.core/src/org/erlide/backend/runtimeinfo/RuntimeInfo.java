@@ -18,7 +18,6 @@ import java.util.List;
 import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class RuntimeInfo {
-    public static final String DEFAULT_MARKER = "*DEFAULT*";
 
     private String name;
     private String homeDir = "";
@@ -29,7 +28,6 @@ public class RuntimeInfo {
     public RuntimeInfo() {
         super();
         codePath = new ArrayList<String>();
-        codePath.add(DEFAULT_MARKER);
     }
 
     public static RuntimeInfo copy(final RuntimeInfo o, final boolean mkCopy) {

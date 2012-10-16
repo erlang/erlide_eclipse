@@ -42,10 +42,15 @@
       <content-type
             base-type="org.eclipse.core.runtime.text"
             default-charset="ISO-8859-1"
+            describer="org.erlide.core.content.ErlangContentDescriber"
             file-extensions="erl,hrl,yrl"
             id="org.erlide.core.content.erlang"
             name="Erlang source file"
-            priority="normal"/>
+            priority="normal">
+         <describer
+               class="org.erlide.core.content.ErlangContentDescriber">
+         </describer>
+      </content-type>
    </extension>
    <extension
          id="problemmarker"

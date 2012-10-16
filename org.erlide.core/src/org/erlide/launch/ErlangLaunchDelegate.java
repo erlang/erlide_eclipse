@@ -245,7 +245,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             final String name = r.getName();
             if (ModuleKind.hasErlExtension(name)) {
                 final IProject p = r.getProject();
-                if (projects.contains(p)) {
+                if (projects == null || projects.contains(p)) {
                     final String s = p.getName() + ":" + name;
                     if (!result.contains(s)) {
                         result.add(s);

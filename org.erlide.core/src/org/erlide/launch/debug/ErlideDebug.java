@@ -375,6 +375,16 @@ public class ErlideDebug {
         return null;
     }
 
+    public static void unloadDebuggerCode(final IBackend backend,
+            final List<String> modules) {
+        try {
+            backend.cast("erlide_debug", "unload_debugger_code", "la", modules);
+        } catch (final RpcException e) {
+            ErlLogger.warn(e);
+        }
+        return;
+    }
+
     public static OtpErlangList nodes(final IBackend backend) {
         try {
             final OtpErlangObject o = backend.call("erlide_debug", "nodes", "");

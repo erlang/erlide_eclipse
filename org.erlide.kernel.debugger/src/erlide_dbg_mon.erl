@@ -325,8 +325,8 @@ gui_cmd({focus, Pid, _Win}, State) ->
 gui_cmd(default, State) ->
 	State;
 
-gui_cmd(Cmd, State) ->
-	io:format("@ dbg_mon: unknown ~p~n",[Cmd]),
+gui_cmd(_Cmd, State) ->
+	%% io:format("@ dbg_mon: unknown ~p~n",[_Cmd]),
 	State.
 
 %%--Commands from the interpreter-------------------------------------

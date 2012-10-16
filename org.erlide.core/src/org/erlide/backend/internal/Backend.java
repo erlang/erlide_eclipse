@@ -13,6 +13,7 @@ package org.erlide.backend.internal;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -345,6 +346,9 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void stop() {
+        if (data.isDebug()) {
+            unloadDebuggerCode();
+        }
         stopped = true;
     }
 
@@ -721,11 +725,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     private void distributeDebuggerCode() {
-        final String[] debuggerModules = { "erlide_dbg_debugged",
-                "erlide_dbg_icmd", "erlide_dbg_idb", "erlide_dbg_ieval",
-                "erlide_dbg_iload", "erlide_dbg_iserver", "erlide_int", "int" };
+        final List<String> debuggerModules = getDebuggerModules();
+
         final List<OtpErlangTuple> modules = new ArrayList<OtpErlangTuple>(
-                debuggerModules.length);
+                debuggerModules.size());
         for (final String module : debuggerModules) {
             final OtpErlangBinary b = getDebuggerBeam(module);
             if (b != null) {
@@ -734,9 +737,31 @@ public abstract class Backend implements IStreamListener, IBackend {
                 final OtpErlangTuple t = OtpErlang.mkTuple(new OtpErlangAtom(
                         module), filename, b);
                 modules.add(t);
+            } else {
+                ErlLogger.warn("Could not find debugger module %s", module);
             }
         }
         ErlideDebug.distributeDebuggerCode(this, modules);
+    }
+
+    private void unloadDebuggerCode() {
+        final List<String> debuggerModules = getDebuggerModules();
+        ErlideDebug.unloadDebuggerCode(this, debuggerModules);
+    }
+
+    private List<String> getDebuggerModules() {
+        final Bundle debugger = Platform
+                .getBundle("org.erlide.kernel.debugger");
+        final List<String> debuggerModules = Lists.newArrayList();
+        @SuppressWarnings("rawtypes")
+        final Enumeration beams = debugger
+                .findEntries("/ebin", "*.beam", false);
+        while (beams.hasMoreElements()) {
+            final URL beam = (URL) beams.nextElement();
+            debuggerModules.add(new Path(beam.getPath()).removeFileExtension()
+                    .lastSegment());
+        }
+        return debuggerModules;
     }
 
     /**

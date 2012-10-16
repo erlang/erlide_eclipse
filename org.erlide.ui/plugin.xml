@@ -169,6 +169,12 @@
             id="org.erlide.ui.internalSettings"
             name="Internal settings">
       </page>
+      <page
+            category="org.erlide.ui.preferences"
+            class="org.erlide.ui.prefs.NetworkPreferencePage"
+            id="org.erlide.ui.network"
+            name="Network">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -1525,14 +1531,6 @@
       </view>
       <view
             allowMultiple="false"
-            category="org.eclipse.debug.ui"
-            class="org.erlide.debug.ui.views.DebuggerTraceView"
-            icon="icons/full/obj16/file.gif"
-            id="org.erlide.debug.ui.views.debuggerTraceView"
-            name="Debugger Trace">
-      </view>
-      <view
-            allowMultiple="false"
             category="org.erlide.views"
             class="org.erlide.ui.views.CallHierarchyView"
             id="org.erlide.ui.callhierarchy"
@@ -1540,7 +1538,7 @@
             restorable="true">
       </view>
    </extension>
-   <extension
+   <!--extension
          point="org.eclipse.ui.viewActions">
       <viewContribution
             id="org.erlide.debug.ui.views.DebuggerTraceViewActions"
@@ -1561,7 +1559,7 @@
             </enablement>
          </action>
       </viewContribution>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
@@ -1609,11 +1607,11 @@
                relative="org.eclipse.debug.ui.DebugView"
                visible="true">
          </view>
-         <view
+         <!--view
                id="org.erlide.debug.ui.views.debuggerTraceView"
                relationship="stack"
                visible="true">
-         </view>
+         </view-->
       </perspectiveExtension>
    </extension>
    <extension

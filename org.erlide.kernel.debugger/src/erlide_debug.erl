@@ -15,6 +15,7 @@
 %%
 %% Include files
 %%
+
 %% -define(Debug(T), erlide_log:erlangLog(?MODULE, ?LINE, finest, T)).
 %% -define(DebugStack(T), erlide_log:erlangLogStack(?MODULE, ?LINE, finest, T)).
 %% -define(Info(T), erlide_log:erlangLog(?MODULE, ?LINE, info, T)).
@@ -22,27 +23,29 @@
 %%
 %% Exported Functions
 %%
--export([start_debug/1, 
-         attached/2, 
+-export([start_debug/1,
+         attached/2,
          send_started/1]).
--export([line_breakpoint/3, 
-         resume/1, 
-         suspend/1, 
-         bindings/1, 
-         step_over/1, 
-         step_into/1, 
+-export([line_breakpoint/3,
+         resume/1,
+         suspend/1,
+         bindings/1,
+         step_over/1,
+         step_into/1,
          step_return/1,
-         interpret/3, 
+         interpret/3,
          all_stack_frames/1,
-	 all_modules_on_stack/1,
-	 tracing/2,
-         eval/2, 
+         all_modules_on_stack/1,
+         tracing/2,
+         eval/2,
          set_variable_value/4,
          distribute_debugger_code/1,
-	 nodes/0,
-	 process_info/2,
+         unload_debugger_code/1,
+         unload_my_debugger_code/1,
+         nodes/0,
+         process_info/2,
          processes/2,
-	 drop_to_frame/2,
+         drop_to_frame/2,
          is_erlide_process/1]).
 
 -export([log/1]).
@@ -77,7 +80,7 @@ send_started(JPid) ->
     JPid ! {started, whereis(erlide_dbg_mon)}.
 
 attached(Pid, JPid) ->
-    %% We can't use erlide_int:attached here, because we want 
+    %% We can't use erlide_int:attached here, because we want
     %% to use the JPid as meta-cmd receiver
     erlide_dbg_iserver:call({attached, JPid, Pid}).
 
@@ -100,7 +103,7 @@ is_erlide_process(Pid) -> % when is_pid(Pid)->
     Started = case (catch erlang:process_info(Pid, initial_call)) of
                   {initial_call, {M1, _, _}} ->
                       lists:prefix("erlide_", atom_to_list(M1));
-                  _ -> 
+                  _ ->
                       false
               end,
     Current = case (catch erlang:process_info(Pid, current_function)) of
@@ -127,7 +130,6 @@ suspend(MetaPid) ->
     erlide_dbg_mon:suspend(MetaPid).
 
 resume(MetaPid) ->
-    erlide_log:logp("dbg resume >>>> ~p", [MetaPid]),
     erlide_dbg_mon:resume(MetaPid).
 
 bindings(MetaPid) ->
@@ -161,8 +163,22 @@ set_variable_value(Variable, Value, SP, MetaPid) ->
     erlide_dbg_mon:set_variable_value(Variable, Value, SP, MetaPid).
 
 distribute_debugger_code(Modules) ->
-    [rpc:multicall(code, load_binary, [Module, Filename, Binary])
-       || {Module, Filename, Binary} <- Modules].
+    [{rpc:multicall(code, purge, [Module]),
+      rpc:multicall(code, load_binary, [Module, Filename, Binary])
+     }
+     || {Module, Filename, Binary} <- Modules].
+
+unload_debugger_code(Modules) ->
+    [rpc:cast(Node, ?MODULE, unload_my_debugger_code, [Modules]) || Node <- [node()|erlang:nodes()]].
+
+unload_my_debugger_code(Modules) ->
+    lists:foreach(fun(Module) ->
+                          code:purge(Module),
+                          code:delete(Module),
+                          code:purge(Module)
+                  end,
+                  Modules--[?MODULE]),
+    code:delete(?MODULE).
 
 nodes() ->
     [node() | erlang:nodes()].
@@ -171,9 +187,9 @@ nodes() ->
 %%                        erlide_dbg_ieval, erlide_dbg_iload, erlide_dbg_iserver,
 %%                        erlide_int, int],
 %%     lists:foreach(fun(Module) ->
-%%                           {_Module, Binary, Filename} = 
+%%                           {_Module, Binary, Filename} =
 %%                               code:get_object_code(Module),
-%%                           rpc:multicall(nodes(), code, load_binary, 
+%%                           rpc:multicall(nodes(), code, load_binary,
 %%                                         [Module, Filename, Binary])
 %%                   end,
 %%                   DebuggerModules).
@@ -192,10 +208,10 @@ log(_) ->
 process_info(Pid, Info) ->
     Node = node(Pid),
     case node() of
-	Node ->
-	    erlang:process_info(Pid, Info);
-	_ ->
-	    rpc:call(Node, erlang, process_info, [Pid, Info], 5000)
+        Node ->
+            erlang:process_info(Pid, Info);
+        _ ->
+            rpc:call(Node, erlang, process_info, [Pid, Info], 5000)
     end.
 
 %%

@@ -13,8 +13,7 @@ public class RuntimeInfoTest {
     public void codePath_Runtime_1() {
         final RuntimeInfo info = new RuntimeInfo();
         final List<String> pa = info.getCodePath();
-        assertTrue(pa.size() == 1);
-        assertTrue(pa.get(0).equals(RuntimeInfo.DEFAULT_MARKER));
+        assertTrue(pa.size() == 0);
     }
 
 }
