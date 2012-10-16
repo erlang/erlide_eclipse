@@ -140,7 +140,7 @@ public class NetworkPreferencePage extends PreferencePage implements
         lblNewLabel_3
                 .setText("This is needed if you change network or network settings.\n\nIf you see \"127.0.0.1\" and \"localhost\" above, you will not be able to debug distributed remote nodes.");
 
-        final Label lblNewLabel_7 = new Label(parent, SWT.NONE);
+        new Label(parent, SWT.NONE);
         new Label(parent, SWT.NONE);
         new Label(parent, SWT.NONE);
 

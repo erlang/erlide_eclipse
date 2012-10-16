@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 public class TestProjectProperties {
     List<String> sources = Lists.newArrayList();
 
+    @SuppressWarnings("unused")
     private List<String> findTestDirs(final IProject prj) {
         final List<String> result = Lists.newArrayList();
         try {

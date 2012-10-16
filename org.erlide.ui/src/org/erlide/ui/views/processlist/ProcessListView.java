@@ -94,7 +94,6 @@ public class ProcessListView extends ViewPart {
 
         @Override
         public void dispose() {
-            final IBackend backend = getBackend();
         }
 
         @Override

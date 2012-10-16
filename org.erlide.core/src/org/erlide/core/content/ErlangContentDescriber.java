@@ -7,7 +7,6 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.internal.content.Util;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
@@ -63,7 +62,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     private void fillContentProperties(final InputStream input,
             final IContentDescription description,
             final Map<String, Object> properties) throws IOException {
-        final byte[] bom = Util.getByteOrderMark(input);
+        final byte[] bom = ContentUtil.getByteOrderMark(input);
         String encoding = "UTF-8"; //$NON-NLS-1$
         input.reset();
         if (bom != null) {
