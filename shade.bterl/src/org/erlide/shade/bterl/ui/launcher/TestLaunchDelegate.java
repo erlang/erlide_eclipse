@@ -2,9 +2,7 @@ package org.erlide.shade.bterl.ui.launcher;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
@@ -30,12 +27,10 @@ import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.shade.bterl.Activator;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.ListsUtils;
 import org.erlide.utils.TermParser;
 import org.erlide.utils.TermParserException;
-import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -309,13 +304,6 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
     public static String[] getBterlPath() throws CoreException {
         return new String[] { "/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool",
                 "/vobs/gsn/tools/3pp/erlang_bt_tool/bt_tool/error_handler" };
-    }
-
-    private static Path getPluginPath() throws IOException {
-        final Bundle bundle = Activator.getDefault().getBundle();
-        URL url = FileLocator.find(bundle, new Path(""), null);
-        url = FileLocator.resolve(url);
-        return new Path(url.getPath());
     }
 
     @SuppressWarnings("unused")

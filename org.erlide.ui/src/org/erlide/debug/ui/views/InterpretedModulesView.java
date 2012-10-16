@@ -1,6 +1,5 @@
 package org.erlide.debug.ui.views;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -130,8 +129,9 @@ public class InterpretedModulesView extends AbstractDebugView implements
             }
             final Set<String> interpret = erlangDebugTarget
                     .getInterpretedModules();
-            final Set<IErlModule> interpretedModules = new HashSet<IErlModule>(
-                    interpret.size());
+            // final Set<IErlModule> interpretedModules = new
+            // HashSet<IErlModule>(
+            // interpret.size());
             contentProvider.addModules(interpret);
             listViewer.refresh();
         }
@@ -208,6 +208,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         contextActivated(selection);
     }
 
+    @SuppressWarnings("unused")
     private void interpretOrDeinterpret(final IErlModule module,
             final boolean checked) {
         if (erlangDebugTarget == null) {

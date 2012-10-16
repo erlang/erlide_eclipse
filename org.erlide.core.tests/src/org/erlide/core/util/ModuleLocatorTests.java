@@ -68,6 +68,7 @@ public class ModuleLocatorTests {
         checkModuleNamesInList(extmods, project.getExternalModules());
     }
 
+    @SuppressWarnings("unused")
     private void checkExternalIncludes(final IErlProject project,
             final String[] extincs) throws ErlModelException {
         checkModuleNamesInList(extincs, project.getExternalIncludes());
