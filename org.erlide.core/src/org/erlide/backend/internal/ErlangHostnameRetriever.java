@@ -2,16 +2,30 @@ package org.erlide.backend.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
+
+import com.ericsson.otp.erlang.OtpNode;
+import com.google.common.collect.Lists;
 
 public class ErlangHostnameRetriever {
 
-    public String checkHostName(final List<String> cmdLine) {
-        final ProcessBuilder builder = new ProcessBuilder(cmdLine);
+    private final RuntimeInfo runtime;
+    private String nodeName;
+
+    public ErlangHostnameRetriever(final RuntimeInfo runtime) {
+        this.runtime = runtime;
+    }
+
+    public String checkHostName(final boolean longHost, String hostName) {
+        nodeName = "foo" + System.currentTimeMillis();
+        final ProcessBuilder builder = new ProcessBuilder(Lists.newArrayList(
+                runtime.getOtpHome() + "/bin/erl", longHost ? "-name"
+                        : "-sname", nodeName));
+        String result = null;
         try {
             final Process process = builder.start();
             final StreamListener listener = new StreamListener(
@@ -19,15 +33,42 @@ public class ErlangHostnameRetriever {
             while (listener.isAlive()) {
                 try {
                     listener.join();
+                    if (hostName == null) {
+                        hostName = listener.getResult();
+                    }
+                    ErlLogger.debug("Test %s hostname: %s", longHost ? "long"
+                            : "short", hostName);
+                    final boolean canConnect = canConnect(nodeName, hostName);
+                    if (canConnect) {
+                        result = hostName;
+                        ErlLogger.debug("OK");
+                    } else {
+                        ErlLogger.warn("Can't use %s as %s name", hostName,
+                                longHost ? "long" : "short");
+                    }
                     process.destroy();
-                    return listener.getResult();
                 } catch (final InterruptedException e) {
                 }
             }
         } catch (final IOException e) {
             ErlLogger.error(e);
         }
-        return null;
+        return result;
+    }
+
+    public String checkHostName(final boolean longHost) {
+        return checkHostName(longHost, null);
+    }
+
+    private boolean canConnect(final String nodeName, final String hostName) {
+        try {
+            final OtpNode node = new OtpNode("jtest");
+            final boolean result = node.ping(nodeName + "@" + hostName, 100);
+            node.close();
+            return result;
+        } catch (final IOException e) {
+        }
+        return false;
     }
 
     private static class StreamListener extends Thread {

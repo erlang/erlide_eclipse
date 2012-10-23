@@ -5,9 +5,9 @@ import java.net.UnknownHostException;
 
 import org.erlide.backend.internal.ErlangHostnameRetriever;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.MessageReporter;
+import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.jinterface.ErlLogger;
-
-import com.google.common.collect.Lists;
 
 public class HostnameUtils {
 
@@ -61,18 +61,37 @@ public class HostnameUtils {
     }
 
     public static void detectHostNames(final RuntimeInfo runtime) {
-        final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever();
+        final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
+                runtime);
         if (runtime != null) {
-            final String nname = "foo";
-            erlangLongName = retriever.checkHostName(Lists.newArrayList(
-                    runtime.getOtpHome() + "/bin/erl", "-name",
-                    nname + System.currentTimeMillis()));
-            erlangShortName = retriever.checkHostName(Lists.newArrayList(
-                    runtime.getOtpHome() + "/bin/erl", "-sname",
-                    nname + System.currentTimeMillis()));
+            erlangLongName = retriever.checkHostName(true);
+            if (erlangLongName == null) {
+                erlangLongName = retriever.checkHostName(true,
+                        getJavaLongHostName());
+            }
+            erlangShortName = retriever.checkHostName(false);
+            if (erlangShortName == null) {
+                erlangShortName = retriever.checkHostName(false,
+                        getJavaShortHostName());
+            }
+        }
+        if (erlangLongName == null && erlangShortName == null) {
+            MessageReporter
+                    .showError(
+                            "Java node can't connect to Erlang backend.\n\n"
+                                    + "Please check your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.",
+                            ReporterPosition.MODAL);
         } else {
-            erlangLongName = getJavaLongHostName();
-            erlangShortName = getJavaShortHostName();
+            if (erlangLongName == null) {
+                MessageReporter
+                        .showWarning("Java node can't connect to Erlang ndoes using long names.\n\n"
+                                + "You might want to review your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.");
+            }
+            if (erlangLongName == null) {
+                MessageReporter
+                        .showWarning("Java node can't connect to Erlang ndoes using short names.\n\n"
+                                + "You might want to review your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.");
+            }
         }
     }
 
@@ -85,18 +104,11 @@ public class HostnameUtils {
     }
 
     public static boolean canUseLongNames() {
-        return erlangLongName != null && erlangLongName.contains(".");
+        return erlangLongName != null;
     }
 
     public static boolean canUseShortNames() {
-        boolean resolvable;
-        try {
-            final InetAddress addr = InetAddress.getByName(erlangShortName);
-            resolvable = addr != null;
-        } catch (final UnknownHostException e) {
-            resolvable = false;
-        }
-        return erlangShortName != null && resolvable;
+        return erlangShortName != null;
     }
 
 }
