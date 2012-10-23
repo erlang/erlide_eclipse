@@ -1,6 +1,5 @@
 package org.erlide.debug.ui.views;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -130,11 +129,19 @@ public class InterpretedModulesView extends AbstractDebugView implements
             }
             final Set<String> interpret = erlangDebugTarget
                     .getInterpretedModules();
-            final Set<IErlModule> interpretedModules = new HashSet<IErlModule>(
-                    interpret.size());
-            contentProvider.addModules(interpret);
-            listViewer.refresh();
+            contentProvider.setModules(interpret);
+            refreshList();
         }
+    }
+
+    private void refreshList() {
+        getSite().getShell().getDisplay().asyncExec(new Runnable() {
+
+            @Override
+            public void run() {
+                listViewer.refresh();
+            }
+        });
     }
 
     @Override
@@ -143,23 +150,12 @@ public class InterpretedModulesView extends AbstractDebugView implements
 
     @Override
     protected void createActions() {
+
     }
 
     @Override
     protected Viewer createViewer(final Composite parent) {
         listViewer = new ListViewer(parent, SWT.BORDER);
-        // final ICheckStateListener checkStateListener = new
-        // ICheckStateListener() {
-        // @Override
-        // public void checkStateChanged(final CheckStateChangedEvent event) {
-        // final DebugTreeItem dti = (DebugTreeItem) event.getElement();
-        // checkboxTreeViewer.setGrayed(dti, false);
-        // final boolean checked = event.getChecked();
-        // setSubtreeChecked(dti, checked);
-        // DebugTab.checkUpwards(checkboxTreeViewer, dti, checked, false);
-        // }
-        //
-        // };
         listViewer.setLabelProvider(new ModuleItemLabelProvider());
         contentProvider = new InterpretedModuleListContentProvider();
         listViewer.setContentProvider(contentProvider);
@@ -208,7 +204,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         contextActivated(selection);
     }
 
-    private void interpretOrDeinterpret(final IErlModule module,
+    public void interpretOrDeinterpret(final IErlModule module,
             final boolean checked) {
         if (erlangDebugTarget == null) {
             ErlLogger.warn("erlangDebugTarget is null ?!?!");
@@ -225,5 +221,15 @@ public class InterpretedModulesView extends AbstractDebugView implements
             backend.interpret(project, moduleWoExtension, distributed,
                     interpret);
         }
+        addRemove(module, checked);
+    }
+
+    private void addRemove(final IErlModule module, final boolean add) {
+        if (add) {
+            contentProvider.addModule(module);
+        } else {
+            contentProvider.removeModule(module);
+        }
+        refreshList();
     }
 }
