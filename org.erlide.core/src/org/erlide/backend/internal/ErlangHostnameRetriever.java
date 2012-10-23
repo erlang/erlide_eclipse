@@ -38,7 +38,7 @@ public class ErlangHostnameRetriever {
                     }
                     ErlLogger.debug("Test %s hostname: %s", longHost ? "long"
                             : "short", hostName);
-                    final boolean canConnect = canConnect(nodeName, hostName);
+                    final boolean canConnect = canConnect(hostName);
                     if (canConnect) {
                         result = hostName;
                         ErlLogger.debug("OK");
@@ -60,7 +60,7 @@ public class ErlangHostnameRetriever {
         return checkHostName(longHost, null);
     }
 
-    private boolean canConnect(final String nodeName, final String hostName) {
+    private boolean canConnect(final String hostName) {
         try {
             final OtpNode node = new OtpNode("jtest");
             final boolean result = node.ping(nodeName + "@" + hostName, 100);
