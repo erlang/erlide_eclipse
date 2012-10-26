@@ -15,7 +15,7 @@ public class UIMessageReporter extends MessageReporter {
     @Override
     public void displayMessage(final MessageType type, final String message,
             final ReporterPosition style) {
-        new UIJob("crashed backend") {
+        new UIJob("erlide message") {
             @Override
             public IStatus runInUIThread(final IProgressMonitor monitor) {
                 switch (style) {

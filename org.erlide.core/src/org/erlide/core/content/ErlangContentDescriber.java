@@ -6,8 +6,9 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.eclipse.core.internal.content.Util;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.ITextContentDescriber;
@@ -15,11 +16,10 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
 import com.google.common.base.Charsets;
 
 public class ErlangContentDescriber implements ITextContentDescriber {
-    private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] {
-            IContentDescription.CHARSET, IContentDescription.BYTE_ORDER_MARK };
-    private static final String PREFIX = "-encoding"; //$NON-NLS-1$
-    private static final String SUFFIX = "."; //$NON-NLS-1$
-    private static final String BOM = "ErlangContentDescriber.bom"; //$NON-NLS-1$
+    private static final QualifiedName[] SUPPORTED_OPTIONS = new QualifiedName[] { IContentDescription.CHARSET };
+    private static final Pattern LATIN1 = Pattern
+            .compile("%+ +coding: *latin-1"); //$NON-NLS-1$
+    private static final Pattern UTF8 = Pattern.compile("%+ +coding: *UTF-8"); //$NON-NLS-1$
     private static final String CHARSET = "ErlangContentDescriber.charset"; //$NON-NLS-1$
     private static final String RESULT = "ErlangContentDescriber.processed"; //$NON-NLS-1$
 
@@ -63,19 +63,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     private void fillContentProperties(final InputStream input,
             final IContentDescription description,
             final Map<String, Object> properties) throws IOException {
-        final byte[] bom = Util.getByteOrderMark(input);
-        String encoding = "UTF-8"; //$NON-NLS-1$
-        input.reset();
-        if (bom != null) {
-            if (bom == IContentDescription.BOM_UTF_16BE) {
-                encoding = "UTF-16BE"; //$NON-NLS-1$
-            } else if (bom == IContentDescription.BOM_UTF_16LE) {
-                encoding = "UTF-16LE"; //$NON-NLS-1$
-            }
-            // skip BOM to make comparison simpler
-            input.skip(bom.length);
-            properties.put(BOM, bom);
-        }
+        final String encoding = "UTF-8"; //$NON-NLS-1$
         fillContentProperties(readEncoding(input, encoding), description,
                 properties);
     }
@@ -91,15 +79,6 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     private int internalDescribe(final IContentDescription description,
             final Map<String, Object> properties) {
-        if (description != null) {
-            final byte[] bom = (byte[]) properties.get(BOM);
-            if (bom != null
-                    && description
-                            .isRequested(IContentDescription.BYTE_ORDER_MARK)) {
-                description.setProperty(IContentDescription.BYTE_ORDER_MARK,
-                        bom);
-            }
-        }
         if (description == null) {
             return VALID;
         }
@@ -147,13 +126,15 @@ public class ErlangContentDescriber implements ITextContentDescriber {
     private String readEncoding(final Reader input) throws IOException {
         final BufferedReader reader = new BufferedReader(input);
         String line = null;
+        int linesRead = 0;
 
         while ((line = reader.readLine()) != null) {
-            final String decl = getDeclaration(line);
-            if (decl == null) {
+            linesRead++;
+            if (linesRead > 2) {
                 return null;
             }
-            if (decl.length() > 0) {
+            final String decl = getDeclaration(line);
+            if (decl != null) {
                 return decl;
             }
         }
@@ -162,25 +143,19 @@ public class ErlangContentDescriber implements ITextContentDescriber {
 
     /**
      * @param line
-     * @return null if search should be canceled; "" if nothing found yet;
-     *         String if found
+     * @return null if nothing found yet; String if found
      */
     private String getDeclaration(String line) {
         line = line.trim();
-        if (line.indexOf(PREFIX) != -1) {
-            String decl = line.substring(
-                    line.indexOf(PREFIX) + PREFIX.length(),
-                    line.indexOf(SUFFIX)).trim();
-            if (decl.startsWith("(")) {
-                decl = decl.substring(1, decl.length() - 1).trim();
-            }
-            return decl;
-        } else if (!((line.length() == 0) || line.startsWith("-module") || line
-                .startsWith("%"))) {
-            // cancel search if we find non-attributes
-            return null;
+        Matcher matcher = LATIN1.matcher(line);
+        if (matcher.matches()) {
+            return "latin1";
         }
-        return "";
+        matcher = UTF8.matcher(line);
+        if (matcher.matches()) {
+            return "utf8";
+        }
+        return null;
     }
 
     @Override

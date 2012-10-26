@@ -171,9 +171,9 @@
       </page>
       <page
             category="org.erlide.ui.preferences"
-            class="org.erlide.ui.prefs.NetworkPreferencePage"
+            class="org.erlide.ui.prefs.TroubleshootingPreferencePage"
             id="org.erlide.ui.network"
-            name="Network">
+            name="Troubleshooting">
       </page>
    </extension>
    <extension

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.jinterface; singleton:=true
-Bundle-Version: 0.17.3.qualifier
+Bundle-Version: 0.17.4.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -21,3 +21,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
+Bundle-Activator: org.erlide.jinterface.JInterfaceActivator

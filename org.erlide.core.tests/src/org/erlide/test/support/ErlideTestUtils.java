@@ -281,7 +281,11 @@ public class ErlideTestUtils {
     public static void deleteProject(final IErlProject erlProject)
             throws CoreException {
         final IProject project = erlProject.getWorkspaceProject();
+        final IPath location = project.getLocation();
         project.delete(true, null);
+        if (location != null) {
+            new File(location.toPortableString()).delete();
+        }
         if (modulesAndIncludes != null) {
             final List<IErlModule> list = Lists
                     .newArrayList(modulesAndIncludes);

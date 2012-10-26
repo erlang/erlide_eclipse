@@ -24,11 +24,9 @@ public class ErlCompletionProposal implements ICompletionProposal {
     protected static final class ExitPolicy implements LinkedModeUI.IExitPolicy {
 
         final char fExitCharacter;
-        private final IDocument fDocument;
 
         public ExitPolicy(final char exitCharacter, final IDocument document) {
             fExitCharacter = exitCharacter;
-            fDocument = document;
         }
 
         /*

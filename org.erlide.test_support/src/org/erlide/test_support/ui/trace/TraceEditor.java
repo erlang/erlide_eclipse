@@ -11,7 +11,6 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelExtension;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -21,7 +20,6 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 public class TraceEditor extends TextEditor {
 
     private Annotation callMatchingLine = null;
-    private ISelectionChangedListener fEditorSelectionChangedListener;
 
     public TraceEditor() {
     }
