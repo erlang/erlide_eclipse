@@ -1034,7 +1034,7 @@
              <with
                    variable="selection">
                 <count
-                      value="?">
+                      value="+">
                 </count>
              </with>
           </and>

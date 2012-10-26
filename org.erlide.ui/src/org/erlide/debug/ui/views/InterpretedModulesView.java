@@ -159,6 +159,7 @@ public class InterpretedModulesView extends AbstractDebugView implements
         listViewer.setLabelProvider(new ModuleItemLabelProvider());
         contentProvider = new InterpretedModuleListContentProvider();
         listViewer.setContentProvider(contentProvider);
+        getSite().setSelectionProvider(listViewer);
         listViewer.addDoubleClickListener(new IDoubleClickListener() {
 
             @Override

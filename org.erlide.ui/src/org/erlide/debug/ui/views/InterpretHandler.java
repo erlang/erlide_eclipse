@@ -28,8 +28,7 @@ public class InterpretHandler extends AbstractHandler {
                 view.interpretOrDeinterpret(module, true);
             }
         } else if (commandId.equals(DEINTERPRET_COMMAND_ID)) {
-            final ISelection sel2 = HandlerUtil.getCurrentSelection(event);
-            final ISelection selection = view.getViewer().getSelection();
+            final ISelection selection = HandlerUtil.getCurrentSelection(event);
             if (selection instanceof IStructuredSelection
                     && !selection.isEmpty()) {
                 final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
@@ -42,5 +41,11 @@ public class InterpretHandler extends AbstractHandler {
             throw new ExecutionException("bad command id");
         }
         return null;
+    }
+
+    @Override
+    public void setEnabled(final Object evaluationContext) {
+        // TODO Auto-generated method stub
+        super.setEnabled(evaluationContext);
     }
 }
