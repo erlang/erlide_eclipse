@@ -29,7 +29,7 @@ default_indent_prefs() ->
      {'case', 4},
      {'try', 4},
      {'catch', 4},
-     {'after', 4},
+     {'after', 8},
      {function_parameters, 2},
      {'fun', 3},
      {fun_body, 5},
@@ -553,16 +553,13 @@ i_receive(R0, I0) ->
 	 end,
     R4 = case i_sniff(R2) of
 	     'after' ->
-		 ?D('after'),
-		 R3 = i_kind('after', R2, I2),
-		 I3 = i_with('case', clause, R0, I1),
+		 I3 = i_with('after', R2, I1),
+		 R3 = i_kind('after', R2, I1),
 		 i_after_clause(R3, I3);
 	     _ ->
 		 R2
 	 end,
     i_block_end('receive', R0, R4, I1).
-
-
 
 i_try(R0, I0) ->
     I1 = I0#i{in_block=true},

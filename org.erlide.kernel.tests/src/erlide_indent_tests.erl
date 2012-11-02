@@ -189,6 +189,27 @@ macro_in_lc_test_() ->
             "    a.\n",
     ?Test_indent(I, S).
 
+%% https://www.assembla.com/spaces/erlide/tickets/776
+%% indentation: receive..after is wrong
+indent_after_test_() ->
+    S = "" ++
+            "a()->\n"++
+            "receive\n"++
+            "X ->\n"++
+            "ok\n"++
+            "after 500 ->\n"++
+            "error\n"++
+            "end.\n",
+    I = "" ++
+            "a()->\n"++
+            "    receive\n"++
+            "        X ->\n"
+            "            ok\n"++
+            "    after 500 ->\n"++
+            "            error\n"++
+            "    end.\n",
+    ?Test_indent(I, S).
+
 
 %%
 %% Local Functions
