@@ -123,7 +123,6 @@ get_prefs(Prefs) ->
 indent(Tokens, LineOffsets, LineN, Prefs, OldLine) ->
     I = #i{anchor=hd(Tokens), indent_line=LineN, current=0, prefs=Prefs,
 	   in_block=true, old_line=OldLine},
-    ?D({I, LineOffsets}),
     try
         i_form_list(Tokens, I),
         ?D(no_catch),
@@ -728,15 +727,7 @@ i_declaration(R0, I) ->
     case skip_comments(R1) of
         [#token{kind='spec'} | _] ->
             R2 = i_kind('spec', R1, I),
-            case i_sniff(R2) of
-                '(' ->
-                    R3 = i_kind('(', R2, I),
-                    R4 = i_form(R3, I),
-                    R5 = i_kind(')', R4, I),
-                    i_dot_or_semi(R5, I);
-                _ ->
-                    i_form(R2, I)
-            end;
+            i_spec(R2, I);
         [#token{kind=atom, value='type'} | _] ->
             R2 = i_kind(atom, R1, I),
             i_type(R2, I);
@@ -745,9 +736,53 @@ i_declaration(R0, I) ->
             i_kind(dot, R2, I)
     end.
 
-i_type(R0, I0) ->
-    {R1, _A1} = i_expr(R0, I0, none),
-    i_kind(dot, R1, I0).
+i_type(R0, I) ->
+    {R1, _A1} = i_expr(R0, I, none),
+    i_kind(dot, R1, I).
+
+i_spec_expr(R0, I) ->
+    {R1, _A} = i_expr(R0, I, none),
+    case i_sniff(R1) of
+        'when' ->
+            R11 = i_kind('when', R1, I),
+            R12 = i_spec_aux(R11, I),
+            R12;
+        _ ->
+            R1
+    end.
+
+i_spec_aux(R0, I0) ->
+    R1 = i_spec_expr(R0, I0),
+    case i_sniff(R1) of
+        '->' ->
+            R2 = i_kind('->', R1, I0),
+            I1 = i_with(after_arrow, R0, I0),
+            i_spec_expr(R2, I1);
+        _ ->
+            R1
+    end.
+
+i_spec_list(R0, I) ->
+    R1 = i_spec_aux(R0, I),
+    case i_sniff(R1) of
+        ';' ->
+            R2 = i_kind(';', R1, I),
+            i_spec_list(R2, I);
+        _ ->
+            R1
+    end.
+
+i_spec(R0, I) ->
+    R = case i_sniff(R0) of
+            '(' ->
+                R1 = i_kind('(', R0, I),
+                R2 = i_spec_list(R1, I),
+                R3 = i_kind(')', R2, I),
+                R3;
+            _ ->
+                i_spec_list(R0, I)
+        end,
+    i_dot_or_semi(R, I).
 
 i_fun_clause(R0, I0) ->
     R1 = i_comments(R0, I0),
@@ -762,11 +797,10 @@ i_fun_clause(R0, I0) ->
                  R2
          end,
     R4 = i_kind('->', R3, I1),
-	I2 = i_with(fun_body, R1, I0),
+    I2 = i_with(fun_body, R1, I0),
     i_expr_list(R4, I2#i{in_block=true}).
 
 i_fun_clause_list(R, I) ->
-	?D(R),
     R0 = i_fun_clause(R, I),
     case i_sniff(R0) of
         ';' ->
