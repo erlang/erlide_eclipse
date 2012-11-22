@@ -10,16 +10,19 @@
 package org.erlide.core.internal.model.erlang;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -27,15 +30,18 @@ import com.ericsson.otp.erlang.OtpErlangList;
  */
 public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
+    private static final Collection<IErlMember> NO_COMMENTS = Lists
+            .newArrayList();
+
     private final boolean fExported;
 
     private int arity;
 
     private final String head;
 
-    private final String fComment;
-
     private final List<String> parameters;
+
+    private Collection<IErlMember> fComments = NO_COMMENTS;
 
     /**
      * @param parent
@@ -45,12 +51,11 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
      * @param comment
      */
     public ErlFunction(final IParent parent, final String name,
-            final int arity, final String head, final String comment,
-            final boolean exported, final OtpErlangList parameters) {
+            final int arity, final String head, final boolean exported,
+            final OtpErlangList parameters) {
         super(parent, name);
         this.arity = arity;
         this.head = head;
-        fComment = comment;
         fExported = exported;
         this.parameters = ErlFunctionClause.getParameters(parameters);
     }
@@ -150,8 +155,8 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
     }
 
     @Override
-    public String getComment() {
-        return fComment;
+    public Collection<IErlMember> getComments() {
+        return fComments;
     }
 
     @Override
@@ -162,6 +167,11 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
     @Override
     public List<String> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public void setComments(final Collection<IErlMember> comments) {
+        fComments = comments;
     }
 
 }

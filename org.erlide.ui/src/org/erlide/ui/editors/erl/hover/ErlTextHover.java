@@ -57,10 +57,11 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
-import org.erlide.ui.internal.information.HoverUtils;
+import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.prefs.plugin.EditorPreferencePage;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
+import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
@@ -308,7 +309,7 @@ public class ErlTextHover implements ITextHover,
             final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(ide,
                     b, offset, stateDir, module.getScannerName(), fImports,
                     externalModulesString, model.getPathVars());
-            // ErlLogger.debug("otp doc %s", t);
+            ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 final String docStr = Util.stringValue(t.elementAt(1));
                 result.append(docStr);
@@ -327,11 +328,12 @@ public class ErlTextHover implements ITextHover,
                 // ErlLogger.debug("found:" + found);
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
-                    final String comment = function.getComment();
-                    if (comment == null) {
+                    final String comment = HoverUtil
+                            .getDocumentationString(function.getComments());
+                    if (comment.length() == 0) {
                         return null;
                     }
-                    result.append(comment);
+                    result.append(HTMLPrinter.asHtml(comment));
                 } else if (found instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
                     result.append(preprocessorDef.getExtra());
@@ -342,7 +344,7 @@ public class ErlTextHover implements ITextHover,
             ErlLogger.warn(e);
             return null;
         }
-        final String strResult = HoverUtils.getHTMLAndReplaceJSLinks(result);
+        final String strResult = HoverUtil.getHTMLAndReplaceJSLinks(result);
         return new ErlBrowserInformationControlInput(null, moduleName, element,
                 strResult, 20, docPath, anchor);
     }

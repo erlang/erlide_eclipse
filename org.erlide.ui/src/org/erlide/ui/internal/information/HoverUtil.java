@@ -3,15 +3,18 @@ package org.erlide.ui.internal.information;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 import org.eclipse.swt.browser.LocationEvent;
+import org.erlide.core.model.erlang.IErlMember;
+import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.utils.ErlangFunctionCall;
 
-public class HoverUtils {
+public class HoverUtil {
 
     public static ErlangFunctionCall eventToErlangFunctionCall(
             String moduleName, final LocationEvent event) {
@@ -87,6 +90,23 @@ public class HoverUtils {
             }
         }
         return null;
+    }
+
+    public static String getDocumentationString(
+            final Collection<IErlMember> comments) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        for (final IErlMember member : comments) {
+            try {
+                final String source = member.getSource();
+                stringBuilder.append(source);
+                if (!source.endsWith("\n")) {
+                    stringBuilder.append('\n');
+                }
+            } catch (final ErlModelException e) {
+                ErlLogger.warn(e);
+            }
+        }
+        return stringBuilder.toString().replace("\n", "<br/>");
     }
 
 }

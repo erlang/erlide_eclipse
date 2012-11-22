@@ -72,7 +72,7 @@ public final class PresenterControlCreator extends
                     .getInput();
             if (input != null) {
                 final String moduleName = input.getModuleName();
-                final ErlangFunctionCall functionCall = HoverUtils
+                final ErlangFunctionCall functionCall = HoverUtil
                         .eventToErlangFunctionCall(moduleName, event);
                 if (functionCall != null) {
                     final IProject project = editor.getModule().getProject()
@@ -102,7 +102,7 @@ public final class PresenterControlCreator extends
                             anchor = Util.stringValue(otpDoc.elementAt(4));
                         }
                         if (result.length() > 0) {
-                            final String html = HoverUtils
+                            final String html = HoverUtil
                                     .getHTMLAndReplaceJSLinks(result);
                             final ErlBrowserInformationControlInput erlBrowserInformationControlInput = new ErlBrowserInformationControlInput(
                                     input, moduleName, null, html, 20, docPath,

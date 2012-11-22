@@ -38,6 +38,7 @@ import org.erlide.jinterface.ErlLogger;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -1424,6 +1425,25 @@ public final class Util {
             sb.append("... <truncated>");
         }
         return sb;
+    }
+
+    public static int getIntegerValue(final OtpErlangObject object,
+            final int defaultValue) {
+        if (object instanceof OtpErlangLong) {
+            final OtpErlangLong l = (OtpErlangLong) object;
+            try {
+                return l.intValue();
+            } catch (final OtpErlangRangeException e) {
+            }
+        }
+        if (object instanceof OtpErlangInt) {
+            final OtpErlangInt l = (OtpErlangInt) object;
+            try {
+                return l.intValue();
+            } catch (final OtpErlangRangeException e) {
+            }
+        }
+        return defaultValue;
     }
 
 }
