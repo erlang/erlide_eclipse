@@ -30,19 +30,22 @@
 check_record(S) ->
     case erlide_scan:string(S) of
 	{ok, Tokens, _Pos} ->
+            ?D(Tokens),
             {State, Name, Prefix, Fields} =
                 check_record_tokens(erlide_scanner:convert_tokens(Tokens)),
             {ok, {state_to_num(State), Name, Prefix, Fields}};
-        {error, {_, _, {atom, $', ""}}, _} ->
+        {error, {_, _, {atom, $', _}}, _} ->
             case erlide_scan:string(S++"><'") of
                 {ok, Tokens, _Pos} ->
+                    ?D(Tokens),
                     {State, Name, Prefix, Fields} =
                         check_record_tokens(erlide_scanner:convert_tokens(Tokens)),
                     {ok, {state_to_num(State), Name, Prefix, Fields}};
                 _ ->
                     none
             end;
-	_ ->
+	_D ->
+            ?D(_D),
 	    none
     end.
 

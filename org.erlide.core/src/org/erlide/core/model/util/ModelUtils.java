@@ -254,6 +254,7 @@ public class ModelUtils {
             final IErlModule module, final String definedName,
             final IErlElement.Kind kind) throws CoreException {
         String unquoted = StringUtils.unquote(definedName);
+        final String quoted = StringUtils.quote(definedName);
         final Set<String> names = new HashSet<String>(3);
         if (kind == Kind.RECORD_DEF) {
             while (names.add(unquoted)) {
@@ -262,6 +263,7 @@ public class ModelUtils {
         } else {
             names.add(unquoted);
         }
+        names.add(quoted);
         names.add(definedName);
         final List<IErlModule> allIncludedFiles = Lists.newArrayList(module
                 .findAllIncludedFiles());

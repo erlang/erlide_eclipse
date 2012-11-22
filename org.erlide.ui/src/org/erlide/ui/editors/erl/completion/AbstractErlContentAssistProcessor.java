@@ -396,7 +396,7 @@ public abstract class AbstractErlContentAssistProcessor {
     String getPrefix(final String before) {
         for (int n = before.length() - 1; n >= 0; --n) {
             final char c = before.charAt(n);
-            if (!isErlangIdentifierChar(c) && c != '?') {
+            if (!isErlangIdentifierChar(c) && c != '?' && c != '\'') {
                 return before.substring(n + 1);
             }
         }

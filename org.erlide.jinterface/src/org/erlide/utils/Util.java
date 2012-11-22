@@ -1426,8 +1426,4 @@ public final class Util {
         return sb;
     }
 
-    public static String normalizeSpaces(final String string) {
-        return string.replaceAll("[\t\n\r ]+", " ");
-    }
-
 }

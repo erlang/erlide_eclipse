@@ -60,9 +60,9 @@ public class ErlideContextAssist {
             kind = kindL.intValue();
             name = nameA.atomValue();
             prefix = prefixA.atomValue();
-            if ("><".equals(prefix)) {
-                prefix = "'";
-            } else if ("<>".equals(prefix)) {
+            if (prefix.endsWith("><")) {
+                prefix = "'" + prefix.substring(0, prefix.length() - 2);
+            } else if (prefix.equals("<>")) {
                 prefix = "";
             }
             fields = new ArrayList<String>(fieldL.arity());
