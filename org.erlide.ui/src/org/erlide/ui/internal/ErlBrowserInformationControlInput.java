@@ -25,6 +25,9 @@ public class ErlBrowserInformationControlInput extends
     private final Object fElement;
     private final String fHtml;
     private final int fLeadingImageWidth;
+    private final String moduleName;
+    private final String docPath;
+    private final String anchor;
 
     /**
      * Creates a new browser information control input.
@@ -37,15 +40,22 @@ public class ErlBrowserInformationControlInput extends
      *            HTML contents, must not be null
      * @param leadingImageWidth
      *            the indent required for the element image
+     * @param docPath
+     * @param anchor
      */
     public ErlBrowserInformationControlInput(
             final ErlBrowserInformationControlInput previous,
-            final Object element, final String html, final int leadingImageWidth) {
+            final String moduleName, final Object element, final String html,
+            final int leadingImageWidth, final String docPath,
+            final String anchor) {
         super(previous);
         Assert.isNotNull(html);
+        this.moduleName = moduleName;
         fElement = element;
         fHtml = html;
         fLeadingImageWidth = leadingImageWidth;
+        this.docPath = docPath;
+        this.anchor = anchor;
     }
 
     /*
@@ -95,4 +105,17 @@ public class ErlBrowserInformationControlInput extends
         }
         return ""; //$NON-NLS-1$
     }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public String getDocPath() {
+        return docPath;
+    }
+
+    public String getAnchor() {
+        return anchor;
+    }
+
 }

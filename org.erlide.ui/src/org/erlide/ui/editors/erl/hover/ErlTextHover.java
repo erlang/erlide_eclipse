@@ -57,12 +57,13 @@ import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
+import org.erlide.ui.internal.information.HoverUtils;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
-import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -251,7 +252,7 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         final StringBuffer result = new StringBuffer();
-        Object element = null;
+        final Object element = null;
         // TODO our model is too coarse, here we need access to expressions
         // try {
         // element = module.getElementAt(hoverRegion.getOffset());
@@ -261,7 +262,6 @@ public class ErlTextHover implements ITextHover,
                 .getImportsAsList(module);
 
         final int offset = hoverRegion.getOffset();
-        OtpErlangObject r1 = null;
         final int length = hoverRegion.getLength();
         final String debuggerVar = makeDebuggerVariableHover(textViewer,
                 offset, length);
@@ -274,6 +274,9 @@ public class ErlTextHover implements ITextHover,
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final IBackend ide = backendManager.getIdeBackend();
+        String moduleName;
+        String docPath = "";
+        String anchor = "";
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
@@ -283,16 +286,21 @@ public class ErlTextHover implements ITextHover,
             final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
-            r1 = ErlideDoc.getOtpDoc(ide, b, offset, stateDir,
-                    module.getScannerName(), fImports, externalModulesString,
-                    model.getPathVars());
-            // ErlLogger.debug("getHoverInfo getDocFromScan " + r1);
-            final OtpErlangTuple t = (OtpErlangTuple) r1;
+            final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(ide,
+                    b, offset, stateDir, module.getScannerName(), fImports,
+                    externalModulesString, model.getPathVars());
+            // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 final String docStr = Util.stringValue(t.elementAt(1));
-                final OpenResult or = new OpenResult(t.elementAt(2));
                 result.append(docStr);
-                element = or;
+                final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(2);
+                final OtpErlangAtom moduleAtom = (OtpErlangAtom) t2
+                        .elementAt(1);
+                moduleName = moduleAtom.atomValue();
+                if (t.arity() > 4) {
+                    docPath = Util.stringValue(t.elementAt(3));
+                    anchor = Util.stringValue(t.elementAt(4));
+                }
             } else {
                 final OpenResult or = new OpenResult(t);
                 final Object found = OpenAction.findOpenResult(editor, module,
@@ -309,16 +317,14 @@ public class ErlTextHover implements ITextHover,
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
                     result.append(preprocessorDef.getExtra());
                 }
+                moduleName = module.getModuleName();
             }
         } catch (final Exception e) {
             ErlLogger.warn(e);
+            return null;
         }
-        String strResult = "";
-        if (result.length() > 0) {
-            strResult = HTMLPrinter.asHtml(result.toString());
-        }
-        // TODO set element
-        return new ErlBrowserInformationControlInput(null, element, strResult,
-                20);
+        final String strResult = HoverUtils.getHTMLAndReplaceJSLinks(result);
+        return new ErlBrowserInformationControlInput(null, moduleName, element,
+                strResult, 20, docPath, anchor);
     }
 }

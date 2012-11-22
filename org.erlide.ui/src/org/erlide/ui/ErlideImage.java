@@ -53,7 +53,8 @@ public enum ErlideImage {
     MODULE(ErlideImagePrefix.T_OBJ, "erlang_srcFile.png"),
     MODULE_RESOURCE(ErlideImagePrefix.T_OBJ, "erlang_srcFileExt.gif"),
     UNKNOWN(ErlideImagePrefix.T_OBJ, "unknown_obj.gif"),
-    OBJS_EDOCTAG(ErlideImagePrefix.T_OBJ, "jdoc_tag_obj.gif");
+    OBJS_EDOCTAG(ErlideImagePrefix.T_OBJ, "jdoc_tag_obj.gif"),
+    OBJS_EXTERNALBROWSER(ErlideImagePrefix.T_ELCL, "open_browser.gif");
     // @formatter:on
 
     private String prefix;

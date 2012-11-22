@@ -79,4 +79,12 @@ public class ActionMessages extends NLS {
     public static final String ToggleLinkingAction_tooltip = "Link with Editor";
 
     public static final String OpenAction_label = "Open";
+
+    public static final String OpenEdocInExternalBrowser_label = "Open in E&xternal Browser";
+
+    public static final String OpenEdocInExternalBrowser_description = "Opens the documentation in a browser";
+
+    public static final String OpenEdocInExternalBrowser_tooltip = "Opens the documentation in a browser";
+
+    public static final String OpenEdocInExternalBrowser_title = "Open in External Browser";
 }

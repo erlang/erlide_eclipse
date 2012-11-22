@@ -47,6 +47,7 @@ public abstract class SelectionDispatchAction extends Action implements
         ISelectionChangedListener {
 
     private final IWorkbenchSite fSite;
+    private ISelectionProvider fSpecialSelectionProvider;
 
     /**
      * Creates a new action with no text and no image.
@@ -60,6 +61,7 @@ public abstract class SelectionDispatchAction extends Action implements
     protected SelectionDispatchAction(final IWorkbenchSite site) {
         Assert.isNotNull(site);
         fSite = site;
+        fSpecialSelectionProvider = null;
     }
 
     /**
@@ -98,6 +100,9 @@ public abstract class SelectionDispatchAction extends Action implements
      * @return the site's selection provider
      */
     public ISelectionProvider getSelectionProvider() {
+        if (fSpecialSelectionProvider != null) {
+            return fSpecialSelectionProvider;
+        }
         return fSite.getSelectionProvider();
     }
 
@@ -136,26 +141,6 @@ public abstract class SelectionDispatchAction extends Action implements
     public void run(final IStructuredSelection selection) {
         run((ISelection) selection);
     }
-
-    // /**
-    // * Note: This method is for internal use only. Clients should not call
-    // this method.
-    // *
-    // * @param selection the selection
-    // */
-    // public void selectionChanged(ErlangTextSelection selection) {
-    // selectionChanged((ITextSelection)selection);
-    // }
-    //
-    // /**
-    // * Note: This method is for internal use only. Clients should not call
-    // this method.
-    // *
-    // * @param selection the selection
-    // */
-    // public void run(ErlangTextSelection selection) {
-    // run((ITextSelection)selection);
-    // }
 
     /**
      * Notifies this action that the given text selection has changed. This
@@ -233,5 +218,14 @@ public abstract class SelectionDispatchAction extends Action implements
         } else {
             run(selection);
         }
+    }
+
+    public ISelectionProvider getSpecialSelectionProvider() {
+        return fSpecialSelectionProvider;
+    }
+
+    public void setSpecialSelectionProvider(
+            final ISelectionProvider fSpecialSelectionProvider) {
+        this.fSpecialSelectionProvider = fSpecialSelectionProvider;
     }
 }
