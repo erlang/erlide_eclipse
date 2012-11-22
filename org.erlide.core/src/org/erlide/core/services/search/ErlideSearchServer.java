@@ -52,8 +52,6 @@ public class ErlideSearchServer {
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
             final String stateDir) throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
-        ErlLogger.debug("findRefs " + pattern.getSearchObject() + "    "
-                + modules);
         final OtpErlangObject r = backend.call(SEARCH_LONG_TIMEOUT,
                 "erlide_search_server", "find_refs", "xxs",
                 pattern.getSearchObject(), modules, stateDir);

@@ -200,20 +200,20 @@ public class ErlangFileWizardPage extends WizardPage {
                 final IProject project = resource.getProject();
                 final IErlProject erlProject = ErlModelManager.getErlangModel()
                         .getErlangProject(project);
-                String txt;
+                String txt = container.getFullPath().toString();
+                ;
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
                 if (sourceDirs.size() > 0) {
                     final IPath sourceDirWithinContainer = sourceDirWithinContainer(
                             sourceDirs, container);
                     if (sourceDirWithinContainer != null) {
                         txt = sourceDirWithinContainer.toString();
-                    } else {
-                        final IPath path = project.getFullPath().append(
-                                sourceDirs.iterator().next());
-                        txt = path.toString();
                     }
-                } else {
-                    txt = container.getFullPath().toString();
+                    // else {
+                    // final IPath path = project.getFullPath().append(
+                    // sourceDirs.iterator().next());
+                    // txt = path.toString();
+                    // }
                 }
                 containerText.setText(txt);
 
@@ -225,11 +225,12 @@ public class ErlangFileWizardPage extends WizardPage {
 
     private IPath sourceDirWithinContainer(final Collection<IPath> sourceDirs,
             final IContainer container) {
-        final IPath containerPath = container.getFullPath();
+        final IPath containerPath = container.getProjectRelativePath();
         for (final IPath sourceDir : sourceDirs) {
-            if (containerPath.equals(sourceDir)
-                    || containerPath.isPrefixOf(sourceDir)) {
-                return sourceDir;
+            if (containerPath.equals(sourceDir)) {
+                return container.getFullPath();
+            } else if (containerPath.isPrefixOf(sourceDir)) {
+                return container.findMember(sourceDir).getFullPath();
             }
         }
         return null;
