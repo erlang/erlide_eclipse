@@ -9,18 +9,12 @@
  *******************************************************************************/
 package org.erlide.ui.prefs.plugin;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.DialogPage;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -29,11 +23,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.util.StatusInfo;
-import org.osgi.service.prefs.BackingStoreException;
-import org.osgi.service.prefs.Preferences;
 
 /**
  * The editor preferences
@@ -84,11 +73,6 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
 
     private final List<Text> textFields = new ArrayList<Text>();
 
-    /**
-     * Tells whether the fields are initialized.
-     */
-    private boolean fieldsInitialized = false;
-
     /*
      * @see PreferencePage#createContents(Composite)
      */
@@ -120,35 +104,23 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
             gd.widthHint = convertWidthInCharsToPixels(3);
             text.setLayoutData(gd);
             textFields.add(text);
-            text.addModifyListener(fNumberFieldListener);
+            text.addModifyListener(getNumberFieldListener());
         }
     }
 
     static final String INDENT_KEY = "indentation"; //$NON-NLS-1$
 
     private void setToPreferences() {
-        final List<String> l = getPreferences(INDENT_KEY, INDENT_KEYS,
-                INDENT_DEFAULTS);
+        final List<String> l = getPreferences(INDENT_KEYS, INDENT_DEFAULTS);
         for (int i = 0; i < l.size(); ++i) {
             final String s = l.get(i);
             textFields.get(i).setText(s);
         }
-        fieldsInitialized = true;
     }
 
     @Override
     protected void putPreferences() {
-        final Preferences node = ErlideUIPlugin.getPrefsNode();
-        for (int i = 0; i < INDENT_KEYS.length; ++i) {
-            int n;
-            n = Integer.parseInt(textFields.get(i).getText());
-            node.putInt(INDENT_KEY + "/" + INDENT_KEYS[i], n); //$NON-NLS-1$
-        }
-        try {
-            node.flush();
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
-        }
+        putIntPreferences(INDENT_KEYS, textFields);
     }
 
     /*
@@ -163,84 +135,14 @@ public class IndentationPreferencePage extends ErlidePreferencePage implements
         super.performDefaults();
     }
 
-    private final ModifyListener fNumberFieldListener = new ModifyListener() {
-        @Override
-        public void modifyText(final ModifyEvent e) {
-            numberFieldChanged((Text) e.widget);
-        }
-    };
-
-    void numberFieldChanged(final Text textControl) {
-        final String number = textControl.getText();
-        final IStatus status = validatePositiveNumber(number);
-        updateStatus(status);
-    }
-
-    private IStatus validatePositiveNumber(final String number) {
-        final StatusInfo status = new StatusInfo();
-        if (number.length() == 0) {
-            status.setError(ErlEditorMessages.ErlEditorPreferencePage_empty_input);
-        } else {
-            try {
-                final int value = Integer.parseInt(number);
-                if (value < 0) {
-                    status.setError(MessageFormat
-                            .format(ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                                    (Object[]) new String[] { number }));
-                }
-            } catch (final NumberFormatException e) {
-                status.setError(MessageFormat
-                        .format(ErlEditorMessages.ErlEditorPreferencePage_invalid_input,
-                                (Object[]) new String[] { number }));
-            }
-        }
-        return status;
-    }
-
-    private void updateStatus(final IStatus status) {
-        if (!fieldsInitialized) {
-            return;
-        }
-        setValid(!status.matches(IStatus.ERROR));
-        applyToStatusLine(this, status);
-    }
-
-    /**
-     * Applies the status to the status line of a dialog page.
-     * 
-     * @param page
-     *            the dialog page
-     * @param status
-     *            the status
-     */
-    public void applyToStatusLine(final DialogPage page, final IStatus status) {
-        String message = status.getMessage();
-        switch (status.getSeverity()) {
-        case IStatus.OK:
-            page.setMessage(message, IMessageProvider.NONE);
-            page.setErrorMessage(null);
-            break;
-        case IStatus.WARNING:
-            page.setMessage(message, IMessageProvider.WARNING);
-            page.setErrorMessage(null);
-            break;
-        case IStatus.INFO:
-            page.setMessage(message, IMessageProvider.INFORMATION);
-            page.setErrorMessage(null);
-            break;
-        default:
-            if (message.length() == 0) {
-                message = null;
-            }
-            page.setMessage(null);
-            page.setErrorMessage(message);
-            break;
-        }
-    }
-
     public static void addKeysAndPrefs(final Map<String, String> map) {
         Assert.isTrue(INDENT_KEYS.length == INDENT_FIELDS.length);
         Assert.isTrue(INDENT_FIELDS.length == INDENT_DEFAULTS.length);
         addKeysAndPrefs(INDENT_KEY, INDENT_KEYS, INDENT_DEFAULTS, map);
+    }
+
+    @Override
+    protected String getDialogPreferenceKey() {
+        return INDENT_KEY;
     }
 }

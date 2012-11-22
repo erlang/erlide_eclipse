@@ -39,6 +39,7 @@ public class ErlEditorMessages extends NLS {
     public static String ErlEditorPreferencePage_systemDefault;
     public static String ErlEditorPreferencePage_empty_input;
     public static String ErlEditorPreferencePage_invalid_input;
+    public static String ErlEditorPreferencePage_enable_hover;
     public static String ErlangOutlinePage_error_noelement;
     public static String Prefs_End_paren;
     public static String Prefs_Binary_begin;
