@@ -201,7 +201,6 @@ public class ErlangFileWizardPage extends WizardPage {
                 final IErlProject erlProject = ErlModelManager.getErlangModel()
                         .getErlangProject(project);
                 String txt = container.getFullPath().toString();
-                ;
                 final Collection<IPath> sourceDirs = erlProject.getSourceDirs();
                 if (sourceDirs.size() > 0) {
                     final IPath sourceDirWithinContainer = sourceDirWithinContainer(
@@ -209,11 +208,6 @@ public class ErlangFileWizardPage extends WizardPage {
                     if (sourceDirWithinContainer != null) {
                         txt = sourceDirWithinContainer.toString();
                     }
-                    // else {
-                    // final IPath path = project.getFullPath().append(
-                    // sourceDirs.iterator().next());
-                    // txt = path.toString();
-                    // }
                 }
                 containerText.setText(txt);
 

@@ -3,6 +3,7 @@ package org.erlide.ui.prefs.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -10,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.ui.internal.ErlideUIPlugin;
 
 public class NavigationPreferencePage extends ErlidePreferencePage implements
         IWorkbenchPreferencePage {
@@ -50,27 +52,31 @@ public class NavigationPreferencePage extends ErlidePreferencePage implements
 
     @Override
     protected void putPreferences() {
-        putPreferences(NAVIGATION_KEY, NAVIGATION_KEYS, buttons);
+        putBooleanPreferences(NAVIGATION_KEYS, buttons);
         fCachedCheckAllProjects = null;
     }
 
     private void setToPreferences() {
-        setToPreferences(NAVIGATION_KEY, NAVIGATION_KEYS, NAVIGATION_DEFAULTS,
-                buttons);
+        setToPreferences(NAVIGATION_KEYS, NAVIGATION_DEFAULTS, buttons);
     }
 
     public static boolean getCheckAllProjects() {
         if (fCachedCheckAllProjects == null) {
-            final List<String> preferences = getPreferences(NAVIGATION_KEY,
-                    NAVIGATION_KEYS, NAVIGATION_DEFAULTS);
-            final List<Boolean> l = getBooleanPreferences(preferences);
-            fCachedCheckAllProjects = Boolean.valueOf(l.size() > 0 && l.get(0));
+            final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
+            final boolean checkAllProjects = node.getBoolean(NAVIGATION_KEY
+                    + "/" + CHECK_ALL_PROJECTS_KEY, true);
+            fCachedCheckAllProjects = checkAllProjects;
         }
         return fCachedCheckAllProjects.booleanValue();
     }
 
     @Override
     public void init(final IWorkbench workbench) {
+    }
+
+    @Override
+    protected String getDialogPreferenceKey() {
+        return NAVIGATION_KEY;
     }
 
 }

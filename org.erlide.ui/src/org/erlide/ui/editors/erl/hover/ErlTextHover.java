@@ -59,6 +59,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.internal.information.HoverUtils;
 import org.erlide.ui.internal.information.PresenterControlCreator;
+import org.erlide.ui.prefs.plugin.EditorPreferencePage;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
@@ -83,11 +84,16 @@ public class ErlTextHover implements ITextHover,
 
     @Override
     public IRegion getHoverRegion(final ITextViewer textViewer, final int offset) {
-        if (fEditor == null) {
+        return internalGetHoverRegion(offset, fEditor);
+    }
+
+    private static IRegion internalGetHoverRegion(final int offset,
+            final ErlangEditor editor) {
+        if (editor == null) {
             return null;
         }
-        fEditor.reconcileNow();
-        final ErlToken token = fEditor.getModule().getScannerTokenAt(offset);
+        editor.reconcileNow();
+        final ErlToken token = editor.getModule().getScannerTokenAt(offset);
         if (token == null) {
             return null;
         }
@@ -218,11 +224,14 @@ public class ErlTextHover implements ITextHover,
 
     public static String getHoverTextForOffset(final int offset,
             final ErlangEditor editor) {
-        final ErlTextHover h = new ErlTextHover(editor);
-        final ITextViewer tv = editor.getViewer();
-        final IRegion r = h.getHoverRegion(tv, offset);
-        if (r != null) {
-            return h.getHoverInfo(tv, r);
+        final ITextViewer textViewer = editor.getViewer();
+        final IRegion region = internalGetHoverRegion(offset, editor);
+        if (region != null) {
+            final ErlBrowserInformationControlInput hoverInfo = internalGetHoverInfo(
+                    editor, textViewer, region);
+            if (hoverInfo != null) {
+                return hoverInfo.getHtml();
+            }
         }
         return null;
     }
@@ -230,14 +239,24 @@ public class ErlTextHover implements ITextHover,
     @Override
     public String getHoverInfo(final ITextViewer textViewer,
             final IRegion hoverRegion) {
+        if (isHoverDisabled()) {
+            return null;
+        }
         final ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) getHoverInfo2(
                 textViewer, hoverRegion);
         return input == null ? "" : input.getHtml();
     }
 
+    private static boolean isHoverDisabled() {
+        return !EditorPreferencePage.getEnableHover();
+    }
+
     @Override
     public Object getHoverInfo2(final ITextViewer textViewer,
             final IRegion hoverRegion) {
+        if (isHoverDisabled()) {
+            return null;
+        }
         return internalGetHoverInfo(fEditor, textViewer, hoverRegion);
     }
 

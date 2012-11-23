@@ -118,6 +118,15 @@ public final class ErlideUIConstants {
     public static final String FIND_IMPLEMENTORS_IN_PROJECT = "org.erlide.ui.search.actions.ImplementorsInProject"; //$NON-NLS-1$
     public static final String FIND_IMPLEMENTORS_IN_WORKING_SET = "org.erlide.ui.search.actions.ImplementorsInWorkingSet"; //$NON-NLS-1$;
 
+    /**
+     * A named preference that controls if hover should be enabled in erlang
+     * editor (value <code>"enableHover"</code>).
+     * <p>
+     * The preference value is of type <code>Boolean</code>.
+     * </p>
+     */
+    public final static String EDITOR_ENABLE_HOVER = "enableHover"; //$NON-NLS-1$
+
     private ErlideUIConstants() {
     }
 
