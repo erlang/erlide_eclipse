@@ -81,17 +81,17 @@ public class HostnameUtils {
                             "Java node can't connect to Erlang backend.\n\n"
                                     + "Please check your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.",
                             ReporterPosition.MODAL);
-        } else {
-            if (erlangLongName == null) {
-                MessageReporter
-                        .showWarning("Java node can't connect to Erlang ndoes using long names.\n\n"
-                                + "You might want to review your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.");
-            }
-            if (erlangLongName == null) {
-                MessageReporter
-                        .showWarning("Java node can't connect to Erlang ndoes using short names.\n\n"
-                                + "You might want to review your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.");
-            }
+        } else if (erlangLongName == null) {
+            MessageReporter
+                    .showWarning("Java node can't connect to Erlang ndoes using long names.\n\n"
+                            + "You might want to review your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.");
+            erlangLongName = erlangLongNameFallback;
+        } else if (erlangLongName == null) {
+            MessageReporter
+                    .showWarning("Java node can't connect to Erlang ndoes using short names.\n\n"
+                            + "You might want to review your network settings,\nsee <a href=\"https://github.com/erlide/erlide/wiki/Troubleshooting\">here</a>.");
+            erlangShortName = erlangShortNameFallback;
+
         }
     }
 
