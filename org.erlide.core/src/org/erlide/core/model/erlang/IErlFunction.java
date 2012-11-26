@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.erlide.core.model.root.IParent;
@@ -33,6 +34,8 @@ public interface IErlFunction extends IErlFunctionClause, IParent {
      */
     String getNameWithParameters();
 
-    String getComment();
+    Collection<IErlMember> getComments();
+
+    void setComments(Collection<IErlMember> comments);
 
 }

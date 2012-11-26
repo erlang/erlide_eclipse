@@ -25,9 +25,9 @@
 
 -record(model, {forms, comments}).
 
--record(function, {pos, name, arity, args, head, clauses, name_pos, comment, exported}).
+-record(function, {pos, name, arity, args, head, clauses, name_pos, exported}).
 %% -record(clause, {pos, name, args, head, name_pos}).
--record(attribute, {pos, name, args, extra}).
+-record(attribute, {pos, name, args, extra, arity}).
 %% -record(other, {pos, name, tokens}).
 
 parse_directive_test_() ->
@@ -43,7 +43,6 @@ parse_small_functions_test_() ->
                                            name = f, arity = 0,
                                            args = [], head = "", clauses = [],
                                            name_pos = {{0, 0}, 1},
-                                           comment = undefined,
                                            exported = false}],
                           comments=[]},
                    test_parse("f() ->\n    a."))].
@@ -73,7 +72,6 @@ parsing_function_with_macro_test_() ->
                                            name = '?f', arity = 0,
                                            args = [], head = "", clauses = [],
                                            name_pos = {{0, 0}, 2},
-                                           comment = undefined,
                                            exported = false}],
                           comments = []},
                    test_parse("?f() -> ok."))].
@@ -88,7 +86,7 @@ parsing_when_clauses_test_() ->
                                              name = foo,arity = 0,args = [],head = [],
                                              clauses = [],
                                              name_pos = {{0,0},3},
-                                             comment = undefined,exported = false}],
+                                             exported = false}],
                           comments = []},
                    test_parse(S))].
 
@@ -103,11 +101,11 @@ function_comments_only_toplevel_test_() ->
     [?_assertEqual(#model{forms = [#function{pos = {{0,2,0},46},
                                              name = f1,arity = 0,args = [],head = [],clauses = [],
                                              name_pos = {{0,0},2},
-                                             comment = undefined,exported = false},
+                                             exported = false},
                                    #function{pos = {{3,4,46},16},
                                              name = f2,arity = 0,args = [],head = [],clauses = [],
                                              name_pos = {{3,46},2},
-                                             comment = undefined,exported = false}],
+                                             exported = false}],
                           comments = [#token{kind = comment,line = 1,offset = 11,
                                              length = 19,value = <<"%some comment here ">>,text = u,
                                              last_line = u}]},

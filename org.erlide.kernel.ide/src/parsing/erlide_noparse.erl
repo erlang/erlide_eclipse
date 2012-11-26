@@ -21,7 +21,7 @@
 %% -define(DEBUG, 1).
 %% -define(IO_FORMAT_DEBUG, 1).
 
--define(CACHE_VERSION, 25).
+-define(CACHE_VERSION, 27).
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
@@ -125,9 +125,7 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
 %%     ?D(AutoImports),
     {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
     ?D({'>>',length(Collected)}),
-    CommentedCollected = erlide_np_util:get_function_comments(Collected, Comments),
-    ?D(CommentedCollected),
-    Model = #model{forms=CommentedCollected, comments=Comments},
+    Model = #model{forms=Collected, comments=Comments},
     %%erlide_noparse_server:create(ScannerName, Model),
 %%     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
@@ -172,8 +170,8 @@ binary_args(Args) when is_list(Args) ->
 binary_args(_) ->
     [].
 
-fixup_form(#function{comment=Comment, clauses=Clauses, args=Args} = Function) ->
-    Function#function{comment= to_binary(Comment), clauses=fixup_forms(Clauses), args=binary_args(Args)};
+fixup_form(#function{clauses=Clauses, args=Args} = Function) ->
+    Function#function{clauses=fixup_forms(Clauses), args=binary_args(Args)};
 fixup_form(#clause{head=Head, args=Args} = Clause) ->
     Clause#clause{head=to_binary(Head), args=binary_args(Args)};
 fixup_form(Other) ->
@@ -265,8 +263,14 @@ get_type_attribute(Kind, Name0, Offset, Line, Attribute, Args) ->
     {AttrArgs, _, _} = get_attribute_args(Kind, Args, Args),
     ?D({AttrArgs, Extra}),
     ExternalRefs = get_refs(tl(AttrArgs), Extra, ?ARI_TYPESPEC),
+    Arity = case Kind of
+                'spec' ->
+                    erlide_text:guess_arity(Args);
+                _ ->
+                    -1
+            end,
     {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                name=Name, args=AttrArgs, extra=Extra},
+                name=Name, args=AttrArgs, extra=Extra, arity=Arity},
      [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
            arity=?ARI_TYPESPEC, clause="", sub_clause=false} | ExternalRefs], [], []}.
 
@@ -638,6 +642,6 @@ unquote_first([$" | Rest]) ->
 unquote_first(L) ->
     L.
 
-remove_rest([], _) -> [];
-remove_rest(Rest, Rest) -> [];
-remove_rest([Hd | Tl], Rest) -> [Hd | remove_rest(Tl, Rest)].
+%% remove_rest([], _) -> [];
+%% remove_rest(Rest, Rest) -> [];
+%% remove_rest([Hd | Tl], Rest) -> [Hd | remove_rest(Tl, Rest)].

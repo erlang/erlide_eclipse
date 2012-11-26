@@ -34,7 +34,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.Util;
+import org.erlide.utils.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -620,7 +620,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public String getLabelString() {
-        return Util.normalizeSpaces(toString());
+        return StringUtils.normalizeSpaces(toString());
     }
 
     @Override

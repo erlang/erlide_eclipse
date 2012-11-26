@@ -6,9 +6,13 @@ import java.util.List;
 import org.erlide.backend.IBackend;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.utils.ErlangFunctionCall;
 
+import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDoc {
     public static OtpErlangObject getProposalsWithDoc(final IBackend b,
@@ -37,18 +41,32 @@ public class ErlideDoc {
         return res;
     }
 
+    public static OtpErlangObject getOtpDoc(final IBackend backend,
+            final ErlangFunctionCall functionCall, final String stateDir) {
+        OtpErlangObject res = null;
+        final OtpErlangTuple input = new OtpErlangTuple(new OtpErlangObject[] {
+                new OtpErlangAtom("local"),
+                new OtpErlangAtom(functionCall.getName()),
+                new OtpErlangInt(functionCall.getArity()) });
+        try {
+            res = backend.call("erlide_otp_doc", "get_doc", "sxs",
+                    functionCall.getModule(), input, stateDir);
+        } catch (final RpcException e) {
+            ErlLogger.warn(e);
+        }
+        return res;
+    }
+
     @SuppressWarnings("boxing")
     public static OtpErlangObject getOtpDoc(final IBackend ide,
             final IBackend b, final int offset, final String stateDir,
             final String module, final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
-        // ErlLogger.debug("getDoc:: %s %s %s", module, offset, imports);
         try {
             final OtpErlangObject input = ide.call("erlide_open", "open",
                     "aix", module, offset, ErlideOpen.mkContext(
                             externalModules, null, pathVars, null, imports));
-            // ErlLogger.debug("%s", input.toString());
             res = b.call("erlide_otp_doc", "get_doc", "sxs", module, input,
                     stateDir);
         } catch (final RpcException e) {

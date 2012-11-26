@@ -68,7 +68,7 @@ public class ErlangFunctionCall {
         if (parameters != null) {
             sb.append(parameters);
         } else {
-            sb.append(arity);
+            sb.append('/').append(arity);
         }
         return sb.toString();
     }

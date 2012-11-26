@@ -296,6 +296,13 @@ public class StringUtils {
         }
     }
 
+    public static String quote(final String s) {
+        if (s.startsWith("'")) {
+            return s;
+        }
+        return "'" + s + "'";
+    }
+
     public static String getLongestPrefix(final List<String> list) {
         final StringBuilder b = new StringBuilder();
         int i = 0;
@@ -354,6 +361,14 @@ public class StringUtils {
         } catch (final NoSuchElementException e) {
             return "";
         }
+    }
+
+    public static boolean startsWithUpperCase(final String s) {
+        return s.length() > 0 && Character.isUpperCase(s.codePointAt(0));
+    }
+
+    public static String normalizeSpaces(final String string) {
+        return string.replaceAll("[\t\n\r ]+", " ");
     }
 
 }

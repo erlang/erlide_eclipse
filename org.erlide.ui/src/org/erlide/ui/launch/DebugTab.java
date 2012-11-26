@@ -14,6 +14,7 @@ package org.erlide.ui.launch;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -36,8 +37,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Shell;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
 import org.erlide.launch.ErlLaunchAttributes;
@@ -45,6 +49,8 @@ import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
 import org.erlide.ui.util.SWTUtil;
+
+import com.google.common.collect.Lists;
 
 /**
  * A tab in the Launch Config with erlang debugger parameters: the debug flags
@@ -159,15 +165,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         addButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                final AddInterpretedModulesSelectionDialog dialog = new AddInterpretedModulesSelectionDialog(
-                        getShell());
-                final int resultCode = dialog.open();
-                if (resultCode != IDialogConstants.OK_ID) {
-                }
-                final Object[] result = dialog.getResult();
-                if (result == null || result.length == 0) {
-                    return;
-                }
+                final List<IErlModule> result = getModulesFromAddModulesDialog(getShell());
                 contentProvider.addModules(result);
                 listViewer.refresh();
                 updateLaunchConfigurationDialog();
@@ -188,6 +186,29 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 updateLaunchConfigurationDialog();
             }
         });
+    }
+
+    public static List<IErlModule> getModulesFromAddModulesDialog(
+            final Shell shell) {
+        final List<IErlModule> result = Lists.newArrayList();
+        final AddInterpretedModulesSelectionDialog dialog = new AddInterpretedModulesSelectionDialog(
+                shell);
+        final int resultCode = dialog.open();
+        if (resultCode != IDialogConstants.OK_ID) {
+            return result;
+        }
+        final Object[] dialogResult = dialog.getResult();
+        if (dialogResult == null || dialogResult.length == 0) {
+            return result;
+        }
+        final IErlModel model = ErlModelManager.getErlangModel();
+        for (final Object o : dialogResult) {
+            if (o instanceof IFile) {
+                final IFile file = (IFile) o;
+                result.add(model.findModule(file));
+            }
+        }
+        return result;
     }
 
     // protected void setSubtreeChecked(final DebugTreeItem dti,

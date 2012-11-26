@@ -36,7 +36,7 @@ import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 
 public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
-    private static final int MAX_RETRIES = 20;
+    private static final int MAX_RETRIES = 10;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
     private static final Object connectLock = new Object();
@@ -55,16 +55,18 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private final IProcess process;
     private final boolean reportWhenDown;
     private final boolean longName;
+    private final boolean connectOnce;
 
     public ErlRuntime(final String name, final String cookie,
             final IProcess process, final boolean reportWhenDown,
-            final boolean longName) {
+            final boolean longName, final boolean connectOnce) {
         state = State.DISCONNECTED;
         peerName = name;
         this.cookie = cookie;
         this.process = process;
         this.reportWhenDown = reportWhenDown;
         this.longName = longName;
+        this.connectOnce = connectOnce;
 
         startLocalNode();
         // if (epmdWatcher.isRunningNode(name)) {
@@ -214,6 +216,8 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 reported = false;
                 if (connectRetry()) {
                     state = State.CONNECTED;
+                } else if (connectOnce) {
+                    state = State.DOWN;
                 } else {
                     state = State.DISCONNECTED;
                 }
@@ -223,23 +227,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             case DOWN:
                 final String fmt = "Backend '%s' is down";
                 final String msg = String.format(fmt, peerName);
-                if (reportWhenDown && !reported) {
-                    final String user = System.getProperty("user.name");
-                    final String bigMsg = msg
-                            + "\n\n"
-                            + "If you didn't shut it down on purpose, it is an "
-                            + "unrecoverable error, please restart the application."
-                            + "\n\n"
-                            + "If an error report "
-                            + user
-                            + "_<timestamp>.txt has been created in your home directory, "
-                            + "please consider reporting the problem. \n"
-                            + (SystemConfiguration
-                                    .hasFeatureEnabled("erlide.ericsson.user") ? ""
-                                    : "http://www.assembla.com/spaces/erlide/support/tickets");
-                    MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
-                    reported = true;
-                }
+                reportRuntimeDown(msg);
                 try {
                     if (process != null) {
                         process.terminate();
@@ -250,6 +238,39 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 // TODO restart it??
                 throw new RpcException(msg);
             }
+        }
+    }
+
+    private void reportRuntimeDown(final String msg) {
+        if (reportWhenDown && !reported) {
+            final String user = System.getProperty("user.name");
+
+            String msg1;
+            if (connectOnce) {
+                msg1 = "It is likely that your network is misconfigured or uses 'strange' host names.\n"
+                        + "Please check the "
+                        + "Window->preferences->erlang->network page for hints about that."
+                        + "\n\n"
+                        + "Also, check if you can create and connect two erlang nodes on your machine\n"
+                        + "using \"erl -name foo1\" and \"erl -name foo2\".";
+            } else {
+                msg1 = "If you didn't shut it down on purpose, it is an "
+                        + "unrecoverable error, please restart Eclipse. ";
+            }
+
+            final String bigMsg = msg
+                    + "\n\n"
+                    + msg1
+                    + "\n\n"
+                    + "If an error report named '"
+                    + user
+                    + "_<timestamp>.txt' has been created in your home directory,\n "
+                    + "please consider reporting the problem. \n"
+                    + (SystemConfiguration
+                            .hasFeatureEnabled("erlide.ericsson.user") ? ""
+                            : "http://www.assembla.com/spaces/erlide/support/tickets");
+            MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
+            reported = true;
         }
     }
 

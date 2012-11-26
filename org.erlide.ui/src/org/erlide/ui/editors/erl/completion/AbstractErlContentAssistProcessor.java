@@ -23,6 +23,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlImport;
+import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
@@ -42,6 +43,7 @@ import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
@@ -396,7 +398,7 @@ public abstract class AbstractErlContentAssistProcessor {
     String getPrefix(final String before) {
         for (int n = before.length() - 1; n >= 0; --n) {
             final char c = before.charAt(n);
-            if (!isErlangIdentifierChar(c) && c != '?') {
+            if (!isErlangIdentifierChar(c) && c != '?' && c != '\'') {
                 return before.substring(n + 1);
             }
         }
@@ -653,7 +655,7 @@ public abstract class AbstractErlContentAssistProcessor {
             final List<ICompletionProposal> result,
             final IErlFunction function, final boolean arityOnly) {
         addFunctionCompletion(offset, aprefix, function.getFunction(),
-                function.getComment(), arityOnly, arityOnly ? null
+                function.getComments(), arityOnly, arityOnly ? null
                         : getParameterNames(function), result);
     }
 
@@ -714,8 +716,9 @@ public abstract class AbstractErlContentAssistProcessor {
     }
 
     void addFunctionCompletion(final int offset, final String prefix,
-            final ErlangFunction function, final String comment,
-            final boolean arityOnly, final List<String> parameterNames,
+            final ErlangFunction function,
+            final Collection<IErlMember> comments, final boolean arityOnly,
+            final List<String> parameterNames,
             final List<ICompletionProposal> result) {
         if (function.name.regionMatches(0, prefix, 0, prefix.length())) {
             final int offs = function.name.length() - prefix.length();
@@ -729,8 +732,8 @@ public abstract class AbstractErlContentAssistProcessor {
             String funWithParameters = arityOnly ? funWithArity
                     : getNameWithParameters(function.name, parameterNames);
             funWithParameters = funWithParameters.substring(prefix.length());
-            final String htmlComment = comment != null ? HTMLPrinter
-                    .asHtml(comment) : "";
+            final String htmlComment = comments != null ? HTMLPrinter
+                    .asHtml(HoverUtil.getDocumentationString(comments)) : "";
             addFunctionCompletion(offset, result, funWithArity, htmlComment,
                     funWithParameters, offsetsAndLengths);
         }

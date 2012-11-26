@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.Viewer;
@@ -38,6 +37,11 @@ public class InterpretedModuleListContentProvider extends
                 ErlLogger.warn(e);
             }
         }
+    }
+
+    public void setModules(final Collection<String> interpret) {
+        modules = EMPTY;
+        addModules(interpret);
     }
 
     /**
@@ -77,16 +81,10 @@ public class InterpretedModuleListContentProvider extends
         }
     }
 
-    public void addModules(final Object[] result) {
-        final IErlModel model = ErlModelManager.getErlangModel();
-        for (final Object o : result) {
-            if (o instanceof IFile) {
-                final IFile file = (IFile) o;
-                addModule(model.findModule(file));
-            } else if (o instanceof String) {
-                assert false;
-            }
+    public void addModules(final List<IErlModule> modules) {
+        for (final IErlModule module : modules) {
+            addModule(module);
         }
-
     }
+
 }

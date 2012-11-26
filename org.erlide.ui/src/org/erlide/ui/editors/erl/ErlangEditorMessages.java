@@ -60,7 +60,7 @@ final public class ErlangEditorMessages extends NLS {
     public static String CompilationUnitEditor_error_saving_title1;
     public static String CompilationUnitEditor_error_saving_title2;
     public static String CompilationUnitEditor_warning_save_delete;
-    public static String ErlangaOutlinePage_Sort_label;
+    public static String ErlangOutlinePage_Sort_label;
     public static String ErlangOutlinePage_Sort_tooltip;
     public static String ErlangOutlinePage_Sort_description;
     public static String ErlangOutlinePage_GoIntoTopLevelType_label;

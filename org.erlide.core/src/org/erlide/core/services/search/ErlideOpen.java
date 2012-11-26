@@ -41,7 +41,6 @@ public class ErlideOpen {
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
                 scanner, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
-        ErlLogger.debug("open: %s %d = %s", module.getName(), offset, res);
         return new OpenResult(res);
     }
 

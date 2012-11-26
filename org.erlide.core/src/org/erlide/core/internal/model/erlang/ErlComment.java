@@ -6,6 +6,7 @@ package org.erlide.core.internal.model.erlang;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.ISourceRange;
+import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IParent;
 
 /**
@@ -51,5 +52,10 @@ public class ErlComment extends ErlMember implements IErlComment {
 
     @Override
     public void setNameRange(final int offset, final int length) {
+    }
+
+    @Override
+    public String getSource() throws ErlModelException {
+        return getName();
     }
 }

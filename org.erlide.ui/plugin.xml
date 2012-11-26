@@ -171,13 +171,17 @@
       </page>
       <page
             category="org.erlide.ui.preferences"
-            class="org.erlide.ui.prefs.NetworkPreferencePage"
+            class="org.erlide.ui.prefs.TroubleshootingPreferencePage"
             id="org.erlide.ui.network"
-            name="Network">
+            name="Troubleshooting">
       </page>
    </extension>
    <extension
          point="org.eclipse.ui.views">
+      <category
+            id="org.erlide.views"
+            name="ErlIDE">
+      </category>
       <view
             allowMultiple="false"
             category="org.erlide.views"
@@ -212,6 +216,35 @@
             icon="icons/erl/erlang-notext016.gif"
             id="org.erlide.ui.views.navigator.view"
             name="Erlang Navigator">
+      </view>
+      <view
+            category="org.erlide.views"
+            class="org.erlide.ui.views.ErlLoggerView"
+            icon="icons/icons/sample.gif"
+            id="org.erlide.ui.views.ErlLoggerView"
+            name="Erlang Logger"/>
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
+            class="org.erlide.ui.views.EpmdView"
+            id="org.erlide.ui.epmd"
+            name="Epmd view">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.eclipse.debug.ui"
+            class="org.erlide.debug.ui.views.InterpretedModulesView"
+            icon="icons/full/obj16/modulenavigator.gif"
+            id="org.erlide.ui.debug.interpretedModulesView"
+            name="Interpreted Modules">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.erlide.views"
+            class="org.erlide.ui.views.CallHierarchyView"
+            id="org.erlide.ui.callhierarchy"
+            name="Call Hierarchy"
+            restorable="true">
       </view>
    </extension>
    <extension
@@ -624,8 +657,14 @@
           </commandParameter>
        </command>
        <command
-             id="org.erlide.ui.command1"
-             name="name">
+             description="Interpret Module"
+             id="org.erlide.ui.interpret"
+             name="Interpret">
+       </command>
+       <command
+             description="Deinterpret Module"
+             id="org.erlide.ui.deinterpret"
+             name="Deinterpret">
        </command>
  </extension>
  <extension
@@ -802,6 +841,42 @@
           </parameter>
        </command>
     </menuContribution>
+    <menuContribution
+          locationURI="toolbar:org.erlide.ui.debug.interpretedModulesView">
+       <command
+             commandId="org.erlide.ui.interpret"
+             icon="icons/full/elcl16/interpret_co.gif"
+             label="Interpret"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="toolbar:org.erlide.ui.debug.interpretedModulesView">
+       <command
+             commandId="org.erlide.ui.deinterpret"
+             icon="icons/full/elcl16/deinterpret_co.gif"
+             label="Deinterpret"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.debug.interpretedModulesView">
+       <command
+             commandId="org.erlide.ui.deinterpret"
+             icon="icons/full/elcl16/deinterpret_co.gif"
+             label="Deinterpret"
+             style="push">
+       </command>
+    </menuContribution>
+    <menuContribution
+          locationURI="popup:org.erlide.ui.debug.interpretedModulesView">
+       <command
+             commandId="org.erlide.ui.interpret"
+             icon="icons/full/elcl16/interpret_co.gif"
+             label="Interpret"
+             style="push">
+       </command>
+    </menuContribution>
  </extension>
  <extension
        point="org.eclipse.ui.bindings">
@@ -944,6 +1019,30 @@
     <handler
           class="org.erlide.ui.editors.erl.outline.filters.ToolbarFilterHandler"
           commandId="org.erlide.ui.command.toolbarFilter">
+    </handler>
+    <handler
+          class="org.erlide.debug.ui.views.InterpretHandler"
+          commandId="org.erlide.ui.deinterpret">
+       <enabledWhen>
+          <and>
+             <with
+                   variable="activePartId">
+                <equals
+                      value="org.erlide.ui.debug.interpretedModulesView">
+                </equals>
+             </with>
+             <with
+                   variable="selection">
+                <count
+                      value="+">
+                </count>
+             </with>
+          </and>
+       </enabledWhen>
+    </handler>
+    <handler
+          class="org.erlide.debug.ui.views.InterpretHandler"
+          commandId="org.erlide.ui.interpret">
     </handler>
  </extension>
  <extension
@@ -1502,41 +1601,6 @@
 
          </mapping>
       </transfer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            id="org.erlide.views"
-            name="Erlang"/>
-      <view
-            category="org.erlide.views"
-            class="org.erlide.ui.views.ErlLoggerView"
-            icon="icons/icons/sample.gif"
-            id="org.erlide.ui.views.ErlLoggerView"
-            name="Erlang Logger"/>
-      <view
-            allowMultiple="false"
-            category="org.erlide.views"
-            class="org.erlide.ui.views.EpmdView"
-            id="org.erlide.ui.epmd"
-            name="Epmd view">
-      </view>
-      <view
-            allowMultiple="false"
-            category="org.eclipse.debug.ui"
-            class="org.erlide.debug.ui.views.InterpretedModulesView"
-            icon="icons/full/obj16/modulenavigator.gif"
-            id="org.erlide.ui.debug.interpretedModulesView"
-            name="Interpreted Modules">
-      </view>
-      <view
-            allowMultiple="false"
-            category="org.erlide.views"
-            class="org.erlide.ui.views.CallHierarchyView"
-            id="org.erlide.ui.callhierarchy"
-            name="Call Hierarchy"
-            restorable="true">
-      </view>
    </extension>
    <!--extension
          point="org.eclipse.ui.viewActions">
