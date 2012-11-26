@@ -6,7 +6,7 @@
 -define(myrec, #'REC'{}).
     
 f() ->
-	X=[1,4,6],
+	X=[1,4,6], lists:reverse([]),
 	X.
  
 g() -> 
