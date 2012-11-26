@@ -233,11 +233,12 @@ public final class ErlParser implements IErlParser {
         }
         lastLine = line;
         try {
-            if (c.elementAt(5) instanceof OtpErlangLong) {
+            if (c.elementAt(7) instanceof OtpErlangLong) {
                 final OtpErlangLong lastLineL = (OtpErlangLong) c.elementAt(7);
                 lastLine = lastLineL.intValue();
             }
         } catch (final OtpErlangRangeException e1) {
+            lastLine = line;
         }
         final ErlComment comment = new ErlComment(module, Util.stringValue(s),
                 line <= MODULE_HEADER_COMMENT_THRESHOLD);
