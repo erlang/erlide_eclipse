@@ -1,3 +1,21 @@
+List of user visible changes between 0.17.4 and 0.17.5 (20121126)
+
+9df0f09 content describer: accept case insensitive encoding tags
+fcf5a30 1077 hover: show -spec information 
+a0262de Merge branch 'hover' into pu
+c76efca 1097 hover: add preference to disable showing it
+e1cadc5 1092 default folder for new module is wrong 
+4d555a4 1078 completion: quoted record names not shown after the first quote
+0cb107a Links in hover and external browser
+e39f128 1083-indentation--bad-after--spec-with-when-clause
+c10069a indentation: receive..after is wrong
+92c36d5 New InterpretedModulesView.java with List of modules instead of tree
+6799e8c 1087: improve docs for troubleshooting backend that can't be started
+e3ab4a1 1086: better backend hostname detection
+1baacb6 let PopupDialog display html, with links and all
+c45a916 1084: if internal backend fails to connect, don't keep trying [#78]
+74156f3 content describer uses the R16 way, %% coding: Latin-1 or UTF-8
+
 List of user visible changes between 0.17.3 and 0.17.4 (20121015)
 
 9925b25 1080: debugger: doesn't shut down on remote targets
