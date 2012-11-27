@@ -852,6 +852,17 @@ public abstract class Backend implements IStreamListener, IBackend {
                 e.printStackTrace();
             }
         }
+
+        // set work dir to gather core dumps
+        final String dir = "/proj/uz/erlide/dumps";
+        if (new File(dir).exists()) {
+            try {
+                call("c", "cd", "s", dir);
+            } catch (final RpcException e) {
+                ErlLogger
+                        .warn("Can't change erlang working dir, core dumps will not be available");
+            }
+        }
     }
 
     @Override
