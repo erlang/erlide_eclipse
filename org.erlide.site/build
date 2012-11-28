@@ -2,7 +2,6 @@
 # arguments:
 # WORKSPACE - location of the source code root
 # JAVA_HOME - location of JDK
-# erlang_R13 - location of R13 
 # erlang_R14 - location of R14
 # BUCKMINSTER - location of the Bucky installation
 # TARGET - location of eclipse installation that defines the target system 
