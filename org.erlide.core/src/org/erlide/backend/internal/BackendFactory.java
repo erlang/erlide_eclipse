@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.erlide.backend.internal;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
@@ -26,6 +28,7 @@ import org.erlide.backend.IErlRuntime;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
@@ -39,7 +42,22 @@ public class BackendFactory implements IBackendFactory {
     @Override
     public IBackend createIdeBackend() {
         ErlLogger.debug("Create ide backend");
-        return createBackend(getIdeBackendData());
+        final IBackend backend = createBackend(getIdeBackendData());
+        setWorkDirForCoreDumps(backend);
+        return backend;
+    }
+
+    private void setWorkDirForCoreDumps(final IBackend backend) {
+        // set work dir to gather core dumps
+        final String dir = "/proj/uz/erlide/dumps";
+        if (new File(dir).exists()) {
+            try {
+                backend.call("c", "cd", "s", dir);
+            } catch (final RpcException e) {
+                ErlLogger
+                        .warn("Can't change erlang working dir, core dumps will not be available");
+            }
+        }
     }
 
     @Override
