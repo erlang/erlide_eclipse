@@ -7,7 +7,9 @@ Bundle-Vendor: Erlide project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: jinterface.jar,
  hamcrest-all-1.2.jar,
- commons-io-1.4.jar
+ commons-io-1.4.jar,
+ org.eclipse.xtend.lib-2.3.1.jar,
+ org.eclipse.xtext.xbase.lib-2.3.1.jar
 Export-Package: com.ericsson.otp.erlang,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
@@ -15,6 +17,11 @@ Export-Package: com.ericsson.otp.erlang,
  org.apache.commons.io.input,
  org.apache.commons.io.output,
  org.eclipse.jdt.annotation,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend2.lib,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xbase.lib.internal;x-internal:=true,
+ org.eclipse.xtext.xbase.lib.util,
  org.hamcrest,
  org.hamcrest.beans,
  org.hamcrest.collection,
