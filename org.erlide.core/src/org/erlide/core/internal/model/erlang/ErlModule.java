@@ -42,6 +42,7 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlFolder;
@@ -110,7 +111,8 @@ public class ErlModule extends Openable implements IErlModule {
         }
         getScanner();
         try {
-            final IErlParser parser = getModel().getParser();
+            final IErlParser parser = ErlModelManager.getErlangModel()
+                    .getParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     useCaches);
         } finally {
@@ -123,7 +125,7 @@ public class ErlModule extends Openable implements IErlModule {
     protected synchronized boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         if (internalBuildStructure(pm)) {
-            final IErlModel model = getModel();
+            final IErlModel model = ErlModelManager.getErlangModel();
             if (model != null) {
                 model.notifyChange(this);
             }
@@ -152,26 +154,27 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public IErlElement getElementAt(final int position)
             throws ErlModelException {
-        return getModel().innermostThat(this, new Predicate<IErlElement>() {
-            @Override
-            public boolean apply(final IErlElement e) {
-                if (e instanceof ISourceReference) {
-                    final ISourceReference ch = (ISourceReference) e;
-                    ISourceRange r;
-                    r = ch.getSourceRange();
-                    if (r != null && r.hasPosition(position)) {
-                        return true;
+        return ErlModelManager.getErlangModel().innermostThat(this,
+                new Predicate<IErlElement>() {
+                    @Override
+                    public boolean apply(final IErlElement e) {
+                        if (e instanceof ISourceReference) {
+                            final ISourceReference ch = (ISourceReference) e;
+                            ISourceRange r;
+                            r = ch.getSourceRange();
+                            if (r != null && r.hasPosition(position)) {
+                                return true;
+                            }
+                        }
+                        return false;
                     }
-                }
-                return false;
-            }
-        });
+                });
     }
 
     @Override
     public IErlMember getElementAtLine(final int lineNumber) {
-        return (IErlMember) getModel().innermostThat(this,
-                new Predicate<IErlElement>() {
+        return (IErlMember) ErlModelManager.getErlangModel().innermostThat(
+                this, new Predicate<IErlElement>() {
                     @Override
                     public boolean apply(final IErlElement e) {
                         if (e instanceof ISourceReference) {
@@ -426,7 +429,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public void dispose() {
         disposeScanner();
-        getModel().removeModule(this);
+        ErlModelManager.getErlangModel().removeModule(this);
     }
 
     @Override
@@ -514,8 +517,8 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return getModel().getToolkit().createScanner(scannerName, initialText,
-                filePath, useCaches);
+        return ErlModelManager.getErlangModel().getToolkit()
+                .createScanner(scannerName, initialText, filePath, useCaches);
     }
 
     @Override
@@ -632,8 +635,8 @@ public class ErlModule extends Openable implements IErlModule {
     public static IErlModule findExternalIncludeInOpenProjects(
             final IErlModule externalInclude) throws CoreException {
         final String filePath = externalInclude.getFilePath();
-        final Collection<IErlProject> projects = externalInclude.getModel()
-                .getErlangProjects();
+        final Collection<IErlProject> projects = ErlModelManager
+                .getErlangModel().getErlangProjects();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> includes = project.getIncludes();
             for (final IErlModule include : includes) {

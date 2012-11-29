@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlFolder;
@@ -39,7 +40,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IErlModel model = getModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         final IContainer c = (IContainer) getResource();
         try {
             // FIXME this is general stuff, should we put it in model or

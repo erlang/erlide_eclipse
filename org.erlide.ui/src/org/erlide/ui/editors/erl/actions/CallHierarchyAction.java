@@ -24,6 +24,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.ErlLogger;
@@ -107,7 +108,8 @@ public class CallHierarchyAction extends Action {
                     final IRpcFuture result) {
                 page.activate(context);
                 try {
-                    context.setRoot(module.getModel().findFunction(ref));
+                    context.setRoot(ErlModelManager.getErlangModel()
+                            .findFunction(ref));
                 } catch (final ErlModelException e) {
                     ErlLogger.error(e);
                 }

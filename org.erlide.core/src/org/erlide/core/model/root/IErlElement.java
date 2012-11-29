@@ -131,13 +131,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
     Kind getKind();
 
     /**
-     * Returns the Erlang model. This is a handle-only method.
-     * 
-     * @return the Erlang model
-     */
-    IErlModel getModel();
-
-    /**
      * Returns the element directly containing this element, or
      * <code>null</code> if this element has no parent. This is a handle-only
      * method.

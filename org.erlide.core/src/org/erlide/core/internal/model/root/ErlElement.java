@@ -28,7 +28,6 @@ import org.erlide.core.model.root.ErlModelStatus;
 import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementVisitor;
-import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
@@ -164,14 +163,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     @Override
     public String getName() {
         return fName;
-    }
-
-    /**
-     * @see IErlElement
-     */
-    @Override
-    public IErlModel getModel() {
-        return ErlModelManager.getErlangModel();
     }
 
     /**
@@ -641,7 +632,7 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     @Override
     public Object getModelLock() {
-        return getModel().getModelLock();
+        return ErlModelManager.getErlangModel().getModelLock();
     }
 
 }
