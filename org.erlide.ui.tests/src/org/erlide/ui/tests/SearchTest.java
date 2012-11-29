@@ -12,8 +12,9 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
-import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
+import org.erlide.core.services.search.LimitTo;
+import org.erlide.core.services.search.SearchFor;
+import org.erlide.core.services.search.SearchPatternFactory;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.internal.search.ErlSearchQuery;
 import org.erlide.ui.internal.search.ErlangSearchElement;
@@ -85,7 +86,7 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the call to a:f
-        final ErlangSearchPattern ref = ErlangSearchPattern.getSearchPattern(
+        final ErlangSearchPattern ref = SearchPatternFactory.getSearchPattern(
                 SearchFor.FUNCTION, "a", "f", 0, limitTo);
         final ErlSearchScope scope = new ErlSearchScope();
         scope.addModule(moduleA);
@@ -115,7 +116,7 @@ public class SearchTest {
         moduleB.open(null);
         // when
         // searching for the call to a:f
-        final ErlangSearchPattern ref = ErlangSearchPattern.getSearchPattern(
+        final ErlangSearchPattern ref = SearchPatternFactory.getSearchPattern(
                 SearchFor.FUNCTION, "a", "f", 0, LimitTo.REFERENCES);
         final ErlSearchScope scope = new ErlSearchScope();
         scope.addModule(moduleA);

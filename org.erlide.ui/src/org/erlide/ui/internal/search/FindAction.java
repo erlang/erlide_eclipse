@@ -42,9 +42,10 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
 import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.OpenResult;
+import org.erlide.core.services.search.SearchPatternFactory;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.ui.actions.SelectionDispatchAction;
@@ -288,7 +289,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 
     protected void performNewSearch(final IErlElement element,
             final ErlSearchScope scope) {
-        final ErlangSearchPattern pattern = ErlangSearchPattern
+        final ErlangSearchPattern pattern = SearchPatternFactory
                 .getSearchPatternFromErlElementAndLimitTo(element, getLimitTo());
         SearchUtil.runQuery(pattern, scope, getScopeDescription(), getShell());
     }

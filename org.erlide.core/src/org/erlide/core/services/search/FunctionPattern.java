@@ -11,7 +11,7 @@ public class FunctionPattern extends ErlangSearchPattern {
     private final boolean matchAnyFunctionDefinition;
 
     public FunctionPattern(final String module, final String name,
-            final int arity, final ErlangSearchPattern.LimitTo limitTo,
+            final int arity, final LimitTo limitTo,
             final boolean matchAnyFunctionDefinition) {
         super(limitTo);
         this.module = module;

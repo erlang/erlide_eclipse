@@ -50,10 +50,11 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
-import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.OpenResult;
+import org.erlide.core.services.search.SearchFor;
+import org.erlide.core.services.search.SearchPatternFactory;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -701,7 +702,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
     }
 
     private SearchPatternData determineInitValuesFrom(final IErlElement e) {
-        final ErlangSearchPattern pattern = ErlangSearchPattern
+        final ErlangSearchPattern pattern = SearchPatternFactory
                 .getSearchPatternFromErlElementAndLimitTo(e, getLimitTo());
         if (pattern == null) {
             return null;

@@ -52,15 +52,16 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
-import org.erlide.core.services.search.ErlangSearchPattern.LimitTo;
-import org.erlide.core.services.search.ErlangSearchPattern.SearchFor;
 import org.erlide.core.services.search.FunctionPattern;
 import org.erlide.core.services.search.IncludePattern;
+import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.MacroPattern;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.search.RecordFieldPattern;
 import org.erlide.core.services.search.RecordPattern;
+import org.erlide.core.services.search.SearchFor;
+import org.erlide.core.services.search.SearchPatternFactory;
 import org.erlide.core.services.search.TypeRefPattern;
 import org.erlide.core.services.search.VariablePattern;
 import org.erlide.ui.actions.OpenAction;
@@ -389,7 +390,7 @@ public class SearchUtil {
             arity = Integer.valueOf(name.substring(p + 1));
             name = name.substring(0, p);
         }
-        return ErlangSearchPattern.getSearchPattern(searchFor, moduleName,
+        return SearchPatternFactory.getSearchPattern(searchFor, moduleName,
                 name, arity, limitTo);
     }
 
