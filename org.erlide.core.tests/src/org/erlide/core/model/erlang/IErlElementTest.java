@@ -65,11 +65,11 @@ public class IErlElementTest extends ErlModelTestBase {
     // IErlProject getProject();
     @Test
     public void getProject() throws Exception {
-        assertEquals(project, module.getProject());
-        assertEquals(project, project.getProject());
+        assertEquals(project, ModelUtils.getProject(module));
+        assertEquals(project, ModelUtils.getProject(project));
         module.open(null);
         final IErlElement element = module.getElementAtLine(3);
-        assertEquals(project, element.getProject());
+        assertEquals(project, ModelUtils.getProject(element));
     }
 
     // IErlModule getModule();

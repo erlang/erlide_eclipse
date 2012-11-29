@@ -108,8 +108,8 @@ public class CallHierarchyView extends ViewPart {
             if (parentElement == input && children.length == 0) {
                 // TODO ErlangXref should cache _all_ projects added to it
                 return new Object[] { "<no callers from project "
-                        + ModelUtils.getModule(parent).getProject().getName()
-                        + ">" };
+                        + ModelUtils.getProject(ModelUtils.getModule(parent))
+                                .getName() + ">" };
             }
             final List<IErlFunction> result = new ArrayList<IErlFunction>();
             for (final FunctionRef r : children) {

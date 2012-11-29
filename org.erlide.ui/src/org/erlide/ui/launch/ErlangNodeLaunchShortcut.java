@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2005 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -39,6 +39,7 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
@@ -71,7 +72,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             }
             final IErlElement erlElement = ErlModelManager.getErlangModel()
                     .findElement((IResource) element);
-            final IErlProject project = erlElement.getProject();
+            final IErlProject project = ModelUtils.getProject(erlElement);
             if (project != null) {
                 projects.add(project);
             }
@@ -115,7 +116,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
             final ErlangEditor erlangEditor = (ErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
-                final IErlProject project = module.getProject();
+                final IErlProject project = ModelUtils.getProject(module);
                 if (project != null) {
                     try {
                         doLaunch(mode, Lists.newArrayList(project));

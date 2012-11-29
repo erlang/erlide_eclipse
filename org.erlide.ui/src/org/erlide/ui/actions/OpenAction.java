@@ -137,7 +137,7 @@ public class OpenAction extends SelectionDispatchAction {
         final IBackend b = BackendCore.getBackendManager().getIdeBackend();
         final int offset = selection.getOffset();
         try {
-            final IErlProject project = module.getProject();
+            final IErlProject project = ModelUtils.getProject(module);
             final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = project == null ? "" : project
                     .getExternalModulesString();

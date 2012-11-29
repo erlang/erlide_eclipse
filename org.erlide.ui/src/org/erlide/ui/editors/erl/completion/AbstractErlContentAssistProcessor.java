@@ -96,18 +96,18 @@ public abstract class AbstractErlContentAssistProcessor {
 
     protected enum Kinds {
         //@formatter:off
-        DECLARED_FUNCTIONS, 
-        EXTERNAL_FUNCTIONS, 
-        VARIABLES, 
-        RECORD_FIELDS, 
-        RECORD_DEFS, 
-        MODULES, 
-        MACRO_DEFS, 
-        IMPORTED_FUNCTIONS, 
-        AUTO_IMPORTED_FUNCTIONS, 
-        ARITY_ONLY, 
-        UNEXPORTED_ONLY, 
-        INCLUDES, 
+        DECLARED_FUNCTIONS,
+        EXTERNAL_FUNCTIONS,
+        VARIABLES,
+        RECORD_FIELDS,
+        RECORD_DEFS,
+        MODULES,
+        MACRO_DEFS,
+        IMPORTED_FUNCTIONS,
+        AUTO_IMPORTED_FUNCTIONS,
+        ARITY_ONLY,
+        UNEXPORTED_ONLY,
+        INCLUDES,
         INCLUDE_LIBS
         //@formatter:on
     }
@@ -128,7 +128,7 @@ public abstract class AbstractErlContentAssistProcessor {
             throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
         if (module != null) {
-            final IErlProject project = module.getProject();
+            final IErlProject project = ModelUtils.getProject(module);
             final boolean includes = kind == Kinds.INCLUDES
                     || kind == Kinds.INCLUDE_LIBS;
             final List<String> names = ModelUtils.findUnitsWithPrefix(prefix,
@@ -177,7 +177,7 @@ public abstract class AbstractErlContentAssistProcessor {
             Set<Kinds> flags = EnumSet.noneOf(Kinds.class);
             int pos;
             String moduleOrRecord = null;
-            final IErlProject erlProject = module.getProject();
+            final IErlProject erlProject = ModelUtils.getProject(module);
             final IProject project = erlProject != null ? erlProject
                     .getWorkspaceProject() : null;
             IErlElement element = getElementAt(offset);
@@ -475,8 +475,8 @@ public abstract class AbstractErlContentAssistProcessor {
         moduleName = ModelUtils.resolveMacroValue(moduleName, module);
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-        final IErlProject erlProject = module == null ? null : module
-                .getProject();
+        final IErlProject erlProject = module == null ? null : ModelUtils
+                .getProject(module);
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
         final IErlModule theModule = ModelUtils.findModule(erlProject,

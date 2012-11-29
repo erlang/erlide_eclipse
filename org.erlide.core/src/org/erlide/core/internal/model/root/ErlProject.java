@@ -59,6 +59,7 @@ import org.erlide.core.model.root.IOldErlangProjectProperties;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlideUtil;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.CommonUtils;
@@ -971,7 +972,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     boolean moduleInProject(final IErlModule module) {
-        final IErlProject project = module.getProject();
+        final IErlProject project = ModelUtils.getProject(module);
         if (project == null) {
             return false;
         }

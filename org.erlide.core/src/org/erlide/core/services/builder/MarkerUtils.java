@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.erlang.IErlComment;
@@ -28,10 +29,10 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemConfiguration;
-import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -462,7 +463,7 @@ public final class MarkerUtils {
         }
         if (module != null) {
             file = module.getResource();
-            final IErlProject erlProject = module.getProject();
+            final IErlProject erlProject = ModelUtils.getProject(module);
             if (erlProject != null) {
                 project = erlProject.getWorkspaceProject();
             }

@@ -221,8 +221,7 @@ public class ModelUtilsTests {
         assertNotNull(module);
         assertNotNull(preprocessorDef);
         assertTrue(preprocessorDef instanceof IErlRecordDef);
-        assertEquals(ModelUtils.getModule(preprocessorDef).getProject(),
-                project);
+        assertEquals(ModelUtils.getProject(preprocessorDef), project);
     }
 
     private OtpErlangTuple makeTuple2(final String functionName, final int arity) {

@@ -42,6 +42,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
 import org.erlide.launch.ErlLaunchAttributes;
@@ -268,7 +269,8 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         final List<String> r = new ArrayList<String>();
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
-            r.add(module.getProject().getName() + ":" + module.getName());
+            r.add(ModelUtils.getProject(module).getName() + ":"
+                    + module.getName());
         }
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, r);
     }

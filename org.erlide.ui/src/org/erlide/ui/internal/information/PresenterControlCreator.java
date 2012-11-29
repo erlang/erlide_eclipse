@@ -33,6 +33,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.jinterface.ErlLogger;
@@ -75,8 +76,8 @@ public final class PresenterControlCreator extends
                 final ErlangFunctionCall functionCall = HoverUtil
                         .eventToErlangFunctionCall(moduleName, event);
                 if (functionCall != null) {
-                    final IProject project = editor.getModule().getProject()
-                            .getWorkspaceProject();
+                    final IProject project = ModelUtils.getProject(
+                            editor.getModule()).getWorkspaceProject();
                     final IBackendManager backendManager = BackendCore
                             .getBackendManager();
                     IBackend backend = null;

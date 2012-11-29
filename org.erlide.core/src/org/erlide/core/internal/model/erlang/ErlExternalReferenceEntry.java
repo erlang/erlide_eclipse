@@ -13,6 +13,7 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.CoreUtil;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 
 import com.google.common.collect.Lists;
@@ -44,8 +45,8 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             // already done
             return true;
         }
-        final IBackend backend = CoreUtil.getBuildOrIdeBackend(getProject()
-                .getWorkspaceProject());
+        final IBackend backend = CoreUtil.getBuildOrIdeBackend(ModelUtils
+                .getProject(this).getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlideOpen.getLibFiles(backend, entry);
             final List<IErlModule> children = Lists

@@ -93,11 +93,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
     IErlElement getAncestorOfKind(Kind kind);
 
     /**
-     * Returns the enclosing IErlProject if there is one
-     */
-    IErlProject getProject();
-
-    /**
      * Returns the resource that corresponds directly to this element, or
      * <code>null</code> if there is no resource that corresponds to this
      * element.

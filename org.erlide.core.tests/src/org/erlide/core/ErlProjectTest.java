@@ -164,7 +164,7 @@ public class ErlProjectTest {
             // then
             // it should be found in the project defining it
             assertNotNull(module);
-            assertEquals(project2, module.getProject());
+            assertEquals(project2, ModelUtils.getProject(module));
         } finally {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
@@ -206,7 +206,7 @@ public class ErlProjectTest {
         // the function should be returned and the module, in External Files
         assertNotNull(module);
         assertEquals(function.getParent(), module);
-        assertEquals(ModelUtils.getModule(function).getProject(), project);
+        assertEquals(ModelUtils.getProject(function), project);
     }
 
     @Test

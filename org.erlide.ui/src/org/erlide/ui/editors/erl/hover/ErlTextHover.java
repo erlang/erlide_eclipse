@@ -290,7 +290,7 @@ public class ErlTextHover implements ITextHover,
         }
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
-        final IErlProject erlProject = module.getProject();
+        final IErlProject erlProject = ModelUtils.getProject(module);
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final IBackend ide = backendManager.getIdeBackend();

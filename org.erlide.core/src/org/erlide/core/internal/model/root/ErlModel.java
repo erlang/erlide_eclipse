@@ -62,6 +62,7 @@ import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.CommonUtils;
@@ -1180,8 +1181,8 @@ public class ErlModel extends Openable implements IErlModel {
                 return include;
             }
         }
-        return findIncludeFromProject(module.getProject(), includeName,
-                includePath, false, true, scope);
+        return findIncludeFromProject(ModelUtils.getProject(module),
+                includeName, includePath, false, true, scope);
     }
 
     private final Object fModelLock = new Object();

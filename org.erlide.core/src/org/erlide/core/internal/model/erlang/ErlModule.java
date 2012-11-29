@@ -51,6 +51,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
@@ -435,7 +436,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public Set<IErlModule> getDirectDependentModules() throws ErlModelException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
-        final IErlProject project = getProject();
+        final IErlProject project = ModelUtils.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final boolean wasOpen = module.isOpen();
             if (!wasOpen) {
@@ -458,7 +459,7 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public Set<IErlModule> getAllDependentModules() throws CoreException {
         final Set<IErlModule> result = new HashSet<IErlModule>();
-        final IErlProject project = getProject();
+        final IErlProject project = ModelUtils.getProject(this);
         for (final IErlModule module : project.getModules()) {
             final Collection<IErlModule> allIncludedFiles = module
                     .findAllIncludedFiles();
@@ -558,7 +559,7 @@ public class ErlModule extends Openable implements IErlModule {
             return includedFilesForModule;
         }
         final Collection<ErlangIncludeFile> includedFiles = getIncludeFiles();
-        final IErlProject project = getProject();
+        final IErlProject project = ModelUtils.getProject(this);
         if (project == null) {
             return result;
         }
@@ -655,7 +656,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnSourcePath();
         }
-        if (checkPath(getProject().getSourceDirs())) {
+        if (checkPath(ModelUtils.getProject(this).getSourceDirs())) {
             return true;
         }
         return false;
@@ -668,7 +669,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlFolder folder = (IErlFolder) parent;
             return folder.isOnIncludePath();
         }
-        if (checkPath(getProject().getIncludeDirs())) {
+        if (checkPath(ModelUtils.getProject(this).getIncludeDirs())) {
             return true;
         }
         return false;

@@ -26,6 +26,7 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -159,8 +160,8 @@ public class AddRefacHandler extends AbstractHandler {
                 return null;
             }
 
-            final IErlProject project = ErlModelManager.getErlangModel()
-                    .findModule(callbackModule).getProject();
+            final IErlProject project = ModelUtils.getProject(ErlModelManager
+                    .getErlangModel().findModule(callbackModule));
             path = project.getWorkspaceProject().getLocation()
                     .append(project.getOutputLocation())
                     .append(callbackModule + ".beam").toOSString();

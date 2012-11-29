@@ -383,4 +383,12 @@ public class ModelUtils {
         return (IErlModule) element.getAncestorOfKind(Kind.MODULE);
     }
 
+    public static IErlProject getProject(final IErlElement element) {
+        final IErlElement ancestor = element.getAncestorOfKind(Kind.PROJECT);
+        if (ancestor instanceof IErlProject) {
+            return (IErlProject) ancestor;
+        }
+        return null;
+    }
+
 }
