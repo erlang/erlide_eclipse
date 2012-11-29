@@ -45,7 +45,7 @@ import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.launch.EpmdWatchJob;
 import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
@@ -283,7 +283,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final Bundle plugin = Platform.getBundle(pluginId);
 
         final Map<String, CodeContext> paths = Maps.newHashMap();
-        final List<Tuple<String, String>> inits = Lists.newArrayList();
+        final List<Pair<String, String>> inits = Lists.newArrayList();
         for (final IConfigurationElement el : extension
                 .getConfigurationElements()) {
             if ("beam_dir".equals(el.getName())) {
@@ -294,7 +294,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");
                 final String function = el.getAttribute("function");
-                inits.add(new Tuple<String, String>(module, function));
+                inits.add(new Pair<String, String>(module, function));
             } else {
                 ErlLogger
                         .error("Unknown code bundle element: %s", el.getName());
@@ -305,7 +305,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
     @Override
     public void addBundle(final Bundle b, final Map<String, CodeContext> paths,
-            final Collection<Tuple<String, String>> inits) {
+            final Collection<Pair<String, String>> inits) {
         final ICodeBundle p = findBundle(b);
         if (p != null) {
             return;

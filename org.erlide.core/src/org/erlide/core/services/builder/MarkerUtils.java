@@ -31,7 +31,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -520,22 +520,22 @@ public final class MarkerUtils {
                     new InputStreamReader(input));
             try {
                 String line = reader.readLine();
-                final List<Tuple<String, Integer>> cl = new ArrayList<Tuple<String, Integer>>();
+                final List<Pair<String, Integer>> cl = new ArrayList<Pair<String, Integer>>();
                 int numline = 0;
                 while (line != null) {
                     if (line.matches("^[^%]*%+[ \t]*(TODO|XXX|FIXME).*")) {
-                        cl.add(new Tuple<String, Integer>(line, numline));
+                        cl.add(new Pair<String, Integer>(line, numline));
                     }
                     numline++;
                     line = reader.readLine();
                 }
 
-                for (final Tuple<String, Integer> c : cl) {
-                    mkTaskMarker(resource, c.second, c.first, TODO,
+                for (final Pair<String, Integer> c : cl) {
+                    mkTaskMarker(resource, c.getValue(), c.getKey(), TODO,
                             IMarker.PRIORITY_NORMAL);
-                    mkTaskMarker(resource, c.second, c.first, XXX,
+                    mkTaskMarker(resource, c.getValue(), c.getKey(), XXX,
                             IMarker.PRIORITY_NORMAL);
-                    mkTaskMarker(resource, c.second, c.first, FIXME,
+                    mkTaskMarker(resource, c.getValue(), c.getKey(), FIXME,
                             IMarker.PRIORITY_HIGH);
                 }
             } finally {

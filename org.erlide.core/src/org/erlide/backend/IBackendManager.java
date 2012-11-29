@@ -8,7 +8,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.jinterface.epmd.EpmdWatcher;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {
@@ -26,7 +26,7 @@ public interface IBackendManager {
     Collection<IBackend> getAllBackends();
 
     void addBundle(Bundle b, Map<String, CodeContext> paths,
-            Collection<Tuple<String, String>> inits);
+            Collection<Pair<String, String>> inits);
 
     void forEachBackend(final IErlideBackendVisitor visitor);
 

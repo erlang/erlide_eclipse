@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.StatusInfo;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -191,7 +191,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         return checkBox;
     }
 
-    protected Tuple<Button, String> addCheckBox(final Composite parent,
+    protected Pair<Button, String> addCheckBox(final Composite parent,
             final String label, final String key, final int indentation) {
         final Button checkBox = new Button(parent, SWT.CHECK);
         checkBox.setText(label);
@@ -201,13 +201,13 @@ public abstract class ErlidePreferencePage extends PreferencePage {
         gd.horizontalSpan = 2;
         checkBox.setLayoutData(gd);
 
-        return new Tuple<Button, String>(checkBox, getDialogPreferenceKey()
+        return new Pair<Button, String>(checkBox, getDialogPreferenceKey()
                 + "/" + key);
     }
 
     protected abstract String getDialogPreferenceKey();
 
-    protected Tuple<Text, String> addTextField(final Composite composite,
+    protected Pair<Text, String> addTextField(final Composite composite,
             final String label, final String key, final int textLimit,
             final int indentation, final boolean isNumber) {
 
@@ -226,7 +226,7 @@ public abstract class ErlidePreferencePage extends PreferencePage {
             textControl.addModifyListener(getNumberFieldListener());
             fNumberFields.add(textControl);
         }
-        return new Tuple<Text, String>(textControl, getDialogPreferenceKey()
+        return new Pair<Text, String>(textControl, getDialogPreferenceKey()
                 + "/" + key);
     }
 

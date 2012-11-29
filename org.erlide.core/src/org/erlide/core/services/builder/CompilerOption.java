@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.erlide.utils.TermParser;
 import org.erlide.utils.TermParserException;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -206,13 +206,13 @@ public abstract class CompilerOption {
         }
 
         public OtpErlangList toTerm(
-                final Collection<Tuple<String, String>> values)
+                final Collection<Pair<String, String>> values)
                 throws TermParserException {
             final OtpErlangObject[] defines = new OtpErlangObject[values.size()];
             final int i = 0;
-            for (final Tuple<String, String> value : values) {
-                final String key = value.first;
-                final String val = value.second;
+            for (final Pair<String, String> value : values) {
+                final String key = value.getKey();
+                final String val = value.getValue();
 
                 final OtpErlangAtom tag = new OtpErlangAtom(getName());
                 final OtpErlangAtom okey = new OtpErlangAtom(key);

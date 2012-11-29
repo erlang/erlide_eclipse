@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 
 import org.erlide.backend.ICodeBundle;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;
@@ -28,11 +28,11 @@ public class CodeBundleImpl implements ICodeBundle {
 
     private final Bundle bundle;
     private final Map<String, CodeContext> paths;
-    private final Collection<Tuple<String, String>> inits;
+    private final Collection<Pair<String, String>> inits;
 
     public CodeBundleImpl(final Bundle b,
             final Map<String, CodeContext> paths2,
-            final Collection<Tuple<String, String>> inits) {
+            final Collection<Pair<String, String>> inits) {
         bundle = b;
         paths = Maps.newHashMap(paths2);
         this.inits = inits;
@@ -65,7 +65,7 @@ public class CodeBundleImpl implements ICodeBundle {
     }
 
     @Override
-    public Collection<Tuple<String, String>> getInits() {
+    public Collection<Pair<String, String>> getInits() {
         return Collections.unmodifiableCollection(inits);
     }
 

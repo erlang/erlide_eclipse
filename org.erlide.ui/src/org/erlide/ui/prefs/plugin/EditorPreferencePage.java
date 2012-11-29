@@ -22,7 +22,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 
 /**
  * The editor preferences
@@ -107,21 +107,21 @@ public class EditorPreferencePage extends ErlidePreferencePage implements
 
         String label = ErlEditorMessages.ErlEditorPreferencePage_displayedTabWidth;
 
-        final Tuple<Text, String> addTextField = addTextField(
+        final Pair<Text, String> addTextField = addTextField(
                 appearanceComposite,
                 label,
                 AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH,
                 3, 0, true);
-        tabWidthText = addTextField.first;
-        tabWidthKey = addTextField.second;
+        tabWidthText = addTextField.getKey();
+        tabWidthKey = addTextField.getValue();
 
         label = ErlEditorMessages.ErlEditorPreferencePage_enable_hover;
 
-        final Tuple<Button, String> addCheckBox = addCheckBox(
+        final Pair<Button, String> addCheckBox = addCheckBox(
                 appearanceComposite, label,
                 ErlideUIConstants.EDITOR_ENABLE_HOVER, 0);
-        enableHoverCheckBox = addCheckBox.first;
-        enableHoverKey = addCheckBox.second;
+        enableHoverCheckBox = addCheckBox.getKey();
+        enableHoverKey = addCheckBox.getValue();
 
         return appearanceComposite;
     }

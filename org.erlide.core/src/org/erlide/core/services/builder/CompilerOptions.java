@@ -19,7 +19,7 @@ import org.erlide.core.services.builder.CompilerOption.RawOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.TermParserException;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -59,7 +59,7 @@ public class CompilerOptions {
                 options.put(option, ((BooleanOption) option).getDefaultValue());
             }
             if (option instanceof DefineOption) {
-                options.put(option, new ArrayList<Tuple<String, String>>());
+                options.put(option, new ArrayList<Pair<String, String>>());
             }
         }
     }
@@ -105,7 +105,7 @@ public class CompilerOptions {
             } else {
                 if (value != null) {
                     @SuppressWarnings("unchecked")
-                    final Collection<Tuple<String, String>> val = (Collection<Tuple<String, String>>) value;
+                    final Collection<Pair<String, String>> val = (Collection<Pair<String, String>>) value;
                     helper.putString(option.getName(), val.toString());
                 } else {
                     helper.remove(option.getName());
@@ -137,7 +137,7 @@ public class CompilerOptions {
             } else {
                 if (value != null) {
                     final String[] str = value.split(",");
-                    options.put(option, new Tuple<String, String>(str[0],
+                    options.put(option, new Pair<String, String>(str[0],
                             str[1]));
                 }
             }
@@ -177,7 +177,7 @@ public class CompilerOptions {
                 } else {
                     try {
                         final OtpErlangList val = ((DefineOption) option)
-                                .toTerm((List<Tuple<String, String>>) optionValue);
+                                .toTerm((List<Pair<String, String>>) optionValue);
                         if (val != null) {
                             result.addAll(Lists.newArrayList(val.elements()));
                         }
@@ -227,7 +227,7 @@ public class CompilerOptions {
     }
 
     public void setListOption(final CompilerOption opt,
-            final List<Tuple<String, String>> value) {
+            final List<Pair<String, String>> value) {
         if (value == null || value.size() == 0) {
             removeOption(opt);
         } else {
@@ -236,11 +236,11 @@ public class CompilerOptions {
     }
 
     public void setListOption(final CompilerOption opt,
-            final Tuple<String, String>... values) {
+            final Pair<String, String>... values) {
         if (values == null || values.length == 0) {
             removeOption(opt);
         } else {
-            final List<Tuple<String, String>> list = Lists.newArrayList(values);
+            final List<Pair<String, String>> list = Lists.newArrayList(values);
             setListOption(opt, list);
         }
     }

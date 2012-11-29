@@ -24,7 +24,7 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.Tuple;
+import org.erlide.utils.Pair;
 
 /**
  * Used as 'shortcuts' to document and selection settings.
@@ -590,14 +590,14 @@ public class ErlideSelection {
      * @throws BadLocationException
      */
     @SuppressWarnings("boxing")
-    public Tuple<String, Integer> getCurrToken() throws BadLocationException {
-        final Tuple<String, Integer> tup = extractActivationToken(doc,
+    public Pair<String, Integer> getCurrToken() throws BadLocationException {
+        final Pair<String, Integer> tup = extractActivationToken(doc,
                 getAbsoluteCursorOffset(), false);
-        final String prefix = tup.first;
+        final String prefix = tup.getKey();
 
         // ok, now, get the rest of the token, as we already have its prefix
 
-        final int start = tup.second - prefix.length();
+        final int start = tup.getValue() - prefix.length();
         int end = start;
         while (doc.getLength() - 1 >= end) {
             final char ch = doc.getChar(end);
@@ -607,8 +607,8 @@ public class ErlideSelection {
                 break;
             }
         }
-        final String post = doc.get(tup.second, end - tup.second);
-        return new Tuple<String, Integer>(prefix + post, start);
+        final String post = doc.get(tup.getValue(), end - tup.getValue());
+        return new Pair<String, Integer>(prefix + post, start);
     }
 
     /**
@@ -772,7 +772,7 @@ public class ErlideSelection {
      *         change if we need to get the full qualifier, otherwise, it is the
      *         same offset passed as a parameter).
      */
-    public static Tuple<String, Integer> extractActivationToken(
+    public static Pair<String, Integer> extractActivationToken(
             final IDocument document, int offset, final boolean getFullQualifier) {
         try {
             if (getFullQualifier) {
@@ -791,7 +791,7 @@ public class ErlideSelection {
             int i = offset;
 
             if (i > document.getLength()) {
-                return new Tuple<String, Integer>("", document.getLength()); //$NON-NLS-1$
+                return new Pair<String, Integer>("", document.getLength()); //$NON-NLS-1$
             }
 
             while (i > 0) {
@@ -802,10 +802,10 @@ public class ErlideSelection {
                 i--;
             }
 
-            return new Tuple<String, Integer>(document.get(i, offset - i),
+            return new Pair<String, Integer>(document.get(i, offset - i),
                     offset);
         } catch (final BadLocationException e) {
-            return new Tuple<String, Integer>("", offset); //$NON-NLS-1$
+            return new Pair<String, Integer>("", offset); //$NON-NLS-1$
         }
     }
 
@@ -1052,12 +1052,12 @@ public class ErlideSelection {
      *            the offset we want info on
      * @return a tuple with the line, col of the passed offset in the document
      */
-    public Tuple<Integer, Integer> getLineAndCol(final int offset) {
+    public Pair<Integer, Integer> getLineAndCol(final int offset) {
         try {
             final IRegion region = doc.getLineInformationOfOffset(offset);
             final int line = doc.getLineOfOffset(offset);
             final int col = offset - region.getOffset();
-            return new Tuple<Integer, Integer>(line, col);
+            return new Pair<Integer, Integer>(line, col);
         } catch (final BadLocationException e) {
             throw new RuntimeException(e);
         }
