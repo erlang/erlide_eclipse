@@ -13,7 +13,7 @@ package org.erlide.backend;
 import java.util.Collection;
 import java.util.Map;
 
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.osgi.framework.Bundle;
 
 public interface ICodeBundle {

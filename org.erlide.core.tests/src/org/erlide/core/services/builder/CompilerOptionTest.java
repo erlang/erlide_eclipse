@@ -8,7 +8,7 @@ import org.erlide.core.services.builder.CompilerOption.BooleanOption;
 import org.erlide.core.services.builder.CompilerOption.DefineOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.utils.TermParserException;
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

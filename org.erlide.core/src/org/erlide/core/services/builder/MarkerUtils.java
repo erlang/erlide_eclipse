@@ -31,7 +31,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -2,7 +2,7 @@ package org.erlide.core.services.builder;
 
 import junit.framework.Assert;
 
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.junit.Test;
 
 import com.google.common.base.Splitter;

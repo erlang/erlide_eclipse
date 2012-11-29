@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.erlide.utils.TermParser;
 import org.erlide.utils.TermParserException;
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

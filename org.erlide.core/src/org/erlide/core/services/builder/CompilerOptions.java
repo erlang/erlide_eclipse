@@ -19,7 +19,7 @@ import org.erlide.core.services.builder.CompilerOption.RawOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.TermParserException;
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlang;

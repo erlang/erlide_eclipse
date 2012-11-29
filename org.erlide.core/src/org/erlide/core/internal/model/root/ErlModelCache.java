@@ -16,7 +16,7 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.utils.IDisposable;
 import org.erlide.utils.LRUCache;
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

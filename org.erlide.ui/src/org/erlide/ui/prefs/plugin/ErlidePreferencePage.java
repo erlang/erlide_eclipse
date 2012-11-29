@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.StatusInfo;
-import org.erlide.utils.Pair;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 

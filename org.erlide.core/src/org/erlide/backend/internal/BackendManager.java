@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
@@ -45,7 +46,6 @@ import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.launch.EpmdWatchJob;
 import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Pair;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 

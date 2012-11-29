@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.eclipse.xtext.xbase.lib.Pair;
+
 import com.google.common.collect.Lists;
 
 public class StringUtils {
