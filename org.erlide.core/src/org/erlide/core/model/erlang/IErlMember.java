@@ -27,14 +27,6 @@ public interface IErlMember extends IErlElement, ISourceReference {
 
     ISourceRange getNameRange();
 
-    /**
-     * Get module if this element is contained in one (or is one)
-     * 
-     * @return module or null
-     */
-    @Override
-    IErlModule getModule();
-
     String getModuleName();
 
 }

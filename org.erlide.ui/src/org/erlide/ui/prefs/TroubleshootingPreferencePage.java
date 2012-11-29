@@ -17,7 +17,9 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.HostnameUtils;
+import org.erlide.backend.runtimeinfo.RuntimeInfo;
 
 public class TroubleshootingPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -125,7 +127,9 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
                     parent.setCursor(cursor);
                     parent.setEnabled(false);
 
-                    HostnameUtils.detectHostNames();
+                    final RuntimeInfo runtime = BackendCore
+                            .getRuntimeInfoManager().getErlideRuntime();
+                    HostnameUtils.detectHostNames(runtime);
                     updateHostNames();
                 } finally {
                     parent.setCursor(null);

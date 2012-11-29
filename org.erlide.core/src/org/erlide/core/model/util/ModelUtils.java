@@ -376,4 +376,11 @@ public class ModelUtils {
         return false;
     }
 
+    public static IErlModule getModule(final IErlElement element) {
+        if (element instanceof IErlModule) {
+            return (IErlModule) element;
+        }
+        return (IErlModule) element.getAncestorOfKind(Kind.MODULE);
+    }
+
 }

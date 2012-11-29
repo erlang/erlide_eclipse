@@ -39,6 +39,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
@@ -106,7 +107,8 @@ public class CallHierarchyView extends ViewPart {
             if (parentElement == input && children.length == 0) {
                 // TODO ErlangXref should cache _all_ projects added to it
                 return new Object[] { "<no callers from project "
-                        + parent.getModule().getProject().getName() + ">" };
+                        + ModelUtils.getModule(parent).getProject().getName()
+                        + ">" };
             }
             final List<IErlFunction> result = new ArrayList<IErlFunction>();
             for (final FunctionRef r : children) {

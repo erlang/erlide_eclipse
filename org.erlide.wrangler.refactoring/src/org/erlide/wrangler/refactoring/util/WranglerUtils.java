@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -42,6 +42,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
@@ -331,7 +332,7 @@ public final class WranglerUtils {
         int offset, length;
         offset = clause.getNameRange().getOffset();
         length = clause.getNameRange().getLength();
-        final IErlModule module = clause.getModule();
+        final IErlModule module = ModelUtils.getModule(clause);
         final IEditorPart editor = openFile((IFile) module.getResource());
         highlightSelection(offset, length, (ITextEditor) editor);
 

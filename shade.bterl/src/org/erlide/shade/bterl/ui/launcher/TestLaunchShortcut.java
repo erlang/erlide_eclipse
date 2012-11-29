@@ -34,6 +34,7 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.test_support.ui.suites.TestResultsView;
 
 public class TestLaunchShortcut implements ILaunchShortcut {
@@ -177,7 +178,8 @@ public class TestLaunchShortcut implements ILaunchShortcut {
             final IErlFunctionClause clause = (IErlFunctionClause) result;
             final ErlangFunction fc = new ErlangFunction(
                     clause.getFunctionName(), clause.getArity());
-            final IErlFunction fun = clause.getModule().findFunction(fc);
+            final IErlFunction fun = ModelUtils.getModule(clause).findFunction(
+                    fc);
             return fun;
         }
         return result;

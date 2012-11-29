@@ -20,6 +20,7 @@ import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IErlExternal;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 
@@ -76,7 +77,7 @@ public class IErlElementTest extends ErlModelTestBase {
     public void getModule() throws Exception {
         module.open(null);
         final IErlMember element = module.getElementAtLine(3);
-        assertEquals(module, element.getModule());
+        assertEquals(module, ModelUtils.getModule(element));
     }
 
     // IResource getCorrespondingResource();

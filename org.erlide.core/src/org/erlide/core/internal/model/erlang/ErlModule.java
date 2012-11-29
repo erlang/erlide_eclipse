@@ -732,9 +732,4 @@ public class ErlModule extends Openable implements IErlModule {
         return scannerName;
     }
 
-    @Override
-    public IErlModule getModule() {
-        return this;
-    }
-
 }

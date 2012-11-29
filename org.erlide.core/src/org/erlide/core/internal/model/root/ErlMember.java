@@ -6,8 +6,8 @@ import org.erlide.core.internal.model.erlang.SourceRefElement;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.util.ModelUtils;
 
 /**
  * 
@@ -59,7 +59,7 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
 
     @Override
     public String getModuleName() {
-        final IErlModule module = getModule();
+        final IErlModule module = ModelUtils.getModule(this);
         if (module != null) {
             return module.getName();
         }
@@ -69,14 +69,4 @@ public abstract class ErlMember extends SourceRefElement implements IErlMember {
         }
         return null;
     }
-
-    @Override
-    public IErlModule getModule() {
-        final IErlElement ancestor = getAncestorOfKind(Kind.MODULE);
-        if (ancestor instanceof IErlModule) {
-            return (IErlModule) ancestor;
-        }
-        return null;
-    }
-
 }

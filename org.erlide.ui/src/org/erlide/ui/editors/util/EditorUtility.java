@@ -43,6 +43,7 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -78,7 +79,7 @@ public class EditorUtility {
         for (final IEditorPart editorPart : allErlangEditors) {
             if (inputElement instanceof IErlElement) {
                 final IErlElement element = (IErlElement) inputElement;
-                final IErlModule module = element.getModule();
+                final IErlModule module = ModelUtils.getModule(element);
                 final ErlangEditor editor = (ErlangEditor) editorPart;
                 if (module.equals(editor.getModule())) {
                     return editorPart;

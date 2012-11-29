@@ -205,7 +205,7 @@ public class ErlProjectTest {
         // the function should be returned and the module, in External Files
         assertNotNull(module);
         assertEquals(function.getParent(), module);
-        assertEquals(function.getModule().getProject(), project);
+        assertEquals(ModelUtils.getModule(function).getProject(), project);
     }
 
     @Test

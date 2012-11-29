@@ -221,7 +221,8 @@ public class ModelUtilsTests {
         assertNotNull(module);
         assertNotNull(preprocessorDef);
         assertTrue(preprocessorDef instanceof IErlRecordDef);
-        assertEquals(preprocessorDef.getModule().getProject(), project);
+        assertEquals(ModelUtils.getModule(preprocessorDef).getProject(),
+                project);
     }
 
     private OtpErlangTuple makeTuple2(final String functionName, final int arity) {
@@ -278,7 +279,8 @@ public class ModelUtilsTests {
             // we should find it iff we check externals
             assertEquals(0, moduleNames0.size());
             assertEquals(1, modules1.size());
-            assertEquals(SystemConfiguration.withoutExtension(externalFileName),
+            assertEquals(
+                    SystemConfiguration.withoutExtension(externalFileName),
                     modules1.get(0));
             assertEquals(1, listModules.size());
             assertEquals("lists", listModules.get(0));
