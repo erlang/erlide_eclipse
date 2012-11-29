@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -30,6 +30,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**
@@ -73,7 +74,8 @@ public class CodeInspectionResultsView extends ViewPart {
                         + e.getResource().getFullPath().toString();
             } else if (e instanceof IErlFunctionClause) {
                 final IErlFunctionClause fc = (IErlFunctionClause) e;
-                return fc.getModule().getModuleName() + ":" + fc.toString();
+                return ModelUtils.getModule(fc).getModuleName() + ":"
+                        + fc.toString();
             }
             return e.toString();
         }
