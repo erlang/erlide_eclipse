@@ -41,8 +41,8 @@ public class ErlideSearchServer {
             final String stateDir, final IRpcResultCallback callback)
             throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
-        ErlLogger.debug("startFindRefs " + pattern.getSearchObject() + "    "
-                + modules);
+        ErlLogger.debug("startFindRefs " + pattern.getSearchObject() + "    #"
+                + modules.arity() + " modules");
         backend.async_call_result(callback, "erlide_search_server",
                 "start_find_refs", "xxxs", pattern.getSearchObject(), modules,
                 stateDir);
