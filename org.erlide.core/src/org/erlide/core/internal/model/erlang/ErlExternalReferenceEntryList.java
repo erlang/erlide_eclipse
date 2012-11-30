@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.ErlModelCache;
@@ -18,7 +19,6 @@ import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IParent;
-import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
@@ -62,7 +62,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final IBackend backend = CoreUtil.getBuildOrIdeBackend(project
+            final IBackend backend = BackendCore.getBuildOrIdeBackend(project
                     .getWorkspaceProject());
             final OtpErlangList pathVars = ErlModelManager.getErlangModel()
                     .getPathVars();

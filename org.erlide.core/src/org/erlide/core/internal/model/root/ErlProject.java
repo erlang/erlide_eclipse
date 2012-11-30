@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
@@ -57,7 +58,6 @@ import org.erlide.core.model.root.IErlModelMarker;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOldErlangProjectProperties;
 import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
@@ -177,7 +177,7 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addOtpExternals(final List<IErlElement> children) {
-        final IBackend backend = CoreUtil.getBuildOrIdeBackend(fProject);
+        final IBackend backend = BackendCore.getBuildOrIdeBackend(fProject);
         final String name = backend.getRuntimeInfo().getName();
         children.add(new ErlOtpExternalReferenceEntryList(this, name));
     }
@@ -189,7 +189,7 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
-                final IBackend backend = CoreUtil
+                final IBackend backend = BackendCore
                         .getBuildOrIdeBackend(fProject);
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());
