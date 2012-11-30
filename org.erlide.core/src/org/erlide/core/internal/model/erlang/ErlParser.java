@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendHelper;
-import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -80,8 +79,7 @@ public final class ErlParser implements IErlParser {
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
             final boolean useCaches) {
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
-        if (b == null || module == null) {
+        if (module == null) {
             return false;
         }
         OtpErlangList forms = null;
@@ -91,10 +89,10 @@ public final class ErlParser implements IErlParser {
             // ErlLogger.debug("initialParse %s", path);
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
-            res = ErlideNoparse.initialParse(b, scannerName, path, stateDir,
+            res = ErlideNoparse.initialParse(scannerName, path, stateDir,
                     useCaches, true);
         } else {
-            res = ErlideNoparse.reparse(b, scannerName);
+            res = ErlideNoparse.reparse(scannerName);
         }
         if (Util.isOk(res)) {
             Bindings bindings = null;
