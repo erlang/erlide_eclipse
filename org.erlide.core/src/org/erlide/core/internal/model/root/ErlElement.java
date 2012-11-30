@@ -533,6 +533,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
+    protected Object getModelLock() {
+        return ErlModelManager.getErlangModel().getModelLock();
+    }
+
     private static IErlElement getChildWithResource(final ErlElement parent,
             final IResource rsrc) {
         synchronized (parent.getModelLock()) {
@@ -615,11 +619,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     protected ErlModelCache getModelCache() {
         return ErlModelCache.getDefault();
-    }
-
-    @Override
-    public Object getModelLock() {
-        return ErlModelManager.getErlangModel().getModelLock();
     }
 
 }
