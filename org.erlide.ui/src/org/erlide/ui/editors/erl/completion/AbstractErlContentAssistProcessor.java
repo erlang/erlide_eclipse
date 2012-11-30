@@ -31,6 +31,7 @@ import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -479,7 +480,8 @@ public abstract class AbstractErlContentAssistProcessor {
                 .getProject(module);
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule theModule = ModelUtils.findModule(erlProject,
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlModule theModule = ModelUtils.findModule(model, erlProject,
                 moduleName, null,
                 checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
                         : IErlElementLocator.Scope.REFERENCED_PROJECTS);

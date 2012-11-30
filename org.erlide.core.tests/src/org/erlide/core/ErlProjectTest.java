@@ -194,8 +194,8 @@ public class ErlProjectTest {
         final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
                 ModelUtils.getImportsAsList(moduleE),
                 project.getExternalModulesString(), model.getPathVars());
-        final IErlFunction function = ModelUtils.findFunction(res.getName(),
-                res.getFunction(), res.getPath(), project,
+        final IErlFunction function = ModelUtils.findFunction(model,
+                res.getName(), res.getFunction(), res.getPath(), project,
                 IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
         assertNotNull(function);
 

@@ -16,6 +16,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
@@ -173,8 +174,10 @@ public class ErlDebugModelPresentation extends LabelProvider implements
         if (element instanceof LocalFileStorage) {
             final LocalFileStorage lfs = (LocalFileStorage) element;
             try {
-                final IErlModule module = ModelUtils.findModule(null, null, lfs
-                        .getFullPath().toString(),
+                final IErlElementLocator model = ErlModelManager
+                        .getErlangModel();
+                final IErlModule module = ModelUtils.findModule(model, null,
+                        null, lfs.getFullPath().toString(),
                         IErlElementLocator.Scope.ALL_PROJECTS);
                 return EditorUtility.getEditorInput(module);
             } catch (final CoreException e) {

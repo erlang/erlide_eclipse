@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local-project language="java" version="2.0.4044" flavor="j2se">
-  <property name="hide-externals" value="true" />
   <property name="show-needs-to-compile" value="false" />
+  <property name="hide-externals" value="true" />
   <property name="detail-mode" value="true" />
   <property name="project-type" value="classpath" />
-  <property name="action-set-mod" value="10" />
   <property name="hide-deprecated" value="false" />
+  <property name="action-set-mod" value="10" />
   <property name="parse-archive-in-archive" value="false" />
   <classpath relativeto="C:\Apps\erlide\meta\architecture">
-    <classpathentry kind="lib" path="C:\Users\vlad\projects\erlide\org.erlide.core\bin" />
+    <classpathentry kind="lib" path="/home/qvladum/erlide/org.erlide.core/bin" />
   </classpath>
   <pom-root-files />
   <transformations>
@@ -102,41 +102,1026 @@
           </action>
         </composite-set>
       </action>
-      <action type="move" active="true" description="Move backend.runtimeinfo to root">
-        <params>
-          <source-fqn fqn="backend.runtimeinfo" type="folder">
-            <node name="backend" type="folder" />
-            <node name="runtimeinfo" type="folder" />
-          </source-fqn>
-          <to-fqn fqn="root" type="root" isroot="true" />
-        </params>
-      </action>
-      <action type="move" active="true" description="Move root.ErlModelManager.getErlangModel():org.erlide.core.model.root.IErlModel to erlang.ErlangToolkitFactory">
-        <params>
-          <source-fqn fqn="root.ErlModelManager.getErlangModel():org.erlide.core.model.root.IErlModel" type="method" path="org.erlide.core.model.root.ErlModelManager">
-            <node name="root" type="package" />
-            <node name="ErlModelManager" type="class" />
-            <node name="getErlangModel():org.erlide.core.model.root.IErlModel" type="method" />
-          </source-fqn>
-          <to-fqn fqn="erlang.ErlangToolkitFactory" type="class" path="org.erlide.core.model.erlang.ErlangToolkitFactory">
-            <node name="erlang" type="package" />
-            <node name="ErlangToolkitFactory" type="class" />
-          </to-fqn>
-        </params>
-      </action>
-      <action type="move" active="true" description="Move root.ErlModelManager.fgErlangModel:org.erlide.core.internal.model.root.ErlModel to erlang.ErlangToolkitFactory">
-        <params>
-          <source-fqn fqn="root.ErlModelManager.fgErlangModel:org.erlide.core.internal.model.root.ErlModel" type="field" path="org.erlide.core.model.root.ErlModelManager">
-            <node name="root" type="package" />
-            <node name="ErlModelManager" type="class" />
-            <node name="fgErlangModel:org.erlide.core.internal.model.root.ErlModel" type="field" />
-          </source-fqn>
-          <to-fqn fqn="erlang.ErlangToolkitFactory" type="class" path="org.erlide.core.model.erlang.ErlangToolkitFactory">
-            <node name="erlang" type="package" />
-            <node name="ErlangToolkitFactory" type="class" />
-          </to-fqn>
-        </params>
-      </action>
+      <hide>
+        <item-fqn fqn="cleanup" type="package">
+          <node name="cleanup" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="codeassist" type="package">
+          <node name="codeassist" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="text" type="package">
+          <node name="text" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="content" type="package">
+          <node name="content" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="ErlangStatus" type="class" path="org.erlide.core.ErlangStatus">
+          <node name="ErlangStatus" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="MessageReporter" type="class" path="org.erlide.core.MessageReporter">
+          <node name="MessageReporter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="ErlangCoreOptions" type="class" path="org.erlide.core.ErlangCoreOptions">
+          <node name="ErlangCoreOptions" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="ErlangCoreLogger" type="class" path="org.erlide.core.ErlangCoreLogger">
+          <node name="ErlangCoreLogger" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="ExecutableExtensionsFactory" type="class" path="org.erlide.core.ExecutableExtensionsFactory">
+          <node name="ExecutableExtensionsFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="ExtensionHelper" type="class" path="org.erlide.core.ExtensionHelper">
+          <node name="ExtensionHelper" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.ErlElementDelta" type="class" path="org.erlide.core.internal.model.root.ErlElementDelta">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="ErlElementDelta" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.PathSerializer" type="class" path="org.erlide.core.internal.model.root.PathSerializer">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="PathSerializer" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.PathEntry" type="class" path="org.erlide.core.internal.model.root.PathEntry">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="PathEntry" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.ErlProjectInfoBuilder" type="class" path="org.erlide.core.internal.model.root.ErlProjectInfoBuilder">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="ErlProjectInfoBuilder" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.ErlProjectInfo" type="class" path="org.erlide.core.internal.model.root.ErlProjectInfo">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="ErlProjectInfo" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.ProjectPreferencesConstants" type="class" path="org.erlide.core.internal.model.root.ProjectPreferencesConstants">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="ProjectPreferencesConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.ErlProjectLayout" type="class" path="org.erlide.core.internal.model.root.ErlProjectLayout">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="ErlProjectLayout" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.root.ModelConfig" type="class" path="org.erlide.core.internal.model.root.ModelConfig">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="root" type="package" />
+          <node name="ModelConfig" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.erlang.ModelInternalUtils" type="class" path="org.erlide.core.internal.model.erlang.ModelInternalUtils">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="erlang" type="package" />
+          <node name="ModelInternalUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.erlang.PreferencesHelper" type="class" path="org.erlide.core.internal.model.erlang.PreferencesHelper">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="erlang" type="package" />
+          <node name="PreferencesHelper" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.erlang.PropertiesUtils" type="class" path="org.erlide.core.internal.model.erlang.PropertiesUtils">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="erlang" type="package" />
+          <node name="PropertiesUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.model.erlang.SourceRange" type="class" path="org.erlide.core.internal.model.erlang.SourceRange">
+          <node name="internal" type="package" />
+          <node name="model" type="package" />
+          <node name="erlang" type="package" />
+          <node name="SourceRange" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.services.builder.ErlangBuilder" type="class" path="org.erlide.core.internal.services.builder.ErlangBuilder">
+          <node name="internal" type="package" />
+          <node name="services" type="package" />
+          <node name="builder" type="package" />
+          <node name="ErlangBuilder" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.services.builder.DialyzerBuilder" type="class" path="org.erlide.core.internal.services.builder.DialyzerBuilder">
+          <node name="internal" type="package" />
+          <node name="services" type="package" />
+          <node name="builder" type="package" />
+          <node name="DialyzerBuilder" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="internal.services.builder.ErlangNature" type="class" path="org.erlide.core.internal.services.builder.ErlangNature">
+          <node name="internal" type="package" />
+          <node name="services" type="package" />
+          <node name="builder" type="package" />
+          <node name="ErlangNature" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.IBeamLocator" type="class" path="org.erlide.launch.IBeamLocator">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="IBeamLocator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.BeamLocator" type="class" path="org.erlide.launch.BeamLocator">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="BeamLocator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErlangSourceLookupParticipant" type="class" path="org.erlide.launch.ErlangSourceLookupParticipant">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErlangSourceLookupParticipant" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErlangSourcePathComputerDelegate" type="class" path="org.erlide.launch.ErlangSourcePathComputerDelegate">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErlangSourcePathComputerDelegate" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErlangLaunchDelegate" type="class" path="org.erlide.launch.ErlangLaunchDelegate">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErlangLaunchDelegate" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErtsWatcher" type="class" path="org.erlide.launch.ErtsWatcher">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErtsWatcher" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErtsProcessFactory" type="class" path="org.erlide.launch.ErtsProcessFactory">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErtsProcessFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.OutputStreamMonitor" type="class" path="org.erlide.launch.OutputStreamMonitor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="OutputStreamMonitor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.DummyProcess" type="class" path="org.erlide.launch.DummyProcess">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="DummyProcess" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErlangSourceLookupDirector" type="class" path="org.erlide.launch.ErlangSourceLookupDirector">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErlangSourceLookupDirector" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.EpmdWatchJob" type="class" path="org.erlide.launch.EpmdWatchJob">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="EpmdWatchJob" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.ErlLaunchAttributes" type="class" path="org.erlide.launch.ErlLaunchAttributes">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="ErlLaunchAttributes" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.DebugHelper" type="class" path="org.erlide.launch.debug.DebugHelper">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="DebugHelper" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.DebugMarkerUtils" type="class" path="org.erlide.launch.debug.DebugMarkerUtils">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="DebugMarkerUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.IErlangBreakpoint" type="class" path="org.erlide.launch.debug.IErlangBreakpoint">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="IErlangBreakpoint" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.ErlangDebugOptionsManager" type="class" path="org.erlide.launch.debug.ErlangDebugOptionsManager">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="ErlangDebugOptionsManager" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.BackendEvalResult" type="class" path="org.erlide.launch.debug.BackendEvalResult">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="BackendEvalResult" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.ErlDebugConstants" type="class" path="org.erlide.launch.debug.ErlDebugConstants">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="ErlDebugConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.model.ErtsProcess" type="class" path="org.erlide.launch.debug.model.ErtsProcess">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="model" type="package" />
+          <node name="ErtsProcess" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.model.TraceChangedEventData" type="class" path="org.erlide.launch.debug.model.TraceChangedEventData">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="model" type="package" />
+          <node name="TraceChangedEventData" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.launch.debug.model.ErlangOtpSourceContainer" type="class" path="org.erlide.launch.debug.model.ErlangOtpSourceContainer">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="launch" type="package" />
+          <node name="debug" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlangOtpSourceContainer" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.GenericBackendData" type="class" path="org.erlide.backend.GenericBackendData">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="GenericBackendData" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.InitialCall" type="class" path="org.erlide.backend.InitialCall">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="InitialCall" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.ICodeManager" type="class" path="org.erlide.backend.ICodeManager">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="ICodeManager" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.ICodeBundle" type="class" path="org.erlide.backend.ICodeBundle">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="ICodeBundle" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.BackendOptions" type="class" path="org.erlide.backend.BackendOptions">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="BackendOptions" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.BackendUtils" type="class" path="org.erlide.backend.BackendUtils">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="BackendUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.IErlRuntime" type="class" path="org.erlide.backend.IErlRuntime">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="IErlRuntime" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.BackendException" type="class" path="org.erlide.backend.BackendException">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="BackendException" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.NodeHostClassifier" type="class" path="org.erlide.backend.NodeHostClassifier">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="NodeHostClassifier" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.HostnameUtils" type="class" path="org.erlide.backend.HostnameUtils">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="HostnameUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.runtimeinfo" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="runtimeinfo" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.internal.CodeBundleImpl" type="class" path="org.erlide.backend.internal.CodeBundleImpl">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="internal" type="package" />
+          <node name="CodeBundleImpl" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.internal.BeamUtil" type="class" path="org.erlide.backend.internal.BeamUtil">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="internal" type="package" />
+          <node name="BeamUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.internal.ErlRuntime" type="class" path="org.erlide.backend.internal.ErlRuntime">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="internal" type="package" />
+          <node name="ErlRuntime" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.internal.ErlangHostnameRetriever" type="class" path="org.erlide.backend.internal.ErlangHostnameRetriever">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="internal" type="package" />
+          <node name="ErlangHostnameRetriever" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.events.IEventDaemon" type="class" path="org.erlide.backend.events.IEventDaemon">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="events" type="package" />
+          <node name="IEventDaemon" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.console.BackendShellListener" type="class" path="org.erlide.backend.console.BackendShellListener">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="console" type="package" />
+          <node name="BackendShellListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.console.IBackendShell" type="class" path="org.erlide.backend.console.IBackendShell">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="console" type="package" />
+          <node name="IBackendShell" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.backend.console.IoRequest" type="class" path="org.erlide.backend.console.IoRequest">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="backend" type="package" />
+          <node name="console" type="package" />
+          <node name="IoRequest" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.DialyzerPreferencesConstants" type="class" path="org.erlide.core.services.builder.DialyzerPreferencesConstants">
+          <node name="builder" type="package" />
+          <node name="DialyzerPreferencesConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.BuildResource" type="class" path="org.erlide.core.services.builder.BuildResource">
+          <node name="builder" type="package" />
+          <node name="BuildResource" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.DialyzerPreferences" type="class" path="org.erlide.core.services.builder.DialyzerPreferences">
+          <node name="builder" type="package" />
+          <node name="DialyzerPreferences" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.ErlideBuilder" type="class" path="org.erlide.core.services.builder.ErlideBuilder">
+          <node name="builder" type="package" />
+          <node name="ErlideBuilder" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.DialyzerUtils" type="class" path="org.erlide.core.services.builder.DialyzerUtils">
+          <node name="builder" type="package" />
+          <node name="DialyzerUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.BuildWorkerInfo" type="class" path="org.erlide.core.services.builder.BuildWorkerInfo">
+          <node name="builder" type="package" />
+          <node name="BuildWorkerInfo" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.BuildNotifier" type="class" path="org.erlide.core.services.builder.BuildNotifier">
+          <node name="builder" type="package" />
+          <node name="BuildNotifier" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.IProblem" type="class" path="org.erlide.core.services.builder.IProblem">
+          <node name="builder" type="package" />
+          <node name="IProblem" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.CompilerOptions" type="class" path="org.erlide.core.services.builder.CompilerOptions">
+          <node name="builder" type="package" />
+          <node name="CompilerOptions" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.CompilerOption" type="class" path="org.erlide.core.services.builder.CompilerOption">
+          <node name="builder" type="package" />
+          <node name="CompilerOption" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="builder.BuilderMessages" type="class" path="org.erlide.core.services.builder.BuilderMessages">
+          <node name="builder" type="package" />
+          <node name="BuilderMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.RecordFieldPattern" type="class" path="org.erlide.core.services.search.RecordFieldPattern">
+          <node name="search" type="package" />
+          <node name="RecordFieldPattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlOpenContext" type="class" path="org.erlide.core.services.search.ErlOpenContext">
+          <node name="search" type="package" />
+          <node name="ErlOpenContext" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.FunctionPattern" type="class" path="org.erlide.core.services.search.FunctionPattern">
+          <node name="search" type="package" />
+          <node name="FunctionPattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlideDoc" type="class" path="org.erlide.core.services.search.ErlideDoc">
+          <node name="search" type="package" />
+          <node name="ErlideDoc" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.NamePattern" type="class" path="org.erlide.core.services.search.NamePattern">
+          <node name="search" type="package" />
+          <node name="NamePattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlSearchScope" type="class" path="org.erlide.core.services.search.ErlSearchScope">
+          <node name="search" type="package" />
+          <node name="ErlSearchScope" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.SearchFor" type="class" path="org.erlide.core.services.search.SearchFor">
+          <node name="search" type="package" />
+          <node name="SearchFor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.RecordPattern" type="class" path="org.erlide.core.services.search.RecordPattern">
+          <node name="search" type="package" />
+          <node name="RecordPattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.SearchPatternFactory" type="class" path="org.erlide.core.services.search.SearchPatternFactory">
+          <node name="search" type="package" />
+          <node name="SearchPatternFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.MacroPattern" type="class" path="org.erlide.core.services.search.MacroPattern">
+          <node name="search" type="package" />
+          <node name="MacroPattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ModuleLineFunctionArityRef" type="class" path="org.erlide.core.services.search.ModuleLineFunctionArityRef">
+          <node name="search" type="package" />
+          <node name="ModuleLineFunctionArityRef" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.TypeRefPattern" type="class" path="org.erlide.core.services.search.TypeRefPattern">
+          <node name="search" type="package" />
+          <node name="TypeRefPattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlangXref" type="class" path="org.erlide.core.services.search.ErlangXref">
+          <node name="search" type="package" />
+          <node name="ErlangXref" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlangSearchPattern" type="class" path="org.erlide.core.services.search.ErlangSearchPattern">
+          <node name="search" type="package" />
+          <node name="ErlangSearchPattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlideSearchServer" type="class" path="org.erlide.core.services.search.ErlideSearchServer">
+          <node name="search" type="package" />
+          <node name="ErlideSearchServer" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.IncludePattern" type="class" path="org.erlide.core.services.search.IncludePattern">
+          <node name="search" type="package" />
+          <node name="IncludePattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.OpenResult" type="class" path="org.erlide.core.services.search.OpenResult">
+          <node name="search" type="package" />
+          <node name="OpenResult" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.ErlideXref" type="class" path="org.erlide.core.services.search.ErlideXref">
+          <node name="search" type="package" />
+          <node name="ErlideXref" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.VariablePattern" type="class" path="org.erlide.core.services.search.VariablePattern">
+          <node name="search" type="package" />
+          <node name="VariablePattern" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="search.LimitTo" type="class" path="org.erlide.core.services.search.LimitTo">
+          <node name="search" type="package" />
+          <node name="LimitTo" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlTypespec" type="class" path="org.erlide.core.model.erlang.IErlTypespec">
+          <node name="erlang" type="package" />
+          <node name="IErlTypespec" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlMacroDef" type="class" path="org.erlide.core.model.erlang.IErlMacroDef">
+          <node name="erlang" type="package" />
+          <node name="IErlMacroDef" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlangReconcilingListener" type="class" path="org.erlide.core.model.erlang.IErlangReconcilingListener">
+          <node name="erlang" type="package" />
+          <node name="IErlangReconcilingListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.ErlangToolkit" type="class" path="org.erlide.core.model.erlang.ErlangToolkit">
+          <node name="erlang" type="package" />
+          <node name="ErlangToolkit" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlImport" type="class" path="org.erlide.core.model.erlang.IErlImport">
+          <node name="erlang" type="package" />
+          <node name="IErlImport" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlAttribute" type="class" path="org.erlide.core.model.erlang.IErlAttribute">
+          <node name="erlang" type="package" />
+          <node name="IErlAttribute" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlRecordDef" type="class" path="org.erlide.core.model.erlang.IErlRecordDef">
+          <node name="erlang" type="package" />
+          <node name="IErlRecordDef" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlRecordField" type="class" path="org.erlide.core.model.erlang.IErlRecordField">
+          <node name="erlang" type="package" />
+          <node name="IErlRecordField" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlPreprocessorDef" type="class" path="org.erlide.core.model.erlang.IErlPreprocessorDef">
+          <node name="erlang" type="package" />
+          <node name="IErlPreprocessorDef" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlScanner" type="class" path="org.erlide.core.model.erlang.IErlScanner">
+          <node name="erlang" type="package" />
+          <node name="IErlScanner" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlParser" type="class" path="org.erlide.core.model.erlang.IErlParser">
+          <node name="erlang" type="package" />
+          <node name="IErlParser" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.ISourceRange" type="class" path="org.erlide.core.model.erlang.ISourceRange">
+          <node name="erlang" type="package" />
+          <node name="ISourceRange" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlImportExport" type="class" path="org.erlide.core.model.erlang.IErlImportExport">
+          <node name="erlang" type="package" />
+          <node name="IErlImportExport" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.ISourceReference" type="class" path="org.erlide.core.model.erlang.ISourceReference">
+          <node name="erlang" type="package" />
+          <node name="ISourceReference" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlComment" type="class" path="org.erlide.core.model.erlang.IErlComment">
+          <node name="erlang" type="package" />
+          <node name="IErlComment" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlangFirstThat" type="class" path="org.erlide.core.model.erlang.IErlangFirstThat">
+          <node name="erlang" type="package" />
+          <node name="IErlangFirstThat" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.FunctionRef" type="class" path="org.erlide.core.model.erlang.FunctionRef">
+          <node name="erlang" type="package" />
+          <node name="FunctionRef" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlMember" type="class" path="org.erlide.core.model.erlang.IErlMember">
+          <node name="erlang" type="package" />
+          <node name="IErlMember" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlExport" type="class" path="org.erlide.core.model.erlang.IErlExport">
+          <node name="erlang" type="package" />
+          <node name="IErlExport" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlMessage" type="class" path="org.erlide.core.model.erlang.IErlMessage">
+          <node name="erlang" type="package" />
+          <node name="IErlMessage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlFunctionClause" type="class" path="org.erlide.core.model.erlang.IErlFunctionClause">
+          <node name="erlang" type="package" />
+          <node name="IErlFunctionClause" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.ErlToken" type="class" path="org.erlide.core.model.erlang.ErlToken">
+          <node name="erlang" type="package" />
+          <node name="ErlToken" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlFunction" type="class" path="org.erlide.core.model.erlang.IErlFunction">
+          <node name="erlang" type="package" />
+          <node name="IErlFunction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.ModuleKind" type="class" path="org.erlide.core.model.erlang.ModuleKind">
+          <node name="erlang" type="package" />
+          <node name="ModuleKind" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="erlang.IErlModule" type="class" path="org.erlide.core.model.erlang.IErlModule">
+          <node name="erlang" type="package" />
+          <node name="IErlModule" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.IElementChangedListener" type="class" path="org.erlide.core.model.util.IElementChangedListener">
+          <node name="util" type="package" />
+          <node name="IElementChangedListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ErlangFunction" type="class" path="org.erlide.core.model.util.ErlangFunction">
+          <node name="util" type="package" />
+          <node name="ErlangFunction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.PluginUtils" type="class" path="org.erlide.core.model.util.PluginUtils">
+          <node name="util" type="package" />
+          <node name="PluginUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ContainerFilter" type="class" path="org.erlide.core.model.util.ContainerFilter">
+          <node name="util" type="package" />
+          <node name="ContainerFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ElementAdapterFactory" type="class" path="org.erlide.core.model.util.ElementAdapterFactory">
+          <node name="util" type="package" />
+          <node name="ElementAdapterFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ContainerFilterCreator" type="class" path="org.erlide.core.model.util.ContainerFilterCreator">
+          <node name="util" type="package" />
+          <node name="ContainerFilterCreator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ResourceUtil" type="class" path="org.erlide.core.model.util.ResourceUtil">
+          <node name="util" type="package" />
+          <node name="ResourceUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ProjectAdapterFactory" type="class" path="org.erlide.core.model.util.ProjectAdapterFactory">
+          <node name="util" type="package" />
+          <node name="ProjectAdapterFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ErlangIncludeFile" type="class" path="org.erlide.core.model.util.ErlangIncludeFile">
+          <node name="util" type="package" />
+          <node name="ErlangIncludeFile" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="util.ElementChangedEvent" type="class" path="org.erlide.core.model.util.ElementChangedEvent">
+          <node name="util" type="package" />
+          <node name="ElementChangedEvent" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.ErlModelStatusConstants" type="class" path="org.erlide.core.model.root.ErlModelStatusConstants">
+          <node name="root" type="package" />
+          <node name="ErlModelStatusConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlElementLocator" type="class" path="org.erlide.core.model.root.IErlElementLocator">
+          <node name="root" type="package" />
+          <node name="IErlElementLocator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlModel" type="class" path="org.erlide.core.model.root.IErlModel">
+          <node name="root" type="package" />
+          <node name="IErlModel" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.ErlModelStatus" type="class" path="org.erlide.core.model.root.ErlModelStatus">
+          <node name="root" type="package" />
+          <node name="ErlModelStatus" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IParent" type="class" path="org.erlide.core.model.root.IParent">
+          <node name="root" type="package" />
+          <node name="IParent" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlFolder" type="class" path="org.erlide.core.model.root.IErlFolder">
+          <node name="root" type="package" />
+          <node name="IErlFolder" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlModelStatus" type="class" path="org.erlide.core.model.root.IErlModelStatus">
+          <node name="root" type="package" />
+          <node name="IErlModelStatus" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IOldErlangProjectProperties" type="class" path="org.erlide.core.model.root.IOldErlangProjectProperties">
+          <node name="root" type="package" />
+          <node name="IOldErlangProjectProperties" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlElement" type="class" path="org.erlide.core.model.root.IErlElement">
+          <node name="root" type="package" />
+          <node name="IErlElement" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlModelMarker" type="class" path="org.erlide.core.model.root.IErlModelMarker">
+          <node name="root" type="package" />
+          <node name="IErlModelMarker" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.ErlModelException" type="class" path="org.erlide.core.model.root.ErlModelException">
+          <node name="root" type="package" />
+          <node name="ErlModelException" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IWorkingCopy" type="class" path="org.erlide.core.model.root.IWorkingCopy">
+          <node name="root" type="package" />
+          <node name="IWorkingCopy" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlProject" type="class" path="org.erlide.core.model.root.IErlProject">
+          <node name="root" type="package" />
+          <node name="IErlProject" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlElementDelta" type="class" path="org.erlide.core.model.root.IErlElementDelta">
+          <node name="root" type="package" />
+          <node name="IErlElementDelta" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlElementVisitor" type="class" path="org.erlide.core.model.root.IErlElementVisitor">
+          <node name="root" type="package" />
+          <node name="IErlElementVisitor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IOpenable" type="class" path="org.erlide.core.model.root.IOpenable">
+          <node name="root" type="package" />
+          <node name="IOpenable" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlExternal" type="class" path="org.erlide.core.model.root.IErlExternal">
+          <node name="root" type="package" />
+          <node name="IErlExternal" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.ISourceUnit" type="class" path="org.erlide.core.model.root.ISourceUnit">
+          <node name="root" type="package" />
+          <node name="ISourceUnit" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="root.IErlModelChangeListener" type="class" path="org.erlide.core.model.root.IErlModelChangeListener">
+          <node name="root" type="package" />
+          <node name="IErlModelChangeListener" type="class" />
+        </item-fqn>
+      </hide>
     </set>
     <set version="1" name="Flattened to classes" hiview="Codemap" active="false" todo="false">
       <action type="flatten" active="true" description="Flatten root">
