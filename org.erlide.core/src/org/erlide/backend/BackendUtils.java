@@ -165,25 +165,4 @@ public class BackendUtils {
         return reg.getExtensionPoint(ErlangCore.PLUGIN_ID, "codepath");
     }
 
-    public static boolean shouldManageNode(final String name) {
-        final int atSignIndex = name.indexOf('@');
-        String shortName = name;
-        if (atSignIndex > 0) {
-            shortName = name.substring(0, atSignIndex);
-        }
-
-        boolean isLocal = atSignIndex < 0;
-        if (atSignIndex > 0) {
-            final String hostname = name.substring(atSignIndex + 1);
-            if (HostnameUtils.isThisHost(hostname)) {
-                isLocal = true;
-            }
-        }
-
-        final boolean isRunning = BackendCore.getBackendManager()
-                .getEpmdWatcher().hasLocalNode(shortName);
-        final boolean result = isLocal && !isRunning;
-        return result;
-    }
-
 }

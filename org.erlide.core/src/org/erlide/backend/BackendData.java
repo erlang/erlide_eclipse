@@ -66,7 +66,7 @@ public final class BackendData extends GenericBackendData {
         if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
-        setManaged(BackendUtils.shouldManageNode(getNodeName()));
+        setManaged(BackendHelper.shouldManageNode(getNodeName()));
     }
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,
