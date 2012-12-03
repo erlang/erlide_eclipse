@@ -716,4 +716,8 @@ public class BrowserInformationControl extends AbstractInformationControl
         return new Point(widthInChars * width, heightInChars * height);
     }
 
+    public Browser getBrowser() {
+        return fBrowser;
+    }
+
 }

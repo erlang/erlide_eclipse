@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -32,26 +30,24 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
+import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
+import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.ui.util.eclipse.text.HTMLTextPresenter;
+import org.erlide.ui.internal.information.HandleEdocLinksLocationListener;
 import org.osgi.framework.Bundle;
 
 /**
@@ -71,11 +67,7 @@ public class EdocView extends AbstractInfoView {
 
     private static final boolean WARNING_DIALOG_ENABLED = true;
 
-    /** The HTML widget. */
     private Browser fBrowser;
-
-    /** The text widget. */
-    StyledText fText;
 
     /** The information presenter. */
     private DefaultInformationControl.IInformationPresenterExtension fPresenter;
@@ -86,10 +78,9 @@ public class EdocView extends AbstractInfoView {
     /** The select all action */
     private SelectAllAction fSelectAllAction;
 
-    /** The Browser widget */
-    boolean fIsUsingBrowserWidget;
-
     private static URL fgStyleSheet;
+    private HandleEdocLinksLocationListener locationListener;
+    private ErlBrowserInformationControlInput input;
 
     /**
      * The Edoc view's select all action.
@@ -111,16 +102,13 @@ public class EdocView extends AbstractInfoView {
          *            the selection provider
          */
         public SelectAllAction(final Control control,
-                final SelectionProvider selectionProvider,
-                final boolean useBrowserWidget) {
+                final SelectionProvider selectionProvider) {
             super("selectAll");
 
             Assert.isNotNull(control);
             Assert.isNotNull(selectionProvider);
             fControl = control;
             fSelectionProvider = selectionProvider;
-
-            setEnabled(!useBrowserWidget);
 
             setText("Select All");
             setToolTipText("Select All");
@@ -257,54 +245,10 @@ public class EdocView extends AbstractInfoView {
     protected void internalCreatePartControl(final Composite parent) {
         try {
             fBrowser = new Browser(parent, SWT.NONE);
-            fIsUsingBrowserWidget = true;
+            locationListener = new HandleEdocLinksLocationListener(this);
+            fBrowser.addLocationListener(locationListener);
         } catch (final SWTError er) {
-
-            /*
-             * The Browser widget throws an SWTError if it fails to instantiate
-             * properly. Application code should catch this SWTError and disable
-             * any feature requiring the Browser widget. Platform requirements
-             * for the SWT Browser widget are available from the SWT FAQ web
-             * site.
-             */
-
-            final IPreferenceStore store = ErlideUIPlugin.getDefault()
-                    .getPreferenceStore();
-            final boolean doNotWarn = store
-                    .getBoolean(DO_NOT_WARN_PREFERENCE_KEY);
-            if (WARNING_DIALOG_ENABLED && !doNotWarn) {
-                final String title = "Error";
-                final String message = "Error no browser found";
-                final String toggleMessage = "Don't show this again";
-                final MessageDialogWithToggle dialog = MessageDialogWithToggle
-                        .openError(parent.getShell(), title, message,
-                                toggleMessage, false, null, null);
-                if (dialog.getReturnCode() == Window.OK) {
-                    store.setValue(DO_NOT_WARN_PREFERENCE_KEY,
-                            dialog.getToggleState());
-                }
-            }
-
-            fIsUsingBrowserWidget = false;
-        }
-
-        if (!fIsUsingBrowserWidget) {
-            fText = new StyledText(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-            fText.setEditable(false);
-            fPresenter = new HTMLTextPresenter(false);
-
-            fText.addControlListener(new ControlAdapter() {
-
-                /*
-                 * @see
-                 * org.eclipse.swt.events.ControlAdapter#controlResized(org.
-                 * eclipse.swt.events.ControlEvent)
-                 */
-                @Override
-                public void controlResized(final ControlEvent e) {
-                    setInfo(fText.getText());
-                }
-            });
+            ErlLogger.warn(er);
         }
 
         initStyleSheet();
@@ -330,8 +274,7 @@ public class EdocView extends AbstractInfoView {
     protected void createActions() {
         super.createActions();
         fSelectAllAction = new SelectAllAction(getControl(),
-                (SelectionProvider) getSelectionProvider(),
-                fIsUsingBrowserWidget);
+                (SelectionProvider) getSelectionProvider());
     }
 
     /*
@@ -343,9 +286,6 @@ public class EdocView extends AbstractInfoView {
      */
     @Override
     protected IAction getSelectAllAction() {
-        if (fIsUsingBrowserWidget) {
-            return null;
-        }
 
         return fSelectAllAction;
     }
@@ -358,9 +298,6 @@ public class EdocView extends AbstractInfoView {
      */
     @Override
     protected IAction getCopyToClipboardAction() {
-        if (fIsUsingBrowserWidget) {
-            return null;
-        }
 
         return super.getCopyToClipboardAction();
     }
@@ -386,7 +323,6 @@ public class EdocView extends AbstractInfoView {
      */
     @Override
     protected void internalDispose() {
-        fText = null;
         fBrowser = null;
     }
 
@@ -399,25 +335,24 @@ public class EdocView extends AbstractInfoView {
     }
 
     @Override
-    protected void setInfo(final String info) {
-        String edocHtml = info;
-
-        if (fIsUsingBrowserWidget) {
-            fBrowser.setText(edocHtml);
-        } else {
-            fPresentation.clear();
-            final Rectangle size = fText.getClientArea();
-
-            try {
-                edocHtml = fPresenter.updatePresentation(getSite().getShell(),
-                        edocHtml, fPresentation, size.width, size.height);
-            } catch (final IllegalArgumentException ex) {
-                // the edoc might no longer be valid
-                return;
-            }
-            fText.setText(edocHtml);
-            TextPresentation.applyTextPresentation(fPresentation, fText);
+    public void setInfo(final Object info) {
+        String edocHtml = null;
+        if (info instanceof String) {
+            edocHtml = (String) info;
+        } else if (info instanceof ErlBrowserInformationControlInput) {
+            final ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) info;
+            setInput(input);
+            edocHtml = input.getHtml();
         }
+        fBrowser.setText(edocHtml);
+    }
+
+    private void setInput(final ErlBrowserInformationControlInput input) {
+        this.input = input;
+    }
+
+    public ErlBrowserInformationControlInput getInput() {
+        return input;
     }
 
     public void setText(final String s) {
@@ -429,10 +364,7 @@ public class EdocView extends AbstractInfoView {
      */
     @Override
     protected Control getControl() {
-        if (fIsUsingBrowserWidget) {
-            return fBrowser;
-        }
-        return fText;
+        return fBrowser;
     }
 
     /*
@@ -447,12 +379,12 @@ public class EdocView extends AbstractInfoView {
     }
 
     @Override
-    protected String getInfoForSelection(final IWorkbenchPart part,
+    protected Object getInfoForSelection(final IWorkbenchPart part,
             final ISelection selection) {
         if (selection instanceof ITextSelection && part instanceof ErlangEditor) {
             final ITextSelection sel = (ITextSelection) selection;
             final ErlangEditor editor = (ErlangEditor) part;
-            return ErlTextHover.getHoverTextForOffset(sel.getOffset(), editor);
+            return ErlTextHover.getHoverInfoForOffset(sel.getOffset(), editor);
         }
         return null;
     }

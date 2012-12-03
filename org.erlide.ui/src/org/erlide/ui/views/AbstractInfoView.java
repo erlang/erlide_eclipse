@@ -34,6 +34,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.erlide.ui.actions.SelectionDispatchAction;
+import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 /**
@@ -41,8 +42,8 @@ import org.erlide.ui.internal.ErlideUIPlugin;
  * 
  * @since 3.0
  */
-abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
-        IMenuListener {
+abstract public class AbstractInfoView extends ViewPart implements
+        ISelectionListener, IMenuListener {
 
     /*
      * @see IPartListener2
@@ -96,7 +97,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
     };
 
     /** The current info. */
-    protected String fCurrentViewInfo;
+    protected Object fCurrentViewInfo;
 
     /** The copy to clipboard action. */
     private SelectionDispatchAction fCopyToClipboardAction;
@@ -113,7 +114,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
      * @param input
      *            the input object
      */
-    abstract protected void setInfo(String info);
+    public abstract void setInfo(Object info);
 
     /**
      * Create the part control.
@@ -147,7 +148,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
      */
     abstract Control getControl();
 
-    abstract protected String getInfoForSelection(IWorkbenchPart part,
+    abstract protected Object getInfoForSelection(IWorkbenchPart part,
             ISelection selection);
 
     /**
@@ -236,7 +237,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
      * 
      * @return input the input object or <code>null</code> if not input is set
      */
-    protected String getInfo() {
+    protected Object getInfo() {
         return fCurrentViewInfo;
     }
 
@@ -282,7 +283,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
      *            the tool bar manager
      */
     protected void fillToolBar(final IToolBarManager tbm) {
-        // TODO NYI tbm.add(fGotoInputAction);
+        tbm.add(fGotoInputAction);
     }
 
     /**
@@ -482,8 +483,12 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
 
                 // final IErlElement je= findSelectedJavaElement(part,
                 // selection);
-                final String info = getInfoForSelection(part, selection);
-                if (info == null || info.length() == 0) {
+                final Object info = getInfoForSelection(part, selection);
+
+                if (info == null
+                        || info instanceof ErlBrowserInformationControlInput
+                        && ((ErlBrowserInformationControlInput) info).getHtml()
+                                .length() == 0) {
                     return;
                 }
                 final Shell shell = getSite().getShell();
@@ -521,7 +526,7 @@ abstract class AbstractInfoView extends ViewPart implements ISelectionListener,
         thread.start();
     }
 
-    void doSetInfo(final String info) {
+    private void doSetInfo(final Object info) {
         setInfo(info);
 
         fGotoInputAction.setEnabled(true);
