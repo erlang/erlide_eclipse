@@ -30,6 +30,7 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
+import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemConfiguration;
@@ -112,10 +113,9 @@ public final class MarkerUtils {
             final Entry<String, List<OtpErlangTuple>> entry,
             final String fileName) {
         IResource res = resource;
-        if (!BuilderHelper
-                .samePath(resource.getLocation().toString(), fileName)) {
+        if (!ResourceUtil.samePath(resource.getLocation().toString(), fileName)) {
             final IProject project = resource.getProject();
-            res = BuilderHelper.findResourceByLocation(project, fileName);
+            res = ResourceUtil.findResourceByLocation(project, fileName);
             if (res == null) {
                 try {
                     final IErlElementLocator model = ErlModelManager

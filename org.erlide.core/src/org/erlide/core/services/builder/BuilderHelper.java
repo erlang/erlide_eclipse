@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IPathVariableManager;
@@ -42,10 +41,10 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.PluginUtils;
+import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -137,7 +136,8 @@ public final class BuilderHelper {
             for (final IErlModule m : ms) {
                 final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
                 for (final ErlangIncludeFile ifile : incs) {
-                    if (samePath(ifile.getFilename(), resource.getName())) {
+                    if (ResourceUtil.samePath(ifile.getFilename(),
+                            resource.getName())) {
                         if (m.getModuleKind() == ModuleKind.ERL) {
                             final BuildResource bres = new BuildResource(
                                     m.getResource());
@@ -269,8 +269,8 @@ public final class BuilderHelper {
         if (m != null) {
             final Collection<ErlangIncludeFile> incs = m.getIncludeFiles();
             for (final ErlangIncludeFile ifile : incs) {
-                final IResource rifile = findResourceByName(project,
-                        ifile.getFilename());
+                final IResource rifile = ResourceUtil.findResourceByName(
+                        project, ifile.getFilename());
                 if (rifile != null
                         && rifile.getLocalTimeStamp() > beam
                                 .getLocalTimeStamp()) {
@@ -280,76 +280,6 @@ public final class BuilderHelper {
             }
         }
         return shouldCompile;
-    }
-
-    public static boolean samePath(final String p1, final String p2) {
-        if (SystemConfiguration.getInstance().isOnWindows()) {
-            return p1.equalsIgnoreCase(p2);
-        } else {
-            return p1.equals(p2);
-        }
-    }
-
-    private final static class FindResourceVisitor implements IResourceVisitor {
-        private static final int FIND_BY_NAME = 1;
-        private static final int FIND_BY_LOCATION = 2;
-
-        private final String fileName;
-        private IResource found = null;
-        private final int how;
-
-        private FindResourceVisitor(final String fileName, final int how) {
-            this.fileName = fileName;
-            this.how = how;
-        }
-
-        @Override
-        public boolean visit(final IResource resource) throws CoreException {
-            if (compare(resource, fileName, how)) {
-                found = resource;
-                return false;
-            }
-            return true;
-        }
-
-        private boolean compare(final IResource resource, final String s,
-                final int theHow) {
-            if (theHow == FIND_BY_NAME) {
-                return samePath(resource.getName(), s);
-            } else if (theHow == FIND_BY_LOCATION) {
-                return samePath(resource.getLocation().toString(), s);
-            } else {
-                return false;
-            }
-        }
-
-        public IResource getFound() {
-            return found;
-        }
-    }
-
-    public static IResource findResourceByLocation(final IContainer container,
-            final String fileName) {
-        return findResource(container, fileName,
-                FindResourceVisitor.FIND_BY_LOCATION);
-    }
-
-    public IResource findResourceByName(final IContainer container,
-            final String fileName) {
-        return findResource(container, fileName,
-                FindResourceVisitor.FIND_BY_NAME);
-    }
-
-    private static IResource findResource(final IContainer container,
-            final String fileName, final int how) {
-        final FindResourceVisitor visitor = new FindResourceVisitor(fileName,
-                how);
-        try {
-            container.accept(visitor);
-        } catch (final CoreException e) {
-            return null;
-        }
-        return visitor.getFound();
     }
 
     public void refreshOutputDir(final IProject project) throws CoreException {

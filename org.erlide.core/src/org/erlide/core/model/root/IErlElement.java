@@ -231,6 +231,4 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     String toStringWithAncestors();
 
-    Object getModelLock();
-
 }

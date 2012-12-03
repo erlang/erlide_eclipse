@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
@@ -35,7 +36,6 @@ import org.erlide.backend.IBackendListener;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeBundle.CodeContext;
-import org.erlide.backend.IErlideBackendVisitor;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
@@ -312,9 +312,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
         final CodeBundleImpl pp = new CodeBundleImpl(b, paths, inits);
         getCodeBundles().put(b, pp);
-        forEachBackend(new IErlideBackendVisitor() {
+        forEachBackend(new Procedure1<IBackend>() {
             @Override
-            public void visit(final IBackend bb) {
+            public void apply(final IBackend bb) {
                 bb.registerCodeBundle(pp);
             }
         });
@@ -330,9 +330,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public void forEachBackend(final IErlideBackendVisitor visitor) {
+    public void forEachBackend(final Procedure1<IBackend> visitor) {
         for (final IBackend b : getAllBackends()) {
-            visitor.visit(b);
+            visitor.apply(b);
         }
     }
 

@@ -96,5 +96,5 @@ public interface IErlModelMarker {
      * markers. The value of this attribute is either "true" or "false".
      * 
      */
-    public static final String PATHENTRY_FILE_FORMAT = "pathEntryFileFormat"; //$NON-NLS-1$
+    String PATHENTRY_FILE_FORMAT = "pathEntryFileFormat"; //$NON-NLS-1$
 }

@@ -10,6 +10,9 @@ import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.core.model.root.IErlElementLocator;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.util.ModelUtils;
 
 public class ErlangExternalEditorInputFactory implements IElementFactory {
@@ -20,8 +23,9 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
 
     public static void saveState(final IMemento memento,
             final ErlangExternalEditorInput input) {
-        final String externalModulePath = ModelUtils
-                .getExternalModulePath(input.getModule());
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final String externalModulePath = ModelUtils.getExternalModulePath(
+                model, input.getModule());
         memento.putString(TAG_EXTERNAL_MODULE_PATH, externalModulePath);
         final URI uri = input.getURI();
         memento.putString(TAG_URI, uri.toString());
@@ -37,8 +41,9 @@ public class ErlangExternalEditorInputFactory implements IElementFactory {
         }
         IErlModule module;
         try {
-            module = ModelUtils
-                    .getModuleFromExternalModulePath(externalModulePath);
+            final IErlModel model = ErlModelManager.getErlangModel();
+            module = ModelUtils.getModuleFromExternalModulePath(model,
+                    externalModulePath);
         } catch (final ErlModelException e1) {
             return null;
         }

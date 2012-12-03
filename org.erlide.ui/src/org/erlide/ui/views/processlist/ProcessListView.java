@@ -43,9 +43,9 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.IErlideBackendVisitor;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
@@ -237,9 +237,9 @@ public class ProcessListView extends ViewPart {
             ErlideProclist.processListInit(ideBackend);
         }
         BackendCore.getBackendManager().forEachBackend(
-                new IErlideBackendVisitor() {
+                new Procedure1<IBackend>() {
                     @Override
-                    public void visit(final IBackend b) {
+                    public void apply(final IBackend b) {
                         ErlideProclist.processListInit(b);
                     }
                 });

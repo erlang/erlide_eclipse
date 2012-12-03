@@ -66,7 +66,7 @@ public final class BackendData extends GenericBackendData {
         if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
-        setManaged(shouldManageNode());
+        setManaged(BackendHelper.shouldManageNode(getNodeName()));
     }
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,
@@ -87,28 +87,6 @@ public final class BackendData extends GenericBackendData {
 
         setConsole(true);
         setLoadAllNodes(false);
-    }
-
-    private boolean shouldManageNode() {
-        final String name = getNodeName();
-        final int atSignIndex = name.indexOf('@');
-        String shortName = name;
-        if (atSignIndex > 0) {
-            shortName = name.substring(0, atSignIndex);
-        }
-
-        boolean isLocal = atSignIndex < 0;
-        if (atSignIndex > 0) {
-            final String hostname = name.substring(atSignIndex + 1);
-            if (HostnameUtils.isThisHost(hostname)) {
-                isLocal = true;
-            }
-        }
-
-        final boolean isRunning = BackendCore.getBackendManager()
-                .getEpmdWatcher().hasLocalNode(shortName);
-        final boolean result = isLocal && !isRunning;
-        return result;
     }
 
     private String getDefaultWorkingDir() {
