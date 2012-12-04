@@ -52,6 +52,7 @@ import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.ModelUtils;
+import org.erlide.core.services.builder.MarkerUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
@@ -116,6 +117,9 @@ public class ErlModule extends Openable implements IErlModule {
                     .getParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
                     useCaches);
+            final IResource resource = getCorrespondingResource();
+            MarkerUtils.removeTaskMarkersFor(resource);
+            MarkerUtils.createTaskMarkers(resource, scanner.getText());
         } finally {
             disposeScanner();
         }
