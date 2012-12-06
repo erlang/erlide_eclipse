@@ -7,8 +7,8 @@
 %% Exported Functions
 %%
 
--export([modules/0, dump_module/1, dump_log/0, create/3, destroy/1, logging/1,
-         all/0, stop/0, find/3, xdump/0]).
+-export([modules/0, dump_module/1, create/3, destroy/1,
+	 all/0, stop/0, find/3, xdump/0]).
 
 -compile(export_all).
 
@@ -42,12 +42,6 @@ create(Module, Model, ErlidePath) when is_atom(Module), is_list(ErlidePath) ->
 
 destroy(Module) when is_atom(Module) ->
     server_cmd(destroy, Module).
-
-dump_log() ->
-    server_cmd(dump_log, []).
-
-logging(OnOff) ->
-    server_cmd(logging, OnOff).
 
 all() ->
     server_cmd(all, []).
@@ -110,12 +104,6 @@ spawn_server() ->
 
 cmd(Cmd, From, Args, Modules) ->
     try
-        case get(logging) of
-            on ->
-                put(log, get(log)++[{Cmd, Args}]);
-            _ ->
-                ok
-        end,
         case do_cmd(Cmd, Args, Modules) of
             {R, NewMods} ->
                 reply(Cmd, From, R),
@@ -156,13 +144,8 @@ do_cmd(modules, [], Modules) ->
 do_cmd(dump_module, Mod, Modules) ->
     {value, Module} = lists:keysearch(Mod, #module.name, Modules),
     {Module, Modules};
-do_cmd(logging, OnOff, Modules) ->
-    put(log, []),
-    {put(logging, OnOff), Modules};
 do_cmd(find, {external_call, {M, F, A}}, Modules) ->
     {erlide_noparse:find_external_call({M, F, A}, Modules), Modules};
-do_cmd(dump_log, [], Modules) ->
-    {get(log), Modules};
 %% do_cmd(cdump, [], Modules) ->
 %%     {do_cdump(Modules), Modules};
 %% do_cmd(vdump, [], Modules) ->

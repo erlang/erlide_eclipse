@@ -50,9 +50,14 @@
 %%
 
 -define(SERVER, erlide_search_server).
+-define(N_MODULES_KEPT, 5).
 
--record(state, {modules=[], dummy}). %% FIXME still too simple data mode
--record(module, {scanner_name, module_name, refs}).
+-record(module, {scanner_name :: atom(),
+		 sequence_number :: integer(),
+                 module_name :: string(),
+                 refs :: list()}).
+-record(state, {modules=[] :: list(#module{}),
+                sequence_number :: integer()}).
 
 %%
 %% API Functions
@@ -114,7 +119,7 @@ start(undefined) ->
                   erlang:yield(),
                   erlang:register(?SERVER, self()),
                   Self ! started,
-                  loop(#state{})
+                  loop(#state{sequence_number=0})
           end),
     receive
         started ->
@@ -156,12 +161,6 @@ loop(State) ->
 
 cmd(Cmd, From, Args, State) ->
     try
-        case get(logging) of
-            on ->
-                put(log, get(log)++[{Cmd, Args}]);
-            _ ->
-                ok
-        end,
         case do_cmd(Cmd, Args, State) of
             {R, NewState} ->
                 reply(Cmd, From, R),
@@ -342,7 +341,8 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
     ?D(R),
     R.
 
-do_add_module_refs(ScannerName, Refs, #state{modules=Modules0} = State) ->
-    Modules1 = lists:keydelete(ScannerName, #module.scanner_name, Modules0),
-    Modules2 = [#module{scanner_name=ScannerName, refs=Refs} | Modules1],
-    State#state{modules=Modules2}.
+do_add_module_refs(ScannerName, Refs, #state{modules=Modules0, sequence_number=SequenceNumber} = State) ->
+    SequenceNumber1 = SequenceNumber+1,
+    Modules1 = [M || M <- Modules0, M#module.sequence_number + ?N_MODULES_KEPT > SequenceNumber1, M#module.scanner_name /= ScannerName],
+    Modules2 = [#module{scanner_name=ScannerName, refs=Refs, sequence_number=SequenceNumber1} | Modules1],
+    State#state{modules=Modules2, sequence_number=SequenceNumber1}.

@@ -441,13 +441,13 @@ public final class MarkerUtils {
                 DIALYZE_WARNING_MARKER);
     }
 
+    @SuppressWarnings("deprecation")
     public static void createTaskMarkers(final IResource resource,
             final String string) {
         if (SystemConfiguration.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
-        getNoScanMarkersFor(resource, string);
-
+        getNoScanMarkersFor(resource, string == null ? "" : string);
     }
 
     public static void getNoScanMarkersFor(final IResource resource,

@@ -23,9 +23,7 @@
 %% stop/0
 
 %% just for testing
--export([getTextLine/2, getText/1, dump_module/1, logging/1]).
--export([dump_log/1]).
-%% all/0, modules/0, dump_log/0, check_all/2,
+-export([getTextLine/2, getText/1, dump_module/1]).
 
 %% internal exports 
 -export([loop/1]).
@@ -65,24 +63,8 @@ initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache)
     server_cmd(ScannerName, initial_scan,
                {ScannerName, ModuleFileName, InitialText, StateDir, UseCache}).
 
-%% scan_uncached(ScannerName, ModuleFileName) ->
-%%     spawn_server(ScannerName),
-%%     server_cmd(ScannerName, scan_uncached, ModuleFileName).
-
-%%modules() ->
-%%    server_cmd(modules, []).
-
-dump_log(ScannerName) when is_atom(ScannerName) ->
-   server_cmd(ScannerName, dump_log).
-
-%%all() ->
-%%    server_cmd(all, []).
-
 dump_module(ScannerName) when is_atom(ScannerName) ->
     server_cmd(ScannerName, dump_module).
-
-%%stop() ->
-%%    server_cmd(stop, []).
 
 replaceText(ScannerName, Offset, RemoveLength, NewText)
   when is_atom(ScannerName), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->
@@ -93,9 +75,6 @@ check_all(ScannerName, Text) when is_atom(ScannerName), is_list(Text) ->
     ScanTest = scan_test(ScannerName),
     MatchTest ++ ScanTest.
             
-logging(OnOff) ->
-    server_cmd(logging, OnOff).
-
 match_test(Module, Text) ->
     case getText(Module) of
         Text ->
@@ -150,8 +129,7 @@ server_cmd(ScannerName, Command, Args) ->
 -record(module, {name,
                  lines = [], % [{Length, String}]
                  tokens = [], % [{Length, [Token]}]
-                 cachedTokens = [],
-                 log = []}).
+                 cachedTokens = []}).
 
 spawn_server(ScannerName) ->
 	case whereis(ScannerName) of
@@ -177,12 +155,6 @@ loop(Module) ->
 
 cmd(Cmd, From, Args, Module) ->
     try
-        case get(logging) of
-            on ->
-                put(log, get(log)++[{Cmd, Args}]);
-            _ ->
-                ok
-        end,
         case do_cmd(Cmd, Args, Module) of
             {R, NewModule} ->
                 reply(Cmd, From, R),
@@ -224,12 +196,7 @@ do_cmd(get_text_line, Line, Module) ->
     {L, Module};
 do_cmd(get_tokens, [], Module) ->
     {erlide_scanner:get_all_tokens(Module), Module};
-do_cmd(dump_log, [], Module) ->
-    {get(log), Module};
 do_cmd(get_token_window, {Offset, Before, After}, Module) ->
-    {erlide_scanner:get_token_window(Module, Offset, Before, After), Module};
-do_cmd(logging, OnOff, Module) ->
-    put(log, []),
-    {put(logging, OnOff), Module}.
+    {erlide_scanner:get_token_window(Module, Offset, Before, After), Module}.
 
 
