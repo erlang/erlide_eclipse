@@ -262,6 +262,10 @@ public final class MarkerUtils {
         removeMarkersFor(resource, TASK_MARKER);
     }
 
+    public static void removeDialyzerMarkersFor(final IResource resource) {
+        removeMarkersFor(resource, DIALYZE_WARNING_MARKER);
+    }
+
     private static void removeMarkersFor(final IResource resource,
             final String type) {
         try {
@@ -270,14 +274,6 @@ public final class MarkerUtils {
             }
         } catch (final CoreException e) {
             // assume there were no problems
-        }
-    }
-
-    public static void removeDialyzerMarkers(final IResource resource) {
-        try {
-            resource.deleteMarkers(DIALYZE_WARNING_MARKER, true,
-                    IResource.DEPTH_INFINITE);
-        } catch (final CoreException e) {
         }
     }
 

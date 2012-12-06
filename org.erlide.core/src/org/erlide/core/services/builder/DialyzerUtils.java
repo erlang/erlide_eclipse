@@ -150,7 +150,7 @@ public class DialyzerUtils {
                 final Collection<String> pltPaths = prefs.getEnabledPltPaths();
                 final boolean fromSource = prefs.getFromSource();
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
-                MarkerUtils.removeDialyzerMarkers(project);
+                MarkerUtils.removeDialyzerMarkersFor(project);
                 final IBackend backend = BackendCore.getBackendManager()
                         .getBuildBackend(project);
                 final List<String> files = Lists.newArrayList();

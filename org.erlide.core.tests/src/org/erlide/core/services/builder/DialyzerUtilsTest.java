@@ -141,7 +141,7 @@ public class DialyzerUtilsTest {
                     "f([_ | _]=L ->\n    atom_to_list(L).\n");
             externalInclude = ErlideTestUtils.createTmpFile(
                     "external_includes", externalFile.getAbsolutePath());
-            MarkerUtils.removeDialyzerMarkers(root);
+            MarkerUtils.removeDialyzerMarkersFor(root);
             // when
             // putting dialyzer warning markers on the external file
             final String message = "test message";
@@ -169,7 +169,7 @@ public class DialyzerUtilsTest {
                 assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
             }
         } finally {
-            MarkerUtils.removeDialyzerMarkers(root);
+            MarkerUtils.removeDialyzerMarkersFor(root);
             if (externalInclude != null && externalInclude.exists()) {
                 externalInclude.delete();
             }

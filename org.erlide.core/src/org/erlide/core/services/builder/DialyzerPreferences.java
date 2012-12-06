@@ -30,6 +30,7 @@ public class DialyzerPreferences {
     private boolean fromSource;
     private boolean dialyzeOnCompile;
     private boolean noCheckPLT;
+    private boolean removeWarningsOnClean;
 
     public static DialyzerPreferences get(final IProject project)
             throws CoreException, RpcException {
@@ -74,6 +75,9 @@ public class DialyzerPreferences {
         helper.putBoolean(DialyzerPreferencesConstants.DIALYZE_ON_COMPILE,
                 getDialyzeOnCompile());
         helper.putBoolean(DialyzerPreferencesConstants.NO_CHECK_PLT, noCheckPLT);
+        helper.putBoolean(
+                DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN,
+                removeWarningsOnClean);
         helper.flush();
     }
 
@@ -107,6 +111,8 @@ public class DialyzerPreferences {
                 DialyzerPreferencesConstants.DIALYZE_ON_COMPILE, false));
         noCheckPLT = helper.getBoolean(
                 DialyzerPreferencesConstants.NO_CHECK_PLT, true);
+        removeWarningsOnClean = helper.getBoolean(
+                DialyzerPreferencesConstants.REMOVE_WARNINGS_ON_CLEAN, true);
     }
 
     @Override
@@ -168,4 +174,13 @@ public class DialyzerPreferences {
     public void setNoCheckPLT(final boolean noCheckPLT) {
         this.noCheckPLT = noCheckPLT;
     }
+
+    public void setRemoveWarningsOnClean(final boolean removeWarningsOnClean) {
+        this.removeWarningsOnClean = removeWarningsOnClean;
+    }
+
+    public boolean getRemoveWarningsOnClean() {
+        return removeWarningsOnClean;
+    }
+
 }
