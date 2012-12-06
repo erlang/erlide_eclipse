@@ -2,7 +2,7 @@ package org.erlide.core.services.builder;
 
 import junit.framework.Assert;
 
-import org.erlide.utils.Tuple;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.junit.Test;
 
 import com.google.common.base.Splitter;
@@ -40,7 +40,7 @@ public class CompilerOptionsTest {
     @Test
     public void test_3() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Tuple<String, String>(
+        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>(
                 "Macro", null));
         final String actual = prefs.export().toString();
         final String expect = "[{d,'Macro'}," + DEF_VALUES + "]";
@@ -51,7 +51,7 @@ public class CompilerOptionsTest {
     @Test
     public void test_4() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Tuple<String, String>(
+        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>(
                 "Macro", "[value,1]"));
         final String actual = prefs.export().toString();
         final String expect = "[{d,'Macro',[value,1]}," + DEF_VALUES + "]";
@@ -80,7 +80,7 @@ public class CompilerOptionsTest {
     @Test
     public void test_7() {
         final CompilerOptions prefs = new CompilerOptions();
-        prefs.setListOption(CompilerOption.DEFINE, new Tuple<String, String>(
+        prefs.setListOption(CompilerOption.DEFINE, new Pair<String, String>(
                 "Macro", null));
         prefs.removeOption(CompilerOption.DEFINE);
         final String actual = prefs.export().toString();

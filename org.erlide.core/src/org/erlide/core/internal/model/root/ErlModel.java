@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.erlide.core.internal.model.root;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,6 +61,7 @@ import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.CommonUtils;
@@ -227,49 +227,6 @@ public class ErlModel extends Openable implements IErlModel {
         if (info == null) {
             buffer.append(" (not open)"); //$NON-NLS-1$
         }
-    }
-
-    /**
-     * Helper method - returns the targeted item (IResource if internal or
-     * java.io.File if external), or null if unbound Internal items must be
-     * referred to using container relative paths.
-     */
-    public static Object getTarget(final IContainer container,
-            final IPath path, final boolean checkResourceExistence) {
-
-        if (path == null) {
-            return null;
-        }
-
-        // lookup - inside the container
-        if (path.getDevice() == null) { // container relative paths should not
-            // contain a device
-            // (see http://dev.eclipse.org/bugs/show_bug.cgi?id=18684)
-            // (case of a workspace rooted at d:\ )
-            final IResource resource = container.findMember(path);
-            if (resource != null) {
-                if (!checkResourceExistence || resource.exists()) {
-                    return resource;
-                }
-                return null;
-            }
-        }
-
-        // if path is relative, it cannot be an external path
-        // (see http://dev.eclipse.org/bugs/show_bug.cgi?id=22517)
-        if (!path.isAbsolute()) {
-            return null;
-        }
-
-        // lookup - outside the container
-        final File externalFile = new File(path.toOSString());
-        if (!checkResourceExistence) {
-            return externalFile;
-        }
-        if (externalFile.exists()) {
-            return externalFile;
-        }
-        return null;
     }
 
     @Override
@@ -1180,8 +1137,8 @@ public class ErlModel extends Openable implements IErlModel {
                 return include;
             }
         }
-        return findIncludeFromProject(module.getProject(), includeName,
-                includePath, false, true, scope);
+        return findIncludeFromProject(ModelUtils.getProject(module),
+                includeName, includePath, false, true, scope);
     }
 
     private final Object fModelLock = new Object();

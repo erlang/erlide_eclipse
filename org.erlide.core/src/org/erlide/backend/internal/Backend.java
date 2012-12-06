@@ -69,6 +69,7 @@ import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -325,10 +326,12 @@ public abstract class Backend implements IStreamListener, IBackend {
         return "";
     }
 
-    private boolean init(final OtpErlangPid jRex, final boolean monitor,
-            final boolean watch) {
+    private boolean init(final OtpErlangPid jRex, final boolean watch) {
         try {
-            call("erlide_kernel_common", "init", "poo", jRex, monitor, watch);
+            call("erlide_kernel_common", "init", "poii", jRex, watch,
+                    SystemConfiguration.getInstance()
+                            .getWarnProcessSizeLimitMB(), SystemConfiguration
+                            .getInstance().getKillProcessSizeLimitMB());
             // TODO should use extension point!
             call("erlide_kernel_builder", "init", "");
             call("erlide_kernel_ide", "init", "");
@@ -441,9 +444,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         codeManager.addPath(usePathZ, path);
     }
 
-    public synchronized void initErlang(final boolean monitor,
-            final boolean watch) {
-        init(getEventPid(), monitor, watch);
+    public synchronized void initErlang(final boolean watch) {
+        init(getEventPid(), watch);
 
         // data.monitor = monitor;
         // data.managed = watch;
@@ -844,7 +846,7 @@ public abstract class Backend implements IStreamListener, IBackend {
             for (final ICodeBundle bb : bm.getCodeBundles().values()) {
                 registerCodeBundle(bb);
             }
-            initErlang(data.isMonitored(), data.isManaged());
+            initErlang(data.isManaged());
 
             try {
                 postLaunch();

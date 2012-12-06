@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.eclipse.xtext.xbase.lib.Pair;
+
 import com.google.common.collect.Lists;
 
 public class StringUtils {
@@ -238,14 +240,14 @@ public class StringUtils {
      * Splits some string given some char in 2 parts. If the separator is not
      * found, everything is put in the 1st part.
      */
-    public static Tuple<String, String> splitOnFirst(final String fullRep,
+    public static Pair<String, String> splitOnFirst(final String fullRep,
             final char toSplit) {
         final int i = fullRep.indexOf(toSplit);
         if (i != -1) {
-            return new Tuple<String, String>(fullRep.substring(0, i),
+            return new Pair<String, String>(fullRep.substring(0, i),
                     fullRep.substring(i + 1));
         } else {
-            return new Tuple<String, String>(fullRep, "");
+            return new Pair<String, String>(fullRep, "");
         }
 
     }

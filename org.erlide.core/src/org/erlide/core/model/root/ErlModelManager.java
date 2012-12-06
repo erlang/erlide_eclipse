@@ -5,15 +5,15 @@ import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.ErlangToolkitFactory;
 
 public class ErlModelManager {
-    private static volatile ErlModel fgErlangModel;
+    private static volatile ErlModel erlangModel;
 
     public static synchronized final IErlModel getErlangModel() {
-        if (fgErlangModel == null) {
+        if (erlangModel == null) {
             final ErlangToolkit toolkit = ErlangToolkitFactory.getInstance();
-            fgErlangModel = new ErlModel(toolkit);
-            fgErlangModel.buildStructure(null);
+            erlangModel = new ErlModel(toolkit);
+            erlangModel.buildStructure(null);
         }
-        return fgErlangModel;
+        return erlangModel;
     }
 
 }

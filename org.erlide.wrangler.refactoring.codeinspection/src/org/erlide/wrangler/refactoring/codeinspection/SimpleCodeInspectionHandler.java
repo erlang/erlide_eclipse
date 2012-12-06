@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -353,8 +353,9 @@ public class SimpleCodeInspectionHandler extends AbstractHandler implements
         final String function = ((OtpErlangAtom) fTuple.elementAt(1))
                 .atomValue();
         final int arity = ((OtpErlangLong) fTuple.elementAt(2)).intValue();
-        final IErlFunctionClause f = mod.getModel().findFunction(
-                new FunctionRef(mod.getModuleName(), function, arity));
+        final IErlFunctionClause f = ErlModelManager.getErlangModel()
+                .findFunction(
+                        new FunctionRef(mod.getModuleName(), function, arity));
         return f;
     }
 

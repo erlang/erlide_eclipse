@@ -13,6 +13,7 @@ import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.shade.bterl.builder.ErlTestNature;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchShortcut;
 
@@ -125,7 +126,7 @@ public class TestRunnableTester extends PropertyTester {
     static boolean isTestCase(final Object receiver) {
         if (receiver instanceof IErlFunction) {
             final IErlFunction fun = (IErlFunction) receiver;
-            final IErlModule mod = fun.getModule();
+            final IErlModule mod = ModelUtils.getModule(fun);
             final IResource file = mod.getResource();
             return isTestSuite(file) && fun.isExported();
         }
@@ -133,7 +134,8 @@ public class TestRunnableTester extends PropertyTester {
             final IErlFunctionClause clause = (IErlFunctionClause) receiver;
             final ErlangFunction fc = new ErlangFunction(
                     clause.getFunctionName(), clause.getArity());
-            final IErlFunction fun = clause.getModule().findFunction(fc);
+            final IErlFunction fun = ModelUtils.getModule(clause).findFunction(
+                    fc);
             return fun != null && isTestCase(fun);
         }
         return false;

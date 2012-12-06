@@ -7,6 +7,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.core.internal.model.erlang.ErlFunction;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 
@@ -26,8 +27,8 @@ public class RemoveTracePatternWithNoArityHandler extends AbstractHandler {
                 final ErlFunction function = (ErlFunction) firstElement;
                 final TracePattern tracePattern = new TracePattern(true);
                 tracePattern.setFunctionName(function.getFunctionName());
-                tracePattern
-                        .setModuleName(function.getModule().getModuleName());
+                tracePattern.setModuleName(ModelUtils.getModule(function)
+                        .getModuleName());
                 TraceBackend.getInstance().removeTracePattern(tracePattern);
             }
         }

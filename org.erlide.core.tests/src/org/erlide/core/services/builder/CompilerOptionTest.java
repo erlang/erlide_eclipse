@@ -8,7 +8,7 @@ import org.erlide.core.services.builder.CompilerOption.BooleanOption;
 import org.erlide.core.services.builder.CompilerOption.DefineOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.utils.TermParserException;
-import org.erlide.utils.Tuple;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -59,8 +59,8 @@ public class CompilerOptionTest {
     public void testToTerm_5() throws TermParserException {
         final DefineOption option = CompilerOption.DEFINE;
         @SuppressWarnings("unchecked")
-        final List<Tuple<String, String>> values = Lists
-                .newArrayList(new Tuple<String, String>("Macro", "[hej,1]"));
+        final List<Pair<String, String>> values = Lists
+                .newArrayList(new Pair<String, String>("Macro", "[hej,1]"));
         final OtpErlangObject actual = option.toTerm(values);
         final String expected = "[{d,'Macro',[hej,1]}]";
         Assert.assertEquals(expected, actual.toString());
@@ -70,8 +70,8 @@ public class CompilerOptionTest {
     public void testToTerm_5a() throws TermParserException {
         final DefineOption option = CompilerOption.DEFINE;
         @SuppressWarnings("unchecked")
-        final List<Tuple<String, String>> values = Lists
-                .newArrayList(new Tuple<String, String>("Macro", ""));
+        final List<Pair<String, String>> values = Lists
+                .newArrayList(new Pair<String, String>("Macro", ""));
         final OtpErlangObject actual = option.toTerm(values);
         final String expected = "[{d,'Macro'}]";
         Assert.assertEquals(expected, actual.toString());

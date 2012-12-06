@@ -54,12 +54,6 @@ public class HostnameUtils {
      * Start erlang nodes and find out how they resolve the long/short host
      * names.
      */
-    public static void detectHostNames() {
-        final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
-                .getErlideRuntime();
-        detectHostNames(runtime);
-    }
-
     public static void detectHostNames(final RuntimeInfo runtime) {
         final ErlangHostnameRetriever retriever = new ErlangHostnameRetriever(
                 runtime);

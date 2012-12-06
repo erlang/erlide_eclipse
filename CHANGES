@@ -1,3 +1,11 @@
+List of user visible changes between 0.17.5 and 0.17.6 (20121206)
+
+4139bbd simplify and improve process heap monitoring
+c0aa677 1096: search_server kills VM because of too much memory usage
+01faad6 add debug info to hostnameRetriever
+5681650 1093: task reminders are created at build only
+7e0e996 1063: docs: navigate links in OTP docs
+
 List of user visible changes between 0.17.4 and 0.17.5 (20121126)
 
 9df0f09 content describer: accept case insensitive encoding tags

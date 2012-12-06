@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -30,6 +30,7 @@ import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.selection.IErlMemberSelection;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
@@ -94,8 +95,8 @@ public class RemoteFunctionClauseDialog extends AbstractInputDialog {
         functionClausesTree.setLayoutData(treeData);
 
         try {
-            final Collection<IErlModule> erlmodules = GlobalParameters
-                    .getWranglerSelection().getErlElement().getProject()
+            final Collection<IErlModule> erlmodules = ModelUtils.getProject(
+                    GlobalParameters.getWranglerSelection().getErlElement())
                     .getModules();
 
             for (final IErlModule m : erlmodules) {

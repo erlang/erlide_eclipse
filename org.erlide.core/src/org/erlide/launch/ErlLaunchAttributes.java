@@ -55,7 +55,5 @@ public interface ErlLaunchAttributes {
 
     final String MANAGED = prefix + ".managed";
 
-    final String MONITORED = prefix + ".monitored";
-
     final String SHELL = prefix + ".startShell";
 }

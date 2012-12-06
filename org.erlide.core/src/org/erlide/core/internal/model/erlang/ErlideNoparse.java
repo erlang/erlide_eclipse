@@ -1,5 +1,6 @@
 package org.erlide.core.internal.model.erlang;
 
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -93,5 +94,19 @@ public class ErlideNoparse {
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
+    }
+
+    public static OtpErlangTuple initialParse(final String scannerName,
+            final String path, final String stateDir, final boolean useCaches,
+            final boolean b) {
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
+        return initialParse(backend, scannerName, path, stateDir, useCaches, b);
+    }
+
+    public static OtpErlangTuple reparse(final String scannerName) {
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
+        return reparse(backend, scannerName);
     }
 }

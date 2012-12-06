@@ -223,16 +223,12 @@ public class ErlTextHover implements ITextHover,
         }
     }
 
-    public static String getHoverTextForOffset(final int offset,
-            final ErlangEditor editor) {
+    public static ErlBrowserInformationControlInput getHoverInfoForOffset(
+            final int offset, final ErlangEditor editor) {
         final ITextViewer textViewer = editor.getViewer();
         final IRegion region = internalGetHoverRegion(offset, editor);
         if (region != null) {
-            final ErlBrowserInformationControlInput hoverInfo = internalGetHoverInfo(
-                    editor, textViewer, region);
-            if (hoverInfo != null) {
-                return hoverInfo.getHtml();
-            }
+            return internalGetHoverInfo(editor, textViewer, region);
         }
         return null;
     }
@@ -290,7 +286,7 @@ public class ErlTextHover implements ITextHover,
         }
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
-        final IErlProject erlProject = module.getProject();
+        final IErlProject erlProject = ModelUtils.getProject(module);
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final IBackend ide = backendManager.getIdeBackend();
@@ -345,7 +341,7 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         final String strResult = HoverUtil.getHTMLAndReplaceJSLinks(result);
-        return new ErlBrowserInformationControlInput(null, moduleName, element,
-                strResult, 20, docPath, anchor);
+        return new ErlBrowserInformationControlInput(null, editor, moduleName,
+                element, strResult, 20, docPath, anchor);
     }
 }

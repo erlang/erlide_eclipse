@@ -164,4 +164,6 @@ public interface IErlModel extends IErlElement, IOpenable, IParent,
     IErlParser getParser();
 
     ErlangToolkit getToolkit();
+
+    Object getModelLock();
 }

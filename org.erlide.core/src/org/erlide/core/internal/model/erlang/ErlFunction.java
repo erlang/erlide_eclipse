@@ -20,6 +20,7 @@ import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
+import org.erlide.core.model.util.ModelUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Lists;
@@ -85,7 +86,7 @@ public class ErlFunction extends ErlMember implements IErlFunction, IParent {
 
     @Override
     public boolean isExported() {
-        return fExported || getModule().exportsAllFunctions();
+        return fExported || ModelUtils.getModule(this).exportsAllFunctions();
     }
 
     public void setArity(final int i) {

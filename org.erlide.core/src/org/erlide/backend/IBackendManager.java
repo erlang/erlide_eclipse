@@ -6,9 +6,10 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.xtext.xbase.lib.Pair;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.jinterface.epmd.EpmdWatcher;
-import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {
@@ -26,9 +27,9 @@ public interface IBackendManager {
     Collection<IBackend> getAllBackends();
 
     void addBundle(Bundle b, Map<String, CodeContext> paths,
-            Collection<Tuple<String, String>> inits);
+            Collection<Pair<String, String>> inits);
 
-    void forEachBackend(final IErlideBackendVisitor visitor);
+    void forEachBackend(final Procedure1<IBackend> visitor);
 
     void updateNodeStatus(final String host, final Collection<String> started,
             final Collection<String> stopped);

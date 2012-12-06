@@ -1,0 +1,1822 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local-project language="java" version="2.0.4044" flavor="j2se">
+  <property name="hide-externals" value="true" />
+  <property name="show-needs-to-compile" value="false" />
+  <property name="detail-mode" value="true" />
+  <property name="project-type" value="classpath" />
+  <property name="action-set-mod" value="10" />
+  <property name="hide-deprecated" value="false" />
+  <property name="parse-archive-in-archive" value="false" />
+  <classpath relativeto="/home/qvladum/erlide/meta/architecture">
+    <classpathentry kind="lib" path="../../org.erlide.ui/bin" />
+  </classpath>
+  <pom-root-files />
+  <restructuring>
+    <set version="2" name="List 1" hiview="Codemap" active="true" todo="false">
+      <hide>
+        <item-fqn fqn="com" type="package">
+          <node name="com" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.eclipse" type="package">
+          <node name="org" type="package" />
+          <node name="eclipse" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.ErlideUIDebugImages" type="class" path="org.erlide.ui.ErlideUIDebugImages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="ErlideUIDebugImages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.wizards" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="wizards" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.dialogfields" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="dialogfields" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.ErlideImagePrefix" type="class" path="org.erlide.ui.ErlideImagePrefix">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="ErlideImagePrefix" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.properties" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="properties" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.launch" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="launch" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.dialogs" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="dialogs" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.ErlideUIConstants" type="class" path="org.erlide.ui.ErlideUIConstants">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="ErlideUIConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.handlers" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="handlers" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.KeyBindingHelper" type="class" path="org.erlide.ui.KeyBindingHelper">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="KeyBindingHelper" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.UIMessageReporter" type="class" path="org.erlide.ui.UIMessageReporter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="UIMessageReporter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.jinterface" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="jinterface" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.perspectives" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="perspectives" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.ErlDragAdapterAssistant" type="class" path="org.erlide.ui.ErlDragAdapterAssistant">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="ErlDragAdapterAssistant" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.ErlideUIMessages" type="class" path="org.erlide.ui.ErlideUIMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="ErlideUIMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.ReportPreferencePage" type="class" path="org.erlide.ui.prefs.ReportPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="ReportPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.ProjectSelectionDialog" type="class" path="org.erlide.ui.prefs.ProjectSelectionDialog">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="ProjectSelectionDialog" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.FoldingConfigurationBlock" type="class" path="org.erlide.ui.prefs.FoldingConfigurationBlock">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="FoldingConfigurationBlock" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.PreferenceConstants" type="class" path="org.erlide.ui.prefs.PreferenceConstants">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="PreferenceConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.AddRuntimeDialog" type="class" path="org.erlide.ui.prefs.AddRuntimeDialog">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="AddRuntimeDialog" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.InternalSettingsPreferencePage" type="class" path="org.erlide.ui.prefs.InternalSettingsPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="InternalSettingsPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.RuntimePreferenceMessages" type="class" path="org.erlide.ui.prefs.RuntimePreferenceMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="RuntimePreferenceMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.DialyzerPreferencePage" type="class" path="org.erlide.ui.prefs.DialyzerPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="DialyzerPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.RuntimePreferencePage" type="class" path="org.erlide.ui.prefs.RuntimePreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="RuntimePreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.PreferenceMessages" type="class" path="org.erlide.ui.prefs.PreferenceMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="PreferenceMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.TokenHighlight" type="class" path="org.erlide.ui.prefs.TokenHighlight">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="TokenHighlight" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.ProblemData" type="class" path="org.erlide.ui.prefs.ProblemData">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="ProblemData" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.SyntaxColorPreviewHighlightScanner" type="class" path="org.erlide.ui.prefs.SyntaxColorPreviewHighlightScanner">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="SyntaxColorPreviewHighlightScanner" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.OtpDirectoryFieldEditor" type="class" path="org.erlide.ui.prefs.OtpDirectoryFieldEditor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="OtpDirectoryFieldEditor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.CompilerPreferencePage" type="class" path="org.erlide.ui.prefs.CompilerPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="CompilerPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.HighlightStyle" type="class" path="org.erlide.ui.prefs.HighlightStyle">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="HighlightStyle" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.tickets" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="tickets" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.TroubleshootingPreferencePage" type="class" path="org.erlide.ui.prefs.TroubleshootingPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="TroubleshootingPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.IPreferenceConfigurationBlock" type="class" path="org.erlide.ui.prefs.IPreferenceConfigurationBlock">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="IPreferenceConfigurationBlock" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.ErlangPreferencePage" type="class" path="org.erlide.ui.prefs.ErlangPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="ErlangPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.PerformanceTuningPreferencePage" type="class" path="org.erlide.ui.prefs.PerformanceTuningPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="PerformanceTuningPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.PreferencesInitializer" type="class" path="org.erlide.ui.prefs.PreferencesInitializer">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="PreferencesInitializer" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.IAddDialogRequestor" type="class" path="org.erlide.ui.prefs.IAddDialogRequestor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="IAddDialogRequestor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.ColoringPreferencePage" type="class" path="org.erlide.ui.prefs.plugin.ColoringPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="ColoringPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.CodeAssistPreferences" type="class" path="org.erlide.ui.prefs.plugin.CodeAssistPreferences">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="CodeAssistPreferences" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.ErlEditorMessages" type="class" path="org.erlide.ui.prefs.plugin.ErlEditorMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="ErlEditorMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.PreferencesMessages" type="class" path="org.erlide.ui.prefs.plugin.PreferencesMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="PreferencesMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.internal" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="internal" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.CodeAssistPreferencePage" type="class" path="org.erlide.ui.prefs.plugin.CodeAssistPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="CodeAssistPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.BuilderPreferencePage" type="class" path="org.erlide.ui.prefs.plugin.BuilderPreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="BuilderPreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.prefs.plugin.CodeAssistPreferencesConstants" type="class" path="org.erlide.ui.prefs.plugin.CodeAssistPreferencesConstants">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="prefs" type="package" />
+          <node name="plugin" type="package" />
+          <node name="CodeAssistPreferencesConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ErlEditorActionBarContributor" type="class" path="org.erlide.ui.editors.erl.ErlEditorActionBarContributor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ErlEditorActionBarContributor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant" type="class" path="org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ErlangDocumentSetupParticipant" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ErlangEditorMessages" type="class" path="org.erlide.ui.editors.erl.ErlangEditorMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ErlangEditorMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds" type="class" path="org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="IErlangEditorActionDefinitionIds" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration" type="class" path="org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ErlangSourceViewerConfiguration" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ErlangPairMatcher" type="class" path="org.erlide.ui.editors.erl.ErlangPairMatcher">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ErlangPairMatcher" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.scanner" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="scanner" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.test" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="test" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.folding" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="folding" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.hyperlink" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="hyperlink" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.DoubleClickStrategy" type="class" path="org.erlide.ui.editors.erl.DoubleClickStrategy">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="DoubleClickStrategy" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ColorManager" type="class" path="org.erlide.ui.editors.erl.ColorManager">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ColorManager" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.IErlangHelpContextIds" type="class" path="org.erlide.ui.editors.erl.IErlangHelpContextIds">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="IErlangHelpContextIds" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.handlers" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="handlers" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.SyntaxColorPreviewEditorConfiguration" type="class" path="org.erlide.ui.editors.erl.SyntaxColorPreviewEditorConfiguration">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="SyntaxColorPreviewEditorConfiguration" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.SimpleSelectionProvider" type="class" path="org.erlide.ui.editors.erl.SimpleSelectionProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="SimpleSelectionProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.correction" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="correction" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.ErlangPresentationReconciler" type="class" path="org.erlide.ui.editors.erl.ErlangPresentationReconciler">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="ErlangPresentationReconciler" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.IErlReconcileListener" type="class" path="org.erlide.ui.editors.erl.IErlReconcileListener">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="IErlReconcileListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.hover.IErlangAnnotation" type="class" path="org.erlide.ui.editors.erl.hover.IErlangAnnotation">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="hover" type="package" />
+          <node name="IErlangAnnotation" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator" type="class" path="org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="hover" type="package" />
+          <node name="ErlangAnnotationIterator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.OpenAndLinkWithEditorHelper" type="class" path="org.erlide.ui.editors.erl.outline.OpenAndLinkWithEditorHelper">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="OpenAndLinkWithEditorHelper" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.ErlangElementLabels" type="class" path="org.erlide.ui.editors.erl.outline.ErlangElementLabels">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="ErlangElementLabels" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.IOutlineContentCreator" type="class" path="org.erlide.ui.editors.erl.outline.IOutlineContentCreator">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="IOutlineContentCreator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.QuickOutlineNamePatternFilter" type="class" path="org.erlide.ui.editors.erl.outline.QuickOutlineNamePatternFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="QuickOutlineNamePatternFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler" type="class" path="org.erlide.ui.editors.erl.outline.ShowCustomOutlineFiltersDialogHandler">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="ShowCustomOutlineFiltersDialogHandler" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.QuickOutlineMouseMoveListener" type="class" path="org.erlide.ui.editors.erl.outline.QuickOutlineMouseMoveListener">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="QuickOutlineMouseMoveListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler" type="class" path="org.erlide.ui.editors.erl.outline.IOutlineSelectionHandler">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="IOutlineSelectionHandler" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage" type="class" path="org.erlide.ui.editors.erl.outline.ISortableContentOutlinePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="ISortableContentOutlinePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.CustomOutlineFiltersDialog" type="class" path="org.erlide.ui.editors.erl.outline.filters.CustomOutlineFiltersDialog">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="CustomOutlineFiltersDialog" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.FilterDescriptor" type="class" path="org.erlide.ui.editors.erl.outline.filters.FilterDescriptor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="FilterDescriptor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.ToolbarFilterHandler" type="class" path="org.erlide.ui.editors.erl.outline.filters.ToolbarFilterHandler">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="ToolbarFilterHandler" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.TypespecFilter" type="class" path="org.erlide.ui.editors.erl.outline.filters.TypespecFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="TypespecFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.AttributesFilter" type="class" path="org.erlide.ui.editors.erl.outline.filters.AttributesFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="AttributesFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.ErlangViewerFilter" type="class" path="org.erlide.ui.editors.erl.outline.filters.ErlangViewerFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="ErlangViewerFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.LocalFunctionsFilter" type="class" path="org.erlide.ui.editors.erl.outline.filters.LocalFunctionsFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="LocalFunctionsFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.outline.filters.MacrosRecordsTypesFilter" type="class" path="org.erlide.ui.editors.erl.outline.filters.MacrosRecordsTypesFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="outline" type="package" />
+          <node name="filters" type="package" />
+          <node name="MacrosRecordsTypesFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.completion.ErlangContextType" type="class" path="org.erlide.ui.editors.erl.completion.ErlangContextType">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="completion" type="package" />
+          <node name="ErlangContextType" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.completion.NoCompletionsProposal" type="class" path="org.erlide.ui.editors.erl.completion.NoCompletionsProposal">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="completion" type="package" />
+          <node name="NoCompletionsProposal" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.completion.DummyCompletionProposal" type="class" path="org.erlide.ui.editors.erl.completion.DummyCompletionProposal">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="completion" type="package" />
+          <node name="DummyCompletionProposal" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.completion.ErlCompletionProposal" type="class" path="org.erlide.ui.editors.erl.completion.ErlCompletionProposal">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="completion" type="package" />
+          <node name="ErlCompletionProposal" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.actions.CleanUpAction" type="class" path="org.erlide.ui.editors.erl.actions.CleanUpAction">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="actions" type="package" />
+          <node name="CleanUpAction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.erl.actions.GotoAnnotationAction" type="class" path="org.erlide.ui.editors.erl.actions.GotoAnnotationAction">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="erl" type="package" />
+          <node name="actions" type="package" />
+          <node name="GotoAnnotationAction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.util.ErlangExternalEditorInput" type="class" path="org.erlide.ui.editors.util.ErlangExternalEditorInput">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="util" type="package" />
+          <node name="ErlangExternalEditorInput" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.util.ErlangExternalEditorInputFactory" type="class" path="org.erlide.ui.editors.util.ErlangExternalEditorInputFactory">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="util" type="package" />
+          <node name="ErlangExternalEditorInputFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.util.IErlangExternalEditorInput" type="class" path="org.erlide.ui.editors.util.IErlangExternalEditorInput">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="util" type="package" />
+          <node name="IErlangExternalEditorInput" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.internal.reconciling.ErlDirtyRegionQueue" type="class" path="org.erlide.ui.editors.internal.reconciling.ErlDirtyRegionQueue">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="internal" type="package" />
+          <node name="reconciling" type="package" />
+          <node name="ErlDirtyRegionQueue" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.internal.reconciling.ErlDirtyRegion" type="class" path="org.erlide.ui.editors.internal.reconciling.ErlDirtyRegion">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="internal" type="package" />
+          <node name="reconciling" type="package" />
+          <node name="ErlDirtyRegion" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.editors.internal.reconciling.IErlReconcilingStrategy" type="class" path="org.erlide.ui.editors.internal.reconciling.IErlReconcilingStrategy">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="editors" type="package" />
+          <node name="internal" type="package" />
+          <node name="reconciling" type="package" />
+          <node name="IErlReconcilingStrategy" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.compare" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="compare" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.util" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="util" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.DocumentCharacterIterator" type="class" path="org.erlide.ui.internal.DocumentCharacterIterator">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="DocumentCharacterIterator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.ErlBrowserInformationControlInput" type="class" path="org.erlide.ui.internal.ErlBrowserInformationControlInput">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="ErlBrowserInformationControlInput" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.hover" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="hover" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.ErlangSearchPage" type="class" path="org.erlide.ui.internal.search.ErlangSearchPage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="ErlangSearchPage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.LRUWorkingSetsList" type="class" path="org.erlide.ui.internal.search.LRUWorkingSetsList">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="LRUWorkingSetsList" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.SearchResultLabelProvider" type="class" path="org.erlide.ui.internal.search.SearchResultLabelProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="SearchResultLabelProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.ErlangSearchElement" type="class" path="org.erlide.ui.internal.search.ErlangSearchElement">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="ErlangSearchElement" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.ErlangSearchResultPage" type="class" path="org.erlide.ui.internal.search.ErlangSearchResultPage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="ErlangSearchResultPage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.ErlangSearchContentProvider" type="class" path="org.erlide.ui.internal.search.ErlangSearchContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="ErlangSearchContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.OpenViewActionGroup" type="class" path="org.erlide.ui.internal.search.OpenViewActionGroup">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="OpenViewActionGroup" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.ErlangSearchTreeContentProvider" type="class" path="org.erlide.ui.internal.search.ErlangSearchTreeContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="ErlangSearchTreeContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.ErlangSearchTableContentProvider" type="class" path="org.erlide.ui.internal.search.ErlangSearchTableContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="ErlangSearchTableContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.IErlSearchContentProvider" type="class" path="org.erlide.ui.internal.search.IErlSearchContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="IErlSearchContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.search.NewErlSearchActionGroup" type="class" path="org.erlide.ui.internal.search.NewErlSearchActionGroup">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="search" type="package" />
+          <node name="NewErlSearchActionGroup" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.folding.ErlangFoldingStructureProviderDescriptor" type="class" path="org.erlide.ui.internal.folding.ErlangFoldingStructureProviderDescriptor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="folding" type="package" />
+          <node name="ErlangFoldingStructureProviderDescriptor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.folding.FoldingMessages" type="class" path="org.erlide.ui.internal.folding.FoldingMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="folding" type="package" />
+          <node name="FoldingMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.folding.DefaultErlangFoldingStructureProvider" type="class" path="org.erlide.ui.internal.folding.DefaultErlangFoldingStructureProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="folding" type="package" />
+          <node name="DefaultErlangFoldingStructureProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.folding.DefaultErlangFoldingPreferenceBlock" type="class" path="org.erlide.ui.internal.folding.DefaultErlangFoldingPreferenceBlock">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="folding" type="package" />
+          <node name="DefaultErlangFoldingPreferenceBlock" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.folding.EmptyErlangFoldingPreferenceBlock" type="class" path="org.erlide.ui.internal.folding.EmptyErlangFoldingPreferenceBlock">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="folding" type="package" />
+          <node name="EmptyErlangFoldingPreferenceBlock" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.information.HoverUtil" type="class" path="org.erlide.ui.internal.information.HoverUtil">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="information" type="package" />
+          <node name="HoverUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.information.OpenBrowserUtil" type="class" path="org.erlide.ui.internal.information.OpenBrowserUtil">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="information" type="package" />
+          <node name="OpenBrowserUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.internal.information.ErlInformationPresenter" type="class" path="org.erlide.ui.internal.information.ErlInformationPresenter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="internal" type="package" />
+          <node name="information" type="package" />
+          <node name="ErlInformationPresenter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.ResourceTreeAndListGroup" type="class" path="org.erlide.ui.util.ResourceTreeAndListGroup">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="ResourceTreeAndListGroup" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.DialogUtil" type="class" path="org.erlide.ui.util.DialogUtil">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="DialogUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.OverlayPreferenceStore" type="class" path="org.erlide.ui.util.OverlayPreferenceStore">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="OverlayPreferenceStore" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.IContextMenuConstants" type="class" path="org.erlide.ui.util.IContextMenuConstants">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="IContextMenuConstants" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.ErlideSelection" type="class" path="org.erlide.ui.util.ErlideSelection">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="ErlideSelection" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.eclipse" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="eclipse" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.StringMatcher" type="class" path="org.erlide.ui.util.StringMatcher">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="StringMatcher" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.BackendManagerPopup" type="class" path="org.erlide.ui.util.BackendManagerPopup">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="BackendManagerPopup" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.StatusInfo" type="class" path="org.erlide.ui.util.StatusInfo">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="StatusInfo" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.PopupDialog" type="class" path="org.erlide.ui.util.PopupDialog">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="PopupDialog" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.TypedElementSelectionValidator" type="class" path="org.erlide.ui.util.TypedElementSelectionValidator">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="TypedElementSelectionValidator" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.SWTUtil" type="class" path="org.erlide.ui.util.SWTUtil">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="SWTUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.ImageImageDescriptor" type="class" path="org.erlide.ui.util.ImageImageDescriptor">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="ImageImageDescriptor" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.IProblemChangedListener" type="class" path="org.erlide.ui.util.IProblemChangedListener">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="IProblemChangedListener" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.PixelConverter" type="class" path="org.erlide.ui.util.PixelConverter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="PixelConverter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.IElementFilter" type="class" path="org.erlide.ui.util.IElementFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="IElementFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.ImageDescriptorRegistry" type="class" path="org.erlide.ui.util.ImageDescriptorRegistry">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="ImageDescriptorRegistry" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.text" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="text" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.ErlangModuleAnnotationModelEvent" type="class" path="org.erlide.ui.util.ErlangModuleAnnotationModelEvent">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="ErlangModuleAnnotationModelEvent" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.PerformanceTuning" type="class" path="org.erlide.ui.util.PerformanceTuning">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="PerformanceTuning" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.EditorInputToModuleAdapterFactory" type="class" path="org.erlide.ui.util.EditorInputToModuleAdapterFactory">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="EditorInputToModuleAdapterFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.StatusUtil" type="class" path="org.erlide.ui.util.StatusUtil">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="StatusUtil" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.ProblemMarkerManager" type="class" path="org.erlide.ui.util.ProblemMarkerManager">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="ProblemMarkerManager" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.TypedViewerFilter" type="class" path="org.erlide.ui.util.TypedViewerFilter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="TypedViewerFilter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.FolderSelectionDialog" type="class" path="org.erlide.ui.util.FolderSelectionDialog">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="FolderSelectionDialog" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.UIStringUtils" type="class" path="org.erlide.ui.util.UIStringUtils">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="UIStringUtils" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.util.IColorManager" type="class" path="org.erlide.ui.util.IColorManager">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="util" type="package" />
+          <node name="IColorManager" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.TraceLogView" type="class" path="org.erlide.ui.views.TraceLogView">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="TraceLogView" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.EpmdView" type="class" path="org.erlide.ui.views.EpmdView">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="EpmdView" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.processlist" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="processlist" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.eval" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="eval" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.ErlLoggerView" type="class" path="org.erlide.ui.views.ErlLoggerView">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="ErlLoggerView" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.BackendContentProvider" type="class" path="org.erlide.ui.views.BackendContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="BackendContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.BackendLabelProvider" type="class" path="org.erlide.ui.views.BackendLabelProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="BackendLabelProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.ErlPatternMatchListenerDelegate" type="class" path="org.erlide.ui.views.ErlPatternMatchListenerDelegate">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="ErlPatternMatchListenerDelegate" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.views.CopyToClipboardAction" type="class" path="org.erlide.ui.views.CopyToClipboardAction">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+          <node name="CopyToClipboardAction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.IoRequestScanner" type="class" path="org.erlide.ui.console.IoRequestScanner">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="IoRequestScanner" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ConsolePageParticipant" type="class" path="org.erlide.ui.console.ConsolePageParticipant">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ConsolePageParticipant" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ScriptStyleRange" type="class" path="org.erlide.ui.console.ScriptStyleRange">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ScriptStyleRange" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.actions" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="actions" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ErlangConsolePartitioner" type="class" path="org.erlide.ui.console.ErlangConsolePartitioner">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ErlangConsolePartitioner" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ErlangConsoleHistory" type="class" path="org.erlide.ui.console.ErlangConsoleHistory">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ErlangConsoleHistory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ConsoleOutputScanner" type="class" path="org.erlide.ui.console.ConsoleOutputScanner">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ConsoleOutputScanner" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ErlConsoleDocument" type="class" path="org.erlide.ui.console.ErlConsoleDocument">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ErlConsoleDocument" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.console.ConsoleMessages" type="class" path="org.erlide.ui.console.ConsoleMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="console" type="package" />
+          <node name="ConsoleMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.templates.ModuleVariableResolver" type="class" path="org.erlide.ui.templates.ModuleVariableResolver">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="templates" type="package" />
+          <node name="ModuleVariableResolver" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.templates.ErlTemplatePreferencePage" type="class" path="org.erlide.ui.templates.ErlTemplatePreferencePage">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="templates" type="package" />
+          <node name="ErlTemplatePreferencePage" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.templates.ErlangSourceContextTypeModuleElement" type="class" path="org.erlide.ui.templates.ErlangSourceContextTypeModuleElement">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="templates" type="package" />
+          <node name="ErlangSourceContextTypeModuleElement" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.actions.ToggleNatureAction" type="class" path="org.erlide.ui.actions.ToggleNatureAction">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+          <node name="ToggleNatureAction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.actions.ActionMessages" type="class" path="org.erlide.ui.actions.ActionMessages">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+          <node name="ActionMessages" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.actions.SelectionDispatchAction" type="class" path="org.erlide.ui.actions.SelectionDispatchAction">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+          <node name="SelectionDispatchAction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.actions.OpenEditorActionGroup" type="class" path="org.erlide.ui.actions.OpenEditorActionGroup">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+          <node name="OpenEditorActionGroup" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.actions.CompositeActionGroup" type="class" path="org.erlide.ui.actions.CompositeActionGroup">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+          <node name="CompositeActionGroup" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.actions.ErlangLinkHelperAction" type="class" path="org.erlide.ui.actions.ErlangLinkHelperAction">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+          <node name="ErlangLinkHelperAction" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.navigator.actions" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="navigator" type="package" />
+          <node name="actions" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.navigator.ErlangExternalsContentProvider" type="class" path="org.erlide.ui.navigator.ErlangExternalsContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="navigator" type="package" />
+          <node name="ErlangExternalsContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.navigator.ErlElementPositionSorter" type="class" path="org.erlide.ui.navigator.ErlElementPositionSorter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="navigator" type="package" />
+          <node name="ErlElementPositionSorter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.navigator.ErlangFileContentProvider" type="class" path="org.erlide.ui.navigator.ErlangFileContentProvider">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="navigator" type="package" />
+          <node name="ErlangFileContentProvider" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.navigator.ErlElementSorter" type="class" path="org.erlide.ui.navigator.ErlElementSorter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="navigator" type="package" />
+          <node name="ErlElementSorter" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.ui.navigator.dnd" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="ui" type="package" />
+          <node name="navigator" type="package" />
+          <node name="dnd" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.actions" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="actions" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.tracing" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="tracing" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.properties" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="properties" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.views" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="views" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.utils" type="package">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="utils" type="package" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.model.ErlDebugModelPresentation" type="class" path="org.erlide.debug.ui.model.ErlDebugModelPresentation">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlDebugModelPresentation" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.model.HotCodeReplaceErrorDialog" type="class" path="org.erlide.debug.ui.model.HotCodeReplaceErrorDialog">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="model" type="package" />
+          <node name="HotCodeReplaceErrorDialog" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.model.ErlBreakpointAdapterFactory" type="class" path="org.erlide.debug.ui.model.ErlBreakpointAdapterFactory">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlBreakpointAdapterFactory" type="class" />
+        </item-fqn>
+      </hide>
+      <hide>
+        <item-fqn fqn="org.erlide.debug.ui.model.ErlLineBreakpointAdapter" type="class" path="org.erlide.debug.ui.model.ErlLineBreakpointAdapter">
+          <node name="org" type="package" />
+          <node name="erlide" type="package" />
+          <node name="debug" type="package" />
+          <node name="ui" type="package" />
+          <node name="model" type="package" />
+          <node name="ErlLineBreakpointAdapter" type="class" />
+        </item-fqn>
+      </hide>
+    </set>
+  </restructuring>
+</local-project>
+

@@ -19,6 +19,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
@@ -31,11 +32,11 @@ import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.util.CoreUtil;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.codeassist.ErlideContextAssist;
@@ -96,18 +97,18 @@ public abstract class AbstractErlContentAssistProcessor {
 
     protected enum Kinds {
         //@formatter:off
-        DECLARED_FUNCTIONS, 
-        EXTERNAL_FUNCTIONS, 
-        VARIABLES, 
-        RECORD_FIELDS, 
-        RECORD_DEFS, 
-        MODULES, 
-        MACRO_DEFS, 
-        IMPORTED_FUNCTIONS, 
-        AUTO_IMPORTED_FUNCTIONS, 
-        ARITY_ONLY, 
-        UNEXPORTED_ONLY, 
-        INCLUDES, 
+        DECLARED_FUNCTIONS,
+        EXTERNAL_FUNCTIONS,
+        VARIABLES,
+        RECORD_FIELDS,
+        RECORD_DEFS,
+        MODULES,
+        MACRO_DEFS,
+        IMPORTED_FUNCTIONS,
+        AUTO_IMPORTED_FUNCTIONS,
+        ARITY_ONLY,
+        UNEXPORTED_ONLY,
+        INCLUDES,
         INCLUDE_LIBS
         //@formatter:on
     }
@@ -128,7 +129,7 @@ public abstract class AbstractErlContentAssistProcessor {
             throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
         if (module != null) {
-            final IErlProject project = module.getProject();
+            final IErlProject project = ModelUtils.getProject(module);
             final boolean includes = kind == Kinds.INCLUDES
                     || kind == Kinds.INCLUDE_LIBS;
             final List<String> names = ModelUtils.findUnitsWithPrefix(prefix,
@@ -177,7 +178,7 @@ public abstract class AbstractErlContentAssistProcessor {
             Set<Kinds> flags = EnumSet.noneOf(Kinds.class);
             int pos;
             String moduleOrRecord = null;
-            final IErlProject erlProject = module.getProject();
+            final IErlProject erlProject = ModelUtils.getProject(module);
             final IProject project = erlProject != null ? erlProject
                     .getWorkspaceProject() : null;
             IErlElement element = getElementAt(offset);
@@ -187,7 +188,7 @@ public abstract class AbstractErlContentAssistProcessor {
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
                 rc = ErlideContextAssist.checkRecordCompletion(
-                        CoreUtil.getBuildOrIdeBackend(project), before);
+                        BackendCore.getBuildOrIdeBackend(project), before);
             }
             if (rc != null && rc.isNameWanted()) {
                 flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -288,7 +289,7 @@ public abstract class AbstractErlContentAssistProcessor {
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final IBackend backend = CoreUtil.getBuildOrIdeBackend(project);
+        final IBackend backend = BackendCore.getBuildOrIdeBackend(project);
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
@@ -475,11 +476,12 @@ public abstract class AbstractErlContentAssistProcessor {
         moduleName = ModelUtils.resolveMacroValue(moduleName, module);
         // we have an external call
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
-        final IErlProject erlProject = module == null ? null : module
-                .getProject();
+        final IErlProject erlProject = module == null ? null : ModelUtils
+                .getProject(module);
         final boolean checkAllProjects = NavigationPreferencePage
                 .getCheckAllProjects();
-        final IErlModule theModule = ModelUtils.findModule(erlProject,
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlModule theModule = ModelUtils.findModule(model, erlProject,
                 moduleName, null,
                 checkAllProjects ? IErlElementLocator.Scope.ALL_PROJECTS
                         : IErlElementLocator.Scope.REFERENCED_PROJECTS);

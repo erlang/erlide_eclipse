@@ -13,8 +13,10 @@ public class SystemConfiguration {
     private boolean clearCacheAvailable;
     private boolean test;
     private final boolean onWindows;
-    private boolean monitoringIdeBackend;
-    private int monitoringInterval = 300;
+    private int warnProcessSizeLimitMB;
+    private int killProcessSizeLimitMB;
+    private final int MIN_WARN_LIMIT = 5;
+    private final int MIN_KILL_LIMIT = 10;
 
     private SystemConfiguration() {
         mustDefineTclLib = hasFeatureEnabled("erlide.ericsson.user");
@@ -23,7 +25,10 @@ public class SystemConfiguration {
         clearCacheAvailable = hasFeatureEnabled("erlide.clearCacheAvailable");
         onWindows = System.getProperty("os.name").toLowerCase()
                 .contains("windows");
-        monitoringIdeBackend = hasFeatureEnabled("erlide.monitor.ide");
+        setWarnProcessSizeLimit(System.getProperty(
+                "erlide.process.heap.warn.limit", "10"));
+        setKillProcessSizeLimit(System.getProperty(
+                "erlide.process.heap.kill.limit", "30"));
     }
 
     public boolean isDeveloper() {
@@ -77,20 +82,37 @@ public class SystemConfiguration {
         return Boolean.parseBoolean(System.getProperty(feature));
     }
 
-    public boolean isMonitoringIdeBackend() {
-        return monitoringIdeBackend;
+    public void setWarnProcessSizeLimit(final String text) {
+        try {
+            warnProcessSizeLimitMB = Integer.parseInt(text);
+        } catch (final Exception e) {
+            warnProcessSizeLimitMB = 10;
+        }
+        warnProcessSizeLimitMB = Math.max(warnProcessSizeLimitMB,
+                MIN_WARN_LIMIT);
+        if (warnProcessSizeLimitMB >= killProcessSizeLimitMB) {
+            killProcessSizeLimitMB = warnProcessSizeLimitMB + 1;
+        }
     }
 
-    public void setMonitoringIdeBackend(final boolean value) {
-        monitoringIdeBackend = value;
+    public void setKillProcessSizeLimit(final String text) {
+        try {
+            killProcessSizeLimitMB = Integer.parseInt(text);
+        } catch (final Exception e) {
+            killProcessSizeLimitMB = 30;
+        }
+        killProcessSizeLimitMB = Math.max(killProcessSizeLimitMB,
+                MIN_KILL_LIMIT);
+        if (warnProcessSizeLimitMB >= killProcessSizeLimitMB) {
+            warnProcessSizeLimitMB = killProcessSizeLimitMB - 1;
+        }
     }
 
-    public int getMonitoringInterval() {
-        return monitoringInterval;
+    public int getKillProcessSizeLimitMB() {
+        return this.killProcessSizeLimitMB;
     }
 
-    public void setMonitoringInterval(final int value) {
-        monitoringInterval = value;
+    public int getWarnProcessSizeLimitMB() {
+        return this.warnProcessSizeLimitMB;
     }
-
 }

@@ -15,10 +15,12 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.erlide.utils.SystemConfiguration;
 
 /**
  * <p>
@@ -101,4 +103,76 @@ public class ResourceUtil {
         }
         return null;
     }
+
+    public static boolean samePath(final String p1, final String p2) {
+        if (SystemConfiguration.getInstance().isOnWindows()) {
+            return p1.equalsIgnoreCase(p2);
+        } else {
+            return p1.equals(p2);
+        }
+    }
+
+    private final static class FindResourceVisitor implements IResourceVisitor {
+        private static final int FIND_BY_NAME = 1;
+        private static final int FIND_BY_LOCATION = 2;
+
+        private final String fileName;
+        private IResource found = null;
+        private final int how;
+
+        private FindResourceVisitor(final String fileName, final int how) {
+            this.fileName = fileName;
+            this.how = how;
+        }
+
+        @Override
+        public boolean visit(final IResource resource) throws CoreException {
+            if (compare(resource, fileName, how)) {
+                found = resource;
+                return false;
+            }
+            return true;
+        }
+
+        private boolean compare(final IResource resource, final String s,
+                final int theHow) {
+            if (theHow == FIND_BY_NAME) {
+                return ResourceUtil.samePath(resource.getName(), s);
+            } else if (theHow == FIND_BY_LOCATION) {
+                return ResourceUtil.samePath(resource.getLocation().toString(),
+                        s);
+            } else {
+                return false;
+            }
+        }
+
+        public IResource getFound() {
+            return found;
+        }
+    }
+
+    public static IResource findResourceByLocation(final IContainer container,
+            final String fileName) {
+        return findResource(container, fileName,
+                FindResourceVisitor.FIND_BY_LOCATION);
+    }
+
+    public static IResource findResourceByName(final IContainer container,
+            final String fileName) {
+        return findResource(container, fileName,
+                FindResourceVisitor.FIND_BY_NAME);
+    }
+
+    private static IResource findResource(final IContainer container,
+            final String fileName, final int how) {
+        final FindResourceVisitor visitor = new FindResourceVisitor(fileName,
+                how);
+        try {
+            container.accept(visitor);
+        } catch (final CoreException e) {
+            return null;
+        }
+        return visitor.getFound();
+    }
+
 }

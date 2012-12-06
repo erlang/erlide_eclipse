@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageObject;
@@ -143,7 +144,7 @@ public class CoverEventHandler extends ErlangEventHandler {
         final IConfiguration config = CoveragePerformer.getPerformer()
                 .getConfig();
 
-        final String ppath = config.getProject().getProject()
+        final String ppath = ModelUtils.getProject(config.getProject())
                 .getWorkspaceProject().getLocation().toString();
         String mpath = config.getModule(moduleStats.getLabel()).getFilePath();
         mpath = mpath.substring(ppath.length());

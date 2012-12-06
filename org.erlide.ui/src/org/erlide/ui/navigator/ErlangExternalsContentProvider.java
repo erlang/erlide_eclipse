@@ -74,8 +74,7 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
     @Override
     public Object getParent(final Object element) {
         if (element instanceof IErlProject) {
-            final IErlProject project = (IErlProject) element;
-            return project.getProject();
+            return element;
         }
         if (element instanceof IErlElement) {
             final IErlElement elt = (IErlElement) element;

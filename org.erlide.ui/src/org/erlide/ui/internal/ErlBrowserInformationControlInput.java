@@ -12,6 +12,7 @@ package org.erlide.ui.internal;
 
 import org.eclipse.core.runtime.Assert;
 import org.erlide.core.model.root.IErlElement;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControlInput;
 
 /**
@@ -28,6 +29,7 @@ public class ErlBrowserInformationControlInput extends
     private final String moduleName;
     private final String docPath;
     private final String anchor;
+    private final ErlangEditor editor;
 
     /**
      * Creates a new browser information control input.
@@ -45,10 +47,12 @@ public class ErlBrowserInformationControlInput extends
      */
     public ErlBrowserInformationControlInput(
             final ErlBrowserInformationControlInput previous,
-            final String moduleName, final Object element, final String html,
+            final ErlangEditor editor, final String moduleName,
+            final Object element, final String html,
             final int leadingImageWidth, final String docPath,
             final String anchor) {
         super(previous);
+        this.editor = editor;
         Assert.isNotNull(html);
         this.moduleName = moduleName;
         fElement = element;
@@ -116,6 +120,10 @@ public class ErlBrowserInformationControlInput extends
 
     public String getAnchor() {
         return anchor;
+    }
+
+    public ErlangEditor getEditor() {
+        return editor;
     }
 
 }

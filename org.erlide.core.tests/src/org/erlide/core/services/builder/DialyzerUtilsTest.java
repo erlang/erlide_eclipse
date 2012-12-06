@@ -103,7 +103,7 @@ public class DialyzerUtilsTest {
             // putting a dialyzer warning on it
             final int lineNumber = 3;
             final String message = "test message";
-            final IErlElementLocator model = erlProject.getModel();
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
             MarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
                     .getLocation().toPortableString(), lineNumber, message);
             // then
@@ -146,7 +146,7 @@ public class DialyzerUtilsTest {
             // putting dialyzer warning markers on the external file
             final String message = "test message";
             final int lineNumber = 2;
-            final IErlElementLocator model = erlProject.getModel();
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
             MarkerUtils.addDialyzerWarningMarker(model,
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then

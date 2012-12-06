@@ -21,6 +21,7 @@ import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 
 /**
@@ -298,7 +299,7 @@ public abstract class Openable extends ErlElement implements IOpenable {
         if (workspace == null) {
             return false;
         }
-        return ErlModel.getTarget(workspace.getRoot(), getResource()
+        return ModelUtils.getTarget(workspace.getRoot(), getResource()
                 .getFullPath().makeRelative(), true) != null;
     }
 

@@ -24,7 +24,7 @@ public class ErlangHostnameRetriever {
         nodeName = "foo" + System.currentTimeMillis();
         final ProcessBuilder builder = new ProcessBuilder(Lists.newArrayList(
                 runtime.getOtpHome() + "/bin/erl", longHost ? "-name"
-                        : "-sname", nodeName));
+                        : "-sname", nodeName, "-setcookie", "erlide"));
         String result = null;
         try {
             final Process process = builder.start();
@@ -62,11 +62,13 @@ public class ErlangHostnameRetriever {
 
     private boolean canConnect(final String hostName) {
         try {
-            final OtpNode node = new OtpNode("jtest");
-            final boolean result = node.ping(nodeName + "@" + hostName, 100);
+            final OtpNode node = new OtpNode("jtest", "erlide");
+            System.out.println("Ping: " + nodeName + "@" + hostName);
+            final boolean result = node.ping(nodeName + "@" + hostName, 1000);
             node.close();
             return result;
         } catch (final IOException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -95,6 +97,7 @@ public class ErlangHostnameRetriever {
                     } else {
                         line.append((char) chr);
                     }
+                    System.out.println(">> " + line);
                     final Matcher matcher = pattern.matcher(line);
                     if (matcher.matches()) {
                         result = matcher.group(1);

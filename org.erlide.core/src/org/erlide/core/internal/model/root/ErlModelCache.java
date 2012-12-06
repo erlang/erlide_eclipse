@@ -16,7 +16,7 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.utils.IDisposable;
 import org.erlide.utils.LRUCache;
-import org.erlide.utils.Tuple;
+import org.eclipse.xtext.xbase.lib.Pair;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,7 +31,7 @@ public class ErlModelCache implements IDisposable {
 
     private final Map<IErlModule, List<IErlModule>> moduleIncludeCache;
     private final Map<String, IErlModule> pathToModuleCache;
-    private final Map<String, Tuple<IErlProject, List<ExternalTreeEntry>>> externalTreeCache;
+    private final Map<String, Pair<IErlProject, List<ExternalTreeEntry>>> externalTreeCache;
     private final Map<String, IErlModule> editedModulesMap;
     // private final LRUCache<String, Set<IErlModule>> nameToModuleCache;
     private final ModelChangeListener modelChangeListener;
@@ -179,18 +179,18 @@ public class ErlModelCache implements IDisposable {
             externalTreeCache.remove(externalPath);
         } else {
             externalTreeCache.put(externalPath,
-                    new Tuple<IErlProject, List<ExternalTreeEntry>>(project,
+                    new Pair<IErlProject, List<ExternalTreeEntry>>(project,
                             Lists.newArrayList(externalTree)));
         }
     }
 
     public List<ExternalTreeEntry> getExternalTree(final String externalPath) {
-        final Tuple<IErlProject, List<ExternalTreeEntry>> tuple = externalTreeCache
+        final Pair<IErlProject, List<ExternalTreeEntry>> tuple = externalTreeCache
                 .get(externalPath);
         if (tuple == null) {
             return null;
         }
-        final List<ExternalTreeEntry> entries = tuple.second;
+        final List<ExternalTreeEntry> entries = tuple.getValue();
         if (entries == null) {
             return null;
         }
@@ -258,10 +258,10 @@ public class ErlModelCache implements IDisposable {
         projectIncludeCache.remove(project);
         projectModuleCache.remove(project);
         final Set<String> keysToRemove = Sets.newHashSet();
-        final Set<Entry<String, Tuple<IErlProject, List<ExternalTreeEntry>>>> entrySet = externalTreeCache
+        final Set<Entry<String, Pair<IErlProject, List<ExternalTreeEntry>>>> entrySet = externalTreeCache
                 .entrySet();
-        for (final Entry<String, Tuple<IErlProject, List<ExternalTreeEntry>>> entry : entrySet) {
-            if (entry.getValue().first == project) {
+        for (final Entry<String, Pair<IErlProject, List<ExternalTreeEntry>>> entry : entrySet) {
+            if (entry.getValue().getKey() == project) {
                 keysToRemove.add(entry.getKey());
             }
         }

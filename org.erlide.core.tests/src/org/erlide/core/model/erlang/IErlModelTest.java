@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
@@ -41,7 +42,7 @@ public class IErlModelTest extends ErlModelTestBase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        model = project.getModel();
+        model = ErlModelManager.getErlangModel();
     }
 
     @After
@@ -314,7 +315,7 @@ public class IErlModelTest extends ErlModelTestBase {
             final String ww = "ww";
             final IErlModule w1 = model.findIncludeFromModule(module, ww, null,
                     IErlElementLocator.Scope.PROJECT_ONLY);
-            final IErlElementLocator mymodel = myProject.getModel();
+            final IErlElementLocator mymodel = ErlModelManager.getErlangModel();
             final IErlModule w2 = mymodel.findIncludeFromProject(myProject, ww,
                     null, IErlElementLocator.Scope.PROJECT_ONLY);
             // then

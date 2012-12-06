@@ -24,10 +24,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.utils.Util;
@@ -147,17 +143,6 @@ public final class CoreUtil {
     }
 
     private CoreUtil() {
-    }
-
-    public static IBackend getBuildOrIdeBackend(final IProject project) {
-        final IBackendManager backendManager = BackendCore.getBackendManager();
-        if (project != null) {
-            try {
-                return backendManager.getBuildBackend(project);
-            } catch (final BackendException e) {
-            }
-        }
-        return backendManager.getIdeBackend();
     }
 
     public static IProject[] getErlangLaunchConfigurationProjects(

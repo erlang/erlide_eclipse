@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.utils.IDisposable;
 
 /**
@@ -43,24 +42,24 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     enum Kind {
         //@formatter:off
-        ERROR, 
-        MODEL, 
-        PROJECT, 
-        MODULE, 
-        ATTRIBUTE, 
-        FUNCTION, 
-        CLAUSE, 
-        EXPORT, 
-        IMPORT, 
-        EXPORTFUNCTION, 
-        HEADERCOMMENT, 
-        COMMENT, 
-        RECORD_DEF, 
-        MACRO_DEF, 
-        FOLDER, 
-        TYPESPEC, 
-        EXTERNAL, 
-        RECORD_FIELD 
+        ERROR,
+        MODEL,
+        PROJECT,
+        MODULE,
+        ATTRIBUTE,
+        FUNCTION,
+        CLAUSE,
+        EXPORT,
+        IMPORT,
+        EXPORTFUNCTION,
+        HEADERCOMMENT,
+        COMMENT,
+        RECORD_DEF,
+        MACRO_DEF,
+        FOLDER,
+        TYPESPEC,
+        EXTERNAL,
+        RECORD_FIELD
         //@formatter:on
     }
 
@@ -94,11 +93,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
     IErlElement getAncestorOfKind(Kind kind);
 
     /**
-     * Returns the enclosing IErlProject if there is one
-     */
-    IErlProject getProject();
-
-    /**
      * Returns the resource that corresponds directly to this element, or
      * <code>null</code> if there is no resource that corresponds to this
      * element.
@@ -130,13 +124,6 @@ public interface IErlElement extends IAdaptable, IDisposable {
      * @see IErlElement
      */
     Kind getKind();
-
-    /**
-     * Returns the Erlang model. This is a handle-only method.
-     * 
-     * @return the Erlang model
-     */
-    IErlModel getModel();
 
     /**
      * Returns the element directly containing this element, or
@@ -244,7 +231,4 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     String toStringWithAncestors();
 
-    Object getModelLock();
-
-    IErlModule getModule();
 }

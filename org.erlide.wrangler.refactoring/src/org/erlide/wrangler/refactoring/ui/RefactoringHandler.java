@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -29,6 +29,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.model.erlang.IErlFunctionClause;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcResult;
 import org.erlide.utils.ErlUtils;
@@ -240,8 +241,9 @@ public class RefactoringHandler extends AbstractHandler {
         } else if (actionId
                 .equals("org.erlide.wrangler.refactoring.movefunction")) {
 
-            final IProject project = GlobalParameters.getWranglerSelection()
-                    .getErlElement().getProject().getWorkspaceProject();
+            final IProject project = ModelUtils.getProject(
+                    GlobalParameters.getWranglerSelection().getErlElement())
+                    .getWorkspaceProject();
             final ArrayList<String> moduleList = WranglerUtils
                     .getModuleNames(project);
             final String moduleName = GlobalParameters.getWranglerSelection()

@@ -10,6 +10,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlModel;
@@ -78,7 +79,7 @@ public class ErlProjectTest {
                         "-module(f).\n-include(\"a.hrl\").\n-export([f/0]).\n-record(rec2, {a, b}).\n"
                                 + "f() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
         module.open(null);
-        final IErlElementLocator model = project.getModel();
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
         // when
         // looking for the include
         final IErlModule include1 = model.findIncludeFromModule(module,
@@ -112,7 +113,7 @@ public class ErlProjectTest {
             // String includeFile = ModelUtils.findIncludeFile(erlProject,
             // "x.hrl", "");
             project.open(null);
-            final IErlElementLocator model = project.getModel();
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
             final IErlModule module = model.findIncludeFromProject(project,
                     null, includePath,
                     IErlElementLocator.Scope.REFERENCED_PROJECTS);
@@ -157,13 +158,13 @@ public class ErlProjectTest {
             // when
             // looking for the include file
             project.open(null);
-            final IErlElementLocator model = project.getModel();
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
             final IErlModule module = model.findIncludeFromProject(project,
                     includeName, null, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
             // it should be found in the project defining it
             assertNotNull(module);
-            assertEquals(project2, module.getProject());
+            assertEquals(project2, ModelUtils.getProject(module));
         } finally {
             if (project != null) {
                 ErlideTestUtils.deleteProject(project);
@@ -189,12 +190,12 @@ public class ErlProjectTest {
         // looking for lists:reverse/2 and lists:reverse/1
         final IBackend backend = BackendCore.getBackendManager()
                 .getIdeBackend();
-        final IErlModel model = project.getModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
                 ModelUtils.getImportsAsList(moduleE),
                 project.getExternalModulesString(), model.getPathVars());
-        final IErlFunction function = ModelUtils.findFunction(res.getName(),
-                res.getFunction(), res.getPath(), project,
+        final IErlFunction function = ModelUtils.findFunction(model,
+                res.getName(), res.getFunction(), res.getPath(), project,
                 IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
         assertNotNull(function);
 
@@ -205,7 +206,7 @@ public class ErlProjectTest {
         // the function should be returned and the module, in External Files
         assertNotNull(module);
         assertEquals(function.getParent(), module);
-        assertEquals(function.getModule().getProject(), project);
+        assertEquals(ModelUtils.getProject(function), project);
     }
 
     @Test
@@ -227,7 +228,7 @@ public class ErlProjectTest {
                     externalsFileName, absolutePath);
             project.setExternalModulesFile(externalsFile.getAbsolutePath());
             project.open(null);
-            final IErlElementLocator model = project.getModel();
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
             // when
             // looking for it
             final IErlModule externalModule = model.findModuleFromProject(

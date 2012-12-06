@@ -22,6 +22,7 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
@@ -266,7 +267,7 @@ public class DialyzerUtils {
         if (element == null) {
             return;
         }
-        final IErlProject project = element.getProject();
+        final IErlProject project = ModelUtils.getProject(element);
         Set<IErlModule> ms = modules.get(project);
         if (ms == null) {
             ms = Sets.newHashSet();

@@ -14,12 +14,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.util.ModelUtils;
 import org.erlide.utils.SystemConfiguration;
 
 /**
@@ -39,7 +41,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IErlModel model = getModel();
+        final IErlModel model = ErlModelManager.getErlangModel();
         final IContainer c = (IContainer) getResource();
         try {
             // FIXME this is general stuff, should we put it in model or
@@ -90,14 +92,14 @@ public class ErlFolder extends Openable implements IErlFolder {
 
     @Override
     public boolean isOnSourcePath() {
-        final IErlProject project = getProject();
+        final IErlProject project = ModelUtils.getProject(this);
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
                 project.getSourceDirs());
     }
 
     @Override
     public boolean isOnIncludePath() {
-        final IErlProject project = getProject();
+        final IErlProject project = ModelUtils.getProject(this);
         return ErlFolder.isOnPaths(folder, project.getWorkspaceProject(),
                 project.getIncludeDirs());
     }
@@ -105,7 +107,7 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public boolean isSourcePathParent() {
         final IProject project = folder.getProject();
-        final IErlProject erlProject = getProject();
+        final IErlProject erlProject = ModelUtils.getProject(this);
         final Collection<IPath> sourcePaths = erlProject.getSourceDirs();
         final IPath path = folder.getFullPath();
         for (final IPath i : sourcePaths) {
@@ -135,7 +137,8 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void setChildren(final Collection<? extends IErlElement> c) {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeProject(getProject());
+            ErlModel.getErlModelCache().removeProject(
+                    ModelUtils.getProject(this));
         }
         super.setChildren(c);
     }
@@ -143,7 +146,8 @@ public class ErlFolder extends Openable implements IErlFolder {
     @Override
     public void clearCaches() {
         if (isOnIncludePath() || isOnSourcePath()) {
-            ErlModel.getErlModelCache().removeProject(getProject());
+            ErlModel.getErlModelCache().removeProject(
+                    ModelUtils.getProject(this));
         }
         super.clearCaches();
     }

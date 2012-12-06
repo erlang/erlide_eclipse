@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.xtext.xbase.lib.Pair;
+import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
@@ -34,7 +36,6 @@ import org.erlide.backend.IBackendListener;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeBundle.CodeContext;
-import org.erlide.backend.IErlideBackendVisitor;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
@@ -45,7 +46,6 @@ import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
 import org.erlide.launch.EpmdWatchJob;
 import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Tuple;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
@@ -283,7 +283,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final Bundle plugin = Platform.getBundle(pluginId);
 
         final Map<String, CodeContext> paths = Maps.newHashMap();
-        final List<Tuple<String, String>> inits = Lists.newArrayList();
+        final List<Pair<String, String>> inits = Lists.newArrayList();
         for (final IConfigurationElement el : extension
                 .getConfigurationElements()) {
             if ("beam_dir".equals(el.getName())) {
@@ -294,7 +294,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             } else if ("init".equals(el.getName())) {
                 final String module = el.getAttribute("module");
                 final String function = el.getAttribute("function");
-                inits.add(new Tuple<String, String>(module, function));
+                inits.add(new Pair<String, String>(module, function));
             } else {
                 ErlLogger
                         .error("Unknown code bundle element: %s", el.getName());
@@ -305,16 +305,16 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
     @Override
     public void addBundle(final Bundle b, final Map<String, CodeContext> paths,
-            final Collection<Tuple<String, String>> inits) {
+            final Collection<Pair<String, String>> inits) {
         final ICodeBundle p = findBundle(b);
         if (p != null) {
             return;
         }
         final CodeBundleImpl pp = new CodeBundleImpl(b, paths, inits);
         getCodeBundles().put(b, pp);
-        forEachBackend(new IErlideBackendVisitor() {
+        forEachBackend(new Procedure1<IBackend>() {
             @Override
-            public void visit(final IBackend bb) {
+            public void apply(final IBackend bb) {
                 bb.registerCodeBundle(pp);
             }
         });
@@ -330,9 +330,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public void forEachBackend(final IErlideBackendVisitor visitor) {
+    public void forEachBackend(final Procedure1<IBackend> visitor) {
         for (final IBackend b : getAllBackends()) {
-            visitor.visit(b);
+            visitor.apply(b);
         }
     }
 

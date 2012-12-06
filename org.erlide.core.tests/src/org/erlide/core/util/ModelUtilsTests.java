@@ -19,9 +19,11 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlTypespec;
+import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementLocator;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
@@ -123,22 +125,24 @@ public class ModelUtilsTests {
         // when
         // looking for it
         // within project
-        final IErlElement element1 = ModelUtils.findTypeDef(moduleB, "bx",
-                "concat_thing", moduleB.getResource().getLocation()
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
+
+        final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
+                "bx", "concat_thing", moduleB.getResource().getLocation()
                         .toPortableString(), projects[0],
                 IErlElementLocator.Scope.PROJECT_ONLY);
         // in other project but path given
-        final IErlElement element2 = ModelUtils.findTypeDef(moduleB, "bx",
-                "concat_thing", moduleB.getResource().getLocation()
+        final IErlElement element2 = ModelUtils.findTypeDef(model, moduleB,
+                "bx", "concat_thing", moduleB.getResource().getLocation()
                         .toPortableString(), projects[1],
                 IErlElementLocator.Scope.PROJECT_ONLY);
         // in other project no path given, search all projects true
-        final IErlElement element3 = ModelUtils.findTypeDef(moduleB, "bx",
-                "concat_thing", null, projects[1],
+        final IErlElement element3 = ModelUtils.findTypeDef(model, moduleB,
+                "bx", "concat_thing", null, projects[1],
                 IErlElementLocator.Scope.ALL_PROJECTS);
         // in other project no path given, search all projects false, -> null
-        final IErlElement element4 = ModelUtils.findTypeDef(moduleB, "bx",
-                "concat_thing", null, projects[1],
+        final IErlElement element4 = ModelUtils.findTypeDef(model, moduleB,
+                "bx", "concat_thing", null, projects[1],
                 IErlElementLocator.Scope.PROJECT_ONLY);
         // then
         // it should be returned if found
@@ -158,7 +162,8 @@ public class ModelUtilsTests {
         moduleD.open(null);
         // when
         // looking for it with ?MODULE
-        final IErlElement element1 = ModelUtils.findFunction("?MODULE",
+        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlElement element1 = ModelUtils.findFunction(model, "?MODULE",
                 new ErlangFunction("f", 0), null, projects[0],
                 IErlElementLocator.Scope.PROJECT_ONLY, moduleD);
         // then
@@ -221,7 +226,7 @@ public class ModelUtilsTests {
         assertNotNull(module);
         assertNotNull(preprocessorDef);
         assertTrue(preprocessorDef instanceof IErlRecordDef);
-        assertEquals(preprocessorDef.getModule().getProject(), project);
+        assertEquals(ModelUtils.getProject(preprocessorDef), project);
     }
 
     private OtpErlangTuple makeTuple2(final String functionName, final int arity) {
@@ -278,7 +283,8 @@ public class ModelUtilsTests {
             // we should find it iff we check externals
             assertEquals(0, moduleNames0.size());
             assertEquals(1, modules1.size());
-            assertEquals(SystemConfiguration.withoutExtension(externalFileName),
+            assertEquals(
+                    SystemConfiguration.withoutExtension(externalFileName),
                     modules1.get(0));
             assertEquals(1, listModules.size());
             assertEquals("lists", listModules.get(0));
@@ -313,7 +319,8 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it
-            final IErlModule module = ModelUtils.findModule(null, null,
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
+            final IErlModule module = ModelUtils.findModule(model, null, null,
                     absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             // then
             // we should find it
@@ -377,14 +384,15 @@ public class ModelUtilsTests {
             project.open(null);
             // when
             // looking for it with its external module path
-            final IErlModule module = ModelUtils.findModule(null, null,
+            final IErlModel model = ErlModelManager.getErlangModel();
+            final IErlModule module = ModelUtils.findModule(model, null, null,
                     absolutePath, IErlElementLocator.Scope.ALL_PROJECTS);
             assertNotNull(module);
-            final String externalModulePath = ModelUtils
-                    .getExternalModulePath(module);
+            final String externalModulePath = ModelUtils.getExternalModulePath(
+                    model, module);
             ErlLogger.debug(" >> %s", externalModulePath);
             final IErlModule module2 = ModelUtils
-                    .getModuleFromExternalModulePath(externalModulePath);
+                    .getModuleFromExternalModulePath(model, externalModulePath);
             // then
             // we should find it
             assertNotNull(module2);

@@ -22,15 +22,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.ErlModelStatus;
 import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementVisitor;
-import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.jinterface.ErlLogger;
@@ -165,26 +162,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     @Override
     public String getName() {
         return fName;
-    }
-
-    /**
-     * @see IErlElement
-     */
-    @Override
-    public IErlModel getModel() {
-        return ErlModelManager.getErlangModel();
-    }
-
-    /**
-     * @see IErlElement
-     */
-    @Override
-    public IErlProject getProject() {
-        final IErlElement ancestor = getAncestorOfKind(Kind.PROJECT);
-        if (ancestor instanceof IErlProject) {
-            return (IErlProject) ancestor;
-        }
-        return null;
     }
 
     /**
@@ -556,6 +533,10 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         return null;
     }
 
+    protected Object getModelLock() {
+        return ErlModelManager.getErlangModel().getModelLock();
+    }
+
     private static IErlElement getChildWithResource(final ErlElement parent,
             final IResource rsrc) {
         synchronized (parent.getModelLock()) {
@@ -638,16 +619,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
 
     protected ErlModelCache getModelCache() {
         return ErlModelCache.getDefault();
-    }
-
-    @Override
-    public Object getModelLock() {
-        return getModel().getModelLock();
-    }
-
-    @Override
-    public IErlModule getModule() {
-        return (IErlModule) getAncestorOfKind(Kind.MODULE);
     }
 
 }
