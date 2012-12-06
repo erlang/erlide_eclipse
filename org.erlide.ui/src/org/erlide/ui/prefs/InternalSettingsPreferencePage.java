@@ -8,22 +8,22 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.erlide.backend.BackendCore;
 import org.erlide.utils.SystemConfiguration;
 
 public class InternalSettingsPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
 
     private SystemConfiguration su;
-    private Button btnMonitorIdeBackend;
     private Button btnTestMode;
     private Button btnDeveloperMode;
     private Button btnMakeAvailableClearcache;
-    private Text text;
     private Label lblNewLabel;
+    private Label warnProcessLimitText;
+    private Label lblNewLabel_1;
+    private Label killProcessLimitText;
+    private Label lblNewLabel_2;
 
     public InternalSettingsPreferencePage() {
     }
@@ -66,22 +66,30 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
         btnMakeAvailableClearcache.setSelection(su.isClearCacheAvailable());
         new Label(panel, SWT.NONE);
 
-        btnMonitorIdeBackend = new Button(panel, SWT.CHECK);
-        btnMonitorIdeBackend.setText("Monitor IDE backend");
-        btnMonitorIdeBackend.setSelection(su.isMonitoringIdeBackend());
+        lblNewLabel_2 = new Label(panel, SWT.NONE);
         new Label(panel, SWT.NONE);
 
         lblNewLabel = new Label(panel, SWT.NONE);
-        lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-                false, 1, 1));
-        lblNewLabel.setText("Monitoring poll interval (seconds)");
+        final GridData gd_lblNewLabel = new GridData(SWT.LEFT, SWT.CENTER,
+                false, false, 1, 1);
+        gd_lblNewLabel.widthHint = 300;
+        lblNewLabel.setLayoutData(gd_lblNewLabel);
+        lblNewLabel.setText("-Derlide.process.heap.warn.limit (MB)");
 
-        text = new Text(panel, SWT.BORDER);
-        final GridData gd_text = new GridData(SWT.LEFT, SWT.CENTER, true,
-                false, 1, 1);
-        gd_text.widthHint = 79;
-        text.setLayoutData(gd_text);
-        text.setText(Integer.toString(su.getMonitoringInterval()));
+        warnProcessLimitText = new Label(panel, SWT.BORDER);
+        warnProcessLimitText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, false, 1, 1));
+        warnProcessLimitText.setText(Integer.toString(su
+                .getWarnProcessSizeLimitMB()));
+
+        lblNewLabel_1 = new Label(panel, SWT.NONE);
+        lblNewLabel_1.setText("-Derlide.process.heap.kill.limit (MB)");
+
+        killProcessLimitText = new Label(panel, SWT.BORDER);
+        killProcessLimitText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                true, false, 1, 1));
+        killProcessLimitText.setText(Integer.toString(su
+                .getKillProcessSizeLimitMB()));
 
         return panel;
     }
@@ -93,13 +101,6 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
         su.setTest(btnTestMode.getSelection());
 
         su.setClearCacheAvailable(btnMakeAvailableClearcache.getSelection());
-
-        su.setMonitoringIdeBackend(btnMonitorIdeBackend.getSelection());
-        BackendCore.getBackendManager().getIdeBackend()
-                .setMonitoring(su.isMonitoringIdeBackend());
-        su.setMonitoringInterval(Integer.parseInt(text.getText()));
-        BackendCore.getBackendManager().getIdeBackend()
-                .setMonitoringInterval(su.getMonitoringInterval());
 
         return true;
     }

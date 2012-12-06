@@ -125,9 +125,6 @@ public class BackendFactory implements IBackendFactory {
         if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
         }
-        if (SystemConfiguration.getInstance().isMonitoringIdeBackend()) {
-            result.setMonitored(true);
-        }
         result.setInternal(true);
         return result;
     }

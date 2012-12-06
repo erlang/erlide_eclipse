@@ -189,14 +189,6 @@ public final class BackendData extends GenericBackendData {
         config.setAttribute(ErlLaunchAttributes.COOKIE, cookie);
     }
 
-    public boolean isMonitored() {
-        return getBooleanAttribute(ErlLaunchAttributes.MONITORED, false);
-    }
-
-    public void setMonitored(final boolean monitored) {
-        config.setAttribute(ErlLaunchAttributes.MONITORED, monitored);
-    }
-
     public boolean isManaged() {
         return getBooleanAttribute(ErlLaunchAttributes.MANAGED, true);
     }
