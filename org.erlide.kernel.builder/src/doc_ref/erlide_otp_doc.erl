@@ -400,6 +400,7 @@ get_doc(Module, Input, StateDir) ->
                         External
                 end;
             {local, F, A} = Local ->
+                ?D({open, Local}),
                 case get_doc_for_external(StateDir, Module, [{F, A}]) of
                     {D, Path, Anchor} when is_list(D) ->
                         {ok, lists:flatten(D), Local, Path, Anchor};
