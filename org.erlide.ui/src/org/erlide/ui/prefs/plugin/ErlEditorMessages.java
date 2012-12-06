@@ -22,7 +22,6 @@ public class ErlEditorMessages extends NLS {
 
     public static String ErlEditorPreferencePage_description;
     public static String ErlEditorPreferencePage_lineNumberForegroundColor;
-    public static String ErlEditorPreferencePage_currentLineHighlighColor;
     public static String ErlEditorPreferencePage_printMarginColor;
     public static String ErlEditorPreferencePage_selectionForegroundColor;
     public static String ErlEditorPreferencePage_selectionBackgroundColor;
@@ -30,7 +29,6 @@ public class ErlEditorMessages extends NLS {
     public static String ErlEditorPreferencePage_printMarginColumn;
     public static String ErlEditorPreferencePage_showOverviewRuler;
     public static String ErlEditorPreferencePage_showLineNumbers;
-    public static String ErlEditorPreferencePage_highlightCurrentLine;
     public static String ErlEditorPreferencePage_showPrintMargin;
     public static String ErlEditorPreferencePage_accessibility_disableCustomCarets;
     public static String ErlEditorPreferencePage_accessibility_wideCaret;
