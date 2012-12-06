@@ -30,10 +30,7 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
@@ -98,12 +95,6 @@ abstract public class AbstractInfoView extends ViewPart implements
 
     /** The current info. */
     protected Object fCurrentViewInfo;
-
-    /** The copy to clipboard action. */
-    private SelectionDispatchAction fCopyToClipboardAction;
-
-    /** The goto input action. */
-    private GotoInputAction fGotoInputAction;
 
     /** Counts the number of background computation requests. */
     volatile int fComputeCount;
@@ -179,14 +170,6 @@ abstract public class AbstractInfoView extends ViewPart implements
      * Creates the actions and action groups for this view.
      */
     protected void createActions() {
-        fGotoInputAction = new GotoInputAction(this);
-        fGotoInputAction.setEnabled(false);
-        fCopyToClipboardAction = new CopyToClipboardAction(getViewSite());
-
-        final ISelectionProvider provider = getSelectionProvider();
-        if (provider != null) {
-            provider.addSelectionChangedListener(fCopyToClipboardAction);
-        }
     }
 
     /**
@@ -198,7 +181,6 @@ abstract public class AbstractInfoView extends ViewPart implements
         menuManager.addMenuListener(this);
         final Menu contextMenu = menuManager.createContextMenu(getControl());
         getControl().setMenu(contextMenu);
-        getSite().registerContextMenu(menuManager, getSelectionProvider());
     }
 
     /*
@@ -207,29 +189,10 @@ abstract public class AbstractInfoView extends ViewPart implements
     @Override
     public void menuAboutToShow(final IMenuManager menu) {
         ErlideUIPlugin.createStandardGroups(menu);
-
-        IAction action;
-
-        action = getCopyToClipboardAction();
-        if (action != null) {
-            menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, action);
-        }
-
-        action = getSelectAllAction();
-        if (action != null) {
-            menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, action);
-        }
-
-        // TODO NYI menu.appendToGroup(IContextMenuConstants.GROUP_OPEN,
-        // fGotoInputAction);
     }
 
     protected IAction getSelectAllAction() {
         return null;
-    }
-
-    protected IAction getCopyToClipboardAction() {
-        return fCopyToClipboardAction;
     }
 
     /**
@@ -239,11 +202,6 @@ abstract public class AbstractInfoView extends ViewPart implements
      */
     protected Object getInfo() {
         return fCurrentViewInfo;
-    }
-
-    // Helper method
-    ISelectionProvider getSelectionProvider() {
-        return getViewSite().getSelectionProvider();
     }
 
     /**
@@ -257,20 +215,6 @@ abstract public class AbstractInfoView extends ViewPart implements
     protected void fillActionBars(final IActionBars actionBars) {
         final IToolBarManager toolBar = actionBars.getToolBarManager();
         fillToolBar(toolBar);
-
-        IAction action;
-
-        action = getCopyToClipboardAction();
-        if (action != null) {
-            actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
-                    action);
-        }
-
-        action = getSelectAllAction();
-        if (action != null) {
-            actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
-                    action);
-        }
     }
 
     /**
@@ -283,7 +227,6 @@ abstract public class AbstractInfoView extends ViewPart implements
      *            the tool bar manager
      */
     protected void fillToolBar(final IToolBarManager tbm) {
-        tbm.add(fGotoInputAction);
     }
 
     /**
@@ -437,11 +380,6 @@ abstract public class AbstractInfoView extends ViewPart implements
         getSite().getWorkbenchWindow().getPartService()
                 .removePartListener(fPartListener);
 
-        final ISelectionProvider provider = getSelectionProvider();
-        if (provider != null) {
-            provider.removeSelectionChangedListener(fCopyToClipboardAction);
-        }
-
         internalDispose();
     }
 
@@ -526,12 +464,7 @@ abstract public class AbstractInfoView extends ViewPart implements
         thread.start();
     }
 
-    private void doSetInfo(final Object info) {
+    protected void doSetInfo(final Object info) {
         setInfo(info);
-
-        fGotoInputAction.setEnabled(true);
-
-        // TODO setContentDescription
-        // TODO setTitleToolTip
     }
 }

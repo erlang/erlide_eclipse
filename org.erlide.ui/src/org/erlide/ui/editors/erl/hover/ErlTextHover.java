@@ -268,12 +268,8 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         final StringBuffer result = new StringBuffer();
-        final Object element = null;
+        Object element = null;
         // TODO our model is too coarse, here we need access to expressions
-        // try {
-        // element = module.getElementAt(hoverRegion.getOffset());
-        // } catch (Exception e) {
-        // }
         final Collection<OtpErlangObject> fImports = ModelUtils
                 .getImportsAsList(module);
 
@@ -307,6 +303,7 @@ public class ErlTextHover implements ITextHover,
                     externalModulesString, model.getPathVars());
             ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
+                element = new OpenResult(t.elementAt(2));
                 final String docStr = Util.stringValue(t.elementAt(1));
                 result.append(docStr);
                 final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(2);
@@ -319,6 +316,7 @@ public class ErlTextHover implements ITextHover,
                 }
             } else {
                 final OpenResult or = new OpenResult(t);
+                element = or;
                 final Object found = OpenAction.findOpenResult(editor, module,
                         b, erlProject, or, offset);
                 // ErlLogger.debug("found:" + found);
