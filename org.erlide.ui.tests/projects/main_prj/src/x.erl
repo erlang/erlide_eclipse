@@ -7,6 +7,7 @@
     
 f() ->
 	X=[1,4,6], lists:reverse([]),
+	io:format(""),
 	X.
  
 g() -> 
