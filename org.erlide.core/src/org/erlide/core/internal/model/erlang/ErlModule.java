@@ -116,7 +116,7 @@ public class ErlModule extends Openable implements IErlModule {
             final IErlParser parser = ErlModelManager.getErlangModel()
                     .getParser();
             parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
-                    useCaches);
+                    useCaches, true);
             final IResource resource = getCorrespondingResource();
             MarkerUtils.removeTaskMarkersFor(resource);
             MarkerUtils.createTaskMarkers(resource, scanner.getText());

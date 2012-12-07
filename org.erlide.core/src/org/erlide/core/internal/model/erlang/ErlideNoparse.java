@@ -1,6 +1,5 @@
 package org.erlide.core.internal.model.erlang;
 
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -27,9 +26,6 @@ public class ErlideNoparse {
             res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE,
                     "initial_parse", "assoo", scannerModuleName,
                     moduleFileName, stateDir, useCaches, updateRefs);
-            if (res.arity() > 2) {
-                // ErlLogger.debug("initialParse " + res.elementAt(2));
-            }
         } catch (final RpcTimeoutException e) {
             if (!b.isStopped()) {
                 ErlLogger.warn(e);
@@ -41,11 +37,11 @@ public class ErlideNoparse {
     }
 
     public static OtpErlangTuple reparse(final IBackend b,
-            final String scannerModuleName) {
+            final String scannerModuleName, final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
             res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse",
-                    "a", scannerModuleName);
+                    "ao", scannerModuleName, updateSearchServer);
         } catch (final RpcTimeoutException e) {
             if (!b.isStopped()) {
                 ErlLogger.warn(e);
@@ -55,14 +51,6 @@ public class ErlideNoparse {
         }
         return res;
     }
-
-    // public static void destroy(final Backend b, final String module) {
-    // try {
-    // b.call("erlide_noparse_server", "destroy", "a", module);
-    // } catch (final Exception e) {
-    // ErlLogger.warn(e);
-    // }
-    // }
 
     public static IErlFunction getFunction(final IErlModule module,
             final String name, final int arity) {
@@ -94,19 +82,5 @@ public class ErlideNoparse {
         } catch (final RpcException e) {
             ErlLogger.error(e);
         }
-    }
-
-    public static OtpErlangTuple initialParse(final String scannerName,
-            final String path, final String stateDir, final boolean useCaches,
-            final boolean b) {
-        final IBackend backend = BackendCore.getBackendManager()
-                .getIdeBackend();
-        return initialParse(backend, scannerName, path, stateDir, useCaches, b);
-    }
-
-    public static OtpErlangTuple reparse(final String scannerName) {
-        final IBackend backend = BackendCore.getBackendManager()
-                .getIdeBackend();
-        return reparse(backend, scannerName);
     }
 }

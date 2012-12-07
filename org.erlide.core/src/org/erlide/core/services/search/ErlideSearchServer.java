@@ -38,23 +38,25 @@ public class ErlideSearchServer {
 
     public static void startFindRefs(final IBackend backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
-            final String stateDir, final IRpcResultCallback callback)
-            throws RpcException {
+            final String stateDir, final IRpcResultCallback callback,
+            final boolean updateSearchServer) throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         ErlLogger.debug("startFindRefs " + pattern.getSearchObject() + "    #"
                 + modules.arity() + " modules");
         backend.async_call_result(callback, "erlide_search_server",
-                "start_find_refs", "xxxs", pattern.getSearchObject(), modules,
-                stateDir);
+                "start_find_refs", "xxxso", pattern.getSearchObject(), modules,
+                stateDir, updateSearchServer);
     }
 
     public static OtpErlangObject findRefs(final IBackend backend,
             final ErlangSearchPattern pattern, final ErlSearchScope scope,
-            final String stateDir) throws RpcException {
+            final String stateDir, final boolean updateSearchServer)
+            throws RpcException {
         final OtpErlangList modules = getModulesFromScope(scope);
         final OtpErlangObject r = backend.call(SEARCH_LONG_TIMEOUT,
-                "erlide_search_server", "find_refs", "xxs",
-                pattern.getSearchObject(), modules, stateDir);
+                "erlide_search_server", "find_refs", "xxso",
+                pattern.getSearchObject(), modules, stateDir,
+                updateSearchServer);
         if (Util.isOk(r)) {
             return r;
         }

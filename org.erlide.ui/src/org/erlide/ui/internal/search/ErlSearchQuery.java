@@ -11,6 +11,7 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.services.search.ErlSearchScope;
@@ -142,7 +143,8 @@ public class ErlSearchQuery implements ISearchQuery {
         };
         try {
             ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
-                    .getIdeBackend(), pattern, scope, getStateDir(), callback);
+                    .getIdeBackend(), pattern, scope, getStateDir(), callback,
+                    false);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);

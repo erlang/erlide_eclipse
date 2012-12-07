@@ -9,10 +9,10 @@
 %%
 
 %% called from Java
--export([initial_parse/5, reparse/1, remove_cache_files/2]).
+-export([initial_parse/5, reparse/2, remove_cache_files/2]).
 
 %% called from Erlang
--export([read_module_refs/3]).
+-export([get_module_refs/4]).
 
 %%
 %% Include files
@@ -42,41 +42,41 @@
 %%
 
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
-              UpdateSearchServer) ->
+	      UpdateSearchServer) ->
     try
-        %%         ?D({StateDir, ModuleFileName}),
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
-                           do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer)
+			   {Model, _Refs} = 
+			       do_parse(ScannerName, RefsFileName, StateDir,
+					UpdateSearchServer),
+			   Model
                    end,
         CacheFileName = BaseName ++ ".noparse",
-        ?D(CacheFileName),
-        {Cached, Res} = erlide_util:check_and_renew_cached(
-                          ModuleFileName, CacheFileName, ?CACHE_VERSION, 
-                          RenewFun, UseCache),
-        %%erlide_noparse_server:update_state(ScannerName, Res),
-        ?D(updated),
-        {ok, Res, Cached}
+	{Cached, Res} = erlide_util:check_and_renew_cached(
+			  ModuleFileName, CacheFileName, ?CACHE_VERSION, 
+			  RenewFun, UseCache),
+	{ok, Res, Cached}
     catch
         error:Reason ->
             {error, Reason}
     end.
 
-reparse(ScannerName) ->
+reparse(ScannerName, UpdateSearchServer) ->
     try
-        Res = do_parse(ScannerName, "", "", true),
-        %%erlide_noparse_server:update_state(ScannerName, Res),
-        {ok, Res, unused}
+        {Model, _Refs} = do_parse(ScannerName, "", "", UpdateSearchServer),
+        {ok, Model}
     catch
         error:Reason ->
             {error, Reason}
     end.
 
-read_module_refs(ScannerName, ModulePath, StateDir) ->
+get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
     ?D(ScannerName),
     BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
     RefsFileName = BaseName ++ ".refs",
+    %% TODO: shouldn't we check that .refs is up-to-date? using renew
+    %% function etc. would probably be more straight-forward...
     ?D(RefsFileName),
     case file:read_file(RefsFileName) of
         {ok, Binary} ->
@@ -90,11 +90,9 @@ read_module_refs(ScannerName, ModulePath, StateDir) ->
             _D = erlide_scanner_server:initialScan(
                    ScannerName, ModulePath, InitialText, StateDir, true),
             ?D(_D),
-            initial_parse(ScannerName, ModulePath, StateDir, true, false),
-            ?D(RefsFileName),
-            {ok, Binary} = file:read_file(RefsFileName),
-            ?D(byte_size(Binary)),
-            binary_to_term(Binary)
+	    {_Model, Refs} = initial_parse(ScannerName, ModulePath, StateDir, 
+					  true, UpdateSearchServer),
+	    Refs
     end.
 
 remove_cache_files(ScannerName, StateDir) ->
@@ -122,15 +120,10 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     Functions = erlide_np_util:split_after_dots(UncommentToks),
     ?D(length(Functions)),
     AutoImports = erlide_util:add_auto_imported([]),
-%%     ?D(AutoImports),
     {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
     ?D({'>>',length(Collected)}),
     Model = #model{forms=Collected, comments=Comments},
-    %%erlide_noparse_server:create(ScannerName, Model),
-%%     ?D({"Model", length(Model#model.forms), erts_debug:flat_size(Model)}),
     FixedModel = fixup_model(Model),
-%%     ?D(erts_debug:flat_size(FixedModel)),
-    %% 	?D([erts_debug:flat_size(F) || F <- element(2, FixedModel)]),
     ?D(StateDir),
     case StateDir of
         "" -> ok;
@@ -139,8 +132,7 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
             file:write_file(RefsFileName, term_to_binary(Refs, [compressed]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
-%%     ?D(FixedModel),
-    FixedModel.
+    {FixedModel, Refs}.
 
 update_search_server(true, ScannerName, Refs) ->
     erlide_search_server:add_module_refs(ScannerName, Refs);

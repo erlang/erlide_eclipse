@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendHelper;
+import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.ErlMember;
 import org.erlide.core.model.erlang.IErlAttribute;
@@ -33,10 +34,7 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.ErlUtils;
-import org.erlide.utils.TermParserException;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -78,39 +76,31 @@ public final class ErlParser implements IErlParser {
     @Override
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
-            final boolean useCaches) {
+            final boolean useCaches, final boolean updateSearchServer) {
         if (module == null) {
             return false;
         }
         OtpErlangList forms = null;
         OtpErlangList comments = null;
         OtpErlangTuple res = null;
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
         if (initialParse) {
-            // ErlLogger.debug("initialParse %s", path);
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
-            res = ErlideNoparse.initialParse(scannerName, path, stateDir,
-                    useCaches, true);
+            res = ErlideNoparse.initialParse(backend, scannerName, path,
+                    stateDir, useCaches, updateSearchServer);
         } else {
-            res = ErlideNoparse.reparse(scannerName);
+            res = ErlideNoparse.reparse(backend, scannerName,
+                    updateSearchServer);
         }
         if (Util.isOk(res)) {
-            Bindings bindings = null;
-            try {
-                bindings = ErlUtils.match("{ok, {_, Forms, Comments}, _}", res);
-            } catch (final TermParserException e) {
-                ErlLogger.warn(e);
-            }
-            if (bindings != null) {
-                forms = (OtpErlangList) bindings.get("Forms");
-                comments = (OtpErlangList) bindings.get("Comments");
-            } else {
-                ErlLogger.error("parser for %s got: %s", path, res);
-            }
+            final OtpErlangTuple t = (OtpErlangTuple) res.elementAt(1);
+            forms = (OtpErlangList) t.elementAt(1);
+            comments = (OtpErlangList) t.elementAt(2);
         } else {
-            ErlLogger.error("rpc error when parsing %s: %s", path, res);
+            ErlLogger.error("error when parsing %s: %s", path, res);
         }
-        // mm.setParseTree(forms);
         if (forms == null) {
             module.setChildren(null);
         } else {
@@ -139,7 +129,7 @@ public final class ErlParser implements IErlParser {
             module.setComments(moduleComments);
         }
         fixFunctionComments(module);
-        return true;
+        return forms != null && comments != null;
     }
 
     /**
@@ -147,10 +137,12 @@ public final class ErlParser implements IErlParser {
      * lines before function, or a sequence of comment, -spec, comment, then
      * they should be added to function documentation
      * 
+     * TODO: check that -spec is actually relevant to the function
+     * 
      * @param module
      */
     private void fixFunctionComments(final IErlModule module) {
-        // TODO rewrite in Erlang?
+        // TODO rewrite in Erlang? would be so much less code...
         try {
             final Collection<IErlComment> comments = module.getComments();
             final List<IErlElement> children = module.getChildren();
@@ -159,8 +151,7 @@ public final class ErlParser implements IErlParser {
             all.addAll(comments);
             for (final IErlElement element : children) {
                 if (element instanceof IErlMember) {
-                    final IErlMember member = (IErlMember) element;
-                    all.add(member);
+                    all.add((IErlMember) element);
                 }
             }
             Collections.sort(all, new SourceOffsetComparator());
@@ -188,10 +179,10 @@ public final class ErlParser implements IErlParser {
 
     private int considerPrevious(final int i, final List<IErlMember> all,
             final LinkedList<IErlMember> comments) {
-        final int j = i - 1;
-        if (j > 0) {
+        final int i_1 = i - 1;
+        if (i_1 > 0) {
             final IErlMember member = all.get(i);
-            final IErlMember member_1 = all.get(j);
+            final IErlMember member_1 = all.get(i_1);
             if (member_1 instanceof IErlComment
                     || member_1 instanceof IErlTypespec) {
                 if (member_1.getLineEnd() + FUNCTION_COMMENT_THRESHOLD >= member
@@ -202,7 +193,7 @@ public final class ErlParser implements IErlParser {
                 return -1;
             }
         }
-        return j;
+        return i_1;
     }
 
     /**
