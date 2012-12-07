@@ -33,6 +33,8 @@ public final class OpenDeclarationAction extends Action {
     public OpenDeclarationAction(final EdocView edocView) {
         this.edocView = edocView;
         fInfoControl = null;
+        setText("Open declaration");
+        ErlideImage.setLocalImageDescriptors(this, "goto_input.gif");
     }
 
     /*
