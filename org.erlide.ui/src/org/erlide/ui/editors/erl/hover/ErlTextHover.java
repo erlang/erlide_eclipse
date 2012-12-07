@@ -299,7 +299,7 @@ public class ErlTextHover implements ITextHover,
             final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(ide,
                     b, offset, stateDir, module.getScannerName(), fImports,
                     externalModulesString, model.getPathVars());
-            ErlLogger.debug("otp doc %s", t);
+            // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));
                 final String docStr = Util.stringValue(t.elementAt(1));
