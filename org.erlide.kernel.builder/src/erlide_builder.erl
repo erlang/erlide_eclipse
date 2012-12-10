@@ -74,16 +74,16 @@ format_compile_msg({File, L}, Marker) ->
 	[{Ln, File, iolist_to_binary(M:format_error(D)), Marker} || {Ln, M, D} <- L].
 
 load(Mod, All) ->
-	case code:is_sticky(Mod) of
-		true ->
-			ok;
-		false ->
-			if All ->
-                   c:nl(Mod);
-               true ->
-                   c:l(Mod)
-            end
-	end.
+    case code:is_sticky(Mod) of
+	true ->
+	    ok;
+	false ->
+	    if All ->
+		   c:nl(Mod);
+	       true ->
+		   c:l(Mod)
+	    end
+    end.
 
 mk_includes(L) ->
 	[{i, X} || X <- L].
