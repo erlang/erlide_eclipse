@@ -98,6 +98,7 @@ remove_module(ScannerName) ->
     server_cmd(remove_module, ScannerName).
 
 add_module_refs(ScannerName, Refs) ->
+    ?D({add_module_refs, ScannerName}),
     server_cmd(add_module_refs, {ScannerName, Refs}).
 
 cancel_find_refs(Pid) ->
@@ -182,11 +183,7 @@ reply(Cmd, From, R) ->
 do_cmd(add_module_refs, {ScannerName, Refs}, State) ->
     do_add_module_refs(ScannerName, Refs, State);
 do_cmd(find_refs, {Ref, Modules, StateDir, UpdateSearchServer}, State) ->
-    ?D(Ref),
-    ?D(Modules),
-    ?D(State),
     R = do_find_refs(Modules, Ref, StateDir, State, UpdateSearchServer, []),
-    ?D(R),
     R;
 do_cmd(start_find_refs, {Pattern, Modules, JPid, StateDir, UpdateSearchServer}, State) ->
     ?D(start_find_refs),
@@ -324,13 +321,10 @@ check_var_pattern([_ | Rest], V, F, A, C) ->
 	check_var_pattern(Rest, V, F, A, C).
 
 get_module_refs(ScannerName, ModulePath, StateDir, Modules, UpdateSearchServer) ->
-    ?D(Modules),
     case lists:keysearch(ScannerName, #module.scanner_name, Modules) of
         {value, #module{refs=Refs}} ->
-            ?D(ye),
             Refs;
         false ->
-            ?D(ok),
             get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer)
     end.
 

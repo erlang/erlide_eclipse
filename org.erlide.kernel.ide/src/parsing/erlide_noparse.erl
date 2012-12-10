@@ -120,10 +120,10 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
     Functions = erlide_np_util:split_after_dots(UncommentToks),
     ?D(length(Functions)),
     AutoImports = erlide_util:add_auto_imported([]),
-    {Collected, Refs} = classify_and_collect(Functions, [], [], [], AutoImports),
+    {Collected, Refs} = classify_and_collect_forms(Functions, [], [], [], AutoImports),
     ?D({'>>',length(Collected)}),
     Model = #model{forms=Collected, comments=Comments},
-    FixedModel = fixup_model(Model),
+    CompactModel = erlide_np_util:compact_model(Model),
     ?D(StateDir),
     case StateDir of
         "" -> ok;
@@ -132,119 +132,32 @@ do_parse2(ScannerName, RefsFileName, Toks, StateDir, UpdateSearchServer) ->
             file:write_file(RefsFileName, term_to_binary(Refs, [compressed]))
     end,
     update_search_server(UpdateSearchServer, ScannerName, Refs),
-    {FixedModel, Refs}.
+    {CompactModel, Refs}.
 
 update_search_server(true, ScannerName, Refs) ->
     erlide_search_server:add_module_refs(ScannerName, Refs);
 update_search_server(_, _, _) ->
     ok.
 
-fixup_model(#model{forms=Forms, comments=Comments}) ->
-    FixedComments = fixup_tokens(Comments),
-    FixedForms = fixup_forms(Forms),
-    #model{forms=FixedForms, comments=FixedComments}.
-
-fixup_forms(Forms) ->
-    [fixup_form(Form) || Form <- Forms].
-
-fixup_tokens(Tokens) ->
-    [fixup_token(Token) || Token <- Tokens].
-
-fixup_token(#token{value=Value} = Token) when is_list(Value) ->
-    Token#token{value=to_binary(Value)};
-fixup_token(#token{text=Text} = Token) when is_list(Text) ->
-    Token#token{value=to_binary(Text)};
-fixup_token(Token) ->
-    Token.
-
-binary_args(Args) when is_list(Args) ->
-    [iolist_to_binary(A) || A <- Args];
-binary_args(_) ->
-    [].
-
-fixup_form(#function{clauses=Clauses, args=Args} = Function) ->
-    Function#function{clauses=fixup_forms(Clauses), args=binary_args(Args)};
-fixup_form(#clause{head=Head, args=Args} = Clause) ->
-    Clause#clause{head=to_binary(Head), args=binary_args(Args)};
-fixup_form(Other) ->
-    Other.
-
-to_binary(Comment) when is_list(Comment) ->
-    try 
-        iolist_to_binary(Comment) 
-    catch 
-        _:_ -> 
-            unicode:characters_to_binary(Comment) 
-    end;
-to_binary(Other) ->
-    Other.
-
-%% parse_test(ScannerName, File) ->
-%%     erlide_scanner_server:scan_uncached(ScannerName, File, ""),
-%%     Toks = erlide_scanner_server:getTokens(ScannerName),
-%%     {UncommentToks, Comments} = extract_comments(Toks),
-%%     Functions = split_after_dots(UncommentToks, [], []),
-%%     {Collected, Refs} = classify_and_collect(Functions, [], []),
-%%     _Model = #model{forms=Collected, comments=Comments},
-%%     %%erlide_noparse_server:create(ScannerName, Model, ""),
-%%     ok.
-
-classify_and_collect([], Acc, RefsAcc, _Exports, _Imports) ->
+classify_and_collect_forms([], Acc, RefsAcc, _Exports, _Imports) ->
     {lists:reverse(Acc), lists:reverse(RefsAcc)};
-classify_and_collect([eof], Acc, RefsAcc, _Exports, _Imports) ->
+classify_and_collect_forms([eof], Acc, RefsAcc, _Exports, _Imports) ->
     {lists:reverse(Acc), lists:reverse(RefsAcc)};
-classify_and_collect([C | Rest], Acc, RefsAcc, Exports, Imports) ->
-    {R, Refs, MoreExports, MoreImports} = cac(check_class(C), C, Exports, Imports),
-    classify_and_collect(Rest, [R | Acc], Refs++RefsAcc, MoreExports++Exports, MoreImports++Imports).
+classify_and_collect_forms([C | Rest], Acc, RefsAcc, Exports, Imports) ->
+    {R, Refs, MoreExports, MoreImports} = cac_form(check_class(C), C, Exports, Imports),
+    classify_and_collect_forms(Rest, [R | Acc], Refs++RefsAcc, MoreExports++Exports, MoreImports++Imports).
 
-cac(function, Tokens, Exports, Imports) ->
-    ClauseList = split_clauses(Tokens),
-    %?D(ClauseList),
-    ClausesAndRefs = fix_clauses(ClauseList),
-    %?D(length(Clauses)),
-    [{#clause{pos=P, name=N, args=A, head=H, name_pos=NP}, _Refs} | _] = ClausesAndRefs,
-    ?D(A),
-    Arity = length(A),
-    Exported = get_exported({N, Arity}, Exports),
-    Function = case ClausesAndRefs of  	% only show subclauses when more than one
-                   [_] ->
-                       #function{pos=P, name=N, arity=Arity, args=A, head=H, 
-                                 clauses=[], name_pos=NP, exported=Exported};
-                   _ ->
-                       Clauses = [C || {C, _} <- ClausesAndRefs],
-                       #function{pos=P, name=N, arity=Arity, clauses=Clauses, 
-                                 name_pos=NP, exported=Exported}
-               end,
-    {Function, fix_refs(ClausesAndRefs, Function, Imports), [], []};
-cac(attribute, Attribute, _Exports, _Imports) ->
-    ?D(Attribute),
-    case Attribute of
-        %% -spec, -type or -opaque
-        [#token{kind='-', offset=Offset, line=Line},
-         #token{kind=Kind, line=_Line, offset=_Offset, value=Name} | Args]
-          when (Kind=:='spec') or ((Kind=:=atom) and (Name=:='type'))
-                   or ((Kind=:=atom) and (Name=:='opaque'))->
-            get_type_attribute(Kind, Name, Offset, Line, Attribute, Args);
-        %% other attributes
-        [#token{kind='-', offset=Offset, line=Line},
-         #token{kind=atom, value=Name, line=_Line, offset=_Offset},
-         _, #token{value=Args} | _] = Attribute ->
-            get_other_attribute(Name, Offset, Line, Attribute, Args);
-        [_, #token{kind=atom, value=Name, line=Line, offset=Offset} | _] ->
-            #token{line=LastLine, offset=LastOffset, 
-                   length=LastLength} = last_not_eof(Attribute),
-            PosLength = LastOffset - Offset + LastLength,
-            {#attribute{pos={{Line, LastLine, Offset}, PosLength},
-                       name=Name, args=[]}, [], [], []}
-    end;
-cac(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _], 
+cac_form(function, Tokens, Exports, Imports) ->
+    get_function(Tokens, Exports, Imports);
+cac_form(attribute, Attribute, _Exports, _Imports) ->
+    get_attribute(Attribute);
+cac_form(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _], 
     _Exports, _Imports) ->
     {#other{pos={{Line, Line, Offset}, Length}, name=Name}, [], [], []};
-cac(_, _D, _E, _I) ->
+cac_form(_, _D, _E, _I) ->
     {eof, [], [], []}.
 
 get_type_attribute(Kind, Name0, Offset, Line, Attribute, Args) ->
-    ?D(Name0),
     Name = case Kind of 'spec' -> Kind; _ -> Name0 end,
     #token{line=LastLine, offset=LastOffset,
            length=LastLength} = last_not_eof(Attribute),
@@ -266,6 +179,43 @@ get_type_attribute(Kind, Name0, Offset, Line, Attribute, Args) ->
      [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
            arity=?ARI_TYPESPEC, clause="", sub_clause=false} | ExternalRefs], [], []}.
 
+get_function(Tokens, Exports, Imports) ->
+    ClauseList = split_clauses(Tokens),
+    ClausesAndRefs = get_clauses(ClauseList),
+    [{#clause{pos=P, name=Name, args=Arguments, head=H, name_pos=NP}, _Refs} | _] = ClausesAndRefs,
+    Arity = length(Arguments),
+    Exported = lists:member({Name, Arity}, Exports), 
+    Function = case ClausesAndRefs of   % only show subclauses when more than one
+                   [_] ->
+                       #function{pos=P, name=Name, arity=Arity, args=Arguments, head=H, 
+                                 clauses=[], name_pos=NP, exported=Exported};
+                   _ ->
+                       Clauses = [C || {C, _} <- ClausesAndRefs],
+                       #function{pos=P, name=Name, arity=Arity, clauses=Clauses, 
+                                 name_pos=NP, exported=Exported}
+               end,
+    {Function, fix_code_refs(ClausesAndRefs, Function, Imports), [], []}.
+
+get_attribute([#token{kind='-', offset=Offset, line=Line},
+               #token{kind=Kind, line=_Line, offset=_Offset, value=Name} | Args] = Attribute)
+  when (Kind=:='spec') or ((Kind=:=atom) and (Name=:='type'))
+           or ((Kind=:=atom) and (Name=:='opaque'))->
+    %% -spec, -type or -opaque
+    get_type_attribute(Kind, Name, Offset, Line, Attribute, Args);
+get_attribute([#token{kind='-', offset=Offset, line=Line},
+               #token{kind=atom, value=Name, line=_Line, offset=_Offset},
+               _, #token{value=Args} | _] = Attribute) ->
+    %% other attributes
+    get_other_attribute(Name, Offset, Line, Attribute, Args);
+get_attribute([_, #token{kind=atom, value=Name, 
+                         line=Line, offset=Offset}
+               | _] = Attribute) ->
+    #token{line=LastLine, offset=LastOffset, 
+           length=LastLength} = last_not_eof(Attribute),
+    PosLength = LastOffset - Offset + LastLength,
+    {#attribute{pos={{Line, LastLine, Offset}, PosLength},
+                name=Name, args=[]}, [], [], []}.
+
 get_other_attribute(Name, Offset, Line, Attribute, Args) ->
     #token{line=LastLine, offset=LastOffset, 
            length=LastLength} = last_not_eof(Attribute),
@@ -279,9 +229,6 @@ get_other_attribute(Name, Offset, Line, Attribute, Args) ->
      make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)++
          make_attribute_arg_refs(Name, AttrArgs, Between),
      Exports, Imports}.
-
-get_exported(F_A, Exports) ->
-    lists:member(F_A, Exports).
 
 get_attribute_args(import, Between, _Args) ->
     From = get_first_of_kind(atom, Between),
@@ -425,17 +372,16 @@ split_clauses([T | Rest] = Tokens, HaveWhen, Acc, ClAcc) ->
             split_clauses(Rest, HaveWhen, [[T | ClAcc] | Acc], [])
     end.
 
-%% fix_clause([#token{kind=atom, value=Name, line=Line, offset=Offset, length=Length} | Rest] = Code) ->
-fix_clauses(Clauses) ->
-    fix_clauses(Clauses, []).
+get_clauses(Clauses) ->
+    get_clauses(Clauses, []).
 
-fix_clauses([], Acc) ->
+get_clauses([], Acc) ->
     lists:reverse(Acc);
-fix_clauses([C | Rest], Acc) ->
-    {Clause, Refs} = fix_clause(C),
-    fix_clauses(Rest, [{Clause, Refs} | Acc]).
+get_clauses([C | Rest], Acc) ->
+    {Clause, Refs} = get_clause(C),
+    get_clauses(Rest, [{Clause, Refs} | Acc]).
 
-fix_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest]) 
+get_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest]) 
   when AtomOrMacro=:=atom; AtomOrMacro=:=macro ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength+1,
@@ -449,22 +395,22 @@ get_function_args(Tokens) ->
     L = erlide_text:split_comma_list(P),
     [to_string(A) || A <- L].
 
-fix_refs(ClausesAndRefs, Function, Imports) ->
-    fix_refs(ClausesAndRefs, Function, Imports, []).
+fix_code_refs(ClausesAndRefs, Function, Imports) ->
+    fix_code_refs(ClausesAndRefs, Function, Imports, []).
 
-fix_refs([], #function{name=Name, arity=Arity, name_pos={{_, Offset}, Length}}, _Imports, Acc) ->
+fix_code_refs([], #function{name=Name, arity=Arity, name_pos={{_, Offset}, Length}}, _Imports, Acc) ->
     Ref = #ref{data=#function_def{function=Name, arity=Arity}, offset=Offset, 
                length=Length, function=Name, arity=Arity, clause="", sub_clause=false},
     [Ref | Acc];
-fix_refs([{Clause, Refs} | Rest], Function, Imports, Acc0) ->
-    Acc1 = fix_refs(Refs, Clause, Function, Imports, Acc0),
-    fix_refs(Rest, Function, Imports, Acc1).
+fix_code_refs([{Clause, Refs} | Rest], Function, Imports, Acc0) ->
+    Acc1 = fix_code_refs(Refs, Clause, Function, Imports, Acc0),
+    fix_code_refs(Rest, Function, Imports, Acc1).
 
-fix_refs([], _Clause, _Function, _Imports, Acc) ->
+fix_code_refs([], _Clause, _Function, _Imports, Acc) ->
     Acc;
-fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause, 
-         #function{name=Name, arity=Arity, clauses=Clauses}=Function, 
-         Imports, Acc) ->
+fix_code_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause, 
+              #function{name=Name, arity=Arity, clauses=Clauses}=Function, 
+              Imports, Acc) ->
     SubClause = case Clauses of
                     [] -> false;
                     [_] -> false;
@@ -473,7 +419,7 @@ fix_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause,
     NewRefData = fix_imported_ref(RefData, Imports),
     Ref = #ref{data=NewRefData, offset=Offset, length=Length, function=Name, 
                arity=Arity, clause=Head, sub_clause=SubClause},
-    fix_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
+    fix_code_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
 
 fix_imported_ref(#local_call{function=F, arity=A}=RefData, [{Module, Imports} | Rest]) ->
     case lists:member({F, A}, Imports) of
