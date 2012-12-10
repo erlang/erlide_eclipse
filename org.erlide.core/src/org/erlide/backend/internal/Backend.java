@@ -445,10 +445,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     public synchronized void initErlang(final boolean watch) {
+        ErlLogger.debug("initialize %s: %s", getName(), watch);
         init(getEventPid(), watch);
-
-        // data.monitor = monitor;
-        // data.managed = watch;
 
         eventDaemon = new ErlangEventPublisher(this);
         eventDaemon.start();
