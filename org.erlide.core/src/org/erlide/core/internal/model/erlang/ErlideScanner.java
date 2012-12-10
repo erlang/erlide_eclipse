@@ -3,7 +3,6 @@ package org.erlide.core.internal.model.erlang;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
@@ -12,7 +11,6 @@ import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcTimeoutException;
-import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -194,33 +192,6 @@ public class ErlideScanner {
             return Util.stringValue(o);
         } catch (final RpcException e) {
             return "";
-        }
-    }
-
-    @SuppressWarnings("boxing")
-    public static void notifyChange(final String scannerName, final int offset,
-            final int length, final String text) {
-        Assert.isNotNull(scannerName);
-        try {
-            final OtpErlangObject msg = ErlUtils.format(
-                    "{change, ~a, ~i,  ~i, ~s}", scannerName, offset, length,
-                    text);
-            BackendCore.getBackendManager().getIdeBackend()
-                    .send("erlide_scanner_listener", msg);
-        } catch (final Exception e) {
-            ErlLogger.warn(e);
-        }
-    }
-
-    public static void notifyNew(final String scannerName) {
-        Assert.isNotNull(scannerName);
-        try {
-            final OtpErlangObject msg = ErlUtils.format("{new, ~a}",
-                    scannerName);
-            BackendCore.getBackendManager().getIdeBackend()
-                    .send("erlide_scanner_listener", msg);
-        } catch (final Exception e) {
-            ErlLogger.warn(e);
         }
     }
 
