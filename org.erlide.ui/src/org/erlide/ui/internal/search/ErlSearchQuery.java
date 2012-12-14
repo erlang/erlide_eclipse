@@ -11,7 +11,6 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.services.search.ErlSearchScope;

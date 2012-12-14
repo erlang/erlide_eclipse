@@ -127,7 +127,7 @@ public class CodeAssistPreferencePage extends PreferencePage implements
     }
 
     protected void validateSettings() {
-        statusChanged(EditorPreferencePage.validatePositiveNumber(delayText
+        statusChanged(ErlidePreferencePage.validatePositiveNumber(delayText
                 .getText()));
         statusChanged(validateCommaSeparatedCharacters(erlangTriggersText
                 .getText()));
@@ -153,7 +153,7 @@ public class CodeAssistPreferencePage extends PreferencePage implements
     private void statusChanged(final IStatus status) {
         final boolean valid = !status.matches(IStatus.ERROR);
         setValid(valid);
-        EditorPreferencePage.applyToStatusLine(this, status);
+        ErlidePreferencePage.applyToStatusLine(this, status);
     }
 
     @Override

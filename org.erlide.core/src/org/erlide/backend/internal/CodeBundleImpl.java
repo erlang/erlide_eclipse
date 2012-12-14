@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.jinterface.ErlLogger;
-import org.eclipse.xtext.xbase.lib.Pair;
 import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Lists;

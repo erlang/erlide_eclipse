@@ -174,8 +174,8 @@ public class PopupDialog {
         builder.append("body\n");
         builder.append("{\n");
         builder.append("background-color:#");
-        final int rgb = (background.getRed() << 16)
-                | (background.getGreen() << 8) | background.getBlue();
+        final int rgb = background.getRed() << 16 | background.getGreen() << 8
+                | background.getBlue();
         builder.append(Integer.toHexString(rgb));
         builder.append(";\n");
         builder.append("font-family:\"");

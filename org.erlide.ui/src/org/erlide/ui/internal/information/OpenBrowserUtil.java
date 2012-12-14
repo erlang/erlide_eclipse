@@ -33,6 +33,7 @@ public class OpenBrowserUtil {
      */
     public static void open(final URL url, final Display display) {
         display.syncExec(new Runnable() {
+            @Override
             public void run() {
                 internalOpen(url, false);
             }
@@ -50,6 +51,7 @@ public class OpenBrowserUtil {
      */
     public static void openExternal(final URL url, final Display display) {
         display.syncExec(new Runnable() {
+            @Override
             public void run() {
                 internalOpen(url, true);
             }
@@ -59,6 +61,7 @@ public class OpenBrowserUtil {
     private static void internalOpen(final URL url,
             final boolean useExternalBrowser) {
         BusyIndicator.showWhile(null, new Runnable() {
+            @Override
             public void run() {
                 final URL helpSystemUrl = PlatformUI.getWorkbench()
                         .getHelpSystem().resolve(url.toExternalForm(), true);
