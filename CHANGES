@@ -1,3 +1,16 @@
+List of user visible changes between 0.17.6 and 0.17.7 (20121214)
+
+45d388b debug backends not being shut down
+0432513 798  debugger: live code update
+da9c3a3 set the default file encoding to whatever the workspace says
+1b9667f Set "module" template to default when creating new erlang module
+0395bda Better handling of search-server state
+d9be92c fix NPE in edoc hover
+3c5cf1f fix edoc css to specify foreground color
+5bc325a 1029-stale-warnings-don-t-clear-on-recompile-
+a9b8d41 Fixed problem with "Open Declaration" when navigating within docs (Edoc and Hover)
+27d77f0 Removed "Goto Input" text from edoc-view, enabled open declaration
+
 List of user visible changes between 0.17.5 and 0.17.6 (20121206)
 
 4139bbd simplify and improve process heap monitoring
