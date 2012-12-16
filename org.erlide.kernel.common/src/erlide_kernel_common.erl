@@ -23,20 +23,17 @@ startup(JRex, Kill, HeapWarnLimit, HeapKillLimit)->
 watch_eclipse(JavaNode, Kill) ->
   spawn(fun() ->
           monitor_node(JavaNode, true),
-		  erlide_log:log("Monitoring java node"),
-		  write_message("start monitoring"),
+		  erlide_log:log({"Monitoring java node", JavaNode}),
+		  write_message({"start monitoring", JavaNode, Kill}),
           receive
             {nodedown, JavaNode}=_Msg ->
 			  write_message(_Msg),
               case Kill of
                 true ->
-                  init:stop();
+                  erlang:halt();
                 false ->
                   shutdown()
               end,
-			  ok;
-  		    _Msg ->
-			  write_message(_Msg),
 			  ok
           end
       end).
