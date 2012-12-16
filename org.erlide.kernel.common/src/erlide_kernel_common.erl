@@ -14,7 +14,7 @@ startup(JRex, Kill, HeapWarnLimit, HeapKillLimit)->
     watch_eclipse(node(JRex), Kill),
 
 	erlide_monitor:start(HeapWarnLimit, HeapKillLimit),
-    erlang:system_monitor(erlang:whereis(erlide_monitor), 
+    erlang:system_monitor(erlang:whereis(erlide_monitor),
 						  [{long_gc, 3000}, {large_heap, HeapWarnLimit*1000000 div 2}]),
 
     erlide_batch:start(erlide_builder),
@@ -51,6 +51,6 @@ write_message(Msg) ->
 	{ok, [[Home]]} = init:get_argument(home),
 	{ok, F} = file:open(Home++"/erlide_debug.txt", [append, raw]),
 	file:write(F, io_lib:format("~p: ~p got ~p~n", [erlang:universaltime(), node(), Msg])),
-	file:sync(),
+	file:sync(F),
 	file:close(F),
 	ok.
