@@ -93,13 +93,14 @@ public class ErlangHostnameRetriever {
                 int chr;
                 while ((chr = stream.read()) != -1) {
                     if (chr == 10 || chr == 13) {
+                        System.out.println("?> " + line);
                         line.setLength(0);
                     } else {
                         line.append((char) chr);
                     }
-                    System.out.println(">> " + line);
                     final Matcher matcher = pattern.matcher(line);
                     if (matcher.matches()) {
+                        System.out.println(">> " + line);
                         result = matcher.group(1);
                         return;
                     }
@@ -107,6 +108,7 @@ public class ErlangHostnameRetriever {
             } catch (final IOException e) {
                 ErlLogger.error(e);
             }
+            System.out.println("?> " + line);
         }
 
         public String getResult() {
