@@ -84,10 +84,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         IPropertyChangeListener {
     public static final String ID = "org.erlide.ui.views.console";
 
-    final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(245, 255,
-            245));
-    final Color bgColor_Err = new Color(Display.getCurrent(), new RGB(255, 245,
-            245));
+    Color bgColor_Ok;
+    Color bgColor_Err;
 
     StyledText consoleText;
     private final ErlConsoleDocument fDoc;
@@ -111,6 +109,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     };
 
     private Composite composite;
+
+    private boolean disposeColors;
 
     public ErlangConsolePage(final IConsoleView view,
             final ErlangConsole console) {
@@ -137,8 +137,10 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         fConsoleView = null;
 
-        bgColor_Err.dispose();
-        bgColor_Ok.dispose();
+        if (disposeColors) {
+            bgColor_Err.dispose();
+            bgColor_Ok.dispose();
+        }
         super.dispose();
     }
 
@@ -182,6 +184,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
      */
     @Override
     public void createControl(final Composite parent) {
+        setBackgroundColors();
+
         composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, false));
 
@@ -336,6 +340,36 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleOutputViewer.getSelectionProvider().addSelectionChangedListener(
                 selectionChangedListener);
 
+    }
+
+    private void setBackgroundColors() {
+        final Color color = DebugUIPlugin
+                .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
+
+        final float[] hsbvals = new float[3];
+        java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(),
+                color.getBlue(), hsbvals);
+
+        if (hsbvals[1] >= 0.01) {
+            bgColor_Ok = color;
+            bgColor_Err = color;
+            disposeColors = false;
+        } else {
+            final float red = java.awt.Color.RGBtoHSB(255, 0, 0, null)[0];
+            final float green = java.awt.Color.RGBtoHSB(0, 255, 0, null)[0];
+            final float deltaSaturation = 0.05f;
+
+            int rgb = java.awt.Color.HSBtoRGB(red, deltaSaturation, hsbvals[2]);
+            java.awt.Color cx = new java.awt.Color(rgb);
+            bgColor_Err = new Color(Display.getCurrent(), new RGB(cx.getRed(),
+                    cx.getGreen(), cx.getBlue()));
+
+            rgb = java.awt.Color.HSBtoRGB(green, deltaSaturation, hsbvals[2]);
+            cx = new java.awt.Color(rgb);
+            bgColor_Ok = new Color(Display.getCurrent(), new RGB(cx.getRed(),
+                    cx.getGreen(), cx.getBlue()));
+            disposeColors = true;
+        }
     }
 
     @Override
