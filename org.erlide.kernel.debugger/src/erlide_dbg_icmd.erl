@@ -366,7 +366,7 @@ handle_user_msg(A, _, _, _) ->
     erlang:display({handle_user_msg, A}).
 
 all_modules_on_stack() ->
-    erlide_dbg_ieval:all_modules_on_stack().
+    erlide_dbg_istk:all_modules_on_stack().
 
 all_frames() ->
     erlide_dbg_ieval:all_frames().

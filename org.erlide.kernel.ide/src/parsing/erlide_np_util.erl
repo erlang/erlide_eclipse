@@ -17,7 +17,8 @@
 %%
 %% Exported Functions
 %%
--export([extract_comments/1, split_after_dots/1, skip_to/2, get_between_outer_pars/3]).
+-export([extract_comments/1, split_after_dots/1, skip_to/2,
+         get_between_outer_pars/3, compact_model/1]).
 
 %%
 %% API Functions
@@ -93,3 +94,44 @@ gbop([#token{kind=L}=T | Rest], L, R) ->
 gbop([T | Rest], L, R) ->
     {LR, Rest1} = gbop(Rest, L, R),
     {[T] ++ LR, Rest1}.
+
+
+compact_model(#model{forms=Forms, comments=Comments}) ->
+    FixedComments = compact_tokens(Comments),
+    FixedForms = compact_forms(Forms),
+    #model{forms=FixedForms, comments=FixedComments}.
+
+compact_forms(Forms) ->
+    [compact_form(Form) || Form <- Forms].
+
+compact_tokens(Tokens) ->
+    [compact_token(Token) || Token <- Tokens].
+
+compact_token(#token{value=Value} = Token) when is_list(Value) ->
+    Token#token{value=to_binary_with_unicode(Value)};
+compact_token(#token{text=Text} = Token) when is_list(Text) ->
+    Token#token{value=to_binary_with_unicode(Text)};
+compact_token(Token) ->
+    Token.
+
+list_of_binaries(Args) when is_list(Args) ->
+    [iolist_to_binary(A) || A <- Args];
+list_of_binaries(_) ->
+    [].
+
+compact_form(#function{clauses=Clauses, args=Args} = Function) ->
+    Function#function{clauses=compact_forms(Clauses), args=list_of_binaries(Args)};
+compact_form(#clause{head=Head, args=Args} = Clause) ->
+    Clause#clause{head=to_binary_with_unicode(Head), args=list_of_binaries(Args)};
+compact_form(Other) ->
+    Other.
+
+to_binary_with_unicode(Comment) when is_list(Comment) ->
+    try 
+        iolist_to_binary(Comment) 
+    catch 
+        _:_ -> 
+            unicode:characters_to_binary(Comment) 
+    end;
+to_binary_with_unicode(Other) ->
+    Other.

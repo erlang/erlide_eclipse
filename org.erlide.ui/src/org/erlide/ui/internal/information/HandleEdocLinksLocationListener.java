@@ -9,6 +9,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideDoc;
+import org.erlide.core.services.search.OpenResult;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -51,7 +52,12 @@ public class HandleEdocLinksLocationListener implements LocationListener {
         }
         if (input != null) {
             final ErlangEditor editor = input.getEditor();
-            final String moduleName = input.getModuleName();
+            String moduleName = "";
+            final Object inputElement = input.getInputElement();
+            if (inputElement instanceof OpenResult) {
+                final OpenResult or = (OpenResult) inputElement;
+                moduleName = or.getName();
+            }
             final ErlangFunctionCall functionCall = HoverUtil
                     .eventToErlangFunctionCall(moduleName, event);
             if (functionCall != null) {
@@ -83,9 +89,10 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                     if (result.length() > 0) {
                         final String html = HoverUtil
                                 .getHTMLAndReplaceJSLinks(result);
+                        final Object element = new OpenResult(
+                                otpDoc.elementAt(2));
                         input = new ErlBrowserInformationControlInput(input,
-                                editor, moduleName, null, html, 20, docPath,
-                                anchor);
+                                editor, element, html, 20, docPath, anchor);
                     }
                 }
             }

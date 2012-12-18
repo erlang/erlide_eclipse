@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -30,6 +32,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
@@ -48,6 +51,7 @@ import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HandleEdocLinksLocationListener;
+import org.erlide.ui.internal.information.OpenDeclarationAction;
 import org.osgi.framework.Bundle;
 
 /**
@@ -81,6 +85,7 @@ public class EdocView extends AbstractInfoView {
     private static URL fgStyleSheet;
     private HandleEdocLinksLocationListener locationListener;
     private ErlBrowserInformationControlInput input;
+    protected OpenDeclarationAction openDeclarationAction;
 
     /**
      * The Edoc view's select all action.
@@ -273,8 +278,22 @@ public class EdocView extends AbstractInfoView {
     @Override
     protected void createActions() {
         super.createActions();
-        fSelectAllAction = new SelectAllAction(getControl(),
-                (SelectionProvider) getSelectionProvider());
+        openDeclarationAction = new OpenDeclarationAction(this);
+        openDeclarationAction.setEnabled(false);
+    }
+
+    @Override
+    public void menuAboutToShow(final IMenuManager menu) {
+        // TODO Auto-generated method stub
+        super.menuAboutToShow(menu);
+        menu.appendToGroup(IContextMenuConstants.GROUP_OPEN,
+                openDeclarationAction);
+    }
+
+    @Override
+    protected void fillToolBar(final IToolBarManager tbm) {
+        super.fillToolBar(tbm);
+        tbm.add(openDeclarationAction);
     }
 
     /*
@@ -290,16 +309,10 @@ public class EdocView extends AbstractInfoView {
         return fSelectAllAction;
     }
 
-    /*
-     * @seeorg.eclipse.jdt.internal.ui.infoviews.AbstractInfoView#
-     * getCopyToClipboardAction()
-     * 
-     * @since 3.0
-     */
     @Override
-    protected IAction getCopyToClipboardAction() {
-
-        return super.getCopyToClipboardAction();
+    protected void doSetInfo(final Object info) {
+        super.doSetInfo(info);
+        openDeclarationAction.setEnabled(true);
     }
 
     /*

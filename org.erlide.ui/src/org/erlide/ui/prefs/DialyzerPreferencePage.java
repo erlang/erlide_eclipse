@@ -41,6 +41,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -48,11 +49,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -153,6 +152,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
     private Button fRemoveButton;
     private Button fUpdatePLTButton;
     private Button noCheckPLTCheckbox;
+    private Button removeWarningsOnCleanCheckbox;
     private final List<String> shownPLTFiles;
 
     public DialyzerPreferencePage() {
@@ -178,6 +178,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         createPltCheck(group);
         createFromSelection(group);
         createPltNoCheckbox(group);
+        createRemoveWarningsOnCleanCheckbox(group);
         enableButtons();
 
         if (isProjectPreferencePage()) {
@@ -188,6 +189,14 @@ public class DialyzerPreferencePage extends PropertyPage implements
         performDefaults();
 
         return prefsComposite;
+    }
+
+    private void createRemoveWarningsOnCleanCheckbox(final Composite group) {
+        final Composite comp = new Composite(group, SWT.NONE);
+        comp.setLayout(new GridLayout(2, false));
+        removeWarningsOnCleanCheckbox = new Button(comp, SWT.CHECK);
+        removeWarningsOnCleanCheckbox
+                .setText("Remove dialyzer warning on clean project");
     }
 
     private void createPltNoCheckbox(final Composite group) {
@@ -260,7 +269,6 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 enableButtons();
             }
         });
-        // gd = new GridData(SWT.DEFAULT, SWT.DEFAULT, false, false, 3, 1);
         gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
                 | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
         gd.horizontalSpan = 2;
@@ -272,40 +280,23 @@ public class DialyzerPreferencePage extends PropertyPage implements
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         buttons.setLayout(layout);
-        gd = new GridData();
-        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
-        fAddButton = new Button(buttons, SWT.PUSH);
-        fAddButton.setText("Add...");
-        fAddButton.setLayoutData(gd);
-        fAddButton.addSelectionListener(new SelectionAdapter() {
+        fAddButton = createButton(buttons, "Add...", new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 addPLTFile();
             }
         });
-
-        fEditButton = new Button(buttons, SWT.PUSH);
-        fEditButton.setText("Change...");
-        gd = new GridData();
-        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
-        fEditButton.setLayoutData(gd);
-        fEditButton.addListener(SWT.Selection, new Listener() {
+        fEditButton = createButton(buttons, "Change...",
+                new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(final SelectionEvent e) {
+                        changeSelectedPLTFiles();
+                    }
+                });
+        fRemoveButton = createButton(buttons, "Remove", new SelectionAdapter() {
             @Override
-            public void handleEvent(final Event evt) {
-                changeSelectedPLTFiles();
-            }
-        });
-
-        fRemoveButton = new Button(buttons, SWT.PUSH);
-        fRemoveButton.setText("Remove");
-        gd = new GridData();
-        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
-        fRemoveButton.setLayoutData(gd);
-        fRemoveButton.addListener(SWT.Selection, new Listener() {
-            @Override
-            public void handleEvent(final Event evt) {
+            public void widgetSelected(final SelectionEvent e) {
                 removeSelectedPLTFiles();
-
             }
         });
 
@@ -314,6 +305,18 @@ public class DialyzerPreferencePage extends PropertyPage implements
             fEditButton.setVisible(false);
             fRemoveButton.setVisible(false);
         }
+    }
+
+    private Button createButton(final Composite buttons, final String text,
+            final SelectionListener selectionListener) {
+        GridData gd;
+        final Button button = new Button(buttons, SWT.PUSH);
+        button.setText(text);
+        gd = new GridData();
+        gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_FILL;
+        button.setLayoutData(gd);
+        button.addSelectionListener(selectionListener);
+        return button;
     }
 
     protected boolean hasProjectSpecificOptions(final IProject project) {
@@ -496,6 +499,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 prefs.setFromSource(fromCombo.getSelectionIndex() == 0);
                 prefs.setDialyzeOnCompile(dialyzeCheckbox.getSelection());
                 prefs.setNoCheckPLT(noCheckPLTCheckbox.getSelection());
+                prefs.setRemoveWarningsOnClean(removeWarningsOnCleanCheckbox
+                        .getSelection());
                 prefs.store();
             }
         } catch (final BackingStoreException e) {
@@ -524,6 +529,10 @@ public class DialyzerPreferencePage extends PropertyPage implements
         }
         if (noCheckPLTCheckbox != null) {
             noCheckPLTCheckbox.setSelection(prefs.getNoCheckPLT());
+        }
+        if (removeWarningsOnCleanCheckbox != null) {
+            removeWarningsOnCleanCheckbox.setSelection(prefs
+                    .getRemoveWarningsOnClean());
         }
         super.performDefaults();
     }

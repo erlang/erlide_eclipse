@@ -406,6 +406,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
     @Override
     public void dispose() {
+        for (final IBackend b : buildBackends.values()) {
+            b.dispose();
+        }
+        ideBackend.dispose();
         final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                 .getLaunches();
         launchListener.launchesTerminated(launches);
@@ -425,6 +429,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
     @Override
     public void terminateBackendsForLaunch(final ILaunch launch) {
+        final IBackend b = getBackendForLaunch(launch);
+        if (b != null) {
+            b.dispose();
+        }
     }
 
     @Override

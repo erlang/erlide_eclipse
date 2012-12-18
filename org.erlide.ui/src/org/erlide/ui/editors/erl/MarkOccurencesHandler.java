@@ -118,9 +118,11 @@ public class MarkOccurencesHandler {
                     scope.addModule(theModule);
                     final List<ModuleLineFunctionArityRef> findRefs = Lists
                             .newArrayList();
+                    // TODO: run in background? for large files, this can take
+                    // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
                             ideBackend, pattern, scope,
-                            erlangEditor.getStateDir());
+                            erlangEditor.getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);
                         fRefs = erlangEditor.markOccurencesHandler

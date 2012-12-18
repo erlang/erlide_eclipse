@@ -23,8 +23,8 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.jinterface.ErlLogger;
 import org.eclipse.xtext.xbase.lib.Pair;
+import org.erlide.jinterface.ErlLogger;
 
 /**
  * Used as 'shortcuts' to document and selection settings.

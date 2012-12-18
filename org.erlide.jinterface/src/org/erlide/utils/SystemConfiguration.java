@@ -109,10 +109,10 @@ public class SystemConfiguration {
     }
 
     public int getKillProcessSizeLimitMB() {
-        return this.killProcessSizeLimitMB;
+        return killProcessSizeLimitMB;
     }
 
     public int getWarnProcessSizeLimitMB() {
-        return this.warnProcessSizeLimitMB;
+        return warnProcessSizeLimitMB;
     }
 }

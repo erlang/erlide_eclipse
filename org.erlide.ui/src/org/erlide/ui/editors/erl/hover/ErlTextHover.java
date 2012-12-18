@@ -65,7 +65,6 @@ import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
@@ -268,12 +267,8 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         final StringBuffer result = new StringBuffer();
-        final Object element = null;
+        Object element = null;
         // TODO our model is too coarse, here we need access to expressions
-        // try {
-        // element = module.getElementAt(hoverRegion.getOffset());
-        // } catch (Exception e) {
-        // }
         final Collection<OtpErlangObject> fImports = ModelUtils
                 .getImportsAsList(module);
 
@@ -290,7 +285,6 @@ public class ErlTextHover implements ITextHover,
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final IBackend ide = backendManager.getIdeBackend();
-        String moduleName;
         String docPath = "";
         String anchor = "";
         try {
@@ -305,20 +299,18 @@ public class ErlTextHover implements ITextHover,
             final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(ide,
                     b, offset, stateDir, module.getScannerName(), fImports,
                     externalModulesString, model.getPathVars());
-            ErlLogger.debug("otp doc %s", t);
+            // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
+                element = new OpenResult(t.elementAt(2));
                 final String docStr = Util.stringValue(t.elementAt(1));
                 result.append(docStr);
-                final OtpErlangTuple t2 = (OtpErlangTuple) t.elementAt(2);
-                final OtpErlangAtom moduleAtom = (OtpErlangAtom) t2
-                        .elementAt(1);
-                moduleName = moduleAtom.atomValue();
                 if (t.arity() > 4) {
                     docPath = Util.stringValue(t.elementAt(3));
                     anchor = Util.stringValue(t.elementAt(4));
                 }
             } else {
                 final OpenResult or = new OpenResult(t);
+                element = or;
                 final Object found = OpenAction.findOpenResult(editor, module,
                         b, erlProject, or, offset);
                 // ErlLogger.debug("found:" + found);
@@ -334,14 +326,13 @@ public class ErlTextHover implements ITextHover,
                     final IErlPreprocessorDef preprocessorDef = (IErlPreprocessorDef) found;
                     result.append(preprocessorDef.getExtra());
                 }
-                moduleName = module.getModuleName();
             }
         } catch (final Exception e) {
             ErlLogger.warn(e);
             return null;
         }
         final String strResult = HoverUtil.getHTMLAndReplaceJSLinks(result);
-        return new ErlBrowserInformationControlInput(null, editor, moduleName,
-                element, strResult, 20, docPath, anchor);
+        return new ErlBrowserInformationControlInput(null, editor, element,
+                strResult, 20, docPath, anchor);
     }
 }

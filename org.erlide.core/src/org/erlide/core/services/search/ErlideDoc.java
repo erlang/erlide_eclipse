@@ -12,6 +12,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDoc {
@@ -45,9 +46,11 @@ public class ErlideDoc {
             final ErlangFunctionCall functionCall, final String stateDir) {
         OtpErlangObject res = null;
         final OtpErlangTuple input = new OtpErlangTuple(new OtpErlangObject[] {
-                new OtpErlangAtom("local"),
+                new OtpErlangAtom("external"),
+                new OtpErlangAtom(functionCall.getModule()),
                 new OtpErlangAtom(functionCall.getName()),
-                new OtpErlangInt(functionCall.getArity()) });
+                new OtpErlangInt(functionCall.getArity()),
+                new OtpErlangString("") });
         try {
             res = backend.call("erlide_otp_doc", "get_doc", "sxs",
                     functionCall.getModule(), input, stateDir);

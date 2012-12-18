@@ -164,11 +164,16 @@ public class ErlangFileWizardPage extends WizardPage {
         skeleton = new Combo(filePanel, SWT.BORDER | SWT.DROP_DOWN
                 | SWT.READ_ONLY);
         // skeleton.add("None");
-
+        int i = 0, defaultSkeleton = 0;
         for (final Template element : moduleTemplates) {
-            skeleton.add(element.getName());
+            final String name = element.getName();
+            skeleton.add(name);
+            if (name == "module") {
+                defaultSkeleton = i;
+            }
+            ++i;
         }
-        skeleton.select(0);
+        skeleton.select(defaultSkeleton);
 
         functionGroup = new FunctionGroup(container, this);
 

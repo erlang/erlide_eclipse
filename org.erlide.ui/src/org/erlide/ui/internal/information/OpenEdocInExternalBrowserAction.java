@@ -195,6 +195,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     private static void showMessage(final Shell shell, final String message,
             final boolean isError) {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 if (isError) {
                     MessageDialog.openError(shell, getTitle(), message);
@@ -235,7 +236,9 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     }
 
     public void setInput(final Object newInput) {
-        input = (ErlBrowserInformationControlInput) newInput;
+        if (input instanceof ErlBrowserInformationControlInput) {
+            input = (ErlBrowserInformationControlInput) newInput;
+        }
     }
 
     @Override

@@ -23,7 +23,6 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
     private Label warnProcessLimitText;
     private Label lblNewLabel_1;
     private Label killProcessLimitText;
-    private Label lblNewLabel_2;
 
     public InternalSettingsPreferencePage() {
     }
@@ -66,7 +65,7 @@ public class InternalSettingsPreferencePage extends PreferencePage implements
         btnMakeAvailableClearcache.setSelection(su.isClearCacheAvailable());
         new Label(panel, SWT.NONE);
 
-        lblNewLabel_2 = new Label(panel, SWT.NONE);
+        new Label(panel, SWT.NONE);
         new Label(panel, SWT.NONE);
 
         lblNewLabel = new Label(panel, SWT.NONE);

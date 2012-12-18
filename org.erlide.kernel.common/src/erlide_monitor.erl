@@ -68,7 +68,7 @@ init([HeapWarnLimit, HeapKillLimit]) ->
 %%          {stop, Reason, Reply, State}   | (terminate/2 is called)
 %%          {stop, Reason, State}            (terminate/2 is called)
 %% --------------------------------------------------------------------
-handle_call(Request, From, State) ->
+handle_call(_Request, _From, State) ->
 	Reply = ok,
 	{reply, Reply, State}.
 
@@ -81,7 +81,7 @@ handle_call(Request, From, State) ->
 %% --------------------------------------------------------------------
 handle_cast(stop, State) ->
 	{stop, normal, State};
-handle_cast(Msg, State) ->
+handle_cast(_Msg, State) ->
 	{noreply, State}.
 
 %% --------------------------------------------------------------------

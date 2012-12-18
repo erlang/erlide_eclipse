@@ -88,8 +88,13 @@ public class ErlangContentDescriber implements ITextContentDescriber {
             if (charset != null && !isCharsetValid(charset)) {
                 return INVALID;
             }
-            description.setProperty(IContentDescription.CHARSET,
-                    realCharsetName(charset));
+            final String charsetName = realCharsetName(charset);
+            if (charsetName != null) {
+                description.setProperty(IContentDescription.CHARSET,
+                        charsetName);
+            } else {
+                // keep the default setting, as in the
+            }
         }
         return VALID;
     }
@@ -100,7 +105,7 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         } else if ("utf8".equals(charset)) {
             return Charsets.UTF_8.name();
         } else {
-            return Charsets.ISO_8859_1.name();
+            return null;
         }
     }
 
@@ -183,6 +188,6 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         if (_ch == -1) {
             return null;
         }
-        return (new String(sb));
+        return new String(sb);
     }
 }

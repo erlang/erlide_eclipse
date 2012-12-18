@@ -7,7 +7,7 @@
   <property name="action-set-mod" value="10" />
   <property name="hide-deprecated" value="false" />
   <property name="parse-archive-in-archive" value="false" />
-  <classpath relativeto="/home/qvladum/erlide/meta/architecture">
+  <classpath relativeto="const(THIS_FILE)">
     <classpathentry kind="lib" path="../../org.erlide.ui/bin" />
   </classpath>
   <pom-root-files />

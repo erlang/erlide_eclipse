@@ -117,7 +117,7 @@ function_comments_only_toplevel_test_() ->
 
 test_parse(S) ->
     erlide_scanner_server:initialScan(testing, "", S, "/tmp", false),
-    {ok, Res, unused} = erlide_noparse:reparse(testing),
+    {ok, Res} = erlide_noparse:reparse(testing, false),
     Res.
 
 %% t() ->

@@ -26,7 +26,6 @@ public class ErlBrowserInformationControlInput extends
     private final Object fElement;
     private final String fHtml;
     private final int fLeadingImageWidth;
-    private final String moduleName;
     private final String docPath;
     private final String anchor;
     private final ErlangEditor editor;
@@ -47,14 +46,12 @@ public class ErlBrowserInformationControlInput extends
      */
     public ErlBrowserInformationControlInput(
             final ErlBrowserInformationControlInput previous,
-            final ErlangEditor editor, final String moduleName,
-            final Object element, final String html,
+            final ErlangEditor editor, final Object element, final String html,
             final int leadingImageWidth, final String docPath,
             final String anchor) {
         super(previous);
         this.editor = editor;
         Assert.isNotNull(html);
-        this.moduleName = moduleName;
         fElement = element;
         fHtml = html;
         fLeadingImageWidth = leadingImageWidth;
@@ -108,10 +105,6 @@ public class ErlBrowserInformationControlInput extends
             return element.getName();
         }
         return ""; //$NON-NLS-1$
-    }
-
-    public String getModuleName() {
-        return moduleName;
     }
 
     public String getDocPath() {

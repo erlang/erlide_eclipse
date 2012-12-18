@@ -142,7 +142,8 @@ public class ErlSearchQuery implements ISearchQuery {
         };
         try {
             ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
-                    .getIdeBackend(), pattern, scope, getStateDir(), callback);
+                    .getIdeBackend(), pattern, scope, getStateDir(), callback,
+                    false);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);

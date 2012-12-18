@@ -1,6 +1,3 @@
-
-
-
 %% Author: jakob
 %% Created: 20 dec 2010
 %% Description: TODO: Add description to erlide_search_tests
@@ -68,5 +65,7 @@ external_call_after_empty_record_test_() ->
 %%
 
 test_refs(S, SearchPattern) ->
-    erlide_parsing_tests:test_parse(S),
-    erlide_search_server:find_refs([SearchPattern], [{testing, "xxx"}], "/tmp").
+    erlide_scanner_server:initialScan(testing, "", S, "/tmp", false),
+    {ok, _Res} = erlide_noparse:reparse(testing, true),
+    erlide_search_server:find_refs([SearchPattern], [{testing, "xxx"}],
+                                   "/tmp", true).

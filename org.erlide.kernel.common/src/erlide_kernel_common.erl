@@ -4,34 +4,37 @@
      init/4
     ]).
 
-init(JRex, Watch, HeapWarnLimit, HeapKillLimit) ->
+init(JRex, Kill, HeapWarnLimit, HeapKillLimit) ->
   spawn(fun () ->
-                 startup(JRex, Watch, HeapWarnLimit, HeapKillLimit)
+                 startup(JRex, Kill, HeapWarnLimit, HeapKillLimit)
         end).
 
-startup(JRex, Watch, HeapWarnLimit, HeapKillLimit)->
+startup(JRex, Kill, HeapWarnLimit, HeapKillLimit)->
     erlide_jrpc:init(JRex),
-    watch_eclipse(node(JRex), Watch),
+    watch_eclipse(node(JRex), Kill),
 
 	erlide_monitor:start(HeapWarnLimit, HeapKillLimit),
-    erlang:system_monitor(erlang:whereis(erlide_monitor), 
+    erlang:system_monitor(erlang:whereis(erlide_monitor),
 						  [{long_gc, 3000}, {large_heap, HeapWarnLimit*1000000 div 2}]),
 
     erlide_batch:start(erlide_builder),
     ok.
 
-watch_eclipse(JavaNode, Watch) ->
+watch_eclipse(JavaNode, Kill) ->
   spawn(fun() ->
           monitor_node(JavaNode, true),
+		  erlide_log:log({"Monitoring java node", JavaNode}),
+		  write_message({"start monitoring", JavaNode, Kill}),
           receive
-            {nodedown, JavaNode} ->
-              case Watch of
+            {nodedown, JavaNode}=_Msg ->
+			  write_message(_Msg),
+              case Kill of
                 true ->
-                  init:stop();
+                  erlang:halt();
                 false ->
                   shutdown()
               end,
-              ok
+			  ok
           end
       end).
 
@@ -41,3 +44,10 @@ shutdown() ->
   [exit(whereis(list_to_atom(X)), kill) || X <- L],
   ok.
 
+write_message(Msg) ->
+	{ok, [[Home]]} = init:get_argument(home),
+	{ok, F} = file:open(Home++"/erlide_debug.txt", [append, raw]),
+	file:write(F, io_lib:format("~p: ~p got ~p~n", [erlang:universaltime(), node(), Msg])),
+	file:sync(F),
+	file:close(F),
+	ok.
