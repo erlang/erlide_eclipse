@@ -37,14 +37,14 @@ public class ExitAtEvent extends MetaEvent {
         super(metaPid, null);
         if (pos instanceof OtpErlangTuple) {
             final OtpErlangTuple t = (OtpErlangTuple) pos;
-            this.module = ((OtpErlangAtom) t.elementAt(0)).atomValue();
-            this.line = parseLine((OtpErlangLong) t.elementAt(1));
+            module = ((OtpErlangAtom) t.elementAt(0)).atomValue();
+            line = parseLine((OtpErlangLong) t.elementAt(1));
         } else {
-            this.module = null;
-            this.line = -1;
+            module = null;
+            line = -1;
         }
         this.metaPid = metaPid;
-        this.pid = pid2;
+        pid = pid2;
         this.stackFrames = stackFrames;
         this.bindings = bindings;
     }

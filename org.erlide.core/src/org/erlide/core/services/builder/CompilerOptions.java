@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
 import org.erlide.core.services.builder.CompilerOption.BooleanOption;
@@ -19,7 +20,6 @@ import org.erlide.core.services.builder.CompilerOption.RawOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.TermParserException;
-import org.eclipse.xtext.xbase.lib.Pair;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -137,8 +137,8 @@ public class CompilerOptions {
             } else {
                 if (value != null) {
                     final String[] str = value.split(",");
-                    options.put(option, new Pair<String, String>(str[0],
-                            str[1]));
+                    options.put(option,
+                            new Pair<String, String>(str[0], str[1]));
                 }
             }
         }

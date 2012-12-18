@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
@@ -16,7 +17,6 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
 import org.erlide.utils.IDisposable;
 import org.erlide.utils.LRUCache;
-import org.eclipse.xtext.xbase.lib.Pair;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

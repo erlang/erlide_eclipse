@@ -188,6 +188,6 @@ public class ErlangContentDescriber implements ITextContentDescriber {
         if (_ch == -1) {
             return null;
         }
-        return (new String(sb));
+        return new String(sb);
     }
 }

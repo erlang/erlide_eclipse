@@ -23,7 +23,8 @@ public class TestsBeamLocator extends BeamLocator {
     @Override
     public IFile findModuleBeam(final IProject project, final String module)
             throws ErlModelException {
-        final String beam = SystemConfiguration.withoutExtension(module) + ".beam";
+        final String beam = SystemConfiguration.withoutExtension(module)
+                + ".beam";
         final File[] files = workdir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(final File dir, final String name) {
