@@ -13,11 +13,8 @@ package org.erlide.ui.console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
@@ -42,7 +39,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -79,37 +75,14 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendHelper;
 import org.erlide.backend.console.IBackendShell;
-import org.erlide.backend.console.IoRequest;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
 
 @SuppressWarnings("restriction")
 public class ErlangConsolePage extends Page implements IAdaptable,
         IPropertyChangeListener {
     public static final String ID = "org.erlide.ui.views.console";
-
-    private static final Color[] colors = {
-            new Color(Display.getDefault(), 0xFF, 0xFF, 0xFF),
-            new Color(Display.getDefault(), 0xCC, 0xFF, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0xCC, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0xFF, 0xCC),
-            new Color(Display.getDefault(), 0xCC, 0xCC, 0xFF),
-            new Color(Display.getDefault(), 0xCC, 0xFF, 0xCC),
-            new Color(Display.getDefault(), 0xFF, 0xCC, 0xCC),
-            new Color(Display.getDefault(), 0x99, 0xFF, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0x99, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0xFF, 0x99),
-            new Color(Display.getDefault(), 0x99, 0xCC, 0xFF),
-            new Color(Display.getDefault(), 0xCC, 0x99, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0x99, 0xCC),
-            new Color(Display.getDefault(), 0xFF, 0xCC, 0x99),
-            new Color(Display.getDefault(), 0x99, 0xFF, 0xCC),
-            new Color(Display.getDefault(), 0xCC, 0xFF, 0x99),
-            new Color(Display.getDefault(), 0x99, 0x99, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0x99, 0x99),
-            new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
 
     final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(245, 255,
             245));
@@ -117,8 +90,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             245));
 
     StyledText consoleText;
-    private boolean fGroupByLeader;
-    private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
     private final ErlConsoleDocument fDoc;
     final ErlangConsoleHistory history = new ErlangConsoleHistory();
     StyledText consoleInput;
@@ -194,49 +165,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.setText("");
     }
 
-    Color getColor(final OtpErlangPid sender) {
-        int ix = 0;
-        for (final Object element : pids) {
-            final OtpErlangPid pid = (OtpErlangPid) element;
-            if (pid.equals(sender)) {
-                break;
-            }
-            ix++;
-        }
-        if (ix < colors.length - 1) {
-            return colors[ix % 19 + 1];
-        }
-        return colors[0];
-    }
-
     public void input(final String data) {
         final String data2 = data.trim() + "\n";
         shell.input(data2);
         shell.send(data2);
         history.addToHistory(data.trim());
-    }
-
-    public void markRequests(final List<IoRequest> reqs) {
-        for (final Object element0 : reqs) {
-            final IoRequest element = (IoRequest) element0;
-            markRequest(element);
-        }
-    }
-
-    public void markRequest(final IoRequest req) {
-        final StyleRange range = new StyleRange();
-        range.start = req.getStart();
-        range.length = req.getLength();
-        range.background = getColor(fGroupByLeader ? req.getLeader() : req
-                .getSender());
-        consoleText.setStyleRange(range);
-    }
-
-    public void clearMarks() {
-        final StyleRange range = new StyleRange();
-        range.start = 0;
-        range.length = consoleText.getCharCount();
-        consoleText.setStyleRange(range);
     }
 
     public void setInput(final String str) {
