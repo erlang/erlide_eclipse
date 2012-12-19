@@ -168,7 +168,7 @@ public class ErlangFileWizardPage extends WizardPage {
         for (final Template element : moduleTemplates) {
             final String name = element.getName();
             skeleton.add(name);
-            if (name == "module") {
+            if (name.equals("module")) {
                 defaultSkeleton = i;
             }
             ++i;
