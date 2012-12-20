@@ -209,7 +209,7 @@ public class ErlangElementImageProvider {
             result = ErlideImage.FUNCTION_CLAUSE;
             break;
         case COMMENT:
-        case ERROR:
+        case PROBLEM:
         case HEADERCOMMENT:
         case MODEL:
         case PROJECT:

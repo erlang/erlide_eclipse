@@ -11,16 +11,21 @@
 package org.erlide.core.internal.model.erlang;
 
 import org.erlide.core.internal.model.root.ErlMember;
-import org.erlide.core.model.erlang.IErlMessage;
+import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlParserProblem;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.root.IParent;
 
-public class ErlMessage extends ErlMember implements IErlMessage {
+public class ErlParserProblem extends ErlMember implements IErlParserProblem {
+
+    enum ProblemKind {
+        INFO, WARNING, ERROR
+    }
 
     private final String message;
-    private final MessageKind fKind;
+    private final ProblemKind fKind;
 
-    public ErlMessage(final IParent parent, final MessageKind kind,
+    ErlParserProblem(final IParent parent, final ProblemKind kind,
             final String name) {
         super(parent, name);
         fKind = kind;
@@ -29,7 +34,11 @@ public class ErlMessage extends ErlMember implements IErlMessage {
 
     @Override
     public Kind getKind() {
-        return Kind.ERROR;
+        return Kind.PROBLEM;
+    }
+
+    public ProblemKind getProblemKind() {
+        return fKind;
     }
 
     @Override
@@ -57,8 +66,18 @@ public class ErlMessage extends ErlMember implements IErlMessage {
         return "ERR: " + getMessage();
     }
 
-    @Override
-    public MessageKind getMessageKind() {
-        return fKind;
+    public static ErlParserProblem newError(final IErlModule module,
+            final String msg) {
+        return new ErlParserProblem(module, ProblemKind.ERROR, msg);
+    }
+
+    public static ErlParserProblem newWarning(final IErlModule module,
+            final String msg) {
+        return new ErlParserProblem(module, ProblemKind.WARNING, msg);
+    }
+
+    public static ErlParserProblem newInfo(final IErlModule module,
+            final String msg) {
+        return new ErlParserProblem(module, ProblemKind.INFO, msg);
     }
 }

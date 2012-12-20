@@ -42,7 +42,7 @@ public interface IErlElement extends IAdaptable, IDisposable {
 
     enum Kind {
         //@formatter:off
-        ERROR,
+        PROBLEM,
         MODEL,
         PROJECT,
         MODULE,

@@ -533,7 +533,7 @@ public class ErlModule extends Openable implements IErlModule {
             for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
-                    if (pd.getKind() == kind || kind == Kind.ERROR) {
+                    if (pd.getKind() == kind || kind == Kind.PROBLEM) {
                         result.add(pd);
                     }
                 }

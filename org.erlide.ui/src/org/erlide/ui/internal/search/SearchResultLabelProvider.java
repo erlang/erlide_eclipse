@@ -139,7 +139,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
         // function - ErlangFunction
         // clause - ClauseHead
         // occurrence - ModuleLineFunctionArityRef
-        Kind kind = Kind.ERROR;
+        Kind kind = Kind.PROBLEM;
         if (element instanceof String) {
             kind = Kind.MODULE;
         } else if (element instanceof ErlangSearchElement) {

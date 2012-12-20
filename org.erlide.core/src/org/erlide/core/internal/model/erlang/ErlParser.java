@@ -257,8 +257,7 @@ public final class ErlParser implements IErlParser {
             final String msg = BackendHelper.format_error(BackendCore
                     .getBackendManager().getIdeBackend(), er);
 
-            final ErlMessage e = new ErlMessage(module,
-                    ErlMessage.MessageKind.ERROR, msg);
+            final ErlParserProblem e = ErlParserProblem.newError(module, msg);
             setPos(e, er.elementAt(0), false);
             return e;
         } else if ("tree".equals(typeS)) {

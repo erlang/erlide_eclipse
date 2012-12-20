@@ -10,16 +10,10 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
-public interface IErlMessage extends IErlMember {
+public interface IErlParserProblem extends IErlMember {
 
     String getMessage();
 
     String getData();
-
-    enum MessageKind {
-        INFO, WARNING, ERROR
-    }
-
-    MessageKind getMessageKind();
 
 }
