@@ -26,11 +26,12 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendManager;
-import org.erlide.backend.IErlRuntime;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IErlRuntime;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
@@ -49,7 +50,7 @@ public class BackendFactory implements IBackendFactory {
         return backend;
     }
 
-    private void setWorkDirForCoreDumps(final IBackend backend) {
+    private void setWorkDirForCoreDumps(final IRpcSite backend) {
         // set work dir to gather core dumps
         final String dir = "/proj/uz/erlide/dumps";
         if (new File(dir).exists()) {

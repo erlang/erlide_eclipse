@@ -2,9 +2,9 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 
-import org.erlide.backend.IBackend;
 import org.erlide.jinterface.Bindings;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
@@ -22,7 +22,7 @@ public final class ErlangCode {
     private ErlangCode() {
     }
 
-    public static void addPathA(final IBackend backend, final String path) {
+    public static void addPathA(final IRpcSite backend, final String path) {
         try {
             backend.call("code", "add_patha", "s", path);
         } catch (final Exception e) {
@@ -30,7 +30,7 @@ public final class ErlangCode {
         }
     }
 
-    public static void addPathZ(final IBackend backend, final String path) {
+    public static void addPathZ(final IRpcSite backend, final String path) {
         try {
             backend.call("code", "add_pathz", "s", path);
         } catch (final Exception e) {
@@ -38,7 +38,7 @@ public final class ErlangCode {
         }
     }
 
-    public static void removePath(final IBackend backend, String path) {
+    public static void removePath(final IRpcSite backend, String path) {
         try {
             // workaround for bug in code:del_path
             try {
@@ -54,14 +54,14 @@ public final class ErlangCode {
         }
     }
 
-    public static OtpErlangObject loadBinary(final IBackend b,
+    public static OtpErlangObject loadBinary(final IRpcSite b,
             final String beamf, final OtpErlangBinary code) throws RpcException {
         OtpErlangObject result;
         result = b.call("code", "load_binary", "asb", beamf, beamf, code);
         return result;
     }
 
-    public static void delete(final IBackend fBackend, final String moduleName) {
+    public static void delete(final IRpcSite fBackend, final String moduleName) {
         try {
             fBackend.call("code", "delete", "a", moduleName);
         } catch (final Exception e) {
@@ -69,7 +69,7 @@ public final class ErlangCode {
         }
     }
 
-    public static void load(final IBackend backend, String name) {
+    public static void load(final IRpcSite backend, String name) {
         if (name.endsWith(".beam")) {
             name = name.substring(0, name.length() - 5);
         }
@@ -80,7 +80,7 @@ public final class ErlangCode {
         }
     }
 
-    public static boolean isAccessible(final IBackend backend,
+    public static boolean isAccessible(final IRpcSite backend,
             final String localDir) {
         File f = null;
         try {
@@ -109,7 +109,7 @@ public final class ErlangCode {
         return false;
     }
 
-    public static boolean isEmbedded(final IBackend backend) {
+    public static boolean isEmbedded(final IRpcSite backend) {
         try {
             final OtpErlangObject r = backend.call("code", "ensure_loaded",
                     "a", "funny_module_name_that_nobody_would_use");

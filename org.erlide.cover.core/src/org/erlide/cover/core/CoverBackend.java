@@ -8,13 +8,13 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.internal.BackendData;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 import org.erlide.cover.views.model.TestTreeModel;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 
 /**
  * Core backend for Cover-plugin

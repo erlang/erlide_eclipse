@@ -1,9 +1,8 @@
-package org.erlide.backend;
+package org.erlide.jinterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
@@ -13,7 +12,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BeamLoader {
 
-    public static boolean loadBeam(final IBackend backend,
+    public static boolean loadBeam(final IRpcSite backend,
             final String moduleName, final OtpErlangBinary bin) {
         OtpErlangObject r = null;
         try {
@@ -43,7 +42,7 @@ public class BeamLoader {
         return false;
     }
 
-    public static void reloadAllCode(final IBackend backend) {
+    public static void reloadAllCode(final IRpcSite backend) {
         try {
             final OtpErlangList loaded = (OtpErlangList) backend.call("code",
                     "all_loaded", "");

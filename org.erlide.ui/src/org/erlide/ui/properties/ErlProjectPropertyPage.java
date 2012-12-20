@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 
 /*TODO ...this should implement IworkspacePreferencePage if it's going to be 
  * used as "default erlang project" page...*/

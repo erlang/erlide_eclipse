@@ -6,6 +6,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcTimeoutException;
 import org.erlide.utils.Util;
@@ -70,7 +71,7 @@ public class ErlideNoparse {
         return null;
     }
 
-    public static void removeCacheFiles(final IBackend backend,
+    public static void removeCacheFiles(final IRpcSite backend,
             final String scannerModuleName, final String stateDir) {
         try {
             final OtpErlangObject res = backend.call(20000, ERLIDE_NOPARSE,

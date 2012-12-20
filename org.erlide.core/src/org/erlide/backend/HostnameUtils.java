@@ -3,11 +3,11 @@ package org.erlide.backend;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.erlide.backend.internal.ErlangHostnameRetriever;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.internal.ErlangHostnameRetriever;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 
 public class HostnameUtils {
 

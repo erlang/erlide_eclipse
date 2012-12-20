@@ -1,6 +1,7 @@
 package org.erlide.backend;
 
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.utils.Util;
 
@@ -12,7 +13,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class BackendHelper {
 
-    public static String format_error(final IBackend b,
+    public static String format_error(final IRpcSite b,
             final OtpErlangObject object) {
         final OtpErlangTuple err = (OtpErlangTuple) object;
         final OtpErlangAtom mod = (OtpErlangAtom) err.elementAt(1);
@@ -31,7 +32,7 @@ public class BackendHelper {
         return res;
     }
 
-    public static String format(final IBackend b, final String fmt,
+    public static String format(final IRpcSite b, final String fmt,
             final OtpErlangObject... args) {
         try {
             final String r = b.call("erlide_backend", "format", "slx", fmt,
@@ -48,7 +49,7 @@ public class BackendHelper {
      * @return OtpErlangobject
      * @throws ErlangParseException
      */
-    public static OtpErlangObject parseTerm(final IBackend b,
+    public static OtpErlangObject parseTerm(final IRpcSite b,
             final String string) throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -70,7 +71,7 @@ public class BackendHelper {
      * @return
      * @throws BackendException
      */
-    public static OtpErlangObject scanString(final IBackend b,
+    public static OtpErlangObject scanString(final IRpcSite b,
             final String string) throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -91,7 +92,7 @@ public class BackendHelper {
      * @param string
      * @return
      */
-    public static OtpErlangObject parseConsoleInput(final IBackend b,
+    public static OtpErlangObject parseConsoleInput(final IRpcSite b,
             final String string) throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -108,7 +109,7 @@ public class BackendHelper {
                 + "\": " + t1.elementAt(1).toString());
     }
 
-    public static String prettyPrint(final IBackend b, final String text)
+    public static String prettyPrint(final IRpcSite b, final String text)
             throws BackendException {
         OtpErlangObject r1 = null;
         try {
@@ -120,7 +121,7 @@ public class BackendHelper {
         return ((OtpErlangString) r1).stringValue();
     }
 
-    public static OtpErlangObject concreteSyntax(final IBackend b,
+    public static OtpErlangObject concreteSyntax(final IRpcSite b,
             final OtpErlangObject val) {
         try {
             return b.call("erlide_syntax", "concrete", "x", val);
@@ -129,14 +130,14 @@ public class BackendHelper {
         }
     }
 
-    public static OtpErlangObject convertErrors(final IBackend b,
+    public static OtpErlangObject convertErrors(final IRpcSite b,
             final String lines) throws RpcException {
         OtpErlangObject res;
         res = b.call("erlide_erlcerrors", "convert_erlc_errors", "s", lines);
         return res;
     }
 
-    public static void startTracer(final IBackend b, final OtpErlangPid tracer) {
+    public static void startTracer(final IRpcSite b, final OtpErlangPid tracer) {
         try {
             ErlLogger.debug("Start tracer to %s", tracer);
             b.call("erlide_backend", "start_tracer", "ps", tracer);
@@ -144,7 +145,7 @@ public class BackendHelper {
         }
     }
 
-    public static void startTracer(final IBackend b, final String logname) {
+    public static void startTracer(final IRpcSite b, final String logname) {
         try {
             ErlLogger.debug("Start tracer to %s", logname);
             b.call("erlide_backend", "start_tracer", "s", logname);

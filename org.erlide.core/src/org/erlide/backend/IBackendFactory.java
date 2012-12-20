@@ -1,6 +1,6 @@
 package org.erlide.backend;
 
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 
 public interface IBackendFactory {
 

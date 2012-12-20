@@ -38,13 +38,14 @@ import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.erlide.jinterface.epmd.IEpmdListener;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.EpmdWatchJob;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
@@ -339,7 +340,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IBackend getByName(final String nodeName) {
+    public IRpcSite getByName(final String nodeName) {
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getName().equals(nodeName)) {

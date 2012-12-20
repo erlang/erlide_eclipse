@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.Openable;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
@@ -15,6 +14,7 @@ import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
+import org.erlide.jinterface.IRpcSite;
 
 import com.google.common.collect.Lists;
 
@@ -45,7 +45,7 @@ public class ErlExternalReferenceEntry extends Openable implements IErlExternal 
             // already done
             return true;
         }
-        final IBackend backend = BackendCore.getBuildOrIdeBackend(ModelUtils
+        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(ModelUtils
                 .getProject(this).getWorkspaceProject());
         if (backend != null) {
             final List<String> files = ErlideOpen.getLibFiles(backend, entry);

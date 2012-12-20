@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.root.ErlModelException;
@@ -43,6 +42,7 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlangXref;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.ui.editors.util.EditorUtility;
 
 public class CallHierarchyView extends ViewPart {
@@ -100,7 +100,7 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final IBackend b = BackendCore.getBackendManager().getIdeBackend();
+            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
                 return new Object[0];
@@ -138,7 +138,7 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
         ErlangXref.start(b);
     }
 
@@ -162,7 +162,7 @@ public class CallHierarchyView extends ViewPart {
                     tltmRefresh.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
-                            final IBackend b = BackendCore.getBackendManager()
+                            final IRpcSite b = BackendCore.getBackendManager()
                                     .getIdeBackend();
                             ErlangXref.update(b);
                             treeViewer.refresh();
@@ -200,7 +200,7 @@ public class CallHierarchyView extends ViewPart {
 
     @Override
     public void dispose() {
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
         ErlangXref.stop(b);
         super.dispose();
     }

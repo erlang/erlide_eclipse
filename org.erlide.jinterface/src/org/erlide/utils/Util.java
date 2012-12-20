@@ -32,7 +32,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.Assert;
 import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -480,7 +479,6 @@ public final class Util {
      */
     public static int getParameterCount(final char[] sig) {
         int i = CharOperation.indexOf('(', sig) + 1;
-        Assert.isTrue(i != 0);
         int count = 0;
         final int len = sig.length;
         for (;;) {
@@ -496,7 +494,6 @@ public final class Util {
             } else if (c == 'L') {
                 ++count;
                 i = CharOperation.indexOf(';', sig, i + 1) + 1;
-                Assert.isTrue(i != 0);
             } else {
                 ++count;
                 ++i;

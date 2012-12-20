@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.backend.runtimeinfo;
 
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 

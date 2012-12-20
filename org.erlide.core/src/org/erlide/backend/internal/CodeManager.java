@@ -20,14 +20,14 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.BeamLoader;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeManager;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.util.ErlideUtil;
+import org.erlide.jinterface.BeamLoader;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

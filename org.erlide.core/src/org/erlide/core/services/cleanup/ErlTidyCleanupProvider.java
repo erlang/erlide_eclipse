@@ -12,7 +12,7 @@ package org.erlide.core.services.cleanup;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.IRpcFuture;
 
 /**
@@ -56,7 +56,7 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
     @Override
     public void cleanUp() throws Exception {
         // lookup a backend to run erl_tidy with
-        final IBackend Backend = BackendCore.getBackendManager()
+        final IRpcSite Backend = BackendCore.getBackendManager()
                 .getIdeBackend();
 
         // invoke erl_tidy in the background

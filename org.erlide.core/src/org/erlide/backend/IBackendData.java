@@ -7,7 +7,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.jinterface.InitialCall;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.IBeamLocator;
 
 public interface IBackendData {

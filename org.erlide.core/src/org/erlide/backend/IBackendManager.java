@@ -9,6 +9,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.ICodeBundle.CodeContext;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.epmd.EpmdWatcher;
 import org.osgi.framework.Bundle;
 
@@ -44,12 +45,12 @@ public interface IBackendManager {
 
     void loadCodepathExtensions();
 
-    IBackend getByName(final String nodeName);
+    IRpcSite getByName(final String nodeName);
 
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
 
-    IBackend getBackendForLaunch(final ILaunch launch);
+    IRpcSite getBackendForLaunch(final ILaunch launch);
 
     void terminateBackendsForLaunch(final ILaunch launch);
 

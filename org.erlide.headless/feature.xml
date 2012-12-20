@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlide core (headless)"
-      version="0.17.7.qualifier"
+      version="0.18.0.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core">
 
@@ -95,6 +95,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.backend"
          download-size="0"
          install-size="0"
          version="0.0.0"

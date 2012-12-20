@@ -1,10 +1,10 @@
-package org.erlide.jinterface;
+package org.erlide.backend;
 
 import org.erlide.utils.DebugStream;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class JInterfaceActivator implements BundleActivator {
+public class BackendActivator implements BundleActivator {
 
     @Override
     public void start(final BundleContext context) throws Exception {

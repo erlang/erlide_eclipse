@@ -9,6 +9,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.jinterface.rpc.RpcTimeoutException;
 import org.erlide.utils.Util;
@@ -116,7 +117,7 @@ public class ErlideScanner {
     public static List<ErlToken> lightScanString(final String string,
             final int offset) throws BackendException {
         OtpErlangObject r1 = null;
-        final IBackend backend = BackendCore.getBackendManager()
+        final IRpcSite backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         try {
             r1 = backend.call("erlide_scanner", "light_scan_string", "ba",

@@ -40,7 +40,7 @@ import org.erlide.backend.NodeHostClassifier;
 import org.erlide.backend.NodeHostClassifier.HostnameType;
 import org.erlide.backend.NodeHostClassifier.NodeType;
 import org.erlide.backend.internal.BackendData;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.ErlLaunchAttributes;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {

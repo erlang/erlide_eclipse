@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.ErlModelCache;
 import org.erlide.core.internal.model.root.Openable;
@@ -22,6 +21,7 @@ import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.jinterface.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
@@ -62,7 +62,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final IBackend backend = BackendCore.getBuildOrIdeBackend(project
+            final IRpcSite backend = BackendCore.getBuildOrIdeBackend(project
                     .getWorkspaceProject());
             final OtpErlangList pathVars = ErlModelManager.getErlangModel()
                     .getPathVars();
@@ -182,7 +182,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return false;
     }
 
-    public IBackend getBackend() {
+    public IRpcSite getBackend() {
         return null;
     }
 

@@ -42,7 +42,6 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
@@ -56,6 +55,7 @@ import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.search.SearchFor;
 import org.erlide.core.services.search.SearchPatternFactory;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.jinterface.IRpcSite;
 import org.erlide.jinterface.rpc.RpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
@@ -615,7 +615,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final ErlangEditor erlangEditor = (ErlangEditor) activePart;
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
-            final IBackend backend = BackendCore.getBackendManager()
+            final IRpcSite backend = BackendCore.getBackendManager()
                     .getIdeBackend();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();

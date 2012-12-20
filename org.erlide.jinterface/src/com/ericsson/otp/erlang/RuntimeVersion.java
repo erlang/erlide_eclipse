@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.Assert;
-
 public final class RuntimeVersion implements Comparable<RuntimeVersion> {
 
     public static final int UNUSED = -1;
@@ -36,9 +34,9 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
     }
 
     public RuntimeVersion(final int major, final int minor, final int micro) {
-        Assert.isTrue(major >= UNUSED);
-        Assert.isTrue(minor >= UNUSED);
-        Assert.isTrue(micro >= UNUSED);
+        // Assert.isTrue(major >= UNUSED);
+        // Assert.isTrue(minor >= UNUSED);
+        // Assert.isTrue(micro >= UNUSED);
         this.major = major;
         this.minor = minor;
         this.micro = micro;
@@ -63,7 +61,7 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
             micro = UNUSED;
             return;
         }
-        Assert.isTrue(version.charAt(0) == 'R');
+        // Assert.isTrue(version.charAt(0) == 'R');
         int i = 1;
         char c;
         do {
@@ -100,9 +98,9 @@ public final class RuntimeVersion implements Comparable<RuntimeVersion> {
             minor = UNUSED;
             micro = UNUSED;
         }
-        Assert.isTrue(major >= UNUSED);
-        Assert.isTrue(minor >= UNUSED);
-        Assert.isTrue(micro >= UNUSED);
+        // Assert.isTrue(major >= UNUSED);
+        // Assert.isTrue(minor >= UNUSED);
+        // Assert.isTrue(micro >= UNUSED);
     }
 
     @Override

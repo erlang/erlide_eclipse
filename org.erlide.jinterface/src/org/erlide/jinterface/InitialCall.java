@@ -1,6 +1,5 @@
-package org.erlide.backend;
+package org.erlide.jinterface;
 
-import org.erlide.jinterface.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
