@@ -36,9 +36,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.BackendHelper;
+import org.erlide.backend.BeamLoader;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendManager;
@@ -55,7 +54,6 @@ import org.erlide.backend.events.LogEventHandler;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.jinterface.ErlLogger;
@@ -106,9 +104,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     private final ICodeManager codeManager;
     private final IBackendData data;
     private ErlangDebugTarget debugTarget;
+    private final IBackendManager backendManager;
 
-    public Backend(final IBackendData data, final IErlRuntime runtime)
-            throws BackendException {
+    public Backend(final IBackendData data, final IErlRuntime runtime,
+            final IBackendManager backendManager2) throws BackendException {
         info = data.getRuntimeInfo();
         if (info == null) {
             throw new BackendException(
@@ -116,7 +115,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         this.runtime = runtime;
         this.data = data;
-        codeManager = new CodeManager(this, getRuntimeInfo());
+        this.backendManager = backendManager2;
+        codeManager = new CodeManager(this, getRuntimeInfo(), backendManager);
     }
 
     @Override
@@ -453,8 +453,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         new LogEventHandler(this).register();
         new ErlangLogEventHandler(this).register();
 
-        BackendCore.getBackendManager().addBackendListener(
-                eventDaemon.getBackendListener());
+        backendManager.addBackendListener(eventDaemon.getBackendListener());
     }
 
     @Override
@@ -543,9 +542,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void addProjectPath(final IProject project) {
-        final IErlProject eproject = ErlModelManager.getErlangModel()
-                .findProject(project);
+    public void addProjectPath(final IErlProject eproject) {
+        final IProject project = eproject.getWorkspaceProject();
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -563,13 +561,12 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void removeProjectPath(final IProject project) {
-        final IErlProject eproject = ErlModelManager.getErlangModel()
-                .findProject(project);
+    public void removeProjectPath(final IErlProject eproject) {
         if (eproject == null) {
             // can happen if project was removed
             return;
         }
+        final IProject project = eproject.getWorkspaceProject();
         final String outDir = project.getLocation()
                 .append(eproject.getOutputLocation()).toOSString();
         if (outDir.length() > 0) {
@@ -599,7 +596,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                         final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
                                 path);
                         if (bin != null) {
-                            ok = BackendHelper.loadBeam(this, m, bin);
+                            ok = BeamLoader.loadBeam(this, m, bin);
                         }
                         if (!ok) {
                             ErlLogger.error("Could not load %s", m);
@@ -661,7 +658,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private void registerProjectsWithExecutionBackend(
             final Collection<IProject> projects) {
         for (final IProject project : projects) {
-            BackendCore.getBackendManager().addExecutionBackend(project, this);
+            backendManager.addExecutionBackend(project, this);
         }
     }
 
@@ -840,8 +837,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         shellManager = new BackendShellManager(this);
         if (isDistributed()) {
             connect();
-            final IBackendManager bm = BackendCore.getBackendManager();
-            for (final ICodeBundle bb : bm.getCodeBundles().values()) {
+            for (final ICodeBundle bb : backendManager.getCodeBundles()
+                    .values()) {
                 registerCodeBundle(bb);
             }
             initErlang(data.isManaged());

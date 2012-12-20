@@ -18,12 +18,14 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendFactory;
+import org.erlide.backend.IBackendManager;
 import org.erlide.backend.IErlRuntime;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
@@ -91,8 +93,11 @@ public class BackendFactory implements IBackendFactory {
             final IErlRuntime runtime = new ErlRuntime(nodeName,
                     data.getCookie(), mainProcess, !data.isTransient(),
                     data.isLongName(), data.isInternal());
-            b = data.isInternal() ? new InternalBackend(data, runtime)
-                    : new ExternalBackend(data, runtime);
+            final IBackendManager backendManager = BackendCore
+                    .getBackendManager();
+            b = data.isInternal() ? new InternalBackend(data, runtime,
+                    backendManager) : new ExternalBackend(data, runtime,
+                    backendManager);
             b.initialize();
             return b;
         } catch (final BackendException e) {

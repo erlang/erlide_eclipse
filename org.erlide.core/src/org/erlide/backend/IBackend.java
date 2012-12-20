@@ -7,6 +7,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.rpc.IRpcCallback;
 import org.erlide.jinterface.rpc.IRpcFuture;
 import org.erlide.jinterface.rpc.IRpcResultCallback;
@@ -58,9 +59,9 @@ public interface IBackend extends IDisposable {
 
     void input(final String s) throws IOException;
 
-    void addProjectPath(final IProject project);
+    void addProjectPath(final IErlProject project);
 
-    void removeProjectPath(final IProject project);
+    void removeProjectPath(final IErlProject project);
 
     boolean isManaged();
 
@@ -124,4 +125,5 @@ public interface IBackend extends IDisposable {
     void send(final OtpErlangPid pid, final Object msg);
 
     void send(final String name, final Object msg);
+
 }

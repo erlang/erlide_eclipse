@@ -40,6 +40,7 @@ import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.epmd.EpmdWatcher;
@@ -254,7 +255,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public synchronized void removeExecutionBackend(final IProject project,
             final IBackend b) {
-        b.removeProjectPath(project);
+        final IErlModel model = ErlModelManager.getErlangModel();
+        b.removeProjectPath(model.findProject(project));
         Set<IBackend> list = executionBackends.get(project);
         if (list == null) {
             list = Sets.newHashSet();
@@ -389,7 +391,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             executionBackends.put(project, list);
         }
         list.add(b);
-        b.addProjectPath(project);
+        final IErlModel model = ErlModelManager.getErlangModel();
+        b.addProjectPath(model.findProject(project));
     }
 
     @Override

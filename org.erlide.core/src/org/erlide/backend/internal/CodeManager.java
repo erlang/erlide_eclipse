@@ -19,10 +19,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendHelper;
 import org.erlide.backend.BackendUtils;
+import org.erlide.backend.BeamLoader;
 import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
@@ -40,11 +40,14 @@ public class CodeManager implements ICodeManager {
     private final List<PathItem> pathA;
     private final List<PathItem> pathZ;
     private final List<ICodeBundle> registeredBundles;
+    private final IBackendManager backendManager;
 
     // only to be called by Backend
-    CodeManager(final IBackend b, final RuntimeInfo runtimeInfo) {
+    CodeManager(final IBackend b, final RuntimeInfo runtimeInfo,
+            final IBackendManager backendManager) {
         backend = b;
         this.runtimeInfo = runtimeInfo;
+        this.backendManager = backendManager;
         pathA = new ArrayList<PathItem>();
         pathZ = new ArrayList<PathItem>();
         registeredBundles = new ArrayList<ICodeBundle>();
@@ -104,7 +107,7 @@ public class CodeManager implements ICodeManager {
         if (bin == null) {
             return false;
         }
-        return BackendHelper.loadBeam(backend, moduleName, bin);
+        return BeamLoader.loadBeam(backend, moduleName, bin);
     }
 
     private void loadPluginCode(final ICodeBundle p) {
@@ -146,8 +149,8 @@ public class CodeManager implements ICodeManager {
                                 ErlLogger.error("Could not load %s",
                                         beamModuleName);
                             }
-                            BackendCore.getBackendManager().moduleLoaded(
-                                    backend, null, beamModuleName);
+                            backendManager.moduleLoaded(backend, null,
+                                    beamModuleName);
                         } catch (final Exception ex) {
                             ErlLogger.warn(ex);
                         }

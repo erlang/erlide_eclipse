@@ -35,6 +35,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
 import org.erlide.jinterface.ErlLogger;
@@ -167,7 +168,8 @@ public class ErlideBuilder {
                             0, IMarker.SEVERITY_ERROR);
                     throw new BackendException(message);
                 }
-                backend.addProjectPath(project);
+                final IErlModel model = ErlModelManager.getErlangModel();
+                backend.addProjectPath(model.findProject(project));
 
                 notifier.setProgressPerCompilationUnit(1.0f / n);
                 final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
@@ -230,7 +232,7 @@ public class ErlideBuilder {
                     helper.checkForClashes(backend, project);
                 } catch (final Exception e) {
                 }
-                backend.removeProjectPath(project);
+                backend.removeProjectPath(model.findProject(project));
             }
 
         } catch (final OperationCanceledException e) {
