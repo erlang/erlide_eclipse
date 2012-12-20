@@ -37,10 +37,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
 import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlUtils;
 import org.erlide.utils.LogUtil;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ReportPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -190,7 +192,7 @@ public class ReportPreferencePage extends PreferencePage implements
     private static void fetchErlangSystemInfo() {
         final IBackend ideBackend = BackendCore.getBackendManager()
                 .getIdeBackend();
-        final String info = BackendHelper.getSystemInfo(ideBackend);
+        final String info = getSystemInfo(ideBackend);
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);
     }
 
@@ -236,4 +238,16 @@ public class ReportPreferencePage extends PreferencePage implements
                 elog);
         return data;
     }
+
+    public static String getSystemInfo(final IBackend b) {
+        try {
+            final OtpErlangObject val = b.call("erlide_backend",
+                    "get_system_info", "");
+            return ErlUtils.asString(val);
+        } catch (final Exception e) {
+            return "System information could not be retrieved "
+                    + "(node not monitored)... ";
+        }
+    }
+
 }

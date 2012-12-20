@@ -2,7 +2,6 @@ package org.erlide.backend;
 
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -150,17 +149,6 @@ public class BackendHelper {
             ErlLogger.debug("Start tracer to %s", logname);
             b.call("erlide_backend", "start_tracer", "s", logname);
         } catch (final RpcException e) {
-        }
-    }
-
-    public static String getSystemInfo(final IBackend b) {
-        try {
-            final OtpErlangObject val = b.call("erlide_backend",
-                    "get_system_info", "");
-            return ErlUtils.asString(val);
-        } catch (final Exception e) {
-            return "System information could not be retrieved "
-                    + "(node not monitored)... ";
         }
     }
 
