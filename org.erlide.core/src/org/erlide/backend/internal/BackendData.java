@@ -32,7 +32,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.backend.BackendHelper;
+import org.erlide.backend.BackendCore;
 import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.InitialCall;
@@ -50,7 +50,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public final class BackendData extends GenericBackendData implements IBackendData {
+public final class BackendData extends GenericBackendData implements
+        IBackendData {
 
     private RuntimeInfoManager runtimeInfoManager;
     private IBeamLocator beamLocator;
@@ -68,7 +69,7 @@ public final class BackendData extends GenericBackendData implements IBackendDat
         if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
             setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
         }
-        setManaged(BackendHelper.shouldManageNode(getNodeName()));
+        setManaged(shouldManageNode(getNodeName()));
     }
 
     public BackendData(final RuntimeInfoManager runtimeInfoManager,
@@ -474,4 +475,24 @@ public final class BackendData extends GenericBackendData implements IBackendDat
         return tokens;
     }
 
+    public static boolean shouldManageNode(final String name) {
+        final int atSignIndex = name.indexOf('@');
+        String shortName = name;
+        if (atSignIndex > 0) {
+            shortName = name.substring(0, atSignIndex);
+        }
+
+        boolean isLocal = atSignIndex < 0;
+        if (atSignIndex > 0) {
+            final String hostname = name.substring(atSignIndex + 1);
+            if (HostnameUtils.isThisHost(hostname)) {
+                isLocal = true;
+            }
+        }
+
+        final boolean isRunning = BackendCore.getBackendManager()
+                .getEpmdWatcher().hasLocalNode(shortName);
+        final boolean result = isLocal && !isRunning;
+        return result;
+    }
 }
