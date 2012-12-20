@@ -70,7 +70,7 @@ public interface IBackend extends IDisposable {
 
     boolean hasConsole();
 
-    BackendData getData();
+    IBackendData getData();
 
     void initialize();
 

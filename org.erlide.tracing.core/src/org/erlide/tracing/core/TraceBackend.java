@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendData;
 import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.backend.internal.BackendData;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.jinterface.ErlLogger;
 import org.erlide.jinterface.rpc.RpcException;
@@ -600,7 +601,7 @@ public class TraceBackend {
 		final RuntimeInfo info = RuntimeInfo.copy(BackendCore
 				.getRuntimeInfoManager().getErlideRuntime(), false);
 		try {
-			final BackendData data = getBackendData(info);
+			final IBackendData data = getBackendData(info);
 			data.setUseStartShell(true);
 			final IBackend b = BackendCore.getBackendManager()
 					.createExecutionBackend(data);
@@ -611,8 +612,8 @@ public class TraceBackend {
 		return null;
 	}
 
-	private BackendData getBackendData(final RuntimeInfo rinfo) {
-		final BackendData backendData = new BackendData(
+	private IBackendData getBackendData(final RuntimeInfo rinfo) {
+		final IBackendData backendData = new BackendData(
 				BackendCore.getRuntimeInfoManager(), rinfo);
 		final String nodeName = Activator.getDefault().getPreferenceStore()
 				.getString(PreferenceNames.NODE_NAME);

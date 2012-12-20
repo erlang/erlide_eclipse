@@ -4,9 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendData;
+import org.erlide.backend.internal.BackendData;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
@@ -211,7 +212,7 @@ public class CoverBackend implements ICoverBackend {
 
 		if (info != null) {
 			try {
-				final BackendData data = getBackendData(info);
+				final IBackendData data = getBackendData(info);
 				data.setNodeName(NODE_NAME);
 				data.setUseStartShell(true);
 				final IBackend b = BackendCore.getBackendManager()
@@ -226,8 +227,8 @@ public class CoverBackend implements ICoverBackend {
 		throw new BackendException();
 	}
 
-	private BackendData getBackendData(final RuntimeInfo rinfo) {
-		final BackendData backendData = new BackendData(
+	private IBackendData getBackendData(final RuntimeInfo rinfo) {
+		final IBackendData backendData = new BackendData(
 				BackendCore.getRuntimeInfoManager(), rinfo);
 		backendData.setConsole(true);
 		backendData.setLongName(false);

@@ -18,11 +18,11 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IErlRuntime;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
@@ -68,7 +68,7 @@ public class BackendFactory implements IBackendFactory {
     }
 
     @Override
-    public IBackend createBackend(final BackendData data) {
+    public IBackend createBackend(final IBackendData data) {
         ErlLogger.debug("Create backend " + data.getNodeName());
         if (!data.isManaged() && !data.isAutostart()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
@@ -101,7 +101,7 @@ public class BackendFactory implements IBackendFactory {
         return null;
     }
 
-    private ILaunch launchPeer(final BackendData data) {
+    private ILaunch launchPeer(final IBackendData data) {
         final ILaunchConfiguration launchConfig = data.asLaunchConfiguration();
         try {
             final boolean registerForDebug = data.getLaunch() != null
@@ -114,9 +114,9 @@ public class BackendFactory implements IBackendFactory {
         }
     }
 
-    private BackendData getIdeBackendData() {
+    private IBackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
-        final BackendData result = new BackendData(runtimeInfoManager, info);
+        final IBackendData result = new BackendData(runtimeInfoManager, info);
         result.setNodeName(getIdeNodeName());
         result.setDebug(false);
         result.setAutostart(true);
@@ -129,10 +129,10 @@ public class BackendFactory implements IBackendFactory {
         return result;
     }
 
-    private BackendData getBuildBackendData(final RuntimeInfo info) {
+    private IBackendData getBuildBackendData(final RuntimeInfo info) {
         final RuntimeInfo myinfo = RuntimeInfo.copy(info, false);
 
-        final BackendData result = new BackendData(runtimeInfoManager, myinfo);
+        final IBackendData result = new BackendData(runtimeInfoManager, myinfo);
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
                 + BackendUtils.getErlideNodeNameTag());
         result.setCookie("erlide");

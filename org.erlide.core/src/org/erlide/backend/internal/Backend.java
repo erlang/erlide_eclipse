@@ -37,10 +37,10 @@ import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
+import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeManager;
@@ -104,10 +104,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-    private final BackendData data;
+    private final IBackendData data;
     private ErlangDebugTarget debugTarget;
 
-    public Backend(final BackendData data, final IErlRuntime runtime)
+    public Backend(final IBackendData data, final IErlRuntime runtime)
             throws BackendException {
         info = data.getRuntimeInfo();
         if (info == null) {
@@ -665,7 +665,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    private void registerStartupFunctionStarter(final BackendData myData) {
+    private void registerStartupFunctionStarter(final IBackendData myData) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
                     @Override
@@ -700,7 +700,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    private void interpretModules(final BackendData myData,
+    private void interpretModules(final IBackendData myData,
             final boolean distributed) {
         for (final String pm : data.getInterpretedModules()) {
             final String[] pms = pm.split(":");
@@ -831,7 +831,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public BackendData getData() {
+    public IBackendData getData() {
         return data;
     }
 

@@ -55,7 +55,7 @@ public interface IBackendManager {
 
     void removeBackendsForLaunch(final ILaunch launch);
 
-    IBackend createExecutionBackend(final BackendData data);
+    IBackend createExecutionBackend(final IBackendData data);
 
     void dispose();
 

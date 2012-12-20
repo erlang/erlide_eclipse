@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.backend.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +32,10 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.erlide.backend.BackendHelper;
+import org.erlide.backend.HostnameUtils;
+import org.erlide.backend.IBackendData;
+import org.erlide.backend.InitialCall;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
@@ -46,9 +50,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public final class BackendData extends GenericBackendData {
-
-    public static final String PROJECT_NAME_SEPARATOR = ";";
+public final class BackendData extends GenericBackendData implements IBackendData {
 
     private RuntimeInfoManager runtimeInfoManager;
     private IBeamLocator beamLocator;
@@ -132,6 +134,7 @@ public final class BackendData extends GenericBackendData {
         return result;
     }
 
+    @Override
     public RuntimeInfo getRuntimeInfo() {
         RuntimeInfo runtimeInfo = runtimeInfoManager
                 .getRuntime(getRuntimeName());
@@ -143,10 +146,12 @@ public final class BackendData extends GenericBackendData {
         return runtimeInfo;
     }
 
+    @Override
     public ILaunch getLaunch() {
         return launch;
     }
 
+    @Override
     public ILaunchConfiguration asLaunchConfiguration() {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -181,54 +186,67 @@ public final class BackendData extends GenericBackendData {
         }
     }
 
+    @Override
     public String getCookie() {
         return getStringAttribute(ErlLaunchAttributes.COOKIE, "").trim();
     }
 
+    @Override
     public void setCookie(final String cookie) {
         config.setAttribute(ErlLaunchAttributes.COOKIE, cookie);
     }
 
+    @Override
     public boolean isManaged() {
         return getBooleanAttribute(ErlLaunchAttributes.MANAGED, true);
     }
 
+    @Override
     public void setManaged(final boolean managed) {
         config.setAttribute(ErlLaunchAttributes.MANAGED, managed);
     }
 
+    @Override
     public boolean isAutostart() {
         return getBooleanAttribute(ErlLaunchAttributes.AUTOSTART, true);
     }
 
+    @Override
     public void setAutostart(final boolean autostart) {
         config.setAttribute(ErlLaunchAttributes.AUTOSTART, autostart);
     }
 
+    @Override
     public boolean useStartShell() {
         return getBooleanAttribute(ErlLaunchAttributes.SHELL, true);
     }
 
+    @Override
     public void setUseStartShell(final boolean shell) {
         config.setAttribute(ErlLaunchAttributes.SHELL, shell);
     }
 
+    @Override
     public boolean hasConsole() {
         return getBooleanAttribute(ErlLaunchAttributes.CONSOLE, true);
     }
 
+    @Override
     public void setConsole(final boolean console) {
         config.setAttribute(ErlLaunchAttributes.CONSOLE, console);
     }
 
+    @Override
     public boolean isDebug() {
         return debug;
     }
 
+    @Override
     public void setDebug(final boolean debug) {
         this.debug = debug;
     }
 
+    @Override
     public Collection<String> getInterpretedModules() {
         final List<String> interpretedModules = getListAttribute(
                 ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
@@ -237,25 +255,30 @@ public final class BackendData extends GenericBackendData {
                 interpretedModules);
     }
 
+    @Override
     public void setInterpretedModules(
             final Collection<String> interpretedModules) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
                 new ArrayList<String>());
     }
 
+    @Override
     public String getRuntimeName() {
         return getStringAttribute(ErlLaunchAttributes.RUNTIME_NAME,
                 runtimeInfoManager.getDefaultRuntimeName());
     }
 
+    @Override
     public void setRuntimeName(final String name) {
         config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, name);
     }
 
+    @Override
     public String getNodeName() {
         return getStringAttribute(ErlLaunchAttributes.NODE_NAME, "");
     }
 
+    @Override
     public void setNodeName(String nodeName) {
         if (!validateNodeName(nodeName)) {
             // TODO this still can create a name that isn't valid
@@ -269,36 +292,44 @@ public final class BackendData extends GenericBackendData {
                 && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
+    @Override
     public boolean isLongName() {
         return getBooleanAttribute(ErlLaunchAttributes.USE_LONG_NAME, true);
     }
 
+    @Override
     public void setLongName(final boolean longname) {
         config.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, longname);
     }
 
+    @Override
     public String getExtraArgs() {
         return getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "");
     }
 
+    @Override
     public void setExtraArgs(final String xtra) {
         config.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, xtra);
     }
 
+    @Override
     public String getWorkingDir() {
         return getStringAttribute(ErlLaunchAttributes.WORKING_DIR,
                 ErlLaunchAttributes.DEFAULT_WORKING_DIR);
     }
 
+    @Override
     public void setWorkingDir(final String dir) {
         config.setAttribute(ErlLaunchAttributes.WORKING_DIR, dir);
     }
 
+    @Override
     public Map<String, String> getEnv() {
         return getMapAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
                 new HashMap<String, String>());
     }
 
+    @Override
     public InitialCall getInitialCall() {
         final String module = getStringAttribute(ErlLaunchAttributes.MODULE, "");
         final String function = getStringAttribute(
@@ -308,6 +339,7 @@ public final class BackendData extends GenericBackendData {
         return new InitialCall(module, function, args);
     }
 
+    @Override
     public Collection<IProject> getProjects() {
         String prjs;
         prjs = getStringAttribute(ErlLaunchAttributes.PROJECTS, "");
@@ -316,47 +348,58 @@ public final class BackendData extends GenericBackendData {
         return gatherProjects(projectNames);
     }
 
+    @Override
     public int getDebugFlags() {
         return getIntAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
                 ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
     }
 
+    @Override
     public boolean isLoadAllNodes() {
         return getBooleanAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
     }
 
+    @Override
     public void setLoadAllNodes(final boolean load) {
         config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, load);
     }
 
+    @Override
     public void setAttribute(final String key, final List<String> value) {
         config.setAttribute(key, value);
     }
 
+    @Override
     public void setBeamLocator(final IBeamLocator beamLocator) {
         this.beamLocator = beamLocator;
     }
 
+    @Override
     public IBeamLocator getBeamLocator() {
         return beamLocator;
     }
 
+    @Override
     public boolean isTransient() {
         return fTransient;
     }
 
+    @Override
     public void setTransient(final boolean value) {
         fTransient = value;
     }
 
+    @Override
     public boolean isInternal() {
         return getBooleanAttribute(ErlLaunchAttributes.INTERNAL, false);
     }
 
+    @Override
     public void setInternal(final boolean value) {
         config.setAttribute(ErlLaunchAttributes.INTERNAL, value);
     }
 
+    @Override
     public String[] getCmdLine() {
         final RuntimeInfo r = getRuntimeInfo();
         final List<String> result = new ArrayList<String>();

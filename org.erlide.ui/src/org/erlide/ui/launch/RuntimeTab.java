@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.NodeHostClassifier;
 import org.erlide.backend.NodeHostClassifier.HostnameType;
 import org.erlide.backend.NodeHostClassifier.NodeType;
+import org.erlide.backend.internal.BackendData;
 import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.ErlLaunchAttributes;
 
