@@ -3,7 +3,7 @@ package org.erlide.core.services.codeassist;
 import java.util.Collection;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.IRpcSite;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

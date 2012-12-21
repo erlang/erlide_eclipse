@@ -9,9 +9,9 @@
 
    <description>
       This feature provides Erlang IDE support for Eclipse.
-For bug reports and feature requests, please use the trackers at 
-https://www.assembla.com/spaces/erlide/support/tickets 
-or at 
+For bug reports and feature requests, please use the trackers at
+https://www.assembla.com/spaces/erlide/support/tickets
+or at
 https://github.com/erlide/erlide/issues.
 You can also mail to erlide-devel@lists.sourceforge.net.
    </description>
@@ -25,7 +25,7 @@ http://www.eclipse.org/legal/epl-v10.html
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
-      Eclipse Public License - v 1.0 
+      Eclipse Public License - v 1.0
 is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
@@ -53,7 +53,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.navigator"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.search"/>
-      <import plugin="org.erlide.jinterface"/>
+      <import plugin="org.erlide.runtime"/>
       <import plugin="org.erlide.core"/>
       <import plugin="org.erlide.libs" version="1.1.4" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
@@ -80,7 +80,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.filesystem" version="1.3.0" match="greaterOrEqual"/>
       <import plugin="org.erlide.core" version="0.11.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.erlide.jinterface" version="0.11.9" match="greaterOrEqual"/>
+      <import plugin="org.erlide.runtime" version="0.18.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

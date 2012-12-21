@@ -5,9 +5,9 @@ package org.erlide.ui.wizards;
 
 import java.util.List;
 
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

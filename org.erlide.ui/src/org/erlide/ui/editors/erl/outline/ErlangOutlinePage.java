@@ -56,7 +56,7 @@ import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModelChangeListener;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;

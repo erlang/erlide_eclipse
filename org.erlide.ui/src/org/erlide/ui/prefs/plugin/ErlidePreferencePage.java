@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.StatusInfo;
 import org.osgi.service.prefs.BackingStoreException;

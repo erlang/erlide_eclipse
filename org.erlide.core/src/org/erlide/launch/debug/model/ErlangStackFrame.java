@@ -27,7 +27,7 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ErlangFunction;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

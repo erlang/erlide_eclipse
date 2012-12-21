@@ -41,8 +41,8 @@ import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlangXref;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.util.EditorUtility;
 
 public class CallHierarchyView extends ViewPart {

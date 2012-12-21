@@ -9,8 +9,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.ICodeBundle.CodeContext;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.epmd.EpmdWatcher;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.epmd.EpmdWatcher;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {

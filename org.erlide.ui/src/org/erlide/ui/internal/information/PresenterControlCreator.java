@@ -25,7 +25,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.SimpleSelectionProvider;

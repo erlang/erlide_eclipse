@@ -54,8 +54,8 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.CompilerOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOptions;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IRpcSite;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;

@@ -35,7 +35,7 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.DialyzerUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

@@ -22,7 +22,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 

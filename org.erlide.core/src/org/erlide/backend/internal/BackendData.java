@@ -37,13 +37,13 @@ import org.erlide.backend.HostnameUtils;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.InitialCall;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.IBeamLocator;
 import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.InitialCall;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 
 import com.google.common.base.Charsets;

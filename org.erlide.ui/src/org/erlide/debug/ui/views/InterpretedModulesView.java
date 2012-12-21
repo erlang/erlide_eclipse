@@ -29,13 +29,13 @@ import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugElement;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
 
 /**

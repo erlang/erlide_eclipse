@@ -12,7 +12,7 @@ import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.api.ICoveragePerformer;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

@@ -63,7 +63,7 @@ import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.model.util.PluginUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.CommonUtils;
 import org.erlide.utils.SystemConfiguration;
 

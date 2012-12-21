@@ -19,8 +19,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.BackendException;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.ErlideUIMessages;
 
 /**

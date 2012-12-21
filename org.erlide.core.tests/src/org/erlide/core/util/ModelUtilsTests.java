@@ -27,7 +27,7 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.utils.SystemConfiguration;
 import org.junit.After;

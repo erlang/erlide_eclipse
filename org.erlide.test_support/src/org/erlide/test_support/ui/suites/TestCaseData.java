@@ -3,8 +3,8 @@ package org.erlide.test_support.ui.suites;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParser;
 import org.erlide.utils.TermParserException;

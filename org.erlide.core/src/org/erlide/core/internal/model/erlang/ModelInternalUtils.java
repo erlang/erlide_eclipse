@@ -19,7 +19,7 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangRangeException;

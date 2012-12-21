@@ -17,7 +17,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 public class BackendManagerPopup implements IBackendListener {
 

@@ -13,7 +13,7 @@ package org.erlide.testing.erlang;
 import static org.junit.Assert.*;
 
 import org.erlide.backend.BackendCore;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.IRpcSite;
 import org.junit.After;
 import org.junit.Before;
 

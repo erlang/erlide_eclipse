@@ -22,7 +22,7 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 
 /**
  * Abstract class for implementations of Erlang elements which are IOpenable.

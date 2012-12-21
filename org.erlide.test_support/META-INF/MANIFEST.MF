@@ -27,7 +27,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.osgi.services;bundle-version="3.2.100",
  com.google.guava;bundle-version="11.0.1",
- org.erlide.jinterface
+ org.erlide.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.test_support,

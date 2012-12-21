@@ -26,7 +26,7 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.StringUtils;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

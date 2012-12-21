@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangOutlinePage;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.utils.ListsUtils;

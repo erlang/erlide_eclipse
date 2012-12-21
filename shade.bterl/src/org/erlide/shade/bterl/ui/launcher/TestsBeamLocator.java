@@ -9,8 +9,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.erlide.core.model.root.ErlModelException;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.BeamLocator;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
 public class TestsBeamLocator extends BeamLocator {

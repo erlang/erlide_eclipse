@@ -27,11 +27,11 @@ import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IErlRuntime;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IErlRuntime;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {

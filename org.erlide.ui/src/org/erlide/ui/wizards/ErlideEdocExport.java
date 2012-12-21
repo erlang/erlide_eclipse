@@ -15,9 +15,9 @@ import java.util.Map;
 
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.TypeConverter;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.TypeConverter;
+import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

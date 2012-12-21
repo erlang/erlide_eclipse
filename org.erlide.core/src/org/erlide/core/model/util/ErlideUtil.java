@@ -16,9 +16,9 @@ import java.io.File;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.core.ErlangCore;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangLong;

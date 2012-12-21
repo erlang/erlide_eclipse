@@ -22,7 +22,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.core.services.builder.CompilerOptions;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.osgi.service.prefs.BackingStoreException;
 

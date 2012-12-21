@@ -38,8 +38,8 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.rpc.IRpcFuture;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

@@ -7,8 +7,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;
 

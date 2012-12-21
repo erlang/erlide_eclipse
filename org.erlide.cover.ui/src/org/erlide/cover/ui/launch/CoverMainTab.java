@@ -35,7 +35,7 @@ import org.erlide.cover.runtime.launch.ICoverAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**

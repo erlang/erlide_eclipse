@@ -30,7 +30,7 @@ import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.root.IParent;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.StringUtils;
 
 import com.google.common.base.Objects;

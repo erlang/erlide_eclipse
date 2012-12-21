@@ -14,7 +14,7 @@ import org.erlide.cover.api.ICoverBackend;
 import org.erlide.cover.runtime.launch.CoverLaunchData;
 import org.erlide.cover.runtime.launch.CoverLaunchSettings;
 import org.erlide.cover.views.model.TestTreeModel;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 /**
  * Core backend for Cover-plugin

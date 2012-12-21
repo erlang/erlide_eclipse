@@ -18,7 +18,7 @@ import org.erlide.core.services.builder.CompilerOption.ModuleOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOption.RawOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.TermParserException;
 import org.osgi.service.prefs.BackingStoreException;
 

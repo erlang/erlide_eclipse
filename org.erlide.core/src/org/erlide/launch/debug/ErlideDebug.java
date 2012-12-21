@@ -9,10 +9,10 @@ import org.eclipse.debug.core.DebugException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcTimeoutException;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

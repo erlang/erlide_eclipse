@@ -26,7 +26,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.ui.navigator,
    org.eclipse.ui,
    org.eclipse.ui.plugin,
-   org.erlide.jinterface,
+   org.erlide.runtime,
    org.eclipse.jface.action,
    org.eclipse.osgi.util,
    org.erlide.ui.internal.folding,
@@ -145,7 +145,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.information;x-internal:=true,
  org.erlide.ui.internal.search;x-internal:=true,
  org.erlide.ui.internal.util;x-internal:=true,
- org.erlide.ui.jinterface;uses:="org.erlide.jinterface.rpc",
+ org.erlide.ui.jinterface;uses:="org.erlide.runtime.rpc",
  org.erlide.ui.launch;
   x-friends:="org.erlide.selfhost.plugin,
    org.erlide.cover.ui";
@@ -247,7 +247,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.core.commands.common,
    org.erlide.core.util,
    org.eclipse.core.resources,
-   org.erlide.jinterface.backend,
+   org.erlide.runtime.backend,
    org.eclipse.jface.viewers,
    org.eclipse.swt.graphics,
    org.eclipse.jface.util,
@@ -344,7 +344,7 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.jface.databinding,
  com.ibm.icu,
  com.google.guava;bundle-version="11.0.1",
- org.erlide.jinterface
+ org.erlide.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true

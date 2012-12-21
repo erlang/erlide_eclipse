@@ -2,10 +2,10 @@
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <booleanAttribute key="com.mountainminds.eclemma.core.INPLACE_INSTRUMENTATION" value="false"/>
 <listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
-<listEntry value="/org.erlide.jinterface/bin"/>
+<listEntry value="/org.erlide.runtime/bin"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/org.erlide.jinterface.tests"/>
+<listEntry value="/org.erlide.runtime.tests"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="4"/>
@@ -18,12 +18,12 @@
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.erlide.jinterface.tests"/>
+<stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.erlide.runtime.tests"/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.erlide.jinterface.tests"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.erlide.runtime.tests"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx256m"/>
 </launchConfiguration>

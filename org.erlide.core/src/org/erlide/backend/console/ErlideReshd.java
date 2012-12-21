@@ -2,7 +2,7 @@ package org.erlide.backend.console;
 
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;

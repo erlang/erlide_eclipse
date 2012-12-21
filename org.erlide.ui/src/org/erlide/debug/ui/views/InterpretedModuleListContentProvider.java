@@ -13,8 +13,8 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.utils.CommonUtils;
 
 public class InterpretedModuleListContentProvider extends

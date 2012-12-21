@@ -65,7 +65,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.SWTUtil;
 

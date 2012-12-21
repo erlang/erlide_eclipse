@@ -24,7 +24,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PropertiesUtils;
 import org.erlide.core.model.root.IOldErlangProjectProperties;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 

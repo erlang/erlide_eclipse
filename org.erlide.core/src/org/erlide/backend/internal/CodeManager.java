@@ -25,9 +25,9 @@ import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeManager;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.jinterface.BeamLoader;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.BeamLoader;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

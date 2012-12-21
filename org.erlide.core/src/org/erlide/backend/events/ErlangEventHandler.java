@@ -5,7 +5,7 @@ import java.util.Hashtable;
 
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

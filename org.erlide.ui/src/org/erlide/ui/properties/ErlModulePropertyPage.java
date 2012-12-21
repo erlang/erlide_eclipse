@@ -16,8 +16,8 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.TypeConverter;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.TypeConverter;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

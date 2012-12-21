@@ -9,7 +9,7 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
 import org.erlide.utils.ErlangFunctionCall;

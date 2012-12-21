@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Assert;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendManager;
-import org.erlide.jinterface.IErlRuntime;
+import org.erlide.runtime.IErlRuntime;
 
 public class InternalBackend extends Backend {
 

@@ -2,10 +2,10 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.IRpcSite;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlLogger;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 

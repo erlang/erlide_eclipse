@@ -1,6 +1,6 @@
 package org.erlide.launch.debug;
 
-import org.erlide.jinterface.IRpcSite;
+import org.erlide.runtime.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangObject;

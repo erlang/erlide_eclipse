@@ -20,7 +20,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.prefs.ProblemData;
 
 public abstract class TicketHandlerImpl implements TicketHandler {

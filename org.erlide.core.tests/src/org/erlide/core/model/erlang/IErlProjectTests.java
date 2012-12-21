@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
 

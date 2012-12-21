@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.jinterface.Bindings;
+import org.erlide.runtime.Bindings;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 
