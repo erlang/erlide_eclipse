@@ -229,7 +229,13 @@ public class ErlangFileWizardPage extends WizardPage {
             if (containerPath.equals(sourceDir)) {
                 return container.getFullPath();
             } else if (containerPath.isPrefixOf(sourceDir)) {
-                return container.findMember(sourceDir).getFullPath();
+                final IResource member = container.findMember(sourceDir);
+                if (member != null) {
+                    return member.getFullPath();
+                } else {
+                    ErlLogger.warn("Could not find %s in %s", sourceDir,
+                            container);
+                }
             }
         }
         return null;
