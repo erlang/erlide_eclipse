@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Backend support (no eclipse dependencies)
+Bundle-Name: Erlang backend support (no eclipse dependencies)
 Bundle-SymbolicName: org.erlide.runtime;singleton:=true
 Bundle-Version: 0.18.0.qualifier
 Bundle-Vendor: erlide.org

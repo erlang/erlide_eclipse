@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: erlide Jinterface Tests Fragment
+Bundle-Name: erlide.runtime Tests Fragment
 Bundle-SymbolicName: org.erlide.runtime.tests;singleton:=true
 Bundle-Version: 0.18.0.qualifier
 Bundle-Vendor: erlide.org

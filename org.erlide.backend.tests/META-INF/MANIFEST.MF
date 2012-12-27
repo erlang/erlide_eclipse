@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Backend Tests
+Bundle-SymbolicName: org.erlide.backend.tests
+Bundle-Version: 0.18.0.qualifier
+Bundle-Vendor: erlide.org
+Fragment-Host: org.erlide.backend;bundle-version="0.18.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit
