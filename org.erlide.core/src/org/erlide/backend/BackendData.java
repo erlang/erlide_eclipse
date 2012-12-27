@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend.internal;
+package org.erlide.backend;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,9 +32,6 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.HostnameUtils;
-import org.erlide.backend.IBackendData;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.ErlLaunchAttributes;

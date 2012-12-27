@@ -19,6 +19,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.HostnameUtils;

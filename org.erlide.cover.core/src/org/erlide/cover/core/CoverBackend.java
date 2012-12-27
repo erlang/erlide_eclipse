@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendData;
-import org.erlide.backend.internal.BackendData;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;

@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.erlide.backend.BackendCore;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendData;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.backend.internal.BackendData;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
