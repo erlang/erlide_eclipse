@@ -49,7 +49,7 @@ import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.backend.events.ErlangLogEventHandler;
 import org.erlide.backend.events.LogEventHandler;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.launch.debug.ErlDebugConstants;

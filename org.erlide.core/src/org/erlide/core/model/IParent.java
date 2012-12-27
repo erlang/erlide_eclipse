@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.model.root;
+package org.erlide.core.model;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 
 /**

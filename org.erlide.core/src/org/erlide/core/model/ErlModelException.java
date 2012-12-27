@@ -8,13 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.erlide.core.model.root;
+package org.erlide.core.model;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.erlide.core.model.root.IErlModelStatus;
 
 /**
  * A checked exception representing a failure in the Erlang model. Erlang model

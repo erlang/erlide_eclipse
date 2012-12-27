@@ -1,9 +1,9 @@
 package org.erlide.core.internal.model.erlang;
 
 import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;

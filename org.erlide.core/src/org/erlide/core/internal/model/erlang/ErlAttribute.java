@@ -10,8 +10,8 @@
 package org.erlide.core.internal.model.erlang;
 
 import org.erlide.core.internal.model.root.ErlMember;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlAttribute;
-import org.erlide.core.model.root.IParent;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

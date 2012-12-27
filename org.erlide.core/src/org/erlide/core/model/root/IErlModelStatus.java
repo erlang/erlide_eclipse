@@ -12,6 +12,7 @@ package org.erlide.core.model.root;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.erlide.core.model.ErlModelStatusConstants;
 
 /**
  * Represents the outcome of an Erlang model operation. Status objects are used

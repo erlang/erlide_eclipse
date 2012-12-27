@@ -3,6 +3,9 @@
  */
 package org.erlide.core.model.root;
 
+import org.erlide.core.model.IOpenable;
+import org.erlide.core.model.IParent;
+
 /**
  * @author jakob
  * 

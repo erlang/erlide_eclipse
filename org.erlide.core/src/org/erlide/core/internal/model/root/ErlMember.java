@@ -3,10 +3,10 @@ package org.erlide.core.internal.model.root;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.internal.model.erlang.SourceRange;
 import org.erlide.core.internal.model.erlang.SourceRefElement;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ModelUtils;
 
 /**

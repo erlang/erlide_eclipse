@@ -11,10 +11,10 @@
 package org.erlide.core.internal.model.erlang;
 
 import org.erlide.core.internal.model.root.ErlMember;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlParserProblem;
 import org.erlide.core.model.erlang.ISourceRange;
-import org.erlide.core.model.root.IParent;
 
 public class ErlParserProblem extends ErlMember implements IErlParserProblem {
 

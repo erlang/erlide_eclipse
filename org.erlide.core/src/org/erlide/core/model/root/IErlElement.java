@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IParent;
 import org.erlide.utils.IDisposable;
 
 /**

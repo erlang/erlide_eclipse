@@ -13,6 +13,7 @@ package org.erlide.core.model.root;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.erlide.core.model.ErlModelException;
 
 /**
  * <p>

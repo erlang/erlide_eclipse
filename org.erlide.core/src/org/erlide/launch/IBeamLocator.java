@@ -2,7 +2,7 @@ package org.erlide.launch;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 
 public interface IBeamLocator {
 

@@ -12,7 +12,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.test.support.ErlideTestUtils;
