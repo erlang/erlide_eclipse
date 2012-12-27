@@ -76,8 +76,4 @@ public interface IBackend extends IDisposable, IRpcSite {
     void interpret(IProject project, String moduleName, boolean distributed,
             boolean interpret);
 
-    void setMonitoring(boolean on);
-
-    void setMonitoringInterval(int monitoringInterval);
-
 }
