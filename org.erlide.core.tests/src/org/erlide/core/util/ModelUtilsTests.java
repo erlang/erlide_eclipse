@@ -92,8 +92,8 @@ public class ModelUtilsTests {
         // then
         // they should be returned
         if (children.size() != 2) {
-            System.out.println(moduleA);
-            System.out.println(children);
+            ErlLogger.debug("" + moduleA);
+            ErlLogger.debug("" + children);
         }
         assertEquals(2, children.size());
         assertEquals(1, imports2.size());

@@ -21,128 +21,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangCore;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoListener;
-import org.erlide.utils.ErlLogger;
-import org.erlide.utils.PreferencesUtils;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 
-public final class RuntimeInfoManager implements IPreferenceChangeListener {
+public final class RuntimeInfoManager {
 
     private RuntimeInfo erlideRuntime;
-    private final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
-    private String defaultRuntimeName = "";
+    final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
+    String defaultRuntimeName = "";
     private final List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
+    private final IRuntimeInfoSerializer serializer;
 
-    public RuntimeInfoManager() {
-        getRootPreferenceNode().addPreferenceChangeListener(this);
-        load();
+    public RuntimeInfoManager(final IRuntimeInfoSerializer serializer) {
+        this.serializer = serializer;
+        serializer.setOwner(this);
+        serializer.load();
         initializeRuntimesList();
         setDefaultRuntimes();
     }
 
     public synchronized Collection<RuntimeInfo> getRuntimes() {
         return new ArrayList<RuntimeInfo>(fRuntimes.values());
-    }
-
-    public synchronized void store() {
-        IEclipsePreferences root = getRootPreferenceNode();
-        try {
-            root.removePreferenceChangeListener(this);
-            root.removeNode();
-            root = getRootPreferenceNode();
-
-            for (final RuntimeInfo rt : fRuntimes.values()) {
-                final RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
-                rtl.store(root);
-            }
-            if (defaultRuntimeName != null) {
-                root.put("default", defaultRuntimeName);
-            }
-            if (erlideRuntime != null) {
-                root.put("erlide", erlideRuntime.getName());
-            }
-            try {
-                root.flush();
-            } catch (final BackingStoreException e) {
-                ErlLogger.warn(e);
-            }
-            root.addPreferenceChangeListener(this);
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
-        }
-    }
-
-    public synchronized void load() {
-        fRuntimes.clear();
-        loadDefaultPrefs();
-
-        IEclipsePreferences root = new DefaultScope()
-                .getNode(ErlangCore.PLUGIN_ID + "/runtimes");
-        loadPrefs(root);
-        root = getRootPreferenceNode();
-        loadPrefs(root);
-    }
-
-    private void loadDefaultPrefs() {
-        final IPreferencesService ps = Platform.getPreferencesService();
-        final String DEFAULT_ID = "org.erlide";
-
-        final String defName = ps.getString(DEFAULT_ID, "default_name", null,
-                null);
-        final RuntimeInfo runtime = getRuntime(defName);
-        if (defName != null && runtime == null) {
-            final RuntimeInfo rt = new RuntimeInfo();
-            rt.setName(defName);
-            final String path = ps.getString(DEFAULT_ID, "default_"
-                    + RuntimeInfoLoader.CODE_PATH, "", null);
-            rt.setCodePath(PreferencesUtils.unpackList(path));
-            rt.setOtpHome(ps.getString(DEFAULT_ID, "default_"
-                    + RuntimeInfoLoader.HOME_DIR, "", null));
-            rt.setArgs(ps.getString(DEFAULT_ID, "default_"
-                    + RuntimeInfoLoader.ARGS, "", null));
-            addRuntime(rt);
-        }
-        defaultRuntimeName = defName;
-    }
-
-    private void loadPrefs(final IEclipsePreferences root) {
-        final String defrt = root.get("default", null);
-        if (defrt != null) {
-            defaultRuntimeName = defrt;
-        }
-
-        String[] children;
-        try {
-            children = root.childrenNames();
-            for (final String name : children) {
-                final RuntimeInfo rt = new RuntimeInfo();
-                final RuntimeInfoLoader rtl = new RuntimeInfoLoader(rt);
-                rtl.load(root.node(name));
-                fRuntimes.put(name, rt);
-            }
-        } catch (final BackingStoreException e) {
-            ErlLogger.warn(e);
-        }
-
-        if (getDefaultRuntime() == null) {
-            if (defaultRuntimeName == null && fRuntimes.size() > 0) {
-                defaultRuntimeName = fRuntimes.values().iterator().next()
-                        .getName();
-            }
-        }
     }
 
     protected IEclipsePreferences getRootPreferenceNode() {
@@ -219,13 +126,6 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
 
     public synchronized RuntimeInfo getDefaultRuntime() {
         return getRuntime(getDefaultRuntimeName());
-    }
-
-    @Override
-    public void preferenceChange(final PreferenceChangeEvent event) {
-        if (event.getNode().absolutePath().contains("org.erlide")) {
-            load();
-        }
     }
 
     public void addListener(final RuntimeInfoListener listener) {
@@ -400,6 +300,10 @@ public final class RuntimeInfoManager implements IPreferenceChangeListener {
             }
         }
         return result;
+    }
+
+    public void store() {
+        serializer.store();
     }
 
 }

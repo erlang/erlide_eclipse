@@ -54,7 +54,7 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                 }
             }
         } catch (final Exception ex) {
-            System.out.println(ex.getMessage());
+            ErlLogger.warn(ex);
         }
         return status;
     }

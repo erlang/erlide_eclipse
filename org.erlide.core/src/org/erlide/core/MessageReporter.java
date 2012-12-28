@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 
@@ -59,7 +60,7 @@ public abstract class MessageReporter {
         for (final MessageReporter reporter : reporters) {
             reporter.displayMessage(type, message, style);
         }
-        System.out.println(type + "::: " + message);
+        ErlLogger.info(type + "::: " + message);
     }
 
     private static List<MessageReporter> getAllImplementors() {

@@ -63,7 +63,7 @@ public class ErlangHostnameRetriever {
     private boolean canConnect(final String hostName) {
         try {
             final OtpNode node = new OtpNode("jtest", "erlide");
-            System.out.println("Ping: " + nodeName + "@" + hostName);
+            ErlLogger.debug("Ping: " + nodeName + "@" + hostName);
             final boolean result = node.ping(nodeName + "@" + hostName, 1000);
             node.close();
             return result;
@@ -93,14 +93,14 @@ public class ErlangHostnameRetriever {
                 int chr;
                 while ((chr = stream.read()) != -1) {
                     if (chr == 10 || chr == 13) {
-                        System.out.println("?> " + line);
+                        ErlLogger.debug("?> " + line);
                         line.setLength(0);
                     } else {
                         line.append((char) chr);
                     }
                     final Matcher matcher = pattern.matcher(line);
                     if (matcher.matches()) {
-                        System.out.println(">> " + line);
+                        ErlLogger.debug(">> " + line);
                         result = matcher.group(1);
                         return;
                     }
@@ -108,7 +108,7 @@ public class ErlangHostnameRetriever {
             } catch (final IOException e) {
                 ErlLogger.error(e);
             }
-            System.out.println("?> " + line);
+            ErlLogger.debug("?> " + line);
         }
 
         public String getResult() {
