@@ -7,7 +7,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.erlide.launch.IBeamLocator;
+import org.erlide.core.model.IBeamLocator;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 

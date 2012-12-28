@@ -13,7 +13,6 @@ import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.model.util.CoreUtil;
 import org.erlide.launch.debug.model.ErlangOtpSourceContainer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
@@ -25,7 +24,7 @@ public class ErlangSourcePathComputerDelegate implements
             final ILaunchConfiguration configuration,
             final IProgressMonitor monitor) throws CoreException {
         final List<ISourceContainer> containers = new ArrayList<ISourceContainer>();
-        final IProject[] projects = CoreUtil
+        final IProject[] projects = LaunchUtils
                 .getErlangLaunchConfigurationProjects(configuration);
         for (final IProject p : projects) {
             containers.add(new ProjectSourceContainer(p, false));
