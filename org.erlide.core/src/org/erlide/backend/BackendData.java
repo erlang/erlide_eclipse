@@ -32,7 +32,6 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
 import org.erlide.core.model.IBeamLocator;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.ErlLaunchAttributes;
@@ -41,6 +40,7 @@ import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 

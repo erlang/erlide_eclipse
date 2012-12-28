@@ -3,10 +3,10 @@ package org.erlide.backend;
 import org.eclipse.core.resources.IProject;
 import org.erlide.backend.internal.BackendFactory;
 import org.erlide.backend.internal.BackendManager;
-import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
-import org.erlide.backend.runtimeinfo.RuntimeInfoManagerData;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
 
 public class BackendCore {
 

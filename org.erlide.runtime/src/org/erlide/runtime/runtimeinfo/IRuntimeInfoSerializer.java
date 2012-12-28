@@ -1,5 +1,4 @@
-package org.erlide.backend.runtimeinfo;
-
+package org.erlide.runtime.runtimeinfo;
 
 public interface IRuntimeInfoSerializer {
 

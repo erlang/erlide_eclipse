@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend.runtimeinfo;
+package org.erlide.runtime.runtimeinfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.erlide.runtime.HostnameUtils;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Maps;

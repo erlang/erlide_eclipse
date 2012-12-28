@@ -1,11 +1,10 @@
-package org.erlide.backend.runtimeinfo;
+package org.erlide.runtime.runtimeinfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 

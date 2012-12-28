@@ -1,10 +1,9 @@
-package org.erlide.backend.runtimeinfo;
+package org.erlide.runtime.runtimeinfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public final class RuntimeInfoManagerData {
     public final String erlideRuntimeName;

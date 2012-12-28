@@ -7,7 +7,9 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.core.ErlangCore;
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
 import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
