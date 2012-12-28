@@ -13,7 +13,6 @@ package org.erlide.utils;
 import java.util.Collection;
 
 import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

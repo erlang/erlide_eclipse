@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.erlide.runtime.rpc;
 
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.TypeConverter;
 import org.erlide.runtime.internal.rpc.RpcFutureImpl;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

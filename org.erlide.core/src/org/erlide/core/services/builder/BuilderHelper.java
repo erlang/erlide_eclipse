@@ -41,10 +41,10 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.model.util.ResourceUtil;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;

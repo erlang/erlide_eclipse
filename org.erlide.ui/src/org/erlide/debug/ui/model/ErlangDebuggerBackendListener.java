@@ -20,9 +20,9 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 

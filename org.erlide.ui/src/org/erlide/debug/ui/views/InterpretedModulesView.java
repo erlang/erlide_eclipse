@@ -35,8 +35,8 @@ import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugElement;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.util.EditorUtility;
+import org.erlide.utils.ErlLogger;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking

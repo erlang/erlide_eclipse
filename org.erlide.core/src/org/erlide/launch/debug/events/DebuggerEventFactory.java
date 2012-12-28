@@ -1,7 +1,7 @@
 package org.erlide.launch.debug.events;
 
 import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 

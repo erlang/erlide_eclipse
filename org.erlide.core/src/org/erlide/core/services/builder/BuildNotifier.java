@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 public class BuildNotifier {
 

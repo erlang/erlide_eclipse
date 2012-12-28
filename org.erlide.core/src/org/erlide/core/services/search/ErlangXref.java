@@ -7,9 +7,9 @@ import org.eclipse.core.runtime.IPath;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ErlUtils;
 
 import com.ericsson.otp.erlang.OtpErlangList;

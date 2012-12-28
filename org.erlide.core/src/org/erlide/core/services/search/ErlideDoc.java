@@ -3,9 +3,9 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

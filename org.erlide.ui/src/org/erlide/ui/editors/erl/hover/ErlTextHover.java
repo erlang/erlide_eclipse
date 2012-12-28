@@ -51,7 +51,6 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
@@ -63,6 +62,7 @@ import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.prefs.plugin.EditorPreferencePage;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 

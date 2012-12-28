@@ -5,9 +5,9 @@ import java.net.UnknownHostException;
 
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.internal.ErlangHostnameRetriever;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.ErlLogger;
 
 public class HostnameUtils {
 

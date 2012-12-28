@@ -57,7 +57,6 @@ import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.runtime.BeamLoader;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.rpc.IRpcCallback;
@@ -67,6 +66,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
 

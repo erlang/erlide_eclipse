@@ -8,8 +8,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.test_support.ui.suites.RegressionResultsView;
+import org.erlide.utils.ErlLogger;
 
 public class TestRegressionLaunchDelegate implements
         ILaunchConfigurationDelegate {

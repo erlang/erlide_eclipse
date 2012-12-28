@@ -26,11 +26,11 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.services.text.ErlideIndent;
 import org.erlide.core.services.text.IndentResult;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.plugin.IndentationPreferencePage;
+import org.erlide.utils.ErlLogger;
 
 /**
  * The erlang auto indent strategy

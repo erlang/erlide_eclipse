@@ -37,8 +37,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.LogUtil;
 

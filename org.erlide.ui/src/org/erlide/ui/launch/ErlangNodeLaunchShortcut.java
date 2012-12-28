@@ -42,8 +42,8 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ListsUtils;
 import org.erlide.utils.StringUtils;
 

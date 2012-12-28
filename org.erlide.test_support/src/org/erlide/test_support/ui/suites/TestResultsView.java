@@ -20,10 +20,10 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.runtime.Bindings;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ErlUtils;
 import org.erlide.utils.TermParserException;
 

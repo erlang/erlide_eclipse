@@ -3,6 +3,8 @@ package org.erlide.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.erlide.utils.ErlLogger;
+
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;

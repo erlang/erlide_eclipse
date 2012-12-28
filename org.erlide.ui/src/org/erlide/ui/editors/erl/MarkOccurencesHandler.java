@@ -45,13 +45,13 @@ import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;

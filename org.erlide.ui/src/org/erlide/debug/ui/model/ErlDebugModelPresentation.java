@@ -24,10 +24,10 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErlangProcess;
 import org.erlide.launch.debug.model.ErlangStackFrame;
 import org.erlide.launch.debug.model.ErlangUninterpretedStackFrame;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.ErlideUIDebugImages;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
+import org.erlide.utils.ErlLogger;
 
 /**
  * @author jakob

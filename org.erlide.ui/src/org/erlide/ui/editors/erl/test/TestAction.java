@@ -12,7 +12,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 /**
  * @author jakob

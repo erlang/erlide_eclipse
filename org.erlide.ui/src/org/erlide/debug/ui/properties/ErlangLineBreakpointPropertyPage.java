@@ -14,8 +14,8 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.debug.ui.utils.BreakpointUtils;
 import org.erlide.launch.debug.IErlangBreakpoint;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
+import org.erlide.utils.ErlLogger;
 
 public class ErlangLineBreakpointPropertyPage extends
         ErlangBreakpointPropertyPage {

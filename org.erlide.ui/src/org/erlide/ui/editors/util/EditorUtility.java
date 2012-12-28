@@ -44,9 +44,9 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 

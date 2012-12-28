@@ -27,12 +27,12 @@ import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlangXref;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.jinterface.AsyncCaller;
 import org.erlide.ui.views.CallHierarchyView;
+import org.erlide.utils.ErlLogger;
 
 public class CallHierarchyAction extends Action {
 

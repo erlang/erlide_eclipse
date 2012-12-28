@@ -41,13 +41,13 @@ import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.codeassist.ErlideContextAssist;
 import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.core.services.search.ErlideDoc;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.StringUtils;
 import org.erlide.utils.Util;
 

@@ -30,9 +30,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.backend.HostnameUtils;
 import org.erlide.core.ErlangCore;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoListener;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 

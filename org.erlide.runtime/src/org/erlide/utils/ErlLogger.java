@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime;
+package org.erlide.utils;
 
 import java.io.IOException;
 import java.io.PrintWriter;

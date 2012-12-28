@@ -54,12 +54,12 @@ import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.search.SearchFor;
 import org.erlide.core.services.search.SearchPatternFactory;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 

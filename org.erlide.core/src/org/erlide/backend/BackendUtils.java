@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.erlide.core.ErlangCore;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SourcePathProvider;
 import org.erlide.utils.Util;
 

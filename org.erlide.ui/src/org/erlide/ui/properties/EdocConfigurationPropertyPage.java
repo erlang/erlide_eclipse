@@ -26,9 +26,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.services.search.ErlideDoc;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 /**
  * Property page used to set the project's edoc location

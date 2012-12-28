@@ -30,8 +30,8 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.erlide.launch.debug.IErlangBreakpoint;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
+import org.erlide.utils.ErlLogger;
 
 /**
  * The widget for the conditional editor on the breakpoints properties page

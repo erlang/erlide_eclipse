@@ -12,7 +12,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.erlide.launch.ErlangLaunchDelegate;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 /**
  * @noextend This class is not intended to be subclassed by clients.

@@ -1,6 +1,8 @@
 package org.erlide.runtime;
 
 
+import org.erlide.utils.ErlLogger;
+
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;

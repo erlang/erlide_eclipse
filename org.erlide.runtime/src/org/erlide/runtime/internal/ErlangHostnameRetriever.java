@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpNode;
 import com.google.common.collect.Lists;

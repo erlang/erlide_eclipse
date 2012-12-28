@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
-import org.erlide.runtime.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;

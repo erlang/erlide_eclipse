@@ -60,10 +60,10 @@ import org.erlide.core.model.root.IOldErlangProjectProperties;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.runtime.ErlLogger;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.CommonUtils;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
