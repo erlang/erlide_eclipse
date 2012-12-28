@@ -343,7 +343,6 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.core.databinding.property,
  org.eclipse.jface.databinding,
  com.ibm.icu,
- com.google.guava;bundle-version="11.0.1",
  org.erlide.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

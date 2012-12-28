@@ -35,7 +35,6 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.debug.core,
  org.eclipse.osgi.services,
  org.erlide.backend,
- com.google.guava;bundle-version="11.0.1",
  org.erlide.libs;bundle-version="1.8.4",
  org.erlide.runtime
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"

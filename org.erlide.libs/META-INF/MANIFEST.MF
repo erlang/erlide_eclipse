@@ -46,4 +46,4 @@ Export-Package: com.ericsson.otp.erlang,
  org.hamcrest.text,
  org.hamcrest.xml,
  org.incava.util.diff
-Require-Bundle: com.google.guava;bundle-version="11.0.1"
+Require-Bundle: com.google.guava;bundle-version="11.0.1";visibility:=reexport
