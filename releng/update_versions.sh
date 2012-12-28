@@ -1,30 +1,31 @@
 #! /bin/sh
 
-if [ "$#" == "0" ] 
+if [ "$#" == "0" ]
 then
 	echo "Check which plugin versions need to be updated and add commit info to the CHANGES file"
-	echo "Usage: $0 base cmd"
-	echo "    base = branch or tag for the latest build"
+	echo "Usage: $0 cmd"
 	echo "    cmd = <nothing> : check which plugins need version updates"
 	echo "          run       : modify the plugins versions where needed, do not commit"
 	echo "          commit    : as above and commit changes"
 fi
 
-BASE=$1
-CMD=$2
+BASE=$(git describe --abbrev=0)
+CMD=$1
+
+echo "Base version: $BASE"
 
 CRT=$(git branch | grep '*' | cut -d ' ' -f 2)
 PROJECTS=$(git log --name-only $BASE..$CRT --oneline | cut -d ' ' -f 1 | grep org.erlide | cut -f 1 -d '/' | sort | uniq)
 
 function inc_version {
   local VER=$1
-  local WHICH=$2	
+  local WHICH=$2
 
   local MAJ=$(echo $VER | cut -d '.' -f 1)
   local MIN=$(echo $VER | cut -d '.' -f 2)
   local MICRO=$(echo $VER | cut -d '.' -f 3)
   local QUAL=$(echo $VER | cut -d '.' -f 4)
-  
+
   local MAJ2=$MAJ
   local MIN2=$MIN
   local MICRO2=$MICRO
@@ -47,15 +48,15 @@ function inc_version {
 	*)
 	  ;;
   esac
-  
+
   local NEW=""
-  if [ -z $QUAL ] 
+  if [ -z $QUAL ]
   then
 	NEW="$MAJ2.$MIN2.$MICRO2"
   else
 	NEW="$MAJ2.$MIN2.$MICRO2.$QUAL"
   fi
-  echo "      : $VER -> $NEW" >&2 
+  echo "      : $VER -> $NEW" >&2
   echo "$NEW"
 }
 
@@ -70,14 +71,14 @@ function which_changed {
   local MAJ2=$(echo $NEW | cut -d '.' -f 1)
   local MIN2=$(echo $NEW | cut -d '.' -f 2)
   local MICRO2=$(echo $NEW | cut -d '.' -f 3)
-  
+
   if [ "$MAJ1" != "$MAJ2" ]
   then
 	echo major
-  elif [ "$MIN1" != "$MIN2" ] 
+  elif [ "$MIN1" != "$MIN2" ]
   then
     echo minor
-  elif [ "$MICRO1" != "$MICRO2" ] 
+  elif [ "$MICRO1" != "$MICRO2" ]
   then
 	echo micro
   else
@@ -87,13 +88,13 @@ function which_changed {
 
 function select_change {
   if [ "$1" = "major" -o "$2" = "major" ]
-  then  
+  then
     echo major
   elif [ "$1" = "minor" -o "$2" = "minor" ]
-  then  
+  then
     echo minor
   elif [ "$1" = "micro" -o "$2" = "micro" ]
-  then  
+  then
     echo micro
   else
     echo "none"
@@ -103,7 +104,7 @@ function select_change {
 function update_feature {
   FEATURE=$1
   CMD=$2
-  
+
   OLD=$(git show $BASE:$FEATURE/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
   NEW=$(cat $FEATURE/feature.xml | grep "  version=" | head -n 1 | cut -d '"' -f 2)
   CH=$(which_changed $OLD $NEW)
@@ -112,18 +113,18 @@ function update_feature {
   then
 	  VER=$(inc_version $NEW $CHG)
 	  echo "-> $VER"
-	  
+
 	  if [ "$CMD" != "" ]
 	  then
 		sed "s/  version=\"$OLD\"/  version=\"$VER\"/" < $FEATURE/feature.xml > $FEATURE/feature.xml1
 		mv $FEATURE/feature.xml1 $FEATURE/feature.xml
 	  fi
 
-	if [ "$FEATURE" == "org.erlide" ]	  
+	if [ "$FEATURE" == "org.erlide" ]
 	then
   		NEW_=$(echo $NEW | sed 's/.qualifier//')
 		VER_=$(echo $VER | sed 's/.qualifier//')
-		mv CHANGES CHANGES.old		
+		mv CHANGES CHANGES.old
 		echo "List of user visible changes between $NEW_ and $VER_ ($(date +%Y%m%d))" > CHANGES
 		echo "" >> CHANGES
 		git log v$NEW_..$CRT --oneline >> CHANGES
@@ -138,11 +139,11 @@ CHANGED="none"
 for PRJ in $PROJECTS
 do
   echo $PRJ
-  if [ -a $PRJ/META-INF/MANIFEST.MF ] 
-  then 
+  if [ -a $PRJ/META-INF/MANIFEST.MF ]
+  then
     OLDFILE=$(git show $BASE:$PRJ/META-INF/MANIFEST.MF 2> /dev/null)
 	ERR=$?
-	if [ $ERR -eq 0 ] 
+	if [ $ERR -eq 0 ]
 	then
       OLD=$(git show $BASE:$PRJ/META-INF/MANIFEST.MF | grep Bundle-Version: | cut -d ' ' -f 2)
       NEW=$(cat $PRJ/META-INF/MANIFEST.MF | grep Bundle-Version: | cut -d ' ' -f 2)
@@ -152,7 +153,7 @@ do
 		  CH="micro"
                   echo "$PRJ::"
 		  NEW=$(inc_version $NEW $CH)
-		  
+
 		  if [ "$CMD" != "" ]
 		  then
 			sed "s/Bundle-Version: $OLD/Bundle-Version: $NEW/" < $PRJ/META-INF/MANIFEST.MF > $PRJ/META-INF/MANIFEST.MF1
@@ -175,7 +176,7 @@ then
 	update_feature "org.erlide.sdk" $CMD
 fi
 
-if [ "$CMD" = "commit" ] 
+if [ "$CMD" = "commit" ]
 then
   git commit -a -m "prepared $VER_"
 fi
