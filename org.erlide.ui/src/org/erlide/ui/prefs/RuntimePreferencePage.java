@@ -12,7 +12,6 @@
 package org.erlide.ui.prefs;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,6 +64,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
+import org.erlide.backend.runtimeinfo.RuntimeInfoManagerData;
+import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.SWTUtil;
@@ -86,7 +87,7 @@ public class RuntimePreferencePage extends PreferencePage implements
     private Combo combo;
     private static final String RUNTIMES_PREFERENCE_PAGE = "RUNTIMES_PREFERENCE_PAGE";
 
-    Collection<RuntimeInfo> runtimes;
+    List<RuntimeInfo> runtimes;
     RuntimeInfo defaultRuntime;
     RuntimeInfo erlideRuntime;
 
@@ -785,9 +786,11 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (defaultRuntime == null) {
             defaultRuntime = (RuntimeInfo) fRuntimeList.getElementAt(0);
         }
-        manager.setDefaultRuntime(defaultRuntime.getName());
-        manager.setRuntimes(runtimes);
-        manager.store();
+        manager.setRuntimes(runtimes, defaultRuntime.getName(),
+                erlideRuntime.getName());
+        final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
+        serializer.store(new RuntimeInfoManagerData(runtimes, defaultRuntime
+                .getName(), erlideRuntime.getName()));
 
         // save column widths
         final IDialogSettings settings = ErlideUIPlugin.getDefault()
@@ -799,7 +802,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     @Override
     public void performDefaults() {
-        runtimes = manager.getRuntimes();
+        runtimes = new ArrayList<RuntimeInfo>(manager.getRuntimes());
         defaultRuntime = manager.getDefaultRuntime();
         erlideRuntime = manager.getErlideRuntime();
     }

@@ -10,94 +10,85 @@
  *******************************************************************************/
 package org.erlide.backend.runtimeinfo;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.core.ErlangCore;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoListener;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public final class RuntimeInfoManager {
 
-    private RuntimeInfo erlideRuntime;
-    final Map<String, RuntimeInfo> fRuntimes = new HashMap<String, RuntimeInfo>();
-    String defaultRuntimeName = "";
-    private final List<RuntimeInfoListener> fListeners = new ArrayList<RuntimeInfoListener>();
-    private final IRuntimeInfoSerializer serializer;
+    public RuntimeInfo erlideRuntime;
+    public final Map<String, RuntimeInfo> runtimes;
+    public String defaultRuntimeName;
 
-    public RuntimeInfoManager(final IRuntimeInfoSerializer serializer) {
-        this.serializer = serializer;
-        serializer.setOwner(this);
-        serializer.load();
-        initializeRuntimesList();
-        setDefaultRuntimes();
+    public RuntimeInfoManager() {
+        runtimes = Maps.newHashMap();
+        erlideRuntime = null;
+        defaultRuntimeName = null;
     }
 
     public synchronized Collection<RuntimeInfo> getRuntimes() {
-        return new ArrayList<RuntimeInfo>(fRuntimes.values());
+        return Collections.unmodifiableCollection(runtimes.values());
     }
 
-    protected IEclipsePreferences getRootPreferenceNode() {
-        return new InstanceScope().getNode(ErlangCore.PLUGIN_ID + "/runtimes");
-    }
-
-    public synchronized void setRuntimes(final Collection<RuntimeInfo> elements) {
-        fRuntimes.clear();
-        for (final RuntimeInfo rt : elements) {
-            fRuntimes.put(rt.getName(), rt);
+    public synchronized void setRuntimes(
+            final Collection<RuntimeInfo> elements, final String dfltRuntime,
+            String ideRuntime) {
+        runtimes.clear();
+        if (elements.size() == 0) {
+            initializeRuntimesList();
         }
-        notifyListeners();
+
+        for (final RuntimeInfo rt : elements) {
+            runtimes.put(rt.getName(), rt);
+        }
+        defaultRuntimeName = dfltRuntime;
+        if (defaultRuntimeName == null) {
+            setDefaultRuntimes();
+        }
+        if (ideRuntime == null) {
+            ideRuntime = defaultRuntimeName;
+        }
+        erlideRuntime = runtimes.get(ideRuntime);
+        // Asserts.isNotNull(erlideRuntime);
     }
 
     public synchronized void addRuntime(final RuntimeInfo rt) {
-        if (!fRuntimes.containsKey(rt.getName())) {
-            fRuntimes.put(rt.getName(), rt);
+        if (!runtimes.containsKey(rt.getName())) {
+            runtimes.put(rt.getName(), rt);
         }
-        notifyListeners();
     }
 
     public synchronized Collection<String> getRuntimeNames() {
-        return fRuntimes.keySet();
+        return runtimes.keySet();
     }
 
     public boolean hasRuntimeWithName(final String name) {
-        for (final RuntimeInfo vm : fRuntimes.values()) {
-            if (vm.getName().equals(name)) {
-                return true;
-            }
-        }
-        return false;
+        return runtimes.containsKey(name);
     }
 
     public RuntimeInfo getRuntime(final String name) {
-        final RuntimeInfo rt = fRuntimes.get(name);
+        final RuntimeInfo rt = runtimes.get(name);
         return rt;
     }
 
     public synchronized void removeRuntime(final String name) {
-        fRuntimes.remove(name);
+        runtimes.remove(name);
         if (erlideRuntime.getName().equals(name)) {
-            erlideRuntime = fRuntimes.values().iterator().next();
+            erlideRuntime = runtimes.values().iterator().next();
         }
         if (defaultRuntimeName.equals(name)) {
-            defaultRuntimeName = fRuntimes.keySet().iterator().next();
+            defaultRuntimeName = runtimes.keySet().iterator().next();
         }
-        notifyListeners();
     }
 
     public synchronized String getDefaultRuntimeName() {
@@ -106,14 +97,12 @@ public final class RuntimeInfoManager {
 
     public synchronized void setDefaultRuntime(final String name) {
         defaultRuntimeName = name;
-        notifyListeners();
     }
 
     private synchronized void setErlideRuntime(final RuntimeInfo runtime) {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
-            notifyListeners();
             HostnameUtils.detectHostNames(runtime);
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
@@ -128,54 +117,10 @@ public final class RuntimeInfoManager {
         return getRuntime(getDefaultRuntimeName());
     }
 
-    public void addListener(final RuntimeInfoListener listener) {
-        if (!fListeners.contains(listener)) {
-            fListeners.add(listener);
-        }
-    }
-
-    public void removeListener(final RuntimeInfoListener listener) {
-        fListeners.remove(listener);
-    }
-
-    private void notifyListeners() {
-        for (final RuntimeInfoListener listener : fListeners) {
-            listener.infoChanged();
-        }
-    }
-
-    /**
-     * Locate runtimes with this version or newer. If exact matches exists, they
-     * are first in the result list. A null or empty version returns all
-     * runtimes.
-     */
-    public List<RuntimeInfo> locateVersion(final String version) {
-        final RuntimeVersion vsn = new RuntimeVersion(version, null);
-        return locateVersion(vsn);
-    }
-
-    public List<RuntimeInfo> locateVersion(final RuntimeVersion vsn) {
-        final List<RuntimeInfo> result = new ArrayList<RuntimeInfo>();
-        for (final RuntimeInfo info : getRuntimes()) {
-            final RuntimeVersion v = info.getVersion();
-            if (v.isReleaseCompatible(vsn)) {
-                result.add(info);
-            }
-        }
-        Collections.reverse(result);
-        // add even newer versions, but at the end
-        for (final RuntimeInfo info : getRuntimes()) {
-            final RuntimeVersion v = info.getVersion();
-            if (!result.contains(info) && v.compareTo(vsn) > 0) {
-                result.add(info);
-            }
-        }
-        return result;
-    }
-
     public RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
             final String runtimeName) {
-        final List<RuntimeInfo> vsns = locateVersion(runtimeVersion);
+        final List<RuntimeInfo> vsns = VersionLocator.locateVersion(
+                runtimeVersion, runtimes.values());
         if (vsns.size() == 0) {
             return null;
         } else if (vsns.size() == 1) {
@@ -216,7 +161,8 @@ public final class RuntimeInfoManager {
      * 
      */
     public void initializeRuntimesList() {
-        final Collection<RuntimeInfo> found = guessRuntimeLocations();
+        final Collection<RuntimeInfo> found = RuntimeFinder
+                .guessRuntimeLocations();
         for (final RuntimeInfo info : found) {
             addRuntime(info);
         }
@@ -251,59 +197,6 @@ public final class RuntimeInfoManager {
                 setErlideRuntime(getDefaultRuntime());
             }
         }
-    }
-
-    private Collection<RuntimeInfo> guessRuntimeLocations() {
-        final List<RuntimeInfo> result = Lists.newArrayList();
-        final String[] locations = {
-                System.getProperty("erlide.runtime"),
-                new DefaultScope().getNode("org.erlide.core").get(
-                        "default_runtime", null), "c:/program files",
-                "c:/program files (x86)", "c:/programs", "c:/", "c:/apps",
-                System.getProperty("user.home"), "/usr", "/usr/lib",
-                "/usr/lib64", "/usr/local", "/usr/local/lib",
-                "/Library/Frameworks/erlang/Versions" };
-        for (final String loc : locations) {
-            final Collection<File> roots = findRuntime(loc);
-            for (final File root : roots) {
-                final RuntimeInfo rt = new RuntimeInfo();
-                rt.setOtpHome(root.getPath());
-                rt.setName(root.getName());
-                result.add(rt);
-            }
-        }
-        return result;
-    }
-
-    private static Collection<File> findRuntime(final String loc) {
-        final Collection<File> result = new ArrayList<File>();
-        if (loc == null) {
-            return result;
-        }
-        final File folder = new File(loc);
-        if (!folder.exists()) {
-            return result;
-        }
-        final File[] candidates = folder.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(final File pathname) {
-                final String path = pathname.getName();
-                return pathname.isDirectory()
-                        && (path.startsWith("otp") || path.startsWith("erl")
-                                || path.startsWith("Erl") || path
-                                    .startsWith("R"));
-            }
-        });
-        for (final File f : candidates) {
-            if (RuntimeInfo.validateLocation(f.getPath())) {
-                result.add(f);
-            }
-        }
-        return result;
-    }
-
-    public void store() {
-        serializer.store();
     }
 
 }

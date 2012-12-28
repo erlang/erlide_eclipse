@@ -1,13 +1,10 @@
 package org.erlide.backend.runtimeinfo;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 
-public interface IRuntimeInfoSerializer extends IPreferenceChangeListener {
+public interface IRuntimeInfoSerializer {
 
-    public abstract void setOwner(final RuntimeInfoManager runtimeInfoManager);
+    RuntimeInfoManagerData load();
 
-    public abstract void store();
-
-    public abstract void load();
+    void store(RuntimeInfoManagerData data);
 
 }

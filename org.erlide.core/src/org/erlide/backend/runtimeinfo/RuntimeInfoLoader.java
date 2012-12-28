@@ -19,13 +19,10 @@ public class RuntimeInfoLoader {
     static final String HOME_DIR = "homeDir";
     static final String ARGS = "args";
 
-    private final RuntimeInfo info;
-
-    public RuntimeInfoLoader(final RuntimeInfo info) {
-        this.info = info;
+    private RuntimeInfoLoader() {
     }
 
-    public void store(final Preferences root) {
+    public static void store(final RuntimeInfo info, final Preferences root) {
         final Preferences node = root.node(info.getName());
         final String code = PreferencesUtils.packList(info.getCodePath());
         node.put(CODE_PATH, code);
@@ -33,12 +30,14 @@ public class RuntimeInfoLoader {
         node.put(ARGS, info.getArgs());
     }
 
-    public void load(final Preferences node) {
+    public static RuntimeInfo load(final Preferences node) {
+        final RuntimeInfo info = new RuntimeInfo();
         info.setName(node.name());
         final String path = node.get(CODE_PATH, "");
         info.setCodePath(PreferencesUtils.unpackList(path));
         info.setOtpHome(node.get(HOME_DIR, ""));
         info.setArgs(node.get(ARGS, ""));
+        return info;
     }
 
 }

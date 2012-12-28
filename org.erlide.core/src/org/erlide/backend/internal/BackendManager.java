@@ -413,7 +413,9 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         for (final IBackend b : buildBackends.values()) {
             b.dispose();
         }
-        ideBackend.dispose();
+        if (ideBackend != null) {
+            ideBackend.dispose();
+        }
         final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                 .getLaunches();
         launchListener.launchesTerminated(launches);

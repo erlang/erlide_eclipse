@@ -4,7 +4,8 @@ import org.eclipse.core.resources.IProject;
 import org.erlide.backend.internal.BackendFactory;
 import org.erlide.backend.internal.BackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoManager;
-import org.erlide.backend.runtimeinfo.RuntimeInfoSerializer;
+import org.erlide.backend.runtimeinfo.RuntimeInfoManagerData;
+import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public class BackendCore {
@@ -15,8 +16,12 @@ public class BackendCore {
 
     public static final RuntimeInfoManager getRuntimeInfoManager() {
         if (runtimeInfoManager == null) {
-            runtimeInfoManager = new RuntimeInfoManager(
-                    new RuntimeInfoSerializer());
+            final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
+            final RuntimeInfoManagerData data = serializer.load();
+
+            runtimeInfoManager = new RuntimeInfoManager();
+            runtimeInfoManager.setRuntimes(data.runtimes,
+                    data.defaultRuntimeName, data.erlideRuntimeName);
         }
         return runtimeInfoManager;
     }
