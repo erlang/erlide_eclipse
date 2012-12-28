@@ -13,5 +13,4 @@ Export-Package: com.ericsson.otp.erlang,
  org.erlide.runtime.internal;x-friends:="org.erlide.core",
  org.erlide.runtime.internal.rpc;x-internal:=true,
  org.erlide.runtime.rpc,
- org.erlide.runtime.runtimeinfo,
- org.erlide.utils
+ org.erlide.runtime.runtimeinfo

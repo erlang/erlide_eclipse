@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
 
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
 import org.erlide.utils.StringUtils;
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
 import org.erlide.utils.Util;
 import org.junit.Assert;
 import org.junit.Test;

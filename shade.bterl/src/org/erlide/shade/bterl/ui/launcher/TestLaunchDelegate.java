@@ -26,12 +26,12 @@ import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlUtils;
 import org.erlide.utils.ListsUtils;
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlang;

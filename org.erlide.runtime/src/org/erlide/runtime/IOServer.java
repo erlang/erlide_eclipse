@@ -8,11 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.runtime;
 
 import java.util.Collection;
 
-import org.erlide.runtime.Bindings;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;

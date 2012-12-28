@@ -3,10 +3,10 @@ package org.erlide.backend.internal;
 import java.io.File;
 
 import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlUtils;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

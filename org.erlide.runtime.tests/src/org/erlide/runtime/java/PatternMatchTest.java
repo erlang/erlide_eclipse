@@ -12,10 +12,10 @@ package org.erlide.runtime.java;
 import junit.framework.Assert;
 
 import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
 import org.erlide.runtime.internal.BindingsImpl;
-import org.erlide.utils.ErlUtils;
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

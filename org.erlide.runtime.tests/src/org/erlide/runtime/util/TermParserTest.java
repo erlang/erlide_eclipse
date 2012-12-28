@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

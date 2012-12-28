@@ -2,8 +2,8 @@ package org.erlide.backend.events;
 
 import org.erlide.backend.IBackend;
 import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlUtils;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlUtils;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -62,12 +62,12 @@ import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
 import org.erlide.launch.debug.BackendEvalResult;
 import org.erlide.launch.debug.DebugHelper;
+import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
-import org.erlide.utils.ErlUtils;
 
 /**
  * @author Vlad Dumitrescu

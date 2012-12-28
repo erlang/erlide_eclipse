@@ -7,13 +7,14 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangException;

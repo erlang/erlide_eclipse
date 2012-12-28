@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlUtils;
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;

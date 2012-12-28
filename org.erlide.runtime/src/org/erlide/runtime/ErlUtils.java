@@ -7,14 +7,12 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.utils;
+package org.erlide.runtime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.erlide.runtime.Bindings;
-import org.erlide.runtime.TypeConverter;
 import org.erlide.runtime.internal.BindingsImpl;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

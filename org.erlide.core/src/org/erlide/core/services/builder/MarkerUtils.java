@@ -27,9 +27,9 @@ import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.model.util.ResourceUtil;
+import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.ErlUtils;
 import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
