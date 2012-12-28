@@ -136,13 +136,13 @@ public final class RuntimeInfoManager {
 
     public String[][] getAllRuntimesVersions() {
         final Collection<RuntimeInfo> rs = getRuntimes();
-        final String[][] runtimes = new String[rs.size()][2];
+        final String[][] myRuntimes = new String[rs.size()][2];
         final Iterator<RuntimeInfo> it = rs.iterator();
         for (int i = 0; i < rs.size(); i++) {
-            runtimes[i][0] = it.next().getVersion().asMinor().toString();
-            runtimes[i][1] = runtimes[i][0];
+            myRuntimes[i][0] = it.next().getVersion().asMinor().toString();
+            myRuntimes[i][1] = myRuntimes[i][0];
         }
-        return runtimes;
+        return myRuntimes;
     }
 
     /**
