@@ -1,10 +1,11 @@
-package org.erlide.backend;
+package org.erlide.runtime;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.erlide.backend.NodeHostClassifier.HostnameType;
-import org.erlide.backend.NodeHostClassifier.NodeType;
+import org.erlide.runtime.NodeHostClassifier;
+import org.erlide.runtime.NodeHostClassifier.HostnameType;
+import org.erlide.runtime.NodeHostClassifier.NodeType;
 import org.junit.Test;
 
 public class NodeHostClassifierTests {

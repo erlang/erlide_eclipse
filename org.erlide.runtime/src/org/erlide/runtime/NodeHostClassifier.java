@@ -1,4 +1,4 @@
-package org.erlide.backend;
+package org.erlide.runtime;
 
 public final class NodeHostClassifier {
     public final HostnameType host;

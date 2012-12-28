@@ -14,9 +14,9 @@ import java.io.IOException;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
-import org.erlide.backend.HostnameUtils;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
+import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
