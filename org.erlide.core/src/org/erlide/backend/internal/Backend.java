@@ -84,7 +84,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public abstract class Backend implements IStreamListener, IBackend {
+public class Backend implements IStreamListener, IBackend {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
@@ -853,33 +853,52 @@ public abstract class Backend implements IStreamListener, IBackend {
     public IRpcFuture async_call(final OtpErlangObject gleader, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        throw new RpcException("not implemented yet");
+        return runtime.async_call(gleader, m, f, signature, args);
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final int timeout,
             final String m, final String f, final String signature,
             final Object... args) throws RpcException {
-        throw new RpcException("not implemented yet");
+        runtime.async_call_cb(cb, timeout, m, f, signature, args);
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... args) throws RpcException {
-        throw new RpcException("not implemented yet");
+        runtime.async_call_cb(cb, timeout, gleader, m, f, signature, args);
     }
 
     @Override
     public void cast(final OtpErlangObject gleader, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        throw new RpcException("not implemented yet");
+        runtime.cast(gleader, m, f, signature, args);
     }
 
     @Override
     public void send(final String fullNodeName, final String name,
             final Object msg) {
+        runtime.send(fullNodeName, name, msg);
+    }
+
+    // /////
+
+    @Override
+    public boolean isAvailable() {
+        return runtime.isAvailable();
+    }
+
+    @Override
+    public String getNodeName() {
+        return runtime.getNodeName();
+    }
+
+    @Override
+    public void remoteStatus(final String node, final boolean up,
+            final Object info) {
+        runtime.remoteStatus(node, up, info);
     }
 
 }

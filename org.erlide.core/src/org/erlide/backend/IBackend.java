@@ -7,7 +7,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;
@@ -18,7 +18,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IBackend extends IDisposable, IRpcSite {
+public interface IBackend extends IDisposable, IErlRuntime {
 
     OtpErlangObject receiveEvent(final long timeout) throws OtpErlangExit,
             OtpErlangDecodeException;
@@ -37,10 +37,13 @@ public interface IBackend extends IDisposable, IRpcSite {
 
     boolean isStopped();
 
+    @Override
     void stop();
 
+    @Override
     OtpMbox createMbox();
 
+    @Override
     OtpMbox createMbox(final String name);
 
     void registerCodeBundle(final ICodeBundle bundle);
