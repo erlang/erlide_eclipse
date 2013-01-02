@@ -68,7 +68,9 @@ public class BackendFactory implements IBackendFactory {
     public IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
-        return createBackend(getBuildBackendData(info));
+        final IBackend backend = createBackend(getBuildBackendData(info));
+        setWorkDirForCoreDumps(backend);
+        return backend;
     }
 
     @Override

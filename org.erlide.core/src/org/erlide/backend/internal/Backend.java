@@ -81,7 +81,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -129,12 +128,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
         try {
-            final OtpErlangObject result = runtime.makeCall(timeout, m, f,
+            final OtpErlangObject result = runtime.call(timeout, m, f,
                     signature, args);
             return new RpcResult(result);
         } catch (final RpcException e) {
-            return RpcResult.error(e.getMessage());
-        } catch (final SignatureException e) {
             return RpcResult.error(e.getMessage());
         }
     }
@@ -142,43 +139,27 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public IRpcFuture async_call(final String m, final String f,
             final String signature, final Object... args) throws RpcException {
-        try {
-            return runtime.makeAsyncCall(m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
+        return runtime.async_call(m, f, signature, args);
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        try {
-            runtime.makeAsyncCbCall(cb, DEFAULT_TIMEOUT, m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
+        runtime.async_call_cb(cb, DEFAULT_TIMEOUT, m, f, signature, args);
     }
 
     @Override
     public void async_call_result(final IRpcResultCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        try {
-            runtime.makeAsyncResultCall(cb, m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
+        runtime.async_call_result(cb, m, f, signature, args);
     }
 
     @Override
     public void cast(final String m, final String f, final String signature,
             final Object... args) throws RpcException {
-        try {
-            runtime.makeCast(m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
+        runtime.cast(m, f, signature, args);
     }
 
     @Override
@@ -198,33 +179,17 @@ public abstract class Backend implements IStreamListener, IBackend {
     public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String m, final String f,
             final String signature, final Object... a) throws RpcException {
-        try {
-            return runtime.makeCall(timeout, gleader, m, f, signature, a);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
+        return runtime.call(timeout, gleader, m, f, signature, a);
     }
 
     @Override
     public void send(final OtpErlangPid pid, final Object msg) {
-        try {
-            runtime.send(pid, msg);
-        } catch (final SignatureException e) {
-            ErlLogger.warn(e);
-        } catch (final RpcException e) {
-            ErlLogger.warn(e);
-        }
+        runtime.send(pid, msg);
     }
 
     @Override
     public void send(final String name, final Object msg) {
-        try {
-            runtime.send(getFullNodeName(), name, msg);
-        } catch (final SignatureException e) {
-            ErlLogger.warn(e);
-        } catch (final RpcException e) {
-            ErlLogger.warn(e);
-        }
+        runtime.send(getFullNodeName(), name, msg);
     }
 
     @Override
@@ -882,6 +847,39 @@ public abstract class Backend implements IStreamListener, IBackend {
         } catch (final ErlModelException e) {
             ErlLogger.warn(e);
         }
+    }
+
+    @Override
+    public IRpcFuture async_call(final OtpErlangObject gleader, final String m,
+            final String f, final String signature, final Object... args)
+            throws RpcException {
+        throw new RpcException("not implemented yet");
+    }
+
+    @Override
+    public void async_call_cb(final IRpcCallback cb, final int timeout,
+            final String m, final String f, final String signature,
+            final Object... args) throws RpcException {
+        throw new RpcException("not implemented yet");
+    }
+
+    @Override
+    public void async_call_cb(final IRpcCallback cb, final int timeout,
+            final OtpErlangObject gleader, final String m, final String f,
+            final String signature, final Object... args) throws RpcException {
+        throw new RpcException("not implemented yet");
+    }
+
+    @Override
+    public void cast(final OtpErlangObject gleader, final String m,
+            final String f, final String signature, final Object... args)
+            throws RpcException {
+        throw new RpcException("not implemented yet");
+    }
+
+    @Override
+    public void send(final String fullNodeName, final String name,
+            final Object msg) {
     }
 
 }

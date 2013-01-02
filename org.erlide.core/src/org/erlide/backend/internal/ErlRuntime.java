@@ -23,6 +23,7 @@ import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcHelper;
+import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
@@ -131,82 +132,101 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     }
 
     @Override
-    public void makeAsyncResultCall(final IRpcResultCallback cb,
-            final String m, final String f, final String signature,
-            final Object[] args) throws SignatureException {
+    public void async_call_result(final IRpcResultCallback cb, final String m,
+            final String f, final String signature, final Object... args)
+            throws RpcException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
-        rpcHelper.rpcCastWithProgress(cb, localNode, peerName, false, gleader,
-                m, f, signature, args);
+        try {
+            rpcHelper.rpcCastWithProgress(cb, localNode, peerName, false,
+                    gleader, m, f, signature, args);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
+        }
     }
 
     @Override
-    public IRpcFuture makeAsyncCall(final OtpErlangObject gleader,
+    public IRpcFuture async_call(final OtpErlangObject gleader,
             final String module, final String fun, final String signature,
-            final Object... args0) throws RpcException, SignatureException {
+            final Object... args0) throws RpcException {
         tryConnect();
-        return rpcHelper.sendRpcCall(localNode, peerName, false, gleader,
-                module, fun, signature, args0);
+        try {
+            return rpcHelper.sendRpcCall(localNode, peerName, false, gleader,
+                    module, fun, signature, args0);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
+        }
     }
 
     @Override
-    public IRpcFuture makeAsyncCall(final String module, final String fun,
-            final String signature, final Object... args0) throws RpcException,
-            SignatureException {
-        return makeAsyncCall(new OtpErlangAtom("user"), module, fun, signature,
+    public IRpcFuture async_call(final String module, final String fun,
+            final String signature, final Object... args0) throws RpcException {
+        return async_call(new OtpErlangAtom("user"), module, fun, signature,
                 args0);
     }
 
     @Override
-    public void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
+    public void async_call_cb(final IRpcCallback cb, final int timeout,
             final String module, final String fun, final String signature,
-            final Object... args) throws RpcException, SignatureException {
-        makeAsyncCbCall(cb, timeout, new OtpErlangAtom("user"), module, fun,
+            final Object... args) throws RpcException {
+        async_call_cb(cb, timeout, new OtpErlangAtom("user"), module, fun,
                 signature, args);
     }
 
     @Override
-    public void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
+    public void async_call_cb(final IRpcCallback cb, final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args)
-            throws RpcException, SignatureException {
+            throws RpcException {
         tryConnect();
-        rpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout, gleader,
-                module, fun, signature, args);
+        try {
+            rpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout,
+                    gleader, module, fun, signature, args);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
+        }
     }
 
     @Override
-    public OtpErlangObject makeCall(final int timeout,
+    public OtpErlangObject call(final int timeout,
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
-            throws RpcException, SignatureException {
+            throws RpcException {
         tryConnect();
-        final OtpErlangObject result = rpcHelper.rpcCall(localNode, peerName,
-                false, gleader, module, fun, timeout, signature, args0);
+        OtpErlangObject result;
+        try {
+            result = rpcHelper.rpcCall(localNode, peerName, false, gleader,
+                    module, fun, timeout, signature, args0);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
+        }
         return result;
     }
 
     @Override
-    public OtpErlangObject makeCall(final int timeout, final String module,
+    public OtpErlangObject call(final int timeout, final String module,
             final String fun, final String signature, final Object... args0)
-            throws RpcException, SignatureException {
-        return makeCall(timeout, new OtpErlangAtom("user"), module, fun,
-                signature, args0);
+            throws RpcException {
+        return call(timeout, new OtpErlangAtom("user"), module, fun, signature,
+                args0);
     }
 
     @Override
-    public void makeCast(final OtpErlangObject gleader, final String module,
+    public void cast(final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
-            throws SignatureException, RpcException {
+            throws RpcException {
         tryConnect();
-        rpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
-                signature, args0);
+        try {
+            rpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
+                    signature, args0);
+        } catch (final SignatureException e) {
+            throw new RpcException(e);
+        }
     }
 
     @Override
-    public void makeCast(final String module, final String fun,
-            final String signature, final Object... args0)
-            throws SignatureException, RpcException {
-        makeCast(new OtpErlangAtom("user"), module, fun, signature, args0);
+    public void cast(final String module, final String fun,
+            final String signature, final Object... args0) throws RpcException {
+        cast(new OtpErlangAtom("user"), module, fun, signature, args0);
     }
 
     private void tryConnect() throws RpcException {
@@ -316,17 +336,24 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     }
 
     @Override
-    public void send(final OtpErlangPid pid, final Object msg)
-            throws RpcException, SignatureException {
-        tryConnect();
-        rpcHelper.send(localNode, pid, msg);
+    public void send(final OtpErlangPid pid, final Object msg) {
+        try {
+            tryConnect();
+            rpcHelper.send(localNode, pid, msg);
+        } catch (final SignatureException e) {
+        } catch (final RpcException e) {
+        }
     }
 
     @Override
     public void send(final String fullNodeName, final String name,
-            final Object msg) throws SignatureException, RpcException {
-        tryConnect();
-        rpcHelper.send(localNode, fullNodeName, name, msg);
+            final Object msg) {
+        try {
+            tryConnect();
+            rpcHelper.send(localNode, fullNodeName, name, msg);
+        } catch (final SignatureException e) {
+        } catch (final RpcException e) {
+        }
     }
 
     @Override
@@ -343,5 +370,34 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     public void stop() {
         // close peer too?
         localNode.close();
+    }
+
+    @Override
+    public RpcResult call_noexception(final String m, final String f,
+            final String signature, final Object... a) {
+        return null;
+    }
+
+    @Override
+    public RpcResult call_noexception(final int timeout, final String m,
+            final String f, final String signature, final Object... args) {
+        return null;
+    }
+
+    @Override
+    public void async_call_cb(final IRpcCallback cb, final String m,
+            final String f, final String signature, final Object... args)
+            throws RpcException {
+        throw new RpcException("not implemented yet");
+    }
+
+    @Override
+    public OtpErlangObject call(final String m, final String f,
+            final String signature, final Object... a) throws RpcException {
+        return null;
+    }
+
+    @Override
+    public void send(final String name, final Object msg) {
     }
 }
