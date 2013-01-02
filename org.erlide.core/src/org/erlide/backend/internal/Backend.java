@@ -66,6 +66,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
@@ -84,7 +85,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public class Backend implements IStreamListener, IBackend {
+public abstract class Backend implements IStreamListener, IBackend {
 
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
@@ -93,7 +94,6 @@ public class Backend implements IStreamListener, IBackend {
         setDefaultTimeout();
     }
 
-    private final RuntimeInfo info;
     private final IErlRuntime runtime;
     private String erlangVersion;
     private OtpMbox eventBox;
@@ -107,11 +107,7 @@ public class Backend implements IStreamListener, IBackend {
 
     public Backend(final IBackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
-        info = data.getRuntimeInfo();
-        if (info == null) {
-            throw new BackendException(
-                    "Can't create backend without runtime information");
-        }
+        Asserts.isNotNull(data.getRuntimeInfo());
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
@@ -263,7 +259,7 @@ public class Backend implements IStreamListener, IBackend {
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        return info;
+        return data.getRuntimeInfo();
     }
 
     @Override
@@ -897,8 +893,8 @@ public class Backend implements IStreamListener, IBackend {
 
     @Override
     public void remoteStatus(final String node, final boolean up,
-            final Object info) {
-        runtime.remoteStatus(node, up, info);
+            final Object statusInfo) {
+        runtime.remoteStatus(node, up, statusInfo);
     }
 
 }

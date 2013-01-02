@@ -16,7 +16,6 @@ import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
-import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IBackend extends IDisposable, IErlRuntime {
 
@@ -36,15 +35,6 @@ public interface IBackend extends IDisposable, IErlRuntime {
     String getFullNodeName();
 
     boolean isStopped();
-
-    @Override
-    void stop();
-
-    @Override
-    OtpMbox createMbox();
-
-    @Override
-    OtpMbox createMbox(final String name);
 
     void registerCodeBundle(final ICodeBundle bundle);
 

@@ -98,4 +98,6 @@ public interface IBackendData {
 
     public abstract String[] getCmdLine();
 
+    public abstract String getQualifiedNodeName();
+
 }

@@ -493,4 +493,13 @@ public final class BackendData extends GenericBackendData implements
         final boolean result = isLocal && !isRunning;
         return result;
     }
+
+    @Override
+    public String getQualifiedNodeName() {
+        final String erlangHostName = HostnameUtils
+                .getErlangHostName(isLongName());
+        final String nodeName = getNodeName();
+        final boolean hasHost = nodeName.contains("@");
+        return hasHost ? nodeName : nodeName + "@" + erlangHostName;
+    }
 }

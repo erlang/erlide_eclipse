@@ -33,6 +33,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
 import org.erlide.utils.ErlLogger;
+import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
@@ -82,20 +83,22 @@ public class BackendFactory implements IBackendFactory {
         }
 
         final IBackend b;
-        final String erlangHostName = HostnameUtils.getErlangHostName(data
-                .isLongName());
         try {
-            String nodeName = data.getNodeName();
-            final boolean hasHost = nodeName.contains("@");
-            nodeName = hasHost ? nodeName : nodeName + "@" + erlangHostName;
-            ILaunch launch = data.getLaunch();
-            if (launch == null) {
-                launch = launchPeer(data);
-            }
-            final IProcess mainProcess = launch.getProcesses().length == 0 ? null
-                    : launch.getProcesses()[0];
+            final String nodeName = data.getQualifiedNodeName();
+            final IProvider<IProcess> erlProcessProvider = new IProvider<IProcess>() {
+
+                @Override
+                public IProcess get() {
+                    ILaunch launch = data.getLaunch();
+                    if (launch == null) {
+                        launch = launchPeer(data);
+                    }
+                    return launch.getProcesses().length == 0 ? null : launch
+                            .getProcesses()[0];
+                }
+            };
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    data.getCookie(), mainProcess, !data.isTransient(),
+                    data.getCookie(), erlProcessProvider, !data.isTransient(),
                     data.isLongName(), data.isInternal());
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();

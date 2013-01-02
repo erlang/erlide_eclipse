@@ -25,6 +25,7 @@ import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.utils.ErlLogger;
+import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -59,12 +60,12 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private final boolean connectOnce;
 
     public ErlRuntime(final String name, final String cookie,
-            final IProcess process, final boolean reportWhenDown,
+            final IProvider<IProcess> process, final boolean reportWhenDown,
             final boolean longName, final boolean connectOnce) {
         state = State.DISCONNECTED;
         peerName = name;
         this.cookie = cookie;
-        this.process = process;
+        this.process = process.get();
         this.reportWhenDown = reportWhenDown;
         this.longName = longName;
         this.connectOnce = connectOnce;
