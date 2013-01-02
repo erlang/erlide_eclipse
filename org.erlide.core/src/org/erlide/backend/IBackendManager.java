@@ -10,7 +10,6 @@ import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.epmd.EpmdWatcher;
 import org.osgi.framework.Bundle;
 
 public interface IBackendManager {
@@ -38,8 +37,6 @@ public interface IBackendManager {
     void addExecutionBackend(final IProject project, final IBackend b);
 
     void removeExecutionBackend(final IProject project, final IBackend b);
-
-    EpmdWatcher getEpmdWatcher();
 
     void dispose(final IBackend backend);
 

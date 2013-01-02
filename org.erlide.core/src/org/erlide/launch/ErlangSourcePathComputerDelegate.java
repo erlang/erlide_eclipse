@@ -34,7 +34,7 @@ public class ErlangSourcePathComputerDelegate implements
         }
         final String runtimeName = configuration.getAttribute(
                 ErlLaunchAttributes.RUNTIME_NAME, "").trim();
-        final RuntimeInfo info = BackendCore.getRuntimeInfoManager()
+        final RuntimeInfo info = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(runtimeName);
         containers
                 .add(new ErlangOtpSourceContainer(new Path(info.getOtpHome())));

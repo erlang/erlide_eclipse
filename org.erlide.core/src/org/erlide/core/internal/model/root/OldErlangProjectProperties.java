@@ -99,7 +99,7 @@ public final class OldErlangProjectProperties implements
                 runtimeVersion = new RuntimeVersion(
                         ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
             } else {
-                final RuntimeInfo ri = BackendCore.getRuntimeInfoManager()
+                final RuntimeInfo ri = BackendCore.getRuntimeInfoCatalog()
                         .getRuntime(runtimeName);
                 if (ri != null) {
                     runtimeVersion = new RuntimeVersion(ri.getVersion());
@@ -250,7 +250,7 @@ public final class OldErlangProjectProperties implements
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
+        final RuntimeInfo runtime = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(runtimeVersion, runtimeName);
         RuntimeInfo rt = null;
         if (runtime != null) {

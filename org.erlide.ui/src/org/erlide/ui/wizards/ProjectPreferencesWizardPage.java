@@ -90,7 +90,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     @Override
     public void createControl(final Composite parent) {
         prefs = new OldErlangProjectProperties();
-        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoManager()
+        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoCatalog()
                 .getDefaultRuntime().getVersion());
 
         // create the composite to hold the widgets
@@ -201,7 +201,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     }
 
     private String[] getAllRuntimeVersions() {
-        final Collection<String> versions = BackendCore.getRuntimeInfoManager()
+        final Collection<String> versions = BackendCore.getRuntimeInfoCatalog()
                 .getAllRuntimesVersions();
         return versions.toArray(new String[versions.size()]);
     }

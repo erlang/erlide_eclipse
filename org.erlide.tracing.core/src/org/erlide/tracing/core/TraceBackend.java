@@ -599,7 +599,7 @@ public class TraceBackend {
 
 	private IBackend createBackend() {
 		final RuntimeInfo info = RuntimeInfo.copy(BackendCore
-				.getRuntimeInfoManager().getErlideRuntime(), false);
+				.getRuntimeInfoCatalog().getErlideRuntime(), false);
 		try {
 			final IBackendData data = getBackendData(info);
 			data.setUseStartShell(true);
@@ -614,7 +614,7 @@ public class TraceBackend {
 
 	private IBackendData getBackendData(final RuntimeInfo rinfo) {
 		final IBackendData backendData = new BackendData(
-				BackendCore.getRuntimeInfoManager(), rinfo);
+				BackendCore.getRuntimeInfoCatalog(), rinfo);
 		final String nodeName = Activator.getDefault().getPreferenceStore()
 				.getString(PreferenceNames.NODE_NAME);
 		backendData.setNodeName(nodeName);

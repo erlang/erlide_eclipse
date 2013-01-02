@@ -41,9 +41,7 @@ import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.launch.EpmdWatchJob;
 import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
@@ -68,9 +66,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     final List<IBackendListener> listeners;
     private final Map<Bundle, ICodeBundle> codeBundles;
 
-    private EpmdWatcher epmdWatcher;
     private final Set<IBackend> allBackends;
-    private EpmdWatchJob epmdWatcherJob;
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
     private final RuntimeInfo erlideRuntimeInfo;
@@ -88,9 +84,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         codeBundles = Maps.newHashMap();
 
         loadCodepathExtensions();
-
-        // tryStartEpmdProcess();
-        startEpmdWatcher();
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
@@ -116,13 +109,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         } catch (final IOException e) {
             // ErlLogger.info("Could not start epmd! " + e.getMessage());
         }
-    }
-
-    private void startEpmdWatcher() {
-        epmdWatcher = new EpmdWatcher();
-        epmdWatcher.addEpmdListener(this);
-        epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
-        epmdWatcherJob.schedule(1000);
     }
 
     private void registerGlobalEventhandlers() {
@@ -397,11 +383,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public EpmdWatcher getEpmdWatcher() {
-        return epmdWatcher;
-    }
-
-    @Override
     public void dispose(final IBackend backend) {
         if (backend != null && backend != ideBackend) {
             backend.dispose();
@@ -420,7 +401,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
                 .getLaunches();
         launchListener.launchesTerminated(launches);
         launchListener.dispose();
-        epmdWatcherJob.stop();
     }
 
     @Override

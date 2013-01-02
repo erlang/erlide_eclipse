@@ -84,7 +84,7 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        final List<String> versions = BackendCore.getRuntimeInfoManager()
+        final List<String> versions = BackendCore.getRuntimeInfoCatalog()
                 .getAllRuntimesVersions();
         final String[][] versionsArray = new String[versions.size()][2];
         for (int i = 0; i < versionsArray.length; i++) {

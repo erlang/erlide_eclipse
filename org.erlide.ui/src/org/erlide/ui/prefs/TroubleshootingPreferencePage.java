@@ -128,7 +128,7 @@ public class TroubleshootingPreferencePage extends PreferencePage implements
                     parent.setEnabled(false);
 
                     final RuntimeInfo runtime = BackendCore
-                            .getRuntimeInfoManager().getErlideRuntime();
+                            .getRuntimeInfoCatalog().getErlideRuntime();
                     HostnameUtils.detectHostNames(runtime);
                     updateHostNames();
                 } finally {

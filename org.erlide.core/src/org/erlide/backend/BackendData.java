@@ -488,8 +488,8 @@ public final class BackendData extends GenericBackendData implements
             }
         }
 
-        final boolean isRunning = BackendCore.getBackendManager()
-                .getEpmdWatcher().hasLocalNode(shortName);
+        final boolean isRunning = BackendCore.getEpmdWatcher().hasLocalNode(
+                shortName);
         final boolean result = isLocal && !isRunning;
         return result;
     }

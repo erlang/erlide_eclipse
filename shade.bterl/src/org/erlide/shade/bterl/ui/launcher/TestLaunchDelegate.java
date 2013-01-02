@@ -227,7 +227,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String[] bterlPath = getBterlPath();
         System.out.println("... internal path = " + bterlPath);
 
-        final String runtimeName = BackendCore.getRuntimeInfoManager()
+        final String runtimeName = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(new RuntimeVersion("R14B"), "").getName();
         // TODO how do we keep this updated?
 

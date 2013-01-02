@@ -126,7 +126,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         setDescription("Add, remove or edit runtime definitions.\n"
                 + "The checked one will be used by default in new projects "
                 + "to build the project's code.");
-        manager = BackendCore.getRuntimeInfoManager();
+        manager = BackendCore.getRuntimeInfoCatalog();
         performDefaults();
     }
 

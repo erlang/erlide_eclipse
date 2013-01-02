@@ -75,7 +75,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     protected IBackend doLaunch(final ILaunchConfiguration config,
             final String mode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
-        BackendData data = new BackendData(BackendCore.getRuntimeInfoManager(),
+        BackendData data = new BackendData(BackendCore.getRuntimeInfoCatalog(),
                 config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {

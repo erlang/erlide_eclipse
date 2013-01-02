@@ -92,7 +92,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     EpmdWatcher epmdWatcher;
 
     public EpmdView() {
-        epmdWatcher = BackendCore.getBackendManager().getEpmdWatcher();
+        epmdWatcher = BackendCore.getEpmdWatcher();
         epmdWatcher.addEpmdListener(this);
     }
 
