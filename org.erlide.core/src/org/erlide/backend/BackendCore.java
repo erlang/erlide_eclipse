@@ -42,14 +42,14 @@ public class BackendCore {
     }
 
     public static IBackend getBuildOrIdeBackend(final IProject project) {
-        final IBackendManager backendManager = getBackendManager();
+        final IBackendManager manager = getBackendManager();
         if (project != null) {
             try {
-                return backendManager.getBuildBackend(project);
+                return manager.getBuildBackend(project);
             } catch (final BackendException e) {
             }
         }
-        return backendManager.getIdeBackend();
+        return manager.getIdeBackend();
     }
 
     public static EpmdWatcher getEpmdWatcher() {
