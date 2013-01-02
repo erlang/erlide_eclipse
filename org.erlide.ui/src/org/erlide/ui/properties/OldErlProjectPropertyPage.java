@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -82,11 +84,16 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        final String[][] runtimes = BackendCore.getRuntimeInfoManager()
+        final List<String> versions = BackendCore.getRuntimeInfoManager()
                 .getAllRuntimesVersions();
+        final String[][] versionsArray = new String[versions.size()][2];
+        for (int i = 0; i < versionsArray.length; i++) {
+            versionsArray[i][0] = versions.get(i);
+            versionsArray[i][1] = versionsArray[i][0];
+        }
         addField(new ComboFieldEditor(
                 ProjectPreferencesConstants.RUNTIME_VERSION,
-                "Runtime version:", runtimes, fieldEditorParent));
+                "Runtime version:", versionsArray, fieldEditorParent));
 
         addField(new BooleanFieldEditor(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,
