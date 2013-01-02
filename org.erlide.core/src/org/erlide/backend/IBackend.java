@@ -12,21 +12,15 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangPid;
-
 public interface IBackend extends IDisposable, IErlRuntime {
 
     String getErlangVersion();
-
-    OtpErlangPid getEventPid();
 
     RuntimeInfo getRuntimeInfo();
 
     String getName();
 
     String getFullNodeName();
-
-    boolean isStopped();
 
     void registerCodeBundle(final ICodeBundle bundle);
 
