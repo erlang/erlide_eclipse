@@ -225,9 +225,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             case CONNECTED:
                 break;
             case DOWN:
-                final String fmt = "Backend '%s' is down";
-                final String msg = String.format(fmt, peerName);
-                reportRuntimeDown(msg);
+                final String msg = reportRuntimeDown(peerName);
                 try {
                     if (process != null) {
                         process.terminate();
@@ -241,7 +239,9 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
         }
     }
 
-    private void reportRuntimeDown(final String msg) {
+    private String reportRuntimeDown(final String peer) {
+        final String fmt = "Backend '%s' is down";
+        final String msg = String.format(fmt, peer);
         if (reportWhenDown && !reported) {
             final String user = System.getProperty("user.name");
 
@@ -272,6 +272,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
             reported = true;
         }
+        return msg;
     }
 
     @Override

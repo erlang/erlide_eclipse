@@ -107,7 +107,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     private final IBackendManager backendManager;
 
     public Backend(final IBackendData data, final IErlRuntime runtime,
-            final IBackendManager backendManager2) throws BackendException {
+            final IBackendManager backendManager) throws BackendException {
         info = data.getRuntimeInfo();
         if (info == null) {
             throw new BackendException(
@@ -115,7 +115,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         this.runtime = runtime;
         this.data = data;
-        this.backendManager = backendManager2;
+        this.backendManager = backendManager;
         codeManager = new CodeManager(this, getRuntimeInfo(), backendManager);
     }
 
