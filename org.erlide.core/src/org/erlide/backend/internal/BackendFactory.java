@@ -31,16 +31,16 @@ import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
 
-    final RuntimeInfoManager runtimeInfoManager;
+    final RuntimeInfoCatalog runtimeInfoManager;
 
-    public BackendFactory(final RuntimeInfoManager runtimeInfoManager) {
+    public BackendFactory(final RuntimeInfoCatalog runtimeInfoManager) {
         this.runtimeInfoManager = runtimeInfoManager;
     }
 

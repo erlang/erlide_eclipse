@@ -5,21 +5,21 @@ import org.erlide.backend.internal.BackendFactory;
 import org.erlide.backend.internal.BackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
 
 public class BackendCore {
 
-    private static RuntimeInfoManager runtimeInfoManager;
+    private static RuntimeInfoCatalog runtimeInfoManager;
     private static IBackendManager backendManager;
     private static BackendFactory backendFactory;
 
-    public static final RuntimeInfoManager getRuntimeInfoManager() {
+    public static final RuntimeInfoCatalog getRuntimeInfoManager() {
         if (runtimeInfoManager == null) {
             final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
             final RuntimeInfoManagerData data = serializer.load();
 
-            runtimeInfoManager = new RuntimeInfoManager();
+            runtimeInfoManager = new RuntimeInfoCatalog();
             runtimeInfoManager.setRuntimes(data.runtimes,
                     data.defaultRuntimeName, data.erlideRuntimeName);
         }

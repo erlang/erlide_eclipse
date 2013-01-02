@@ -23,13 +23,13 @@ import org.erlide.runtime.HostnameUtils;
 import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Maps;
 
-public final class RuntimeInfoManager {
+public final class RuntimeInfoCatalog {
 
     public RuntimeInfo erlideRuntime;
     public final Map<String, RuntimeInfo> runtimes;
     public String defaultRuntimeName;
 
-    public RuntimeInfoManager() {
+    public RuntimeInfoCatalog() {
         runtimes = Maps.newHashMap();
         erlideRuntime = null;
         defaultRuntimeName = null;

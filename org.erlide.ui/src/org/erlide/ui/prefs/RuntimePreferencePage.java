@@ -64,7 +64,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.SWTUtil;
@@ -84,7 +84,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     private static final String RUNTIMES_PREFERENCE_PAGE = "RUNTIMES_PREFERENCE_PAGE";
 
-    private final RuntimeInfoManager manager;
+    private final RuntimeInfoCatalog manager;
     private List<RuntimeInfo> runtimes;
     private RuntimeInfo defaultRuntime;
     private RuntimeInfo erlideRuntime;

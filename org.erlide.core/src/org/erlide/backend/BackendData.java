@@ -40,7 +40,7 @@ import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
@@ -51,11 +51,11 @@ import com.google.common.collect.Lists;
 public final class BackendData extends GenericBackendData implements
         IBackendData {
 
-    private RuntimeInfoManager runtimeInfoManager;
+    private RuntimeInfoCatalog runtimeInfoManager;
     private IBeamLocator beamLocator;
     private boolean fTransient = false;
 
-    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final ILaunchConfiguration config, final String mode) {
         super(config, mode);
         this.runtimeInfoManager = runtimeInfoManager;
@@ -70,7 +70,7 @@ public final class BackendData extends GenericBackendData implements
         setManaged(shouldManageNode(getNodeName()));
     }
 
-    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
         if (info == null) {
