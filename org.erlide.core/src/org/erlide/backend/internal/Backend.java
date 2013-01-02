@@ -12,7 +12,6 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,8 +86,6 @@ import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
-    private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
-    private static final int EPMD_PORT = 4369;
     public static int DEFAULT_TIMEOUT;
     {
         setDefaultTimeout();
@@ -96,7 +93,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private String erlangVersion;
-    private OtpMbox eventBox;
     private boolean stopped = false;
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
@@ -189,38 +185,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public OtpErlangObject receiveEvent(final long timeout)
-            throws OtpErlangExit, OtpErlangDecodeException {
-        if (eventBox == null) {
-            return null;
-        }
-        return eventBox.receive(timeout);
-    }
-
-    @Override
-    public void connect() {
-        final String label = getName();
-        ErlLogger.debug(label + ": waiting connection to peer...");
-        try {
-            wait_for_epmd();
-            eventBox = runtime.createMbox("rex");
-
-            if (waitForCodeServer()) {
-                ErlLogger.debug("connected!");
-            } else {
-                ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-            }
-
-        } catch (final BackendException e) {
-            ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-        } catch (final Exception e) {
-            ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-        }
-    }
-
-    @Override
     public void dispose() {
         ErlLogger.debug("disposing backend " + getName());
         if (shellManager != null) {
@@ -242,19 +206,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             }
         }
         return erlangVersion;
-    }
-
-    private OtpMbox getEventBox() {
-        return eventBox;
-    }
-
-    @Override
-    public OtpErlangPid getEventPid() {
-        final OtpMbox theEventBox = getEventBox();
-        if (theEventBox == null) {
-            return null;
-        }
-        return theEventBox.self();
     }
 
     @Override
@@ -309,69 +260,17 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
+    public void start() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
     public void stop() {
         if (data.isDebug()) {
             unloadDebuggerCode();
         }
         stopped = true;
-    }
-
-    private void wait_for_epmd() throws BackendException {
-        wait_for_epmd("localhost");
-    }
-
-    private void wait_for_epmd(final String host) throws BackendException {
-        // If anyone has a better solution for waiting for epmd to be up, please
-        // let me know
-        int tries = 50;
-        boolean ok = false;
-        do {
-            Socket s;
-            try {
-                s = new Socket(host, EPMD_PORT);
-                s.close();
-                ok = true;
-            } catch (final IOException e) {
-            }
-            try {
-                Thread.sleep(100);
-                // ErlLogger.debug("sleep............");
-            } catch (final InterruptedException e1) {
-            }
-            tries--;
-        } while (!ok && tries > 0);
-        if (!ok) {
-            final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "  Possibly your host's entry in /etc/hosts is wrong.";
-            ErlLogger.error(msg);
-            throw new BackendException(msg);
-        }
-    }
-
-    private boolean waitForCodeServer() {
-        try {
-            OtpErlangObject r;
-            int i = 10;
-            do {
-                r = call("erlang", "whereis", "a", "code_server");
-                try {
-                    Thread.sleep(200);
-                } catch (final InterruptedException e) {
-                }
-                i--;
-            } while (!(r instanceof OtpErlangPid) && i > 0);
-            if (!(r instanceof OtpErlangPid)) {
-                ErlLogger.error("code server did not start in time for %s",
-                        getRuntimeInfo().getName());
-                return false;
-            }
-            ErlLogger.debug("code server started");
-            return true;
-        } catch (final Exception e) {
-            ErlLogger.error("error starting code server for %s: %s",
-                    getRuntimeInfo().getName(), e.getMessage());
-            return false;
-        }
     }
 
     @Override
@@ -892,9 +791,18 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void remoteStatus(final String node, final boolean up,
-            final Object statusInfo) {
-        runtime.remoteStatus(node, up, statusInfo);
+    public OtpErlangPid getEventPid() {
+        return runtime.getEventPid();
     }
 
+    @Override
+    public OtpErlangObject receiveEvent(final long timeout)
+            throws OtpErlangExit, OtpErlangDecodeException {
+        return runtime.receiveEvent(timeout);
+    }
+
+    @Override
+    public void connect() {
+        runtime.connect();
+    }
 }

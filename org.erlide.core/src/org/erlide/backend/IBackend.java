@@ -12,17 +12,9 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import com.ericsson.otp.erlang.OtpErlangExit;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 
 public interface IBackend extends IDisposable, IErlRuntime {
-
-    OtpErlangObject receiveEvent(final long timeout) throws OtpErlangExit,
-            OtpErlangDecodeException;
-
-    void connect();
 
     String getErlangVersion();
 

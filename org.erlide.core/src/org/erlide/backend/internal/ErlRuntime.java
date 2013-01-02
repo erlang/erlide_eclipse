@@ -11,9 +11,11 @@
 package org.erlide.backend.internal;
 
 import java.io.IOException;
+import java.net.Socket;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
+import org.erlide.backend.BackendException;
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.runtime.HostnameUtils;
@@ -29,6 +31,8 @@ import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -37,7 +41,9 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 
-public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
+public class ErlRuntime implements IErlRuntime {
+    private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
+    private static final int EPMD_PORT = 4369;
     private static final int MAX_RETRIES = 10;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
@@ -58,22 +64,48 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     private final boolean reportWhenDown;
     private final boolean longName;
     private final boolean connectOnce;
+    private final IProvider<IProcess> processProvider;
+    private final OtpNodeStatus statusWatcher;
+    private OtpMbox eventBox;
 
     public ErlRuntime(final String name, final String cookie,
-            final IProvider<IProcess> process, final boolean reportWhenDown,
-            final boolean longName, final boolean connectOnce) {
+            final IProvider<IProcess> processProvider,
+            final boolean reportWhenDown, final boolean longName,
+            final boolean connectOnce) {
         state = State.DISCONNECTED;
         peerName = name;
         this.cookie = cookie;
-        this.process = process.get();
+        this.processProvider = processProvider;
+        this.process = processProvider.get();
         this.reportWhenDown = reportWhenDown;
         this.longName = longName;
         this.connectOnce = connectOnce;
 
+        statusWatcher = new OtpNodeStatus() {
+            @Override
+            public void remoteStatus(final String node, final boolean up,
+                    final Object info) {
+                if (node.equals(peerName)) {
+                    if (up) {
+                        ErlLogger.debug("Node %s is up", peerName);
+                        connectRetry();
+                    } else {
+                        ErlLogger.debug("Node %s is down: %s", peerName, info);
+                        state = State.DOWN;
+                    }
+                }
+            }
+        };
         startLocalNode();
         // if (epmdWatcher.isRunningNode(name)) {
         // connect();
         // }
+    }
+
+    @Override
+    public void start() {
+        // TODO Auto-generated method stub
+
     }
 
     public void startLocalNode() {
@@ -84,7 +116,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                 try {
                     i++;
                     localNode = ErlRuntime.createOtpNode(cookie, longName);
-                    localNode.registerStatusHandler(this);
+                    localNode.registerStatusHandler(statusWatcher);
                     nodeCreated = true;
                 } catch (final IOException e) {
                     ErlLogger
@@ -116,20 +148,6 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
             tries--;
         }
         return ok;
-    }
-
-    @Override
-    public void remoteStatus(final String node, final boolean up,
-            final Object info) {
-        if (node.equals(peerName)) {
-            if (up) {
-                ErlLogger.debug("Node %s is up", peerName);
-                connectRetry();
-            } else {
-                ErlLogger.debug("Node %s is down: %s", peerName, info);
-                state = State.DOWN;
-            }
-        }
     }
 
     @Override
@@ -255,6 +273,7 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
                     ErlLogger.info(e);
                 }
                 // TODO restart it??
+                // process =
                 throw new RpcException(msg);
             }
         }
@@ -401,4 +420,108 @@ public class ErlRuntime extends OtpNodeStatus implements IErlRuntime {
     @Override
     public void send(final String name, final Object msg) {
     }
+
+    @Override
+    public OtpErlangObject receiveEvent(final long timeout)
+            throws OtpErlangExit, OtpErlangDecodeException {
+        if (eventBox == null) {
+            return null;
+        }
+        return eventBox.receive(timeout);
+    }
+
+    @Override
+    public void connect() {
+        final String label = getNodeName();
+        ErlLogger.debug(label + ": waiting connection to peer...");
+        try {
+            wait_for_epmd();
+            eventBox = createMbox("rex");
+
+            if (waitForCodeServer()) {
+                ErlLogger.debug("connected!");
+            } else {
+                ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+            }
+
+        } catch (final BackendException e) {
+            ErlLogger.error(e);
+            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+        } catch (final Exception e) {
+            ErlLogger.error(e);
+            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
+        }
+    }
+
+    private OtpMbox getEventBox() {
+        return eventBox;
+    }
+
+    @Override
+    public OtpErlangPid getEventPid() {
+        final OtpMbox theEventBox = getEventBox();
+        if (theEventBox == null) {
+            return null;
+        }
+        return theEventBox.self();
+    }
+
+    private void wait_for_epmd() throws BackendException {
+        wait_for_epmd("localhost");
+    }
+
+    private void wait_for_epmd(final String host) throws BackendException {
+        // If anyone has a better solution for waiting for epmd to be up, please
+        // let me know
+        int tries = 50;
+        boolean ok = false;
+        do {
+            Socket s;
+            try {
+                s = new Socket(host, EPMD_PORT);
+                s.close();
+                ok = true;
+            } catch (final IOException e) {
+            }
+            try {
+                Thread.sleep(100);
+                // ErlLogger.debug("sleep............");
+            } catch (final InterruptedException e1) {
+            }
+            tries--;
+        } while (!ok && tries > 0);
+        if (!ok) {
+            final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
+                    + "  Possibly your host's entry in /etc/hosts is wrong.";
+            ErlLogger.error(msg);
+            throw new BackendException(msg);
+        }
+    }
+
+    private boolean waitForCodeServer() {
+        try {
+            OtpErlangObject r;
+            int i = 10;
+            do {
+                r = call("erlang", "whereis", "a", "code_server");
+                try {
+                    Thread.sleep(200);
+                } catch (final InterruptedException e) {
+                }
+                i--;
+            } while (!(r instanceof OtpErlangPid) && i > 0);
+            if (!(r instanceof OtpErlangPid)) {
+                ErlLogger.error("code server did not start in time for %s",
+                        getNodeName());
+                return false;
+            }
+            ErlLogger.debug("code server started");
+            return true;
+        } catch (final Exception e) {
+            ErlLogger.error("error starting code server for %s: %s",
+                    getNodeName(), e.getMessage());
+            return false;
+        }
+    }
+
 }
