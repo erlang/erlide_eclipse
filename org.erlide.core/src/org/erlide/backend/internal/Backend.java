@@ -62,7 +62,6 @@ import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.Asserts;
@@ -86,14 +85,8 @@ import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
-    public static int DEFAULT_TIMEOUT;
-    {
-        setDefaultTimeout();
-    }
-
     private final IErlRuntime runtime;
     private String erlangVersion;
-    private boolean stopped = false;
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
@@ -113,19 +106,13 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public RpcResult call_noexception(final String m, final String f,
             final String signature, final Object... a) {
-        return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
+        return runtime.call_noexception(m, f, signature, a);
     }
 
     @Override
     public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
-        try {
-            final OtpErlangObject result = runtime.call(timeout, m, f,
-                    signature, args);
-            return new RpcResult(result);
-        } catch (final RpcException e) {
-            return RpcResult.error(e.getMessage());
-        }
+        return runtime.call_noexception(timeout, m, f, signature, args);
     }
 
     @Override
@@ -138,7 +125,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void async_call_cb(final IRpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        runtime.async_call_cb(cb, DEFAULT_TIMEOUT, m, f, signature, args);
+        runtime.async_call_cb(cb, m, f, signature, args);
     }
 
     @Override
@@ -157,14 +144,15 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public OtpErlangObject call(final String m, final String f,
             final String signature, final Object... a) throws RpcException {
-        return call(DEFAULT_TIMEOUT, m, f, signature, a);
+        return runtime.call(m, f, signature, a);
     }
 
     @Override
     public OtpErlangObject call(final int timeout, final String m,
             final String f, final String signature, final Object... a)
             throws RpcException {
-        return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
+        return runtime.call(timeout, new OtpErlangAtom("user"), m, f,
+                signature, a);
     }
 
     @Override
@@ -256,7 +244,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean isStopped() {
-        return stopped || !runtime.isAvailable();
+        return runtime.isStopped();
     }
 
     @Override
@@ -270,7 +258,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (data.isDebug()) {
             unloadDebuggerCode();
         }
-        stopped = true;
+        runtime.stop();
     }
 
     @Override
@@ -281,19 +269,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public OtpMbox createMbox(final String name) {
         return runtime.createMbox(name);
-    }
-
-    private static void setDefaultTimeout() {
-        final String t = System.getProperty("erlide.rpc.timeout", "9000");
-        if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
-        } else {
-            try {
-                DEFAULT_TIMEOUT = Integer.parseInt(t);
-            } catch (final Exception e) {
-                DEFAULT_TIMEOUT = 9000;
-            }
-        }
     }
 
     public void removePath(final String path) {

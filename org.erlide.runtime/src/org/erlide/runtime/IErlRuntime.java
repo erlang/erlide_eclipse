@@ -37,4 +37,6 @@ public interface IErlRuntime extends IRpcSite {
 
     OtpErlangPid getEventPid();
 
+    boolean isStopped();
+
 }

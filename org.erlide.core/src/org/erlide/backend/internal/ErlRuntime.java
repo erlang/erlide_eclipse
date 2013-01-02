@@ -44,6 +44,11 @@ import com.google.common.base.Strings;
 public class ErlRuntime implements IErlRuntime {
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
+    public static int DEFAULT_TIMEOUT;
+    {
+        setDefaultTimeout();
+    }
+
     private static final int MAX_RETRIES = 10;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "300"));
@@ -67,6 +72,7 @@ public class ErlRuntime implements IErlRuntime {
     private final IProvider<IProcess> processProvider;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
+    private boolean stopped;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -80,6 +86,7 @@ public class ErlRuntime implements IErlRuntime {
         this.reportWhenDown = reportWhenDown;
         this.longName = longName;
         this.connectOnce = connectOnce;
+        this.stopped = false;
 
         statusWatcher = new OtpNodeStatus() {
             @Override
@@ -389,36 +396,48 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public void stop() {
         // close peer too?
+        stopped = true;
         localNode.close();
     }
 
     @Override
     public RpcResult call_noexception(final String m, final String f,
-            final String signature, final Object... a) {
-        return null;
+            final String signature, final Object... args) {
+        return call_noexception(DEFAULT_TIMEOUT, m, f, signature, args);
     }
 
     @Override
     public RpcResult call_noexception(final int timeout, final String m,
             final String f, final String signature, final Object... args) {
-        return null;
+        try {
+            final OtpErlangObject result = call(timeout, m, f, signature, args);
+            return new RpcResult(result);
+        } catch (final RpcException e) {
+            return RpcResult.error(e.getMessage());
+        }
     }
 
     @Override
     public void async_call_cb(final IRpcCallback cb, final String m,
             final String f, final String signature, final Object... args)
             throws RpcException {
-        throw new RpcException("not implemented yet");
+        async_call_cb(cb, DEFAULT_TIMEOUT, m, f, signature, args);
     }
 
     @Override
     public OtpErlangObject call(final String m, final String f,
             final String signature, final Object... a) throws RpcException {
-        return null;
+        return call(DEFAULT_TIMEOUT, m, f, signature, a);
     }
 
     @Override
     public void send(final String name, final Object msg) {
+        try {
+            tryConnect();
+            rpcHelper.send(localNode, peerName, name, msg);
+        } catch (final SignatureException e) {
+        } catch (final RpcException e) {
+        }
     }
 
     @Override
@@ -501,7 +520,7 @@ public class ErlRuntime implements IErlRuntime {
     private boolean waitForCodeServer() {
         try {
             OtpErlangObject r;
-            int i = 10;
+            int i = 20;
             do {
                 r = call("erlang", "whereis", "a", "code_server");
                 try {
@@ -522,6 +541,24 @@ public class ErlRuntime implements IErlRuntime {
                     getNodeName(), e.getMessage());
             return false;
         }
+    }
+
+    private static void setDefaultTimeout() {
+        final String t = System.getProperty("erlide.rpc.timeout", "9000");
+        if ("infinity".equals(t)) {
+            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
+        } else {
+            try {
+                DEFAULT_TIMEOUT = Integer.parseInt(t);
+            } catch (final Exception e) {
+                DEFAULT_TIMEOUT = 9000;
+            }
+        }
+    }
+
+    @Override
+    public boolean isStopped() {
+        return stopped || !isAvailable();
     }
 
 }
