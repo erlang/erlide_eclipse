@@ -71,13 +71,13 @@ scanner_test_() ->
 %%
 
 test_scan(S) ->
-	erlide_scanner_server:initialScan(testing, "", S, "/tmp", false), 
+	erlide_scanner_server:initialScan(testing, "", S, "/tmp", false, off), 
 	R = erlide_scanner_server:getTokens(testing),
 	erlide_scanner_server:destroy(testing),
 	R.
 
 test_replace(S, Pos, RemoveLength, NewText) ->
-	erlide_scanner_server:initialScan(testing, "", S, "/tmp", false), 
+	erlide_scanner_server:initialScan(testing, "", S, "/tmp", false, off), 
 	R1 = erlide_scanner_server:getTokens(testing),
 	erlide_scanner_server:replaceText(testing, Pos, RemoveLength, NewText),
 	R2 = erlide_scanner_server:getTokens(testing),

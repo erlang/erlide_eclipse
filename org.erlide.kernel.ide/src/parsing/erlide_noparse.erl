@@ -88,7 +88,7 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
             ?D(byte_size(InitialTextBin)),
             InitialText = binary_to_list(InitialTextBin),
             _D = erlide_scanner_server:initialScan(
-                   ScannerName, ModulePath, InitialText, StateDir, true),
+                   ScannerName, ModulePath, InitialText, StateDir, true, off),
             ?D(_D),
 	    {_Model, Refs} = initial_parse(ScannerName, ModulePath, StateDir, 
 					  true, UpdateSearchServer),

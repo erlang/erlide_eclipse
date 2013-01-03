@@ -65,7 +65,7 @@ external_call_after_empty_record_test_() ->
 %%
 
 test_refs(S, SearchPattern) ->
-    erlide_scanner_server:initialScan(testing, "", S, "/tmp", false),
+    erlide_scanner_server:initialScan(testing, "", S, "/tmp", false, off),
     {ok, _Res} = erlide_noparse:reparse(testing, true),
     erlide_search_server:find_refs([SearchPattern], [{testing, "xxx"}],
                                    "/tmp", true).
