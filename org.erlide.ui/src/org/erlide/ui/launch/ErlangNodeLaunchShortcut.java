@@ -33,7 +33,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.backend.IBackendData;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
@@ -54,6 +53,7 @@ import com.google.common.collect.Sets;
 public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
 
     private static final String CONSOLE_VIEW_ID = "org.eclipse.ui.console.ConsoleView";
+    public static final String PROJECT_NAME_SEPARATOR = ";";
 
     @Override
     public void launch(final ISelection selection, final String mode) {
@@ -173,8 +173,8 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
                 .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE);
         ILaunchConfigurationWorkingCopy wc = null;
         wc = launchConfigurationType.newInstance(null, name);
-        wc.setAttribute(ErlLaunchAttributes.PROJECTS, ListsUtils.packList(
-                projectNames, IBackendData.PROJECT_NAME_SEPARATOR));
+        wc.setAttribute(ErlLaunchAttributes.PROJECTS,
+                ListsUtils.packList(projectNames, PROJECT_NAME_SEPARATOR));
         wc.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, projects.iterator()
                 .next().getRuntimeInfo().getName());
         wc.setAttribute(ErlLaunchAttributes.NODE_NAME, name);

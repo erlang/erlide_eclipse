@@ -450,8 +450,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean doLoadOnAllNodes() {
-        return getData().isLoadAllNodes();
+    public boolean shouldLoadOnAllNodes() {
+        return data.shouldLoadOnAllNodes();
     }
 
     @Override
@@ -635,7 +635,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                     final String s = (String) e.nextElement();
                     final Path path = new Path(s);
                     if (path.lastSegment().equals(beamname)) {
-                        return getBeamFromBundlePath(bundle, beamname, s, path);
+                        return getBeamFromBundlePath(bundle, s, path);
                     }
                 }
             }
@@ -644,10 +644,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     private OtpErlangBinary getBeamFromBundlePath(final Bundle bundle,
-            final String beamname, final String s, final Path path) {
-        if (!path.lastSegment().equals(beamname)) {
-            return null; // Shouln't happen
-        }
+            final String s, final Path path) {
         final String m = path.removeFileExtension().lastSegment();
         try {
             return BeamUtil.getBeamBinary(m, bundle.getEntry(s));

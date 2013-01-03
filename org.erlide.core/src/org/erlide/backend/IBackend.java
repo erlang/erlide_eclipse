@@ -14,7 +14,9 @@ import org.osgi.framework.Bundle;
 
 public interface IBackend extends IDisposable, IErlRuntime {
 
-    String getErlangVersion();
+    void initialize();
+
+    IBackendData getData();
 
     RuntimeInfo getRuntimeInfo();
 
@@ -22,15 +24,23 @@ public interface IBackend extends IDisposable, IErlRuntime {
 
     String getFullNodeName();
 
+    boolean hasConsole();
+
+    boolean isDistributed();
+
+    boolean isManaged();
+
+    String getErlangVersion();
+
+    ILaunch getLaunch();
+
+    IStreamsProxy getStreamsProxy();
+
     void registerCodeBundle(final ICodeBundle bundle);
 
     void unregisterCodeBundle(final Bundle b);
 
-    ILaunch getLaunch();
-
     IBackendShell getShell(final String id);
-
-    boolean isDistributed();
 
     void input(final String s) throws IOException;
 
@@ -38,21 +48,10 @@ public interface IBackend extends IDisposable, IErlRuntime {
 
     void removeProjectPath(final IErlProject project);
 
-    boolean isManaged();
-
-    boolean doLoadOnAllNodes();
-
-    IStreamsProxy getStreamsProxy();
-
-    boolean hasConsole();
-
-    IBackendData getData();
-
-    void initialize();
+    boolean shouldLoadOnAllNodes();
 
     void installDeferredBreakpoints();
 
     void interpret(IProject project, String moduleName, boolean distributed,
             boolean interpret);
-
 }

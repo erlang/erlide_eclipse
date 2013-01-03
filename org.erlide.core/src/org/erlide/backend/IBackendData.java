@@ -1,7 +1,6 @@
 package org.erlide.backend;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -13,13 +12,7 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public interface IBackendData {
 
-    public static final String PROJECT_NAME_SEPARATOR = ";";
-
     public abstract RuntimeInfo getRuntimeInfo();
-
-    public abstract ILaunch getLaunch();
-
-    public abstract ILaunchConfiguration asLaunchConfiguration();
 
     public abstract String getCookie();
 
@@ -45,11 +38,6 @@ public interface IBackendData {
 
     public abstract void setDebug(final boolean debug);
 
-    public abstract Collection<String> getInterpretedModules();
-
-    public abstract void setInterpretedModules(
-            final Collection<String> interpretedModules);
-
     public abstract String getRuntimeName();
 
     public abstract void setRuntimeName(final String name);
@@ -74,19 +62,7 @@ public interface IBackendData {
 
     public abstract InitialCall getInitialCall();
 
-    public abstract Collection<IProject> getProjects();
-
     public abstract int getDebugFlags();
-
-    public abstract boolean isLoadAllNodes();
-
-    public abstract void setLoadAllNodes(final boolean load);
-
-    public abstract void setAttribute(final String key, final List<String> value);
-
-    public abstract void setBeamLocator(final IBeamLocator beamLocator);
-
-    public abstract IBeamLocator getBeamLocator();
 
     public abstract boolean isTransient();
 
@@ -99,5 +75,26 @@ public interface IBackendData {
     public abstract String[] getCmdLine();
 
     public abstract String getQualifiedNodeName();
+
+    //
+
+    public abstract ILaunch getLaunch();
+
+    public abstract ILaunchConfiguration asLaunchConfiguration();
+
+    public abstract void setBeamLocator(final IBeamLocator beamLocator);
+
+    public abstract IBeamLocator getBeamLocator();
+
+    public abstract Collection<String> getInterpretedModules();
+
+    public abstract void setInterpretedModules(
+            final Collection<String> interpretedModules);
+
+    public abstract boolean shouldLoadOnAllNodes();
+
+    public abstract void setLoadAllNodes(final boolean load);
+
+    public abstract Collection<IProject> getProjects();
 
 }

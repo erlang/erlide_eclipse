@@ -63,7 +63,7 @@ public class InternalErlideBuilder {
                         .getRuntimeInfo().toString());
                 if (b.isDistributed()) {
                     b.call("erlide_builder", "load", "ao", module,
-                            b.doLoadOnAllNodes());
+                            b.shouldLoadOnAllNodes());
                 }
                 backendManager.moduleLoaded(b, project, module);
             }

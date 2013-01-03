@@ -354,18 +354,13 @@ public final class BackendData extends GenericBackendData implements
     }
 
     @Override
-    public boolean isLoadAllNodes() {
+    public boolean shouldLoadOnAllNodes() {
         return getBooleanAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
     }
 
     @Override
     public void setLoadAllNodes(final boolean load) {
         config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, load);
-    }
-
-    @Override
-    public void setAttribute(final String key, final List<String> value) {
-        config.setAttribute(key, value);
     }
 
     @Override
