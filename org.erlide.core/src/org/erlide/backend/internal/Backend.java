@@ -383,8 +383,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = ErlideUtil
-                        .isAccessible(this, outDir);
+                final boolean accessible = ErlideUtil.isAccessibleDir(this,
+                        outDir);
                 if (accessible) {
                     addPath(false/* prefs.getUsePathZ() */, outDir);
                 } else {
@@ -406,8 +406,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = ErlideUtil
-                        .isAccessible(this, outDir);
+                final boolean accessible = ErlideUtil.isAccessibleDir(this,
+                        outDir);
                 if (accessible) {
                     removePath(outDir);
                 } else {

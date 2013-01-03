@@ -28,7 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlideUtil {
 
-    public static boolean isAccessible(final IRpcSite backend,
+    public static boolean isAccessibleDir(final IRpcSite backend,
             final String localDir) {
         File f = null;
         try {
@@ -48,6 +48,7 @@ public final class ErlideUtil {
         } catch (final OtpErlangRangeException e) {
             ErlLogger.error(e);
         } catch (final RpcException e) {
+            ErlLogger.error(e);
         } finally {
             if (f != null) {
                 f.delete();

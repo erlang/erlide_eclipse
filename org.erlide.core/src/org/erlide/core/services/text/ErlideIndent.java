@@ -11,7 +11,6 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideIndent {
@@ -71,19 +70,6 @@ public class ErlideIndent {
                 "template_indent_lines", "ssiolx", prefix, text, tabw, useTabs,
                 fixIndentPrefs(prefs));
         return o;
-    }
-
-    @SuppressWarnings("boxing")
-    public static OtpErlangObject call(final IRpcSite b, final String module,
-            final String fun, final int offset, final int length,
-            final String text) {
-        try {
-            final OtpErlangObject r1 = b.call(module, fun, "sii", text, offset,
-                    length);
-            return r1;
-        } catch (final RpcException e) {
-            return new OtpErlangString("");
-        }
     }
 
 }

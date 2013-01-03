@@ -196,7 +196,7 @@ public class CodeManager implements ICodeManager {
         final String externalPath = System.getProperty(p.getBundle()
                 .getSymbolicName() + ".ebin");
         if (externalPath != null) {
-            final boolean accessible = ErlideUtil.isAccessible(backend,
+            final boolean accessible = ErlideUtil.isAccessibleDir(backend,
                     externalPath);
             if (accessible) {
                 ErlLogger.debug("adding external %s to code path for %s:: %s",
@@ -213,7 +213,7 @@ public class CodeManager implements ICodeManager {
         if (ebinDirs != null) {
             for (final String ebinDir : ebinDirs) {
                 final String localDir = ebinDir.replaceAll("\\\\", "/");
-                final boolean accessible = ErlideUtil.isAccessible(backend,
+                final boolean accessible = ErlideUtil.isAccessibleDir(backend,
                         localDir);
                 final boolean embedded = ErlangCode.isEmbedded(backend);
                 if (accessible && !embedded) {
