@@ -388,14 +388,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
 
         if (SystemConfiguration.getInstance().isTest()) {
-            testAction = new TestAction(
-                    ErlangEditorMessages.getBundleForConstructedKeys(),
-                    "Test.", this, getModule());
-            testAction
-                    .setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
-            setAction("Test", testAction);
-            markAsStateDependentAction("Test", true);
-            markAsSelectionDependentAction("Test", true);
+            setupTestAction();
             // PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
             // IErlangHelpContextIds.INDENT_ACTION);
         }
@@ -452,11 +445,25 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     }
 
+    private void setupTestAction() {
+        if (testAction != null) {
+            return;
+        }
+        testAction = new TestAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(), "Test.",
+                this, getModule());
+        testAction.setActionDefinitionId(IErlangEditorActionDefinitionIds.TEST);
+        setAction("Test", testAction);
+        markAsStateDependentAction("Test", true);
+        markAsSelectionDependentAction("Test", true);
+    }
+
     @Override
     protected void editorContextMenuAboutToShow(final IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
 
         if (SystemConfiguration.getInstance().isTest()) {
+            setupTestAction();
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         }
         if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
@@ -1667,6 +1674,11 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     public void reconcileNow() {
         ((EditorConfiguration) getSourceViewerConfiguration()).reconcileNow();
+    }
+
+    public void dumpReconcilerLog(final String filename) {
+        ((EditorConfiguration) getSourceViewerConfiguration())
+                .dumpReconcilerLog(filename);
     }
 
     public ActionGroup getActionGroup() {

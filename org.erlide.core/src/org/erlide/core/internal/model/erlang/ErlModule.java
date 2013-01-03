@@ -67,6 +67,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     private static final OtpErlangAtom EXPORT_ALL = new OtpErlangAtom(
             "export_all");
+    private static final boolean logging = false;
     private long timestamp = IResource.NULL_STAMP;
     private IFile fFile;
     private final ModuleKind moduleKind;
@@ -522,8 +523,11 @@ public class ErlModule extends Openable implements IErlModule {
         if (initialText == null) {
             initialText = "";
         }
-        return ErlModelManager.getErlangModel().getToolkit()
-                .createScanner(scannerName, initialText, filePath, useCaches);
+        return ErlModelManager
+                .getErlangModel()
+                .getToolkit()
+                .createScanner(scannerName, initialText, filePath, useCaches,
+                        logging);
     }
 
     @Override

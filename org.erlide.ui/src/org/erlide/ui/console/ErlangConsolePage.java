@@ -477,7 +477,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         fSelectionActions.add(ActionFactory.CUT.getId());
         fSelectionActions.add(ActionFactory.COPY.getId());
-        fSelectionActions.add(ActionFactory.PASTE.getId());
         fSelectionActions.add(ActionFactory.FIND.getId());
 
         actionBars.updateActionBars();
@@ -497,7 +496,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         menuManager.add(fGlobalActions.get(ActionFactory.CUT.getId()));
         menuManager.add(fGlobalActions.get(ActionFactory.COPY.getId()));
-        menuManager.add(fGlobalActions.get(ActionFactory.PASTE.getId()));
         menuManager.add(fGlobalActions.get(ActionFactory.SELECT_ALL.getId()));
 
         menuManager.add(new Separator("FIND")); //$NON-NLS-1$

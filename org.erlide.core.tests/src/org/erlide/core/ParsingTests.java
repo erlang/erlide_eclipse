@@ -50,7 +50,7 @@ public class ParsingTests {
 
 	private boolean parse(final String s) {
 		final String scannerModuleName = module.getScannerName();
-		ErlideScanner.initialScan(scannerModuleName, "", s, false);
+		ErlideScanner.initialScan(scannerModuleName, "", s, false, false);
 		final IErlParser parser = ErlModelManager.getErlangModel().getParser();
 		return parser.parse(module, scannerModuleName, false, "", false, false);
 	}

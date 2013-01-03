@@ -26,14 +26,16 @@ public class ErlideScanner {
             "erlide.encoding.__test__", "latin1");
 
     public static void initialScan(final String module, final String path,
-            final String initialText, final boolean useCaches) {
+            final String initialText, final boolean useCaches,
+            final boolean logging) {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
         final IBackend backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         try {
-            backend.call(ERLIDE_SCANNER, "initialScan", "assso", module, path,
-                    initialText, stateDir, useCaches);
+            final String loggingOnOff = logging ? "on" : "off";
+            backend.call(ERLIDE_SCANNER, "initialScan", "asssoa", module, path,
+                    initialText, stateDir, useCaches, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -194,6 +196,20 @@ public class ErlideScanner {
         } catch (final RpcException e) {
             return "";
         }
+    }
+
+    public static boolean dumpLog(final String scannerName,
+            final String dumpLocationFilename) {
+        try {
+            final IBackend backend = BackendCore.getBackendManager()
+                    .getIdeBackend();
+            final OtpErlangObject object = backend.call(ERLIDE_SCANNER,
+                    "dump_log", "as", scannerName, dumpLocationFilename);
+            return Util.isOk(object);
+        } catch (final RpcException e) {
+            ErlLogger.warn(e);
+        }
+        return false;
     }
 
 }

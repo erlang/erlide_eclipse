@@ -12,8 +12,10 @@ public class ErlangBackendToolkit implements ErlangToolkit {
 
     @Override
     public IErlScanner createScanner(final String scannerName,
-            final String initialText, final String path, final boolean useCaches) {
-        return new ErlScanner(scannerName, initialText, path, useCaches);
+            final String initialText, final String path,
+            final boolean useCaches, final boolean logging) {
+        return new ErlScanner(scannerName, initialText, path, useCaches,
+                logging);
     }
 
 }
