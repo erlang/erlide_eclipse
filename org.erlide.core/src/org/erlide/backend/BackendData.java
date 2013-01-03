@@ -82,7 +82,6 @@ public final class BackendData extends GenericBackendData implements
         setCookie("erlide");
         setLongName(true);
 
-        setAutostart(true);
         setWorkingDir(getDefaultWorkingDir());
         setExtraArgs(info.getArgs());
 
@@ -206,13 +205,13 @@ public final class BackendData extends GenericBackendData implements
     }
 
     @Override
-    public boolean isAutostart() {
-        return getBooleanAttribute(ErlLaunchAttributes.AUTOSTART, true);
+    public boolean isRestartable() {
+        return getBooleanAttribute(ErlLaunchAttributes.RESTARTABLE, false);
     }
 
     @Override
-    public void setAutostart(final boolean autostart) {
-        config.setAttribute(ErlLaunchAttributes.AUTOSTART, autostart);
+    public void setRestartable(final boolean restartable) {
+        config.setAttribute(ErlLaunchAttributes.RESTARTABLE, restartable);
     }
 
     @Override
@@ -497,4 +496,5 @@ public final class BackendData extends GenericBackendData implements
         final boolean hasHost = nodeName.contains("@");
         return hasHost ? nodeName : nodeName + "@" + erlangHostName;
     }
+
 }

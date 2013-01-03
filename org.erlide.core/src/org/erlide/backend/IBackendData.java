@@ -12,89 +12,88 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public interface IBackendData {
 
-    public abstract RuntimeInfo getRuntimeInfo();
+    RuntimeInfo getRuntimeInfo();
 
-    public abstract String getCookie();
+    String getCookie();
 
-    public abstract void setCookie(final String cookie);
+    void setCookie(final String cookie);
 
-    public abstract boolean isManaged();
+    boolean isManaged();
 
-    public abstract void setManaged(final boolean managed);
+    void setManaged(final boolean managed);
 
-    public abstract boolean isAutostart();
+    boolean isRestartable();
 
-    public abstract void setAutostart(final boolean autostart);
+    void setRestartable(boolean restartable);
 
-    public abstract boolean useStartShell();
+    boolean useStartShell();
 
-    public abstract void setUseStartShell(final boolean shell);
+    void setUseStartShell(final boolean shell);
 
-    public abstract boolean hasConsole();
+    boolean hasConsole();
 
-    public abstract void setConsole(final boolean console);
+    void setConsole(final boolean console);
 
-    public abstract boolean isDebug();
+    boolean isDebug();
 
-    public abstract void setDebug(final boolean debug);
+    void setDebug(final boolean debug);
 
-    public abstract String getRuntimeName();
+    String getRuntimeName();
 
-    public abstract void setRuntimeName(final String name);
+    void setRuntimeName(final String name);
 
-    public abstract String getNodeName();
+    String getNodeName();
 
-    public abstract void setNodeName(String nodeName);
+    void setNodeName(String nodeName);
 
-    public abstract boolean isLongName();
+    boolean isLongName();
 
-    public abstract void setLongName(final boolean longname);
+    void setLongName(final boolean longname);
 
-    public abstract String getExtraArgs();
+    String getExtraArgs();
 
-    public abstract void setExtraArgs(final String xtra);
+    void setExtraArgs(final String xtra);
 
-    public abstract String getWorkingDir();
+    String getWorkingDir();
 
-    public abstract void setWorkingDir(final String dir);
+    void setWorkingDir(final String dir);
 
-    public abstract Map<String, String> getEnv();
+    Map<String, String> getEnv();
 
-    public abstract InitialCall getInitialCall();
+    InitialCall getInitialCall();
 
-    public abstract int getDebugFlags();
+    int getDebugFlags();
 
-    public abstract boolean isTransient();
+    boolean isTransient();
 
-    public abstract void setTransient(final boolean value);
+    void setTransient(final boolean value);
 
-    public abstract boolean isInternal();
+    boolean isInternal();
 
-    public abstract void setInternal(final boolean value);
+    void setInternal(final boolean value);
 
-    public abstract String[] getCmdLine();
+    String[] getCmdLine();
 
-    public abstract String getQualifiedNodeName();
+    String getQualifiedNodeName();
 
     //
 
-    public abstract ILaunch getLaunch();
+    ILaunch getLaunch();
 
-    public abstract ILaunchConfiguration asLaunchConfiguration();
+    ILaunchConfiguration asLaunchConfiguration();
 
-    public abstract void setBeamLocator(final IBeamLocator beamLocator);
+    void setBeamLocator(final IBeamLocator beamLocator);
 
-    public abstract IBeamLocator getBeamLocator();
+    IBeamLocator getBeamLocator();
 
-    public abstract Collection<String> getInterpretedModules();
+    Collection<String> getInterpretedModules();
 
-    public abstract void setInterpretedModules(
-            final Collection<String> interpretedModules);
+    void setInterpretedModules(final Collection<String> interpretedModules);
 
-    public abstract boolean shouldLoadOnAllNodes();
+    boolean shouldLoadOnAllNodes();
 
-    public abstract void setLoadAllNodes(final boolean load);
+    void setLoadAllNodes(final boolean load);
 
-    public abstract Collection<IProject> getProjects();
+    Collection<IProject> getProjects();
 
 }

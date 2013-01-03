@@ -77,7 +77,7 @@ public class BackendFactory implements IBackendFactory {
     @Override
     public IBackend createBackend(final IBackendData data) {
         ErlLogger.debug("Create backend " + data.getNodeName());
-        if (!data.isManaged() && !data.isAutostart()) {
+        if (!data.isManaged()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
             return null;
         }
@@ -131,8 +131,8 @@ public class BackendFactory implements IBackendFactory {
         final IBackendData result = new BackendData(runtimeInfoManager, info);
         result.setNodeName(getIdeNodeName());
         result.setDebug(false);
-        result.setAutostart(true);
         result.setConsole(false);
+        result.setRestartable(true);
         result.setLongName(HostnameUtils.canUseLongNames());
         if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
@@ -148,8 +148,8 @@ public class BackendFactory implements IBackendFactory {
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
                 + BackendUtils.getErlideNodeNameTag());
         result.setCookie("erlide");
+        result.setRestartable(true);
         result.setDebug(false);
-        result.setAutostart(true);
         result.setConsole(false);
         result.setLongName(HostnameUtils.canUseLongNames());
         result.setInternal(true);

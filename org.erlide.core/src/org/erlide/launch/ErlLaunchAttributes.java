@@ -51,9 +51,10 @@ public interface ErlLaunchAttributes {
 
     final String LOAD_ALL_NODES = prefix + ".loadAllNodes";
 
-    final String AUTOSTART = prefix + ".autostart";
+    final String RESTARTABLE = prefix + ".restartable";
 
     final String MANAGED = prefix + ".managed";
 
     final String SHELL = prefix + ".startShell";
+
 }

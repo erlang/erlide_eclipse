@@ -226,7 +226,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         return "";
     }
 
-    private boolean init(final OtpErlangPid jRex, final boolean watch) {
+    private boolean startErlangApps(final OtpErlangPid jRex, final boolean watch) {
         try {
             call("erlide_kernel_common", "init", "poii", jRex, watch,
                     SystemConfiguration.getInstance()
@@ -249,8 +249,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void start() {
-        // TODO Auto-generated method stub
-
+        runtime.start();
     }
 
     @Override
@@ -281,7 +280,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        init(getEventPid(), watch);
+        startErlangApps(getEventPid(), watch);
 
         eventDaemon = new ErlangEventPublisher(this);
         eventDaemon.start();
