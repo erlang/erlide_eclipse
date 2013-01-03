@@ -223,6 +223,12 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
         }
     }
 
+    public void dumpReconcilerLog(final String filename) {
+        if (reconciler != null) {
+            reconciler.dumpLog(filename);
+        }
+    }
+
     @Override
     public IQuickAssistAssistant getQuickAssistAssistant(
             final ISourceViewer sourceViewer) {

@@ -165,7 +165,7 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
            end,
     CacheFileName = filename:join(StateDir, atom_to_list(ScannerName) ++ ".scan"),
     RenewFun = fun(_F) -> do_scan(ScannerName, Text) end,
-    erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache).
+    {erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache), Text}.
 
 %% do_scan_uncached(ScannerName, ModuleFileName) ->
 %%     {ok, B} = file:read_file(ModuleFileName),

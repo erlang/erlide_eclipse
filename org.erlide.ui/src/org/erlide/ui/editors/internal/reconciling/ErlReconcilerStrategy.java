@@ -92,4 +92,8 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
 
     }
 
+    public IErlModule getModule() {
+        return fModule;
+    }
+
 }

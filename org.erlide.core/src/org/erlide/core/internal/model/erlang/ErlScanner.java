@@ -22,10 +22,10 @@ public class ErlScanner implements IDisposable, IErlScanner {
     private final String name;
 
     public ErlScanner(final String name, final String initialText,
-            final String path, final boolean useCaches) {
+            final String path, final boolean useCaches, final boolean logging) {
         this.name = name;
         // ErlLogger.debug("> create scanner " + name);
-        ErlideScanner.initialScan(name, path, initialText, useCaches);
+        ErlideScanner.initialScan(name, path, initialText, useCaches, logging);
     }
 
     @Override
