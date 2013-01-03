@@ -342,7 +342,7 @@ public final class BackendData extends GenericBackendData implements
         String prjs;
         prjs = getStringAttribute(ErlLaunchAttributes.PROJECTS, "");
         final String[] projectNames = prjs.length() == 0 ? new String[] {}
-                : prjs.split(";");
+                : prjs.split(PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
     }
 

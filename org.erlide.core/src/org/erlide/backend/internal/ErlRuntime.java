@@ -511,7 +511,8 @@ public class ErlRuntime implements IErlRuntime {
         } while (!ok && tries > 0);
         if (!ok) {
             final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "  Possibly your host's entry in /etc/hosts is wrong.";
+                    + "  Possibly your host's entry in /etc/hosts is wrong ("
+                    + host + ").";
             ErlLogger.error(msg);
             throw new BackendException(msg);
         }
@@ -520,16 +521,20 @@ public class ErlRuntime implements IErlRuntime {
     private boolean waitForCodeServer() {
         try {
             OtpErlangObject r;
-            int i = 20;
+            int i = 30;
+            boolean gotIt = false;
             do {
                 r = call("erlang", "whereis", "a", "code_server");
-                try {
-                    Thread.sleep(200);
-                } catch (final InterruptedException e) {
+                gotIt = !(r instanceof OtpErlangPid);
+                if (!gotIt) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (final InterruptedException e) {
+                    }
                 }
                 i--;
-            } while (!(r instanceof OtpErlangPid) && i > 0);
-            if (!(r instanceof OtpErlangPid)) {
+            } while (gotIt && i > 0);
+            if (gotIt) {
                 ErlLogger.error("code server did not start in time for %s",
                         getNodeName());
                 return false;

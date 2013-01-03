@@ -12,6 +12,8 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public interface IBackendData {
 
+    public final static String PROJECT_NAME_SEPARATOR = ";";
+
     RuntimeInfo getRuntimeInfo();
 
     String getCookie();
