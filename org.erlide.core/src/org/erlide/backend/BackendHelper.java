@@ -21,7 +21,7 @@ public class BackendHelper {
     }
 
     public BackendHelper() {
-        this(BackendCore.getBackendManager().getIdeBackend());
+        this(BackendCore.getBackendManager().getIdeBackend().getRpcSite());
     }
 
     public String format_error(final OtpErlangObject object) {

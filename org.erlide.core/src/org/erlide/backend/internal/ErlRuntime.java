@@ -20,6 +20,7 @@ import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
@@ -39,7 +40,7 @@ import com.ericsson.otp.erlang.OtpNodeStatus;
 import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 
-public class ErlRuntime implements IErlRuntime {
+public class ErlRuntime implements IErlRuntime, IRpcSite {
     private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
     private static final int EPMD_PORT = 4369;
     public static int DEFAULT_TIMEOUT;
@@ -560,4 +561,8 @@ public class ErlRuntime implements IErlRuntime {
         return eventBox;
     }
 
+    @Override
+    public IRpcSite getRpcSite() {
+        return this;
+    }
 }

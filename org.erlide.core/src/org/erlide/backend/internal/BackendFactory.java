@@ -48,7 +48,7 @@ public class BackendFactory implements IBackendFactory {
     public IBackend createIdeBackend() {
         ErlLogger.debug("Create ide backend");
         final IBackend backend = createBackend(getIdeBackendData());
-        setWorkDirForCoreDumps(backend);
+        setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
 
@@ -70,7 +70,7 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
         final IBackend backend = createBackend(getBuildBackendData(info));
-        setWorkDirForCoreDumps(backend);
+        setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
 

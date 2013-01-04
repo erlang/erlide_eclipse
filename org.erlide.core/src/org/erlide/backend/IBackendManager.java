@@ -47,7 +47,7 @@ public interface IBackendManager {
     void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName);
 
-    IRpcSite getBackendForLaunch(final ILaunch launch);
+    IBackend getBackendForLaunch(final ILaunch launch);
 
     void terminateBackendsForLaunch(final ILaunch launch);
 

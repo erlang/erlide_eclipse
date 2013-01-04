@@ -330,7 +330,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getName().equals(nodeName)) {
-                return b;
+                return b.getRpcSite();
             }
         }
         return null;

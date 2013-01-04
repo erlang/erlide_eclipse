@@ -229,7 +229,8 @@ public class ErlangTextEditorAction extends TextEditorAction {
      */
     protected OtpErlangObject callErlang(final int offset, final int length,
             final String aText) throws RpcException {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final OtpErlangObject r1 = BackendUtils.call(b, fErlModule,
                 fErlFunction, offset, length, aText);
         return r1;

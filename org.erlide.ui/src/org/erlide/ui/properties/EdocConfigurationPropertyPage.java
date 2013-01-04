@@ -76,7 +76,7 @@ public class EdocConfigurationPropertyPage extends PropertyPage implements
     protected Control createContents(final Composite parent) {
         fInitialLocation = null;
         final String s = ErlideDoc.getOtpDocLocation(BackendCore
-                .getBackendManager().getIdeBackend());
+                .getBackendManager().getIdeBackend().getRpcSite());
         try {
             fInitialLocation = new URL("file", null, s);
         } catch (final MalformedURLException e) {

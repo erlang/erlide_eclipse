@@ -13,9 +13,11 @@ package org.erlide.runtime;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
-public interface IErlRuntime extends IRpcSite {
+public interface IErlRuntime {
 
     boolean isAvailable();
+
+    boolean isStopped();
 
     String getNodeName();
 
@@ -33,6 +35,6 @@ public interface IErlRuntime extends IRpcSite {
 
     OtpMbox getEventMbox();
 
-    boolean isStopped();
+    IRpcSite getRpcSite();
 
 }

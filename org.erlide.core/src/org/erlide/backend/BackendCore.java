@@ -5,6 +5,7 @@ import org.erlide.backend.internal.BackendFactory;
 import org.erlide.backend.internal.BackendManager;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.launch.EpmdWatchJob;
+import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -27,6 +28,7 @@ public class BackendCore {
             runtimeInfoCatalog = new RuntimeInfoCatalog();
             runtimeInfoCatalog.setRuntimes(data.runtimes,
                     data.defaultRuntimeName, data.erlideRuntimeName);
+            HostnameUtils.detectHostNames(runtimeInfoCatalog.erlideRuntime);
         }
         return runtimeInfoCatalog;
     }

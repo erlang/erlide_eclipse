@@ -100,7 +100,8 @@ public class CallHierarchyView extends ViewPart {
             }
             final IErlFunction parent = (IErlFunction) parentElement;
             final FunctionRef ref = new FunctionRef(parent);
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                    .getRpcSite();
             final FunctionRef[] children = ErlangXref.functionUse(b, ref);
             if (children == null) {
                 return new Object[0];
@@ -138,7 +139,8 @@ public class CallHierarchyView extends ViewPart {
     }
 
     public CallHierarchyView() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         ErlangXref.start(b);
     }
 
@@ -163,7 +165,7 @@ public class CallHierarchyView extends ViewPart {
                         @Override
                         public void widgetSelected(final SelectionEvent e) {
                             final IRpcSite b = BackendCore.getBackendManager()
-                                    .getIdeBackend();
+                                    .getIdeBackend().getRpcSite();
                             ErlangXref.update(b);
                             treeViewer.refresh();
                         }
@@ -200,7 +202,8 @@ public class CallHierarchyView extends ViewPart {
 
     @Override
     public void dispose() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         ErlangXref.stop(b);
         super.dispose();
     }

@@ -68,7 +68,7 @@ public class TestLaunchShortcut implements ILaunchShortcut {
                             .launch(mode, Job.getJobManager()
                                     .createProgressGroup(), false, true);
                     final IRpcSite backend = BackendCore.getBackendManager()
-                            .getBackendForLaunch(launch);
+                            .getBackendForLaunch(launch).getRpcSite();
                     if (backend == null) {
                         System.out.println("NULL backend for bterl");
                         return;

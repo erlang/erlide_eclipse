@@ -291,15 +291,16 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IRpcSite b = erlProject == null ? ide : backendManager
-                    .getBuildBackend(project);
+            final IRpcSite b = erlProject == null ? ide.getRpcSite()
+                    : backendManager.getBuildBackend(project).getRpcSite();
 
             final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
-            final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(ide,
-                    b, offset, stateDir, module.getScannerName(), fImports,
-                    externalModulesString, model.getPathVars());
+            final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(
+                    ide.getRpcSite(), b, offset, stateDir,
+                    module.getScannerName(), fImports, externalModulesString,
+                    model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));

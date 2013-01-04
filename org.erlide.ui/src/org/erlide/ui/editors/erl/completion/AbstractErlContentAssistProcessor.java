@@ -187,8 +187,8 @@ public abstract class AbstractErlContentAssistProcessor {
             }
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
-                rc = ErlideContextAssist.checkRecordCompletion(
-                        BackendCore.getBuildOrIdeBackend(project), before);
+                rc = ErlideContextAssist.checkRecordCompletion(BackendCore
+                        .getBuildOrIdeBackend(project).getRpcSite(), before);
             }
             if (rc != null && rc.isNameWanted()) {
                 flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -289,7 +289,8 @@ public abstract class AbstractErlContentAssistProcessor {
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(project);
+        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(project)
+                .getRpcSite();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

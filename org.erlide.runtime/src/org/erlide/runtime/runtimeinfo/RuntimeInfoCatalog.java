@@ -17,8 +17,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.runtime.HostnameUtils;
-
 import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -102,7 +100,6 @@ public final class RuntimeInfoCatalog {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
-            HostnameUtils.detectHostNames(runtime);
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
         }

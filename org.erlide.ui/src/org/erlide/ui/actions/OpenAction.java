@@ -134,7 +134,8 @@ public class OpenAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final int offset = selection.getOffset();
         try {
             final IErlProject project = ModelUtils.getProject(module);

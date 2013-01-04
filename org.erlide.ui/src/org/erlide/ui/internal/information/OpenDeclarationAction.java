@@ -60,10 +60,9 @@ public final class OpenDeclarationAction extends Action {
                     final OpenResult or = (OpenResult) element;
                     try {
                         final ErlangEditor editor = input.getEditor();
-                        OpenAction
-                                .openOpenResult(editor, editor.getModule(),
-                                        BackendCore.getBackendManager()
-                                                .getIdeBackend(), -1, null, or);
+                        OpenAction.openOpenResult(editor, editor.getModule(),
+                                BackendCore.getBackendManager().getIdeBackend()
+                                        .getRpcSite(), -1, null, or);
                     } catch (final Exception e) {
                         e.printStackTrace();
                     }

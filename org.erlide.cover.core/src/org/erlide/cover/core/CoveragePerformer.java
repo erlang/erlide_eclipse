@@ -94,6 +94,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                 CoverBackend
                         .getInstance()
                         .getBackend()
+                        .getRpcSite()
                         .call(CoverConstants.COVER_ERL_BACKEND,
                                 CoverConstants.FUN_START, "x", nodesList);
 
@@ -132,6 +133,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_SET_INCLUDES, "x", includes);
         } catch (final RpcException e1) {
@@ -160,6 +162,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_PREP, "x", paths);
 
@@ -186,6 +189,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_ANALYSE, "x", modules);
 

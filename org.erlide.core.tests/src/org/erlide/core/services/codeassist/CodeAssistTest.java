@@ -14,7 +14,8 @@ public class CodeAssistTest {
 
     @Test
     public void getVariablesShouldReturnNonNull() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final Collection<String> result = ErlideContextAssist.getVariables(b,
                 "src", "");
         MatcherAssert.assertThat(result, Matchers.notNullValue());
@@ -22,7 +23,8 @@ public class CodeAssistTest {
 
     @Test
     public void getVariables_1() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final Collection<String> result = ErlideContextAssist.getVariables(b,
                 "a(X)-> XY=-X, {Z, W}=XY, X.", "");
         final Collection<String> expected = Sets
@@ -32,7 +34,8 @@ public class CodeAssistTest {
 
     @Test
     public void getVariables_2() {
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final Collection<String> result = ErlideContextAssist.getVariables(b,
                 "a(X)-> XY=-X, Z=XY, X.", "X");
         final Collection<String> expected = Sets.newHashSet("X", "XY");

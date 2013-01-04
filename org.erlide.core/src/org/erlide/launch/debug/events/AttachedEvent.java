@@ -17,8 +17,8 @@ public class AttachedEvent implements DebuggerEvent {
     public void execute(final ErlangDebugTarget debugTarget) {
         if (debugTarget.getMetaFromPid(pid) == null) {
             final OtpErlangPid self = debugTarget.getEventMBox();
-            final OtpErlangPid metaPid = ErlideDebug.attached(
-                    debugTarget.getBackend(), pid, self);
+            final OtpErlangPid metaPid = ErlideDebug.attached(debugTarget
+                    .getBackend().getRpcSite(), pid, self);
             // ErlLogger.debug("attached: " + pid + ",  meta: " + metaPid);
             if (metaPid != null) {
                 debugTarget.putMetaPid(metaPid, pid);

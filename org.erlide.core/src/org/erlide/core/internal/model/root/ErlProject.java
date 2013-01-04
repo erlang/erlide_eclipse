@@ -190,8 +190,8 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
-                final IRpcSite backend = BackendCore
-                        .getBuildOrIdeBackend(fProject);
+                final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
+                        fProject).getRpcSite();
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());
                 if (includes != null) {

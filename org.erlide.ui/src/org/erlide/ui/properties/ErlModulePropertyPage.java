@@ -51,7 +51,7 @@ public class ErlModulePropertyPage extends PropertyPage implements
 
             // TODO should it be the build backend?
             final IRpcSite backend = BackendCore.getBackendManager()
-                    .getIdeBackend();
+                    .getIdeBackend().getRpcSite();
             try {
                 final OtpErlangObject info = backend.call("erlide_backend",
                         "get_module_info", "s", beam.getLocation()

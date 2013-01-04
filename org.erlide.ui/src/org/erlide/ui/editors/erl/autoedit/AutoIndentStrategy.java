@@ -79,7 +79,8 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
         final int lineLength = d.getLineLength(lineN);
         final String oldLine = d.get(offset, lineLength + lineOffset - offset);
         try {
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                    .getRpcSite();
             final int tabw = getTabWidthFromPreferences();
 
             final Map<String, String> prefs = new TreeMap<String, String>();

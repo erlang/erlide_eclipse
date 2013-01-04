@@ -72,7 +72,7 @@ public class MatchSpecCellEditor extends DialogCellEditor {
             }
             try {
                 final IRpcSite backend = BackendCore.getBackendManager()
-                        .getIdeBackend();
+                        .getIdeBackend().getRpcSite();
                 final OtpErlangTuple tuple = (OtpErlangTuple) backend.call(
                         Constants.ERLANG_HELPER_MODULE, Constants.FUN_STR2MS,
                         "s", new OtpErlangString(newText));

@@ -160,8 +160,8 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final Map<IRpcFuture, IResource> results = Maps.newHashMap();
             IRpcSite backend;
             try {
-                backend = BackendCore.getBackendManager().getBuildBackend(
-                        project);
+                backend = BackendCore.getBackendManager()
+                        .getBuildBackend(project).getRpcSite();
             } catch (final BackendException e) {
                 backend = null;
             }

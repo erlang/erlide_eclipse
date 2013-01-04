@@ -98,7 +98,7 @@ public class CallHierarchyAction extends Action {
             @Override
             protected IRpcFuture call() throws BackendException {
                 final IRpcSite b = BackendCore.getBackendManager()
-                        .getIdeBackend();
+                        .getIdeBackend().getRpcSite();
                 final IRpcFuture result = ErlangXref.addProject(b,
                         ModelUtils.getProject(module));
                 return result;

@@ -62,7 +62,7 @@ public class InternalErlideBuilder {
                 ErlLogger.debug(":: loading %s in %s", module, b
                         .getRuntimeInfo().toString());
                 if (b.isDistributed()) {
-                    b.call("erlide_builder", "load", "ao", module,
+                    b.getRpcSite().call("erlide_builder", "load", "ao", module,
                             b.shouldLoadOnAllNodes());
                 }
                 backendManager.moduleLoaded(b, project, module);

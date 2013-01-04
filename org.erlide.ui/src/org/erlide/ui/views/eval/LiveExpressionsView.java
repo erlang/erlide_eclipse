@@ -105,7 +105,8 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                    .getRpcSite();
             final BackendEvalResult r = DebugHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
@@ -305,7 +306,7 @@ public class LiveExpressionsView extends ViewPart implements
                             // ErlLogger.debug(str);
                             final BackendEvalResult r = DebugHelper.eval(
                                     BackendCore.getBackendManager()
-                                            .getIdeBackend(),
+                                            .getIdeBackend().getRpcSite(),
                                     "lists:flatten(io_lib:format(\"~p\", ["
                                             + item.getText(1) + "])).", null);
                             if (r.isOk()) {

@@ -62,8 +62,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final IRpcSite backend = BackendCore.getBuildOrIdeBackend(project
-                    .getWorkspaceProject());
+            final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
+                    project.getWorkspaceProject()).getRpcSite();
             final OtpErlangList pathVars = ErlModelManager.getErlangModel()
                     .getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
