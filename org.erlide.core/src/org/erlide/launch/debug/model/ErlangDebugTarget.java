@@ -79,7 +79,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             throws DebugException {
         super(null);
         fBackend = b;
-        fNodeName = b.getFullNodeName();
+        fNodeName = b.getNodeName();
         fLaunch = launch;
         fTerminated = false;
         this.projects = projects;

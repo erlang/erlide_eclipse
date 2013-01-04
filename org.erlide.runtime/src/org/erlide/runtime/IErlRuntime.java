@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import com.ericsson.otp.erlang.OtpErlangExit;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
@@ -26,9 +23,6 @@ public interface IErlRuntime extends IRpcSite {
 
     void stop();
 
-    OtpErlangObject receiveEvent(final long timeout) throws OtpErlangExit,
-            OtpErlangDecodeException;
-
     void connect();
 
     OtpMbox createMbox(String string);
@@ -36,6 +30,8 @@ public interface IErlRuntime extends IRpcSite {
     OtpMbox createMbox();
 
     OtpErlangPid getEventPid();
+
+    OtpMbox getEventMbox();
 
     boolean isStopped();
 

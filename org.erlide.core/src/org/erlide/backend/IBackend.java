@@ -22,8 +22,6 @@ public interface IBackend extends IDisposable, IErlRuntime {
 
     String getName();
 
-    String getFullNodeName();
-
     boolean hasConsole();
 
     boolean isDistributed();

@@ -31,8 +31,6 @@ import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
@@ -441,15 +439,6 @@ public class ErlRuntime implements IErlRuntime {
     }
 
     @Override
-    public OtpErlangObject receiveEvent(final long timeout)
-            throws OtpErlangExit, OtpErlangDecodeException {
-        if (eventBox == null) {
-            return null;
-        }
-        return eventBox.receive(timeout);
-    }
-
-    @Override
     public void connect() {
         final String label = getNodeName();
         ErlLogger.debug(label + ": waiting connection to peer...");
@@ -564,6 +553,11 @@ public class ErlRuntime implements IErlRuntime {
     @Override
     public boolean isStopped() {
         return stopped || !isAvailable();
+    }
+
+    @Override
+    public OtpMbox getEventMbox() {
+        return eventBox;
     }
 
 }

@@ -72,8 +72,6 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
@@ -169,7 +167,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void send(final String name, final Object msg) {
-        runtime.send(getFullNodeName(), name, msg);
+        runtime.send(getNodeName(), name, msg);
     }
 
     @Override
@@ -206,11 +204,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (runtime == null) {
             return "<not_connected>";
         }
-        return runtime.getNodeName();
-    }
-
-    @Override
-    public String getFullNodeName() {
         return runtime.getNodeName();
     }
 
@@ -767,13 +760,12 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public OtpErlangObject receiveEvent(final long timeout)
-            throws OtpErlangExit, OtpErlangDecodeException {
-        return runtime.receiveEvent(timeout);
+    public void connect() {
+        runtime.connect();
     }
 
     @Override
-    public void connect() {
-        runtime.connect();
+    public OtpMbox getEventMbox() {
+        return runtime.getEventMbox();
     }
 }
