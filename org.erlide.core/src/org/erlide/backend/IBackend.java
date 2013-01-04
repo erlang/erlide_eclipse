@@ -54,4 +54,5 @@ public interface IBackend extends IDisposable, IErlRuntime {
 
     void interpret(IProject project, String moduleName, boolean distributed,
             boolean interpret);
+
 }
