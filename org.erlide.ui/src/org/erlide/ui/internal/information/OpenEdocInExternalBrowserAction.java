@@ -236,7 +236,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
     }
 
     public void setInput(final Object newInput) {
-        if (input instanceof ErlBrowserInformationControlInput) {
+        if (newInput instanceof ErlBrowserInformationControlInput) {
             input = (ErlBrowserInformationControlInput) newInput;
         }
     }
