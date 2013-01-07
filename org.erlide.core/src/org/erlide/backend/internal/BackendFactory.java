@@ -31,15 +31,16 @@ import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.ErlLogger;
+import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
 
-    final RuntimeInfoManager runtimeInfoManager;
+    final RuntimeInfoCatalog runtimeInfoManager;
 
-    public BackendFactory(final RuntimeInfoManager runtimeInfoManager) {
+    public BackendFactory(final RuntimeInfoCatalog runtimeInfoManager) {
         this.runtimeInfoManager = runtimeInfoManager;
     }
 
@@ -47,7 +48,7 @@ public class BackendFactory implements IBackendFactory {
     public IBackend createIdeBackend() {
         ErlLogger.debug("Create ide backend");
         final IBackend backend = createBackend(getIdeBackendData());
-        setWorkDirForCoreDumps(backend);
+        setWorkDirForCoreDumps(backend.getRpcSite());
         return backend;
     }
 
@@ -68,32 +69,36 @@ public class BackendFactory implements IBackendFactory {
     public IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
-        return createBackend(getBuildBackendData(info));
+        final IBackend backend = createBackend(getBuildBackendData(info));
+        setWorkDirForCoreDumps(backend.getRpcSite());
+        return backend;
     }
 
     @Override
     public IBackend createBackend(final IBackendData data) {
         ErlLogger.debug("Create backend " + data.getNodeName());
-        if (!data.isManaged() && !data.isAutostart()) {
+        if (!data.isManaged()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
             return null;
         }
 
         final IBackend b;
-        final String erlangHostName = HostnameUtils.getErlangHostName(data
-                .isLongName());
         try {
-            String nodeName = data.getNodeName();
-            final boolean hasHost = nodeName.contains("@");
-            nodeName = hasHost ? nodeName : nodeName + "@" + erlangHostName;
-            ILaunch launch = data.getLaunch();
-            if (launch == null) {
-                launch = launchPeer(data);
-            }
-            final IProcess mainProcess = launch.getProcesses().length == 0 ? null
-                    : launch.getProcesses()[0];
+            final String nodeName = data.getQualifiedNodeName();
+            final IProvider<IProcess> erlProcessProvider = new IProvider<IProcess>() {
+
+                @Override
+                public IProcess get() {
+                    ILaunch launch = data.getLaunch();
+                    if (launch == null) {
+                        launch = launchPeer(data);
+                    }
+                    return launch.getProcesses().length == 0 ? null : launch
+                            .getProcesses()[0];
+                }
+            };
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    data.getCookie(), mainProcess, !data.isTransient(),
+                    data.getCookie(), erlProcessProvider, !data.isTransient(),
                     data.isLongName(), data.isInternal());
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
@@ -126,8 +131,8 @@ public class BackendFactory implements IBackendFactory {
         final IBackendData result = new BackendData(runtimeInfoManager, info);
         result.setNodeName(getIdeNodeName());
         result.setDebug(false);
-        result.setAutostart(true);
         result.setConsole(false);
+        result.setRestartable(true);
         result.setLongName(HostnameUtils.canUseLongNames());
         if (SystemConfiguration.getInstance().isDeveloper()) {
             result.setConsole(true);
@@ -143,8 +148,8 @@ public class BackendFactory implements IBackendFactory {
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
                 + BackendUtils.getErlideNodeNameTag());
         result.setCookie("erlide");
+        result.setRestartable(true);
         result.setDebug(false);
-        result.setAutostart(true);
         result.setConsole(false);
         result.setLongName(HostnameUtils.canUseLongNames());
         result.setInternal(true);

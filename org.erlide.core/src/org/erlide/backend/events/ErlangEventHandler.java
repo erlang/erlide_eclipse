@@ -37,7 +37,7 @@ public abstract class ErlangEventHandler implements EventHandler, IDisposable {
     }
 
     public IRpcSite getBackend() {
-        return backend;
+        return backend.getRpcSite();
     }
 
     @Override

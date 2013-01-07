@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
@@ -89,8 +89,9 @@ public class ErlangVariable extends ErlangDebugElement implements IVariable {
                     "Can't set value of part of expression", null));
         }
         final ErlangDebugTarget edt = getErlangDebugTarget();
-        final String err = ErlideDebug.setVariableValue(edt.getBackend(), name,
-                expression, stackFrameNo, process.getMeta());
+        final String err = ErlideDebug.setVariableValue(edt.getBackend()
+                .getRpcSite(), name, expression, stackFrameNo, process
+                .getMeta());
         if (err != null) {
             throw new DebugException(new Status(IStatus.ERROR,
                     ErlangCore.PLUGIN_ID, DebugException.TARGET_REQUEST_FAILED,

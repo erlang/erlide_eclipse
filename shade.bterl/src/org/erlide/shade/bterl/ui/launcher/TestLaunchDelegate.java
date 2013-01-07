@@ -27,7 +27,6 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.runtime.ErlUtils;
-import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.TermParser;
 import org.erlide.runtime.TermParserException;
 import org.erlide.utils.ErlLogger;
@@ -183,7 +182,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
                 final OtpErlangPid pid = (OtpErlangPid) event
                         .getProperty("DATA");
-                backend.send(pid, new OtpErlangAtom("ok"));
+                backend.getRpcSite().send(pid, new OtpErlangAtom("ok"));
             }
         };
         handler.register();
@@ -227,7 +226,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String[] bterlPath = getBterlPath();
         System.out.println("... internal path = " + bterlPath);
 
-        final String runtimeName = BackendCore.getRuntimeInfoManager()
+        final String runtimeName = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(new RuntimeVersion("R14B"), "").getName();
         // TODO how do we keep this updated?
 

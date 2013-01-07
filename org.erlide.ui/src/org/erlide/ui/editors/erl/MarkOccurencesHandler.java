@@ -104,8 +104,9 @@ public class MarkOccurencesHandler {
             }
             try {
                 final int offset = aSelection.getOffset();
-                final OpenResult res = ErlideOpen.open(ideBackend, theModule,
-                        offset, ModelUtils.getImportsAsList(theModule), "",
+                final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
+                        theModule, offset,
+                        ModelUtils.getImportsAsList(theModule), "",
                         ErlModelManager.getErlangModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
@@ -121,7 +122,7 @@ public class MarkOccurencesHandler {
                     // TODO: run in background? for large files, this can take
                     // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
-                            ideBackend, pattern, scope,
+                            ideBackend.getRpcSite(), pattern, scope,
                             erlangEditor.getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);

@@ -69,8 +69,10 @@ public final class ErlParser implements IErlParser {
 
     private static final int FUNCTION_COMMENT_THRESHOLD = 3;
     private static final int MODULE_HEADER_COMMENT_THRESHOLD = 1;
+    private final BackendHelper helper;
 
     public ErlParser() {
+        helper = new BackendHelper();
     }
 
     @Override
@@ -253,10 +255,7 @@ public final class ErlParser implements IErlParser {
         final String typeS = type.atomValue();
         if ("error".equals(typeS)) {
             final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
-
-            final String msg = BackendHelper.format_error(BackendCore
-                    .getBackendManager().getIdeBackend(), er);
-
+            final String msg = helper.format_error(er);
             final ErlParserProblem e = ErlParserProblem.newError(module, msg);
             setPos(e, er.elementAt(0), false);
             return e;
@@ -620,8 +619,7 @@ public final class ErlParser implements IErlParser {
             return new OtpErlangList(res);
         }
         try {
-            return BackendHelper.concreteSyntax(BackendCore.getBackendManager()
-                    .getIdeBackend(), val);
+            return helper.concreteSyntax(val);
         } catch (final Exception e) {
             return val;
         }

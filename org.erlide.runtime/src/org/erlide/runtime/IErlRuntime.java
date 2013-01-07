@@ -10,73 +10,31 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
-import org.erlide.runtime.rpc.IRpcCallback;
-import org.erlide.runtime.rpc.IRpcFuture;
-import org.erlide.runtime.rpc.IRpcResultCallback;
-import org.erlide.runtime.rpc.RpcException;
-
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.SignatureException;
 
 public interface IErlRuntime {
 
     boolean isAvailable();
 
+    boolean isStopped();
+
     String getNodeName();
 
-    void remoteStatus(final String node, final boolean up, final Object info);
+    void start();
+
+    void stop();
+
+    void connect();
 
     OtpMbox createMbox(String string);
 
     OtpMbox createMbox();
 
-    void stop();
+    OtpErlangPid getEventPid();
 
-    // RPC stuff; TODO why duplicate IBackend?
+    OtpMbox getEventMbox();
 
-    void makeAsyncResultCall(final IRpcResultCallback cb, final String m,
-            final String f, final String signature, final Object[] args)
-            throws SignatureException;
-
-    IRpcFuture makeAsyncCall(final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws RpcException, SignatureException;
-
-    IRpcFuture makeAsyncCall(final String module, final String fun,
-            final String signature, final Object... args0) throws RpcException,
-            SignatureException;
-
-    void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
-            final String module, final String fun, final String signature,
-            final Object... args) throws RpcException, SignatureException;
-
-    void makeAsyncCbCall(final IRpcCallback cb, final int timeout,
-            final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args)
-            throws RpcException, SignatureException;
-
-    OtpErlangObject makeCall(final int timeout, final OtpErlangObject gleader,
-            final String module, final String fun, final String signature,
-            final Object... args0) throws RpcException, SignatureException;
-
-    OtpErlangObject makeCall(final int timeout, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws RpcException, SignatureException;
-
-    void makeCast(final OtpErlangObject gleader, final String module,
-            final String fun, final String signature, final Object... args0)
-            throws SignatureException, RpcException;
-
-    void makeCast(final String module, final String fun,
-            final String signature, final Object... args0)
-            throws SignatureException, RpcException;
-
-    void send(OtpErlangPid pid, Object msg) throws SignatureException,
-            RpcException;
-
-    void send(String fullNodeName, String name, Object msg)
-            throws SignatureException, RpcException;
+    IRpcSite getRpcSite();
 
 }

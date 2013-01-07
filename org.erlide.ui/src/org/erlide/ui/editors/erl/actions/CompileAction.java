@@ -46,7 +46,8 @@ public class CompileAction extends Action {
         if (module == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
 
         final IResource resource = module.getResource();
         final IProject project = resource.getProject();

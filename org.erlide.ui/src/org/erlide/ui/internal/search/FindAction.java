@@ -227,7 +227,8 @@ public abstract class FindAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final ISelection sel = getSelection();
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();

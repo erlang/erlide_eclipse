@@ -117,7 +117,8 @@ public class DialyzerUtils {
             if (monitor.isCanceled()) {
                 try {
                     ErlideSearchServer.cancelSearch(BackendCore
-                            .getBackendManager().getIdeBackend(), dialyzerPid);
+                            .getBackendManager().getIdeBackend().getRpcSite(),
+                            dialyzerPid);
                 } catch (final RpcException e) {
                 }
             }
@@ -152,7 +153,7 @@ public class DialyzerUtils {
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
                 MarkerUtils.removeDialyzerMarkersFor(project);
                 final IRpcSite backend = BackendCore.getBackendManager()
-                        .getBuildBackend(project);
+                        .getBuildBackend(project).getRpcSite();
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();
                 final List<String> names = Lists.newArrayList();

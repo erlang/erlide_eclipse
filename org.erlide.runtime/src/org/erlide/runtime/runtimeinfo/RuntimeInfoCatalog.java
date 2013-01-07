@@ -14,22 +14,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.erlide.runtime.HostnameUtils;
-
 import com.ericsson.otp.erlang.RuntimeVersion;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public final class RuntimeInfoManager {
+public final class RuntimeInfoCatalog {
 
     public RuntimeInfo erlideRuntime;
     public final Map<String, RuntimeInfo> runtimes;
     public String defaultRuntimeName;
 
-    public RuntimeInfoManager() {
+    public RuntimeInfoCatalog() {
         runtimes = Maps.newHashMap();
         erlideRuntime = null;
         defaultRuntimeName = null;
@@ -102,7 +100,6 @@ public final class RuntimeInfoManager {
         final RuntimeInfo old = erlideRuntime;
         if (old == null || !old.equals(runtime)) {
             erlideRuntime = runtime;
-            HostnameUtils.detectHostNames(runtime);
             // this creates infinite recursion!
             // BackendManagerImpl.getDefault().getIdeBackend().stop();
         }
@@ -134,15 +131,17 @@ public final class RuntimeInfoManager {
         }
     }
 
-    public String[][] getAllRuntimesVersions() {
+    public List<String> getAllRuntimesVersions() {
         final Collection<RuntimeInfo> rs = getRuntimes();
-        final String[][] myRuntimes = new String[rs.size()][2];
-        final Iterator<RuntimeInfo> it = rs.iterator();
-        for (int i = 0; i < rs.size(); i++) {
-            myRuntimes[i][0] = it.next().getVersion().asMinor().toString();
-            myRuntimes[i][1] = myRuntimes[i][0];
+        final List<String> myVersions = Lists.newArrayList();
+        for (final RuntimeInfo info : rs) {
+            final String version = info.getVersion().asMinor().toString();
+            if (!myVersions.contains(version)) {
+                myVersions.add(version);
+            }
         }
-        return myRuntimes;
+        Collections.sort(myVersions);
+        return myVersions;
     }
 
     /**

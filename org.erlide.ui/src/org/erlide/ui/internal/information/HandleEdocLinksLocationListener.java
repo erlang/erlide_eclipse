@@ -23,7 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class HandleEdocLinksLocationListener implements LocationListener {
     /**
-     * 
+     *
      */
     private final BrowserInformationControl control;
     private final EdocView edocView;
@@ -67,11 +67,12 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         .getBackendManager();
                 IRpcSite backend = null;
                 try {
-                    backend = backendManager.getBuildBackend(project);
+                    backend = backendManager.getBuildBackend(project)
+                            .getRpcSite();
                 } catch (final BackendException e) {
                 }
                 if (backend == null) {
-                    backend = backendManager.getIdeBackend();
+                    backend = backendManager.getIdeBackend().getRpcSite();
                 }
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();

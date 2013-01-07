@@ -19,6 +19,7 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.ericsson.otp.erlang.OtpMbox;
 
 public class ErlangEventPublisher {
 
@@ -104,7 +105,8 @@ public class ErlangEventPublisher {
             OtpErlangObject msg = null;
             do {
                 try {
-                    msg = myBackend.receiveEvent(200);
+                    final OtpMbox eventBox = myBackend.getEventMbox();
+                    msg = eventBox != null ? eventBox.receive(200) : null;
                     String topic = null;
                     OtpErlangObject data = null;
                     OtpErlangPid sender = null;

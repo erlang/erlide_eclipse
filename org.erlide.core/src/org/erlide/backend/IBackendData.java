@@ -1,7 +1,6 @@
 package org.erlide.backend;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -13,89 +12,90 @@ import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public interface IBackendData {
 
-    public static final String PROJECT_NAME_SEPARATOR = ";";
+    public final static String PROJECT_NAME_SEPARATOR = ";";
 
-    public abstract RuntimeInfo getRuntimeInfo();
+    RuntimeInfo getRuntimeInfo();
 
-    public abstract ILaunch getLaunch();
+    String getCookie();
 
-    public abstract ILaunchConfiguration asLaunchConfiguration();
+    void setCookie(final String cookie);
 
-    public abstract String getCookie();
+    boolean isManaged();
 
-    public abstract void setCookie(final String cookie);
+    void setManaged(final boolean managed);
 
-    public abstract boolean isManaged();
+    boolean isRestartable();
 
-    public abstract void setManaged(final boolean managed);
+    void setRestartable(boolean restartable);
 
-    public abstract boolean isAutostart();
+    boolean useStartShell();
 
-    public abstract void setAutostart(final boolean autostart);
+    void setUseStartShell(final boolean shell);
 
-    public abstract boolean useStartShell();
+    boolean hasConsole();
 
-    public abstract void setUseStartShell(final boolean shell);
+    void setConsole(final boolean console);
 
-    public abstract boolean hasConsole();
+    boolean isDebug();
 
-    public abstract void setConsole(final boolean console);
+    void setDebug(final boolean debug);
 
-    public abstract boolean isDebug();
+    String getRuntimeName();
 
-    public abstract void setDebug(final boolean debug);
+    void setRuntimeName(final String name);
 
-    public abstract Collection<String> getInterpretedModules();
+    String getNodeName();
 
-    public abstract void setInterpretedModules(
-            final Collection<String> interpretedModules);
+    void setNodeName(String nodeName);
 
-    public abstract String getRuntimeName();
+    boolean isLongName();
 
-    public abstract void setRuntimeName(final String name);
+    void setLongName(final boolean longname);
 
-    public abstract String getNodeName();
+    String getExtraArgs();
 
-    public abstract void setNodeName(String nodeName);
+    void setExtraArgs(final String xtra);
 
-    public abstract boolean isLongName();
+    String getWorkingDir();
 
-    public abstract void setLongName(final boolean longname);
+    void setWorkingDir(final String dir);
 
-    public abstract String getExtraArgs();
+    Map<String, String> getEnv();
 
-    public abstract void setExtraArgs(final String xtra);
+    InitialCall getInitialCall();
 
-    public abstract String getWorkingDir();
+    int getDebugFlags();
 
-    public abstract void setWorkingDir(final String dir);
+    boolean isTransient();
 
-    public abstract Map<String, String> getEnv();
+    void setTransient(final boolean value);
 
-    public abstract InitialCall getInitialCall();
+    boolean isInternal();
 
-    public abstract Collection<IProject> getProjects();
+    void setInternal(final boolean value);
 
-    public abstract int getDebugFlags();
+    String[] getCmdLine();
 
-    public abstract boolean isLoadAllNodes();
+    String getQualifiedNodeName();
 
-    public abstract void setLoadAllNodes(final boolean load);
+    //
 
-    public abstract void setAttribute(final String key, final List<String> value);
+    ILaunch getLaunch();
 
-    public abstract void setBeamLocator(final IBeamLocator beamLocator);
+    ILaunchConfiguration asLaunchConfiguration();
 
-    public abstract IBeamLocator getBeamLocator();
+    void setBeamLocator(final IBeamLocator beamLocator);
 
-    public abstract boolean isTransient();
+    IBeamLocator getBeamLocator();
 
-    public abstract void setTransient(final boolean value);
+    Collection<String> getInterpretedModules();
 
-    public abstract boolean isInternal();
+    void setInterpretedModules(final Collection<String> interpretedModules);
 
-    public abstract void setInternal(final boolean value);
+    boolean shouldLoadOnAllNodes();
 
-    public abstract String[] getCmdLine();
+    void setLoadAllNodes(final boolean load);
+
+    Collection<IProject> getProjects();
 
 }

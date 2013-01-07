@@ -89,7 +89,7 @@ public class DialyzerPreferences {
         final String pltFilesString = service
                 .getString(pluginId, key, "", null);
         return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
-                .getIdeBackend(), pltFilesString);
+                .getIdeBackend().getRpcSite(), pltFilesString);
     }
 
     public static String getAlternatePLTFileDirectoryFromPreferences()

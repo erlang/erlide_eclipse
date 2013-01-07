@@ -40,7 +40,7 @@ import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManager;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
@@ -51,11 +51,11 @@ import com.google.common.collect.Lists;
 public final class BackendData extends GenericBackendData implements
         IBackendData {
 
-    private RuntimeInfoManager runtimeInfoManager;
+    private RuntimeInfoCatalog runtimeInfoManager;
     private IBeamLocator beamLocator;
     private boolean fTransient = false;
 
-    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final ILaunchConfiguration config, final String mode) {
         super(config, mode);
         this.runtimeInfoManager = runtimeInfoManager;
@@ -70,7 +70,7 @@ public final class BackendData extends GenericBackendData implements
         setManaged(shouldManageNode(getNodeName()));
     }
 
-    public BackendData(final RuntimeInfoManager runtimeInfoManager,
+    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final RuntimeInfo info) {
         super(null, ILaunchManager.RUN_MODE);
         if (info == null) {
@@ -82,7 +82,6 @@ public final class BackendData extends GenericBackendData implements
         setCookie("erlide");
         setLongName(true);
 
-        setAutostart(true);
         setWorkingDir(getDefaultWorkingDir());
         setExtraArgs(info.getArgs());
 
@@ -206,13 +205,13 @@ public final class BackendData extends GenericBackendData implements
     }
 
     @Override
-    public boolean isAutostart() {
-        return getBooleanAttribute(ErlLaunchAttributes.AUTOSTART, true);
+    public boolean isRestartable() {
+        return getBooleanAttribute(ErlLaunchAttributes.RESTARTABLE, false);
     }
 
     @Override
-    public void setAutostart(final boolean autostart) {
-        config.setAttribute(ErlLaunchAttributes.AUTOSTART, autostart);
+    public void setRestartable(final boolean restartable) {
+        config.setAttribute(ErlLaunchAttributes.RESTARTABLE, restartable);
     }
 
     @Override
@@ -343,7 +342,7 @@ public final class BackendData extends GenericBackendData implements
         String prjs;
         prjs = getStringAttribute(ErlLaunchAttributes.PROJECTS, "");
         final String[] projectNames = prjs.length() == 0 ? new String[] {}
-                : prjs.split(";");
+                : prjs.split(PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
     }
 
@@ -354,18 +353,13 @@ public final class BackendData extends GenericBackendData implements
     }
 
     @Override
-    public boolean isLoadAllNodes() {
+    public boolean shouldLoadOnAllNodes() {
         return getBooleanAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
     }
 
     @Override
     public void setLoadAllNodes(final boolean load) {
         config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, load);
-    }
-
-    @Override
-    public void setAttribute(final String key, final List<String> value) {
-        config.setAttribute(key, value);
     }
 
     @Override
@@ -488,9 +482,19 @@ public final class BackendData extends GenericBackendData implements
             }
         }
 
-        final boolean isRunning = BackendCore.getBackendManager()
-                .getEpmdWatcher().hasLocalNode(shortName);
+        final boolean isRunning = BackendCore.getEpmdWatcher().hasLocalNode(
+                shortName);
         final boolean result = isLocal && !isRunning;
         return result;
     }
+
+    @Override
+    public String getQualifiedNodeName() {
+        final String erlangHostName = HostnameUtils
+                .getErlangHostName(isLongName());
+        final String nodeName = getNodeName();
+        final boolean hasHost = nodeName.contains("@");
+        return hasHost ? nodeName : nodeName + "@" + erlangHostName;
+    }
+
 }

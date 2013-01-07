@@ -1,21 +1,15 @@
 package org.erlide.backend.internal;
 
-import java.io.File;
-
 import org.erlide.runtime.Bindings;
 import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
-import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlangCode {
 
@@ -78,35 +72,6 @@ public final class ErlangCode {
         } catch (final Exception e) {
             ErlLogger.debug(e);
         }
-    }
-
-    public static boolean isAccessible(final IRpcSite backend,
-            final String localDir) {
-        File f = null;
-        try {
-            f = new File(localDir);
-            final OtpErlangObject r = backend.call("file", "read_file_info",
-                    "s", localDir);
-            if (Util.isOk(r)) {
-                final OtpErlangTuple result = (OtpErlangTuple) r;
-                final OtpErlangTuple info = (OtpErlangTuple) result
-                        .elementAt(1);
-                final String access = info.elementAt(3).toString();
-                final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
-                return ("read".equals(access) || "read_write".equals(access))
-                        && (mode & 4) == 4;
-            }
-
-        } catch (final OtpErlangRangeException e) {
-            ErlLogger.error(e);
-        } catch (final RpcException e) {
-            ErlLogger.error(e);
-        } finally {
-            if (f != null) {
-                f.delete();
-            }
-        }
-        return false;
     }
 
     public static boolean isEmbedded(final IRpcSite backend) {

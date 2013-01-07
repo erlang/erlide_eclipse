@@ -35,7 +35,7 @@ public class ErlideDialyze {
         try {
             final int timeout = files.size() * FILE_TIMEOUT
                     + includeDirs.size() * INCLUDE_TIMEOUT + LONG_TIMEOUT;
-            final OtpErlangObject result = backend.call(timeout,
+            final OtpErlangObject result = backend.getRpcSite().call(timeout,
                     "erlide_dialyze", "dialyze", "lslslsoo", files, pltPaths,
                     incs, fromSource, noCheckPLT);
             // ErlLogger.debug("result %s", result.toString());

@@ -616,7 +616,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
         final IErlModule module = erlangEditor.getModule();
         if (module != null) {
             final IRpcSite backend = BackendCore.getBackendManager()
-                    .getIdeBackend();
+                    .getIdeBackend().getRpcSite();
             final ISelection ssel = erlangEditor.getSite()
                     .getSelectionProvider().getSelection();
             final ITextSelection textSel = (ITextSelection) ssel;

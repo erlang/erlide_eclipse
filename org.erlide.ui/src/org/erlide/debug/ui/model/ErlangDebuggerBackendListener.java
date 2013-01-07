@@ -39,12 +39,13 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     public void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName) {
         try {
-            final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend);
+            final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend
+                    .getRpcSite());
             if (erlangDebugTarget != null
                     && erlangDebugTarget.getInterpretedModules().contains(
                             moduleName)) {
-                if (isModuleRunningInInterpreter(erlangDebugTarget, backend,
-                        moduleName)) {
+                if (isModuleRunningInInterpreter(erlangDebugTarget,
+                        backend.getRpcSite(), moduleName)) {
                     abortContinueDialog(erlangDebugTarget);
                 } else {
                     final ILaunchConfiguration launchConfiguration = erlangDebugTarget

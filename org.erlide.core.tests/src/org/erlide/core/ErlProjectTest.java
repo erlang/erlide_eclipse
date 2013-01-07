@@ -189,7 +189,7 @@ public class ErlProjectTest {
         // when
         // looking for lists:reverse/2 and lists:reverse/1
         final IRpcSite backend = BackendCore.getBackendManager()
-                .getIdeBackend();
+                .getIdeBackend().getRpcSite();
         final IErlModel model = ErlModelManager.getErlangModel();
         final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
                 ModelUtils.getImportsAsList(moduleE),

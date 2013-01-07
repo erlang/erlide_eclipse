@@ -31,8 +31,8 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     @Override
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
-        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(ModelUtils
-                .getProject(this).getWorkspaceProject());
+        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
+                ModelUtils.getProject(this).getWorkspaceProject()).getRpcSite();
         if (backend != null) {
             final List<String> libList = ErlideOpen.getLibDirs(backend);
             addExternalEntries(pm, libList, backend);

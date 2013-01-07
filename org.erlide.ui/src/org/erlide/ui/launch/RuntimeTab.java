@@ -63,7 +63,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
      */
     @Override
     public void createControl(final Composite parent) {
-        runtimes = BackendCore.getRuntimeInfoManager().getRuntimes();
+        runtimes = BackendCore.getRuntimeInfoCatalog().getRuntimes();
 
         final Composite comp = new Composite(parent, SWT.NONE);
         setControl(comp);
@@ -79,7 +79,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             rtl.add(r.getName());
         }
         final String[] rts = rtl.toArray(new String[] {});
-        final RuntimeInfo defaultRuntime = BackendCore.getRuntimeInfoManager()
+        final RuntimeInfo defaultRuntime = BackendCore.getRuntimeInfoCatalog()
                 .getDefaultRuntime();
         final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
                 defaultRuntime.getName());

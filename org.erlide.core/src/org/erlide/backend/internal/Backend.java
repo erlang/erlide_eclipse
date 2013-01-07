@@ -12,7 +12,6 @@ package org.erlide.backend.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,14 +57,11 @@ import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.IErlRuntime;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.InitialCall;
-import org.erlide.runtime.rpc.IRpcCallback;
-import org.erlide.runtime.rpc.IRpcFuture;
-import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcHelper;
-import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
@@ -73,32 +69,19 @@ import org.osgi.framework.Bundle;
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.ericsson.otp.erlang.SignatureException;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
 
-    private static final String COULD_NOT_CONNECT_TO_BACKEND = "Could not connect to backend! Please check runtime settings.";
-    private static final int EPMD_PORT = 4369;
-    public static int DEFAULT_TIMEOUT;
-    {
-        setDefaultTimeout();
-    }
-
-    private final RuntimeInfo info;
     private final IErlRuntime runtime;
     private String erlangVersion;
-    private OtpMbox eventBox;
-    private boolean stopped = false;
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
@@ -108,155 +91,11 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public Backend(final IBackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
-        info = data.getRuntimeInfo();
-        if (info == null) {
-            throw new BackendException(
-                    "Can't create backend without runtime information");
-        }
+        Asserts.isNotNull(data.getRuntimeInfo());
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
         codeManager = new CodeManager(this, getRuntimeInfo(), backendManager);
-    }
-
-    @Override
-    public RpcResult call_noexception(final String m, final String f,
-            final String signature, final Object... a) {
-        return call_noexception(DEFAULT_TIMEOUT, m, f, signature, a);
-    }
-
-    @Override
-    public RpcResult call_noexception(final int timeout, final String m,
-            final String f, final String signature, final Object... args) {
-        try {
-            final OtpErlangObject result = runtime.makeCall(timeout, m, f,
-                    signature, args);
-            return new RpcResult(result);
-        } catch (final RpcException e) {
-            return RpcResult.error(e.getMessage());
-        } catch (final SignatureException e) {
-            return RpcResult.error(e.getMessage());
-        }
-    }
-
-    @Override
-    public IRpcFuture async_call(final String m, final String f,
-            final String signature, final Object... args) throws RpcException {
-        try {
-            return runtime.makeAsyncCall(m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public void async_call_cb(final IRpcCallback cb, final String m,
-            final String f, final String signature, final Object... args)
-            throws RpcException {
-        try {
-            runtime.makeAsyncCbCall(cb, DEFAULT_TIMEOUT, m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public void async_call_result(final IRpcResultCallback cb, final String m,
-            final String f, final String signature, final Object... args)
-            throws RpcException {
-        try {
-            runtime.makeAsyncResultCall(cb, m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public void cast(final String m, final String f, final String signature,
-            final Object... args) throws RpcException {
-        try {
-            runtime.makeCast(m, f, signature, args);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public OtpErlangObject call(final String m, final String f,
-            final String signature, final Object... a) throws RpcException {
-        return call(DEFAULT_TIMEOUT, m, f, signature, a);
-    }
-
-    @Override
-    public OtpErlangObject call(final int timeout, final String m,
-            final String f, final String signature, final Object... a)
-            throws RpcException {
-        return call(timeout, new OtpErlangAtom("user"), m, f, signature, a);
-    }
-
-    @Override
-    public OtpErlangObject call(final int timeout,
-            final OtpErlangObject gleader, final String m, final String f,
-            final String signature, final Object... a) throws RpcException {
-        try {
-            return runtime.makeCall(timeout, gleader, m, f, signature, a);
-        } catch (final SignatureException e) {
-            throw new RpcException(e);
-        }
-    }
-
-    @Override
-    public void send(final OtpErlangPid pid, final Object msg) {
-        try {
-            runtime.send(pid, msg);
-        } catch (final SignatureException e) {
-            ErlLogger.warn(e);
-        } catch (final RpcException e) {
-            ErlLogger.warn(e);
-        }
-    }
-
-    @Override
-    public void send(final String name, final Object msg) {
-        try {
-            runtime.send(getFullNodeName(), name, msg);
-        } catch (final SignatureException e) {
-            ErlLogger.warn(e);
-        } catch (final RpcException e) {
-            ErlLogger.warn(e);
-        }
-    }
-
-    @Override
-    public OtpErlangObject receiveEvent(final long timeout)
-            throws OtpErlangExit, OtpErlangDecodeException {
-        if (eventBox == null) {
-            return null;
-        }
-        return eventBox.receive(timeout);
-    }
-
-    @Override
-    public void connect() {
-        final String label = getName();
-        ErlLogger.debug(label + ": waiting connection to peer...");
-        try {
-            wait_for_epmd();
-            eventBox = runtime.createMbox("rex");
-
-            if (waitForCodeServer()) {
-                ErlLogger.debug("connected!");
-            } else {
-                ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-            }
-
-        } catch (final BackendException e) {
-            ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-        } catch (final Exception e) {
-            ErlLogger.error(e);
-            ErlLogger.error(COULD_NOT_CONNECT_TO_BACKEND);
-        }
     }
 
     @Override
@@ -283,22 +122,9 @@ public abstract class Backend implements IStreamListener, IBackend {
         return erlangVersion;
     }
 
-    private OtpMbox getEventBox() {
-        return eventBox;
-    }
-
-    @Override
-    public OtpErlangPid getEventPid() {
-        final OtpMbox theEventBox = getEventBox();
-        if (theEventBox == null) {
-            return null;
-        }
-        return theEventBox.self();
-    }
-
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        return info;
+        return data.getRuntimeInfo();
     }
 
     @Override
@@ -309,14 +135,9 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.getNodeName();
     }
 
-    @Override
-    public String getFullNodeName() {
-        return runtime.getNodeName();
-    }
-
     private String getScriptId() throws RpcException {
         OtpErlangObject r;
-        r = call("init", "script_id", "");
+        r = getRpcSite().call("init", "script_id", "");
         if (r instanceof OtpErlangTuple) {
             final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
             if (rr instanceof OtpErlangString) {
@@ -326,15 +147,21 @@ public abstract class Backend implements IStreamListener, IBackend {
         return "";
     }
 
-    private boolean init(final OtpErlangPid jRex, final boolean watch) {
+    private boolean startErlangApps(final OtpErlangPid jRex, final boolean watch) {
         try {
-            call("erlide_kernel_common", "init", "poii", jRex, watch,
+            getRpcSite().call(
+                    "erlide_kernel_common",
+                    "init",
+                    "poii",
+                    jRex,
+                    watch,
                     SystemConfiguration.getInstance()
-                            .getWarnProcessSizeLimitMB(), SystemConfiguration
-                            .getInstance().getKillProcessSizeLimitMB());
+                            .getWarnProcessSizeLimitMB(),
+                    SystemConfiguration.getInstance()
+                            .getKillProcessSizeLimitMB());
             // TODO should use extension point!
-            call("erlide_kernel_builder", "init", "");
-            call("erlide_kernel_ide", "init", "");
+            getRpcSite().call("erlide_kernel_builder", "init", "");
+            getRpcSite().call("erlide_kernel_ide", "init", "");
             return true;
         } catch (final Exception e) {
             ErlLogger.error(e);
@@ -344,7 +171,12 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean isStopped() {
-        return stopped || !runtime.isAvailable();
+        return runtime.isStopped();
+    }
+
+    @Override
+    public void start() {
+        runtime.start();
     }
 
     @Override
@@ -352,65 +184,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (data.isDebug()) {
             unloadDebuggerCode();
         }
-        stopped = true;
-    }
-
-    private void wait_for_epmd() throws BackendException {
-        wait_for_epmd("localhost");
-    }
-
-    private void wait_for_epmd(final String host) throws BackendException {
-        // If anyone has a better solution for waiting for epmd to be up, please
-        // let me know
-        int tries = 50;
-        boolean ok = false;
-        do {
-            Socket s;
-            try {
-                s = new Socket(host, EPMD_PORT);
-                s.close();
-                ok = true;
-            } catch (final IOException e) {
-            }
-            try {
-                Thread.sleep(100);
-                // ErlLogger.debug("sleep............");
-            } catch (final InterruptedException e1) {
-            }
-            tries--;
-        } while (!ok && tries > 0);
-        if (!ok) {
-            final String msg = "Couldn't contact epmd - erlang backend is probably not working\n"
-                    + "  Possibly your host's entry in /etc/hosts is wrong.";
-            ErlLogger.error(msg);
-            throw new BackendException(msg);
-        }
-    }
-
-    private boolean waitForCodeServer() {
-        try {
-            OtpErlangObject r;
-            int i = 10;
-            do {
-                r = call("erlang", "whereis", "a", "code_server");
-                try {
-                    Thread.sleep(200);
-                } catch (final InterruptedException e) {
-                }
-                i--;
-            } while (!(r instanceof OtpErlangPid) && i > 0);
-            if (!(r instanceof OtpErlangPid)) {
-                ErlLogger.error("code server did not start in time for %s",
-                        getRuntimeInfo().getName());
-                return false;
-            }
-            ErlLogger.debug("code server started");
-            return true;
-        } catch (final Exception e) {
-            ErlLogger.error("error starting code server for %s: %s",
-                    getRuntimeInfo().getName(), e.getMessage());
-            return false;
-        }
+        runtime.stop();
     }
 
     @Override
@@ -423,19 +197,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         return runtime.createMbox(name);
     }
 
-    private static void setDefaultTimeout() {
-        final String t = System.getProperty("erlide.rpc.timeout", "9000");
-        if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
-        } else {
-            try {
-                DEFAULT_TIMEOUT = Integer.parseInt(t);
-            } catch (final Exception e) {
-                DEFAULT_TIMEOUT = 9000;
-            }
-        }
-    }
-
     public void removePath(final String path) {
         codeManager.removePath(path);
     }
@@ -446,7 +207,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     public synchronized void initErlang(final boolean watch) {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
-        init(getEventPid(), watch);
+        startErlangApps(getEventPid(), watch);
 
         eventDaemon = new ErlangEventPublisher(this);
         eventDaemon.start();
@@ -549,8 +310,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: add path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = ErlideUtil
-                        .isAccessible(this, outDir);
+                final boolean accessible = ErlideUtil.isAccessibleDir(
+                        getRpcSite(), outDir);
                 if (accessible) {
                     addPath(false/* prefs.getUsePathZ() */, outDir);
                 } else {
@@ -572,8 +333,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (outDir.length() > 0) {
             ErlLogger.debug("backend %s: remove path %s", getName(), outDir);
             if (isDistributed()) {
-                final boolean accessible = ErlideUtil
-                        .isAccessible(this, outDir);
+                final boolean accessible = ErlideUtil.isAccessibleDir(
+                        getRpcSite(), outDir);
                 if (accessible) {
                     removePath(outDir);
                 } else {
@@ -596,7 +357,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                         final OtpErlangBinary bin = BeamUtil.getBeamBinary(m,
                                 path);
                         if (bin != null) {
-                            ok = BeamLoader.loadBeam(this, m, bin);
+                            ok = BeamLoader.loadBeam(getRpcSite(), m, bin);
                         }
                         if (!ok) {
                             ErlLogger.error("Could not load %s", m);
@@ -615,8 +376,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean doLoadOnAllNodes() {
-        return getData().isLoadAllNodes();
+    public boolean shouldLoadOnAllNodes() {
+        return data.shouldLoadOnAllNodes();
     }
 
     @Override
@@ -685,9 +446,9 @@ public abstract class Backend implements IStreamListener, IBackend {
                 ErlLogger.debug("calling startup function %s:%s", module,
                         function);
                 if (args.length() > 0) {
-                    cast(module, function, "s", args);
+                    getRpcSite().cast(module, function, "s", args);
                 } else {
-                    cast(module, function, "");
+                    getRpcSite().cast(module, function, "");
                 }
             }
         } catch (final Exception e) {
@@ -709,7 +470,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private void addNodesAsDebugTargets(final ILaunch aLaunch,
             final ErlangDebugTarget target) {
-        final OtpErlangList nodes = ErlideDebug.nodes(this);
+        final OtpErlangList nodes = ErlideDebug.nodes(getRpcSite());
         if (nodes != null) {
             for (int i = 1, n = nodes.arity(); i < n; ++i) {
                 final OtpErlangAtom o = (OtpErlangAtom) nodes.elementAt(i);
@@ -738,12 +499,12 @@ public abstract class Backend implements IStreamListener, IBackend {
                 ErlLogger.warn("Could not find debugger module %s", module);
             }
         }
-        ErlideDebug.distributeDebuggerCode(this, modules);
+        ErlideDebug.distributeDebuggerCode(getRpcSite(), modules);
     }
 
     private void unloadDebuggerCode() {
         final List<String> debuggerModules = getDebuggerModules();
-        ErlideDebug.unloadDebuggerCode(this, debuggerModules);
+        ErlideDebug.unloadDebuggerCode(getRpcSite(), debuggerModules);
     }
 
     private List<String> getDebuggerModules() {
@@ -800,7 +561,7 @@ public abstract class Backend implements IStreamListener, IBackend {
                     final String s = (String) e.nextElement();
                     final Path path = new Path(s);
                     if (path.lastSegment().equals(beamname)) {
-                        return getBeamFromBundlePath(bundle, beamname, s, path);
+                        return getBeamFromBundlePath(bundle, s, path);
                     }
                 }
             }
@@ -809,10 +570,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     private OtpErlangBinary getBeamFromBundlePath(final Bundle bundle,
-            final String beamname, final String s, final Path path) {
-        if (!path.lastSegment().equals(beamname)) {
-            return null; // Shouln't happen
-        }
+            final String s, final Path path) {
         final String m = path.removeFileExtension().lastSegment();
         try {
             return BeamUtil.getBeamBinary(m, bundle.getEntry(s));
@@ -866,8 +624,8 @@ public abstract class Backend implements IStreamListener, IBackend {
                 if (beam.exists()) {
                     final String de = interpret ? "" : "de";
                     ErlLogger.debug(de + "interpret " + beam.getLocation());
-                    boolean b = ErlideDebug.interpret(this, beam.getLocation()
-                            .toString(), distributed, interpret);
+                    boolean b = ErlideDebug.interpret(getRpcSite(), beam
+                            .getLocation().toString(), distributed, interpret);
                     b = !b;
                 } else {
                     ErlLogger.debug("IGNORED MISSING interpret "
@@ -884,4 +642,35 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
+    // /////
+
+    @Override
+    public boolean isAvailable() {
+        return runtime.isAvailable();
+    }
+
+    @Override
+    public String getNodeName() {
+        return runtime.getNodeName();
+    }
+
+    @Override
+    public OtpErlangPid getEventPid() {
+        return runtime.getEventPid();
+    }
+
+    @Override
+    public void connect() {
+        runtime.connect();
+    }
+
+    @Override
+    public OtpMbox getEventMbox() {
+        return runtime.getEventMbox();
+    }
+
+    @Override
+    public IRpcSite getRpcSite() {
+        return runtime.getRpcSite();
+    }
 }

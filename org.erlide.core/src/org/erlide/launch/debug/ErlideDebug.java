@@ -155,8 +155,8 @@ public class ErlideDebug {
         try {
             final String a = action == ErlDebugConstants.REQUEST_INSTALL ? "add"
                     : "delete";
-            backend.call("erlide_debug", "line_breakpoint", "sia", module,
-                    line, a);
+            backend.getRpcSite().call("erlide_debug", "line_breakpoint", "sia",
+                    module, line, a);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -169,7 +169,8 @@ public class ErlideDebug {
     public static void sendStarted(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            backend.call("erlide_debug", "send_started", "x", meta);
+            backend.getRpcSite()
+                    .call("erlide_debug", "send_started", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -181,7 +182,7 @@ public class ErlideDebug {
 
     public static void resume(final IBackend backend, final OtpErlangPid meta) {
         try {
-            backend.call("erlide_debug", "resume", "x", meta);
+            backend.getRpcSite().call("erlide_debug", "resume", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -193,7 +194,7 @@ public class ErlideDebug {
 
     public static void suspend(final IBackend backend, final OtpErlangPid meta) {
         try {
-            backend.call("erlide_debug", "suspend", "x", meta);
+            backend.getRpcSite().call("erlide_debug", "suspend", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -206,8 +207,8 @@ public class ErlideDebug {
     public static OtpErlangList getBindings(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            final OtpErlangObject res = backend.call("erlide_debug",
-                    "bindings", "x", meta);
+            final OtpErlangObject res = backend.getRpcSite().call(
+                    "erlide_debug", "bindings", "x", meta);
             return (OtpErlangList) res;
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
@@ -221,7 +222,7 @@ public class ErlideDebug {
 
     public static void stepOver(final IBackend backend, final OtpErlangPid meta) {
         try {
-            backend.call("erlide_debug", "step_over", "x", meta);
+            backend.getRpcSite().call("erlide_debug", "step_over", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -234,7 +235,7 @@ public class ErlideDebug {
     public static void stepReturn(final IBackend backend,
             final OtpErlangPid meta) {
         try {
-            backend.call("erlide_debug", "step_return", "x", meta);
+            backend.getRpcSite().call("erlide_debug", "step_return", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -246,7 +247,7 @@ public class ErlideDebug {
 
     public static void stepInto(final IBackend backend, final OtpErlangPid meta) {
         try {
-            backend.call("erlide_debug", "step_into", "x", meta);
+            backend.getRpcSite().call("erlide_debug", "step_into", "x", meta);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);

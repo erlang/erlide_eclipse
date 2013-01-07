@@ -48,7 +48,8 @@ public class IndentAction extends ErlangTextEditorAction {
         final Map<String, String> prefs = new TreeMap<String, String>();
         IndentationPreferencePage.addKeysAndPrefs(prefs);
         SmartTypingPreferencePage.addAutoNLKeysAndPrefs(prefs);
-        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final boolean useTabs = AutoIndentStrategy.getUseTabsFromPreferences();
         if (template) {
             final OtpErlangObject r1 = ErlideIndent.templateIndentLines(b,
