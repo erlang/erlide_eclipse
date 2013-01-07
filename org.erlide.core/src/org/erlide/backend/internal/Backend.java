@@ -58,6 +58,7 @@ import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IRuntimeData;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -675,5 +676,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public IRpcSite getRpcSite() {
         return runtime.getRpcSite();
+    }
+
+    @Override
+    public IRuntimeData getRuntimeData() {
+        return data;
     }
 }

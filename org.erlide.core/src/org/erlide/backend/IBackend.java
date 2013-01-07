@@ -8,7 +8,6 @@ import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.runtime.IErlRuntime;
-import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;
 
@@ -17,8 +16,6 @@ public interface IBackend extends IDisposable, IErlRuntime {
     void initialize();
 
     IBackendData getData();
-
-    RuntimeInfo getRuntimeInfo();
 
     String getName();
 

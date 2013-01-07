@@ -21,12 +21,14 @@ import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IRuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
@@ -72,6 +74,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
+    private final IRuntimeData data;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -86,6 +89,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         this.longName = longName;
         this.connectOnce = connectOnce;
         this.stopped = false;
+        this.data = new RuntimeData();
 
         statusWatcher = new OtpNodeStatus() {
             @Override
@@ -564,5 +568,15 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public IRpcSite getRpcSite() {
         return this;
+    }
+
+    @Override
+    public IRuntimeData getRuntimeData() {
+        return data;
+    }
+
+    @Override
+    public RuntimeInfo getRuntimeInfo() {
+        return data.getRuntimeInfo();
     }
 }
