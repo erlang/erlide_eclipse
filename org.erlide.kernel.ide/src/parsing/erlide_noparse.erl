@@ -90,8 +90,8 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
             _D = erlide_scanner_server:initialScan(
                    ScannerName, ModulePath, InitialText, StateDir, true, off),
             ?D(_D),
-	    {_Model, Refs} = initial_parse(ScannerName, ModulePath, StateDir, 
-					  true, UpdateSearchServer),
+	    {ok, _Model, Refs} = initial_parse(ScannerName, ModulePath, StateDir, 
+                                               true, UpdateSearchServer),
 	    Refs
     end.
 
