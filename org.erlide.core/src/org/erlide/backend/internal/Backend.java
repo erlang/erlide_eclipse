@@ -162,6 +162,9 @@ public abstract class Backend implements IStreamListener, IBackend {
             // TODO should use extension point!
             getRpcSite().call("erlide_kernel_builder", "init", "");
             getRpcSite().call("erlide_kernel_ide", "init", "");
+
+            // TODO start tracing when configured to do so!
+            // getRpcSite().call("erlide_tracer", "start", "");
             return true;
         } catch (final Exception e) {
             ErlLogger.error(e);
