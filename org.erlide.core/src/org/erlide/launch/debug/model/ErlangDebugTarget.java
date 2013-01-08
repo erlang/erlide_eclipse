@@ -13,6 +13,7 @@ package org.erlide.launch.debug.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.erlide.launch.debug.DebuggerEventDaemon;
 import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -75,8 +77,8 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     // private final WaitingForDebuggerListener waiter;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-            final Collection<IProject> projects, final int debugFlags)
-            throws DebugException {
+            final Collection<IProject> projects,
+            final EnumSet<ErlDebugFlags> debugFlags) throws DebugException {
         super(null);
         fBackend = b;
         fNodeName = b.getNodeName();
@@ -92,7 +94,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         ErlLogger.debug("debug daemon " + debuggerDaemon.getMBox());
 
         final OtpErlangPid pid = ErlideDebug.startDebug(b.getRpcSite(),
-                debugFlags);
+                ErlDebugFlags.getFlag(debugFlags));
         ErlLogger.debug("debug started " + pid);
         fBackend.getRpcSite().send(pid,
                 OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));

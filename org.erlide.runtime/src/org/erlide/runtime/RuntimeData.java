@@ -3,6 +3,7 @@ package org.erlide.runtime;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -33,7 +34,7 @@ public class RuntimeData {
     protected String workingDir;
     protected Map<String, String> env;
     protected InitialCall initialCall;
-    protected int debugFlags;
+    protected EnumSet<ErlDebugFlags> debugFlags;
     protected boolean loadOnAllNodes;
     protected boolean internal;
     protected RuntimeInfo runtimeInfo;
@@ -54,7 +55,7 @@ public class RuntimeData {
         workingDir = ".";
         env = Maps.newHashMap();
         initialCall = null;
-        debugFlags = 0;// ErlDebugConstants.DEFAULT_DEBUG_FLAGS;
+        debugFlags = ErlDebugFlags.DEFAULT_DEBUG_FLAGS;
         loadOnAllNodes = false;
         internal = false;
         interpretedModules = Lists.newArrayList();
@@ -203,7 +204,7 @@ public class RuntimeData {
         return runtimeInfo;
     }
 
-    public int getDebugFlags() {
+    public EnumSet<ErlDebugFlags> getDebugFlags() {
         return debugFlags;
     }
 

@@ -32,6 +32,7 @@ import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
@@ -84,8 +85,9 @@ public final class BackendData extends RuntimeData {
             env = config.getAttribute(
                     ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, env);
             initialCall = createInitialCall(config);
-            debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                    debugFlags);
+            debugFlags = ErlDebugFlags.makeSet(config.getAttribute(
+                    ErlLaunchAttributes.DEBUG_FLAGS,
+                    ErlDebugFlags.getFlag(debugFlags)));
             loadOnAllNodes = config.getAttribute(
                     ErlLaunchAttributes.LOAD_ALL_NODES, loadOnAllNodes);
             internal = config.getAttribute(ErlLaunchAttributes.INTERNAL,

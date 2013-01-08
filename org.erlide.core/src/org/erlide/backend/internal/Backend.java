@@ -51,11 +51,11 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.runtime.BeamLoader;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.InitialCall;
@@ -403,7 +403,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             // debugTarget.getWaiter().doWait();
             getLaunch().addDebugTarget(debugTarget);
             // interpret everything we can
-            final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+            final boolean distributed = (data.getDebugFlags()
+                    .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
             if (distributed) {
                 distributeDebuggerCode();
                 addNodesAsDebugTargets(getLaunch(), debugTarget);

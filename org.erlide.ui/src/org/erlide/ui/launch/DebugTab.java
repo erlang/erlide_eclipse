@@ -12,6 +12,7 @@
 package org.erlide.ui.launch;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -47,7 +48,7 @@ import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
-import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.ui.dialogs.AddInterpretedModulesSelectionDialog;
 import org.erlide.ui.util.SWTUtil;
 
@@ -239,7 +240,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
         config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
                 new ArrayList<String>());
         config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+                ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS));
     }
 
     @Override
@@ -252,12 +253,14 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
                 .addBreakpointProjectsAndModules(null, new ArrayList<String>());
         contentProvider.addModules(interpret);
 
-        int debugFlags;
+        EnumSet<ErlDebugFlags> debugFlags;
         try {
-            debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                    ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
+            final int attribute = config.getAttribute(
+                    ErlLaunchAttributes.DEBUG_FLAGS,
+                    ErlDebugFlags.getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS));
+            debugFlags = ErlDebugFlags.makeSet(attribute);
         } catch (final CoreException e) {
-            debugFlags = ErlDebugConstants.DEFAULT_DEBUG_FLAGS;
+            debugFlags = ErlDebugFlags.DEFAULT_DEBUG_FLAGS;
         }
         setFlagCheckboxes(debugFlags);
     }
@@ -265,7 +268,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
     @Override
     public void performApply(final ILaunchConfigurationWorkingCopy config) {
         config.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                getFlagCheckboxes());
+                ErlDebugFlags.getFlag(getFlagCheckboxes()));
         final List<String> r = new ArrayList<String>();
         for (final Object o : contentProvider.getElements(null)) {
             final IErlModule module = (IErlModule) o;
@@ -291,19 +294,19 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      * @param debugFlags
      *            flags
      */
-    private void setFlagCheckboxes(final int debugFlags) {
+    private void setFlagCheckboxes(final EnumSet<ErlDebugFlags> debugFlags) {
         if (attachOnFirstCallCheck == null) {
             // I don't know why these are null sometimes...
             return;
         }
-        int flag = debugFlags & ErlDebugConstants.ATTACH_ON_FIRST_CALL;
-        attachOnFirstCallCheck.setSelection(flag != 0);
-        flag = debugFlags & ErlDebugConstants.ATTACH_ON_BREAKPOINT;
-        attachOnBreakpointCheck.setSelection(flag != 0);
-        flag = debugFlags & ErlDebugConstants.ATTACH_ON_EXIT;
-        attachOnExitCheck.setSelection(flag != 0);
-        flag = debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG;
-        distributedDebugCheck.setSelection(flag != 0);
+        attachOnFirstCallCheck.setSelection(debugFlags
+                .contains(ErlDebugFlags.ATTACH_ON_FIRST_CALL));
+        attachOnBreakpointCheck.setSelection(debugFlags
+                .contains(ErlDebugFlags.ATTACH_ON_BREAKPOINT));
+        attachOnExitCheck.setSelection(debugFlags
+                .contains(ErlDebugFlags.ATTACH_ON_EXIT));
+        distributedDebugCheck.setSelection(debugFlags
+                .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
     }
 
     /**
@@ -311,19 +314,20 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
      * 
      * @return flags as int
      */
-    private int getFlagCheckboxes() {
-        int result = 0;
+    private EnumSet<ErlDebugFlags> getFlagCheckboxes() {
+        final EnumSet<ErlDebugFlags> result = EnumSet
+                .noneOf(ErlDebugFlags.class);
         if (attachOnFirstCallCheck.getSelection()) {
-            result |= ErlDebugConstants.ATTACH_ON_FIRST_CALL;
+            result.add(ErlDebugFlags.ATTACH_ON_FIRST_CALL);
         }
         if (attachOnBreakpointCheck.getSelection()) {
-            result |= ErlDebugConstants.ATTACH_ON_BREAKPOINT;
+            result.add(ErlDebugFlags.ATTACH_ON_BREAKPOINT);
         }
         if (attachOnExitCheck.getSelection()) {
-            result |= ErlDebugConstants.ATTACH_ON_EXIT;
+            result.add(ErlDebugFlags.ATTACH_ON_EXIT);
         }
         if (distributedDebugCheck.getSelection()) {
-            result |= ErlDebugConstants.DISTRIBUTED_DEBUG;
+            result.add(ErlDebugFlags.DISTRIBUTED_DEBUG);
         }
         return result;
     }
