@@ -128,7 +128,7 @@ public class BackendFactory implements IBackendFactory {
 
     private IBackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
-        final IBackendData result = new BackendData(runtimeInfoManager, info);
+        final BackendData result = new BackendData(runtimeInfoManager, info);
         result.setNodeName(getIdeNodeName());
         result.setDebug(false);
         result.setConsole(false);
@@ -138,6 +138,7 @@ public class BackendFactory implements IBackendFactory {
             result.setConsole(true);
         }
         result.setInternal(true);
+        result.debugPrint();
         return result;
     }
 

@@ -1,6 +1,7 @@
 package org.erlide.backend;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
@@ -12,8 +13,6 @@ public interface IBackendData extends IRuntimeData {
 
     public final static String PROJECT_NAME_SEPARATOR = ";";
 
-    //
-
     ILaunch getLaunch();
 
     ILaunchConfiguration asLaunchConfiguration();
@@ -22,9 +21,9 @@ public interface IBackendData extends IRuntimeData {
 
     IBeamLocator getBeamLocator();
 
-    Collection<String> getInterpretedModules();
+    List<String> getInterpretedModules();
 
-    void setInterpretedModules(final Collection<String> interpretedModules);
+    void setInterpretedModules(final List<String> interpretedModules);
 
     boolean shouldLoadOnAllNodes();
 
