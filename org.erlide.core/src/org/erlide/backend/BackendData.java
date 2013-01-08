@@ -33,6 +33,7 @@ import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.runtime.HostnameUtils;
+import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
@@ -104,7 +105,7 @@ public final class BackendData extends RuntimeData {
                 workingDir);
         env = config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
                 env);
-        // FIXME initialCall = getInitialCall(config);
+        initialCall = createInitialCall(config);
         debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
                 debugFlags);
         loadOnAllNodes = config.getAttribute(
@@ -122,7 +123,7 @@ public final class BackendData extends RuntimeData {
 
     public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final RuntimeInfo info) {
-        super(runtimeInfoManager, info, getDefaultWorkingDir());
+        super(info, "run", getDefaultWorkingDir());
         projects = Lists.newArrayList();
     }
 
@@ -260,6 +261,17 @@ public final class BackendData extends RuntimeData {
         final String name = getNodeName();
         final boolean hasHost = name.contains("@");
         return hasHost ? name : name + "@" + erlangHostName;
+    }
+
+    private InitialCall createInitialCall(final ILaunchConfiguration config)
+            throws CoreException {
+        final String module = config.getAttribute(ErlLaunchAttributes.MODULE,
+                "");
+        final String function = config.getAttribute(
+                ErlLaunchAttributes.FUNCTION, "");
+        final String args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS,
+                "");
+        return new InitialCall(module, function, args);
     }
 
 }

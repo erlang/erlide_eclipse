@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
@@ -68,9 +67,9 @@ public class RuntimeData {
         debug = mode.equals("debug");
     }
 
-    public RuntimeData(final RuntimeInfoCatalog runtimeInfoManager,
-            final RuntimeInfo info, final String defaultWorkingDir) {
-        this();
+    public RuntimeData(final RuntimeInfo info, final String mode,
+            final String defaultWorkingDir) {
+        this(info, mode);
         Asserts.isNotNull(info, "Can't create backend with no runtime info");
 
         runtimeInfo = info;
@@ -193,17 +192,6 @@ public class RuntimeData {
     public Map<String, String> getEnv() {
         return env;
     }
-
-    // protected InitialCall getInitialCall(final ILaunchConfiguration config)
-    // throws CoreException {
-    // final String module = config.getAttribute(ErlLaunchAttributes.MODULE,
-    // "");
-    // final String function = config.getAttribute(
-    // ErlLaunchAttributes.FUNCTION, "");
-    // final String args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS,
-    // "");
-    // return new InitialCall(module, function, args);
-    // }
 
     @Nullable
     public InitialCall getInitialCall() {
