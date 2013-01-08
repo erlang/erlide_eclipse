@@ -36,7 +36,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendData;
+import org.erlide.backend.BackendData;
 import org.erlide.core.model.BeamLocator;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.debug.ErlDebugConstants;
@@ -123,7 +123,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         return data;
     }
 
-    private void startErtsProcess(final ILaunch launch, final IBackendData data) {
+    private void startErtsProcess(final ILaunch launch, final BackendData data) {
         final Process process = startRuntimeProcess(data);
         if (process == null) {
             ErlLogger.debug("Error starting process");
@@ -153,7 +153,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         launch(wc, mode, launch, monitor);
     }
 
-    private Process startRuntimeProcess(final IBackendData data) {
+    private Process startRuntimeProcess(final BackendData data) {
         final String[] cmds = data.getCmdLine();
         final File workingDirectory = new File(data.getWorkingDir());
 
@@ -188,7 +188,7 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
         }
     }
 
-    private void setEnvironment(final IBackendData data,
+    private void setEnvironment(final BackendData data,
             final ProcessBuilder builder) {
         final Map<String, String> env = builder.environment();
         if (!SystemConfiguration.getInstance().isOnWindows()

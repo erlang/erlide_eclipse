@@ -27,13 +27,13 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.backend.internal.RuntimeData;
 import org.erlide.core.model.IBeamLocator;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.runtime.HostnameUtils;
+import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.Asserts;
@@ -42,7 +42,9 @@ import org.erlide.utils.ErlLogger;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 
-public final class BackendData extends RuntimeData implements IBackendData {
+public final class BackendData extends RuntimeData {
+
+    public static final String PROJECT_NAME_SEPARATOR = ";";
 
     private IBeamLocator beamLocator;
     protected ILaunch launch;
@@ -55,7 +57,7 @@ public final class BackendData extends RuntimeData implements IBackendData {
 
     public BackendData(final RuntimeInfo runtime,
             final ILaunchConfiguration config, final String mode) {
-        super(runtime, config, mode);
+        super(runtime, mode);
 
         Asserts.isNotNull(config);
         try {
@@ -102,7 +104,7 @@ public final class BackendData extends RuntimeData implements IBackendData {
                 workingDir);
         env = config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
                 env);
-        initialCall = getInitialCall(config);
+        // FIXME initialCall = getInitialCall(config);
         debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
                 debugFlags);
         loadOnAllNodes = config.getAttribute(
@@ -167,7 +169,6 @@ public final class BackendData extends RuntimeData implements IBackendData {
         return result;
     }
 
-    @Override
     public ILaunch getLaunch() {
         return launch;
     }
@@ -176,7 +177,6 @@ public final class BackendData extends RuntimeData implements IBackendData {
         this.launch = launch;
     }
 
-    @Override
     public ILaunchConfiguration asLaunchConfiguration() {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -211,7 +211,6 @@ public final class BackendData extends RuntimeData implements IBackendData {
         }
     }
 
-    @Override
     public Collection<IProject> getProjects() {
         return projects;
     }
@@ -225,12 +224,10 @@ public final class BackendData extends RuntimeData implements IBackendData {
         return gatherProjects(projectNames);
     }
 
-    @Override
     public void setBeamLocator(final IBeamLocator beamLocator) {
         this.beamLocator = beamLocator;
     }
 
-    @Override
     public IBeamLocator getBeamLocator() {
         return beamLocator;
     }

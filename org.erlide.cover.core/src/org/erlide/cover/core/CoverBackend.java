@@ -7,7 +7,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendData;
+import org.erlide.backend.BackendData;
 import org.erlide.cover.api.AbstractCoverRunner;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.ICoverBackend;
@@ -212,7 +212,7 @@ public class CoverBackend implements ICoverBackend {
 
 		if (info != null) {
 			try {
-				final IBackendData data = getBackendData(info);
+				final BackendData data = getBackendData(info);
 				data.setNodeName(NODE_NAME);
 				data.setUseStartShell(true);
 				final IBackend b = BackendCore.getBackendManager()
@@ -227,8 +227,8 @@ public class CoverBackend implements ICoverBackend {
 		throw new BackendException();
 	}
 
-	private IBackendData getBackendData(final RuntimeInfo rinfo) {
-		final IBackendData backendData = new BackendData(
+	private BackendData getBackendData(final RuntimeInfo rinfo) {
+		final BackendData backendData = new BackendData(
 				BackendCore.getRuntimeInfoCatalog(), rinfo);
 		backendData.setConsole(true);
 		backendData.setLongName(false);

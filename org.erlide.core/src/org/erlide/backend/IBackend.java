@@ -15,7 +15,7 @@ public interface IBackend extends IDisposable, IErlRuntime {
 
     void initialize();
 
-    IBackendData getData();
+    BackendData getData();
 
     String getName();
 

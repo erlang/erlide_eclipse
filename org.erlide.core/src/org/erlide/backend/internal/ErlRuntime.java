@@ -21,7 +21,7 @@ import org.erlide.core.MessageReporter.ReporterPosition;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
-import org.erlide.runtime.IRuntimeData;
+import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcResultCallback;
@@ -74,7 +74,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
-    private final IRuntimeData data;
+    private final RuntimeData data;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -571,7 +571,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public IRuntimeData getRuntimeData() {
+    public RuntimeData getRuntimeData() {
         return data;
     }
 

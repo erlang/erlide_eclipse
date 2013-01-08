@@ -17,7 +17,7 @@ import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IErlRuntime {
 
-    IRuntimeData getRuntimeData();
+    RuntimeData getRuntimeData();
 
     RuntimeInfo getRuntimeInfo();
 

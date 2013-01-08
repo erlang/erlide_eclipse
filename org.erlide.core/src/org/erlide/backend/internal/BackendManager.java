@@ -30,7 +30,7 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendData;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendListener;
 import org.erlide.backend.IBackendManager;
@@ -125,7 +125,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IBackend createExecutionBackend(final IBackendData data) {
+    public IBackend createExecutionBackend(final BackendData data) {
         ErlLogger.debug("create execution backend " + data.getNodeName());
         final IBackend b = factory.createBackend(data);
         addBackend(b);
