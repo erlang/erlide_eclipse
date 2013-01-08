@@ -25,10 +25,6 @@ public interface IBackendData extends IRuntimeData {
 
     void setInterpretedModules(final List<String> interpretedModules);
 
-    boolean shouldLoadOnAllNodes();
-
-    void setLoadAllNodes(final boolean load);
-
     Collection<IProject> getProjects();
 
 }

@@ -623,7 +623,7 @@ public class TraceBackend {
                 .getString(PreferenceNames.NODE_NAME);
         backendData.setNodeName(nodeName);
         backendData.setConsole(false);
-        backendData.setTransient(true);
+        backendData.setReportErrors(true);
         return backendData;
     }
 

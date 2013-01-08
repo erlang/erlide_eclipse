@@ -1,5 +1,6 @@
 package org.erlide.runtime;
 
+import java.util.List;
 import java.util.Map;
 
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
@@ -57,9 +58,9 @@ public interface IRuntimeData {
 
     int getDebugFlags();
 
-    boolean isTransient();
+    boolean isReportErrors();
 
-    void setTransient(final boolean value);
+    void setReportErrors(final boolean value);
 
     boolean isInternal();
 
@@ -68,5 +69,13 @@ public interface IRuntimeData {
     String[] getCmdLine();
 
     String getQualifiedNodeName();
+
+    boolean shouldLoadOnAllNodes();
+
+    void setLoadAllNodes(final boolean load);
+
+    List<String> getInterpretedModules();
+
+    void setInterpretedModules(List<String> interpretedModules);
 
 }

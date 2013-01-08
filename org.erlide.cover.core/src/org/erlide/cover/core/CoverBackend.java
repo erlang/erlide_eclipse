@@ -232,7 +232,7 @@ public class CoverBackend implements ICoverBackend {
 				BackendCore.getRuntimeInfoCatalog(), rinfo);
 		backendData.setConsole(true);
 		backendData.setLongName(false);
-		backendData.setTransient(true);
+		backendData.setReportErrors(true);
 		return backendData;
 	}
 
