@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
@@ -165,7 +166,7 @@ public class RuntimeData {
                 && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
     }
 
-    public boolean isLongName() {
+    public boolean hasLongName() {
         return longName;
     }
 
@@ -254,11 +255,11 @@ public class RuntimeData {
         }
 
         if (!getNodeName().equals("")) {
-            final String nameTag = isLongName() ? "-name" : "-sname";
+            final String nameTag = hasLongName() ? "-name" : "-sname";
             String nameOption = getNodeName();
             if (!nameOption.contains("@")) {
                 nameOption += "@"
-                        + HostnameUtils.getErlangHostName(isLongName());
+                        + HostnameUtils.getErlangHostName(hasLongName());
             }
             result.add(nameTag);
             result.add(nameOption);
@@ -298,7 +299,7 @@ public class RuntimeData {
 
     public String getQualifiedNodeName() {
         final String erlangHostName = HostnameUtils
-                .getErlangHostName(isLongName());
+                .getErlangHostName(hasLongName());
         final String name = getNodeName();
         final boolean hasHost = name.contains("@");
         return hasHost ? name : name + "@" + erlangHostName;
@@ -347,4 +348,30 @@ public class RuntimeData {
 
         return result;
     }
+
+    public static boolean shouldManageNode(final String name,
+            final EpmdWatcher epmdWatcher) {
+        final int atSignIndex = name.indexOf('@');
+        String shortName = name;
+        if (atSignIndex > 0) {
+            shortName = name.substring(0, atSignIndex);
+        }
+
+        boolean isLocal = atSignIndex < 0;
+        if (atSignIndex > 0) {
+            final String hostname = name.substring(atSignIndex + 1);
+            if (HostnameUtils.isThisHost(hostname)) {
+                isLocal = true;
+            }
+        }
+
+        final boolean isRunning = epmdWatcher.hasLocalNode(shortName);
+        final boolean result = isLocal && !isRunning;
+        return result;
+    }
+
+    public boolean getReportErrors() {
+        return reportErrors;
+    }
+
 }

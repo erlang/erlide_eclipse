@@ -98,7 +98,7 @@ public class BackendFactory implements IBackendFactory {
             };
             final IErlRuntime runtime = new ErlRuntime(nodeName,
                     data.getCookie(), erlProcessProvider,
-                    !data.isReportErrors(), data.isLongName(),
+                    !data.isReportErrors(), data.hasLongName(),
                     data.isInternal());
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();

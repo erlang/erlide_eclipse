@@ -60,47 +60,44 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         CONNECTED, DISCONNECTED, DOWN
     }
 
-    private final String peerName;
     private State state;
+    private final RuntimeData data;
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
-    private final String cookie;
     private boolean reported;
     private final IProcess process;
-    private final boolean reportWhenDown;
-    private final boolean longName;
     private final boolean connectOnce;
     private final IProvider<IProcess> processProvider;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
-    private final RuntimeData data;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
             final boolean reportWhenDown, final boolean longName,
             final boolean connectOnce) {
         state = State.DISCONNECTED;
-        peerName = name;
-        this.cookie = cookie;
         this.processProvider = processProvider;
         process = processProvider.get();
-        this.reportWhenDown = reportWhenDown;
-        this.longName = longName;
         this.connectOnce = connectOnce;
         stopped = false;
         data = new RuntimeData();
+        data.setLongName(longName);
+        data.setCookie(cookie);
+        data.setNodeName(name);
+        data.setReportErrors(reportWhenDown);
 
         statusWatcher = new OtpNodeStatus() {
             @Override
             public void remoteStatus(final String node, final boolean up,
                     final Object info) {
-                if (node.equals(peerName)) {
+                if (node.equals(data.getNodeName())) {
                     if (up) {
-                        ErlLogger.debug("Node %s is up", peerName);
+                        ErlLogger.debug("Node %s is up", data.getNodeName());
                         connectRetry();
                     } else {
-                        ErlLogger.debug("Node %s is down: %s", peerName, info);
+                        ErlLogger.debug("Node %s is down: %s",
+                                data.getNodeName(), info);
                         state = State.DOWN;
                     }
                 }
@@ -125,7 +122,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             do {
                 try {
                     i++;
-                    localNode = ErlRuntime.createOtpNode(cookie, longName);
+                    localNode = ErlRuntime.createOtpNode(data.getCookie(),
+                            data.hasLongName());
                     localNode.registerStatusHandler(statusWatcher);
                     nodeCreated = true;
                 } catch (final IOException e) {
@@ -144,7 +142,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
 
     @Override
     public String getNodeName() {
-        return peerName;
+        return data.getNodeName();
     }
 
     private boolean connectRetry() {
@@ -166,8 +164,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             throws RpcException {
         final OtpErlangAtom gleader = new OtpErlangAtom("user");
         try {
-            rpcHelper.rpcCastWithProgress(cb, localNode, peerName, false,
-                    gleader, m, f, signature, args);
+            rpcHelper.rpcCastWithProgress(cb, localNode, data.getNodeName(),
+                    false, gleader, m, f, signature, args);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -179,8 +177,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             final Object... args0) throws RpcException {
         tryConnect();
         try {
-            return rpcHelper.sendRpcCall(localNode, peerName, false, gleader,
-                    module, fun, signature, args0);
+            return rpcHelper.sendRpcCall(localNode, data.getNodeName(), false,
+                    gleader, module, fun, signature, args0);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -208,8 +206,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             throws RpcException {
         tryConnect();
         try {
-            rpcHelper.makeAsyncCbCall(localNode, peerName, cb, timeout,
-                    gleader, module, fun, signature, args);
+            rpcHelper.makeAsyncCbCall(localNode, data.getNodeName(), cb,
+                    timeout, gleader, module, fun, signature, args);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -223,8 +221,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         tryConnect();
         OtpErlangObject result;
         try {
-            result = rpcHelper.rpcCall(localNode, peerName, false, gleader,
-                    module, fun, timeout, signature, args0);
+            result = rpcHelper.rpcCall(localNode, data.getNodeName(), false,
+                    gleader, module, fun, timeout, signature, args0);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -245,8 +243,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             throws RpcException {
         tryConnect();
         try {
-            rpcHelper.rpcCast(localNode, peerName, false, gleader, module, fun,
-                    signature, args0);
+            rpcHelper.rpcCast(localNode, data.getNodeName(), false, gleader,
+                    module, fun, signature, args0);
         } catch (final SignatureException e) {
             throw new RpcException(e);
         }
@@ -274,7 +272,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             case CONNECTED:
                 break;
             case DOWN:
-                final String msg = reportRuntimeDown(peerName);
+                final String msg = reportRuntimeDown(data.getNodeName());
                 try {
                     if (process != null) {
                         process.terminate();
@@ -292,7 +290,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private String reportRuntimeDown(final String peer) {
         final String fmt = "Backend '%s' is down";
         final String msg = String.format(fmt, peer);
-        if (reportWhenDown && !reported) {
+        if (data.getReportErrors() && !reported) {
             final String user = System.getProperty("user.name");
 
             String msg1;
@@ -437,7 +435,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public void send(final String name, final Object msg) {
         try {
             tryConnect();
-            rpcHelper.send(localNode, peerName, name, msg);
+            rpcHelper.send(localNode, data.getNodeName(), name, msg);
         } catch (final SignatureException e) {
         } catch (final RpcException e) {
         }

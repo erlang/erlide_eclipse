@@ -56,13 +56,47 @@ public final class BackendData extends RuntimeData {
         projects = Lists.newArrayList();
     }
 
+    @SuppressWarnings("unchecked")
     public BackendData(final RuntimeInfo runtime,
             final ILaunchConfiguration config, final String mode) {
         super(runtime, mode);
 
         Asserts.isNotNull(config);
         try {
-            init(config);
+            cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, cookie);
+            managed = config.getAttribute(ErlLaunchAttributes.MANAGED, managed);
+            restartable = config.getAttribute(ErlLaunchAttributes.RESTARTABLE,
+                    restartable);
+            startShell = config.getAttribute(ErlLaunchAttributes.SHELL,
+                    startShell);
+            console = config.getAttribute(ErlLaunchAttributes.CONSOLE, console);
+
+            runtimeName = config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                    runtimeName);
+            nodeName = config.getAttribute(ErlLaunchAttributes.NODE_NAME,
+                    nodeName);
+            longName = config.getAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+                    longName);
+            extraArgs = config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS,
+                    extraArgs);
+            workingDir = config.getAttribute(ErlLaunchAttributes.WORKING_DIR,
+                    workingDir);
+            env = config.getAttribute(
+                    ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, env);
+            initialCall = createInitialCall(config);
+            debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
+                    debugFlags);
+            loadOnAllNodes = config.getAttribute(
+                    ErlLaunchAttributes.LOAD_ALL_NODES, loadOnAllNodes);
+            internal = config.getAttribute(ErlLaunchAttributes.INTERNAL,
+                    internal);
+
+            projects = getProjects(config);
+            final List<String> intMods = config.getAttribute(
+                    ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+                    interpretedModules);
+            interpretedModules = addBreakpointProjectsAndModules(getProjects(),
+                    intMods);
         } catch (final CoreException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -81,44 +115,7 @@ public final class BackendData extends RuntimeData {
             } catch (final CoreException e) {
             }
         }
-        setManaged(shouldManageNode(getNodeName()));
-        debug = mode.equals(ILaunchManager.DEBUG_MODE);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void init(final ILaunchConfiguration config) throws CoreException {
-        cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, cookie);
-        managed = config.getAttribute(ErlLaunchAttributes.MANAGED, managed);
-        restartable = config.getAttribute(ErlLaunchAttributes.RESTARTABLE,
-                restartable);
-        startShell = config.getAttribute(ErlLaunchAttributes.SHELL, startShell);
-        console = config.getAttribute(ErlLaunchAttributes.CONSOLE, console);
-
-        runtimeName = config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                runtimeName);
-        nodeName = config.getAttribute(ErlLaunchAttributes.NODE_NAME, nodeName);
-        longName = config.getAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                longName);
-        extraArgs = config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS,
-                extraArgs);
-        workingDir = config.getAttribute(ErlLaunchAttributes.WORKING_DIR,
-                workingDir);
-        env = config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
-                env);
-        initialCall = createInitialCall(config);
-        debugFlags = config.getAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                debugFlags);
-        loadOnAllNodes = config.getAttribute(
-                ErlLaunchAttributes.LOAD_ALL_NODES, loadOnAllNodes);
-        internal = config.getAttribute(ErlLaunchAttributes.INTERNAL, internal);
-
-        projects = getProjects(config);
-        final List<String> intMods = config
-                .getAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
-                        interpretedModules);
-        interpretedModules = addBreakpointProjectsAndModules(getProjects(),
-                intMods);
-
+        setManaged(shouldManageNode(getNodeName(), BackendCore.getEpmdWatcher()));
     }
 
     public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
@@ -201,7 +198,7 @@ public final class BackendData extends RuntimeData {
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                    isLongName());
+                    hasLongName());
             workingCopy
                     .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
@@ -233,31 +230,10 @@ public final class BackendData extends RuntimeData {
         return beamLocator;
     }
 
-    public static boolean shouldManageNode(final String name) {
-        final int atSignIndex = name.indexOf('@');
-        String shortName = name;
-        if (atSignIndex > 0) {
-            shortName = name.substring(0, atSignIndex);
-        }
-
-        boolean isLocal = atSignIndex < 0;
-        if (atSignIndex > 0) {
-            final String hostname = name.substring(atSignIndex + 1);
-            if (HostnameUtils.isThisHost(hostname)) {
-                isLocal = true;
-            }
-        }
-
-        final boolean isRunning = BackendCore.getEpmdWatcher().hasLocalNode(
-                shortName);
-        final boolean result = isLocal && !isRunning;
-        return result;
-    }
-
     @Override
     public String getQualifiedNodeName() {
         final String erlangHostName = HostnameUtils
-                .getErlangHostName(isLongName());
+                .getErlangHostName(hasLongName());
         final String name = getNodeName();
         final boolean hasHost = name.contains("@");
         return hasHost ? name : name + "@" + erlangHostName;
