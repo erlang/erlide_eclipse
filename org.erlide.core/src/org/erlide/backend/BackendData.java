@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,8 +49,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public final class BackendData extends GenericBackendData implements
-        IBackendData {
+public final class BackendData implements IBackendData {
 
     private RuntimeInfoCatalog runtimeInfoManager;
     private IBeamLocator beamLocator;
@@ -57,7 +57,24 @@ public final class BackendData extends GenericBackendData implements
 
     public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final ILaunchConfiguration config, final String mode) {
-        super(config, mode);
+        debug = mode.equals(ILaunchManager.DEBUG_MODE);
+        try {
+            if (config != null) {
+                this.config = config.getWorkingCopy();
+            } else {
+                final ILaunchManager manager = DebugPlugin.getDefault()
+                        .getLaunchManager();
+                final ILaunchConfigurationType ltype = manager
+                        .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
+                this.config = ltype.newInstance(null,
+                        manager.generateLaunchConfigurationName("erlide"));
+            }
+            launch = null;
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+            this.config = null;
+        }
+
         this.runtimeInfoManager = runtimeInfoManager;
         final RuntimeInfo runtimeInfo = runtimeInfoManager
                 .getRuntime(getRuntimeName());
@@ -72,7 +89,20 @@ public final class BackendData extends GenericBackendData implements
 
     public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
             final RuntimeInfo info) {
-        super(null, ILaunchManager.RUN_MODE);
+        debug = false;
+        try {
+            final ILaunchManager manager = DebugPlugin.getDefault()
+                    .getLaunchManager();
+            final ILaunchConfigurationType ltype = manager
+                    .getLaunchConfigurationType(ErlangLaunchDelegate.CONFIGURATION_TYPE_INTERNAL);
+            config = ltype.newInstance(null,
+                    manager.generateLaunchConfigurationName("erlide"));
+            launch = null;
+        } catch (final CoreException e) {
+            ErlLogger.error(e);
+            config = null;
+        }
+
         if (info == null) {
             throw new IllegalArgumentException(
                     "BackendData can't be created with null RuntimeInfo");
@@ -495,6 +525,103 @@ public final class BackendData extends GenericBackendData implements
         final String nodeName = getNodeName();
         final boolean hasHost = nodeName.contains("@");
         return hasHost ? nodeName : nodeName + "@" + erlangHostName;
+    }
+
+    // /////////////////////////////////
+
+    protected ILaunch launch;
+    protected ILaunchConfigurationWorkingCopy config;
+    boolean debug = false;
+
+    @SuppressWarnings("rawtypes")
+    public void debugPrint() {
+        final String mode = debug ? "debug" : "run";
+        ErlLogger.info("Backend data:" + mode + " mode,  with attributes::");
+        Map attrs;
+        try {
+            attrs = config.getAttributes();
+            for (final Object oe : attrs.entrySet()) {
+                final Entry e = (Entry) oe;
+                String key = (String) e.getKey();
+                if (key.startsWith("org.erlide.core.")) {
+                    key = "*." + key.substring(15);
+                }
+                ErlLogger.info("%-30s: %s", key, e.getValue());
+            }
+        } catch (final CoreException e1) {
+            ErlLogger.info("Could not get attributes! %s", e1.getMessage());
+        }
+        ErlLogger.info("---------------");
+    }
+
+    public String getStringAttribute(final String key, final String defaultValue) {
+        try {
+            return config.getAttribute(key, defaultValue).trim();
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    public boolean getBooleanAttribute(final String key,
+            final boolean defaultValue) {
+        try {
+            return config.getAttribute(key, defaultValue);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    public int getIntAttribute(final String key, final int defaultValue) {
+        try {
+            return config.getAttribute(key, defaultValue);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String, String> getMapAttribute(final String key,
+            final Map<String, String> defaultValue) {
+        try {
+            return config.getAttribute(key, defaultValue);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getListAttribute(final String key,
+            final List<String> defaultValue) {
+        try {
+            return config.getAttribute(key, defaultValue);
+        } catch (final CoreException e) {
+            e.printStackTrace();
+            return defaultValue;
+        }
+    }
+
+    public void setLaunch(final ILaunch launch) {
+        this.launch = launch;
+    }
+
+    public void setAttribute(final String key, final String value) {
+        config.setAttribute(key, value);
+    }
+
+    public void setAttribute(final String key, final boolean value) {
+        config.setAttribute(key, value);
+    }
+
+    public void setAttribute(final String key, final int value) {
+        config.setAttribute(key, value);
+    }
+
+    public void setAttribute(final String key, final Map<String, String> value) {
+        config.setAttribute(key, value);
     }
 
 }
