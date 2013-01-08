@@ -82,6 +82,8 @@ public final class MarkerUtils {
             }
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
         } catch (final CoreException e) {
+        } catch (final Exception e) {
+            ErlLogger.warn(e);
         }
     }
 
