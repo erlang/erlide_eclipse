@@ -71,7 +71,7 @@ public final class BackendData extends RuntimeData {
         if (runtime != null) {
             runtimeInfo = RuntimeInfo.copy(runtime, false);
             runtimeInfo.setArgs(getExtraArgs());
-            this.runtimeName = runtime.getName();
+            runtimeName = runtime.getName();
             try {
                 if (config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS, "")
                         .equals("")) {

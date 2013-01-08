@@ -64,8 +64,8 @@ public class RuntimeData {
 
     public RuntimeData(final RuntimeInfo runtime, final String mode) {
         this();
-        this.runtimeInfo = runtime;
-        this.debug = mode.equals("debug");
+        runtimeInfo = runtime;
+        debug = mode.equals("debug");
     }
 
     public RuntimeData(final RuntimeInfoCatalog runtimeInfoManager,
@@ -114,7 +114,7 @@ public class RuntimeData {
     }
 
     public void setUseStartShell(final boolean shell) {
-        this.startShell = shell;
+        startShell = shell;
     }
 
     public boolean hasConsole() {
@@ -146,7 +146,7 @@ public class RuntimeData {
     }
 
     public void setRuntimeName(final String name) {
-        this.runtimeName = name;
+        runtimeName = name;
     }
 
     public String getNodeName() {
@@ -171,7 +171,7 @@ public class RuntimeData {
     }
 
     public void setLongName(final boolean longname) {
-        this.longName = longname;
+        longName = longname;
     }
 
     public String getExtraArgs() {
@@ -179,7 +179,7 @@ public class RuntimeData {
     }
 
     public void setExtraArgs(final String xtra) {
-        this.extraArgs = xtra;
+        extraArgs = xtra;
     }
 
     public String getWorkingDir() {
@@ -187,7 +187,7 @@ public class RuntimeData {
     }
 
     public void setWorkingDir(final String dir) {
-        this.workingDir = dir;
+        workingDir = dir;
     }
 
     public Map<String, String> getEnv() {
@@ -223,7 +223,7 @@ public class RuntimeData {
     }
 
     public void setLoadAllNodes(final boolean load) {
-        this.loadOnAllNodes = load;
+        loadOnAllNodes = load;
     }
 
     public boolean isInternal() {

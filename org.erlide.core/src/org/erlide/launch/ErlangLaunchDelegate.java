@@ -36,7 +36,6 @@ import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.BackendData;
 import org.erlide.core.model.BeamLocator;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.debug.ErlDebugConstants;

@@ -23,7 +23,6 @@ import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendManager;
 import org.erlide.runtime.HostnameUtils;
@@ -98,8 +97,9 @@ public class BackendFactory implements IBackendFactory {
                 }
             };
             final IErlRuntime runtime = new ErlRuntime(nodeName,
-                    data.getCookie(), erlProcessProvider, !data.isReportErrors(),
-                    data.isLongName(), data.isInternal());
+                    data.getCookie(), erlProcessProvider,
+                    !data.isReportErrors(), data.isLongName(),
+                    data.isInternal());
             final IBackendManager backendManager = BackendCore
                     .getBackendManager();
             b = data.isInternal() ? new InternalBackend(data, runtime,

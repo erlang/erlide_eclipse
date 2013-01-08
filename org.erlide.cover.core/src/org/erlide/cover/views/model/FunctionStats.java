@@ -50,7 +50,7 @@ public class FunctionStats extends StatsTreeObject {
         final String mName = ((StatsTreeObject) getParent()).getLabel();
         IErlModule m;
         try {
-            m =  ErlModelManager.getErlangModel().findModule(mName);
+            m = ErlModelManager.getErlangModel().findModule(mName);
             final IErlFunction f = m.findFunction(new ErlangFunction(
                     getLabel(), getArity()));
 

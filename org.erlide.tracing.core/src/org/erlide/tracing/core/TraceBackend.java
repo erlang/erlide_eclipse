@@ -11,7 +11,6 @@ import java.util.Set;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.BackendData;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;

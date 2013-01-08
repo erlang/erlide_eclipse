@@ -84,12 +84,12 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         peerName = name;
         this.cookie = cookie;
         this.processProvider = processProvider;
-        this.process = processProvider.get();
+        process = processProvider.get();
         this.reportWhenDown = reportWhenDown;
         this.longName = longName;
         this.connectOnce = connectOnce;
-        this.stopped = false;
-        this.data = new RuntimeData();
+        stopped = false;
+        data = new RuntimeData();
 
         statusWatcher = new OtpNodeStatus() {
             @Override

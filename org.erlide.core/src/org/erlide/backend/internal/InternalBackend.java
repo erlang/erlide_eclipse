@@ -11,8 +11,8 @@
 package org.erlide.backend.internal;
 
 import org.eclipse.core.runtime.Assert;
-import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendData;
+import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackendManager;
 import org.erlide.runtime.IErlRuntime;
 

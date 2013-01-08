@@ -19,7 +19,7 @@ public class ModuleNameValidator extends AtomValidator {
             return false;
         }
         try {
-            if ( ErlModelManager.getErlangModel().findModule(s) == null) {
+            if (ErlModelManager.getErlangModel().findModule(s) == null) {
                 return false;
             }
         } catch (final ErlModelException e) {

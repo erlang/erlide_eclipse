@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.erlide.utils.ErlLogger;
 
-
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
