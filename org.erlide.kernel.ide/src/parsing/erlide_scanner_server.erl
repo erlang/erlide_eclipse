@@ -1,6 +1,6 @@
 %% Author: jakob
 %% Created: 24 apr 2008
-%% Description: 
+%% Description:
 -module(erlide_scanner_server).
 
 %%
@@ -18,7 +18,7 @@
 %% Exported Functions
 %%
 
--export([create/1, destroy/1, initialScan/6, getTokenAt/2, getTokenWindow/4, 
+-export([create/1, destroy/1, initialScan/6, getTokenAt/2, getTokenWindow/4,
          getTokens/1, replaceText/4, check_all/2]).
 
 %% stop/0
@@ -26,7 +26,7 @@
 %% just for testing
 -export([getTextLine/2, getText/1, dump_module/1, dump_log/2]).
 
-%% internal exports 
+%% internal exports
 -export([loop/1]).
 
 %%
@@ -49,14 +49,14 @@ getTextLine(ScannerName, Line) when is_atom(ScannerName), is_integer(Line) ->
 getTokens(ScannerName) when is_atom(ScannerName) ->
     server_cmd(ScannerName, get_tokens).
 
-getTokenWindow(ScannerName, Offset, Before, After) 
+getTokenWindow(ScannerName, Offset, Before, After)
   when is_atom(ScannerName), is_integer(Offset), is_integer(Before), is_integer(After) ->
     server_cmd(ScannerName, get_token_window, {Offset, Before, After}).
 
 getTokenAt(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
     server_cmd(ScannerName, get_token_at, Offset).
 
-initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging) 
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging)
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
 	spawn_server(ScannerName),
     server_cmd(ScannerName, initial_scan,
@@ -76,12 +76,12 @@ check_all(ScannerName, Text) when is_atom(ScannerName), is_list(Text) ->
     MatchTest = match_test(ScannerName, Text),
     ScanTest = scan_test(ScannerName),
     MatchTest ++ ScanTest.
-            
+
 match_test(Module, Text) ->
     case getText(Module) of
         Text ->
             "match\n";
-        ModText -> 
+        ModText ->
             "text mismatch!"++
 		  "\n(Scanner text)----------------\n\"" ++ ModText ++
 		"\"\n(Eclipse text)----------------\n\""++Text++"\"\n"
@@ -119,10 +119,11 @@ server_cmd(ScannerName, Command, Args) ->
 spawn_server(ScannerName) ->
 	case whereis(ScannerName) of
 		undefined ->
-			Pid = spawn(fun() -> 
+			Pid = spawn(fun() ->
 								?SAVE_CALLS,
-								loop(#module{name=ScannerName}) 
+								loop(#module{name=ScannerName})
 						end),
+            erlide_log:log({"!!!>>>", spawn, ScannerName}),
 			erlang:register(ScannerName, Pid);
 		_ ->
 			ok
@@ -131,7 +132,8 @@ spawn_server(ScannerName) ->
 loop(Module) ->
     receive
 	{stop, From, []} ->
-            ?D({stop, erlang:process_info(self(), registered_name)}),
+        ?D({stop, erlang:process_info(self(), registered_name)}),
+        erlide_log:log({"!!!>>>", stop, erlang:process_info(self(), registered_name)}),
 	    reply(stop, From, stopped);
 	{Cmd, From, Args} ->
 	    NewModule = cmd(Cmd, From, Args, Module),
