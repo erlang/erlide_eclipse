@@ -35,9 +35,9 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.IBackendData;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeManager;
@@ -51,14 +51,15 @@ import org.erlide.core.ErlangCore;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlideUtil;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.runtime.BeamLoader;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.InitialCall;
+import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.Asserts;
@@ -85,11 +86,11 @@ public abstract class Backend implements IStreamListener, IBackend {
     private ErlangEventPublisher eventDaemon;
     private BackendShellManager shellManager;
     private final ICodeManager codeManager;
-    private final IBackendData data;
+    private final BackendData data;
     private ErlangDebugTarget debugTarget;
     private final IBackendManager backendManager;
 
-    public Backend(final IBackendData data, final IErlRuntime runtime,
+    public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
         Asserts.isNotNull(data.getRuntimeInfo());
         this.runtime = runtime;
@@ -402,7 +403,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             // debugTarget.getWaiter().doWait();
             getLaunch().addDebugTarget(debugTarget);
             // interpret everything we can
-            final boolean distributed = (data.getDebugFlags() & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+            final boolean distributed = (data.getDebugFlags()
+                    .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
             if (distributed) {
                 distributeDebuggerCode();
                 addNodesAsDebugTargets(getLaunch(), debugTarget);
@@ -426,7 +428,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    private void registerStartupFunctionStarter(final IBackendData myData) {
+    private void registerStartupFunctionStarter(final BackendData myData) {
         DebugPlugin.getDefault().addDebugEventListener(
                 new IDebugEventSetListener() {
                     @Override
@@ -461,7 +463,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    private void interpretModules(final IBackendData myData,
+    private void interpretModules(final BackendData myData,
             final boolean distributed) {
         for (final String pm : data.getInterpretedModules()) {
             final String[] pms = pm.split(":");
@@ -589,7 +591,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public IBackendData getData() {
+    public BackendData getData() {
         return data;
     }
 
@@ -675,5 +677,10 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public IRpcSite getRpcSite() {
         return runtime.getRpcSite();
+    }
+
+    @Override
+    public RuntimeData getRuntimeData() {
+        return data;
     }
 }

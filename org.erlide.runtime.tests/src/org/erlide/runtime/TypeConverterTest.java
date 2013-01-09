@@ -17,8 +17,6 @@ import java.util.Arrays;
 
 import junit.framework.Assert;
 
-import org.erlide.runtime.IConvertible;
-import org.erlide.runtime.TypeConverter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

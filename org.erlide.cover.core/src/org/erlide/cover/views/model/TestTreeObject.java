@@ -73,7 +73,7 @@ public class TestTreeObject {
     }
 
     public TestTreeObject findNode(final String myName) {
-        if (this.name.equals(myName)) {
+        if (name.equals(myName)) {
             return this;
         }
         TestTreeObject result;

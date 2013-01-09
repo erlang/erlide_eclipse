@@ -35,12 +35,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.NodeHostClassifier;
 import org.erlide.runtime.NodeHostClassifier.HostnameType;
 import org.erlide.runtime.NodeHostClassifier.NodeType;
+import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
@@ -343,7 +343,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
     public boolean isValid(final ILaunchConfiguration config) {
         setErrorMessage(null);
         final String name = nameText.getText().trim();
-        if (!name.equals("") && !BackendData.validateNodeName(name)) {
+        if (!name.equals("") && !RuntimeData.validateNodeName(name)) {
             setErrorMessage(String.format("Node name '%s' is invalid.", name));
             return false;
         }

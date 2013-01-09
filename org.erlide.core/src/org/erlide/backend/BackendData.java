@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.erlide.backend;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -37,65 +32,104 @@ import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
+import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
+import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.SystemConfiguration;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-public final class BackendData extends GenericBackendData implements
-        IBackendData {
+public final class BackendData extends RuntimeData {
 
-    private RuntimeInfoCatalog runtimeInfoManager;
+    public static final String PROJECT_NAME_SEPARATOR = ";";
+
     private IBeamLocator beamLocator;
-    private boolean fTransient = false;
+    protected ILaunch launch;
+    private Collection<IProject> projects;
 
-    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
+    public BackendData() {
+        super();
+        projects = Lists.newArrayList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public BackendData(final RuntimeInfo runtime,
             final ILaunchConfiguration config, final String mode) {
-        super(config, mode);
-        this.runtimeInfoManager = runtimeInfoManager;
-        final RuntimeInfo runtimeInfo = runtimeInfoManager
-                .getRuntime(getRuntimeName());
-        if (runtimeInfo == null) {
-            return;
+        super(runtime, mode);
+
+        Asserts.isNotNull(config);
+        try {
+            cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, cookie);
+            managed = config.getAttribute(ErlLaunchAttributes.MANAGED, managed);
+            restartable = config.getAttribute(ErlLaunchAttributes.RESTARTABLE,
+                    restartable);
+            startShell = config.getAttribute(ErlLaunchAttributes.SHELL,
+                    startShell);
+            console = config.getAttribute(ErlLaunchAttributes.CONSOLE, console);
+
+            runtimeName = config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                    runtimeName);
+            nodeName = config.getAttribute(ErlLaunchAttributes.NODE_NAME,
+                    nodeName);
+            longName = config.getAttribute(ErlLaunchAttributes.USE_LONG_NAME,
+                    longName);
+            extraArgs = config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS,
+                    extraArgs);
+            workingDir = config.getAttribute(ErlLaunchAttributes.WORKING_DIR,
+                    workingDir);
+            env = config.getAttribute(
+                    ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, env);
+            initialCall = createInitialCall(config);
+            debugFlags = ErlDebugFlags.makeSet(config.getAttribute(
+                    ErlLaunchAttributes.DEBUG_FLAGS,
+                    ErlDebugFlags.getFlag(debugFlags)));
+            loadOnAllNodes = config.getAttribute(
+                    ErlLaunchAttributes.LOAD_ALL_NODES, loadOnAllNodes);
+            internal = config.getAttribute(ErlLaunchAttributes.INTERNAL,
+                    internal);
+
+            projects = getProjects(config);
+            final List<String> intMods = config.getAttribute(
+                    ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
+                    interpretedModules);
+            interpretedModules = addBreakpointProjectsAndModules(getProjects(),
+                    intMods);
+        } catch (final CoreException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
-        if (getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "").equals("")) {
-            setAttribute(ErlLaunchAttributes.EXTRA_ARGS, runtimeInfo.getArgs());
+        projects = Lists.newArrayList();
+
+        if (runtime != null) {
+            runtimeInfo = runtime.setArgs(getExtraArgs());
+            runtimeName = runtime.getName();
+            try {
+                if (config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS, "")
+                        .equals("")) {
+                    setExtraArgs(runtime.getArgs());
+                }
+            } catch (final CoreException e) {
+            }
         }
-        setManaged(shouldManageNode(getNodeName()));
+        setManaged(shouldManageNode(getNodeName(), BackendCore.getEpmdWatcher()));
     }
 
-    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
-            final RuntimeInfo info) {
-        super(null, ILaunchManager.RUN_MODE);
-        if (info == null) {
-            throw new IllegalArgumentException(
-                    "BackendData can't be created with null RuntimeInfo");
-        }
-        this.runtimeInfoManager = runtimeInfoManager;
-        setRuntimeName(info.getName());
-        setCookie("erlide");
-        setLongName(true);
-
-        setWorkingDir(getDefaultWorkingDir());
-        setExtraArgs(info.getArgs());
-
-        setConsole(true);
-        setLoadAllNodes(false);
+    public BackendData(final RuntimeInfo info) {
+        super(info, "run", getDefaultWorkingDir());
+        projects = Lists.newArrayList();
     }
 
-    private String getDefaultWorkingDir() {
+    private static String getDefaultWorkingDir() {
         final IWorkspaceRoot wroot = ResourcesPlugin.getWorkspace().getRoot();
         return wroot.getLocation().toPortableString();
     }
 
     private List<IProject> gatherProjects(final String[] projectNames) {
-        final List<IProject> projects = Lists.newArrayList();
+        final List<IProject> myProjects = Lists.newArrayList();
         for (final String s : projectNames) {
             final IProject project = ResourcesPlugin.getWorkspace().getRoot()
                     .getProject(s);
@@ -103,12 +137,12 @@ public final class BackendData extends GenericBackendData implements
                 ErlLogger.error("Launch: project not found: '%s'!", s);
                 continue;
             }
-            projects.add(project);
+            myProjects.add(project);
         }
-        return projects;
+        return myProjects;
     }
 
-    public static Collection<String> addBreakpointProjectsAndModules(
+    public static List<String> addBreakpointProjectsAndModules(
             final Collection<IProject> projects,
             final Collection<String> interpretedModules2) {
         final IBreakpointManager bpm = DebugPlugin.getDefault()
@@ -132,24 +166,14 @@ public final class BackendData extends GenericBackendData implements
         return result;
     }
 
-    @Override
-    public RuntimeInfo getRuntimeInfo() {
-        RuntimeInfo runtimeInfo = runtimeInfoManager
-                .getRuntime(getRuntimeName());
-        if (runtimeInfo == null) {
-            return null;
-        }
-        runtimeInfo = RuntimeInfo.copy(runtimeInfo, false);
-        runtimeInfo.setArgs(getExtraArgs());
-        return runtimeInfo;
-    }
-
-    @Override
     public ILaunch getLaunch() {
         return launch;
     }
 
-    @Override
+    public void setLaunch(final ILaunch launch) {
+        this.launch = launch;
+    }
+
     public ILaunchConfiguration asLaunchConfiguration() {
         final ILaunchManager manager = DebugPlugin.getDefault()
                 .getLaunchManager();
@@ -173,7 +197,7 @@ public final class BackendData extends GenericBackendData implements
             // workingCopy.setAttribute(ErlLaunchAttributes.CONSOLE,
             // !options.contains(BackendOptions.NO_CONSOLE));
             workingCopy.setAttribute(ErlLaunchAttributes.USE_LONG_NAME,
-                    isLongName());
+                    hasLongName());
             workingCopy
                     .setAttribute(ErlLaunchAttributes.INTERNAL, isInternal());
 
@@ -184,317 +208,45 @@ public final class BackendData extends GenericBackendData implements
         }
     }
 
-    @Override
-    public String getCookie() {
-        return getStringAttribute(ErlLaunchAttributes.COOKIE, "").trim();
-    }
-
-    @Override
-    public void setCookie(final String cookie) {
-        config.setAttribute(ErlLaunchAttributes.COOKIE, cookie);
-    }
-
-    @Override
-    public boolean isManaged() {
-        return getBooleanAttribute(ErlLaunchAttributes.MANAGED, true);
-    }
-
-    @Override
-    public void setManaged(final boolean managed) {
-        config.setAttribute(ErlLaunchAttributes.MANAGED, managed);
-    }
-
-    @Override
-    public boolean isRestartable() {
-        return getBooleanAttribute(ErlLaunchAttributes.RESTARTABLE, false);
-    }
-
-    @Override
-    public void setRestartable(final boolean restartable) {
-        config.setAttribute(ErlLaunchAttributes.RESTARTABLE, restartable);
-    }
-
-    @Override
-    public boolean useStartShell() {
-        return getBooleanAttribute(ErlLaunchAttributes.SHELL, true);
-    }
-
-    @Override
-    public void setUseStartShell(final boolean shell) {
-        config.setAttribute(ErlLaunchAttributes.SHELL, shell);
-    }
-
-    @Override
-    public boolean hasConsole() {
-        return getBooleanAttribute(ErlLaunchAttributes.CONSOLE, true);
-    }
-
-    @Override
-    public void setConsole(final boolean console) {
-        config.setAttribute(ErlLaunchAttributes.CONSOLE, console);
-    }
-
-    @Override
-    public boolean isDebug() {
-        return debug;
-    }
-
-    @Override
-    public void setDebug(final boolean debug) {
-        this.debug = debug;
-    }
-
-    @Override
-    public Collection<String> getInterpretedModules() {
-        final List<String> interpretedModules = getListAttribute(
-                ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
-                new ArrayList<String>());
-        return addBreakpointProjectsAndModules(getProjects(),
-                interpretedModules);
-    }
-
-    @Override
-    public void setInterpretedModules(
-            final Collection<String> interpretedModules) {
-        config.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES,
-                new ArrayList<String>());
-    }
-
-    @Override
-    public String getRuntimeName() {
-        return getStringAttribute(ErlLaunchAttributes.RUNTIME_NAME,
-                runtimeInfoManager.getDefaultRuntimeName());
-    }
-
-    @Override
-    public void setRuntimeName(final String name) {
-        config.setAttribute(ErlLaunchAttributes.RUNTIME_NAME, name);
-    }
-
-    @Override
-    public String getNodeName() {
-        return getStringAttribute(ErlLaunchAttributes.NODE_NAME, "");
-    }
-
-    @Override
-    public void setNodeName(String nodeName) {
-        if (!validateNodeName(nodeName)) {
-            // TODO this still can create a name that isn't valid
-            nodeName = nodeName.replaceAll("[^a-zA-Z0-9_-]", "");
-        }
-        config.setAttribute(ErlLaunchAttributes.NODE_NAME, nodeName);
-    }
-
-    public static boolean validateNodeName(final String name) {
-        return name != null
-                && name.matches("[a-zA-Z0-9_-]+(@[a-zA-Z0-9_.-]+)?");
-    }
-
-    @Override
-    public boolean isLongName() {
-        return getBooleanAttribute(ErlLaunchAttributes.USE_LONG_NAME, true);
-    }
-
-    @Override
-    public void setLongName(final boolean longname) {
-        config.setAttribute(ErlLaunchAttributes.USE_LONG_NAME, longname);
-    }
-
-    @Override
-    public String getExtraArgs() {
-        return getStringAttribute(ErlLaunchAttributes.EXTRA_ARGS, "");
-    }
-
-    @Override
-    public void setExtraArgs(final String xtra) {
-        config.setAttribute(ErlLaunchAttributes.EXTRA_ARGS, xtra);
-    }
-
-    @Override
-    public String getWorkingDir() {
-        return getStringAttribute(ErlLaunchAttributes.WORKING_DIR,
-                ErlLaunchAttributes.DEFAULT_WORKING_DIR);
-    }
-
-    @Override
-    public void setWorkingDir(final String dir) {
-        config.setAttribute(ErlLaunchAttributes.WORKING_DIR, dir);
-    }
-
-    @Override
-    public Map<String, String> getEnv() {
-        return getMapAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES,
-                new HashMap<String, String>());
-    }
-
-    @Override
-    public InitialCall getInitialCall() {
-        final String module = getStringAttribute(ErlLaunchAttributes.MODULE, "");
-        final String function = getStringAttribute(
-                ErlLaunchAttributes.FUNCTION, "");
-        final String args = getStringAttribute(ErlLaunchAttributes.ARGUMENTS,
-                "");
-        return new InitialCall(module, function, args);
-    }
-
-    @Override
     public Collection<IProject> getProjects() {
+        return projects;
+    }
+
+    private Collection<IProject> getProjects(final ILaunchConfiguration config)
+            throws CoreException {
         String prjs;
-        prjs = getStringAttribute(ErlLaunchAttributes.PROJECTS, "");
+        prjs = config.getAttribute(ErlLaunchAttributes.PROJECTS, "");
         final String[] projectNames = prjs.length() == 0 ? new String[] {}
                 : prjs.split(PROJECT_NAME_SEPARATOR);
         return gatherProjects(projectNames);
     }
 
-    @Override
-    public int getDebugFlags() {
-        return getIntAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-    }
-
-    @Override
-    public boolean shouldLoadOnAllNodes() {
-        return getBooleanAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, false);
-    }
-
-    @Override
-    public void setLoadAllNodes(final boolean load) {
-        config.setAttribute(ErlLaunchAttributes.LOAD_ALL_NODES, load);
-    }
-
-    @Override
     public void setBeamLocator(final IBeamLocator beamLocator) {
         this.beamLocator = beamLocator;
     }
 
-    @Override
     public IBeamLocator getBeamLocator() {
         return beamLocator;
     }
 
     @Override
-    public boolean isTransient() {
-        return fTransient;
-    }
-
-    @Override
-    public void setTransient(final boolean value) {
-        fTransient = value;
-    }
-
-    @Override
-    public boolean isInternal() {
-        return getBooleanAttribute(ErlLaunchAttributes.INTERNAL, false);
-    }
-
-    @Override
-    public void setInternal(final boolean value) {
-        config.setAttribute(ErlLaunchAttributes.INTERNAL, value);
-    }
-
-    @Override
-    public String[] getCmdLine() {
-        final RuntimeInfo r = getRuntimeInfo();
-        final List<String> result = new ArrayList<String>();
-
-        if (hasDetachedConsole() && !isInternal()) {
-            if (SystemConfiguration.getInstance().isOnWindows()) {
-                result.add("cmd.exe");
-                result.add("/c");
-                result.add("start");
-            } else {
-                final String command = System.getenv().get("TERM");
-                result.add(command);
-                result.add("-e");
-            }
-        }
-
-        String erl = r.getOtpHome() + "/bin/erl";
-        if (erl.indexOf(' ') >= 0) {
-            erl = "\"" + erl + "\"";
-        }
-        result.add(erl);
-        for (final String path : r.getCodePath()) {
-            if (!Strings.isNullOrEmpty(path)) {
-                result.add("-pa");
-                result.add(path);
-            }
-        }
-        if (!useStartShell()) {
-            result.add("-noshell");
-        }
-
-        if (!getNodeName().equals("")) {
-            final String nameTag = isLongName() ? "-name" : "-sname";
-            String nameOption = getNodeName();
-            if (!nameOption.contains("@")) {
-                nameOption += "@"
-                        + HostnameUtils.getErlangHostName(isLongName());
-            }
-            result.add(nameTag);
-            result.add(nameOption);
-            final String cky = getCookie();
-            if (!Strings.isNullOrEmpty(cky)) {
-                result.add("-setcookie");
-                result.add(cky);
-            }
-        }
-        final String gotArgs = r.getArgs();
-        if (!Strings.isNullOrEmpty(gotArgs)) {
-            result.addAll(splitQuoted(gotArgs));
-        }
-        return result.toArray(new String[result.size()]);
-    }
-
-    private boolean hasDetachedConsole() {
-        // TODO add GUI for "detached console"
-        return "true".equals(System.getProperty("erlide.backend.detached"));
-    }
-
-    /**
-     * split on spaces but respect quotes
-     * 
-     * @param theArgs
-     * @return
-     */
-    private Collection<String> splitQuoted(final String theArgs) {
-        final Pattern p = Pattern.compile("(\"[^\"]*?\"|'[^']*?'|\\S+)");
-        final Matcher m = p.matcher(theArgs);
-        final List<String> tokens = new ArrayList<String>();
-        while (m.find()) {
-            tokens.add(m.group(1));
-        }
-        return tokens;
-    }
-
-    public static boolean shouldManageNode(final String name) {
-        final int atSignIndex = name.indexOf('@');
-        String shortName = name;
-        if (atSignIndex > 0) {
-            shortName = name.substring(0, atSignIndex);
-        }
-
-        boolean isLocal = atSignIndex < 0;
-        if (atSignIndex > 0) {
-            final String hostname = name.substring(atSignIndex + 1);
-            if (HostnameUtils.isThisHost(hostname)) {
-                isLocal = true;
-            }
-        }
-
-        final boolean isRunning = BackendCore.getEpmdWatcher().hasLocalNode(
-                shortName);
-        final boolean result = isLocal && !isRunning;
-        return result;
-    }
-
-    @Override
     public String getQualifiedNodeName() {
         final String erlangHostName = HostnameUtils
-                .getErlangHostName(isLongName());
-        final String nodeName = getNodeName();
-        final boolean hasHost = nodeName.contains("@");
-        return hasHost ? nodeName : nodeName + "@" + erlangHostName;
+                .getErlangHostName(hasLongName());
+        final String name = getNodeName();
+        final boolean hasHost = name.contains("@");
+        return hasHost ? name : name + "@" + erlangHostName;
+    }
+
+    private InitialCall createInitialCall(final ILaunchConfiguration config)
+            throws CoreException {
+        final String module = config.getAttribute(ErlLaunchAttributes.MODULE,
+                "");
+        final String function = config.getAttribute(
+                ErlLaunchAttributes.FUNCTION, "");
+        final String args = config.getAttribute(ErlLaunchAttributes.ARGUMENTS,
+                "");
+        return new InitialCall(module, function, args);
     }
 
 }

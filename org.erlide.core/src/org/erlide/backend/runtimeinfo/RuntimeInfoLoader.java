@@ -31,12 +31,10 @@ public class RuntimeInfoLoader {
     }
 
     public static RuntimeInfo load(final Preferences node) {
-        final RuntimeInfo info = new RuntimeInfo();
-        info.setName(node.name());
         final String path = node.get(CODE_PATH, "");
-        info.setCodePath(PreferencesUtils.unpackList(path));
-        info.setOtpHome(node.get(HOME_DIR, ""));
-        info.setArgs(node.get(ARGS, ""));
+        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(
+                HOME_DIR, ""), node.get(ARGS, ""),
+                PreferencesUtils.unpackList(path));
         return info;
     }
 

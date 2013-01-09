@@ -13,36 +13,38 @@ package org.erlide.runtime.runtimeinfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class RuntimeInfo {
 
-    private String name;
-    private String homeDir = "";
-    private String args = "";
-    private List<String> codePath;
-    private RuntimeVersion version;
+    private final String name;
+    private final String homeDir;
+    private final String args;
+    private final Collection<String> codePath;
 
-    public RuntimeInfo() {
-        super();
-        codePath = new ArrayList<String>();
+    private RuntimeVersion version_cached = null;
+
+    public RuntimeInfo(final String name) {
+        this(name, ".", "", new ArrayList<String>());
     }
 
-    public static RuntimeInfo copy(final RuntimeInfo o, final boolean mkCopy) {
+    public RuntimeInfo(final String name, final String homeDir,
+            final String args, final Collection<String> codePath) {
+        this.name = name;
+        this.homeDir = homeDir;
+        this.args = args;
+        this.codePath = Collections.unmodifiableCollection(codePath);
+    }
+
+    public static RuntimeInfo copy(final RuntimeInfo o) {
         if (o == null) {
             return null;
         }
-        final RuntimeInfo rt = new RuntimeInfo();
-        rt.name = o.name;
-        if (mkCopy) {
-            rt.name += "_copy";
-        }
-        rt.args = o.args;
-        rt.codePath = new ArrayList<String>(o.codePath);
-        rt.homeDir = o.homeDir;
-        rt.version = o.version;
+        final RuntimeInfo rt = new RuntimeInfo(o.name, o.homeDir, o.args,
+                o.codePath);
         return rt;
     }
 
@@ -50,39 +52,38 @@ public class RuntimeInfo {
         return args;
     }
 
-    public void setArgs(final String args) {
-        this.args = args.trim();
+    public RuntimeInfo setArgs(final String args) {
+        return new RuntimeInfo(name, homeDir, args, codePath);
     }
 
     @Override
     public String toString() {
         return String.format("Runtime<%s (%s) %s [%s]>", getName(),
-                getOtpHome(), version, getArgs());
+                getOtpHome(), version_cached, getArgs());
     }
 
     public String getOtpHome() {
         return homeDir;
     }
 
-    public void setOtpHome(final String otpHome) {
-        homeDir = otpHome;
-        version = RuntimeVersion.getVersion(otpHome);
+    public RuntimeInfo setOtpHome(final String otpHome) {
+        return new RuntimeInfo(name, otpHome, args, codePath);
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public RuntimeInfo setName(final String name) {
+        return new RuntimeInfo(name, homeDir, args, codePath);
     }
 
-    public List<String> getCodePath() {
+    public Collection<String> getCodePath() {
         return codePath;
     }
 
-    public void setCodePath(final List<String> path) {
-        codePath = path;
+    public RuntimeInfo setCodePath(final List<String> path) {
+        return new RuntimeInfo(name, homeDir, args, path);
     }
 
     public static boolean validateLocation(final String path) {
@@ -148,7 +149,10 @@ public class RuntimeInfo {
     }
 
     public RuntimeVersion getVersion() {
-        return version;
+        if (version_cached == null) {
+            version_cached = RuntimeVersion.getVersion(homeDir);
+        }
+        return version_cached;
     }
 
 }

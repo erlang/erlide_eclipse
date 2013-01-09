@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpMbox;
 
 public interface IErlRuntime {
+
+    RuntimeData getRuntimeData();
+
+    RuntimeInfo getRuntimeInfo();
 
     boolean isAvailable();
 

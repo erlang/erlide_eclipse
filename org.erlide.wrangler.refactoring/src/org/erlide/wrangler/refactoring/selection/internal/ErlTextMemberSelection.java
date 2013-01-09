@@ -46,12 +46,13 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
      */
     public ErlTextMemberSelection(final ITextSelection selection,
             final ITextEditor editor) throws WranglerException {
-        IEditorInput input = editor.getEditorInput();
-        if (!(input instanceof IFileEditorInput))
+        final IEditorInput input = editor.getEditorInput();
+        if (!(input instanceof IFileEditorInput)) {
             throw new WranglerException("Can not refactor external modules!");
+        }
         document = editor.getDocumentProvider().getDocument(input);
         final IFileEditorInput fileInput = (IFileEditorInput) input;
-        IFile theFile = fileInput.getFile();
+        final IFile theFile = fileInput.getFile();
         store(selection, theFile, document);
     }
 

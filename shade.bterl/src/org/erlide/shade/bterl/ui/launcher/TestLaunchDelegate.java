@@ -25,7 +25,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
-import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.TermParser;
 import org.erlide.runtime.TermParserException;
@@ -111,7 +111,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final BackendData result = super.configureBackend(data, config, aMode,
                 launch);
         result.setBeamLocator(new TestsBeamLocator(workdir));
-        result.setTransient(true);
+        result.setReportErrors(true);
         return result;
     }
 
@@ -261,7 +261,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         }
         wc.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, modules);
         wc.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                ErlDebugConstants.ATTACH_ON_BREAKPOINT);
+                ErlDebugFlags.ATTACH_ON_BREAKPOINT.getFlag());
 
         final OtpErlangString e_dir = new OtpErlangString(workdirPath);
         final OtpErlangAtom e_suite = new OtpErlangAtom(suite);

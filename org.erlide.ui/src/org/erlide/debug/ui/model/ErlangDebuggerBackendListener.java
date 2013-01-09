@@ -1,6 +1,7 @@
 package org.erlide.debug.ui.model;
 
 import java.text.MessageFormat;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -17,9 +18,9 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.utils.ErlLogger;
@@ -50,10 +51,14 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
                 } else {
                     final ILaunchConfiguration launchConfiguration = erlangDebugTarget
                             .getLaunch().getLaunchConfiguration();
-                    final int debugFlags = launchConfiguration.getAttribute(
-                            ErlLaunchAttributes.DEBUG_FLAGS,
-                            ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-                    final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+                    final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
+                            .makeSet(launchConfiguration
+                                    .getAttribute(
+                                            ErlLaunchAttributes.DEBUG_FLAGS,
+                                            ErlDebugFlags
+                                                    .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
+                    final boolean distributed = debugFlags
+                            .contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
                     backend.interpret(project, moduleName, distributed, true);
                 }
             }

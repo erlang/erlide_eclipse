@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-
 public final class RuntimeInfoManagerData {
     public final String erlideRuntimeName;
     public final Collection<RuntimeInfo> runtimes;
