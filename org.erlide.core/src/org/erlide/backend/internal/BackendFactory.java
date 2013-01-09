@@ -37,10 +37,10 @@ import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
 
-    final RuntimeInfoCatalog runtimeInfoManager;
+    final RuntimeInfoCatalog runtimeInfoCatalog;
 
     public BackendFactory(final RuntimeInfoCatalog runtimeInfoManager) {
-        this.runtimeInfoManager = runtimeInfoManager;
+        this.runtimeInfoCatalog = runtimeInfoManager;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class BackendFactory implements IBackendFactory {
 
     private BackendData getIdeBackendData() {
         final RuntimeInfo info = getIdeRuntimeInfo();
-        final BackendData result = new BackendData(runtimeInfoManager, info);
+        final BackendData result = new BackendData(info);
         result.setNodeName(getIdeNodeName());
         result.setDebug(false);
         result.setConsole(false);
@@ -145,7 +145,7 @@ public class BackendFactory implements IBackendFactory {
     private BackendData getBuildBackendData(final RuntimeInfo info) {
         final RuntimeInfo myinfo = RuntimeInfo.copy(info);
 
-        final BackendData result = new BackendData(runtimeInfoManager, myinfo);
+        final BackendData result = new BackendData(myinfo);
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
                 + BackendUtils.getErlideNodeNameTag());
         result.setCookie("erlide");
@@ -158,8 +158,8 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private RuntimeInfo getIdeRuntimeInfo() {
-        final RuntimeInfo info = RuntimeInfo.copy(
-                runtimeInfoManager.getErlideRuntime());
+        final RuntimeInfo info = RuntimeInfo.copy(runtimeInfoCatalog
+                .getErlideRuntime());
         return info;
     }
 

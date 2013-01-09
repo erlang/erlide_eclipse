@@ -37,7 +37,6 @@ import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
 
@@ -119,8 +118,7 @@ public final class BackendData extends RuntimeData {
         setManaged(shouldManageNode(getNodeName(), BackendCore.getEpmdWatcher()));
     }
 
-    public BackendData(final RuntimeInfoCatalog runtimeInfoManager,
-            final RuntimeInfo info) {
+    public BackendData(final RuntimeInfo info) {
         super(info, "run", getDefaultWorkingDir());
         projects = Lists.newArrayList();
     }
