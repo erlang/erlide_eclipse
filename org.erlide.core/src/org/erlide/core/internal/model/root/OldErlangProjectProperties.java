@@ -254,7 +254,7 @@ public final class OldErlangProjectProperties implements
                 .getRuntime(runtimeVersion, runtimeName);
         RuntimeInfo rt = null;
         if (runtime != null) {
-            rt = RuntimeInfo.copy(runtime, false);
+            rt = RuntimeInfo.copy(runtime);
         }
         return rt;
     }

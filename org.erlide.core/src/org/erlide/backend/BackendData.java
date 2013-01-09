@@ -106,8 +106,7 @@ public final class BackendData extends RuntimeData {
         projects = Lists.newArrayList();
 
         if (runtime != null) {
-            runtimeInfo = RuntimeInfo.copy(runtime, false);
-            runtimeInfo.setArgs(getExtraArgs());
+            runtimeInfo = runtime.setArgs(getExtraArgs());
             runtimeName = runtime.getName();
             try {
                 if (config.getAttribute(ErlLaunchAttributes.EXTRA_ARGS, "")

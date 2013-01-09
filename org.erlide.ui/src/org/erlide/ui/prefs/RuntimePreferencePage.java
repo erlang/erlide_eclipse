@@ -84,7 +84,7 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     private static final String RUNTIMES_PREFERENCE_PAGE = "RUNTIMES_PREFERENCE_PAGE";
 
-    private final RuntimeInfoCatalog manager;
+    private final RuntimeInfoCatalog catalog;
     private List<RuntimeInfo> runtimes;
     private RuntimeInfo defaultRuntime;
     private RuntimeInfo erlideRuntime;
@@ -126,7 +126,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         setDescription("Add, remove or edit runtime definitions.\n"
                 + "The checked one will be used by default in new projects "
                 + "to build the project's code.");
-        manager = BackendCore.getRuntimeInfoCatalog();
+        catalog = BackendCore.getRuntimeInfoCatalog();
         performDefaults();
     }
 
@@ -236,7 +236,7 @@ public class RuntimePreferencePage extends PreferencePage implements
                 .getSelection()).size();
         fEditButton.setEnabled(selectionCount == 1);
         fDuplicateButton.setEnabled(selectionCount == 1);
-        fRemoveButton.setEnabled(selectionCount > 0);
+        fRemoveButton.setEnabled(selectionCount > 0 && runtimes.size() > 1);
     }
 
     protected Button createPushButton(final Composite parent, final String label) {
@@ -347,7 +347,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         fRuntimeList.refresh();
 
         final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
-                null, true);
+                null);
         dialog.setTitle(RuntimePreferenceMessages.add_title);
         if (dialog.open() != Window.OK) {
             return;
@@ -380,7 +380,7 @@ public class RuntimePreferencePage extends PreferencePage implements
      */
     @Override
     public boolean isDuplicateName(final String name) {
-        return manager.hasRuntimeWithName(name);
+        return catalog.hasRuntimeWithName(name);
     }
 
     protected void editRuntime() {
@@ -391,12 +391,14 @@ public class RuntimePreferencePage extends PreferencePage implements
             return;
         }
         final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
-                vm, false);
+                vm);
         dialog.setTitle(RuntimePreferenceMessages.edit_title);
         if (dialog.open() != Window.OK) {
             return;
         }
-        fRuntimeList.refresh(vm);
+        removeRuntimes(new RuntimeInfo[] { vm });
+        catalog.removeRuntime(vm.getName());
+        fRuntimeList.refresh();
     }
 
     protected void duplicateRuntime() {
@@ -406,9 +408,9 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (vm == null) {
             return;
         }
-        final RuntimeInfo vm1 = RuntimeInfo.copy(vm, true);
+        final RuntimeInfo vm1 = vm.setName(vm.getName() + "_copy");
         final AddRuntimeDialog dialog = new AddRuntimeDialog(this, getShell(),
-                vm1, true);
+                vm1);
         dialog.setTitle(RuntimePreferenceMessages.edit_title);
         if (dialog.open() != Window.OK) {
             return;
@@ -784,7 +786,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (defaultRuntime == null) {
             defaultRuntime = (RuntimeInfo) fRuntimeList.getElementAt(0);
         }
-        manager.setRuntimes(runtimes, defaultRuntime.getName(),
+        catalog.setRuntimes(runtimes, defaultRuntime.getName(),
                 erlideRuntime.getName());
         final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
         serializer.store(new RuntimeInfoManagerData(runtimes, defaultRuntime
@@ -800,9 +802,9 @@ public class RuntimePreferencePage extends PreferencePage implements
 
     @Override
     public void performDefaults() {
-        runtimes = new ArrayList<RuntimeInfo>(manager.getRuntimes());
-        defaultRuntime = manager.getDefaultRuntime();
-        erlideRuntime = manager.getErlideRuntime();
+        runtimes = new ArrayList<RuntimeInfo>(catalog.getRuntimes());
+        defaultRuntime = catalog.getDefaultRuntime();
+        erlideRuntime = catalog.getErlideRuntime();
     }
 
     void checkValid() {

@@ -143,7 +143,7 @@ public class BackendFactory implements IBackendFactory {
     }
 
     private BackendData getBuildBackendData(final RuntimeInfo info) {
-        final RuntimeInfo myinfo = RuntimeInfo.copy(info, false);
+        final RuntimeInfo myinfo = RuntimeInfo.copy(info);
 
         final BackendData result = new BackendData(runtimeInfoManager, myinfo);
         result.setNodeName(info.getVersion().asMajor().toString() + "_"
@@ -159,7 +159,7 @@ public class BackendFactory implements IBackendFactory {
 
     private RuntimeInfo getIdeRuntimeInfo() {
         final RuntimeInfo info = RuntimeInfo.copy(
-                runtimeInfoManager.getErlideRuntime(), false);
+                runtimeInfoManager.getErlideRuntime());
         return info;
     }
 

@@ -20,9 +20,8 @@ public class RuntimeFinder {
         for (final String loc : locations) {
             final Collection<File> roots = findRuntime(loc);
             for (final File root : roots) {
-                final RuntimeInfo rt = new RuntimeInfo();
-                rt.setOtpHome(root.getPath());
-                rt.setName(root.getName());
+                final RuntimeInfo rt = new RuntimeInfo(root.getName())
+                        .setOtpHome(root.getPath());
                 result.add(rt);
             }
         }

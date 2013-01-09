@@ -199,7 +199,7 @@ public class CoverBackend implements ICoverBackend {
     // creates erlang backend
     private IBackend createBackend() throws BackendException {
         final RuntimeInfo info = RuntimeInfo.copy(BackendCore
-                .getRuntimeInfoCatalog().getErlideRuntime(), false);
+                .getRuntimeInfoCatalog().getErlideRuntime());
 
         if (info == null) {
             log.error(String.format("Could not find runtime %s", BackendCore

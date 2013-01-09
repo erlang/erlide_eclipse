@@ -602,7 +602,7 @@ public class TraceBackend {
 
     private IBackend createBackend() {
         final RuntimeInfo info = RuntimeInfo.copy(BackendCore
-                .getRuntimeInfoCatalog().getErlideRuntime(), false);
+                .getRuntimeInfoCatalog().getErlideRuntime());
         try {
             final BackendData data = getBackendData(info);
             data.setUseStartShell(true);
