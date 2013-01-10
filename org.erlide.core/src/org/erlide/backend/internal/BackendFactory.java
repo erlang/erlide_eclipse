@@ -65,7 +65,7 @@ public class BackendFactory implements IBackendFactory {
     }
 
     @Override
-    public IBackend createBuildBackend(final RuntimeInfo info) {
+    public synchronized IBackend createBuildBackend(final RuntimeInfo info) {
         ErlLogger.debug("Create build backend "
                 + info.getVersion().asMajor().toString());
         final IBackend backend = createBackend(getBuildBackendData(info));
@@ -74,7 +74,7 @@ public class BackendFactory implements IBackendFactory {
     }
 
     @Override
-    public IBackend createBackend(final BackendData data) {
+    public synchronized IBackend createBackend(final BackendData data) {
         ErlLogger.debug("Create backend " + data.getNodeName());
         if (!data.isManaged()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
