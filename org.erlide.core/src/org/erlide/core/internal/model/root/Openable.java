@@ -322,4 +322,9 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // }
     }
 
+    @Override
+    public void close() throws ErlModelException {
+        // /ErlModelManager.getErlangModelManager().removeInfoAndChildren(this);
+    }
+
 }
