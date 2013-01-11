@@ -126,6 +126,7 @@ spawn_server(ScannerName) ->
             erlide_log:log({"!!!>>>", spawn, ScannerName}),
 			erlang:register(ScannerName, Pid);
 		_ ->
+            erlide_log:log({"!!!>>>", existing, ScannerName}),
 			ok
 	end.
 
@@ -133,7 +134,7 @@ loop(Module) ->
     receive
 	{stop, From, []} ->
         ?D({stop, erlang:process_info(self(), registered_name)}),
-        erlide_log:log({"!!!>>>", stop, erlang:process_info(self(), registered_name)}),
+        erlide_log:log({"!!!>>>", stop, Module#module.name}),
 	    reply(stop, From, stopped);
 	{Cmd, From, Args} ->
 	    NewModule = cmd(Cmd, From, Args, Module),
