@@ -144,14 +144,11 @@ server_cmd(Command, Args) ->
 
 
 loop(State) ->
-    ?D(State),
     receive
         {stop, From, []} ->
             reply(stop, From, stopped);
         {Cmd, From, Args} ->
-            ?D(Cmd),
             NewState = cmd(Cmd, From, Args, State),
-            ?D(NewState),
             ?MODULE:loop(NewState)
     end.
 
@@ -204,7 +201,7 @@ do_cmd(modules, _, #state{modules=Modules} = State) ->
 do_start_find_refs(Pattern, Modules, JPid, StateDir, UpdateSearchServer, State) ->
     ?D({do_start_find_refs, Pattern, JPid}),
     Pid = spawn_link(fun() ->
-                             ModuleChunks = chunkify(Modules, 10),
+                             ModuleChunks = chunkify(Modules, 3),
                              ?D({JPid, length(ModuleChunks)}),
                              JPid ! {start, length(ModuleChunks)},
                              ?D({JPid, length(ModuleChunks)}),

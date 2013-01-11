@@ -47,16 +47,16 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
-			   {Model, _Refs} = 
+			   {Model, Refs} =
 			       do_parse(ScannerName, RefsFileName, StateDir,
 					UpdateSearchServer),
-			   Model
+			   {Model, Refs}
                    end,
         CacheFileName = BaseName ++ ".noparse",
-	{Cached, Res} = erlide_util:check_and_renew_cached(
-			  ModuleFileName, CacheFileName, ?CACHE_VERSION, 
-			  RenewFun, UseCache),
-	{ok, Res, Cached}
+        {Cached, {Model, Refs}} = erlide_util:check_and_renew_cached(
+                                    ModuleFileName, CacheFileName, ?CACHE_VERSION,
+                                    RenewFun, UseCache),
+	{ok, Model, Cached, Refs}
     catch
         error:Reason ->
             {error, Reason}
@@ -89,9 +89,8 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
             InitialText = binary_to_list(InitialTextBin),
             _D = erlide_scanner_server:initialScan(
                    ScannerName, ModulePath, InitialText, StateDir, true, off),
-            ?D(_D),
-	    {ok, _Model, Refs} = initial_parse(ScannerName, ModulePath, StateDir, 
-                                               true, UpdateSearchServer),
+            {ok, _, _, Refs} = initial_parse(ScannerName, ModulePath, StateDir,
+                                             true, UpdateSearchServer),
 	    Refs
     end.
 
@@ -223,7 +222,6 @@ get_other_attribute(Name, Offset, Line, Attribute, Args) ->
     Between = erlide_np_util:get_between_outer_pars(Attribute, '(', ')'),
     Extra = to_string(Between),
     {AttrArgs, Exports, Imports} = get_attribute_args(Name, Between, Args),
-    ?D({AttrArgs, Between}),
     {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                 name=Name, args=AttrArgs, extra=Extra},
      make_attribute_ref(Name, AttrArgs, Extra, Offset, PosLength)++
@@ -540,7 +538,6 @@ skip_to_rparen([_ | Rest]) ->
     skip_to_rparen(Rest).
 
 make_attribute_ref(Name, Between, Extra, Offset, Length) ->
-    ?D({Name, Between, Offset, Length}),
     case make_attribute_ref(Name, Between, Extra) of
         [] ->
             [];
@@ -555,13 +552,11 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
 make_attribute_ref(module, _, Extra) ->
     {?ARI_ATTRIBUTE, #module_def{module=Extra}};
 make_attribute_ref(record, Between, _E) ->
-    ?D({Between, _E}),
     Name = case Between of
                {N, _} -> N;
                N -> N
            end,
     R= #record_def{record=Name},
-    ?D(R),
     {?ARI_RECORD_DEF, Name, R};
 make_attribute_ref(define, [Name | _], _) when is_list(Name) ->
     {?ARI_MACRO_DEF, Name, #macro_def{macro=Name}};
