@@ -81,13 +81,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
     }
 
     /**
-     * @see IOpenable
-     */
-    public void close() throws ErlModelException {
-        // /ErlModelManager.getErlangModelManager().removeInfoAndChildren(this);
-    }
-
-    /**
      * This element is being closed. Do any necessary cleanup.
      */
     protected void closing(final Object info) throws ErlModelException {
