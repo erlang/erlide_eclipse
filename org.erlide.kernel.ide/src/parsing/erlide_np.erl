@@ -10,7 +10,7 @@
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
 -include("erlide_noparse.hrl").
--include("erlide_search_server.hrl").
+-include("erlide_search.hrl").
 
 parse(Tokens) ->
     {TokensWoComments, Comments} = erlide_np_util:extract_comments(Tokens),
