@@ -8,7 +8,7 @@
 %%
 
 -include("erlide_scanner.hrl").
--include("erlide_search_server.hrl").
+-include("erlide_search.hrl").
 
 %%
 %% Exported Functions
