@@ -12,6 +12,9 @@
 -include("erlide_noparse.hrl").
 -include("erlide_search.hrl").
 
+-type form() :: #attribute{} | #clause{} | #function{} | #other{}.
+
+-spec parse([#token{}]) -> {[form()], [#token{}], [#ref{}]}.
 parse(Tokens) ->
     {TokensWoComments, Comments} = erlide_np_util:extract_comments(Tokens),
     Functions = erlide_np_util:split_after_dots(TokensWoComments),

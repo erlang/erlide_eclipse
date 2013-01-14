@@ -19,7 +19,6 @@
 %%
 
 %% -define(DEBUG, 1).
-%% -define(IO_FORMAT_DEBUG, 1).
 
 -define(CACHE_VERSION, 29).
 -define(SERVER, erlide_noparse).
@@ -32,6 +31,12 @@
 %%
 %% API Functions
 %%
+
+
+
+-spec initial_parse(atom(), string(), string(), boolean(), boolean()) ->
+          {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
+              | {error, term()}.
 
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
 	      UpdateSearchServer) ->
@@ -54,6 +59,9 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
             {error, Reason}
     end.
 
+-spec reparse(atom(), boolean()) ->
+          {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
+              | {error, term()}.
 reparse(ScannerName, UpdateSearchServer) ->
     try
         {Model, _Refs} = do_parse(ScannerName, "", "", UpdateSearchServer),
@@ -63,6 +71,7 @@ reparse(ScannerName, UpdateSearchServer) ->
             {error, Reason}
     end.
 
+-spec get_module_refs(atom(), string(), string(), boolean()) -> [#ref{}].
 get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
     ?D(ScannerName),
     BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
@@ -86,6 +95,7 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
 	    Refs
     end.
 
+-spec remove_cache_files(atom(), string) -> ok | {error, term()}.
 remove_cache_files(ScannerName, StateDir) ->
     BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
     ScannerCacheFileName = BaseName ++ ".scan",

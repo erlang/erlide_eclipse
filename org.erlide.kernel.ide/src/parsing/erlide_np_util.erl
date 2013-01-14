@@ -8,7 +8,6 @@
 %%
 
 %% -define(DEBUG, 1).
-%% -define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
 -include("erlide_noparse.hrl").
@@ -24,17 +23,18 @@
 %% API Functions
 %%
 
-%% @spec (Tokens::tokens()) -> {tokens(), tokens()}
-%% @type tokens() = [#token]
-%%
-%% @doc extract comments from tokens, and concatenate multiline comments to one token
 
+
+-spec extract_comments([#token{}]) -> {[#token{}],[#token{}]}.
+%% extract comments from tokens, and concatenate multiline comments to one token
 extract_comments(Tokens) ->
     extract_comments(Tokens, -1, [], []).
 
+-spec split_after_dots([#token{}]) -> [[#token{}]].
 split_after_dots(D) ->
     split_after_dots(D, [], []).
 
+-spec skip_to([#token{}], atom()) -> [#token{}].
 skip_to([], _Delim) ->
     [];
 skip_to([#token{kind=Delim} | _] = L, Delim) ->
@@ -42,6 +42,7 @@ skip_to([#token{kind=Delim} | _] = L, Delim) ->
 skip_to([_ | Rest], Delim) ->
     skip_to(Rest, Delim).
 
+-spec get_between_outer_pars([#token{}], atom(), atom()) -> [#token{}].
 get_between_outer_pars(T, L, R) ->
     case skip_to(T, L) of
         [] ->
@@ -50,6 +51,13 @@ get_between_outer_pars(T, L, R) ->
             {RL, _Rest} = gbop(S, L, R),
             lists:reverse(tl(lists:reverse(RL)))
     end.
+
+%% change model to more compact to miminize terms from erlang to java
+-spec compact_model(#model{}) -> #model{}.
+compact_model(#model{forms=Forms, comments=Comments}) ->
+    FixedComments = compact_tokens(Comments),
+    FixedForms = compact_forms(Forms),
+    #model{forms=FixedForms, comments=FixedComments}.
 
 %%
 %% Local Functions
@@ -94,12 +102,6 @@ gbop([#token{kind=L}=T | Rest], L, R) ->
 gbop([T | Rest], L, R) ->
     {LR, Rest1} = gbop(Rest, L, R),
     {[T] ++ LR, Rest1}.
-
-
-compact_model(#model{forms=Forms, comments=Comments}) ->
-    FixedComments = compact_tokens(Comments),
-    FixedForms = compact_forms(Forms),
-    #model{forms=FixedForms, comments=FixedComments}.
 
 compact_forms(Forms) ->
     [compact_form(Form) || Form <- Forms].
