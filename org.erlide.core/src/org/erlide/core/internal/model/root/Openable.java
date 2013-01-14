@@ -146,13 +146,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
         }
     }
 
-    /*
-     * @see IErlElement
-     */
-    public IOpenable getOpenable() {
-        return this;
-    }
-
     class ErlangResourceVisitor implements IResourceVisitor {
 
         private final String aname;
