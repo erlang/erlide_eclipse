@@ -56,7 +56,7 @@ public class ErlideIndent {
             final int offset, final int length, final String text,
             final int tabw, final boolean useTabs,
             final Map<String, String> prefs) throws RpcException {
-        final OtpErlangObject o = b.call(20000, "erlide_indent",
+        final OtpErlangObject o = b.call(40000, "erlide_indent",
                 "indent_lines", "siiiolx", text, offset, length, tabw, useTabs,
                 fixIndentPrefs(prefs));
         return o;
