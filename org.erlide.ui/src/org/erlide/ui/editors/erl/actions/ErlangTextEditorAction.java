@@ -168,9 +168,9 @@ public class ErlangTextEditorAction extends TextEditorAction {
         if (newText == null) {
             final Status status = new Status(IStatus.ERROR,
                     ErlangCore.PLUGIN_ID,
-                    ErlangStatus.INTERNAL_ERROR.getValue(), "indent returned "
-                            + r1 + " instead of a string", null);
-            ErlLogger.error("INTERNAL ERROR: indent returned " + r1
+                    ErlangStatus.INTERNAL_ERROR.getValue(),
+                    "operation returned " + r1 + " instead of a string", null);
+            ErlLogger.error("INTERNAL ERROR: operation returned " + r1
                     + " instead of a string");
 
             ErrorDialog.openError(textEditor.getSite().getShell(),
