@@ -97,11 +97,13 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.core.internal.model.erlang.ErlScanner;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.IErlElement;
@@ -184,6 +186,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             new ActivationListener());
 
     private String stateDirCached;
+    private IErlScanner scanner;
     public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
     /**
@@ -270,6 +273,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     public void disposeModule() {
         if (fModule != null) {
             fModule.dispose();
+            scanner.dispose();
             fModule = null;
         }
     }
@@ -780,6 +784,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         if (fModule == null) {
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
+                scanner = new ErlScanner(fModule.getScannerName());
             } catch (final CoreException e) {
             }
         }
@@ -1662,6 +1667,8 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         resetReconciler();
         try {
             module.resetAndCacheScannerAndParser(getDocument().get());
+            scanner.dispose();
+            scanner = new ErlScanner(module.getScannerName());
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
         }

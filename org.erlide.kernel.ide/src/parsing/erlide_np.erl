@@ -1,7 +1,7 @@
 %% @author jakob
 %% the functional interface for the "parser"
 %% returns forms, comments and referencs
- 
+
 
 -module(erlide_np).
 
@@ -37,7 +37,7 @@ cac_form(function, Tokens, Exports, Imports) ->
     get_function(Tokens, Exports, Imports);
 cac_form(attribute, Attribute, _Exports, _Imports) ->
     get_attribute(Attribute);
-cac_form(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _], 
+cac_form(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _],
     _Exports, _Imports) ->
     {#other{pos={{Line, Line, Offset}, Length}, name=Name}, [], [], []};
 cac_form(_, _D, _E, _I) ->
@@ -70,7 +70,7 @@ get_type_attribute(Kind, Name0, Offset, Line, Attribute, Args) ->
             end,
     {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                 name=Name, args=AttrArgs, extra=Extra, arity=Arity},
-     [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name, 
+     [#ref{data=#type_def{type=Name}, offset=Offset, length=PosLength, function=Name,
            arity=?ARI_TYPESPEC, clause="", sub_clause=false} | ExternalRefs], [], []}.
 
 get_function(Tokens, Exports, Imports) ->
@@ -78,14 +78,14 @@ get_function(Tokens, Exports, Imports) ->
     ClausesAndRefs = get_clauses(ClauseList),
     [{#clause{pos=P, name=Name, args=Arguments, head=H, name_pos=NP}, _Refs} | _] = ClausesAndRefs,
     Arity = length(Arguments),
-    Exported = lists:member({Name, Arity}, Exports), 
+    Exported = lists:member({Name, Arity}, Exports),
     Function = case ClausesAndRefs of   % only show subclauses when more than one
                    [_] ->
-                       #function{pos=P, name=Name, arity=Arity, args=Arguments, head=H, 
+                       #function{pos=P, name=Name, arity=Arity, args=Arguments, head=H,
                                  clauses=[], name_pos=NP, exported=Exported};
                    _ ->
                        Clauses = [C || {C, _} <- ClausesAndRefs],
-                       #function{pos=P, name=Name, arity=Arity, clauses=Clauses, 
+                       #function{pos=P, name=Name, arity=Arity, clauses=Clauses,
                                  name_pos=NP, exported=Exported}
                end,
     {Function, fix_code_refs(ClausesAndRefs, Function, Imports), [], []}.
@@ -101,17 +101,17 @@ get_attribute([#token{kind='-', offset=Offset, line=Line},
                _, #token{value=Args} | _] = Attribute) ->
     %% other attributes
     get_other_attribute(Name, Offset, Line, Attribute, Args);
-get_attribute([_, #token{kind=atom, value=Name, 
+get_attribute([_, #token{kind=atom, value=Name,
                          line=Line, offset=Offset}
                | _] = Attribute) ->
-    #token{line=LastLine, offset=LastOffset, 
+    #token{line=LastLine, offset=LastOffset,
            length=LastLength} = last_not_eof(Attribute),
     PosLength = LastOffset - Offset + LastLength,
     {#attribute{pos={{Line, LastLine, Offset}, PosLength},
                 name=Name, args=[]}, [], [], []}.
 
 get_other_attribute(Name, Offset, Line, Attribute, Args) ->
-    #token{line=LastLine, offset=LastOffset, 
+    #token{line=LastLine, offset=LastOffset,
            length=LastLength} = last_not_eof(Attribute),
     PosLength = LastOffset - Offset + LastLength,
     Between = erlide_np_util:get_between_outer_pars(Attribute, '(', ')'),
@@ -161,8 +161,8 @@ get_first_of_kind(Kind, Tokens) ->
         _ ->
             undefined
     end.
-        
-fun_arity_from_tokens([#token{kind=atom, value=Fun}, #token{kind='/'}, 
+
+fun_arity_from_tokens([#token{kind=atom, value=Fun}, #token{kind='/'},
                        #token{kind=integer, value=Arity} | Rest]) ->
     [{Fun, Arity} | fun_arity_from_tokens(Rest)];
 fun_arity_from_tokens([_ | Rest]) ->
@@ -170,7 +170,7 @@ fun_arity_from_tokens([_ | Rest]) ->
 fun_arity_from_tokens(_) ->
     [].
 
-field_list_from_tokens([#token{kind=atom, value=Field, line=Line, 
+field_list_from_tokens([#token{kind=atom, value=Field, line=Line,
                                offset=Offset, length=Length} | Rest]) ->
     {Extra, NewRest} = get_upto2(Rest, ','),
     [{Field, {{Line, Line, Offset}, Length}, to_string(Extra)}
@@ -205,9 +205,9 @@ get_args(T) ->
 get_guards([]) ->
     "";
 get_guards(T) ->
-    to_string(get_between(T, 'when', '->')). 
+    to_string(get_between(T, 'when', '->')).
 
-last_not_eof(L) -> 
+last_not_eof(L) ->
     case lists:reverse(L) of
         [eof, Last | _] ->
             Last;
@@ -215,7 +215,7 @@ last_not_eof(L) ->
             Last;
         _ ->
             error
-    end.    
+    end.
 
 
 get_between(L, A, B) ->
@@ -254,7 +254,7 @@ split_clauses([], _HaveWhen, Acc, []) ->
     erlide_util:reverse2(Acc);
 split_clauses([], HaveWhen, Acc, ClAcc) ->
     split_clauses([], HaveWhen, [ClAcc | Acc], []);
-split_clauses([#token{kind=Kind}=T | Rest], _HaveWhen, Acc, ClAcc) 
+split_clauses([#token{kind=Kind}=T | Rest], _HaveWhen, Acc, ClAcc)
   when Kind=:='end'; Kind=:=dot; Kind=:='->'; Kind=:='when' ->
     split_clauses(Rest, Kind=:='when', Acc, [T | ClAcc]);
 split_clauses([T | Rest] = Tokens, HaveWhen, Acc, ClAcc) ->
@@ -274,7 +274,7 @@ get_clauses([C | Rest], Acc) ->
     {Clause, Refs} = get_clause(C),
     get_clauses(Rest, [{Clause, Refs} | Acc]).
 
-get_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest]) 
+get_clause([#token{kind=AtomOrMacro, value=Name, line=Line, offset=Offset, length=Length} | Rest])
   when AtomOrMacro=:=atom; AtomOrMacro=:=macro ->
     #token{line=LastLine, offset=LastOffset, length=LastLength} = last_not_eof(Rest),
     PosLength = LastOffset - Offset + LastLength+1,
@@ -292,7 +292,7 @@ fix_code_refs(ClausesAndRefs, Function, Imports) ->
     fix_code_refs(ClausesAndRefs, Function, Imports, []).
 
 fix_code_refs([], #function{name=Name, arity=Arity, name_pos={{_, Offset}, Length}}, _Imports, Acc) ->
-    Ref = #ref{data=#function_def{function=Name, arity=Arity}, offset=Offset, 
+    Ref = #ref{data=#function_def{function=Name, arity=Arity}, offset=Offset,
                length=Length, function=Name, arity=Arity, clause="", sub_clause=false},
     [Ref | Acc];
 fix_code_refs([{Clause, Refs} | Rest], Function, Imports, Acc0) ->
@@ -301,8 +301,8 @@ fix_code_refs([{Clause, Refs} | Rest], Function, Imports, Acc0) ->
 
 fix_code_refs([], _Clause, _Function, _Imports, Acc) ->
     Acc;
-fix_code_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause, 
-              #function{name=Name, arity=Arity, clauses=Clauses}=Function, 
+fix_code_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause,
+              #function{name=Name, arity=Arity, clauses=Clauses}=Function,
               Imports, Acc) ->
     SubClause = case Clauses of
                     [] -> false;
@@ -310,7 +310,7 @@ fix_code_refs([{Offset, Length, RefData} | Rest], #clause{head=Head}=Clause,
                     _ -> true
                 end,
     NewRefData = fix_imported_ref(RefData, Imports),
-    Ref = #ref{data=NewRefData, offset=Offset, length=Length, function=Name, 
+    Ref = #ref{data=NewRefData, offset=Offset, length=Length, function=Name,
                arity=Arity, clause=Head, sub_clause=SubClause},
     fix_code_refs(Rest, Clause, Function, Imports, [Ref | Acc]).
 
@@ -335,7 +335,7 @@ get_refs_in_code([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
                   #token{kind=atom, value=F, offset=Offset2, length=Length2},
                   #token{kind='('} | Rest], Acc) ->
     Arity = erlide_text:guess_arity(Rest),
-    R = {Offset, Length2+Offset2-Offset, 
+    R = {Offset, Length2+Offset2-Offset,
          #external_call{module = M, function=F, arity=Arity}},
     get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind=atom, value=F, offset=Offset, length=Length},
@@ -343,11 +343,11 @@ get_refs_in_code([#token{kind=atom, value=F, offset=Offset, length=Length},
     Arity = erlide_text:guess_arity(Rest),
     R = {Offset, Length, #local_call{function=F, arity=Arity}},
     get_refs_in_code(Rest, [R | Acc]);
-get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest], 
+get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest],
                  Acc) ->
     R = {Offset, Length, #macro_ref{name=M}},
     get_refs_in_code(Rest, [R | Acc]);
-get_refs_in_code([#token{kind='#', offset=Offset}, 
+get_refs_in_code([#token{kind='#', offset=Offset},
                   #token{kind=atom, value=Record, offset=Offset2, length=Length2} | Rest],
                  Acc) ->
     R = {Offset, Length2+Offset2-Offset, #record_ref{name=Record}},
@@ -408,12 +408,12 @@ get_record_field_defs([], _) ->
     [];
 get_record_field_defs([{FieldName, {{_, _, Offset}, Length}, _Extra} | Rest],
                       RecordName) ->
-    [make_ref(Offset, Length, #record_field_def{record=RecordName, name=FieldName}, 
+    [make_ref(Offset, Length, #record_field_def{record=RecordName, name=FieldName},
               FieldName, ?ARI_RECORD_FIELD_DEF)
          | get_record_field_defs(Rest, RecordName)].
 
 make_ref(Offset, Length, Data, Name, Arity) ->
-    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity, 
+    #ref{data=Data, offset=Offset, length=Length, function=Name, arity=Arity,
          clause="", sub_clause=false}.
 
 make_attribute_arg_refs(define, Name, [#token{}, #token{kind='('} | Rest]) ->
@@ -437,10 +437,10 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
         [] ->
             [];
         {Arity, AName, Data} ->
-            [#ref{data=Data, offset=Offset, length=Length, function=AName, 
+            [#ref{data=Data, offset=Offset, length=Length, function=AName,
                   arity=Arity, clause="", sub_clause=false}];
         {Arity, Data} ->
-            [#ref{data=Data, offset=Offset, length=Length, function=Name, 
+            [#ref{data=Data, offset=Offset, length=Length, function=Name,
                   arity=Arity, clause="", sub_clause=false}]
     end.
 

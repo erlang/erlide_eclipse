@@ -141,8 +141,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     boolean exportsAllFunctions();
 
-    boolean isRealFile();
-
     String getScannerName();
 
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.ErlangFunction;
@@ -200,21 +201,26 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void reconcileText() throws Exception {
         final ErlangFunction f_1 = new ErlangFunction("f", 1);
         final ErlangFunction abc_1 = new ErlangFunction("abc", 1);
-        module.open(null);
-        final IErlFunction function = module.findFunction(f_1);
-        final IErlFunction function2 = module.findFunction(abc_1);
-        module.reconcileText(33, 1, "abc", null);
-        final IErlFunction function3 = module.findFunction(f_1);
-        final IErlFunction function4 = module.findFunction(abc_1);
-        module.postReconcile(null);
-        final IErlFunction function5 = module.findFunction(f_1);
-        final IErlFunction function6 = module.findFunction(abc_1);
-        assertNotNull(function);
-        assertNull(function2);
-        assertNotNull(function3);
-        assertNull(function4);
-        assertNull(function5);
-        assertNotNull(function6);
+        final IErlScanner scanner = ((ErlModule) module).getScanner();
+        try {
+            module.open(null);
+            final IErlFunction function = module.findFunction(f_1);
+            final IErlFunction function2 = module.findFunction(abc_1);
+            module.reconcileText(33, 1, "abc", null);
+            final IErlFunction function3 = module.findFunction(f_1);
+            final IErlFunction function4 = module.findFunction(abc_1);
+            module.postReconcile(null);
+            final IErlFunction function5 = module.findFunction(f_1);
+            final IErlFunction function6 = module.findFunction(abc_1);
+            assertNotNull(function);
+            assertNull(function2);
+            assertNotNull(function3);
+            assertNull(function4);
+            assertNull(function5);
+            assertNotNull(function6);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     // void finalReconcile();

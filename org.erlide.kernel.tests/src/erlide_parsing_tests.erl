@@ -70,7 +70,7 @@ parsing_function_with_macro_test_() ->
 parsing_when_clauses_test_() ->
     S = "" ++
             "foo() ->\n"++
-            "case A of\n"++ 
+            "case A of\n"++
             "    ?CHST_HRL when is_integer(A);\n"++
             "                   is_list(A) ->\n",
     [?_assertEqual({[#function{pos = {{0,3,0},86},
@@ -83,7 +83,7 @@ parsing_when_clauses_test_() ->
 
 % this test is not relevant, since the function doc fixing is moved to java
 function_comments_only_toplevel_test_() ->
-    %% http://www.assembla.com/spaces/erlide/tickets/891-wrong-function-comment-in-edoc-view-and-hover 
+    %% http://www.assembla.com/spaces/erlide/tickets/891-wrong-function-comment-in-edoc-view-and-hover
     S = "" ++
             "f1()->\n"++
             "    %some comment here \n"++

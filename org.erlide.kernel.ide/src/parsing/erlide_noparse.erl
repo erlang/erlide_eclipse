@@ -26,6 +26,7 @@
 -include("erlide.hrl").
 -include("erlide_noparse.hrl").
 -include("erlide_scanner.hrl").
+-include("erlide_scanner_server.hrl").
 -include("erlide_search.hrl").
 
 %%
@@ -39,24 +40,37 @@
               | {error, term()}.
 
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
-	      UpdateSearchServer) ->
+              UpdateSearchServer) ->
     try
         BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
-			   {Model, Refs} =
-			       do_parse(ScannerName, RefsFileName, StateDir,
-					UpdateSearchServer),
-			   {Model, Refs}
+                           Tokens = get_tokens(ScannerName, ModuleFileName, StateDir),
+                           erlide_log:log(Tokens),
+                           {Model, Refs} =
+                               do_parse(ScannerName, RefsFileName, Tokens, StateDir,
+                                        UpdateSearchServer),
+                           {Model, Refs}
                    end,
         CacheFileName = BaseName ++ ".noparse",
         {Cached, {Model, Refs}} = erlide_util:check_and_renew_cached(
                                     ModuleFileName, CacheFileName, ?CACHE_VERSION,
                                     RenewFun, UseCache),
-	{ok, Model, Cached, Refs}
+        {ok, Model, Cached, Refs}
     catch
         error:Reason ->
             {error, Reason}
+    end.
+
+get_tokens(ScannerName, ModuleFileName, StateDir) ->
+    case whereis(ScannerName) of
+        undefined ->
+            {ok, InitialTextBin} = file:read_file(ModuleFileName),
+            InitialText = binary_to_list(InitialTextBin),
+            {{_Cached, Module}, _Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, true),
+            erlide_scanner:get_all_tokens(Module);
+        _ ->
+            erlide_scanner_server:getTokens(ScannerName)
     end.
 
 -spec reparse(atom(), boolean()) ->
@@ -64,16 +78,16 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
               | {error, term()}.
 reparse(ScannerName, UpdateSearchServer) ->
     try
-        {Model, _Refs} = do_parse(ScannerName, "", "", UpdateSearchServer),
+        Tokens = erlide_scanner_server:getTokens(ScannerName),
+        {Model, _Refs} = do_parse(ScannerName, "", Tokens, "", UpdateSearchServer),
         {ok, Model}
     catch
         error:Reason ->
-            {error, Reason}
+            {error, Reason, erlang:get_stacktrace()}
     end.
 
 -spec get_module_refs(atom(), string(), string(), boolean()) -> [#ref{}].
 get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
-    ?D(ScannerName),
     BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
     RefsFileName = BaseName ++ ".refs",
     %% TODO: shouldn't we check that .refs is up-to-date? using renew
@@ -81,18 +95,11 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
     ?D(RefsFileName),
     case file:read_file(RefsFileName) of
         {ok, Binary} ->
-            ?D(byte_size(Binary)),
             binary_to_term(Binary);
         _ ->
-            ?D(ModulePath),
-            {ok, InitialTextBin} = file:read_file(ModulePath),
-            ?D(byte_size(InitialTextBin)),
-            InitialText = binary_to_list(InitialTextBin),
-            _D = erlide_scanner_server:initialScan(
-                   ScannerName, ModulePath, InitialText, StateDir, true, off),
             {ok, _, _, Refs} = initial_parse(ScannerName, ModulePath, StateDir,
                                              true, UpdateSearchServer),
-	    Refs
+            Refs
     end.
 
 -spec remove_cache_files(atom(), string) -> ok | {error, term()}.
@@ -110,11 +117,7 @@ remove_cache_files(ScannerName, StateDir) ->
 %% Internal functions
 %%
 
-do_parse(ScannerName, RefsFileName, StateDir, UpdateSearchServer) ->
-    Tokens = erlide_scanner_server:getTokens(ScannerName),
-    do_parse2(ScannerName, RefsFileName, Tokens, StateDir, UpdateSearchServer).
-
-do_parse2(ScannerName, RefsFileName, Tokens, StateDir, UpdateSearchServer) ->
+do_parse(ScannerName, RefsFileName, Tokens, StateDir, UpdateSearchServer) ->
     {Forms, Comments, References} = erlide_np:parse(Tokens),
     Model = #model{forms=Forms, comments=Comments},
     CompactModel = erlide_np_util:compact_model(Model),
@@ -130,3 +133,4 @@ update_search_server(true, ScannerName, Refs) ->
     erlide_search_server:add_module_refs(ScannerName, Refs);
 update_search_server(_, _, _) ->
     ok.
+

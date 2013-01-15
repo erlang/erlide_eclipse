@@ -13,11 +13,13 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
@@ -119,37 +121,44 @@ public class ModelUtilsTests {
         // final IErlModule moduleC =
         // ErlideTestUtils.createErlModule(projects[1],
         // "c.erl", "-module(c).\n-type cc() :: b:concat_thing().\n");
-        moduleB.open(null);
-        projects[0].open(null);
-        // moduleC.open(null);
-        // when
-        // looking for it
-        // within project
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlScanner scanner = ((ErlModule) moduleB).getScanner();
+        try {
+            moduleB.open(null);
+            projects[0].open(null);
+            // moduleC.open(null);
+            // when
+            // looking for it
+            // within project
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
 
-        final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", moduleB.getResource().getLocation()
-                        .toPortableString(), projects[0],
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // in other project but path given
-        final IErlElement element2 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", moduleB.getResource().getLocation()
-                        .toPortableString(), projects[1],
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // in other project no path given, search all projects true
-        final IErlElement element3 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", null, projects[1],
-                IErlElementLocator.Scope.ALL_PROJECTS);
-        // in other project no path given, search all projects false, -> null
-        final IErlElement element4 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", null, projects[1],
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // then
-        // it should be returned if found
-        assertTrue(element1 instanceof IErlTypespec);
-        assertNull(element2);
-        assertTrue(element3 instanceof IErlTypespec);
-        assertNull(element4);
+            final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", moduleB.getResource().getLocation()
+                            .toPortableString(), projects[0],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            // in other project but path given
+            final IErlElement element2 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", moduleB.getResource().getLocation()
+                            .toPortableString(), projects[1],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            // in other project no path given, search all projects true
+            final IErlElement element3 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", null, projects[1],
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            // in other project no path given, search all projects false, ->
+            // null
+            final IErlElement element4 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", null, projects[1],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+
+            // then
+            // it should be returned if found
+            assertTrue(element1 instanceof IErlTypespec);
+            assertNull(element2);
+            assertTrue(element3 instanceof IErlTypespec);
+            assertNull(element4);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     @Test
