@@ -167,11 +167,6 @@ initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
     RenewFun = fun(_F) -> do_scan(ScannerName, Text) end,
     {erlide_util:check_and_renew_cached(ModuleFileName, CacheFileName, ?CACHE_VERSION, RenewFun, UseCache), Text}.
 
-%% do_scan_uncached(ScannerName, ModuleFileName) ->
-%%     {ok, B} = file:read_file(ModuleFileName),
-%%     InitialText = binary_to_list(B),
-%%     do_scan(ScannerName, InitialText).
-
 do_scan(ScannerName, InitialText) ->
     ?D(do_scan),
     Lines = split_lines_w_lengths(InitialText),
