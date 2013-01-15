@@ -20,7 +20,8 @@ parse(Tokens) ->
     Functions = erlide_np_util:split_after_dots(TokensWoComments),
     AutoImports = erlide_util:add_auto_imported([]),
     {Forms, References} = classify_and_collect_forms(Functions, [], [], [], AutoImports),
-    {Forms, Comments, References}.
+    ToplevelComments = erlide_np_util:get_top_level_comments(Forms, Comments),
+    {Forms, ToplevelComments, References}.
 
 classify_and_collect_forms([], Acc, RefsAcc, _Exports, _Imports) ->
     {lists:reverse(Acc), lists:reverse(RefsAcc)};

@@ -81,6 +81,7 @@ parsing_when_clauses_test_() ->
                     []},
                    test_parse(S))].
 
+% this test is not relevant, since the function doc fixing is moved to java
 function_comments_only_toplevel_test_() ->
     %% http://www.assembla.com/spaces/erlide/tickets/891-wrong-function-comment-in-edoc-view-and-hover 
     S = "" ++

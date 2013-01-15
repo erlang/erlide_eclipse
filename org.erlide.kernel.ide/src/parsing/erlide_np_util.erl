@@ -17,7 +17,7 @@
 %% Exported Functions
 %%
 -export([extract_comments/1, split_after_dots/1, skip_to/2,
-         get_between_outer_pars/3, compact_model/1]).
+         get_between_outer_pars/3, compact_model/1, get_top_level_comments/2]).
 
 %%
 %% API Functions
@@ -58,6 +58,10 @@ compact_model(#model{forms=Forms, comments=Comments}) ->
     FixedComments = compact_tokens(Comments),
     FixedForms = compact_forms(Forms),
     #model{forms=FixedForms, comments=FixedComments}.
+
+-spec get_top_level_comments([tuple()], [#token{}]) -> #token{}.
+get_top_level_comments(Forms, Comments) ->
+    get_top_level_comments(Forms, Comments, []).
 
 %%
 %% Local Functions
@@ -137,3 +141,39 @@ to_binary_with_unicode(Comment) when is_list(Comment) ->
     end;
 to_binary_with_unicode(Other) ->
     Other.
+
+get_top_level_comments(_Forms, [], Acc) ->
+    lists:reverse(Acc);
+get_top_level_comments([], _Comments, Acc) ->
+    lists:reverse(Acc);
+get_top_level_comments([Form | FormRest] = Forms,
+                       [#token{offset=CommentOffset, length=CommentLength}=Comment | CommentRest] = Comments,
+                       Acc) ->
+    {{_Line, _LastLine, FormOffset}, FormLength} = get_form_pos(Form),
+    case relative_pos(CommentOffset, CommentLength, FormOffset, FormLength) of
+        within ->
+            get_top_level_comments(FormRest, CommentRest, Acc);
+        before ->
+            get_top_level_comments(Forms, CommentRest, [Comment | Acc]);
+        'after' ->
+            get_top_level_comments(FormRest, Comments, Acc);
+        overlapping ->
+            get_top_level_comments(FormRest, CommentRest, Acc)
+    end.
+
+get_form_pos(#function{pos=Pos}) -> Pos;
+get_form_pos(#attribute{pos=Pos}) -> Pos;
+get_form_pos(#clause{pos=Pos}) -> Pos;
+get_form_pos(#other{pos=Pos}) -> Pos.
+
+relative_pos(Offset1, Length1, Offset2, Length2)
+  when Offset1 >= Offset2, Offset1 + Length1 =< Offset2 + Length2 ->
+    within;
+relative_pos(Offset1, Length1, Offset2, _Length2)
+  when Offset1+Length1 =< Offset2 ->
+    before;
+relative_pos(Offset1, _Length1, Offset2, Length2)
+  when Offset1 >= Offset2+Length2 ->
+    'after';
+relative_pos(_, _, _, _) ->
+    overlapping.

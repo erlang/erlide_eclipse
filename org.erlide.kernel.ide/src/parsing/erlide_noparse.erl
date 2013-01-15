@@ -96,6 +96,7 @@ get_module_refs(ScannerName, ModulePath, StateDir, UpdateSearchServer) ->
     end.
 
 -spec remove_cache_files(atom(), string) -> ok | {error, term()}.
+%% remove all cache files for an erlang module in erlide
 remove_cache_files(ScannerName, StateDir) ->
     BaseName = filename:join(StateDir, atom_to_list(ScannerName)),
     ScannerCacheFileName = BaseName ++ ".scan",
