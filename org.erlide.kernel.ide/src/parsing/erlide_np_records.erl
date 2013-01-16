@@ -8,7 +8,7 @@
 %%
 
 -include("erlide_scanner.hrl").
--include("erlide_search_server.hrl").
+-include("erlide_search.hrl").
 
 %%
 %% Exported Functions
@@ -49,7 +49,7 @@ check_fields(record_name, [#token{kind=Dot} | Rest], RecordName, Fields, PrevRec
     check_fields(record_want_dot_field, Rest, RecordName, Fields, PrevRecordName, RightSides);
 check_fields(record_want_dot_field, [#token{kind=atom, value=FieldName, offset=Offset, length=Length} | Rest],
              RecordName, Fields, _PrevRecordName, RightSides) -> % 4
-    NewFields = [{Offset, Length, #record_field_ref{field=FieldName, record=RecordName}} | Fields],
+    NewFields = [{Offset, Length, #record_field_ref{name=FieldName, record=RecordName}} | Fields],
     {Rest, NewFields, lists:reverse(RightSides)};
 check_fields(record_name, [#token{kind='{'} | Rest], RecordName, Fields, PrevRecordName, RightSides) -> % 5
     {NewRest, NewFields, NewRS} = check_fields(record_want_field, Rest, RecordName, Fields, PrevRecordName, RightSides),
@@ -59,7 +59,7 @@ check_fields(State, [#token{kind='{'} | Rest], RecordName, Fields, PrevRecordNam
     check_fields(State, NewRest, RecordName, NewFields, PrevRecordName, lists:reverse(NewRS));
 check_fields(record_want_field, [#token{kind=atom, value=FieldName, offset=Offset, length=Length} | Rest],
              RecordName, Fields, PrevRecordName, RightSides) -> % 7
-    NewFields = [{Offset, Length, #record_field_ref{field=FieldName, record=RecordName}} | Fields],
+    NewFields = [{Offset, Length, #record_field_ref{name=FieldName, record=RecordName}} | Fields],
     check_fields(record_field, Rest, RecordName, NewFields, PrevRecordName, RightSides);
 check_fields(no_record, [#token{kind=','} | Rest], RecordName, Fields, PrevRecordName, RightSides) -> % 8
     check_fields(record_want_field, Rest, RecordName, Fields, PrevRecordName, RightSides);
