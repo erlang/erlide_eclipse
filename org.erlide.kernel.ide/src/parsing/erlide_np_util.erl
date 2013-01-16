@@ -144,8 +144,8 @@ to_binary_with_unicode(Other) ->
 
 get_top_level_comments(_Forms, [], Acc) ->
     lists:reverse(Acc);
-get_top_level_comments([], _Comments, Acc) ->
-    lists:reverse(Acc);
+get_top_level_comments([], Comments, Acc) ->
+    lists:reverse(Acc, Comments);
 get_top_level_comments([Form | FormRest] = Forms,
                        [#token{offset=CommentOffset, length=CommentLength}=Comment | CommentRest] = Comments,
                        Acc) ->
