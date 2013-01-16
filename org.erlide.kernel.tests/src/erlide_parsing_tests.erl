@@ -98,9 +98,7 @@ function_comments_only_toplevel_test_() ->
                                name = f2,arity = 0,args = [],head = [],clauses = [],
                                name_pos = {{3,46},2},
                                exported = false}],
-                    [#token{kind = comment, line = 1, offset = 11, length = 19,
-                            value = "%some comment here ", 
-                            text = u, last_line = u}]},
+                    []},
                    test_parse(S))].
 
 %%
