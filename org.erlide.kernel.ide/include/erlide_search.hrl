@@ -9,15 +9,15 @@
 -record(function_def, {function, arity}).
 -record(function_def_mod, {module, function, arity}).
 -record(include_ref, {filename}).
--record(macro_ref, {macro}).
--record(record_ref, {record}).
--record(macro_def, {macro}).
--record(record_def, {record}).
+-record(macro_ref, {name}).
+-record(record_ref, {name}).
+-record(macro_def, {name}).
+-record(record_def, {name}).
 -record(type_ref, {module, type}).
 -record(type_def, {type}).
--record(module_def, {module}).
--record(var_def, {variable}).
--record(var_ref, {variable}).
+-record(module_def, {name}).
+-record(var_def, {name}).
+-record(var_ref, {name}).
 -record(var_pattern, {vardefref, function, arity, clause}).
--record(record_field_def, {record, field}).
--record(record_field_ref, {record, field}).
+-record(record_field_def, {record, name}).
+-record(record_field_ref, {record, name}).

@@ -343,12 +343,12 @@ get_refs_in_code([#token{kind=atom, value=F, offset=Offset, length=Length},
     get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest], 
                  Acc) ->
-    R = {Offset, Length, #macro_ref{macro=M}},
+    R = {Offset, Length, #macro_ref{name=M}},
     get_refs_in_code(Rest, [R | Acc]);
 get_refs_in_code([#token{kind='#', offset=Offset}, 
                   #token{kind=atom, value=Record, offset=Offset2, length=Length2} | Rest],
                  Acc) ->
-    R = {Offset, Length2+Offset2-Offset, #record_ref{record=Record}},
+    R = {Offset, Length2+Offset2-Offset, #record_ref{name=Record}},
     {NewRest, Fields, RightSides} = erlide_np_records:check_fields(Rest, Record),
     NewAcc = get_refs_in_code(RightSides, Acc),
     get_refs_in_code(NewRest, Fields ++ [R | NewAcc]);
@@ -360,11 +360,11 @@ get_refs_in_code([_ | Rest], Acc) ->
     get_refs_in_code(Rest, Acc).
 
 make_var_def_ref([], Var) ->
-        #var_def{variable=Var};
-make_var_def_ref([{_, _, #var_def{variable=Var}} | _], Var) ->
-        #var_ref{variable=Var};
-make_var_def_ref([{_, _, #var_ref{variable=Var}} | _], Var) ->
-        #var_ref{variable=Var};
+        #var_def{name=Var};
+make_var_def_ref([{_, _, #var_def{name=Var}} | _], Var) ->
+        #var_ref{name=Var};
+make_var_def_ref([{_, _, #var_ref{name=Var}} | _], Var) ->
+        #var_ref{name=Var};
 make_var_def_ref([_ | Rest], Var) ->
         make_var_def_ref(Rest, Var).
 
@@ -378,12 +378,12 @@ get_refs([], _, _, Acc) ->
     lists:reverse(Acc);
 get_refs([#token{kind=macro, value=M, offset=Offset, length=Length} | Rest],
                  Name, Arity, Acc) ->
-    Ref = make_ref(Offset, Length, #macro_ref{macro=M}, Name, Arity),
+    Ref = make_ref(Offset, Length, #macro_ref{name=M}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind='#', offset=Offset},
           #token{kind=atom, value=R, offset=Offset2, length=Length2} | Rest],
                  Name, Arity, Acc) ->
-    Ref = make_ref(Offset, Length2+Offset2-Offset, #record_ref{record=R}, Name, Arity),
+    Ref = make_ref(Offset, Length2+Offset2-Offset, #record_ref{name=R}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=atom, value=M, offset=Offset}, #token{kind=':'},
                   #token{kind=atom, value=T, offset=Offset2, length=Length2},
@@ -397,7 +397,7 @@ get_refs([#token{kind=atom, value=T, offset=Offset, length=Length},
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([#token{kind=variable, value=V, offset=Offset, length=Length} | Rest],
                  Name, Arity, Acc) ->
-    Ref = make_ref(Offset, Length, #var_ref{variable=V}, Name, Arity),
+    Ref = make_ref(Offset, Length, #var_ref{name=V}, Name, Arity),
     get_refs(Rest, Name, Arity, [Ref | Acc]);
 get_refs([_ | Rest], Name, Arity, Acc) ->
     get_refs(Rest, Name, Arity, Acc).
@@ -406,7 +406,7 @@ get_record_field_defs([], _) ->
     [];
 get_record_field_defs([{FieldName, {{_, _, Offset}, Length}, _Extra} | Rest],
                       RecordName) ->
-    [make_ref(Offset, Length, #record_field_def{record=RecordName, field=FieldName}, 
+    [make_ref(Offset, Length, #record_field_def{record=RecordName, name=FieldName}, 
               FieldName, ?ARI_RECORD_FIELD_DEF)
          | get_record_field_defs(Rest, RecordName)].
 
@@ -443,18 +443,18 @@ make_attribute_ref(Name, Between, Extra, Offset, Length) ->
     end.
 
 make_attribute_ref(module, _, Extra) ->
-    {?ARI_ATTRIBUTE, #module_def{module=Extra}};
+    {?ARI_ATTRIBUTE, #module_def{name=Extra}};
 make_attribute_ref(record, Between, _E) ->
     Name = case Between of
                {N, _} -> N;
                N -> N
            end,
-    R= #record_def{record=Name},
+    R= #record_def{name=Name},
     {?ARI_RECORD_DEF, Name, R};
 make_attribute_ref(define, [Name | _], _) when is_list(Name) ->
-    {?ARI_MACRO_DEF, Name, #macro_def{macro=Name}};
+    {?ARI_MACRO_DEF, Name, #macro_def{name=Name}};
 make_attribute_ref(define, Name, _) ->
-    {?ARI_MACRO_DEF, Name, #macro_def{macro=Name}};
+    {?ARI_MACRO_DEF, Name, #macro_def{name=Name}};
 make_attribute_ref(include, _, Extra) ->
     {?ARI_INCLUDE, #include_ref{filename=unquote(Extra)}};
 make_attribute_ref(_, _, _) ->

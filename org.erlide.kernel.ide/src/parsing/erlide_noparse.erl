@@ -35,7 +35,7 @@
 
 
 -spec initial_parse(atom(), string(), string(), boolean(), boolean()) ->
-          {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
+          {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
               | {error, term()}.
 
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
