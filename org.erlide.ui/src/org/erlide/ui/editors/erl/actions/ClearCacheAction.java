@@ -15,6 +15,7 @@ import org.erlide.ui.editors.erl.ErlangEditor;
  * @author jakob
  * 
  */
+// FIXME the Java side should not be aware of the cache details!
 public class ClearCacheAction extends TextEditorAction {
 
     private final ErlangEditor erlangEditor;

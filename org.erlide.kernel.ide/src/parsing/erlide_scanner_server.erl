@@ -17,7 +17,7 @@
 %% Exported Functions
 %%
 
--export([create/1, destroy/1, initialScan/6, getTokenAt/2, getTokenWindow/4,
+-export([create/1, addref/1, dispose/1, initialScan/6, getTokenAt/2, getTokenWindow/4,
          getTokens/1, replaceText/4, check_all/2]).
 
 %% stop/0
@@ -26,18 +26,22 @@
 -export([getTextLine/2, getText/1, dump_module/1, dump_log/2]).
 
 %% internal exports
--export([loop/1]).
+-export([loop/2]).
 
 %%
 %% API Functions
 %%
 
 create(ScannerName) when is_atom(ScannerName) ->
-	spawn_server(ScannerName).
+    spawn_server(ScannerName).
 
-destroy(ScannerName) when is_atom(ScannerName) ->
+addref(ScannerName) when is_atom(ScannerName) ->
+    server_cmd(ScannerName, addref).
+
+dispose(ScannerName) when is_atom(ScannerName) ->
+    %% TODO move this from here?
     erlide_search_server:remove_module(ScannerName),
-    server_cmd(ScannerName, stop).
+    server_cmd(ScannerName, dispose).
 
 getText(ScannerName) when is_atom(ScannerName) ->
     server_cmd(ScannerName, get_text).
@@ -57,7 +61,6 @@ getTokenAt(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
 
 initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging)
   when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
-	spawn_server(ScannerName),
     server_cmd(ScannerName, initial_scan,
                {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}).
 
@@ -82,8 +85,8 @@ match_test(Module, Text) ->
             "match\n";
         ModText ->
             "text mismatch!"++
-		  "\n(Scanner text)----------------\n\"" ++ ModText ++
-		"\"\n(Eclipse text)----------------\n\""++Text++"\"\n"
+                "\n(Scanner text)----------------\n\"" ++ ModText ++
+                "\"\n(Eclipse text)----------------\n\""++Text++"\"\n"
     end.
 
 scan_test(Module) ->
@@ -102,42 +105,59 @@ scan_test(Module) ->
 %%
 
 server_cmd(ScannerName, Command) ->
-	server_cmd(ScannerName, Command, []).
+    server_cmd(ScannerName, Command, []).
 
 server_cmd(ScannerName, Command, Args) ->
-	try
-		ScannerName ! {Command, self(), Args},
-		receive
-			{Command, _Pid, Result} ->
-				Result
-		end
-	catch _:Exception ->
-			  {error, Exception, erlang:get_stacktrace()}
-	end.
+    try
+        ScannerName ! {Command, self(), Args},
+        receive
+            {Command, _Pid, Result} ->
+                Result
+        end
+    catch _:Exception ->
+              {error, Exception, erlang:get_stacktrace()}
+    end.
 
 spawn_server(ScannerName) ->
-	case whereis(ScannerName) of
-		undefined ->
-			Pid = spawn(fun() ->
-								?SAVE_CALLS,
-								loop(#module{name=ScannerName})
-						end),
+    case whereis(ScannerName) of
+        undefined ->
+            Pid = spawn(fun() ->
+                                ?SAVE_CALLS,
+                                loop(#module{name=ScannerName}, 0)
+                        end),
             erlide_log:log({"!!!>>>", spawn, ScannerName}),
-			erlang:register(ScannerName, Pid);
-		_ ->
+            erlang:register(ScannerName, Pid);
+        _ ->
             erlide_log:log({"!!!>>>", existing, ScannerName}),
-			ok
-	end.
+            ok
+    end,
+    server_cmd(ScannerName, addref, []),
+    ok.
 
-loop(Module) ->
+loop(Module, Refs) ->
     receive
-	{stop, From, []} ->
-        ?D({stop, erlang:process_info(self(), registered_name)}),
-        erlide_log:log({"!!!>>>", stop, Module#module.name}),
-	    reply(stop, From, stopped);
-	{Cmd, From, Args} ->
-	    NewModule = cmd(Cmd, From, Args, Module),
-	    ?MODULE:loop(NewModule)
+        {addref, From, []} ->
+            ?D({addref, Module#module.name}),
+            erlide_log:log({"!!!>>>", addref, Module#module.name, Refs+1}),
+            reply(addref, From, ok),
+            ?MODULE:loop(Module, Refs+1);
+        {dispose, From, []} ->
+            ?D({dispose, Module#module.name}),
+            erlide_log:log({"!!!>>>", dispose, Module#module.name, Refs-1}),
+            reply(dispose, From, ok),
+            case Refs=<1 of
+                true ->
+                    erlide_log:log({"!!!>>>", 'KILL', Module#module.name}),
+                    ok;
+                _ ->
+                    ?MODULE:loop(Module, Refs-1)
+            end;
+        {Cmd, From, Args} ->
+            NewModule = cmd(Cmd, From, Args, Module),
+            ?MODULE:loop(NewModule, Refs);
+        Msg ->
+            erlide_log:log({scanner, Module#module.name, unexpected_message, Msg}),
+            ?MODULE:loop(Module, Refs)
     end.
 
 cmd(Cmd, From, Args, Module) ->

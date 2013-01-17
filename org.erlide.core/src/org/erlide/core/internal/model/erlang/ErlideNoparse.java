@@ -20,13 +20,12 @@ public class ErlideNoparse {
 
     public static OtpErlangTuple initialParse(final IBackend b,
             final String scannerModuleName, final String moduleFileName,
-            final String stateDir, final boolean useCaches,
-            final boolean updateRefs) {
+            final String stateDir, final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
             res = (OtpErlangTuple) b.getRpcSite().call(200000, ERLIDE_NOPARSE,
                     "initial_parse", "assoo", scannerModuleName,
-                    moduleFileName, stateDir, useCaches, updateRefs);
+                    moduleFileName, stateDir, true, updateRefs);
         } catch (final RpcTimeoutException e) {
             if (!b.isStopped()) {
                 ErlLogger.warn(e);

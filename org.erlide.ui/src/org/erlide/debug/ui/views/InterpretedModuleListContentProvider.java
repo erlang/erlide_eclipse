@@ -81,8 +81,8 @@ public class InterpretedModuleListContentProvider extends
         }
     }
 
-    public void addModules(final List<IErlModule> modules) {
-        for (final IErlModule module : modules) {
+    public void addModules(final List<IErlModule> newModules) {
+        for (final IErlModule module : newModules) {
             addModule(module);
         }
     }

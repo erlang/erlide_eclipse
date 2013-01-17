@@ -641,7 +641,7 @@ public class FilteredModulesSelectionDialog extends
 
         private final IContainer filterContainer;
         private final int filterTypeMask;
-        private final boolean allowHrl;
+        private final boolean allow_Hrl;
 
         /**
          * Creates new ResourceFilter instance
@@ -656,7 +656,7 @@ public class FilteredModulesSelectionDialog extends
             super(new MatchAnySearchPattern());
             filterContainer = container;
             filterTypeMask = typeMask;
-            this.allowHrl = allowHrl;
+            this.allow_Hrl = allowHrl;
         }
 
         // /**
@@ -710,7 +710,7 @@ public class FilteredModulesSelectionDialog extends
                 return false;
             }
             final String name = resource.getName();
-            if (!allowHrl && name.toLowerCase().endsWith(".hrl")) {
+            if (!allow_Hrl && name.toLowerCase().endsWith(".hrl")) {
                 return false;
             }
             if (matches(name)) {

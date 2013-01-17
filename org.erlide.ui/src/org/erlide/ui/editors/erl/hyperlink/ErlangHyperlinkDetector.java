@@ -41,7 +41,7 @@ public class ErlangHyperlinkDetector extends AbstractHyperlinkDetector {
         if (module == null) {
             return null;
         }
-        final ErlToken token = module.getScannerTokenAt(offset);
+        final ErlToken token = editor.getScanner().getTokenAt(offset);
         if (token == null) {
             return null;
         }

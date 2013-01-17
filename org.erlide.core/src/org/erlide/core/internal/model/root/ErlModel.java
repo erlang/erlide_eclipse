@@ -531,13 +531,7 @@ public class ErlModel extends Openable implements IErlModel {
         IErlModule m = moduleMap.get(key);
         if (m == null) {
             final IParent parent2 = parent == null ? this : parent;
-            final boolean useCache = false;
-            // TODO kan vi skilja p� t.ex. local history och OTP-moduler? de
-            // senare vill vi ha cache f�r, men inte de tidigare, f�r d�
-            // krockar
-            // det med aktuell fil
-            // final boolean useCache = path != null && path.length() > 0;
-            m = new ErlModule(parent2, name, initialText, null, path, useCache);
+            m = new ErlModule(parent2, name, initialText, null, path);
             if (key != null) {
                 moduleMap.put(key, m);
                 mapModule.put(m, key);
@@ -726,7 +720,7 @@ public class ErlModel extends Openable implements IErlModel {
         final String name = file.getName();
         if (CommonUtils.isErlangFileContentFileName(name)) {
             final IErlModule module = new ErlModule(parent, name, null, file,
-                    null, true);
+                    null);
             if (parent != null) {
                 parent.addChild(module);
             }

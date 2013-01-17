@@ -5,6 +5,6 @@ public interface ErlangToolkit {
     IErlParser createParser();
 
     IErlScanner createScanner(String scannerName, String initialText,
-            String path, boolean useCaches, boolean logging);
+            String path, boolean logging);
 
 }
