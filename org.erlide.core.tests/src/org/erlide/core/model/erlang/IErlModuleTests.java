@@ -405,10 +405,18 @@ public class IErlModuleTests extends ErlModelTestBase {
     // boolean isOnIncludePath();
     @Test
     public void isOnIncludePath() throws Exception {
-
         final IErlModule module2 = ErlideTestUtils.createInclude(project,
                 "yy.erl", "-module(yy).\n");
         assertFalse(module.isOnIncludePath());
         assertTrue(module2.isOnIncludePath());
+    }
+
+    @Test
+    public void resetCachesWorks() throws Exception {
+        module.open(null);
+        assertTrue(module.getChildCount() > 0);
+        final IErlScanner scanner = module.getScanner();
+        module.resetAndCacheScannerAndParser(scanner.getText(), scanner);
+        assertTrue(module.getChildCount() > 0);
     }
 }
