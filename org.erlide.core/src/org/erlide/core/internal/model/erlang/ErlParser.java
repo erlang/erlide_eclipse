@@ -78,7 +78,7 @@ public final class ErlParser implements IErlParser {
     @Override
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
-            final boolean useCaches, final boolean updateSearchServer) {
+            final boolean updateSearchServer) {
         if (module == null) {
             return false;
         }
@@ -91,7 +91,7 @@ public final class ErlParser implements IErlParser {
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
             res = ErlideNoparse.initialParse(backend, scannerName, path,
-                    stateDir, useCaches, updateSearchServer);
+                    stateDir, updateSearchServer);
         } else {
             res = ErlideNoparse.reparse(backend, scannerName,
                     updateSearchServer);

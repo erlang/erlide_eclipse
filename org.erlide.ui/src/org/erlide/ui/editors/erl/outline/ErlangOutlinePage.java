@@ -139,7 +139,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      * 
      */
     public void setInput(final IEditorInput editorInput) {
-        // ErlLogger.log("> outline set input "+editorInput);
         fModule = null;
         try {
             fModule = ErlModelUtils.getModule(editorInput);

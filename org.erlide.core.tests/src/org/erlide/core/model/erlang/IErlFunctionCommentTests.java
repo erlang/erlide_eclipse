@@ -15,10 +15,10 @@ public class IErlFunctionCommentTests extends ErlModelTestBase {
 	public void functionCommentsOnlyTopLevel() throws Exception {
 		final String s = "f1()->\n    %some comment here \n    foo:bar().\n"
 				+ "f2() ->\n    ok.";
-		final IErlModule module = ErlideTestUtils.createModule(project,
+		final IErlModule myModule = ErlideTestUtils.createModule(project,
 				"w.erl", s);
-		module.open(null);
-		final IErlFunction function = (IErlFunction) module.getChildNamed("f2");
+		myModule.open(null);
+		final IErlFunction function = (IErlFunction) myModule.getChildNamed("f2");
 		assertEquals(0, function.getComments().size());
 	}
 }

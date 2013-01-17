@@ -112,9 +112,11 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
      * updating the parser cache
      * 
      * @param newText
+     * @param scanner
      * @throws ErlModelException
      */
-    void resetAndCacheScannerAndParser(String newText) throws ErlModelException;
+    void resetAndCacheScannerAndParser(String newText, IErlScanner scanner)
+            throws ErlModelException;
 
     /**
      * Get the module name without extension
@@ -126,8 +128,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
     IErlFunction findFunction(ErlangFunction erlangFunction);
 
     IErlTypespec findTypespec(String typeName);
-
-    ErlToken getScannerTokenAt(int offset);
 
     void setResource(IFile file);
 
@@ -141,8 +141,8 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     boolean exportsAllFunctions();
 
-    boolean isRealFile();
-
     String getScannerName();
+
+    public abstract IErlScanner getScanner();
 
 }

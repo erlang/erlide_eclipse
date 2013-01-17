@@ -726,8 +726,6 @@ public class ErlProject extends Openable implements IErlProject {
         if ((delta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
             // TODO when we have cache in ErlModuleMap for referenced projects,
             // we should purge it here
-            int i = 0;
-            ++i;
         }
         if ((delta.getFlags() & ~IResourceDelta.MARKERS) != 0) {
             super.resourceChanged(delta);

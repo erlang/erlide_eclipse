@@ -13,7 +13,6 @@
 %% Exported Functions
 %%
 
--compile(export_all).
 %%
 %% API Functions
 %%
