@@ -7,7 +7,6 @@ import java.io.File;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlScanner;
@@ -187,7 +186,7 @@ public class ErlProjectTest {
                         project,
                         "e.erl",
                         "-module(e).\n-export([f/0]).\nf() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
-        final IErlScanner scanner = ((ErlModule) moduleE).getScanner();
+        final IErlScanner scanner = moduleE.getScanner();
         try {
             moduleE.open(null);
             // when

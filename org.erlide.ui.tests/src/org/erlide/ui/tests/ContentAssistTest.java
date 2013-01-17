@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlScanner;
@@ -397,7 +396,7 @@ public class ContentAssistTest {
         IDocument document = new StringDocument(initialText);
         final IErlModule module = ErlideTestUtils
                 .createModuleFromText(initialText);
-        final IErlScanner scanner = ((ErlModule) module).getScanner();
+        final IErlScanner scanner = module.getScanner();
         try {
             final MockSourceViewer sourceViewer = new MockSourceViewer(
                     document, offset);

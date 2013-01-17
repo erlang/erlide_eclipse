@@ -19,7 +19,6 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlModule;
@@ -111,7 +110,7 @@ public class AddRefacHandler extends AbstractHandler {
         try {
             final IErlModule module = ErlModelManager.getErlangModel()
                     .findModule(callbackModule);
-            IErlScanner scanner = ((ErlModule) module).getScanner();
+            IErlScanner scanner = module.getScanner();
             try {
                 module.resetAndCacheScannerAndParser(null, scanner);
             } finally {

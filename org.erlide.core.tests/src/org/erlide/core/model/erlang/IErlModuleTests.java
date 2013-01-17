@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.ErlangFunction;
@@ -201,7 +200,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void reconcileText() throws Exception {
         final ErlangFunction f_1 = new ErlangFunction("f", 1);
         final ErlangFunction abc_1 = new ErlangFunction("abc", 1);
-        final IErlScanner scanner = ((ErlModule) module).getScanner();
+        final IErlScanner scanner = module.getScanner();
         try {
             module.open(null);
             final IErlFunction function = module.findFunction(f_1);
@@ -318,7 +317,7 @@ public class IErlModuleTests extends ErlModelTestBase {
     // ErlToken getScannerTokenAt(int offset);
     @Test
     public void getScannerTokenAt() throws Exception {
-        final IErlScanner scanner = ((ErlModule) module).getScanner();
+        final IErlScanner scanner = module.getScanner();
         try {
             module.open(null);
             final ErlToken token = scanner.getTokenAt(-1);

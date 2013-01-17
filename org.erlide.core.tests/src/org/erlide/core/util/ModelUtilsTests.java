@@ -13,7 +13,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
@@ -121,7 +120,7 @@ public class ModelUtilsTests {
         // final IErlModule moduleC =
         // ErlideTestUtils.createErlModule(projects[1],
         // "c.erl", "-module(c).\n-type cc() :: b:concat_thing().\n");
-        final IErlScanner scanner = ((ErlModule) moduleB).getScanner();
+        final IErlScanner scanner = moduleB.getScanner();
         try {
             moduleB.open(null);
             projects[0].open(null);

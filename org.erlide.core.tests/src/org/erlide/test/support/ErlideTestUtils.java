@@ -197,6 +197,7 @@ public class ErlideTestUtils {
             file.delete(true, null);
         }
         final IPath stateDir = ErlangPlugin.getDefault().getStateLocation();
+        // FIXME this code should not know about caches!
         final String cacheExts[] = { ".noparse", ".refs", ".scan" };
         for (final String ext : cacheExts) {
             final IPath p = stateDir.append(scannerName + ext);

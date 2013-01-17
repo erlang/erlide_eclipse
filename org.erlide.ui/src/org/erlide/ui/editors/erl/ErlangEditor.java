@@ -97,7 +97,6 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunctionClause;
@@ -784,7 +783,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         if (fModule == null) {
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
-                scanner = ((ErlModule) fModule).getScanner();
+                scanner = fModule.getScanner();
             } catch (final CoreException e) {
             }
         }
@@ -1667,7 +1666,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         resetReconciler();
         try {
             scanner.dispose();
-            scanner = ((ErlModule) module).getScanner();
+            scanner = module.getScanner();
             module.resetAndCacheScannerAndParser(getDocument().get(), scanner);
         } catch (final ErlModelException e) {
             ErlLogger.error(e);

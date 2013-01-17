@@ -2,7 +2,6 @@
 %% the functional interface for the "parser"
 %% returns forms, comments and referencs
 
-
 -module(erlide_np).
 
 -export([parse/1]).

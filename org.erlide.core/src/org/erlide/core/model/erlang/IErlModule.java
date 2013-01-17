@@ -143,4 +143,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     String getScannerName();
 
+    public abstract IErlScanner getScanner();
+
 }

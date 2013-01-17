@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.erlide.core;
 
@@ -50,11 +50,15 @@ public class ParsingTests {
     private boolean parse(final String s) {
         final String scannerModuleName = module.getScannerName();
         ErlideScanner.create(scannerModuleName);
-        ErlideScanner.initialScan(scannerModuleName, "", s, false);
-        final IErlParser parser = ErlModelManager.getErlangModel().getParser();
-        final boolean result = parser.parse(module, scannerModuleName, false,
-                "", false);
-        ErlideScanner.dispose(scannerModuleName);
+        boolean result = false;
+        try {
+            ErlideScanner.initialScan(scannerModuleName, "", s, false);
+            final IErlParser parser = ErlModelManager.getErlangModel()
+                    .getParser();
+            result = parser.parse(module, scannerModuleName, false, "", false);
+        } finally {
+            ErlideScanner.dispose(scannerModuleName);
+        }
         return result;
     }
 

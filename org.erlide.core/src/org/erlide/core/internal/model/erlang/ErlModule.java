@@ -456,6 +456,7 @@ public class ErlModule extends Openable implements IErlModule {
         return getName();
     }
 
+    @Override
     public IErlScanner getScanner() {
         return getNewScanner();
     }
