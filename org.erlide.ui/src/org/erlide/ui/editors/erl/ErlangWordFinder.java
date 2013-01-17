@@ -15,7 +15,7 @@ public final class ErlangWordFinder {
         if (editor != null) {
             editor.reconcileNow();
         }
-        final ErlToken token = module.getScannerTokenAt(offset);
+        final ErlToken token = editor.getScanner().getTokenAt(offset);
         if (token == null) {
             return null;
         }

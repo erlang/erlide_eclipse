@@ -97,7 +97,7 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.model.erlang.ErlScanner;
+import org.erlide.core.internal.model.erlang.ErlModule;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunctionClause;
@@ -784,7 +784,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         if (fModule == null) {
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
-                scanner = new ErlScanner(fModule.getScannerName());
+                scanner = ((ErlModule) fModule).getScanner();
             } catch (final CoreException e) {
             }
         }
@@ -1666,9 +1666,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
         resetReconciler();
         try {
-            module.resetAndCacheScannerAndParser(getDocument().get());
             scanner.dispose();
-            scanner = new ErlScanner(module.getScannerName());
+            scanner = ((ErlModule) module).getScanner();
+            module.resetAndCacheScannerAndParser(getDocument().get(), scanner);
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
         }
@@ -1946,6 +1946,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     .toString();
         }
         return stateDirCached;
+    }
+
+    public IErlScanner getScanner() {
+        return scanner;
     }
 
 }

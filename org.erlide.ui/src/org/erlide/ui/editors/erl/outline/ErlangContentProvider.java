@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2004 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -42,6 +42,13 @@ public class ErlangContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(final Object parent) {
+        System.out.println("outline: " + parent);
+        if (parent instanceof IErlModule) {
+            final IErlModule m = (IErlModule) parent;
+            if (m.getChildCount() == 0) {
+                System.out.println("EMPTY?!?!");
+            }
+        }
         return getChildren(parent);
     }
 

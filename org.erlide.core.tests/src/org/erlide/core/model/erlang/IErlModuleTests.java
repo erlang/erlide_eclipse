@@ -318,26 +318,31 @@ public class IErlModuleTests extends ErlModelTestBase {
     // ErlToken getScannerTokenAt(int offset);
     @Test
     public void getScannerTokenAt() throws Exception {
-        module.open(null);
-        final ErlToken token = module.getScannerTokenAt(-1);
-        final ErlToken token2 = module.getScannerTokenAt(0);
-        final ErlToken token3 = module.getScannerTokenAt(1);
-        final ErlToken token4 = module.getScannerTokenAt(10);
-        final ErlToken token5 = module.getScannerTokenAt(24);
-        final ErlToken token6 = module.getScannerTokenAt(61);
-        final ErlToken token7 = module.getScannerTokenAt(62);
-        assertNull(token);
-        assertNotNull(token2);
-        assertEquals(ErlToken.KIND_OTHER, token2.getKind());
-        assertNotNull(token3);
-        assertEquals(ErlToken.KIND_ATOM, token3.getKind());
-        assertNotNull(token4);
-        assertEquals(ErlToken.KIND_OTHER, token4.getKind());
-        assertNotNull(token5);
-        assertEquals(ErlToken.KIND_STRING, token5.getKind());
-        assertNotNull(token6);
-        assertEquals(ErlToken.KIND_OTHER, token6.getKind());
-        assertNull(token7);
+        final IErlScanner scanner = ((ErlModule) module).getScanner();
+        try {
+            module.open(null);
+            final ErlToken token = scanner.getTokenAt(-1);
+            final ErlToken token2 = scanner.getTokenAt(0);
+            final ErlToken token3 = scanner.getTokenAt(1);
+            final ErlToken token4 = scanner.getTokenAt(10);
+            final ErlToken token5 = scanner.getTokenAt(24);
+            final ErlToken token6 = scanner.getTokenAt(61);
+            final ErlToken token7 = scanner.getTokenAt(62);
+            assertNull(token);
+            assertNotNull(token2);
+            assertEquals(ErlToken.KIND_OTHER, token2.getKind());
+            assertNotNull(token3);
+            assertEquals(ErlToken.KIND_ATOM, token3.getKind());
+            assertNotNull(token4);
+            assertEquals(ErlToken.KIND_OTHER, token4.getKind());
+            assertNotNull(token5);
+            assertEquals(ErlToken.KIND_STRING, token5.getKind());
+            assertNotNull(token6);
+            assertEquals(ErlToken.KIND_OTHER, token6.getKind());
+            assertNull(token7);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     // void setResource(IFile file);

@@ -28,7 +28,6 @@ import org.erlide.core.internal.model.root.ModelConfig;
 import org.erlide.core.internal.model.root.Openable;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.IParent;
-import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlExport;
@@ -436,23 +435,15 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public synchronized void resetAndCacheScannerAndParser(final String newText)
+    public synchronized void resetAndCacheScannerAndParser(
+            final String newText, final IErlScanner scanner)
             throws ErlModelException {
         initialText = newText;
         parsed = false;
         setStructureKnown(false);
+        scanner.initialScan(newText, "", true);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
-    }
-
-    @Override
-    public ErlToken getScannerTokenAt(final int offset) {
-        final IErlScanner scanner = getScanner();
-        try {
-            return scanner.getTokenAt(offset);
-        } finally {
-            scanner.dispose();
-        }
     }
 
     @Override

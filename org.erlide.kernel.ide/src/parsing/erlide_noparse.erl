@@ -33,11 +33,9 @@
 %% API Functions
 %%
 
-
-
 -spec initial_parse(atom(), string(), string(), boolean(), boolean()) ->
           {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
-              | {error, term()}.
+              | {error, term(), term()}.
 
 initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
               UpdateSearchServer) ->
@@ -46,7 +44,6 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
         RefsFileName = BaseName ++ ".refs",
         RenewFun = fun(_F) ->
                            Tokens = get_tokens(ScannerName, ModuleFileName, StateDir),
-                           erlide_log:log(Tokens),
                            {Model, Refs} =
                                do_parse(ScannerName, RefsFileName, Tokens, StateDir,
                                         UpdateSearchServer),
@@ -59,23 +56,12 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
         {ok, Model, Cached, Refs}
     catch
         error:Reason ->
-            {error, Reason}
-    end.
-
-get_tokens(ScannerName, ModuleFileName, StateDir) ->
-    case whereis(ScannerName) of
-        undefined ->
-            {ok, InitialTextBin} = file:read_file(ModuleFileName),
-            InitialText = binary_to_list(InitialTextBin),
-            {{_Cached, Module}, _Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, true),
-            erlide_scanner:get_all_tokens(Module);
-        _ ->
-            erlide_scanner_server:getTokens(ScannerName)
+            {error, Reason, erlang:get_stacktrace()}
     end.
 
 -spec reparse(atom(), boolean()) ->
           {ok, #model{}, cached | renewing | dont_use_cache, [#ref{}]}
-              | {error, term()}.
+              | {error, term(), term()}.
 reparse(ScannerName, UpdateSearchServer) ->
     try
         Tokens = erlide_scanner_server:getTokens(ScannerName),
@@ -116,6 +102,17 @@ remove_cache_files(ScannerName, StateDir) ->
 %%
 %% Internal functions
 %%
+
+get_tokens(ScannerName, ModuleFileName, StateDir) ->
+    case whereis(ScannerName) of
+        undefined ->
+            {ok, InitialTextBin} = file:read_file(ModuleFileName),
+            InitialText = binary_to_list(InitialTextBin),
+            {{_Cached, Module}, _Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, true),
+            erlide_scanner:get_all_tokens(Module);
+        _ ->
+      erlide_scanner_server:getTokens(ScannerName)
+    end.
 
 do_parse(ScannerName, RefsFileName, Tokens, StateDir, UpdateSearchServer) ->
     {Forms, Comments, References} = erlide_np:parse(Tokens),
