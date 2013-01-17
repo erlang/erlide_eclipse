@@ -42,13 +42,6 @@ public class ErlangContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(final Object parent) {
-        System.out.println("outline: " + parent);
-        if (parent instanceof IErlModule) {
-            final IErlModule m = (IErlModule) parent;
-            if (m.getChildCount() == 0) {
-                System.out.println("EMPTY?!?!");
-            }
-        }
         return getChildren(parent);
     }
 

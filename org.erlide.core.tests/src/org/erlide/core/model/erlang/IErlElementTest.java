@@ -126,7 +126,6 @@ public class IErlElementTest extends ErlModelTestBase {
     @Test
     public void getModel() throws Exception {
         module.open(null);
-        final IErlElement element = module.getElementAtLine(3);
         final IErlElementLocator model = ErlModelManager.getErlangModel();
         assertEquals(model, ErlModelManager.getErlangModel());
     }

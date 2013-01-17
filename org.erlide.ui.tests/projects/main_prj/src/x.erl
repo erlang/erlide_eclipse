@@ -5,6 +5,8 @@
 
 -define(myrec, #'REC'{}).
     
+
+%% doc for f
 f() ->
 	X=[1,4,6], lists:reverse([]),
 	io:format(""),

@@ -12,7 +12,6 @@ package org.erlide.core.internal.model.erlang;
 
 import org.erlide.core.model.erlang.ErlToken;
 import org.erlide.core.model.erlang.IErlScanner;
-import org.erlide.utils.ErlLogger;
 import org.erlide.utils.IDisposable;
 
 /**
@@ -23,7 +22,6 @@ public class ErlScanner implements IDisposable, IErlScanner {
 
     public ErlScanner(final String name) {
         this.name = name;
-        ErlLogger.debug("!!!>>> create scanner " + name);
         ErlideScanner.create(name);
     }
 
@@ -35,7 +33,6 @@ public class ErlScanner implements IDisposable, IErlScanner {
 
     @Override
     public void dispose() {
-        ErlLogger.debug("!!>>> dispose scanner " + name);
         ErlideScanner.dispose(name);
     }
 
