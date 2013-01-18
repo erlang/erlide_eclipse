@@ -125,10 +125,8 @@ spawn_server(ScannerName) ->
                                 ?SAVE_CALLS,
                                 loop(#module{name=ScannerName}, 0)
                         end),
-            erlide_log:log({"!!!>>>", spawn, ScannerName}),
             erlang:register(ScannerName, Pid);
         _ ->
-            erlide_log:log({"!!!>>>", existing, ScannerName}),
             ok
     end,
     server_cmd(ScannerName, addref, []),
@@ -138,16 +136,13 @@ loop(Module, Refs) ->
     receive
         {addref, From, []} ->
             ?D({addref, Module#module.name}),
-            erlide_log:log({"!!!>>>", addref, Module#module.name, Refs+1}),
             reply(addref, From, ok),
             ?MODULE:loop(Module, Refs+1);
         {dispose, From, []} ->
             ?D({dispose, Module#module.name}),
-            erlide_log:log({"!!!>>>", dispose, Module#module.name, Refs-1}),
             reply(dispose, From, ok),
             case Refs=<1 of
                 true ->
-                    erlide_log:log({"!!!>>>", 'KILL', Module#module.name}),
                     ok;
                 _ ->
                     ?MODULE:loop(Module, Refs-1)
