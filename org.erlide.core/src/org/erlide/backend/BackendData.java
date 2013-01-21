@@ -61,6 +61,8 @@ public final class BackendData extends RuntimeData {
             final ILaunchConfiguration config, final String mode) {
         super(runtime, mode);
 
+        projects = Lists.newArrayList();
+
         Asserts.isNotNull(config);
         try {
             cookie = config.getAttribute(ErlLaunchAttributes.COOKIE, cookie);
@@ -102,7 +104,6 @@ public final class BackendData extends RuntimeData {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        projects = Lists.newArrayList();
 
         if (runtime != null) {
             runtimeInfo = runtime.setArgs(getExtraArgs());

@@ -59,7 +59,7 @@ public class RuntimeInfo {
     @Override
     public String toString() {
         return String.format("Runtime<%s (%s) %s [%s]>", getName(),
-                getOtpHome(), version_cached, getArgs());
+                getOtpHome(), getVersion(), getArgs());
     }
 
     public String getOtpHome() {
