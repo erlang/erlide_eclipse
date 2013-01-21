@@ -272,7 +272,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     public void disposeModule() {
         if (fModule != null) {
             fModule.dispose();
-            scanner.dispose();
             fModule = null;
         }
     }
@@ -783,7 +782,9 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         if (fModule == null) {
             try {
                 fModule = ErlModelUtils.getModule(getEditorInput());
+                fModule.createScanner();
                 scanner = fModule.getScanner();
+                scanner.dispose();
             } catch (final CoreException e) {
             }
         }
@@ -1665,9 +1666,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
         resetReconciler();
         try {
-            scanner.dispose();
+            module.createScanner();
             scanner = module.getScanner();
-            module.resetAndCacheScannerAndParser(getDocument().get(), scanner);
+            scanner.dispose();
+            module.resetAndCacheScannerAndParser(getDocument().get());
         } catch (final ErlModelException e) {
             ErlLogger.error(e);
         }

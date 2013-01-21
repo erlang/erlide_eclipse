@@ -416,7 +416,11 @@ public class IErlModuleTests extends ErlModelTestBase {
         module.open(null);
         assertTrue(module.getChildCount() > 0);
         final IErlScanner scanner = module.getScanner();
-        module.resetAndCacheScannerAndParser(scanner.getText(), scanner);
+        try {
+            module.resetAndCacheScannerAndParser(scanner.getText());
+        } finally {
+            scanner.dispose();
+        }
         assertTrue(module.getChildCount() > 0);
     }
 }

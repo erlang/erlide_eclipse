@@ -16,4 +16,6 @@ public interface IErlScanner extends IDisposable {
 
     String getText();
 
+    void addref();
+
 }

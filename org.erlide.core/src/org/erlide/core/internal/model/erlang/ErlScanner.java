@@ -56,4 +56,9 @@ public class ErlScanner implements IDisposable, IErlScanner {
     public String getName() {
         return name;
     }
+
+    @Override
+    public void addref() {
+        ErlideScanner.addref(name);
+    }
 }

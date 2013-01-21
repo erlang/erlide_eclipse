@@ -75,6 +75,7 @@ public class ErlModule extends Openable implements IErlModule {
     private boolean parsed;
     private final String scannerName;
     private final Collection<IErlComment> comments;
+    private IErlScanner scanner;
 
     public ErlModule(final IParent parent, final String name,
             final String initialText, final IFile file, final String path) {
@@ -346,11 +347,8 @@ public class ErlModule extends Openable implements IErlModule {
     public synchronized void reconcileText(final int offset,
             final int removeLength, final String newText,
             final IProgressMonitor mon) {
-        final IErlScanner scanner = getScanner();
-        try {
+        if (scanner != null) {
             scanner.replaceText(offset, removeLength, newText);
-        } finally {
-            scanner.dispose();
         }
         if (mon != null) {
             mon.worked(1);
@@ -394,6 +392,10 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public void dispose() {
+        if (scanner != null) {
+            scanner.dispose();
+            scanner = null;
+        }
         ErlModelManager.getErlangModel().removeModule(this);
     }
 
@@ -435,8 +437,7 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     @Override
-    public synchronized void resetAndCacheScannerAndParser(
-            final String newText, final IErlScanner scanner)
+    public synchronized void resetAndCacheScannerAndParser(final String newText)
             throws ErlModelException {
         initialText = newText;
         parsed = false;
@@ -458,7 +459,20 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public IErlScanner getScanner() {
-        return getNewScanner();
+        if (scanner == null) {
+            scanner = getNewScanner();
+        } else {
+            scanner.addref();
+        }
+        return scanner;
+    }
+
+    @Override
+    public void createScanner() {
+        if (scanner != null) {
+            scanner.dispose();
+        }
+        scanner = getNewScanner();
     }
 
     private IErlScanner getNewScanner() {

@@ -112,11 +112,9 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
      * updating the parser cache
      * 
      * @param newText
-     * @param scanner
      * @throws ErlModelException
      */
-    void resetAndCacheScannerAndParser(String newText, IErlScanner scanner)
-            throws ErlModelException;
+    void resetAndCacheScannerAndParser(String newText) throws ErlModelException;
 
     /**
      * Get the module name without extension
@@ -143,6 +141,8 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     String getScannerName();
 
-    public abstract IErlScanner getScanner();
+    IErlScanner getScanner();
+
+    void createScanner();
 
 }

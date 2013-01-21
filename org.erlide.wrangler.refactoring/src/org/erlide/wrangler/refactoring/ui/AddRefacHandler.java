@@ -112,7 +112,7 @@ public class AddRefacHandler extends AbstractHandler {
                     .findModule(callbackModule);
             IErlScanner scanner = module.getScanner();
             try {
-                module.resetAndCacheScannerAndParser(null, scanner);
+                module.resetAndCacheScannerAndParser(null);
             } finally {
                 scanner.dispose();
             }
