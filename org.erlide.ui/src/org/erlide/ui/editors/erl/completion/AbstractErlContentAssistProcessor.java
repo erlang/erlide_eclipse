@@ -172,6 +172,7 @@ public abstract class AbstractErlContentAssistProcessor {
             final int parenPos = before.lastIndexOf('(');
             final int leftBracketPos = before.lastIndexOf('{');
             final int interrogationMarkPos = before.lastIndexOf('?');
+            final int arrowPos = before.lastIndexOf("->");
             final String prefix = getPrefix(before);
             List<String> fieldsSoFar = null;
             List<ICompletionProposal> result;
@@ -215,7 +216,8 @@ public abstract class AbstractErlContentAssistProcessor {
                 before = before.substring(colonPos + 1);
             } else if (interrogationMarkPos > hashMarkPos
                     && interrogationMarkPos > commaPos
-                    && interrogationMarkPos > colonPos) {
+                    && interrogationMarkPos > colonPos
+                    && interrogationMarkPos > arrowPos) {
                 flags = EnumSet.of(Kinds.MACRO_DEFS);
                 pos = interrogationMarkPos;
                 before = before.substring(interrogationMarkPos + 1);
