@@ -403,14 +403,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         markAsSelectionDependentAction("CallHierarchy", true);
 
         if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
-            clearCacheAction = new ClearCacheAction(
-                    ErlangEditorMessages.getBundleForConstructedKeys(),
-                    "ClearCache.", this);
-            clearCacheAction
-                    .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
-            setAction("ClearCache", clearCacheAction);
-            markAsStateDependentAction("ClearCache", true);
-            markAsSelectionDependentAction("ClearCache", true);
+            setupClearCacheAction();
             // PlatformUI.getWorkbench().getHelpSystem().setHelp(indentAction,
             // IErlangHelpContextIds.INDENT_ACTION);
         }
@@ -447,6 +440,20 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     }
 
+    private void setupClearCacheAction() {
+        if (clearCacheAction != null) {
+            return;
+        }
+        clearCacheAction = new ClearCacheAction(
+                ErlangEditorMessages.getBundleForConstructedKeys(),
+                "ClearCache.", this);
+        clearCacheAction
+                .setActionDefinitionId(IErlangEditorActionDefinitionIds.CLEAR_CACHE);
+        setAction("ClearCache", clearCacheAction);
+        markAsStateDependentAction("ClearCache", true);
+        markAsSelectionDependentAction("ClearCache", true);
+    }
+
     private void setupTestAction() {
         if (testAction != null) {
             return;
@@ -469,6 +476,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN, testAction);
         }
         if (SystemConfiguration.getInstance().isClearCacheAvailable()) {
+            setupClearCacheAction();
             menu.prependToGroup(IContextMenuConstants.GROUP_OPEN,
                     clearCacheAction);
         }
