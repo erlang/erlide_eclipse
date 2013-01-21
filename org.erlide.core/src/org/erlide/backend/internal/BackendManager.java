@@ -229,8 +229,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             for (final Entry<IProject, Set<IBackend>> e : executionBackends
                     .entrySet()) {
                 for (final IBackend be : e.getValue()) {
-                    final String bnode = be.getData().getNodeName();
-                    if (bnode.equals(node)) {
+                    final String bnode = be.getData().getQualifiedNodeName();
+                    // TODO this is not very reliable
+                    // we have to get the real node name... how?
+                    if (bnode.startsWith(node)) {
                         removeExecutionBackend(e.getKey(), be);
                         break;
                     }
