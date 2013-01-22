@@ -8,7 +8,7 @@
  *     Vlad Dumitrescu
  *******************************************************************************/
 
-package org.erlide.core.internal.model.root;
+package org.erlide.core.model.root;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
@@ -23,7 +23,10 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PropertiesUtils;
-import org.erlide.core.model.root.IOldErlangProjectProperties;
+import org.erlide.core.internal.model.root.ErlProjectInfo;
+import org.erlide.core.internal.model.root.ErlProjectInfoBuilder;
+import org.erlide.core.internal.model.root.PathSerializer;
+import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
@@ -32,7 +35,7 @@ import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 
 public final class OldErlangProjectProperties implements
-        IPreferenceChangeListener, IOldErlangProjectProperties {
+        IPreferenceChangeListener {
 
     private IProject project;
 
@@ -119,7 +122,6 @@ public final class OldErlangProjectProperties implements
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN, false));
     }
 
-    @Override
     public void store() throws BackingStoreException {
         if (project == null) {
             return;
@@ -172,17 +174,14 @@ public final class OldErlangProjectProperties implements
         }
     }
 
-    @Override
     public Collection<IPath> getIncludeDirs() {
         return Collections.unmodifiableCollection(includeDirs);
     }
 
-    @Override
     public void setIncludeDirs(final Collection<IPath> includeDirs2) {
         includeDirs = Lists.newArrayList(includeDirs2);
     }
 
-    @Override
     @Deprecated
     public IPath getOutputDir() {
         try {
@@ -192,12 +191,10 @@ public final class OldErlangProjectProperties implements
         }
     }
 
-    @Override
     public Collection<IPath> getOutputDirs() {
         return outputDirs;
     }
 
-    @Override
     @Deprecated
     public void setOutputDir(final IPath dir) {
         setOutputDirs(Lists.newArrayList(dir));
@@ -207,20 +204,17 @@ public final class OldErlangProjectProperties implements
         outputDirs = Lists.newArrayList(dirs);
     }
 
-    @Override
     public Collection<IPath> getSourceDirs() {
         return Collections.unmodifiableCollection(sourceDirs);
     }
 
-    @Override
     public void setSourceDirs(final Collection<IPath> sourceDirs2) {
         sourceDirs = Lists.newArrayList(sourceDirs2);
     }
 
-    @Override
     public void copyFrom(
-            final IOldErlangProjectProperties erlangProjectProperties) {
-        final OldErlangProjectProperties bprefs = (OldErlangProjectProperties) erlangProjectProperties;
+            final OldErlangProjectProperties erlangProjectProperties) {
+        final OldErlangProjectProperties bprefs = erlangProjectProperties;
         includeDirs = bprefs.includeDirs;
         sourceDirs = bprefs.sourceDirs;
         outputDirs = bprefs.outputDirs;
@@ -228,27 +222,22 @@ public final class OldErlangProjectProperties implements
         runtimeVersion = bprefs.runtimeVersion;
     }
 
-    @Override
     public String getExternalIncludesFile() {
         return externalIncludesFile;
     }
 
-    @Override
     public void setExternalIncludesFile(final String file) {
         externalIncludesFile = file;
     }
 
-    @Override
     public void setExternalModulesFile(final String externalModules) {
         externalModulesFile = externalModules;
     }
 
-    @Override
     public String getExternalModulesFile() {
         return externalModulesFile;
     }
 
-    @Override
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeInfo runtime = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(runtimeVersion, runtimeName);
@@ -259,7 +248,6 @@ public final class OldErlangProjectProperties implements
         return rt;
     }
 
-    @Override
     public RuntimeVersion getRuntimeVersion() {
         return runtimeVersion;
     }
@@ -271,7 +259,6 @@ public final class OldErlangProjectProperties implements
         load(root);
     }
 
-    @Override
     public void setRuntimeVersion(final RuntimeVersion runtimeVersion) {
         this.runtimeVersion = runtimeVersion;
     }

@@ -36,10 +36,9 @@ import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IOldErlangProjectProperties;
+import org.erlide.core.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -155,7 +154,7 @@ public class NewErlangProject extends Wizard implements INewWizard {
      * @return
      */
     private boolean validateFinish() {
-        final IOldErlangProjectProperties prefs = buildPage.getPrefs();
+        final OldErlangProjectProperties prefs = buildPage.getPrefs();
         if (prefs.getOutputDirs().isEmpty()) {
             reportError(ErlideUIPlugin
                     .getResourceString("wizard.errors.buildpath"));

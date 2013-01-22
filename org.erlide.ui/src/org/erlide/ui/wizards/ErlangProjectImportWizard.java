@@ -45,7 +45,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.internal.model.root.OldErlangProjectProperties;
+import org.erlide.core.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.perspectives.ErlangPerspective;

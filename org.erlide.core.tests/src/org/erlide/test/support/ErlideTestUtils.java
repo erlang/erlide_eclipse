@@ -26,13 +26,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IOldErlangProjectProperties;
+import org.erlide.core.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.util.ModelUtils;
 
 import com.google.common.collect.Lists;
@@ -220,7 +219,7 @@ public class ErlideTestUtils {
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .newProject(name, path.toPortableString());
         final IProject project = erlProject.getWorkspaceProject();
-        final IOldErlangProjectProperties prefs = new OldErlangProjectProperties(
+        final OldErlangProjectProperties prefs = new OldErlangProjectProperties(
                 project);
         final List<IPath> srcDirs = new ArrayList<IPath>();
         srcDirs.add(new Path("src"));
