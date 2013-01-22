@@ -1,7 +1,7 @@
 package org.erlide.core.services.search;
 
 import org.erlide.core.model.util.ErlangFunction;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

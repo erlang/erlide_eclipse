@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.erlide.ui.properties;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +24,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;
 
@@ -82,11 +84,16 @@ public class OldErlProjectPropertyPage extends FieldEditorOverlayPage {
         // tst.setEnabled(false, fieldEditorParent);
         // addField(tst);
 
-        final String[][] runtimes = BackendCore.getRuntimeInfoManager()
+        final List<String> versions = BackendCore.getRuntimeInfoCatalog()
                 .getAllRuntimesVersions();
+        final String[][] versionsArray = new String[versions.size()][2];
+        for (int i = 0; i < versionsArray.length; i++) {
+            versionsArray[i][0] = versions.get(i);
+            versionsArray[i][1] = versionsArray[i][0];
+        }
         addField(new ComboFieldEditor(
                 ProjectPreferencesConstants.RUNTIME_VERSION,
-                "Runtime version:", runtimes, fieldEditorParent));
+                "Runtime version:", versionsArray, fieldEditorParent));
 
         addField(new BooleanFieldEditor(
                 ProjectPreferencesConstants.NUKE_OUTPUT_ON_CLEAN,

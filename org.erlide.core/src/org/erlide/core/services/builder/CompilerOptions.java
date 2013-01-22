@@ -18,8 +18,8 @@ import org.erlide.core.services.builder.CompilerOption.ModuleOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOption.RawOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.TermParserException;
+import org.erlide.runtime.TermParserException;
+import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlang;

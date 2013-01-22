@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -26,7 +26,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.exception.WranglerException;
 import org.erlide.wrangler.refactoring.selection.IErlSelection;
 import org.erlide.wrangler.refactoring.selection.internal.ErlMemberSelection;
@@ -61,7 +61,7 @@ public class GlobalParameters {
             return hasQuickCheck;
         } else {
             final RpcResult res = BackendCore.getBackendManager()
-                    .getIdeBackend()
+                    .getIdeBackend().getRpcSite()
                     .call_noexception("code", "which", "a", "eqc");
             if (!res.isOk()) {
                 return false;
@@ -142,8 +142,8 @@ public class GlobalParameters {
                             WranglerUtils.getDocument(file));
                 } else if (firstElement instanceof IFile) {
                     final IFile file = (IFile) firstElement;
-                    final IErlModule module =  ErlModelManager.getErlangModel().findModule(
-                            file);
+                    final IErlModule module = ErlModelManager.getErlangModel()
+                            .findModule(file);
                     wranglerSelection = new ErlModuleSelection(module, file);
                 } else {
                     wranglerSelection = null;

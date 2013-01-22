@@ -3,9 +3,9 @@ package org.erlide.core.services.search;
 import java.util.Collection;
 import java.util.List;
 
-import org.erlide.backend.IBackend;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ErlangFunctionCall;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -16,7 +16,7 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideDoc {
-    public static OtpErlangObject getProposalsWithDoc(final IBackend b,
+    public static OtpErlangObject getProposalsWithDoc(final IRpcSite b,
             final String mod, final String prefix, final String stateDir) {
         OtpErlangObject res = null;
         try {
@@ -28,7 +28,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static OtpErlangObject getModules(final IBackend b,
+    public static OtpErlangObject getModules(final IRpcSite b,
             final String prefix, final List<String> projectModules,
             final boolean includes) {
         OtpErlangObject res = null;
@@ -42,7 +42,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static OtpErlangObject getOtpDoc(final IBackend backend,
+    public static OtpErlangObject getOtpDoc(final IRpcSite backend,
             final ErlangFunctionCall functionCall, final String stateDir) {
         OtpErlangObject res = null;
         final OtpErlangTuple input = new OtpErlangTuple(new OtpErlangObject[] {
@@ -61,8 +61,8 @@ public class ErlideDoc {
     }
 
     @SuppressWarnings("boxing")
-    public static OtpErlangObject getOtpDoc(final IBackend ide,
-            final IBackend b, final int offset, final String stateDir,
+    public static OtpErlangObject getOtpDoc(final IRpcSite ide,
+            final IRpcSite b, final int offset, final String stateDir,
             final String module, final Collection<OtpErlangObject> imports,
             final String externalModules, final OtpErlangList pathVars) {
         OtpErlangObject res = null;
@@ -78,7 +78,7 @@ public class ErlideDoc {
         return res;
     }
 
-    public static String getOtpDocLocation(final IBackend b) {
+    public static String getOtpDocLocation(final IRpcSite b) {
         // OtpErlangObject res = null;
         // try {
         // // commented out since target doesn't exist

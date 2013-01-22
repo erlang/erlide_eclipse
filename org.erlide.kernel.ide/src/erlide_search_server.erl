@@ -15,8 +15,6 @@
 
 -include_lib("kernel/include/file.hrl").
 
--include("erlide_search_server.hrl").
-
 %%
 %% Exported Functions
 %%
@@ -31,8 +29,7 @@
 
 %% called from Erlang
 -export([remove_module/1,
-         add_module_refs/2,
-         check_pattern/6]).
+         add_module_refs/2]).
 
 
 %% for testing
@@ -144,14 +141,11 @@ server_cmd(Command, Args) ->
 
 
 loop(State) ->
-    ?D(State),
     receive
         {stop, From, []} ->
             reply(stop, From, stopped);
         {Cmd, From, Args} ->
-            ?D(Cmd),
             NewState = cmd(Cmd, From, Args, State),
-            ?D(NewState),
             ?MODULE:loop(NewState)
     end.
 
@@ -204,7 +198,7 @@ do_cmd(modules, _, #state{modules=Modules} = State) ->
 do_start_find_refs(Pattern, Modules, JPid, StateDir, UpdateSearchServer, State) ->
     ?D({do_start_find_refs, Pattern, JPid}),
     Pid = spawn_link(fun() ->
-                             ModuleChunks = chunkify(Modules, 10),
+                             ModuleChunks = chunkify(Modules, 3),
                              ?D({JPid, length(ModuleChunks)}),
                              JPid ! {start, length(ModuleChunks)},
                              ?D({JPid, length(ModuleChunks)}),
@@ -250,75 +244,16 @@ do_find_refs([], _, _, State, _, Acc) ->
     {{ok, Acc}, State};
 do_find_refs([{ScannerName, ModulePath} | Rest], Pattern, StateDir, 
              #state{modules=Modules} = State, UpdateSearchServer, Acc0) ->
-    ?D(ScannerName),
     Refs = get_module_refs(ScannerName, ModulePath, StateDir, Modules,
 			   UpdateSearchServer),
     Mod = get_module_name(ModulePath),
-    Acc1 = find_data(Refs, Pattern, Mod, ModulePath, Acc0),
-    ?D(Acc1),
+    Acc1 = Acc0 ++ erlide_search:find_data(Refs, Pattern, Mod, ModulePath),
     do_find_refs(Rest, Pattern, StateDir, State, UpdateSearchServer, Acc1).
 
 get_module_name(ModulePath) ->
     L = filename:rootname(filename:basename(ModulePath)),
     list_to_atom(L).
 
-find_data([], _, _, _, Acc) ->
-    Acc;
-find_data([#ref{function=F, arity=A, clause=C, data=D, offset=O, length=L, sub_clause=S} | Rest],
-          Pattern, Mod, M, Acc) ->
-    NewAcc = case check_pattern(Pattern, Mod, D, F, A, C) of
-                 true ->
-                     [{M, F, A, C, S, O, L, is_def(D)} | Acc];
-                 false ->
-                     Acc
-             end,
-    find_data(Rest, Pattern, Mod, M, NewAcc).
-
-is_def(#function_def{}) -> true;
-is_def(#macro_def{}) -> true;
-is_def(#type_def{}) -> true;
-is_def(#module_def{}) -> true;
-is_def(#var_def{}) -> true;
-is_def(#record_field_def{}) -> true;
-is_def(_) -> false.
-
-check_pattern(Pattern, Mod, #local_call{function=F, arity=A}, _, _, _)->
-    check_function_ref(#external_call{module=Mod, function=F, arity=A}, Pattern);
-check_pattern(Pattern, Mod, #function_def{function=F, arity=A} = FD, _, _, _)->
-    check_function_ref(FD, Pattern) orelse
-        check_function_ref(#function_def_mod{module=Mod, function=F, arity=A}, Pattern);
-check_pattern(Pattern, Mod, #type_ref{module='_', type=T}, _, _, _) ->
-    lists:member(#type_ref{module=Mod, type=T}, Pattern);
-check_pattern(Pattern, _Mod, #var_ref{}=VR, F, A, C) ->
-	check_var_pattern(Pattern, VR, F, A, C);
-check_pattern(Pattern, _Mod, #var_def{}=VD, F, A, C) ->
-	check_var_pattern(Pattern, VD, F, A, C);
-check_pattern(Pattern, _Mod, D, _, _, _) ->
-%%     ?D({check_pattern, Pattern, D}),
-    lists:member(D, Pattern).
-
-check_function_ref(_, []) ->
-    false;
-check_function_ref(#external_call{module=Mod, function=F, arity=A1}, [#external_call{module=Mod, function=F, arity=A2}|_]) ->
-    A1==A2 orelse A2==undefined;
-check_function_ref(#function_def{function=F, arity=A1}, [#function_def{function=F, arity=A2}|_]) ->
-    A1==A2 orelse A2==undefined;
-check_function_ref(#function_def_mod{module=Mod, function=F, arity=A1}, [#function_def_mod{module=Mod, function=F, arity=A2}|_]) ->
-    A1==A2 orelse A2==undefined;
-check_function_ref(X, [_|Tail]) ->
-    check_function_ref(X, Tail).
-
-    
-
-check_var_pattern([], _, _, _, _) ->
-	false;
-check_var_pattern([#var_pattern{vardefref=VL, function=F, arity=A, clause=C} | Rest], V, F, A, C) ->
-	case lists:member(V, VL) of
-		true -> true;
-		false -> check_var_pattern(Rest, V, F, A, C)
-	end;
-check_var_pattern([_ | Rest], V, F, A, C) ->
-	check_var_pattern(Rest, V, F, A, C).
 
 get_module_refs(ScannerName, ModulePath, StateDir, Modules, UpdateSearchServer) ->
     case lists:keysearch(ScannerName, #module.scanner_name, Modules) of

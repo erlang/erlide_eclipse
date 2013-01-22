@@ -5,11 +5,11 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
-import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -23,7 +23,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class HandleEdocLinksLocationListener implements LocationListener {
     /**
-     * 
+     *
      */
     private final BrowserInformationControl control;
     private final EdocView edocView;
@@ -65,13 +65,14 @@ public class HandleEdocLinksLocationListener implements LocationListener {
                         editor.getModule()).getWorkspaceProject();
                 final IBackendManager backendManager = BackendCore
                         .getBackendManager();
-                IBackend backend = null;
+                IRpcSite backend = null;
                 try {
-                    backend = backendManager.getBuildBackend(project);
+                    backend = backendManager.getBuildBackend(project)
+                            .getRpcSite();
                 } catch (final BackendException e) {
                 }
                 if (backend == null) {
-                    backend = backendManager.getIdeBackend();
+                    backend = backendManager.getIdeBackend().getRpcSite();
                 }
                 final String stateDir = ErlideUIPlugin.getDefault()
                         .getStateLocation().toString();

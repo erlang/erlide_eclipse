@@ -9,7 +9,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 

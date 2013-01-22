@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 
 import org.erlide.core.MessageReporter;
 import org.erlide.core.MessageReporter.ReporterPosition;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.LogUtil;
 import org.erlide.utils.SystemConfiguration;
 

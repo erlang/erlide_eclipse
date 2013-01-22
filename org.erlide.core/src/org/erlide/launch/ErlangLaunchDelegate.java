@@ -36,10 +36,11 @@ import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.core.model.BeamLocator;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.ErlDebugConstants;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
 import com.google.common.collect.Maps;
@@ -73,8 +74,8 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     protected IBackend doLaunch(final ILaunchConfiguration config,
             final String mode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
-        BackendData data = new BackendData(BackendCore.getRuntimeInfoManager(),
-                config, mode);
+        BackendData data = new BackendData(BackendCore.getRuntimeInfoCatalog()
+                .getDefaultRuntime(), config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'",

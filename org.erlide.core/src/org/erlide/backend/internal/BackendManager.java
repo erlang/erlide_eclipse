@@ -38,13 +38,13 @@ import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.epmd.EpmdWatcher;
-import org.erlide.jinterface.epmd.IEpmdListener;
-import org.erlide.launch.EpmdWatchJob;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.epmd.IEpmdListener;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
@@ -66,9 +66,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     final List<IBackendListener> listeners;
     private final Map<Bundle, ICodeBundle> codeBundles;
 
-    private EpmdWatcher epmdWatcher;
     private final Set<IBackend> allBackends;
-    private EpmdWatchJob epmdWatcherJob;
     private final BackendManagerLaunchListener launchListener;
     private final IBackendFactory factory;
     private final RuntimeInfo erlideRuntimeInfo;
@@ -86,9 +84,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         codeBundles = Maps.newHashMap();
 
         loadCodepathExtensions();
-
-        // tryStartEpmdProcess();
-        startEpmdWatcher();
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
@@ -114,13 +109,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         } catch (final IOException e) {
             // ErlLogger.info("Could not start epmd! " + e.getMessage());
         }
-    }
-
-    private void startEpmdWatcher() {
-        epmdWatcher = new EpmdWatcher();
-        epmdWatcher.addEpmdListener(this);
-        epmdWatcherJob = new EpmdWatchJob(epmdWatcher);
-        epmdWatcherJob.schedule(1000);
     }
 
     private void registerGlobalEventhandlers() {
@@ -241,8 +229,10 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             for (final Entry<IProject, Set<IBackend>> e : executionBackends
                     .entrySet()) {
                 for (final IBackend be : e.getValue()) {
-                    final String bnode = be.getData().getNodeName();
-                    if (bnode.equals(node)) {
+                    final String bnode = be.getData().getQualifiedNodeName();
+                    // TODO this is not very reliable
+                    // we have to get the real node name... how?
+                    if (bnode.startsWith(node)) {
                         removeExecutionBackend(e.getKey(), be);
                         break;
                     }
@@ -254,7 +244,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public synchronized void removeExecutionBackend(final IProject project,
             final IBackend b) {
-        b.removeProjectPath(project);
+        final IErlModel model = ErlModelManager.getErlangModel();
+        b.removeProjectPath(model.findProject(project));
         Set<IBackend> list = executionBackends.get(project);
         if (list == null) {
             list = Sets.newHashSet();
@@ -337,11 +328,11 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     }
 
     @Override
-    public IBackend getByName(final String nodeName) {
+    public IRpcSite getByName(final String nodeName) {
         final Collection<IBackend> list = getAllBackends();
         for (final IBackend b : list) {
             if (b.getName().equals(nodeName)) {
-                return b;
+                return b.getRpcSite();
             }
         }
         return null;
@@ -389,12 +380,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             executionBackends.put(project, list);
         }
         list.add(b);
-        b.addProjectPath(project);
-    }
-
-    @Override
-    public EpmdWatcher getEpmdWatcher() {
-        return epmdWatcher;
+        final IErlModel model = ErlModelManager.getErlangModel();
+        b.addProjectPath(model.findProject(project));
     }
 
     @Override
@@ -409,12 +396,13 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         for (final IBackend b : buildBackends.values()) {
             b.dispose();
         }
-        ideBackend.dispose();
+        if (ideBackend != null) {
+            ideBackend.dispose();
+        }
         final ILaunch[] launches = DebugPlugin.getDefault().getLaunchManager()
                 .getLaunches();
         launchListener.launchesTerminated(launches);
         launchListener.dispose();
-        epmdWatcherJob.stop();
     }
 
     @Override

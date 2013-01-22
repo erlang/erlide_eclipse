@@ -17,7 +17,7 @@ import org.eclipse.ui.PlatformUI;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 public class BackendManagerPopup implements IBackendListener {
 
@@ -32,9 +32,8 @@ public class BackendManagerPopup implements IBackendListener {
 
     @Override
     public void runtimeAdded(final IBackend b) {
-        ErlLogger.debug("$$ added backend " + b);
         ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
-        ErlLogger.debug("$$ added backend " + b.getRuntimeInfo().getName());
+        ErlLogger.debug("$$ added backend " + b.getName() + " " + b);
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final Display display = workbench.getDisplay();
         display.asyncExec(new Runnable() {

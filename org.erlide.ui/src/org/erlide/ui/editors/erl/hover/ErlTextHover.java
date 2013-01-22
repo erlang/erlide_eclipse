@@ -51,7 +51,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideDoc;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
@@ -62,6 +62,7 @@ import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.prefs.plugin.EditorPreferencePage;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 import org.osgi.framework.Bundle;
 
@@ -93,7 +94,7 @@ public class ErlTextHover implements ITextHover,
             return null;
         }
         editor.reconcileNow();
-        final ErlToken token = editor.getModule().getScannerTokenAt(offset);
+        final ErlToken token = editor.getScanner().getTokenAt(offset);
         if (token == null) {
             return null;
         }
@@ -290,15 +291,16 @@ public class ErlTextHover implements ITextHover,
         try {
             final IProject project = erlProject == null ? null : erlProject
                     .getWorkspaceProject();
-            final IBackend b = erlProject == null ? ide : backendManager
-                    .getBuildBackend(project);
+            final IRpcSite b = erlProject == null ? ide.getRpcSite()
+                    : backendManager.getBuildBackend(project).getRpcSite();
 
             final IErlModel model = ErlModelManager.getErlangModel();
             final String externalModulesString = erlProject != null ? erlProject
                     .getExternalModulesString() : null;
-            final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(ide,
-                    b, offset, stateDir, module.getScannerName(), fImports,
-                    externalModulesString, model.getPathVars());
+            final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(
+                    ide.getRpcSite(), b, offset, stateDir,
+                    module.getScannerName(), fImports, externalModulesString,
+                    model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
                 element = new OpenResult(t.elementAt(2));

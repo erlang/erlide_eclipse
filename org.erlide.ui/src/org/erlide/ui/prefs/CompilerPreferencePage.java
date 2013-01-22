@@ -44,18 +44,14 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.BackendHelper;
-import org.erlide.backend.IBackend;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.CompilerOption;
 import org.erlide.core.services.builder.CompilerOption.PathsOption;
 import org.erlide.core.services.builder.CompilerOptions;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.common.collect.Lists;
@@ -389,24 +385,6 @@ public class CompilerPreferencePage extends PropertyPage implements
         ERROR, 
         NO_RUNTIME
         //@formatter:off
-    }
-
-    OptionStatus optionsAreOk(final String string) {
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
-        if (b == null) {
-            return OptionStatus.NO_RUNTIME;
-        }
-        try {
-            BackendHelper.parseTerm(b, string + " .");
-        } catch (final BackendException e) {
-            try {
-                final String string2 = "[" + string + "].";
-                BackendHelper.parseTerm(b, string2);
-            } catch (final BackendException e1) {
-                return OptionStatus.ERROR;
-            }
-        }
-        return OptionStatus.OK;
     }
 
     @Override

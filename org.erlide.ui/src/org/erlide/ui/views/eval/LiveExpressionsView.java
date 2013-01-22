@@ -60,14 +60,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.launch.debug.BackendEvalResult;
 import org.erlide.launch.debug.DebugHelper;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.views.SourceViewerInformationControl;
-import org.erlide.utils.ErlUtils;
 
 /**
  * @author Vlad Dumitrescu
@@ -105,7 +105,8 @@ public class LiveExpressionsView extends ViewPart implements
         }
 
         private String evaluate() {
-            final IBackend b = BackendCore.getBackendManager().getIdeBackend();
+            final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                    .getRpcSite();
             final BackendEvalResult r = DebugHelper.eval(b, fExpr + ".", null);
             if (r.isOk()) {
                 return r.getValue().toString();
@@ -305,7 +306,7 @@ public class LiveExpressionsView extends ViewPart implements
                             // ErlLogger.debug(str);
                             final BackendEvalResult r = DebugHelper.eval(
                                     BackendCore.getBackendManager()
-                                            .getIdeBackend(),
+                                            .getIdeBackend().getRpcSite(),
                                     "lists:flatten(io_lib:format(\"~p\", ["
                                             + item.getText(1) + "])).", null);
                             if (r.isOk()) {

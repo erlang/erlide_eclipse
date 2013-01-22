@@ -26,8 +26,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.ide.IDE;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.cover.runtime.launch.FrameworkType;
@@ -35,8 +35,8 @@ import org.erlide.cover.runtime.launch.ICoverAttributes;
 import org.erlide.cover.runtime.launch.LaunchType;
 import org.erlide.cover.ui.launch.helpers.ProjectElement;
 import org.erlide.cover.ui.launch.helpers.ProjectLabelProvider;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
+import org.erlide.utils.ErlLogger;
 
 /**
  * Main panel of EUnit run configuration

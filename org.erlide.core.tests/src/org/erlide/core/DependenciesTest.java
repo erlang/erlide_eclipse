@@ -17,8 +17,8 @@ public class DependenciesTest {
     @SuppressWarnings("unchecked")
     public void setUp() throws IOException {
         jdep = new JDepend();
-        jdep.setComponents("org.erlide.jinterface,java,org.eclipse,com.ericsson,com,org.osgi");
-        // jdep.addDirectory(getPathToPlugin("org.erlide.jinterface"));
+        jdep.setComponents("org.erlide.runtime,java,org.eclipse,com.ericsson,com,org.osgi");
+        // jdep.addDirectory(getPathToPlugin("org.erlide.runtime"));
         jdep.addDirectory(getPathToPlugin("org.erlide.core"));
 
         analyzed = Lists.newArrayList(jdep.analyze());
@@ -39,7 +39,7 @@ public class DependenciesTest {
 
     private void removeUninterestingPackages(final List<JavaPackage> all) {
         final String[] boring = { "org.eclipse", "org.osgi", "com", "java",
-                "com.ericsson", "org.erlide.jinterface" };
+                "com.ericsson", "org.erlide.runtime" };
         for (final String b : boring) {
             final JavaPackage p = jdep.getPackage(b);
             all.remove(p);

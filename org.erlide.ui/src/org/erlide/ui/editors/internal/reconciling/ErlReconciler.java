@@ -1,5 +1,10 @@
 package org.erlide.ui.editors.internal.reconciling;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -17,7 +22,9 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 public class ErlReconciler implements IReconciler {
 
@@ -45,6 +52,9 @@ public class ErlReconciler implements IReconciler {
     private ITextViewer fViewer;
     /** True if it should reconcile all regions without delay between them */
     final boolean fChunkReconciler;
+
+    List<ErlDirtyRegion> log = Lists.newLinkedList();
+    boolean logging = false;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
             final boolean isIncremental, final boolean chunkReconciler,
@@ -219,9 +229,9 @@ public class ErlReconciler implements IReconciler {
                 ErlDirtyRegion r = null;
                 synchronized (fDirtyRegionQueue) {
                     if (fChunkReconciler) {
-                        rs = fDirtyRegionQueue.getAllDirtyRegions();
+                        rs = fDirtyRegionQueue.extractAllDirtyRegions();
                     } else {
-                        r = fDirtyRegionQueue.getNextDirtyRegion();
+                        r = fDirtyRegionQueue.extractNextDirtyRegion();
                     }
                 }
                 fIsActive = true;
@@ -240,14 +250,6 @@ public class ErlReconciler implements IReconciler {
                     process(r);
                 }
                 postProcess();
-                synchronized (fDirtyRegionQueue) {
-                    if (fChunkReconciler) {
-                        fDirtyRegionQueue.removeAll(rs);
-                    } else {
-                        fDirtyRegionQueue.remove(r);
-                    }
-                    fDirtyRegionQueue.notifyAll();
-                }
                 fIsActive = false;
             }
         }
@@ -521,9 +523,16 @@ public class ErlReconciler implements IReconciler {
             if (text == null) {
                 text = "";
             }
-            fDirtyRegionQueue.addDirtyRegion(new ErlDirtyRegion(e.getOffset(),
-                    e.getLength(), text));
+            final ErlDirtyRegion erlDirtyRegion = new ErlDirtyRegion(
+                    e.getOffset(), e.getLength(), text);
+            final boolean addDirtyRegion = fDirtyRegionQueue
+                    .addDirtyRegion(erlDirtyRegion);
             fDirtyRegionQueue.notifyAll();
+            if (logging) {
+                if (addDirtyRegion) {
+                    log.add(erlDirtyRegion);
+                }
+            }
         }
     }
 
@@ -624,6 +633,28 @@ public class ErlReconciler implements IReconciler {
     /*
      * @see AbstractReconciler#reconcilerDocumentChanged(IDocument)
      */
+    private class InitialScan extends ErlDirtyRegion {
+
+        private final String scannerName;
+        private final String erlFilename;
+
+        public InitialScan(final String text, final String scannerName,
+                final String erlFilename) {
+            super(0, 0, text);
+            this.scannerName = scannerName;
+            this.erlFilename = erlFilename;
+        }
+
+        public String getScannerName() {
+            return scannerName;
+        }
+
+        public String getErlFilename() {
+            return erlFilename;
+        }
+
+    }
+
     protected void reconcilerDocumentChanged(final IDocument document) {
         fStrategy.setDocument(document);
     }
@@ -647,6 +678,16 @@ public class ErlReconciler implements IReconciler {
         if (fStrategy instanceof IReconcilingStrategyExtension) {
             final IReconcilingStrategyExtension extension = (IReconcilingStrategyExtension) fStrategy;
             extension.initialReconcile();
+            if (logging) {
+                log.clear();
+                final ErlReconcilerStrategy erlReconcilerStrategy = (ErlReconcilerStrategy) fStrategy;
+                final IErlModule module = erlReconcilerStrategy.getModule();
+                final String scannerName = module.getScannerName();
+                final String erlFilename = module.getFilePath();
+                final ErlDirtyRegion erlDirtyRegion = new InitialScan(
+                        getDocument().get(), scannerName, erlFilename);
+                log.add(erlDirtyRegion);
+            }
         }
     }
 
@@ -666,6 +707,40 @@ public class ErlReconciler implements IReconciler {
             fThread.reset();
             initialProcess();
         }
+    }
+
+    public void dumpLog(final String filename) {
+        try {
+            final OutputStream out = new BufferedOutputStream(
+                    new FileOutputStream(new File(filename)));
+            for (final ErlDirtyRegion erlDirtyRegion : log) {
+                final String text = erlFixText(erlDirtyRegion.getText());
+                String s;
+                if (erlDirtyRegion instanceof InitialScan) {
+                    final InitialScan initialScan = (InitialScan) erlDirtyRegion;
+                    final String spaces = "              ";
+                    s = "{initial_scan,'" + initialScan.getScannerName()
+                            + "',\n" + spaces + "\""
+                            + initialScan.getErlFilename() + "\",[],\n"
+                            + spaces + text + "}.\n";
+                } else {
+                    s = "{replace_text," + erlDirtyRegion.getOffset() + ","
+                            + erlDirtyRegion.getLength() + "," + text + "}.\n";
+                }
+                out.write(s.getBytes());
+            }
+            out.close();
+            log.clear();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String erlFixText(final String text) {
+        if (text.isEmpty()) {
+            return "[]";
+        }
+        return "\"" + text.replace("\t", "\\t").replace("\n", "\\n") + "\"";
     }
 
 }

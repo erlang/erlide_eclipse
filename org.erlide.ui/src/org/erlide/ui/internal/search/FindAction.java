@@ -31,12 +31,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.progress.IProgressService;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.util.ModelUtils;
@@ -46,11 +45,12 @@ import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.OpenResult;
 import org.erlide.core.services.search.SearchPatternFactory;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ExceptionHandler;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -227,7 +227,8 @@ public abstract class FindAction extends SelectionDispatchAction {
         if (module == null) {
             return;
         }
-        final IBackend b = BackendCore.getBackendManager().getIdeBackend();
+        final IRpcSite b = BackendCore.getBackendManager().getIdeBackend()
+                .getRpcSite();
         final ISelection sel = getSelection();
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();

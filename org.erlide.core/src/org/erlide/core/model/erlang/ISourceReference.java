@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.erlide.core.model.erlang;
 
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 
 /**
  * Common protocol for Erlang elements that have associated source code. This

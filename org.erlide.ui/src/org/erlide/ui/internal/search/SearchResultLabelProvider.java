@@ -14,9 +14,9 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.AbstractTextSearchViewPage;
 import org.eclipse.swt.graphics.Image;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ResourceUtil;
@@ -139,7 +139,7 @@ public class SearchResultLabelProvider extends LabelProvider implements
         // function - ErlangFunction
         // clause - ClauseHead
         // occurrence - ModuleLineFunctionArityRef
-        Kind kind = Kind.ERROR;
+        Kind kind = Kind.PROBLEM;
         if (element instanceof String) {
             kind = Kind.MODULE;
         } else if (element instanceof ErlangSearchElement) {

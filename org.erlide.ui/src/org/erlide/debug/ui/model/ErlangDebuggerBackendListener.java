@@ -1,6 +1,7 @@
 package org.erlide.debug.ui.model;
 
 import java.text.MessageFormat;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -16,12 +17,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendListener;
 import org.erlide.core.ErlangCore;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangPid;
 
@@ -38,20 +40,25 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     public void moduleLoaded(final IBackend backend, final IProject project,
             final String moduleName) {
         try {
-            final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend);
+            final ErlangDebugTarget erlangDebugTarget = debugTargetOfBackend(backend
+                    .getRpcSite());
             if (erlangDebugTarget != null
                     && erlangDebugTarget.getInterpretedModules().contains(
                             moduleName)) {
-                if (isModuleRunningInInterpreter(erlangDebugTarget, backend,
-                        moduleName)) {
+                if (isModuleRunningInInterpreter(erlangDebugTarget,
+                        backend.getRpcSite(), moduleName)) {
                     abortContinueDialog(erlangDebugTarget);
                 } else {
                     final ILaunchConfiguration launchConfiguration = erlangDebugTarget
                             .getLaunch().getLaunchConfiguration();
-                    final int debugFlags = launchConfiguration.getAttribute(
-                            ErlLaunchAttributes.DEBUG_FLAGS,
-                            ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-                    final boolean distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+                    final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
+                            .makeSet(launchConfiguration
+                                    .getAttribute(
+                                            ErlLaunchAttributes.DEBUG_FLAGS,
+                                            ErlDebugFlags
+                                                    .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
+                    final boolean distributed = debugFlags
+                            .contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
                     backend.interpret(project, moduleName, distributed, true);
                 }
             }
@@ -60,7 +67,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
         }
     }
 
-    private ErlangDebugTarget debugTargetOfBackend(final IBackend backend) {
+    private ErlangDebugTarget debugTargetOfBackend(final IRpcSite backend) {
         final IDebugTarget[] debugTargets = DebugPlugin.getDefault()
                 .getLaunchManager().getDebugTargets();
         for (final IDebugTarget debugTarget : debugTargets) {
@@ -123,7 +130,7 @@ public class ErlangDebuggerBackendListener implements IBackendListener {
     }
 
     private boolean isModuleRunningInInterpreter(
-            final ErlangDebugTarget erlangDebugTarget, final IBackend backend,
+            final ErlangDebugTarget erlangDebugTarget, final IRpcSite backend,
             final String moduleName) {
         for (final OtpErlangPid metaPid : erlangDebugTarget.getAllMetaPids()) {
             final List<String> allModulesOnStack = ErlideDebug

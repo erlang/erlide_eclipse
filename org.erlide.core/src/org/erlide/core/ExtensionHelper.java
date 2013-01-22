@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 

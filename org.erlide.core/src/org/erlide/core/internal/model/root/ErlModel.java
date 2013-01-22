@@ -42,12 +42,14 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.ErlModule;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IOpenable;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.ErlangToolkit;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlParser;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementDelta;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -55,16 +57,14 @@ import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelChangeListener;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ElementChangedEvent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.IElementChangedListener;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.model.util.PluginUtils;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.utils.CommonUtils;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -531,13 +531,7 @@ public class ErlModel extends Openable implements IErlModel {
         IErlModule m = moduleMap.get(key);
         if (m == null) {
             final IParent parent2 = parent == null ? this : parent;
-            final boolean useCache = false;
-            // TODO kan vi skilja p� t.ex. local history och OTP-moduler? de
-            // senare vill vi ha cache f�r, men inte de tidigare, f�r d�
-            // krockar
-            // det med aktuell fil
-            // final boolean useCache = path != null && path.length() > 0;
-            m = new ErlModule(parent2, name, initialText, null, path, useCache);
+            m = new ErlModule(parent2, name, initialText, null, path);
             if (key != null) {
                 moduleMap.put(key, m);
                 mapModule.put(m, key);
@@ -726,7 +720,7 @@ public class ErlModel extends Openable implements IErlModel {
         final String name = file.getName();
         if (CommonUtils.isErlangFileContentFileName(name)) {
             final IErlModule module = new ErlModule(parent, name, null, file,
-                    null, true);
+                    null);
             if (parent != null) {
                 parent.addChild(module);
             }

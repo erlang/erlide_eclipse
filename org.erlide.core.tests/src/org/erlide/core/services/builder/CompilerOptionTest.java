@@ -4,11 +4,11 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.services.builder.CompilerOption.BooleanOption;
 import org.erlide.core.services.builder.CompilerOption.DefineOption;
 import org.erlide.core.services.builder.CompilerOption.WarningOption;
-import org.erlide.utils.TermParserException;
-import org.eclipse.xtext.xbase.lib.Pair;
+import org.erlide.runtime.TermParserException;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Activator;
 import org.erlide.tracing.core.Images;
 import org.erlide.tracing.core.TraceType;
@@ -13,6 +12,7 @@ import org.erlide.tracing.core.mvc.model.treenodes.ITreeNode;
 import org.erlide.tracing.core.mvc.model.treenodes.ModuleNode;
 import org.erlide.tracing.core.mvc.model.treenodes.TracingResultsNode;
 import org.erlide.tracing.core.mvc.model.treenodes.TreeNode;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangInt;

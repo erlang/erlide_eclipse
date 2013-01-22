@@ -1,6 +1,6 @@
 package org.erlide.wrangler.refactoring.ui.validator;
 
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 
 /**
@@ -19,7 +19,7 @@ public class ModuleNameValidator extends AtomValidator {
             return false;
         }
         try {
-            if ( ErlModelManager.getErlangModel().findModule(s) == null) {
+            if (ErlModelManager.getErlangModel().findModule(s) == null) {
                 return false;
             }
         } catch (final ErlModelException e) {

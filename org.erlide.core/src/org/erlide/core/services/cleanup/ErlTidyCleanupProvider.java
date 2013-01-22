@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Alain O'Dea
  *******************************************************************************/
@@ -12,8 +12,8 @@ package org.erlide.core.services.cleanup;
 
 import org.eclipse.core.resources.IResource;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
-import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.IRpcFuture;
 
 /**
  * <p>
@@ -56,8 +56,8 @@ class ErlTidyCleanupProvider implements CleanUpProvider {
     @Override
     public void cleanUp() throws Exception {
         // lookup a backend to run erl_tidy with
-        final IBackend Backend = BackendCore.getBackendManager()
-                .getIdeBackend();
+        final IRpcSite Backend = BackendCore.getBackendManager()
+                .getIdeBackend().getRpcSite();
 
         // invoke erl_tidy in the background
         final String absolutePathToErlangModule = resource.getLocation()

@@ -39,14 +39,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
 import org.erlide.backend.IBackend;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
 import org.erlide.core.internal.model.root.ErlModel.External;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IOpenable;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -57,12 +57,13 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlModelMarker;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.IOldErlangProjectProperties;
-import org.erlide.core.model.root.IOpenable;
 import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.CommonUtils;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -189,8 +190,8 @@ public class ErlProject extends Openable implements IErlProject {
         final List<String> projectIncludes = Lists.newArrayList();
         for (final IPath path : includeDirs) {
             if (path.isAbsolute() && !fProject.getLocation().isPrefixOf(path)) {
-                final IBackend backend = BackendCore
-                        .getBuildOrIdeBackend(fProject);
+                final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
+                        fProject).getRpcSite();
                 final Collection<String> includes = ErlideOpen
                         .getIncludesInDir(backend, path.toPortableString());
                 if (includes != null) {
@@ -725,8 +726,6 @@ public class ErlProject extends Openable implements IErlProject {
         if ((delta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
             // TODO when we have cache in ErlModuleMap for referenced projects,
             // we should purge it here
-            int i = 0;
-            ++i;
         }
         if ((delta.getFlags() & ~IResourceDelta.MARKERS) != 0) {
             super.resourceChanged(delta);

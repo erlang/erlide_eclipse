@@ -15,14 +15,14 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.root.ErlModelException;
-import org.erlide.core.model.root.ErlModelStatus;
-import org.erlide.core.model.root.ErlModelStatusConstants;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.ErlModelStatus;
+import org.erlide.core.model.ErlModelStatusConstants;
+import org.erlide.core.model.IOpenable;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 /**
  * Abstract class for implementations of Erlang elements which are IOpenable.
@@ -144,13 +144,6 @@ public abstract class Openable extends ErlElement implements IOpenable {
             final boolean knownStructure = buildStructure(monitor);
             setStructureKnown(knownStructure);
         }
-    }
-
-    /*
-     * @see IErlElement
-     */
-    public IOpenable getOpenable() {
-        return this;
     }
 
     class ErlangResourceVisitor implements IResourceVisitor {
@@ -320,6 +313,11 @@ public abstract class Openable extends ErlElement implements IOpenable {
         // makeConsistent(pm); // update the element info of this
         // // element
         // }
+    }
+
+    @Override
+    public void close() throws ErlModelException {
+        // /ErlModelManager.getErlangModelManager().removeInfoAndChildren(this);
     }
 
 }

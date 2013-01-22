@@ -14,7 +14,7 @@
 <listEntry value="/org.erlide.test_support/bin"/>
 <listEntry value="/org.erlide.core/bin"/>
 <listEntry value="/org.erlide.ui/bin"/>
-<listEntry value="/org.erlide.jinterface/bin"/>
+<listEntry value="/org.erlide.runtime/bin"/>
 </listAttribute>
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
 <booleanAttribute key="default" value="true"/>

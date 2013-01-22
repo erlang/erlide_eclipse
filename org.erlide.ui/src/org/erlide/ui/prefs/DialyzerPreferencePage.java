@@ -58,9 +58,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
@@ -70,8 +69,9 @@ import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
 import org.erlide.core.services.builder.DialyzerUtils.DialyzerErrorException;
 import org.erlide.core.services.builder.ErlideDialyze;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -661,8 +661,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
                 final String alternatePltFileDirectory = DialyzerPreferences
                         .getAlternatePLTFileDirectoryFromPreferences();
                 checkIfPltFilesShouldBeCopied(alternatePltFileDirectory);
-                final IBackend backend = BackendCore
-                        .getBuildOrIdeBackend(fProject);
+                final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
+                        fProject).getRpcSite();
                 for (final String pltPath : selectedPLTPaths) {
                     checkPlt(pltPath, alternatePltFileDirectory, monitor,
                             backend);
@@ -728,7 +728,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
 
         private void checkPlt(final String pltPath,
                 final String alternatePltFileDirectory,
-                final IProgressMonitor monitor, final IBackend backend)
+                final IProgressMonitor monitor, final IRpcSite backend)
                 throws DialyzerErrorException, BackingStoreException,
                 ErlModelException, RpcException {
             try {

@@ -26,7 +26,8 @@ import org.eclipse.core.runtime.Path;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.ModelConfig;
 import org.erlide.core.internal.model.root.Openable;
-import org.erlide.core.model.erlang.ErlToken;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlExport;
@@ -41,19 +42,17 @@ import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.builder.MarkerUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -67,6 +66,7 @@ public class ErlModule extends Openable implements IErlModule {
 
     private static final OtpErlangAtom EXPORT_ALL = new OtpErlangAtom(
             "export_all");
+    private static final boolean logging = false;
     private long timestamp = IResource.NULL_STAMP;
     private IFile fFile;
     private final ModuleKind moduleKind;
@@ -74,13 +74,11 @@ public class ErlModule extends Openable implements IErlModule {
     private String initialText;
     private boolean parsed;
     private final String scannerName;
-    private IErlScanner scanner;
-    private final boolean useCaches;
     private final Collection<IErlComment> comments;
+    private IErlScanner scanner;
 
     public ErlModule(final IParent parent, final String name,
-            final String initialText, final IFile file, final String path,
-            final boolean useCaches) {
+            final String initialText, final IFile file, final String path) {
         super(parent, name);
         fFile = file;
         moduleKind = ModuleKind.nameToModuleKind(name);
@@ -88,8 +86,6 @@ public class ErlModule extends Openable implements IErlModule {
         this.initialText = initialText;
         parsed = false;
         scannerName = createScannerName();
-        scanner = null;
-        this.useCaches = useCaches;
         comments = Lists.newArrayList();
         if (ModelConfig.verbose) {
             final IErlElement element = (IErlElement) parent;
@@ -97,32 +93,14 @@ public class ErlModule extends Openable implements IErlModule {
             ErlLogger.debug("...creating " + parentName + "/" + getName() + " "
                     + moduleKind);
         }
-        if (useCaches) {
-            getModelCache().putModule(this);
-        }
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
-        if (scanner == null) {
-            parsed = false;
-        }
-        if (scanner == null) {
-            // There are two places that we make the initial scanner... this
-            // is one
-            getScanner();
-        }
-        getScanner();
-        try {
-            final IErlParser parser = ErlModelManager.getErlangModel()
-                    .getParser();
-            parsed = parser.parse(this, scannerName, !parsed, getFilePath(),
-                    useCaches, true);
-            final IResource resource = getCorrespondingResource();
-            MarkerUtils.removeTaskMarkersFor(resource);
-            MarkerUtils.createTaskMarkers(resource, scanner.getText());
-        } finally {
-            disposeScanner();
-        }
+        final IErlParser parser = ErlModelManager.getErlangModel().getParser();
+        parsed = parser.parse(this, scannerName, !parsed, getFilePath(), true);
+        final IResource resource = getCorrespondingResource();
+        MarkerUtils.removeTaskMarkersFor(resource);
+        // MarkerUtils.createTaskMarkers(resource, scanner.getText());
         return parsed;
     }
 
@@ -369,12 +347,6 @@ public class ErlModule extends Openable implements IErlModule {
     public synchronized void reconcileText(final int offset,
             final int removeLength, final String newText,
             final IProgressMonitor mon) {
-        if (scanner == null) {
-            // There are two places that we make the initial scanner... this
-            // is one too
-            getScanner();
-        }
-        getScanner();
         if (scanner != null) {
             scanner.replaceText(offset, removeLength, newText);
         }
@@ -382,7 +354,6 @@ public class ErlModule extends Openable implements IErlModule {
             mon.worked(1);
         }
         setStructureKnown(false);
-        disposeScanner();
     }
 
     @Override
@@ -414,18 +385,6 @@ public class ErlModule extends Openable implements IErlModule {
         return SystemConfiguration.withoutExtension(getName());
     }
 
-    public void disposeScanner() {
-        if (scanner == null) {
-            return;
-        }
-        final IErlScanner s = scanner;
-        if (s.willDispose()) {
-            scanner = null;
-        }
-        s.dispose();
-        setStructureKnown(false);
-    }
-
     @Override
     public Kind getKind() {
         return Kind.MODULE;
@@ -433,7 +392,10 @@ public class ErlModule extends Openable implements IErlModule {
 
     @Override
     public void dispose() {
-        disposeScanner();
+        if (scanner != null) {
+            scanner.dispose();
+            scanner = null;
+        }
         ErlModelManager.getErlangModel().removeModule(this);
     }
 
@@ -477,22 +439,12 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public synchronized void resetAndCacheScannerAndParser(final String newText)
             throws ErlModelException {
-        while (scanner != null) {
-            disposeScanner();
-        }
         initialText = newText;
         parsed = false;
         setStructureKnown(false);
+        scanner.initialScan(newText, "", true);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
-    }
-
-    @Override
-    public ErlToken getScannerTokenAt(final int offset) {
-        if (scanner != null) {
-            return scanner.getTokenAt(offset);
-        }
-        return null;
     }
 
     @Override
@@ -505,13 +457,22 @@ public class ErlModule extends Openable implements IErlModule {
         return getName();
     }
 
-    public void getScanner() {
+    @Override
+    public IErlScanner getScanner() {
         if (scanner == null) {
             scanner = getNewScanner();
+        } else {
+            scanner.addref();
         }
+        return scanner;
+    }
+
+    @Override
+    public void createScanner() {
         if (scanner != null) {
-            scanner.addRef();
+            scanner.dispose();
         }
+        scanner = getNewScanner();
     }
 
     private IErlScanner getNewScanner() {
@@ -523,7 +484,7 @@ public class ErlModule extends Openable implements IErlModule {
             initialText = "";
         }
         return ErlModelManager.getErlangModel().getToolkit()
-                .createScanner(scannerName, initialText, filePath, useCaches);
+                .createScanner(scannerName, initialText, filePath, logging);
     }
 
     @Override
@@ -533,7 +494,7 @@ public class ErlModule extends Openable implements IErlModule {
             for (final IErlElement e : internalGetChildren()) {
                 if (e instanceof IErlPreprocessorDef) {
                     final IErlPreprocessorDef pd = (IErlPreprocessorDef) e;
-                    if (pd.getKind() == kind || kind == Kind.ERROR) {
+                    if (pd.getKind() == kind || kind == Kind.PROBLEM) {
                         result.add(pd);
                     }
                 }
@@ -711,16 +672,11 @@ public class ErlModule extends Openable implements IErlModule {
         return false;
     }
 
-    @Override
-    public boolean isRealFile() {
-        return useCaches;
-    }
-
     public String createScannerName() {
         final IResource res = getResource();
         if (res != null) {
             return createScannerNameFromResource(res);
-        } else if (getFilePath() != null && isRealFile()) {
+        } else if (getFilePath() != null) {
             return "mod" + getFilePath().hashCode() + "__" + getName();
         }
         // This is not used more than temporarily, so it's OK to have

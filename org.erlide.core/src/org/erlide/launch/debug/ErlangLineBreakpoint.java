@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.utils.ErlLogger;
 
 public class ErlangLineBreakpoint extends Breakpoint implements
         IErlangBreakpoint, ILineBreakpoint {

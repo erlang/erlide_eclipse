@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.backend.runtimeinfo;
 
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
@@ -18,13 +19,10 @@ public class RuntimeInfoLoader {
     static final String HOME_DIR = "homeDir";
     static final String ARGS = "args";
 
-    private final RuntimeInfo info;
-
-    public RuntimeInfoLoader(final RuntimeInfo info) {
-        this.info = info;
+    private RuntimeInfoLoader() {
     }
 
-    public void store(final Preferences root) {
+    public static void store(final RuntimeInfo info, final Preferences root) {
         final Preferences node = root.node(info.getName());
         final String code = PreferencesUtils.packList(info.getCodePath());
         node.put(CODE_PATH, code);
@@ -32,12 +30,12 @@ public class RuntimeInfoLoader {
         node.put(ARGS, info.getArgs());
     }
 
-    public void load(final Preferences node) {
-        info.setName(node.name());
+    public static RuntimeInfo load(final Preferences node) {
         final String path = node.get(CODE_PATH, "");
-        info.setCodePath(PreferencesUtils.unpackList(path));
-        info.setOtpHome(node.get(HOME_DIR, ""));
-        info.setArgs(node.get(ARGS, ""));
+        final RuntimeInfo info = new RuntimeInfo(node.name(), node.get(
+                HOME_DIR, ""), node.get(ARGS, ""),
+                PreferencesUtils.unpackList(path));
+        return info;
     }
 
 }

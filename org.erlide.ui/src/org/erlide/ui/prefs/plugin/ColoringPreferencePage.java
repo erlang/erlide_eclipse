@@ -57,7 +57,6 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
 import org.erlide.ui.editors.erl.SyntaxColorPreviewEditorConfiguration;
@@ -68,6 +67,7 @@ import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.internal.ErlangSourceViewerUpdater;
 import org.erlide.ui.util.IColorManager;
 import org.erlide.ui.util.PixelConverter;
+import org.erlide.utils.ErlLogger;
 
 /**
  * The color preferences.

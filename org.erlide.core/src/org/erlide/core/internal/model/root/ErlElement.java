@@ -22,15 +22,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.ErlModelStatus;
+import org.erlide.core.model.ErlModelStatusConstants;
+import org.erlide.core.model.IOpenable;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.ErlModelStatus;
-import org.erlide.core.model.root.ErlModelStatusConstants;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementVisitor;
-import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.root.IParent;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.StringUtils;
 
 import com.google.common.base.Objects;
@@ -78,13 +78,6 @@ public abstract class ErlElement extends PlatformObject implements IErlElement,
         fParent = parent;
         fName = name;
         Assert.isNotNull(fName);
-    }
-
-    /**
-     * @see IOpenable
-     */
-    public void close() throws ErlModelException {
-        // /ErlModelManager.getErlangModelManager().removeInfoAndChildren(this);
     }
 
     /**

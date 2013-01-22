@@ -27,11 +27,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.erlide.backend.BackendException;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.ErlToken;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
 import org.erlide.ui.util.IColorManager;
+import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.Preferences;
 
 public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener {

@@ -8,9 +8,9 @@ import org.eclipse.jface.text.templates.TemplateBuffer;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateTranslator;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.actions.IndentAction;
+import org.erlide.utils.ErlLogger;
 
 public class ErlangTemplateContext extends DocumentTemplateContext {
 

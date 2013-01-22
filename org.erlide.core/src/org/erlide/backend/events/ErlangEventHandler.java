@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -35,8 +36,8 @@ public abstract class ErlangEventHandler implements EventHandler, IDisposable {
         }
     }
 
-    public IBackend getBackend() {
-        return backend;
+    public IRpcSite getBackend() {
+        return backend.getRpcSite();
     }
 
     @Override

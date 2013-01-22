@@ -12,7 +12,7 @@ import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.api.ICoveragePerformer;
 import org.erlide.cover.constants.CoverConstants;
 import org.erlide.cover.views.model.StatsTreeModel;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -75,9 +75,9 @@ public class CoveragePerformer implements ICoveragePerformer {
         if (coverNodes.isEmpty() || different) {
 
             coverNodes = nodes;
-            log.info(CoverBackend.getInstance().getBackend().getFullNodeName());
+            log.info(CoverBackend.getInstance().getBackend().getNodeName());
             coverNodes.add(CoverBackend.getInstance().getBackend()
-                    .getFullNodeName());
+                    .getNodeName());
 
             // TODO restarting
 
@@ -94,6 +94,7 @@ public class CoveragePerformer implements ICoveragePerformer {
                 CoverBackend
                         .getInstance()
                         .getBackend()
+                        .getRpcSite()
                         .call(CoverConstants.COVER_ERL_BACKEND,
                                 CoverConstants.FUN_START, "x", nodesList);
 
@@ -132,6 +133,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_SET_INCLUDES, "x", includes);
         } catch (final RpcException e1) {
@@ -160,6 +162,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_PREP, "x", paths);
 
@@ -186,6 +189,7 @@ public class CoveragePerformer implements ICoveragePerformer {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(CoverConstants.COVER_ERL_BACKEND,
                             CoverConstants.FUN_ANALYSE, "x", modules);
 

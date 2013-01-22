@@ -6,9 +6,8 @@ public interface IErlScanner extends IDisposable {
 
     String getName();
 
-    void addRef();
-
-    boolean willDispose();
+    void initialScan(final String initialText, final String path,
+            final boolean logging);
 
     void replaceText(final int offset, final int removeLength,
             final String newText);
@@ -16,5 +15,7 @@ public interface IErlScanner extends IDisposable {
     ErlToken getTokenAt(final int offset);
 
     String getText();
+
+    void addref();
 
 }

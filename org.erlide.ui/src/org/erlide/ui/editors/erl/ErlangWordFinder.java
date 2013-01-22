@@ -14,12 +14,13 @@ public final class ErlangWordFinder {
         }
         if (editor != null) {
             editor.reconcileNow();
+            final ErlToken token = editor.getScanner().getTokenAt(offset);
+            if (token == null) {
+                return null;
+            }
+            return new Region(token.getOffset(), token.getLength());
         }
-        final ErlToken token = module.getScannerTokenAt(offset);
-        if (token == null) {
-            return null;
-        }
-        return new Region(token.getOffset(), token.getLength());
+        return null;
     }
 
 }

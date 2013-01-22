@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.backend.IBackend;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcResultCallback;
-import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcTimeoutException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.IRpcResultCallback;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -34,7 +35,7 @@ public class ErlideDialyze {
         try {
             final int timeout = files.size() * FILE_TIMEOUT
                     + includeDirs.size() * INCLUDE_TIMEOUT + LONG_TIMEOUT;
-            final OtpErlangObject result = backend.call(timeout,
+            final OtpErlangObject result = backend.getRpcSite().call(timeout,
                     "erlide_dialyze", "dialyze", "lslslsoo", files, pltPaths,
                     incs, fromSource, noCheckPLT);
             // ErlLogger.debug("result %s", result.toString());
@@ -49,7 +50,7 @@ public class ErlideDialyze {
         return null;
     }
 
-    public static void startDialyzer(final IBackend backend,
+    public static void startDialyzer(final IRpcSite backend,
             final Collection<String> files, final Collection<String> pltPaths,
             final Collection<IPath> includeDirs, final boolean fromSource,
             final Object noCheckPLT, final IRpcResultCallback callback)
@@ -63,7 +64,7 @@ public class ErlideDialyze {
         // ErlLogger.debug("result %s", result.toString());
     }
 
-    public static String formatWarning(final IBackend backend,
+    public static String formatWarning(final IRpcSite backend,
             final OtpErlangObject warning) {
         try {
             final OtpErlangObject result = backend.call("erlide_dialyze",
@@ -75,7 +76,7 @@ public class ErlideDialyze {
         return warning.toString();
     }
 
-    public static OtpErlangObject checkPlt(final IBackend backend,
+    public static OtpErlangObject checkPlt(final IRpcSite backend,
             final String plt, final List<String> ebinDirs) throws RpcException {
         if (ebinDirs == null) {
             return backend.call(UPDATE_TIMEOUT, "erlide_dialyze", "check_plt",
@@ -86,7 +87,7 @@ public class ErlideDialyze {
         }
     }
 
-    public static List<String> getPltFiles(final IBackend backend,
+    public static List<String> getPltFiles(final IRpcSite backend,
             final String pltFiles) throws RpcException {
         final OtpErlangObject o = backend.call("erlide_dialyze",
                 "get_plt_files", "s", pltFiles);
@@ -106,7 +107,7 @@ public class ErlideDialyze {
         return null;
     }
 
-    public static void startCheckPlt(final IBackend backend, final String plt,
+    public static void startCheckPlt(final IRpcSite backend, final String plt,
             final List<String> ebinDirs, final IRpcResultCallback callback)
             throws RpcException {
         backend.async_call_result(callback, "erlide_dialyze",

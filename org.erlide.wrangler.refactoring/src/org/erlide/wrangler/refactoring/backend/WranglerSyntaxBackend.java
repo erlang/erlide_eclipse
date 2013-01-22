@@ -11,9 +11,9 @@
 package org.erlide.wrangler.refactoring.backend;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.backend.IBackend;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.utils.ErlLogger;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo.Type;
 import org.erlide.wrangler.refactoring.util.GlobalParameters;
 
@@ -31,7 +31,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
  * @version %I%, %G%
  */
 public class WranglerSyntaxBackend implements IWranglerBackend {
-    protected IBackend backend;
+    protected IRpcSite backend;
     protected static final String MODULE = "wrangler_ast_server";
     protected static final String INTERFACE_MODULE = "api_interface";
     protected static final String PARSE_FUNCTION = "parse_annotate_file";
@@ -41,7 +41,7 @@ public class WranglerSyntaxBackend implements IWranglerBackend {
      * @param backend
      *            Backend object
      */
-    public WranglerSyntaxBackend(final IBackend backend) {
+    public WranglerSyntaxBackend(final IRpcSite backend) {
         this.backend = backend;
     }
 

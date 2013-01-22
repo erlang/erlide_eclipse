@@ -10,7 +10,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.navigator.CommonDropAdapter;
 import org.eclipse.ui.navigator.CommonDropAdapterAssistant;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
 
@@ -54,7 +54,7 @@ public class ErlCommonDropAdapterAssistant extends CommonDropAdapterAssistant {
                 }
             }
         } catch (final Exception ex) {
-            System.out.println(ex.getMessage());
+            ErlLogger.warn(ex);
         }
         return status;
     }

@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.ui.dialogfields.DialogField;
 import org.erlide.ui.dialogfields.IDialogFieldListener;
 import org.erlide.ui.dialogfields.IListAdapter;
@@ -78,13 +78,11 @@ public class AddRuntimeDialog extends StatusDialog implements
     private StringButtonDialogField fOtpHome;
     private ListDialogField<String> fCodePath;
     private StringDialogField fArgs;
-    private final boolean returnNew;
 
     private final IStatus[] fStatuses;
 
     public AddRuntimeDialog(final IAddDialogRequestor<RuntimeInfo> requestor,
-            final Shell shell, final RuntimeInfo editedVM,
-            final boolean returnNew) {
+            final Shell shell, final RuntimeInfo editedVM) {
         super(shell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         fRequestor = requestor;
@@ -93,7 +91,6 @@ public class AddRuntimeDialog extends StatusDialog implements
             fStatuses[i] = new StatusInfo();
         }
         fEditedRuntime = editedVM;
-        this.returnNew = returnNew;
     }
 
     /**
@@ -186,7 +183,7 @@ public class AddRuntimeDialog extends StatusDialog implements
         if (fEditedRuntime == null) {
             fName.setText(""); //$NON-NLS-1$
             fOtpHome.setText(""); //$NON-NLS-1$
-            fCodePath.setElements(new ArrayList<String>(5));
+            fCodePath.setElements(new ArrayList<String>());
             fArgs.setText(""); //$NON-NLS-1$
         } else {
             fName.setText(fEditedRuntime.getName());
@@ -261,21 +258,10 @@ public class AddRuntimeDialog extends StatusDialog implements
     }
 
     private void doOkPressed() {
-        if (returnNew) {
-            final RuntimeInfo info = new RuntimeInfo();
-            storeValues(info);
-            fRequestor.itemAdded(info);
-        } else {
-            storeValues(fEditedRuntime);
-        }
-    }
-
-    protected void storeValues(final RuntimeInfo runtime) {
-        runtime.setOtpHome(fOtpHome.getText());
-        runtime.setName(fName.getText());
-        runtime.setCodePath(fCodePath.getElements());
-        final String argString = fArgs.getText().trim();
-        runtime.setArgs(argString);
+        final RuntimeInfo info = new RuntimeInfo(fName.getText().trim(),
+                fOtpHome.getText().trim(), fArgs.getText().trim(),
+                fCodePath.getElements());
+        fRequestor.itemAdded(info);
     }
 
     protected void setNameStatus(final IStatus status) {

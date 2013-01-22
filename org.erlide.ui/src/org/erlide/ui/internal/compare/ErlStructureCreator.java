@@ -44,17 +44,17 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.services.IDisposable;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IOpenable;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.root.IParent;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 public class ErlStructureCreator extends StructureCreator {
 

@@ -17,8 +17,8 @@ import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
-import org.erlide.jinterface.rpc.IRpcResultCallback;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.IRpcResultCallback;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.internal.ErlideUIPlugin;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -132,8 +132,8 @@ public class ErlSearchQuery implements ISearchQuery {
                 if (monitor.isCanceled()) {
                     try {
                         ErlideSearchServer.cancelSearch(BackendCore
-                                .getBackendManager().getIdeBackend(),
-                                backgroundSearchPid);
+                                .getBackendManager().getIdeBackend()
+                                .getRpcSite(), backgroundSearchPid);
                     } catch (final RpcException e) {
                     }
                 }
@@ -142,8 +142,8 @@ public class ErlSearchQuery implements ISearchQuery {
         };
         try {
             ErlideSearchServer.startFindRefs(BackendCore.getBackendManager()
-                    .getIdeBackend(), pattern, scope, getStateDir(), callback,
-                    false);
+                    .getIdeBackend().getRpcSite(), pattern, scope,
+                    getStateDir(), callback, false);
         } catch (final RpcException e) {
             return new Status(IStatus.ERROR, ErlideUIPlugin.PLUGIN_ID,
                     "Search error", e);

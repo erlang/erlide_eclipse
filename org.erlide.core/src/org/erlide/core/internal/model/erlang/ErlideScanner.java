@@ -8,9 +8,10 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.model.erlang.ErlToken;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcTimeoutException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -25,14 +26,15 @@ public class ErlideScanner {
             "erlide.encoding.__test__", "latin1");
 
     public static void initialScan(final String module, final String path,
-            final String initialText, final boolean useCaches) {
+            final String initialText, final boolean logging) {
         final String stateDir = ErlangPlugin.getDefault().getStateLocation()
                 .toString();
         final IBackend backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         try {
-            backend.call(ERLIDE_SCANNER, "initialScan", "assso", module, path,
-                    initialText, stateDir, useCaches);
+            final String loggingOnOff = logging ? "on" : "off";
+            backend.getRpcSite().call(ERLIDE_SCANNER, "initialScan", "asssoa",
+                    module, path, initialText, stateDir, true, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -42,11 +44,39 @@ public class ErlideScanner {
         }
     }
 
-    public static void destroy(final String module) {
+    public static void create(final String module) {
         final IBackend backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         try {
-            backend.call(ERLIDE_SCANNER, "destroy", "a", module);
+            backend.getRpcSite().call(ERLIDE_SCANNER, "create", "a", module);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
+        } catch (final Exception e) {
+            ErlLogger.debug(e);
+        }
+    }
+
+    public static void addref(final String module) {
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
+        try {
+            backend.getRpcSite().call(ERLIDE_SCANNER, "addref", "a", module);
+        } catch (final RpcTimeoutException e) {
+            if (!backend.isStopped()) {
+                ErlLogger.warn(e);
+            }
+        } catch (final Exception e) {
+            ErlLogger.debug(e);
+        }
+    }
+
+    public static void dispose(final String module) {
+        final IBackend backend = BackendCore.getBackendManager()
+                .getIdeBackend();
+        try {
+            backend.getRpcSite().call(ERLIDE_SCANNER, "dispose", "a", module);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
                 ErlLogger.warn(e);
@@ -60,7 +90,7 @@ public class ErlideScanner {
     public static ErlToken getTokenAt(final String module, final int offset) {
         OtpErlangObject r1 = null;
         try {
-            r1 = BackendCore.getBackendManager().getIdeBackend()
+            r1 = BackendCore.getBackendManager().getIdeBackend().getRpcSite()
                     .call(ERLIDE_SCANNER, "getTokenAt", "ai", module, offset);
             // ErlLogger.debug("getTokenAt -> " + r1);
         } catch (final Exception e) {
@@ -92,7 +122,7 @@ public class ErlideScanner {
             // removeLength, newTextLen);
             // ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
             // removeLength, newText);
-            final OtpErlangObject r = backend.call(ERLIDE_SCANNER,
+            final OtpErlangObject r = backend.getRpcSite().call(ERLIDE_SCANNER,
                     "replaceText", "aiis", module, offset, removeLength,
                     newText);
             if (r instanceof OtpErlangTuple) {
@@ -116,8 +146,8 @@ public class ErlideScanner {
     public static List<ErlToken> lightScanString(final String string,
             final int offset) throws BackendException {
         OtpErlangObject r1 = null;
-        final IBackend backend = BackendCore.getBackendManager()
-                .getIdeBackend();
+        final IRpcSite backend = BackendCore.getBackendManager()
+                .getIdeBackend().getRpcSite();
         try {
             r1 = backend.call("erlide_scanner", "light_scan_string", "ba",
                     string, ENCODING);
@@ -175,7 +205,7 @@ public class ErlideScanner {
         }
         try {
             final OtpErlangObject o = BackendCore.getBackendManager()
-                    .getIdeBackend()
+                    .getIdeBackend().getRpcSite()
                     .call(ERLIDE_SCANNER, "check_all", "as", module, text);
             return o.toString();
         } catch (final RpcException e) {
@@ -187,12 +217,27 @@ public class ErlideScanner {
     public static String getText(final String scannerName) {
         try {
             final OtpErlangObject o = BackendCore.getBackendManager()
-                    .getIdeBackend()
+                    .getIdeBackend().getRpcSite()
                     .call(ERLIDE_SCANNER, "getText", "a", scannerName);
             return Util.stringValue(o);
         } catch (final RpcException e) {
             return "";
         }
+    }
+
+    public static boolean dumpLog(final String scannerName,
+            final String dumpLocationFilename) {
+        try {
+            final IBackend backend = BackendCore.getBackendManager()
+                    .getIdeBackend();
+            final OtpErlangObject object = backend.getRpcSite().call(
+                    ERLIDE_SCANNER, "dump_log", "as", scannerName,
+                    dumpLocationFilename);
+            return Util.isOk(object);
+        } catch (final RpcException e) {
+            ErlLogger.warn(e);
+        }
+        return false;
     }
 
 }

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.utils.ErlUtils;
+import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 
 public final class ErlangXref {
 
-    public static void start(final IBackend b) {
+    public static void start(final IRpcSite b) {
         try {
             b.call("erlide_xref", "start", "");
         } catch (final Exception e) {
@@ -26,7 +26,7 @@ public final class ErlangXref {
 
     }
 
-    public static void stop(final IBackend b) {
+    public static void stop(final IRpcSite b) {
         try {
             b.call("erlide_xref", "stop", "");
         } catch (final Exception e) {
@@ -35,7 +35,7 @@ public final class ErlangXref {
 
     }
 
-    public static IRpcFuture addProject(final IBackend b,
+    public static IRpcFuture addProject(final IRpcSite b,
             final IErlProject project) {
         try {
             final IPath outputLocation = project.getWorkspaceProject()
@@ -48,7 +48,7 @@ public final class ErlangXref {
         return null;
     }
 
-    public static void update(final IBackend b) {
+    public static void update(final IRpcSite b) {
         try {
             b.call("erlide_xref", "update", "");
         } catch (final Exception e) {
@@ -57,7 +57,7 @@ public final class ErlangXref {
     }
 
     @SuppressWarnings("boxing")
-    public static FunctionRef[] functionUse(final IBackend b, final String mod,
+    public static FunctionRef[] functionUse(final IRpcSite b, final String mod,
             final String fun, final int arity) {
         try {
             final OtpErlangObject r = b.call("erlide_xref", "function_use",
@@ -81,7 +81,7 @@ public final class ErlangXref {
     private ErlangXref() {
     }
 
-    public static FunctionRef[] functionUse(final IBackend b,
+    public static FunctionRef[] functionUse(final IRpcSite b,
             final FunctionRef ref) {
         return functionUse(b, ref.module, ref.function, ref.arity);
     }

@@ -12,7 +12,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.erlide.core.internal.model.root.ErlModelCache;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.AcceptFlags;
@@ -126,7 +126,6 @@ public class IErlElementTest extends ErlModelTestBase {
     @Test
     public void getModel() throws Exception {
         module.open(null);
-        final IErlElement element = module.getElementAtLine(3);
         final IErlElementLocator model = ErlModelManager.getErlangModel();
         assertEquals(model, ErlModelManager.getErlangModel());
     }

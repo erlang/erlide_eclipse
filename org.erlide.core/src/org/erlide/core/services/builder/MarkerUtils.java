@@ -16,20 +16,20 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Pair;
-import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.model.util.ResourceUtil;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.ErlUtils;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
@@ -82,6 +82,8 @@ public final class MarkerUtils {
             }
             marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
         } catch (final CoreException e) {
+        } catch (final Exception e) {
+            ErlLogger.warn(e);
         }
     }
 
@@ -344,7 +346,7 @@ public final class MarkerUtils {
     }
 
     public static void addDialyzerWarningMarkersFromResultList(
-            final IBackend backend, final OtpErlangList result) {
+            final IRpcSite backend, final OtpErlangList result) {
         if (result == null) {
             return;
         }

@@ -11,7 +11,7 @@
 <booleanAttribute key="clearwslog" value="true"/>
 <booleanAttribute key="com.mountainminds.eclemma.core.INPLACE_INSTRUMENTATION" value="true"/>
 <listAttribute key="com.mountainminds.eclemma.core.INSTRUMENTATION_PATHS">
-<listEntry value="/org.erlide.jinterface/bin"/>
+<listEntry value="/org.erlide.runtime/bin"/>
 <listEntry value="/org.erlide.backend/bin"/>
 <listEntry value="/org.erlide.ui/bin"/>
 <listEntry value="/org.erlide.core/bin"/>

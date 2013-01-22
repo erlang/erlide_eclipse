@@ -7,15 +7,15 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.Viewer;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.utils.CommonUtils;
+import org.erlide.utils.ErlLogger;
 
 public class InterpretedModuleListContentProvider extends
         ModuleListContentProvider {
@@ -81,8 +81,8 @@ public class InterpretedModuleListContentProvider extends
         }
     }
 
-    public void addModules(final List<IErlModule> modules) {
-        for (final IErlModule module : modules) {
+    public void addModules(final List<IErlModule> newModules) {
+        for (final IErlModule module : newModules) {
             addModule(module);
         }
     }

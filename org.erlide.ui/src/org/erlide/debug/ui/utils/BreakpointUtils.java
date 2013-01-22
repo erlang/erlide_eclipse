@@ -5,7 +5,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 public class BreakpointUtils {
 

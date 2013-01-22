@@ -35,13 +35,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendData;
-import org.erlide.backend.HostnameUtils;
-import org.erlide.backend.NodeHostClassifier;
-import org.erlide.backend.NodeHostClassifier.HostnameType;
-import org.erlide.backend.NodeHostClassifier.NodeType;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.launch.ErlLaunchAttributes;
+import org.erlide.runtime.HostnameUtils;
+import org.erlide.runtime.NodeHostClassifier;
+import org.erlide.runtime.NodeHostClassifier.HostnameType;
+import org.erlide.runtime.NodeHostClassifier.NodeType;
+import org.erlide.runtime.RuntimeData;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 
 public class RuntimeTab extends AbstractLaunchConfigurationTab {
 
@@ -63,7 +63,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
      */
     @Override
     public void createControl(final Composite parent) {
-        runtimes = BackendCore.getRuntimeInfoManager().getRuntimes();
+        runtimes = BackendCore.getRuntimeInfoCatalog().getRuntimes();
 
         final Composite comp = new Composite(parent, SWT.NONE);
         setControl(comp);
@@ -79,7 +79,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
             rtl.add(r.getName());
         }
         final String[] rts = rtl.toArray(new String[] {});
-        final RuntimeInfo defaultRuntime = BackendCore.getRuntimeInfoManager()
+        final RuntimeInfo defaultRuntime = BackendCore.getRuntimeInfoCatalog()
                 .getDefaultRuntime();
         final int db = defaultRuntime == null ? 0 : Arrays.binarySearch(rts,
                 defaultRuntime.getName());
@@ -343,7 +343,7 @@ public class RuntimeTab extends AbstractLaunchConfigurationTab {
     public boolean isValid(final ILaunchConfiguration config) {
         setErrorMessage(null);
         final String name = nameText.getText().trim();
-        if (!name.equals("") && !BackendData.validateNodeName(name)) {
+        if (!name.equals("") && !RuntimeData.validateNodeName(name)) {
             setErrorMessage(String.format("Node name '%s' is invalid.", name));
             return false;
         }

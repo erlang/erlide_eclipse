@@ -10,7 +10,7 @@ import org.erlide.cover.api.CoverageAnalysis;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.constants.TestConstants;
 import org.erlide.cover.views.model.TestTreeModel;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcException;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 
@@ -63,6 +63,7 @@ public class CoverRunner extends AbstractCoverRunner {
         CoverBackend
                 .getInstance()
                 .getBackend()
+                .getRpcSite()
                 .call(TestConstants.TEST_ERL_BACKEND,
                         TestConstants.FUN_START,
                         "x",
@@ -77,6 +78,7 @@ public class CoverRunner extends AbstractCoverRunner {
         CoverBackend
                 .getInstance()
                 .getBackend()
+                .getRpcSite()
                 .call(TestConstants.TEST_ERL_BACKEND,
                         TestConstants.FUN_OUTPUT_DIR, "s",
                         ppath.append(config.getOutputDir()).toString());
@@ -89,6 +91,7 @@ public class CoverRunner extends AbstractCoverRunner {
             CoverBackend
                     .getInstance()
                     .getBackend()
+                    .getRpcSite()
                     .call(TestConstants.TEST_ERL_BACKEND,
                             TestConstants.FUN_TEST,
                             "ss",
@@ -112,6 +115,7 @@ public class CoverRunner extends AbstractCoverRunner {
                 CoverBackend
                         .getInstance()
                         .getBackend()
+                        .getRpcSite()
                         .call(TestConstants.TEST_ERL_BACKEND,
                                 TestConstants.FUN_TEST,
                                 "ss",

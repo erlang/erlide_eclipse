@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.17.7.qualifier
+Bundle-Version: 0.18.0.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -12,9 +12,11 @@ Export-Package: org.erlide.backend,
  org.erlide.backend.internal;x-friends:="org.erlide.ui,shade.bterl",
  org.erlide.backend.runtimeinfo,
  org.erlide.core,
+ org.erlide.core.content,
  org.erlide.core.internal.model.erlang;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
  org.erlide.core.internal.model.root;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
  org.erlide.core.internal.services.builder;x-friends:="shade.bterl",
+ org.erlide.core.model,
  org.erlide.core.model.erlang,
  org.erlide.core.model.root,
  org.erlide.core.model.util,
@@ -25,15 +27,16 @@ Export-Package: org.erlide.backend,
  org.erlide.core.services.text,
  org.erlide.launch,
  org.erlide.launch.debug,
+ org.erlide.launch.debug.events,
  org.erlide.launch.debug.model
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.eclipse.osgi.services,
- org.erlide.jinterface,
- com.google.guava;bundle-version="11.0.1",
- org.erlide.libs
+ org.erlide.backend,
+ org.erlide.libs;bundle-version="1.8.4",
+ org.erlide.runtime
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

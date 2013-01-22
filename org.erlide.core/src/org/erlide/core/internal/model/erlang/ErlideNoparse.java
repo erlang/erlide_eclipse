@@ -1,13 +1,14 @@
 package org.erlide.core.internal.model.erlang;
 
 import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcTimeoutException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcTimeoutException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -19,13 +20,12 @@ public class ErlideNoparse {
 
     public static OtpErlangTuple initialParse(final IBackend b,
             final String scannerModuleName, final String moduleFileName,
-            final String stateDir, final boolean useCaches,
-            final boolean updateRefs) {
+            final String stateDir, final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE,
+            res = (OtpErlangTuple) b.getRpcSite().call(200000, ERLIDE_NOPARSE,
                     "initial_parse", "assoo", scannerModuleName,
-                    moduleFileName, stateDir, useCaches, updateRefs);
+                    moduleFileName, stateDir, true, updateRefs);
         } catch (final RpcTimeoutException e) {
             if (!b.isStopped()) {
                 ErlLogger.warn(e);
@@ -40,8 +40,8 @@ public class ErlideNoparse {
             final String scannerModuleName, final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse",
-                    "ao", scannerModuleName, updateSearchServer);
+            res = (OtpErlangTuple) b.getRpcSite().call(20000, ERLIDE_NOPARSE,
+                    "reparse", "ao", scannerModuleName, updateSearchServer);
         } catch (final RpcTimeoutException e) {
             if (!b.isStopped()) {
                 ErlLogger.warn(e);
@@ -70,7 +70,7 @@ public class ErlideNoparse {
         return null;
     }
 
-    public static void removeCacheFiles(final IBackend backend,
+    public static void removeCacheFiles(final IRpcSite backend,
             final String scannerModuleName, final String stateDir) {
         try {
             final OtpErlangObject res = backend.call(20000, ERLIDE_NOPARSE,

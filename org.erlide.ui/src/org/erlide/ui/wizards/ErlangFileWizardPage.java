@@ -46,12 +46,12 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.erlide.core.model.erlang.ModuleKind;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.templates.ErlangSourceContextTypeModule;
 import org.erlide.ui.templates.ModuleVariableResolver;
 import org.erlide.ui.wizards.templates.ExportedFunctionsVariableResolver;
 import org.erlide.ui.wizards.templates.LocalFunctionsVariableResolver;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
 /**
@@ -168,7 +168,7 @@ public class ErlangFileWizardPage extends WizardPage {
         for (final Template element : moduleTemplates) {
             final String name = element.getName();
             skeleton.add(name);
-            if (name == "module") {
+            if (name.equals("module")) {
                 defaultSkeleton = i;
             }
             ++i;
@@ -229,7 +229,13 @@ public class ErlangFileWizardPage extends WizardPage {
             if (containerPath.equals(sourceDir)) {
                 return container.getFullPath();
             } else if (containerPath.isPrefixOf(sourceDir)) {
-                return container.findMember(sourceDir).getFullPath();
+                final IResource member = container.findMember(sourceDir);
+                if (member != null) {
+                    return member.getFullPath();
+                } else {
+                    ErlLogger.warn("Could not find %s in %s", sourceDir,
+                            container);
+                }
             }
         }
         return null;

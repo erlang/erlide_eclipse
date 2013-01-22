@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.ui; singleton:=true
-Bundle-Version: 0.17.7.qualifier
+Bundle-Version: 0.18.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: org.erlide.ui.internal.ErlideUIPlugin
 Bundle-Vendor: %providerName
@@ -26,7 +26,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.ui.navigator,
    org.eclipse.ui,
    org.eclipse.ui.plugin,
-   org.erlide.jinterface,
+   org.erlide.runtime,
    org.eclipse.jface.action,
    org.eclipse.osgi.util,
    org.erlide.ui.internal.folding,
@@ -145,7 +145,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
  org.erlide.ui.internal.information;x-internal:=true,
  org.erlide.ui.internal.search;x-internal:=true,
  org.erlide.ui.internal.util;x-internal:=true,
- org.erlide.ui.jinterface;uses:="org.erlide.jinterface.rpc",
+ org.erlide.ui.jinterface;uses:="org.erlide.runtime.rpc",
  org.erlide.ui.launch;
   x-friends:="org.erlide.selfhost.plugin,
    org.erlide.cover.ui";
@@ -247,7 +247,7 @@ Export-Package: com.bdaum.overlayPages;x-internal:=true,
    org.eclipse.core.commands.common,
    org.erlide.core.util,
    org.eclipse.core.resources,
-   org.erlide.jinterface.backend,
+   org.erlide.runtime.backend,
    org.eclipse.jface.viewers,
    org.eclipse.swt.graphics,
    org.eclipse.jface.util,
@@ -333,7 +333,7 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.ui.navigator,
  org.eclipse.jface.text,
  org.eclipse.search,
- org.erlide.jinterface,
+ org.erlide.backend,
  org.erlide.core,
  org.erlide.libs;bundle-version="1.1.4",
  org.eclipse.osgi.services;bundle-version="3.2.100",
@@ -343,7 +343,7 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.core.databinding.property,
  org.eclipse.jface.databinding,
  com.ibm.icu,
- com.google.guava;bundle-version="11.0.1"
+ org.erlide.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true

@@ -1,7 +1,7 @@
 package org.erlide.launch.debug.events;
 
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

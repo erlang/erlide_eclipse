@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.erlide.jinterface.epmd.EpmdWatcher;
+import org.erlide.runtime.epmd.EpmdWatcher;
 
 /**
  * Periodically, query epmd to see if there are any new nodes that have been
@@ -23,7 +23,7 @@ import org.erlide.jinterface.epmd.EpmdWatcher;
  */
 public class EpmdWatchJob extends Job {
 
-    private static final int defaultInterval = 2000;
+    private static final int defaultInterval = 1000;
     private int interval = defaultInterval;
     private final EpmdWatcher watcher;
     private boolean isStopped;

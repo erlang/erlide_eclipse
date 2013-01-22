@@ -14,19 +14,19 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ModuleKind;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlFolder;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideSearchServer;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcResultCallback;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.IRpcResultCallback;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.erlide.utils.Util;
 
@@ -50,12 +50,12 @@ public class DialyzerUtils {
     }
 
     private static final class DialyzerCallback implements IRpcResultCallback {
-        IBackend backend;
+        IRpcSite backend;
         private final SubMonitor monitor;
         private final String projectName;
         private final Object locker;
 
-        DialyzerCallback(final IBackend backend, final SubMonitor monitor,
+        DialyzerCallback(final IRpcSite backend, final SubMonitor monitor,
                 final String projectName, final Object locker) {
             this.backend = backend;
             this.monitor = monitor;
@@ -117,7 +117,8 @@ public class DialyzerUtils {
             if (monitor.isCanceled()) {
                 try {
                     ErlideSearchServer.cancelSearch(BackendCore
-                            .getBackendManager().getIdeBackend(), dialyzerPid);
+                            .getBackendManager().getIdeBackend().getRpcSite(),
+                            dialyzerPid);
                 } catch (final RpcException e) {
                 }
             }
@@ -151,8 +152,8 @@ public class DialyzerUtils {
                 final boolean fromSource = prefs.getFromSource();
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
                 MarkerUtils.removeDialyzerMarkersFor(project);
-                final IBackend backend = BackendCore.getBackendManager()
-                        .getBuildBackend(project);
+                final IRpcSite backend = BackendCore.getBackendManager()
+                        .getBuildBackend(project).getRpcSite();
                 final List<String> files = Lists.newArrayList();
                 final List<IPath> includeDirs = Lists.newArrayList();
                 final List<String> names = Lists.newArrayList();

@@ -7,9 +7,9 @@ import java.io.File;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementLocator;
@@ -18,6 +18,7 @@ import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.OpenResult;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.utils.FilePathUtils;
 import org.junit.After;
@@ -185,28 +186,33 @@ public class ErlProjectTest {
                         project,
                         "e.erl",
                         "-module(e).\n-export([f/0]).\nf() ->\n    lists:reverse([1, 0]),\n    lists:reverse([1, 0], [2]).\n");
-        moduleE.open(null);
-        // when
-        // looking for lists:reverse/2 and lists:reverse/1
-        final IBackend backend = BackendCore.getBackendManager()
-                .getIdeBackend();
-        final IErlModel model = ErlModelManager.getErlangModel();
-        final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
-                ModelUtils.getImportsAsList(moduleE),
-                project.getExternalModulesString(), model.getPathVars());
-        final IErlFunction function = ModelUtils.findFunction(model,
-                res.getName(), res.getFunction(), res.getPath(), project,
-                IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
-        assertNotNull(function);
+        final IErlScanner scanner = moduleE.getScanner();
+        try {
+            moduleE.open(null);
+            // when
+            // looking for lists:reverse/2 and lists:reverse/1
+            final IRpcSite backend = BackendCore.getBackendManager()
+                    .getIdeBackend().getRpcSite();
+            final IErlModel model = ErlModelManager.getErlangModel();
+            final OpenResult res = ErlideOpen.open(backend, moduleE, 49,
+                    ModelUtils.getImportsAsList(moduleE),
+                    project.getExternalModulesString(), model.getPathVars());
+            final IErlFunction function = ModelUtils.findFunction(model,
+                    res.getName(), res.getFunction(), res.getPath(), project,
+                    IErlElementLocator.Scope.PROJECT_ONLY, moduleE);
+            assertNotNull(function);
 
-        final IErlElement module = model.findModuleFromProject(project,
-                function.getModuleName(), res.getPath(),
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // then
-        // the function should be returned and the module, in External Files
-        assertNotNull(module);
-        assertEquals(function.getParent(), module);
-        assertEquals(ModelUtils.getProject(function), project);
+            final IErlElement module = model.findModuleFromProject(project,
+                    function.getModuleName(), res.getPath(),
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            // then
+            // the function should be returned and the module, in External Files
+            assertNotNull(module);
+            assertEquals(function.getParent(), module);
+            assertEquals(ModelUtils.getProject(function), project);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     @Test

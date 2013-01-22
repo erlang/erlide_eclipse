@@ -35,10 +35,11 @@ import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.OldErlangProjectProperties;
 import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -167,7 +168,8 @@ public class ErlideBuilder {
                             0, IMarker.SEVERITY_ERROR);
                     throw new BackendException(message);
                 }
-                backend.addProjectPath(project);
+                final IErlModel model = ErlModelManager.getErlangModel();
+                backend.addProjectPath(model.findProject(project));
 
                 notifier.setProgressPerCompilationUnit(1.0f / n);
                 final Map<IRpcFuture, IResource> results = new HashMap<IRpcFuture, IResource>();
@@ -179,14 +181,16 @@ public class ErlideBuilder {
                         final String outputDir = erlProject.getOutputLocation()
                                 .toString();
                         final IRpcFuture f = helper.startCompileErl(project,
-                                bres, outputDir, backend, compilerOptions,
+                                bres, outputDir, backend.getRpcSite(),
+                                compilerOptions,
                                 kind == IncrementalProjectBuilder.FULL_BUILD);
                         if (f != null) {
                             results.put(f, resource);
                         }
                     } else if ("yrl".equals(resource.getFileExtension())) {
-                        final IRpcFuture f = helper.startCompileYrl(project,
-                                resource, backend, compilerOptions);
+                        final IRpcFuture f = helper
+                                .startCompileYrl(project, resource,
+                                        backend.getRpcSite(), compilerOptions);
                         if (f != null) {
                             results.put(f, resource);
                         }
@@ -215,7 +219,7 @@ public class ErlideBuilder {
                             final IResource resource = result.getValue();
 
                             helper.completeCompile(project, resource, r,
-                                    backend, compilerOptions);
+                                    backend.getRpcSite(), compilerOptions);
                             notifier.compiled(resource);
 
                             done.add(result);
@@ -227,10 +231,10 @@ public class ErlideBuilder {
                 helper.refreshOutputDir(project);
 
                 try {
-                    helper.checkForClashes(backend, project);
+                    helper.checkForClashes(backend.getRpcSite(), project);
                 } catch (final Exception e) {
                 }
-                backend.removeProjectPath(project);
+                backend.removeProjectPath(model.findProject(project));
             }
 
         } catch (final OperationCanceledException e) {

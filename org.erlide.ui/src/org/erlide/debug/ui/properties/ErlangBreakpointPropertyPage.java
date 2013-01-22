@@ -27,11 +27,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.IErlangBreakpoint;
 import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.PixelConverter;
+import org.erlide.utils.ErlLogger;
 
 public class ErlangBreakpointPropertyPage extends PropertyPage {
 

@@ -16,8 +16,8 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.eclipse.debug.core.model.RuntimeProcess;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErtsWatcher;
+import org.erlide.utils.ErlLogger;
 
 public class ErtsProcess extends RuntimeProcess {
 

@@ -13,11 +13,8 @@ package org.erlide.ui.console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
@@ -42,7 +39,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -75,50 +71,22 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendHelper;
 import org.erlide.backend.console.IBackendShell;
-import org.erlide.backend.console.IoRequest;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangPid;
 
 @SuppressWarnings("restriction")
 public class ErlangConsolePage extends Page implements IAdaptable,
         IPropertyChangeListener {
     public static final String ID = "org.erlide.ui.views.console";
 
-    private static final Color[] colors = {
-            new Color(Display.getDefault(), 0xFF, 0xFF, 0xFF),
-            new Color(Display.getDefault(), 0xCC, 0xFF, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0xCC, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0xFF, 0xCC),
-            new Color(Display.getDefault(), 0xCC, 0xCC, 0xFF),
-            new Color(Display.getDefault(), 0xCC, 0xFF, 0xCC),
-            new Color(Display.getDefault(), 0xFF, 0xCC, 0xCC),
-            new Color(Display.getDefault(), 0x99, 0xFF, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0x99, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0xFF, 0x99),
-            new Color(Display.getDefault(), 0x99, 0xCC, 0xFF),
-            new Color(Display.getDefault(), 0xCC, 0x99, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0x99, 0xCC),
-            new Color(Display.getDefault(), 0xFF, 0xCC, 0x99),
-            new Color(Display.getDefault(), 0x99, 0xFF, 0xCC),
-            new Color(Display.getDefault(), 0xCC, 0xFF, 0x99),
-            new Color(Display.getDefault(), 0x99, 0x99, 0xFF),
-            new Color(Display.getDefault(), 0xFF, 0x99, 0x99),
-            new Color(Display.getDefault(), 0x99, 0xFF, 0x99) };
-
-    final Color bgColor_Ok = new Color(Display.getCurrent(), new RGB(245, 255,
-            245));
-    final Color bgColor_Err = new Color(Display.getCurrent(), new RGB(255, 245,
-            245));
+    Color bgColor_Ok;
+    Color bgColor_Err;
 
     StyledText consoleText;
-    private boolean fGroupByLeader;
-    private final Set<OtpErlangPid> pids = new TreeSet<OtpErlangPid>();
     private final ErlConsoleDocument fDoc;
     final ErlangConsoleHistory history = new ErlangConsoleHistory();
     StyledText consoleInput;
@@ -140,6 +108,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     };
 
     private Composite composite;
+
+    private boolean disposeColors;
 
     public ErlangConsolePage(final IConsoleView view,
             final ErlangConsole console) {
@@ -166,16 +136,18 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         fConsoleView = null;
 
-        bgColor_Err.dispose();
-        bgColor_Ok.dispose();
+        if (disposeColors) {
+            bgColor_Err.dispose();
+            bgColor_Ok.dispose();
+        }
         super.dispose();
     }
 
     boolean isInputComplete() {
         try {
             final String str = consoleInput.getText() + " ";
-            final OtpErlangObject o = BackendHelper.parseConsoleInput(
-                    BackendCore.getBackendManager().getIdeBackend(), str);
+            final BackendHelper helper = new BackendHelper();
+            final OtpErlangObject o = helper.parseConsoleInput(str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;
             }
@@ -194,49 +166,11 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         consoleInput.setText("");
     }
 
-    Color getColor(final OtpErlangPid sender) {
-        int ix = 0;
-        for (final Object element : pids) {
-            final OtpErlangPid pid = (OtpErlangPid) element;
-            if (pid.equals(sender)) {
-                break;
-            }
-            ix++;
-        }
-        if (ix < colors.length - 1) {
-            return colors[ix % 19 + 1];
-        }
-        return colors[0];
-    }
-
     public void input(final String data) {
         final String data2 = data.trim() + "\n";
         shell.input(data2);
         shell.send(data2);
         history.addToHistory(data.trim());
-    }
-
-    public void markRequests(final List<IoRequest> reqs) {
-        for (final Object element0 : reqs) {
-            final IoRequest element = (IoRequest) element0;
-            markRequest(element);
-        }
-    }
-
-    public void markRequest(final IoRequest req) {
-        final StyleRange range = new StyleRange();
-        range.start = req.getStart();
-        range.length = req.getLength();
-        range.background = getColor(fGroupByLeader ? req.getLeader() : req
-                .getSender());
-        consoleText.setStyleRange(range);
-    }
-
-    public void clearMarks() {
-        final StyleRange range = new StyleRange();
-        range.start = 0;
-        range.length = consoleText.getCharCount();
-        consoleText.setStyleRange(range);
     }
 
     public void setInput(final String str) {
@@ -249,6 +183,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
      */
     @Override
     public void createControl(final Composite parent) {
+        setBackgroundColors();
+
         composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, false));
 
@@ -405,6 +341,36 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     }
 
+    private void setBackgroundColors() {
+        final Color color = DebugUIPlugin
+                .getPreferenceColor(IDebugPreferenceConstants.CONSOLE_BAKGROUND_COLOR);
+
+        final float[] hsbvals = new float[3];
+        java.awt.Color.RGBtoHSB(color.getRed(), color.getGreen(),
+                color.getBlue(), hsbvals);
+
+        if (hsbvals[1] >= 0.01) {
+            bgColor_Ok = color;
+            bgColor_Err = color;
+            disposeColors = false;
+        } else {
+            final float red = java.awt.Color.RGBtoHSB(255, 0, 0, null)[0];
+            final float green = java.awt.Color.RGBtoHSB(0, 255, 0, null)[0];
+            final float deltaSaturation = 0.05f;
+
+            int rgb = java.awt.Color.HSBtoRGB(red, deltaSaturation, hsbvals[2]);
+            java.awt.Color cx = new java.awt.Color(rgb);
+            bgColor_Err = new Color(Display.getCurrent(), new RGB(cx.getRed(),
+                    cx.getGreen(), cx.getBlue()));
+
+            rgb = java.awt.Color.HSBtoRGB(green, deltaSaturation, hsbvals[2]);
+            cx = new java.awt.Color(rgb);
+            bgColor_Ok = new Color(Display.getCurrent(), new RGB(cx.getRed(),
+                    cx.getGreen(), cx.getBlue()));
+            disposeColors = true;
+        }
+    }
+
     @Override
     public Control getControl() {
         return composite;
@@ -510,7 +476,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         fSelectionActions.add(ActionFactory.CUT.getId());
         fSelectionActions.add(ActionFactory.COPY.getId());
-        fSelectionActions.add(ActionFactory.PASTE.getId());
         fSelectionActions.add(ActionFactory.FIND.getId());
 
         actionBars.updateActionBars();
@@ -530,7 +495,6 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         menuManager.add(fGlobalActions.get(ActionFactory.CUT.getId()));
         menuManager.add(fGlobalActions.get(ActionFactory.COPY.getId()));
-        menuManager.add(fGlobalActions.get(ActionFactory.PASTE.getId()));
         menuManager.add(fGlobalActions.get(ActionFactory.SELECT_ALL.getId()));
 
         menuManager.add(new Separator("FIND")); //$NON-NLS-1$

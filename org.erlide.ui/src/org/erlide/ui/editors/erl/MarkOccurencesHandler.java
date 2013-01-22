@@ -34,8 +34,8 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlSearchScope;
@@ -45,13 +45,13 @@ import org.erlide.core.services.search.ErlideSearchServer;
 import org.erlide.core.services.search.LimitTo;
 import org.erlide.core.services.search.ModuleLineFunctionArityRef;
 import org.erlide.core.services.search.OpenResult;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
-import org.erlide.jinterface.rpc.RpcTimeoutException;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.ui.editors.erl.ErlangEditor.ActivationListener;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.search.ErlangSearchElement;
 import org.erlide.ui.internal.search.SearchUtil;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
@@ -104,8 +104,9 @@ public class MarkOccurencesHandler {
             }
             try {
                 final int offset = aSelection.getOffset();
-                final OpenResult res = ErlideOpen.open(ideBackend, theModule,
-                        offset, ModelUtils.getImportsAsList(theModule), "",
+                final OpenResult res = ErlideOpen.open(ideBackend.getRpcSite(),
+                        theModule, offset,
+                        ModelUtils.getImportsAsList(theModule), "",
                         ErlModelManager.getErlangModel().getPathVars());
                 final ErlangSearchPattern pattern = SearchUtil
                         .getSearchPatternFromOpenResultAndLimitTo(theModule,
@@ -121,7 +122,7 @@ public class MarkOccurencesHandler {
                     // TODO: run in background? for large files, this can take
                     // seconds
                     final OtpErlangObject refs = ErlideSearchServer.findRefs(
-                            ideBackend, pattern, scope,
+                            ideBackend.getRpcSite(), pattern, scope,
                             erlangEditor.getStateDir(), true);
                     if (refs != null) {
                         SearchUtil.addSearchResult(findRefs, refs);

@@ -15,9 +15,9 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.backend.SyntaxInfo;
@@ -46,12 +46,13 @@ public class ErlTextMemberSelection extends AbstractErlMemberSelection {
      */
     public ErlTextMemberSelection(final ITextSelection selection,
             final ITextEditor editor) throws WranglerException {
-        IEditorInput input = editor.getEditorInput();
-        if (!(input instanceof IFileEditorInput))
+        final IEditorInput input = editor.getEditorInput();
+        if (!(input instanceof IFileEditorInput)) {
             throw new WranglerException("Can not refactor external modules!");
+        }
         document = editor.getDocumentProvider().getDocument(input);
         final IFileEditorInput fileInput = (IFileEditorInput) input;
-        IFile theFile = fileInput.getFile();
+        final IFile theFile = fileInput.getFile();
         store(selection, theFile, document);
     }
 

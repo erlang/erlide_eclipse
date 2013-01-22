@@ -11,11 +11,11 @@ import java.util.Collections;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Plugin;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Activator;
 import org.erlide.tracing.core.TraceBackend;
 import org.erlide.tracing.core.mvc.model.TracePattern;
 import org.erlide.tracing.core.mvc.model.TracedNode;
+import org.erlide.utils.ErlLogger;
 
 /**
  * Class containing helper methods for managing nodes and trace patterns

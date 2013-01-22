@@ -200,21 +200,26 @@ public class IErlModuleTests extends ErlModelTestBase {
     public void reconcileText() throws Exception {
         final ErlangFunction f_1 = new ErlangFunction("f", 1);
         final ErlangFunction abc_1 = new ErlangFunction("abc", 1);
-        module.open(null);
-        final IErlFunction function = module.findFunction(f_1);
-        final IErlFunction function2 = module.findFunction(abc_1);
-        module.reconcileText(33, 1, "abc", null);
-        final IErlFunction function3 = module.findFunction(f_1);
-        final IErlFunction function4 = module.findFunction(abc_1);
-        module.postReconcile(null);
-        final IErlFunction function5 = module.findFunction(f_1);
-        final IErlFunction function6 = module.findFunction(abc_1);
-        assertNotNull(function);
-        assertNull(function2);
-        assertNotNull(function3);
-        assertNull(function4);
-        assertNull(function5);
-        assertNotNull(function6);
+        final IErlScanner scanner = module.getScanner();
+        try {
+            module.open(null);
+            final IErlFunction function = module.findFunction(f_1);
+            final IErlFunction function2 = module.findFunction(abc_1);
+            module.reconcileText(33, 1, "abc", null);
+            final IErlFunction function3 = module.findFunction(f_1);
+            final IErlFunction function4 = module.findFunction(abc_1);
+            module.postReconcile(null);
+            final IErlFunction function5 = module.findFunction(f_1);
+            final IErlFunction function6 = module.findFunction(abc_1);
+            assertNotNull(function);
+            assertNull(function2);
+            assertNotNull(function3);
+            assertNull(function4);
+            assertNull(function5);
+            assertNotNull(function6);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     // void finalReconcile();
@@ -312,26 +317,31 @@ public class IErlModuleTests extends ErlModelTestBase {
     // ErlToken getScannerTokenAt(int offset);
     @Test
     public void getScannerTokenAt() throws Exception {
-        module.open(null);
-        final ErlToken token = module.getScannerTokenAt(-1);
-        final ErlToken token2 = module.getScannerTokenAt(0);
-        final ErlToken token3 = module.getScannerTokenAt(1);
-        final ErlToken token4 = module.getScannerTokenAt(10);
-        final ErlToken token5 = module.getScannerTokenAt(24);
-        final ErlToken token6 = module.getScannerTokenAt(61);
-        final ErlToken token7 = module.getScannerTokenAt(62);
-        assertNull(token);
-        assertNotNull(token2);
-        assertEquals(ErlToken.KIND_OTHER, token2.getKind());
-        assertNotNull(token3);
-        assertEquals(ErlToken.KIND_ATOM, token3.getKind());
-        assertNotNull(token4);
-        assertEquals(ErlToken.KIND_OTHER, token4.getKind());
-        assertNotNull(token5);
-        assertEquals(ErlToken.KIND_STRING, token5.getKind());
-        assertNotNull(token6);
-        assertEquals(ErlToken.KIND_OTHER, token6.getKind());
-        assertNull(token7);
+        final IErlScanner scanner = module.getScanner();
+        try {
+            module.open(null);
+            final ErlToken token = scanner.getTokenAt(-1);
+            final ErlToken token2 = scanner.getTokenAt(0);
+            final ErlToken token3 = scanner.getTokenAt(1);
+            final ErlToken token4 = scanner.getTokenAt(10);
+            final ErlToken token5 = scanner.getTokenAt(24);
+            final ErlToken token6 = scanner.getTokenAt(61);
+            final ErlToken token7 = scanner.getTokenAt(62);
+            assertNull(token);
+            assertNotNull(token2);
+            assertEquals(ErlToken.KIND_OTHER, token2.getKind());
+            assertNotNull(token3);
+            assertEquals(ErlToken.KIND_ATOM, token3.getKind());
+            assertNotNull(token4);
+            assertEquals(ErlToken.KIND_OTHER, token4.getKind());
+            assertNotNull(token5);
+            assertEquals(ErlToken.KIND_STRING, token5.getKind());
+            assertNotNull(token6);
+            assertEquals(ErlToken.KIND_OTHER, token6.getKind());
+            assertNull(token7);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     // void setResource(IFile file);
@@ -395,10 +405,22 @@ public class IErlModuleTests extends ErlModelTestBase {
     // boolean isOnIncludePath();
     @Test
     public void isOnIncludePath() throws Exception {
-
         final IErlModule module2 = ErlideTestUtils.createInclude(project,
                 "yy.erl", "-module(yy).\n");
         assertFalse(module.isOnIncludePath());
         assertTrue(module2.isOnIncludePath());
+    }
+
+    @Test
+    public void resetCachesWorks() throws Exception {
+        module.open(null);
+        assertTrue(module.getChildCount() > 0);
+        final IErlScanner scanner = module.getScanner();
+        try {
+            module.resetAndCacheScannerAndParser(scanner.getText());
+        } finally {
+            scanner.dispose();
+        }
+        assertTrue(module.getChildCount() > 0);
     }
 }

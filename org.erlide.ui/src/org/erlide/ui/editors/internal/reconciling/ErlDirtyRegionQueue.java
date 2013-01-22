@@ -1,7 +1,12 @@
 package org.erlide.ui.editors.internal.reconciling;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.erlide.utils.ErlLogger;
+
+import com.google.common.collect.Lists;
 
 /**
  * Queue used by {@link org.eclipse.jface.text.reconciler.Reconciler} to manage
@@ -14,7 +19,8 @@ import java.util.List;
 public class ErlDirtyRegionQueue {
 
     /** The list of dirty regions. */
-    private final List<ErlDirtyRegion> fDirtyRegions = new ArrayList<ErlDirtyRegion>();
+    private final LinkedList<ErlDirtyRegion> fDirtyRegions = Lists
+            .newLinkedList();
 
     /**
      * Creates a new empty dirty region.
@@ -28,26 +34,21 @@ public class ErlDirtyRegionQueue {
      * 
      * @param dr
      *            the dirty region to add
+     * @return true if the region is added, false if it's merged to previous
+     * 
      */
-    public void addDirtyRegion(final ErlDirtyRegion dr) {
+    public boolean addDirtyRegion(final ErlDirtyRegion dr) {
         // If the dirty region being added is directly adjacent to the last
         // dirty region on the queue then merge the two dirty regions together.
-        final ErlDirtyRegion lastDR = getLastDirtyRegion();
+        final ErlDirtyRegion lastDR = fDirtyRegions.peekLast();
         if (lastDR != null && lastDR.isMergable(dr)) {
             lastDR.mergeWith(dr);
+            return false;
         } else {
-            fDirtyRegions.add(dr);
+            fDirtyRegions.addLast(dr);
+            ErlLogger.debug("added %s (size %d)", dr, fDirtyRegions.size());
+            return true;
         }
-    }
-
-    /**
-     * Returns the last dirty region that was added to the queue.
-     * 
-     * @return the last DirtyRegion on the queue
-     */
-    private ErlDirtyRegion getLastDirtyRegion() {
-        final int size = fDirtyRegions.size();
-        return size == 0 ? null : fDirtyRegions.get(size - 1);
     }
 
     /**
@@ -57,33 +58,19 @@ public class ErlDirtyRegionQueue {
         fDirtyRegions.clear();
     }
 
-    public ErlDirtyRegion getNextDirtyRegion() {
-        if (fDirtyRegions.size() == 0) {
-            return null;
-        }
-        final ErlDirtyRegion dr = fDirtyRegions.get(0);
-        return dr;
+    public ErlDirtyRegion extractNextDirtyRegion() {
+        return fDirtyRegions.pollFirst();
     }
 
-    public List<ErlDirtyRegion> getAllDirtyRegions() {
-        if (fDirtyRegions.size() == 0) {
-            return null;
-        }
+    public List<ErlDirtyRegion> extractAllDirtyRegions() {
         final List<ErlDirtyRegion> d = new ArrayList<ErlDirtyRegion>(
                 fDirtyRegions);
+        fDirtyRegions.clear();
         return d;
     }
 
     public boolean isEmpty() {
         return fDirtyRegions.isEmpty();
-    }
-
-    public void removeAll(final List<ErlDirtyRegion> rs) {
-        fDirtyRegions.removeAll(rs);
-    }
-
-    public void remove(final ErlDirtyRegion r) {
-        fDirtyRegions.remove(r);
     }
 
 }

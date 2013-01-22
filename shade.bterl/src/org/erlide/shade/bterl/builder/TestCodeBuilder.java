@@ -32,14 +32,14 @@ import org.eclipse.debug.internal.core.StreamsProxy;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.IBackend;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.IRpcFuture;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.shade.bterl.ui.launcher.TestLaunchDelegate;
-import org.erlide.utils.ErlUtils;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -158,10 +158,10 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
             final boolean deleteMarkers, final IProgressMonitor monitor) {
         try {
             final Map<IRpcFuture, IResource> results = Maps.newHashMap();
-            IBackend backend;
+            IRpcSite backend;
             try {
-                backend = BackendCore.getBackendManager().getBuildBackend(
-                        project);
+                backend = BackendCore.getBackendManager()
+                        .getBuildBackend(project).getRpcSite();
             } catch (final BackendException e) {
                 backend = null;
             }
@@ -240,7 +240,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    public void registerBterlBeams(final IBackend backend)
+    public void registerBterlBeams(final IRpcSite backend)
             throws CoreException, RpcException {
         final String[] bterl_beams = TestLaunchDelegate.getBterlPath();
         for (final String bterl_beam : bterl_beams) {
@@ -248,7 +248,7 @@ public class TestCodeBuilder extends IncrementalProjectBuilder {
         }
     }
 
-    public void unregisterBterlBeams(final IBackend backend)
+    public void unregisterBterlBeams(final IRpcSite backend)
             throws CoreException, RpcException {
         final String[] bterl_beams = TestLaunchDelegate.getBterlPath();
         for (final String bterl_beam : bterl_beams) {

@@ -22,9 +22,9 @@ import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 
 /**
  * 

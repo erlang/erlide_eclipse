@@ -23,14 +23,14 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
 import org.erlide.launch.ErlangLaunchDelegate;
-import org.erlide.launch.debug.ErlDebugConstants;
-import org.erlide.utils.ErlUtils;
+import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ListsUtils;
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -111,7 +111,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final BackendData result = super.configureBackend(data, config, aMode,
                 launch);
         result.setBeamLocator(new TestsBeamLocator(workdir));
-        result.setTransient(true);
+        result.setReportErrors(true);
         return result;
     }
 
@@ -182,7 +182,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
 
                 final OtpErlangPid pid = (OtpErlangPid) event
                         .getProperty("DATA");
-                backend.send(pid, new OtpErlangAtom("ok"));
+                backend.getRpcSite().send(pid, new OtpErlangAtom("ok"));
             }
         };
         handler.register();
@@ -226,7 +226,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         final String[] bterlPath = getBterlPath();
         System.out.println("... internal path = " + bterlPath);
 
-        final String runtimeName = BackendCore.getRuntimeInfoManager()
+        final String runtimeName = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(new RuntimeVersion("R14B"), "").getName();
         // TODO how do we keep this updated?
 
@@ -261,7 +261,7 @@ public class TestLaunchDelegate extends ErlangLaunchDelegate {
         }
         wc.setAttribute(ErlLaunchAttributes.DEBUG_INTERPRET_MODULES, modules);
         wc.setAttribute(ErlLaunchAttributes.DEBUG_FLAGS,
-                ErlDebugConstants.ATTACH_ON_BREAKPOINT);
+                ErlDebugFlags.ATTACH_ON_BREAKPOINT.getFlag());
 
         final OtpErlangString e_dir = new OtpErlangString(workdirPath);
         final OtpErlangAtom e_suite = new OtpErlangAtom(suite);

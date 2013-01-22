@@ -8,20 +8,20 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
 import org.erlide.core.internal.model.root.ErlModel;
 import org.erlide.core.internal.model.root.ErlModelCache;
 import org.erlide.core.internal.model.root.Openable;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.search.ErlideOpen;
 import org.erlide.core.services.search.ErlideOpen.ExternalTreeEntry;
+import org.erlide.runtime.IRpcSite;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.google.common.collect.Maps;
@@ -62,8 +62,8 @@ public class ErlExternalReferenceEntryList extends Openable implements
         List<ExternalTreeEntry> externalIncludeTree = cache
                 .getExternalTree(externalIncludes);
         if (externalModuleTree == null || externalIncludeTree == null) {
-            final IBackend backend = BackendCore.getBuildOrIdeBackend(project
-                    .getWorkspaceProject());
+            final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
+                    project.getWorkspaceProject()).getRpcSite();
             final OtpErlangList pathVars = ErlModelManager.getErlangModel()
                     .getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
@@ -182,7 +182,7 @@ public class ErlExternalReferenceEntryList extends Openable implements
         return false;
     }
 
-    public IBackend getBackend() {
+    public IRpcSite getBackend() {
         return null;
     }
 

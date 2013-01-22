@@ -33,20 +33,19 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.core.internal.model.root.ErlElementDelta;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlMember;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
 import org.erlide.core.model.root.IErlElementDelta;
 import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.IElementChangedListener;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
@@ -55,6 +54,7 @@ import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.PerformanceTuning;
+import org.erlide.utils.ErlLogger;
 
 public class DefaultErlangFoldingStructureProvider implements
         IProjectionListener, IErlangFoldingStructureProvider,

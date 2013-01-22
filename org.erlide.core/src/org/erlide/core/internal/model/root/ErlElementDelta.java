@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResourceDelta;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElementDelta;
-import org.erlide.core.model.root.IParent;
 
 import com.google.common.collect.Lists;
 

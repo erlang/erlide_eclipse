@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.headless"
       label="Erlide core (headless)"
-      version="0.17.7.qualifier"
+      version="0.18.0.qualifier"
       provider-name="erlide.org"
       plugin="org.erlide.core">
 
@@ -10,9 +10,9 @@
       This feature provides Erlang IDE support for Eclipse, that
 can be used without an UI (headless).
 For bug reports and feature requests, please use the SouceForge
-For bug reports and feature requests, please use the trackers at 
-https://www.assembla.com/spaces/erlide/support/tickets 
-or at 
+For bug reports and feature requests, please use the trackers at
+https://www.assembla.com/spaces/erlide/support/tickets
+or at
 https://github.com/erlide/erlide/issues.
 You can also mail to erlide-devel@lists.sourceforge.net.
    </description>
@@ -27,7 +27,7 @@ http://www.eclipse.org/legal/epl-v10.html
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
-      Eclipse Public License - v 1.0 
+      Eclipse Public License - v 1.0
 is available from http://www.eclipse.org/legal/epl-v10.html
    </license>
 
@@ -57,7 +57,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.jinterface"
+         id="org.erlide.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -95,6 +95,13 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.backend"
          download-size="0"
          install-size="0"
          version="0.0.0"

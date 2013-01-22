@@ -3,11 +3,11 @@ package org.erlide.test_support.ui.suites;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.erlide.jinterface.Bindings;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.utils.ErlUtils;
-import org.erlide.utils.TermParser;
-import org.erlide.utils.TermParserException;
+import org.erlide.runtime.Bindings;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.TermParser;
+import org.erlide.runtime.TermParserException;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;

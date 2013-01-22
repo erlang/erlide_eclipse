@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.tracing.core.Activator;
 import org.erlide.tracing.core.ITraceNodeObserver;
 import org.erlide.tracing.core.TraceBackend;
@@ -44,6 +43,7 @@ import org.erlide.tracing.core.preferences.PreferenceNames;
 import org.erlide.tracing.core.ui.dialogs.RunnableWithProgress;
 import org.erlide.tracing.core.utils.TracingStatusHandler;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.utils.ErlLogger;
 
 public class TreeViewerView extends ViewPart implements ITraceNodeObserver {
 

@@ -13,6 +13,7 @@ package org.erlide.launch.debug.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +33,12 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.erlide.backend.IBackend;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.debug.DebuggerEventDaemon;
 import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
+import org.erlide.runtime.ErlDebugFlags;
+import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -75,11 +77,11 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
     // private final WaitingForDebuggerListener waiter;
 
     public ErlangDebugTarget(final ILaunch launch, final IBackend b,
-            final Collection<IProject> projects, final int debugFlags)
-            throws DebugException {
+            final Collection<IProject> projects,
+            final EnumSet<ErlDebugFlags> debugFlags) throws DebugException {
         super(null);
         fBackend = b;
-        fNodeName = b.getFullNodeName();
+        fNodeName = b.getNodeName();
         fLaunch = launch;
         fTerminated = false;
         this.projects = projects;
@@ -91,9 +93,10 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
         debuggerDaemon.start();
         ErlLogger.debug("debug daemon " + debuggerDaemon.getMBox());
 
-        final OtpErlangPid pid = ErlideDebug.startDebug(b, debugFlags);
+        final OtpErlangPid pid = ErlideDebug.startDebug(b.getRpcSite(),
+                ErlDebugFlags.getFlag(debugFlags));
         ErlLogger.debug("debug started " + pid);
-        fBackend.send(pid,
+        fBackend.getRpcSite().send(pid,
                 OtpErlang.mkTuple(PARENT_ATOM, debuggerDaemon.getMBox()));
 
         DebugPlugin.getDefault().getBreakpointManager()
@@ -165,7 +168,7 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
             return;
         }
 
-        fBackend.send("erlide_dbg_mon", new OtpErlangAtom("stop"));
+        fBackend.getRpcSite().send("erlide_dbg_mon", new OtpErlangAtom("stop"));
         final DebugPlugin dbgPlugin = DebugPlugin.getDefault();
         if (dbgPlugin != null) {
             dbgPlugin.getBreakpointManager().removeBreakpointListener(this);

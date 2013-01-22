@@ -1,8 +1,8 @@
 /*******************************************************************************
  * Copyright (c) 2008 Vlad Dumitrescu and others.
- * All rights reserved. This program and the accompanying materials 
+ * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at 
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -37,10 +37,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendHelper;
-import org.erlide.backend.IBackend;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.LogUtil;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
 
 public class ReportPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -188,9 +190,9 @@ public class ReportPreferencePage extends PreferencePage implements
     }
 
     private static void fetchErlangSystemInfo() {
-        final IBackend ideBackend = BackendCore.getBackendManager()
-                .getIdeBackend();
-        final String info = BackendHelper.getSystemInfo(ideBackend);
+        final IRpcSite ideBackend = BackendCore.getBackendManager()
+                .getIdeBackend().getRpcSite();
+        final String info = getSystemInfo(ideBackend);
         ErlLogger.info("\n++++++++++++++++++++++\n" + info);
     }
 
@@ -236,4 +238,16 @@ public class ReportPreferencePage extends PreferencePage implements
                 elog);
         return data;
     }
+
+    public static String getSystemInfo(final IRpcSite b) {
+        try {
+            final OtpErlangObject val = b.call("erlide_backend",
+                    "get_system_info", "");
+            return ErlUtils.asString(val);
+        } catch (final Exception e) {
+            return "System information could not be retrieved "
+                    + "(node not monitored)... ";
+        }
+    }
+
 }

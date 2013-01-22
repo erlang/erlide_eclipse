@@ -12,7 +12,7 @@ package org.erlide.wrangler.refactoring.backend.internal;
 
 import java.util.ArrayList;
 
-import org.erlide.utils.ErlUtils;
+import org.erlide.runtime.ErlUtils;
 import org.erlide.wrangler.refactoring.backend.ChangedFile;
 import org.erlide.wrangler.refactoring.backend.IRefactoringRpcMessage;
 

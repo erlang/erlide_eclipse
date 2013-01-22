@@ -134,7 +134,7 @@
                     </listitem>
                 </varlistentry>
                 <varlistentry>
-                    <term>org.erlide.jinterface</term>
+                    <term>org.erlide.runtime</term>
                     <listitem>
                         <para>This contains our extensions to jinterface. It is
                             Eclipse-independent.</para>

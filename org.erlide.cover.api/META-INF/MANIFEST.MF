@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cover Interfaces
 Bundle-SymbolicName: org.erlide.cover.api;singleton:=true
-Bundle-Version: 0.15.0.qualifier
+Bundle-Version: 0.18.0.qualifier
 Bundle-Activator: org.erlide.cover.api.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.erlide.core;bundle-version="0.11.0",
  org.eclipse.core.resources;bundle-version="3.5.0",
- org.erlide.jinterface;bundle-version="0.11.9"
+ org.erlide.backend;bundle-version="0.11.9"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.erlide.cover.api

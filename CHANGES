@@ -1,3 +1,18 @@
+List of user visible changes between 0.17.7 and 0.18.0 (20130121)
+
+3e0a09f 1122 completion: no suggestions after guard with macro
+f8f13c9 1123: scanner gets out of sync after completion
+2367244 Merge pull request #92 from vladdu/scanner: fix problem with eternal scanner processes eating up memory
+d38fb9b Merge pull request #91 from jakobc/noparse: separate scanner and parse functionality to make it easier to test
+0237deb 1116: indent fails for large blocks of test; increased timeout of this slow operation
+138c4d5 Fixed sync problem There was code between getting from reconciler queue and removing from it. If regions were added from another thread (e.g. from user typing), the scanner buffer and the editor buffer would diverge.
+1afb3f4 make BackendData part of API
+26766e4 rename jinterface plugin to "runtime"
+b64cedb create backend plugin and make jinterface plugin independent of eclipse
+8609afe fix NPE in new file wizard
+0750ca0 remove periodic dump of backend info; not needed anymore
+0539c9a 1114: console problem with dark colors.
+
 List of user visible changes between 0.17.6 and 0.17.7 (20121214)
 
 45d388b debug backends not being shut down

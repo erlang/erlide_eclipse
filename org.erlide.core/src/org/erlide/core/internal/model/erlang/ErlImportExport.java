@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.erlide.core.internal.model.root.ErlMember;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.erlang.IErlImportExport;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.util.ErlangFunction;
 
 import com.ericsson.otp.erlang.OtpErlangList;

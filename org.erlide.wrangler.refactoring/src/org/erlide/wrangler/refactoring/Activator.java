@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.utils.ErlLogger;
 import org.osgi.framework.BundleContext;
 
 import com.ericsson.otp.erlang.OtpErlangList;
@@ -87,8 +87,8 @@ public class Activator extends AbstractUIPlugin {
          * "Wrangler's path is added to Erlang with result:" + res.isOk() +
          * "\t raw:" + res);
          */
-        RpcResult res = mb.call_noexception("wrangler_refacs", "init_eclipse",
-                "", new Object[0]);
+        RpcResult res = mb.getRpcSite().call_noexception("wrangler_refacs",
+                "init_eclipse", "", new Object[0]);
         /*
          * application :start(wrangler_app) res = mb.call_noexception
          * ("application", "start", "a", "wrangler_app");
@@ -101,8 +101,8 @@ public class Activator extends AbstractUIPlugin {
          * e.printStackTrace(); } }
          */
 
-        res = mb.call_noexception("wrangler_error_logger", "init", "x",
-                new OtpErlangList());
+        res = mb.getRpcSite().call_noexception("wrangler_error_logger", "init",
+                "x", new OtpErlangList());
 
         ErlLogger.debug("Error logger started:" + res);
     }

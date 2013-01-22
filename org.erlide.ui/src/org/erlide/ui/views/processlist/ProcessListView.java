@@ -47,6 +47,7 @@ import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 import org.osgi.service.event.Event;
@@ -98,7 +99,7 @@ public class ProcessListView extends ViewPart {
 
         @Override
         public Object[] getElements(final Object parent) {
-            final IBackend backend = getBackend();
+            final IRpcSite backend = getBackend().getRpcSite();
             if (backend == null) {
                 return new OtpErlangObject[] {};
             }
@@ -231,8 +232,8 @@ public class ProcessListView extends ViewPart {
         t.setHeaderVisible(true);
 
         // TODO this is wrong - all backends should be inited
-        final IBackend ideBackend = BackendCore.getBackendManager()
-                .getIdeBackend();
+        final IRpcSite ideBackend = BackendCore.getBackendManager()
+                .getIdeBackend().getRpcSite();
         if (ideBackend != null) {
             ErlideProclist.processListInit(ideBackend);
         }
@@ -240,7 +241,7 @@ public class ProcessListView extends ViewPart {
                 new Procedure1<IBackend>() {
                     @Override
                     public void apply(final IBackend b) {
-                        ErlideProclist.processListInit(b);
+                        ErlideProclist.processListInit(b.getRpcSite());
                     }
                 });
 
@@ -316,7 +317,7 @@ public class ProcessListView extends ViewPart {
                         .elementAt(0);
 
                 final OtpErlangObject r = ErlideProclist.getProcessInfo(
-                        getBackend(), pid);
+                        getBackend().getRpcSite(), pid);
                 if (r instanceof OtpErlangList) {
                     final OtpErlangList l = (OtpErlangList) r;
                     final StringBuilder s = new StringBuilder();

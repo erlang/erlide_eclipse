@@ -21,10 +21,10 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.runtimeinfo.RuntimeInfo;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PropertiesUtils;
 import org.erlide.core.model.root.IOldErlangProjectProperties;
+import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -99,7 +99,7 @@ public final class OldErlangProjectProperties implements
                 runtimeVersion = new RuntimeVersion(
                         ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
             } else {
-                final RuntimeInfo ri = BackendCore.getRuntimeInfoManager()
+                final RuntimeInfo ri = BackendCore.getRuntimeInfoCatalog()
                         .getRuntime(runtimeName);
                 if (ri != null) {
                     runtimeVersion = new RuntimeVersion(ri.getVersion());
@@ -250,11 +250,11 @@ public final class OldErlangProjectProperties implements
 
     @Override
     public RuntimeInfo getRuntimeInfo() {
-        final RuntimeInfo runtime = BackendCore.getRuntimeInfoManager()
+        final RuntimeInfo runtime = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(runtimeVersion, runtimeName);
         RuntimeInfo rt = null;
         if (runtime != null) {
-            rt = RuntimeInfo.copy(runtime, false);
+            rt = RuntimeInfo.copy(runtime);
         }
         return rt;
     }

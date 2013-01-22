@@ -18,10 +18,10 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.ErlModelException;
+import org.erlide.core.model.IOpenable;
+import org.erlide.core.model.IParent;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IOpenable;
-import org.erlide.core.model.root.IParent;
 import org.erlide.core.model.root.ISourceUnit;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ErlangIncludeFile;
@@ -127,8 +127,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     IErlTypespec findTypespec(String typeName);
 
-    ErlToken getScannerTokenAt(int offset);
-
     void setResource(IFile file);
 
     void setComments(Collection<? extends IErlComment> comments);
@@ -141,8 +139,10 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     boolean exportsAllFunctions();
 
-    boolean isRealFile();
-
     String getScannerName();
+
+    IErlScanner getScanner();
+
+    void createScanner();
 
 }

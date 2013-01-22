@@ -15,10 +15,10 @@ import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -28,7 +28,7 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public final class ErlideUtil {
 
-    public static boolean isAccessible(final IBackend backend,
+    public static boolean isAccessibleDir(final IRpcSite backend,
             final String localDir) {
         File f = null;
         try {
@@ -48,6 +48,7 @@ public final class ErlideUtil {
         } catch (final OtpErlangRangeException e) {
             ErlLogger.error(e);
         } catch (final RpcException e) {
+            ErlLogger.error(e);
         } finally {
             if (f != null) {
                 f.delete();

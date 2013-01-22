@@ -3,6 +3,11 @@
  */
 package org.erlide.ui.editors.erl.test;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -12,7 +17,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.utils.ErlLogger;
 
 /**
  * @author jakob
@@ -39,10 +45,21 @@ public class TestAction extends TextEditorAction {
             final IDocument document = textEditor.getDocumentProvider()
                     .getDocument(textEditor.getEditorInput());
             final String text = document.get();
-            final String s = ErlideScanner.checkAll(module.getScannerName(),
-                    text);
+            final String scannerName = module.getScannerName();
+            final String s = ErlideScanner.checkAll(scannerName, text);
             ErlLogger.debug("%s", s);
-            // return;
+            final String scannerText = ErlideScanner.getText(scannerName);
+            dumpText(scannerText, "/tmp/scanner.txt");
+            dumpText(text, "/tmp/editor.txt");
+            if (textEditor instanceof ErlangEditor) {
+                final ErlangEditor editor = (ErlangEditor) textEditor;
+                ErlideScanner.dumpLog(editor.getModule().getScannerName(),
+                        "/tmp/x.scanner.log");
+                editor.dumpReconcilerLog("/tmp/x.reconciler.log");
+            }
+            if (module != null) {
+                return;
+            }
         }
 
         Set<IErlModule> deps;
@@ -55,5 +72,16 @@ public class TestAction extends TextEditorAction {
             e.printStackTrace();
         }
 
+    }
+
+    private void dumpText(final String text, final String filename) {
+        try {
+            final OutputStream out = new BufferedOutputStream(
+                    new FileOutputStream(new File(filename)));
+            out.write(text.getBytes());
+            out.close();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 }

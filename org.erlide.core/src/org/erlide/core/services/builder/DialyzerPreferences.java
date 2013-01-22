@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.PreferencesHelper;
-import org.erlide.jinterface.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -89,7 +89,7 @@ public class DialyzerPreferences {
         final String pltFilesString = service
                 .getString(pluginId, key, "", null);
         return ErlideDialyze.getPltFiles(BackendCore.getBackendManager()
-                .getIdeBackend(), pltFilesString);
+                .getIdeBackend().getRpcSite(), pltFilesString);
     }
 
     public static String getAlternatePLTFileDirectoryFromPreferences()

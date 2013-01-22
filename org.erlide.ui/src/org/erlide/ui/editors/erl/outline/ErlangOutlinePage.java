@@ -56,7 +56,6 @@ import org.erlide.core.model.erlang.ISourceReference;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlModelChangeListener;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.CompositeActionGroup;
@@ -72,6 +71,7 @@ import org.erlide.ui.navigator.ErlElementSorter;
 import org.erlide.ui.prefs.PreferenceConstants;
 import org.erlide.ui.prefs.plugin.ErlEditorMessages;
 import org.erlide.ui.util.ErlModelUtils;
+import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -139,7 +139,6 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
      * 
      */
     public void setInput(final IEditorInput editorInput) {
-        // ErlLogger.log("> outline set input "+editorInput);
         fModule = null;
         try {
             fModule = ErlModelUtils.getModule(editorInput);
@@ -273,7 +272,7 @@ public class ErlangOutlinePage extends ContentOutlinePage implements
 
             @Override
             public void partOpened(final IWorkbenchPart part) {
-                addFilters(); // JC borde filter-metoden ovan rŠcka?
+                addFilters(); // JC borde filter-metoden ovan rï¿½cka?
             }
 
             @Override

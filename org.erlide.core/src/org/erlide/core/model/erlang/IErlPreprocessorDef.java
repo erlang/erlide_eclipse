@@ -3,7 +3,7 @@
  */
 package org.erlide.core.model.erlang;
 
-import org.erlide.core.model.root.IParent;
+import org.erlide.core.model.IParent;
 
 /**
  * @author jakob

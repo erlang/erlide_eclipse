@@ -12,7 +12,7 @@ package org.erlide.ui.wizards;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,7 +43,6 @@ import org.erlide.utils.PreferencesUtils;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.RuntimeVersion;
-import com.google.common.collect.Lists;
 
 /**
  * 
@@ -91,7 +90,7 @@ public class ProjectPreferencesWizardPage extends WizardPage {
     @Override
     public void createControl(final Composite parent) {
         prefs = new OldErlangProjectProperties();
-        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoManager()
+        prefs.setRuntimeVersion(BackendCore.getRuntimeInfoCatalog()
                 .getDefaultRuntime().getVersion());
 
         // create the composite to hold the widgets
@@ -188,8 +187,8 @@ public class ProjectPreferencesWizardPage extends WizardPage {
                 true, false);
         gd_backendName.widthHint = 62;
         runtimeVersion.setLayoutData(gd_backendName);
-        final String[] runtimeNames = getAllRuntimeNames();
-        runtimeVersion.setItems(runtimeNames);
+        final String[] runtimeVersions = getAllRuntimeVersions();
+        runtimeVersion.setItems(runtimeVersions);
         runtimeVersion.setText(prefs.getRuntimeVersion().asMinor().toString());
         runtimeVersion.addListener(SWT.Modify, nameModifyListener);
 
@@ -201,17 +200,10 @@ public class ProjectPreferencesWizardPage extends WizardPage {
 
     }
 
-    private String[] getAllRuntimeNames() {
-        final String[][] runtimes = BackendCore.getRuntimeInfoManager()
+    private String[] getAllRuntimeVersions() {
+        final Collection<String> versions = BackendCore.getRuntimeInfoCatalog()
                 .getAllRuntimesVersions();
-        final List<String> runtimeNames = Lists.newArrayList();
-        for (int i = 0; i < runtimes.length; i++) {
-            if (!runtimeNames.contains(runtimes[i][0])) {
-                runtimeNames.add(runtimes[i][0]);
-            }
-        }
-        Collections.sort(runtimeNames);
-        return runtimeNames.toArray(new String[runtimeNames.size()]);
+        return versions.toArray(new String[versions.size()]);
     }
 
     protected void discoverPaths() {

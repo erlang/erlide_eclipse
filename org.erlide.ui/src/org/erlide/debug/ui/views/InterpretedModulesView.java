@@ -1,5 +1,6 @@
 package org.erlide.debug.ui.views;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -29,14 +30,14 @@ import org.erlide.backend.IBackend;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.util.ModelUtils;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.launch.debug.IErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugElement;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
 import org.erlide.launch.debug.model.ErtsProcess;
+import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.ui.editors.util.EditorUtility;
+import org.erlide.utils.ErlLogger;
 
 /**
  * A view with a checkbox tree of interpreted modules checking/unchecking
@@ -94,10 +95,13 @@ public class InterpretedModulesView extends AbstractDebugView implements
                     .getLaunch().getLaunchConfiguration();
             setViewerInput(launchConfiguration);
             try {
-                final int debugFlags = launchConfiguration.getAttribute(
-                        ErlLaunchAttributes.DEBUG_FLAGS,
-                        ErlDebugConstants.DEFAULT_DEBUG_FLAGS);
-                distributed = (debugFlags & ErlDebugConstants.DISTRIBUTED_DEBUG) != 0;
+                final EnumSet<ErlDebugFlags> debugFlags = ErlDebugFlags
+                        .makeSet(launchConfiguration.getAttribute(
+                                ErlLaunchAttributes.DEBUG_FLAGS,
+                                ErlDebugFlags
+                                        .getFlag(ErlDebugFlags.DEFAULT_DEBUG_FLAGS)));
+                distributed = debugFlags
+                        .contains(ErlDebugFlags.DISTRIBUTED_DEBUG);
             } catch (final CoreException e1) {
                 distributed = false;
             }

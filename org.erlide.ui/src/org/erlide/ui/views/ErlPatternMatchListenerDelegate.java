@@ -22,7 +22,7 @@ import org.eclipse.ui.console.IHyperlink;
 import org.eclipse.ui.console.IPatternMatchListenerDelegate;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 public class ErlPatternMatchListenerDelegate implements
         IPatternMatchListenerDelegate {

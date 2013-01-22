@@ -22,6 +22,7 @@ import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangPlugin;
 import org.erlide.core.internal.model.root.ErlMember;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlAttribute;
 import org.erlide.core.model.erlang.IErlComment;
 import org.erlide.core.model.erlang.IErlFunction;
@@ -32,9 +33,8 @@ import org.erlide.core.model.erlang.IErlParser;
 import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.IErlElement;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -69,14 +69,16 @@ public final class ErlParser implements IErlParser {
 
     private static final int FUNCTION_COMMENT_THRESHOLD = 3;
     private static final int MODULE_HEADER_COMMENT_THRESHOLD = 1;
+    private final BackendHelper helper;
 
     public ErlParser() {
+        helper = new BackendHelper();
     }
 
     @Override
     public boolean parse(final IErlModule module, final String scannerName,
             final boolean initialParse, final String path,
-            final boolean useCaches, final boolean updateSearchServer) {
+            final boolean updateSearchServer) {
         if (module == null) {
             return false;
         }
@@ -89,7 +91,7 @@ public final class ErlParser implements IErlParser {
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
             res = ErlideNoparse.initialParse(backend, scannerName, path,
-                    stateDir, useCaches, updateSearchServer);
+                    stateDir, updateSearchServer);
         } else {
             res = ErlideNoparse.reparse(backend, scannerName,
                     updateSearchServer);
@@ -253,12 +255,8 @@ public final class ErlParser implements IErlParser {
         final String typeS = type.atomValue();
         if ("error".equals(typeS)) {
             final OtpErlangTuple er = (OtpErlangTuple) el.elementAt(1);
-
-            final String msg = BackendHelper.format_error(BackendCore
-                    .getBackendManager().getIdeBackend(), er);
-
-            final ErlMessage e = new ErlMessage(module,
-                    ErlMessage.MessageKind.ERROR, msg);
+            final String msg = helper.format_error(er);
+            final ErlParserProblem e = ErlParserProblem.newError(module, msg);
             setPos(e, er.elementAt(0), false);
             return e;
         } else if ("tree".equals(typeS)) {
@@ -621,8 +619,7 @@ public final class ErlParser implements IErlParser {
             return new OtpErlangList(res);
         }
         try {
-            return BackendHelper.concreteSyntax(BackendCore.getBackendManager()
-                    .getIdeBackend(), val);
+            return helper.concreteSyntax(val);
         } catch (final Exception e) {
             return val;
         }

@@ -18,6 +18,7 @@ import org.erlide.core.model.erlang.IErlImport;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.erlang.IErlPreprocessorDef;
 import org.erlide.core.model.erlang.IErlRecordDef;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.erlang.IErlTypespec;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
@@ -27,8 +28,8 @@ import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.core.model.util.ModelUtils;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.test.support.ErlideTestUtils;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -92,8 +93,8 @@ public class ModelUtilsTests {
         // then
         // they should be returned
         if (children.size() != 2) {
-            System.out.println(moduleA);
-            System.out.println(children);
+            ErlLogger.debug("" + moduleA);
+            ErlLogger.debug("" + children);
         }
         assertEquals(2, children.size());
         assertEquals(1, imports2.size());
@@ -119,37 +120,44 @@ public class ModelUtilsTests {
         // final IErlModule moduleC =
         // ErlideTestUtils.createErlModule(projects[1],
         // "c.erl", "-module(c).\n-type cc() :: b:concat_thing().\n");
-        moduleB.open(null);
-        projects[0].open(null);
-        // moduleC.open(null);
-        // when
-        // looking for it
-        // within project
-        final IErlElementLocator model = ErlModelManager.getErlangModel();
+        final IErlScanner scanner = moduleB.getScanner();
+        try {
+            moduleB.open(null);
+            projects[0].open(null);
+            // moduleC.open(null);
+            // when
+            // looking for it
+            // within project
+            final IErlElementLocator model = ErlModelManager.getErlangModel();
 
-        final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", moduleB.getResource().getLocation()
-                        .toPortableString(), projects[0],
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // in other project but path given
-        final IErlElement element2 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", moduleB.getResource().getLocation()
-                        .toPortableString(), projects[1],
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // in other project no path given, search all projects true
-        final IErlElement element3 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", null, projects[1],
-                IErlElementLocator.Scope.ALL_PROJECTS);
-        // in other project no path given, search all projects false, -> null
-        final IErlElement element4 = ModelUtils.findTypeDef(model, moduleB,
-                "bx", "concat_thing", null, projects[1],
-                IErlElementLocator.Scope.PROJECT_ONLY);
-        // then
-        // it should be returned if found
-        assertTrue(element1 instanceof IErlTypespec);
-        assertNull(element2);
-        assertTrue(element3 instanceof IErlTypespec);
-        assertNull(element4);
+            final IErlElement element1 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", moduleB.getResource().getLocation()
+                            .toPortableString(), projects[0],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            // in other project but path given
+            final IErlElement element2 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", moduleB.getResource().getLocation()
+                            .toPortableString(), projects[1],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+            // in other project no path given, search all projects true
+            final IErlElement element3 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", null, projects[1],
+                    IErlElementLocator.Scope.ALL_PROJECTS);
+            // in other project no path given, search all projects false, ->
+            // null
+            final IErlElement element4 = ModelUtils.findTypeDef(model, moduleB,
+                    "bx", "concat_thing", null, projects[1],
+                    IErlElementLocator.Scope.PROJECT_ONLY);
+
+            // then
+            // it should be returned if found
+            assertTrue(element1 instanceof IErlTypespec);
+            assertNull(element2);
+            assertTrue(element3 instanceof IErlTypespec);
+            assertNull(element4);
+        } finally {
+            scanner.dispose();
+        }
     }
 
     @Test

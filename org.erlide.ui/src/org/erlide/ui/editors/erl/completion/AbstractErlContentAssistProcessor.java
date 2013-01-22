@@ -20,7 +20,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Point;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.IBackend;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlFunctionClause;
 import org.erlide.core.model.erlang.IErlImport;
@@ -31,7 +31,6 @@ import org.erlide.core.model.erlang.IErlRecordDef;
 import org.erlide.core.model.erlang.IErlRecordField;
 import org.erlide.core.model.erlang.ISourceRange;
 import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.root.ErlModelException;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
@@ -42,12 +41,13 @@ import org.erlide.core.model.util.ModelUtils;
 import org.erlide.core.services.codeassist.ErlideContextAssist;
 import org.erlide.core.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.core.services.search.ErlideDoc;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.internal.information.HoverUtil;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.templates.ErlTemplateCompletionProcessor;
 import org.erlide.ui.util.eclipse.text.HTMLPrinter;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.StringUtils;
 import org.erlide.utils.Util;
 
@@ -124,7 +124,7 @@ public abstract class AbstractErlContentAssistProcessor {
         this.contentAssistant = contentAssistant;
     }
 
-    protected List<ICompletionProposal> getModules(final IBackend backend,
+    protected List<ICompletionProposal> getModules(final IRpcSite backend,
             final int offset, final String prefix, final Kinds kind)
             throws ErlModelException {
         final List<ICompletionProposal> result = Lists.newArrayList();
@@ -172,6 +172,7 @@ public abstract class AbstractErlContentAssistProcessor {
             final int parenPos = before.lastIndexOf('(');
             final int leftBracketPos = before.lastIndexOf('{');
             final int interrogationMarkPos = before.lastIndexOf('?');
+            final int arrowPos = before.lastIndexOf("->");
             final String prefix = getPrefix(before);
             List<String> fieldsSoFar = null;
             List<ICompletionProposal> result;
@@ -187,8 +188,8 @@ public abstract class AbstractErlContentAssistProcessor {
             }
             RecordCompletion rc = null;
             if (hashMarkPos >= 0) {
-                rc = ErlideContextAssist.checkRecordCompletion(
-                        BackendCore.getBuildOrIdeBackend(project), before);
+                rc = ErlideContextAssist.checkRecordCompletion(BackendCore
+                        .getBuildOrIdeBackend(project).getRpcSite(), before);
             }
             if (rc != null && rc.isNameWanted()) {
                 flags = EnumSet.of(Kinds.RECORD_DEFS);
@@ -215,7 +216,8 @@ public abstract class AbstractErlContentAssistProcessor {
                 before = before.substring(colonPos + 1);
             } else if (interrogationMarkPos > hashMarkPos
                     && interrogationMarkPos > commaPos
-                    && interrogationMarkPos > colonPos) {
+                    && interrogationMarkPos > colonPos
+                    && interrogationMarkPos > arrowPos) {
                 flags = EnumSet.of(Kinds.MACRO_DEFS);
                 pos = interrogationMarkPos;
                 before = before.substring(interrogationMarkPos + 1);
@@ -289,7 +291,8 @@ public abstract class AbstractErlContentAssistProcessor {
             final int pos, final List<String> fieldsSoFar,
             final IErlProject erlProject, final IProject project)
             throws CoreException, OtpErlangRangeException, BadLocationException {
-        final IBackend backend = BackendCore.getBuildOrIdeBackend(project);
+        final IRpcSite backend = BackendCore.getBuildOrIdeBackend(project)
+                .getRpcSite();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(
@@ -422,7 +425,7 @@ public abstract class AbstractErlContentAssistProcessor {
         return result;
     }
 
-    List<ICompletionProposal> getVariables(final IBackend b, final int offset,
+    List<ICompletionProposal> getVariables(final IRpcSite b, final int offset,
             final String prefix) throws ErlModelException, BadLocationException {
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         // get variables
@@ -469,7 +472,7 @@ public abstract class AbstractErlContentAssistProcessor {
         return result;
     }
 
-    List<ICompletionProposal> getExternalCallCompletions(final IBackend b,
+    List<ICompletionProposal> getExternalCallCompletions(final IRpcSite b,
             final IErlProject project, String moduleName, final int offset,
             final String prefix, final boolean arityOnly)
             throws OtpErlangRangeException, CoreException {
@@ -540,7 +543,7 @@ public abstract class AbstractErlContentAssistProcessor {
         }
     }
 
-    List<ICompletionProposal> getAutoImportedFunctions(final IBackend backend,
+    List<ICompletionProposal> getAutoImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
@@ -551,7 +554,7 @@ public abstract class AbstractErlContentAssistProcessor {
         return result;
     }
 
-    List<ICompletionProposal> getImportedFunctions(final IBackend backend,
+    List<ICompletionProposal> getImportedFunctions(final IRpcSite backend,
             final int offset, final String prefix) {
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();

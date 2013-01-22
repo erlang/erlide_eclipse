@@ -3,6 +3,7 @@ package org.erlide.core.model.root;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.FunctionRef;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;

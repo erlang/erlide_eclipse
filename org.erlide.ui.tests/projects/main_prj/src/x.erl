@@ -5,8 +5,11 @@
 
 -define(myrec, #'REC'{}).
     
-f() ->
-	X=[1,4,6], lists:reverse([]),
+
+%% doc for f
+f() -> 
+	X=[1,4,6], 
+	lists:reverse([]), 
 	io:format(""),
 	X.
  
@@ -15,6 +18,7 @@ g() ->
 	new_file:ok(),
 	   
 	dict:new(),
+	hello,
 	f(), 
 	"he  ~n ha \b \0123 \xcafa \x{cafe}s he\"j '",
 	[$", $', $\567, $\x{cafe}]. 

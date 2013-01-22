@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -31,7 +31,7 @@ public class WranglerBackendManager {
     public static WranglerRefactoringBackend getRefactoringBackend() {
         if (refactoringBackend == null) {
             refactoringBackend = new WranglerRefactoringBackend(BackendCore
-                    .getBackendManager().getIdeBackend());
+                    .getBackendManager().getIdeBackend().getRpcSite());
         }
         return refactoringBackend;
     }
@@ -44,7 +44,7 @@ public class WranglerBackendManager {
     public static WranglerSyntaxBackend getSyntaxBackend() {
         if (syntaxBackend == null) {
             syntaxBackend = new WranglerSyntaxBackend(BackendCore
-                    .getBackendManager().getIdeBackend());
+                    .getBackendManager().getIdeBackend().getRpcSite());
         }
         return syntaxBackend;
     }

@@ -11,7 +11,7 @@ import org.eclipse.debug.core.IBreakpointsListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchesListener;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 
 public class ErlangDebugOptionsManager implements ILaunchesListener,
         IBreakpointsListener {

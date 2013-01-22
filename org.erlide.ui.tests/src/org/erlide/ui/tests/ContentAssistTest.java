@@ -30,8 +30,9 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelException;
+import org.erlide.core.model.erlang.IErlScanner;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
@@ -395,22 +396,29 @@ public class ContentAssistTest {
         IDocument document = new StringDocument(initialText);
         final IErlModule module = ErlideTestUtils
                 .createModuleFromText(initialText);
-        final MockSourceViewer sourceViewer = new MockSourceViewer(document,
-                offset);
-        final IContentAssistProcessor p = new ErlContentAssistProcessor(
-                sourceViewer, module, null); // null is ok since we don't call
-                                             // setToPrefs
-        ICompletionProposal[] completionProposals = p
-                .computeCompletionProposals(sourceViewer, offset);
-        Assert.assertEquals(nTotalExpectedCompletions,
-                completionProposals.length);
-        document = new StringDocument(initialText + completionChar);
-        sourceViewer.setDocument(document);
-        sourceViewer.setOffset(offset + 1);
-        completionProposals = p.computeCompletionProposals(sourceViewer,
-                offset + 1);
-        Assert.assertEquals(nExpectedCompletions, completionProposals.length);
-        Assert.assertEquals(expectedFirstCompletion,
-                completionProposals[0].getDisplayString());
+        final IErlScanner scanner = module.getScanner();
+        try {
+            final MockSourceViewer sourceViewer = new MockSourceViewer(
+                    document, offset);
+            final IContentAssistProcessor p = new ErlContentAssistProcessor(
+                    sourceViewer, module, null); // null is ok since we don't
+                                                 // call
+                                                 // setToPrefs
+            ICompletionProposal[] completionProposals = p
+                    .computeCompletionProposals(sourceViewer, offset);
+            Assert.assertEquals(nTotalExpectedCompletions,
+                    completionProposals.length);
+            document = new StringDocument(initialText + completionChar);
+            sourceViewer.setDocument(document);
+            sourceViewer.setOffset(offset + 1);
+            completionProposals = p.computeCompletionProposals(sourceViewer,
+                    offset + 1);
+            Assert.assertEquals(nExpectedCompletions,
+                    completionProposals.length);
+            Assert.assertEquals(expectedFirstCompletion,
+                    completionProposals[0].getDisplayString());
+        } finally {
+            scanner.dispose();
+        }
     }
 }

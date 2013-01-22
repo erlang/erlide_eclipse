@@ -54,11 +54,9 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.BackendHelper;
 import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangStatus;
 import org.erlide.debug.ui.model.ErlangDebuggerBackendListener;
-import org.erlide.jinterface.ErlLogger;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.console.ErlConsoleManager;
@@ -74,6 +72,7 @@ import org.erlide.ui.util.BackendManagerPopup;
 import org.erlide.ui.util.IContextMenuConstants;
 import org.erlide.ui.util.ImageDescriptorRegistry;
 import org.erlide.ui.util.ProblemMarkerManager;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.BundleContext;
 
@@ -167,7 +166,6 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
             }
         }
 
-        startPeriodicDump();
         erlangDebuggerBackendListener = new ErlangDebuggerBackendListener();
         BackendCore.getBackendManager().addBackendListener(
                 erlangDebuggerBackendListener);
@@ -528,42 +526,12 @@ public class ErlideUIPlugin extends AbstractUIPlugin {
         return eclipsePreferences;
     }
 
-    private final int DUMP_INTERVAL = Integer.parseInt(System.getProperty(
-            "erlide.dump.interval", "300000"));
-
     private ErlangConsolePage fErlangConsolePage;
 
     private ContributionContextTypeRegistry fContextTypeRegistry;
     private ContributionTemplateStore fStore;
 
     private ErlangDebuggerBackendListener erlangDebuggerBackendListener;
-
-    private void startPeriodicDump() {
-        final String env = System.getenv("erlide.internal.coredump");
-        if (Boolean.parseBoolean(env)) {
-            final Job job = new Job("Erlang node info dump") {
-
-                @Override
-                protected IStatus run(final IProgressMonitor monitor) {
-                    try {
-                        final IBackend ideBackend = BackendCore
-                                .getBackendManager().getIdeBackend();
-                        final String info = BackendHelper
-                                .getSystemInfo(ideBackend);
-                        final String sep = "\n++++++++++++++++++++++\n";
-                        ErlLogger.debug(sep + info + sep);
-                    } finally {
-                        schedule(DUMP_INTERVAL);
-                    }
-                    return Status.OK_STATUS;
-                }
-
-            };
-            job.setPriority(Job.SHORT);
-            job.setSystem(true);
-            job.schedule(DUMP_INTERVAL);
-        }
-    }
 
     public ErlangConsolePage getConsolePage() {
         return fErlangConsolePage;

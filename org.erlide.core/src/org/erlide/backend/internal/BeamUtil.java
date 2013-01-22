@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 import org.erlide.backend.BackendUtils;
-import org.erlide.jinterface.ErlLogger;
+import org.erlide.utils.ErlLogger;
 import org.osgi.framework.Bundle;
 
 import com.ericsson.otp.erlang.OtpErlangBinary;

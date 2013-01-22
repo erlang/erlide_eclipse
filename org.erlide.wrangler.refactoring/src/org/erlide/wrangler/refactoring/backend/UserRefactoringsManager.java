@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.erlide.jinterface.ErlLogger;
-import org.erlide.jinterface.rpc.RpcResult;
+import org.erlide.runtime.rpc.RpcResult;
+import org.erlide.utils.ErlLogger;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 import org.osgi.framework.Bundle;
