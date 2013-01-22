@@ -355,6 +355,8 @@ public class ColoringPreferencePage extends PreferencePage implements
         gd.horizontalAlignment = GridData.BEGINNING;
         gd.horizontalSpan = 2;
         fEnableCheckbox.setLayoutData(gd);
+        // TODO hide this until reworking the dialog
+        fEnableCheckbox.setVisible(false);
 
         fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
         fColorEditorLabel
