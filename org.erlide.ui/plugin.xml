@@ -180,7 +180,7 @@
          point="org.eclipse.ui.views">
       <category
             id="org.erlide.views"
-            name="ErlIDE">
+            name="Erlang">
       </category>
       <view
             allowMultiple="false"
@@ -281,20 +281,20 @@
             class="org.erlide.ui.properties.OldErlProjectPropertyPage"
             id="org.erlide.core"
             name="Erlang">
-		<enabledWhen>
- 			<adapt type="org.eclipse.core.resources.IProject">
-		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
-		     </adapt>
+    <enabledWhen>
+       <adapt type="org.eclipse.core.resources.IProject">
+              <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
+         </adapt>
         </enabledWhen>
       </page>
       <page
             class="org.erlide.ui.prefs.CompilerPreferencePage"
             id="org.erlide.ui.properties.compilerPreferencePage"
             name="Erlang compiler">
-		<enabledWhen>
- 			<adapt type="org.eclipse.core.resources.IProject">
-		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
-		     </adapt>
+    <enabledWhen>
+       <adapt type="org.eclipse.core.resources.IProject">
+              <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
+         </adapt>
         </enabledWhen>
       </page>
       <page
@@ -329,10 +329,10 @@
             class="org.erlide.ui.properties.ErlProjectPropertyPage"
             id="org.erlide.ui.properties.myErlangProjectPropertyPage"
             name="new Erlang (work in progress)">
-		<enabledWhen>
- 			<adapt type="org.eclipse.core.resources.IProject">
-		          <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
-		     </adapt>
+    <enabledWhen>
+       <adapt type="org.eclipse.core.resources.IProject">
+              <test property="org.eclipse.core.resources.projectNature" value="org.erlide.core.erlnature"/>
+         </adapt>
         </enabledWhen>
       </page>
       <page
@@ -459,7 +459,7 @@
           name="Debugging Trace"
           parentId="org.eclipse.debug.ui.debugging">
     </context>
- </extension>    
+ </extension>
  <extension
        point="org.erlide.ui.foldingStructureProviders">
     <provider
@@ -491,7 +491,7 @@
             id="org.erlide.ui.actions.console.input"
             name="Erlang console 1"/>
       <command
-            categoryId="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlangCategory"
             description="Indent code"
             id="org.erlide.ui.actions.indent"
             name="Indent code"/>
@@ -502,7 +502,7 @@
             id="org.erlide.ui.actions.show.outline"
             name="Show outline"/>
       <command
-            categoryId="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlangCategory"
             description="Toggle Comment"
             id="org.erlide.ui.actions.togglecomment"
             name="Toggle Comment"/>
@@ -517,33 +517,33 @@
             id="org.erlide.debug.ui.commands.ToggleDebugTracing">
       </command> -->
       <command
-            categoryId="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlangCategory"
             description="Clear Cache"
             id="org.erlide.ui.actions.clearCache"
             name="Clear Cache">
       </command>
       <command
-            categoryId="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlangCategory"
             description="Call hierarchy"
             id="org.erlide.ui.actions.callhierarchy"
             name="Call hierarchy">
       </command>
       <category
-            id="org.erlide.ui.erlideCategory"
-            name="ErlIDE">
+            id="org.erlide.ui.erlangCategory"
+            name="Erlang">
       </category>
       <command
             categoryId="org.eclipse.ui.category.navigate"
             defaultHandler="org.erlide.ui.handlers.OpenModuleHandler"
             id="org.erlide.ui.open.module"
             name="Open Module">
-		    <commandParameter
+        <commandParameter
                id="filePath"
                name="module name...."
                typeId="org.eclipse.ui.ide.resourcePath"/>
        </command>
       <command
-            categoryId="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlangCategory"
             defaultHandler="org.erlide.ui.handlers.ReportProblemHandler"
             id="org.erlide.ui.command.reportProblem"
             name="Report problems">
@@ -560,7 +560,7 @@
             name="Definitions in Workspace">
       </command>
       <!--command   TODO reenable this when erl_tidy doesn't destroy formatting
-            categoryId="org.erlide.ui.erlideCategory"
+            categoryId="org.erlide.ui.erlangCategory"
             description="Clean Up..."
             id="org.erlide.ui.actions.cleanUp"
             name="Clean Up...">
@@ -929,7 +929,7 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+/"/>
       <key
-      		platform="gtk"
+          platform="gtk"
             commandId="org.erlide.ui.actions.togglecomment"
             contextId="org.erlide.ui.erlangEditorScope"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -1002,7 +1002,7 @@
                    value="org.erlide.ui.editors.erl.ErlangEditor">
              </instanceof>
           </with>
-       </enabledWhen>                    
+       </enabledWhen>
     </handler>
     <handler
           class="org.erlide.ui.handlers.RunDialyzerHandler"
@@ -1275,10 +1275,10 @@
                 allowsPlatformContributions="true"
                 id="org.erlide.ui.views.navigator.view#PopupMenu">
              <insertionPoint name="erlideMenu1"
-             				 separator="true"/>
+                      separator="true"/>
              <insertionPoint name="erlideMenu2"/>
              <insertionPoint name="group.new"
-             				separator="true"/>
+                     separator="true"/>
              <insertionPoint
                    name="group.open"
                    separator="true"/>
@@ -1653,7 +1653,7 @@
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.erlide.ui.perspectives.ErlangPerspective">
-		 <actionSet
+     <actionSet
                id="org.eclipse.debug.ui.breakpointActionSet">
          </actionSet>
          <actionSet
@@ -1805,7 +1805,7 @@
             file="erlang_templates/module_templates.xml">
       </include>
       <include
-      		file="erlang_templates/module_element_templates.xml">
+          file="erlang_templates/module_element_templates.xml">
       </include>
       <contextType
             class="org.erlide.ui.editors.erl.completion.ErlangContextType"
