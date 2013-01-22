@@ -78,7 +78,7 @@ public class BackendFactory implements IBackendFactory {
         ErlLogger.debug("Create backend " + data.getNodeName());
         if (!data.isManaged()) {
             ErlLogger.info("Not creating backend for %s", data.getNodeName());
-            return null;
+            // return null;
         }
 
         final IBackend b;
