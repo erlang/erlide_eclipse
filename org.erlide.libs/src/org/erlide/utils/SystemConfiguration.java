@@ -115,4 +115,15 @@ public class SystemConfiguration {
     public int getWarnProcessSizeLimitMB() {
         return warnProcessSizeLimitMB;
     }
+
+    public String getHomeDir() {
+        final String u = System.getProperty("user.home");
+        if (isOnWindows()) {
+            final String d = System.getenv("HOMEDRIVE");
+            final String p = System.getenv("HOMEPATH");
+            return (d != null && p != null) ? d + p : u;
+        } else {
+            return u;
+        }
+    }
 }

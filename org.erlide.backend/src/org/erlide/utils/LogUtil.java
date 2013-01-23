@@ -32,7 +32,9 @@ public class LogUtil {
         }
         final File dir = new File(s);
         if (!dir.exists()) {
-            s = System.getProperty("user.home");
+            final String homeDir = SystemConfiguration.getInstance()
+                    .getHomeDir();
+            s = homeDir;
         }
         return s;
     }

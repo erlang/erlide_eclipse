@@ -1,20 +1,20 @@
 /*
  * %CopyrightBegin%
- * 
+ *
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- * 
+ *
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- * 
+ *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- * 
- * %CopyrightEnd% 
+ *
+ * %CopyrightEnd%
  */
 package com.ericsson.otp.erlang;
 
@@ -116,8 +116,9 @@ public class AbstractNode {
             localHost = "localhost";
         }
 
-        final String dotCookieFilename = System.getProperty("user.home")
-                + File.separator + ".erlang.cookie";
+        final String homeDir = getHomeDir();
+        final String dotCookieFilename = homeDir + File.separator
+                + ".erlang.cookie";
         BufferedReader br = null;
 
         try {
@@ -250,4 +251,16 @@ public class AbstractNode {
     public String toString() {
         return node();
     }
+
+    private static String getHomeDir() {
+        final String u = System.getProperty("user.home");
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            final String d = System.getenv("HOMEDRIVE");
+            final String p = System.getenv("HOMEPATH");
+            return (d != null && p != null) ? d + p : u;
+        } else {
+            return u;
+        }
+    }
+
 }
