@@ -728,7 +728,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         super.doSetInput(input);
 
         final IDocument document = provider.getDocument(input);
-        if (!(input instanceof IPathEditorInput)) {
+        if (!(input instanceof IPathEditorInput) && document != null) {
             final ErlangDocumentSetupParticipant setupParticipant = new ErlangDocumentSetupParticipant();
             setupParticipant.setup(document);
         }
