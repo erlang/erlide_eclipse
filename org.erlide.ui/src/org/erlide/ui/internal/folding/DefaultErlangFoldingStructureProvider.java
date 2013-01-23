@@ -538,19 +538,15 @@ public class DefaultErlangFoldingStructureProvider implements
             boolean structureKnown = false;
             try {
                 structureKnown = fModule.isStructureKnown();
-            } catch (final ErlModelException e1) {
-            }
-            if (structureKnown) {
-                final IErlElementDelta d = new ErlElementDelta(
-                        IErlElementDelta.CHANGED, IErlElementDelta.F_CONTENT,
-                        fModule);
-                processDelta(d);
-            } else {
-                try {
+                if (structureKnown) {
+                    final IErlElementDelta d = new ErlElementDelta(
+                            IErlElementDelta.CHANGED,
+                            IErlElementDelta.F_CONTENT, fModule);
+                    processDelta(d);
+                } else {
                     fModule.open(null);
-                } catch (final ErlModelException e) {
-                    e.printStackTrace();
                 }
+            } catch (final ErlModelException e) {
             }
         }
     }
