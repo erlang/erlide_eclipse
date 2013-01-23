@@ -63,10 +63,13 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.search.ui.IContextMenuConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -1151,8 +1154,15 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
                     .prependVerifyKeyListener(getBracketInserter());
         }
 
-        final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
-        v.doOperation(ProjectionViewer.TOGGLE);
+        parent.addListener(SWT.Activate, new Listener() {
+            @Override
+            public void handleEvent(final Event event) {
+                if (event.type == SWT.Activate) {
+                    final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
+                    v.doOperation(ProjectionViewer.TOGGLE);
+                }
+            }
+        });
 
         fEditorSelectionChangedListener = new EditorSelectionChangedListener();
         fEditorSelectionChangedListener.install(getSelectionProvider());

@@ -96,9 +96,22 @@ public class ErlModule extends Openable implements IErlModule {
     }
 
     public boolean internalBuildStructure(final IProgressMonitor pm) {
+        final IResource resource = getResource();
+        boolean isInSync = true;
+        if (resource != null) {
+            isInSync = resource.isSynchronized(IResource.DEPTH_ZERO);
+            if (!isInSync) {
+                try {
+                    resource.refreshLocal(IResource.DEPTH_ZERO, null);
+                } catch (final CoreException e) {
+                    ErlLogger.debug(e);
+                }
+            }
+        }
         final IErlParser parser = ErlModelManager.getErlangModel().getParser();
-        parsed = parser.parse(this, scannerName, !parsed, getFilePath(), true);
-        final IResource resource = getCorrespondingResource();
+        parsed = parser.parse(this, scannerName, !parsed, getFilePath(), true)
+                && isInSync;
+
         MarkerUtils.removeTaskMarkersFor(resource);
         // MarkerUtils.createTaskMarkers(resource, scanner.getText());
         return parsed;
