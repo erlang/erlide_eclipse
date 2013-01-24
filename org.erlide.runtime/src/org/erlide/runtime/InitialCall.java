@@ -6,6 +6,7 @@ import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
+import com.google.common.base.Strings;
 
 public final class InitialCall {
     private final String module;
@@ -66,6 +67,9 @@ public final class InitialCall {
 
     @Override
     public String toString() {
+        if (Strings.isNullOrEmpty(module)) {
+            return "<none>";
+        }
         final StringBuilder sb = new StringBuilder();
         sb.append(module).append(':').append(function);
         if (parameters != null) {
