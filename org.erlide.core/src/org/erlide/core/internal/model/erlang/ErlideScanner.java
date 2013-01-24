@@ -113,7 +113,7 @@ public class ErlideScanner {
 
     @SuppressWarnings("boxing")
     public static void replaceText(final String module, final int offset,
-            final int removeLength, final String newText) {
+            final int removeLength, String newText) {
         final IBackend backend = BackendCore.getBackendManager()
                 .getIdeBackend();
         try {
@@ -122,6 +122,9 @@ public class ErlideScanner {
             // removeLength, newTextLen);
             // ErlLogger.debug("replaceText %s %d %d \"%s\"", module, offset,
             // removeLength, newText);
+            if (newText == null) {
+                newText = "";
+            }
             final OtpErlangObject r = backend.getRpcSite().call(ERLIDE_SCANNER,
                     "replaceText", "aiis", module, offset, removeLength,
                     newText);
