@@ -16,8 +16,8 @@
 %% Exported Functions
 %%
 
--export([server_cmd/2, server_cmd/3,
-         spawn_server/1, scan_test/2, match_test/2]).
+-export([create/1, addref/1, dispose/1, initialScan/6, getTokenAt/2, getTokenWindow/4,
+         getTokens/1, replaceText/4, check_all/3]).
 
 %% stop/0
 
@@ -27,6 +27,59 @@
 %%
 %% API Functions
 %%
+
+create(ScannerName) when is_atom(ScannerName) ->
+    spawn_server(ScannerName).
+
+addref(ScannerName) when is_atom(ScannerName) ->
+    server_cmd(ScannerName, addref).
+
+dispose(ScannerName) when is_atom(ScannerName) ->
+    %% TODO move this from here?
+    erlide_search_server:remove_module(ScannerName),
+    server_cmd(ScannerName, dispose).
+
+getText(ScannerName) when is_atom(ScannerName) ->
+    server_cmd(ScannerName, get_text).
+
+getTextLine(ScannerName, Line) when is_atom(ScannerName), is_integer(Line) ->
+    server_cmd(ScannerName, get_text_line, Line).
+
+getTokens(ScannerName) when is_atom(ScannerName) ->
+    server_cmd(ScannerName, get_tokens).
+
+getTokenWindow(ScannerName, Offset, Before, After)
+  when is_atom(ScannerName), is_integer(Offset), is_integer(Before), is_integer(After) ->
+    server_cmd(ScannerName, get_token_window, {Offset, Before, After}).
+
+getTokenAt(ScannerName, Offset) when is_atom(ScannerName), is_integer(Offset) ->
+    server_cmd(ScannerName, get_token_at, Offset).
+
+initialScan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging)
+  when is_atom(ScannerName), is_list(ModuleFileName), is_list(InitialText), is_list(StateDir) ->
+    server_cmd(ScannerName, initial_scan,
+               {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}).
+
+dump_module(ScannerName) when is_atom(ScannerName) ->
+    server_cmd(ScannerName, dump_module).
+
+dump_log(ScannerName, Filename) when is_atom(ScannerName) ->
+    server_cmd(ScannerName, dump_log, Filename).
+
+replaceText(ScannerName, Offset, RemoveLength, NewText)
+  when is_atom(ScannerName), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->
+    server_cmd(ScannerName, replace_text, {Offset, RemoveLength, NewText}).
+
+check_all(ScannerName, Text, GetTokens) 
+  when is_atom(ScannerName), is_list(Text), is_boolean(GetTokens) ->
+    MatchTest = match_test(ScannerName, Text),
+    ScanTest = scan_test(ScannerName, GetTokens),
+    case ScanTest of
+        T when is_tuple(T) ->
+            T;
+        _ ->
+            MatchTest ++ ScanTest
+    end.
 
 match_test(Module, Text) ->
     case erlide_scanner:get_text(Module) of
@@ -39,10 +92,10 @@ match_test(Module, Text) ->
     end.
 
 scan_test(Module, GetTokens) ->
-    ModText = erlide_scanner:get_text(Module),
-    M = erlide_scan_model:do_scan(dont_care, ModText),
-    T = erlide_scan_model:get_all_tokens(M),
-    Tokens = erlide_scanner:get_tokens(Module),
+    ModText = getText(Module),
+    M = erlide_scanner:do_scan(dont_care, ModText),
+    T = erlide_scanner:get_all_tokens(M),
+    Tokens = getTokens(Module),
     R = case Tokens of
             T ->
                 "scan match\n";
