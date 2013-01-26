@@ -143,13 +143,13 @@ public class ErlReconciler implements IReconciler {
             while (i > 0 && isDirty) {
                 i--;
                 synchronized (fDirtyRegionQueue) {
-                    isDirty = isDirty();
                     if (isDirty) {
                         try {
                             fDirtyRegionQueue.wait(fDelay);
                         } catch (final InterruptedException x) {
                         }
                     }
+                    isDirty = isDirty();
                 }
             }
             if (i == 0 || isDirty) {
