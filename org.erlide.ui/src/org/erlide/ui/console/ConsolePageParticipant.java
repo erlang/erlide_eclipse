@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.console.IConsolePageParticipant;
@@ -52,6 +51,7 @@ import org.erlide.ui.console.actions.ConsoleTerminateAction;
 import org.erlide.ui.console.actions.ShowStandardOutAction;
 import org.erlide.ui.console.actions.ShowWhenContentChangesAction;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.DisplayUtils;
 
 /**
  * Creates and manages process console specific actions
@@ -225,7 +225,7 @@ public class ConsolePageParticipant implements IConsolePageParticipant,
                         }
                     }
                 };
-                PlatformUI.getWorkbench().getDisplay().asyncExec(r);
+                DisplayUtils.asyncExec(r);
             }
         }
     }

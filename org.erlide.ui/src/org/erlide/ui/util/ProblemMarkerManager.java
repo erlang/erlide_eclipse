@@ -27,7 +27,6 @@ import org.eclipse.jface.text.source.AnnotationModelEvent;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IAnnotationModelListener;
 import org.eclipse.jface.text.source.IAnnotationModelListenerExtension;
-import org.eclipse.swt.widgets.Display;
 import org.erlide.utils.ErlLogger;
 
 /**
@@ -176,20 +175,17 @@ public class ProblemMarkerManager implements IResourceChangeListener,
 
     private void fireChanges(final IResource[] changes,
             final boolean isMarkerChange) {
-        final Display display = SWTUtil.getStandardDisplay();
-        if (display != null && !display.isDisposed()) {
-            display.asyncExec(new Runnable() {
-                @Override
-                @SuppressWarnings("synthetic-access")
-                public void run() {
-                    final Object[] listeners = fListeners.getListeners();
-                    for (int i = 0; i < listeners.length; i++) {
-                        final IProblemChangedListener curr = (IProblemChangedListener) listeners[i];
-                        curr.problemsChanged(changes, isMarkerChange);
-                    }
+        DisplayUtils.asyncExec(new Runnable() {
+            @Override
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+                final Object[] listeners = fListeners.getListeners();
+                for (int i = 0; i < listeners.length; i++) {
+                    final IProblemChangedListener curr = (IProblemChangedListener) listeners[i];
+                    curr.problemsChanged(changes, isMarkerChange);
                 }
-            });
-        }
+            }
+        });
     }
 
 }
