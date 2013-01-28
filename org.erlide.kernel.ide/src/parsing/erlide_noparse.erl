@@ -25,7 +25,6 @@
 
 -include("erlide.hrl").
 -include("erlide_noparse.hrl").
--include("erlide_scanner.hrl").
 -include("erlide_scanner_server.hrl").
 -include("erlide_search.hrl").
 
@@ -64,7 +63,7 @@ initial_parse(ScannerName, ModuleFileName, StateDir, UseCache,
               | {error, term(), term()}.
 reparse(ScannerName, UpdateSearchServer) ->
     try
-        Tokens = erlide_scanner_server:getTokens(ScannerName),
+        Tokens = erlide_scanner:get_tokens(ScannerName),
         {Model, _Refs} = do_parse(ScannerName, "", Tokens, "", UpdateSearchServer),
         {ok, Model}
     catch
@@ -117,7 +116,7 @@ get_tokens(ScannerName, ModuleFileName, StateDir) ->
                     []
             end;
         _ ->
-            erlide_scanner_server:getTokens(ScannerName)
+            erlide_scanner:get_tokens(ScannerName)
     end.
 
 do_parse(ScannerName, RefsFileName, Tokens, StateDir, UpdateSearchServer) ->

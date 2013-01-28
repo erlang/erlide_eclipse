@@ -21,7 +21,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlideScanner {
-    private static final String ERLIDE_SCANNER = "erlide_scanner_server";
+    private static final String ERLIDE_SCANNER = "erlide_scanner";
     private static final Object ENCODING = System.getProperty(
             "erlide.encoding.__test__", "latin1");
 
@@ -33,7 +33,7 @@ public class ErlideScanner {
                 .getIdeBackend();
         try {
             final String loggingOnOff = logging ? "on" : "off";
-            backend.getRpcSite().call(ERLIDE_SCANNER, "initialScan", "asssoa",
+            backend.getRpcSite().call(ERLIDE_SCANNER, "initial_scan", "asssoa",
                     module, path, initialText, stateDir, true, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             if (!backend.isStopped()) {
@@ -91,7 +91,7 @@ public class ErlideScanner {
         OtpErlangObject r1 = null;
         try {
             r1 = BackendCore.getBackendManager().getIdeBackend().getRpcSite()
-                    .call(ERLIDE_SCANNER, "getTokenAt", "ai", module, offset);
+                    .call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
             // ErlLogger.debug("getTokenAt -> " + r1);
         } catch (final Exception e) {
             // e.printStackTrace();
@@ -126,7 +126,7 @@ public class ErlideScanner {
                 newText = "";
             }
             final OtpErlangObject r = backend.getRpcSite().call(ERLIDE_SCANNER,
-                    "replaceText", "aiis", module, offset, removeLength,
+                    "replace_text", "aiis", module, offset, removeLength,
                     newText);
             if (r instanceof OtpErlangTuple) {
                 ErlLogger.error("GOT::" + r.toString());
@@ -226,7 +226,7 @@ public class ErlideScanner {
         try {
             final OtpErlangObject o = BackendCore.getBackendManager()
                     .getIdeBackend().getRpcSite()
-                    .call(ERLIDE_SCANNER, "getText", "a", scannerName);
+                    .call(ERLIDE_SCANNER, "get_text", "a", scannerName);
             return Util.stringValue(o);
         } catch (final RpcException e) {
             return "";

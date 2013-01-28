@@ -209,7 +209,7 @@ public final class ErlParser implements IErlParser {
      */
     private IErlComment createComment(final IErlModule module,
             final OtpErlangTuple c) {
-        // from erlide_scanner.hrl:
+        // from erlide_token.hrl:
         // -record(token, {kind, line = {Line, LastLine}, offset, length, value,
         // text}).
         final OtpErlangLong lineL = (OtpErlangLong) c.elementAt(2);

@@ -30,8 +30,7 @@
 %% -define(DEBUG, 1).
 
 -include("erlide.hrl").
-
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 %%
 %% API Functions

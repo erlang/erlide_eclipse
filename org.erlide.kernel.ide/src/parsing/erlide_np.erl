@@ -9,7 +9,7 @@
 -compile(export_all).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 -include("erlide_noparse.hrl").
 -include("erlide_search.hrl").
 
@@ -180,7 +180,7 @@ field_list_from_tokens(_) ->
     [].
 
 to_string(Tokens) ->
-    S = erlide_scanner:tokens_to_string(Tokens),
+    S = erlide_scan_model:tokens_to_string(Tokens),
     erlide_text:strip(S).
 %%     unspacify(S).
 
