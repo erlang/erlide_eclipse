@@ -147,6 +147,8 @@ import org.erlide.utils.SystemConfiguration;
 public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         IOutlineSelectionHandler {
 
+    public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
+
     private ColorManager colorManager;
     private ErlangOutlinePage myOutlinePage;
     private IPropertySource myPropertySource;
@@ -186,7 +188,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     private String stateDirCached;
     private IErlScanner scanner;
-    public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
     /**
      * Simple constructor
@@ -532,7 +533,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected ISourceViewer createSourceViewer(final Composite parent,
             final IVerticalRuler ruler, final int styles) {
         // return new ErlangSourceViewer(parent, ruler, styles);
-        final ISourceViewer viewer = new ProjectionViewer(parent, ruler,
+        final ISourceViewer viewer = new ErlangSourceViewer(parent, ruler,
                 getOverviewRuler(), true, styles);
         getSourceViewerDecorationSupport(viewer);
 
@@ -717,10 +718,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected void doSetInput(final IEditorInput input) throws CoreException {
         final IDocumentProvider provider = getDocumentProvider();
         if (input != getEditorInput()) {
-            final IDocument document = provider.getDocument(getEditorInput());
-            if (document != null) {
-                // document.removeDocumentListener(scannerListener);
-            }
             disposeModule();
             resetReconciler();
         }
