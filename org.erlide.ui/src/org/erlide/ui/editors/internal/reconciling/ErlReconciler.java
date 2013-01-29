@@ -54,13 +54,14 @@ public class ErlReconciler implements IReconciler {
     final boolean fChunkReconciler;
 
     List<ErlDirtyRegion> log = Lists.newLinkedList();
-    boolean logging = false;
+    boolean logging;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
             final boolean isIncremental, final boolean chunkReconciler,
-            final String path, final IErlModule module) {
+            final String path, final IErlModule module, final boolean logging) {
 
         super();
+        this.logging = logging;
         Assert.isNotNull(strategy);
 
         setIsIncrementalReconciler(isIncremental);

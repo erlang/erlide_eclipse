@@ -442,7 +442,7 @@ public class ErlModule extends Openable implements IErlModule {
         initialText = newText;
         parsed = false;
         setStructureKnown(false);
-        scanner.initialScan(newText, "", true);
+        scanner.initialScan(newText, "", logging);
         final boolean built = buildStructure(null);
         setStructureKnown(built);
     }
@@ -694,6 +694,11 @@ public class ErlModule extends Openable implements IErlModule {
     @Override
     public String getScannerName() {
         return scannerName;
+    }
+
+    @Override
+    public boolean getLogging() {
+        return logging;
     }
 
 }

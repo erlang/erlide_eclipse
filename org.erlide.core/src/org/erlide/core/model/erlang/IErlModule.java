@@ -145,4 +145,6 @@ public interface IErlModule extends IErlElement, IParent, IOpenable,
 
     void createScanner();
 
+    boolean getLogging();
+
 }
