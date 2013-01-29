@@ -50,9 +50,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         setDefaultTimeout();
     }
 
-    private static final int MAX_RETRIES = 10;
+    private static final int MAX_RETRIES = 15;
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
-            "erlide.connect.delay", "300"));
+            "erlide.connect.delay", "400"));
     private static final Object connectLock = new Object();
     private static final RpcHelper rpcHelper = RpcHelper.getInstance();
 
