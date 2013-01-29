@@ -18,7 +18,7 @@
 %%
 
 -export([create/1, addref/1, dispose/1, initialScan/6, getTokenAt/2, getTokenWindow/4,
-         getTokens/1, replaceText/4, check_all/2]).
+         getTokens/1, replaceText/4, check_all/3]).
 
 %% stop/0
 
@@ -74,10 +74,16 @@ replaceText(ScannerName, Offset, RemoveLength, NewText)
   when is_atom(ScannerName), is_integer(Offset), is_integer(RemoveLength), is_list(NewText) ->
     server_cmd(ScannerName, replace_text, {Offset, RemoveLength, NewText}).
 
-check_all(ScannerName, Text) when is_atom(ScannerName), is_list(Text) ->
+check_all(ScannerName, Text, GetTokens) 
+  when is_atom(ScannerName), is_list(Text), is_boolean(GetTokens) ->
     MatchTest = match_test(ScannerName, Text),
-    ScanTest = scan_test(ScannerName),
-    MatchTest ++ ScanTest.
+    ScanTest = scan_test(ScannerName, GetTokens),
+    case ScanTest of
+        T when is_tuple(T) ->
+            T;
+        _ ->
+            MatchTest ++ ScanTest
+    end.
 
 match_test(Module, Text) ->
     case getText(Module) of
@@ -89,15 +95,22 @@ match_test(Module, Text) ->
                 "\"\n(Eclipse text)----------------\n\""++Text++"\"\n"
     end.
 
-scan_test(Module) ->
+scan_test(Module, GetTokens) ->
     ModText = getText(Module),
     M = erlide_scanner:do_scan(dont_care, ModText),
     T = erlide_scanner:get_all_tokens(M),
-    case getTokens(Module) of
-        T ->
-            "scan match\n";
-        _ ->
-            "scan mismatch!\n"
+    Tokens = getTokens(Module),
+    R = case Tokens of
+            T ->
+                "scan match\n";
+            _ ->
+                "scan mismatch!\n"
+        end,
+    case GetTokens of
+        true ->
+            {R, Tokens, T};
+        false ->
+            R
     end.
 
 %%

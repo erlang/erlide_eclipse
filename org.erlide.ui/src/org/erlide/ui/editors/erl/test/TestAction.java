@@ -19,6 +19,10 @@ import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.utils.ErlLogger;
+import org.erlide.utils.Util;
+
+import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangTuple;
 
 /**
  * @author jakob
@@ -46,7 +50,19 @@ public class TestAction extends TextEditorAction {
                     .getDocument(textEditor.getEditorInput());
             final String text = document.get();
             final String scannerName = module.getScannerName();
-            final String s = ErlideScanner.checkAll(scannerName, text);
+            String s;
+            final OtpErlangObject checkAll = ErlideScanner.checkAll(
+                    scannerName, text, true);
+            if (checkAll instanceof OtpErlangTuple) {
+                final OtpErlangTuple t = (OtpErlangTuple) checkAll;
+                s = Util.stringValue(t.elementAt(0));
+                final OtpErlangObject o1 = t.elementAt(1);
+                final OtpErlangObject o2 = t.elementAt(2);
+                dumpText(o1.toString(), "/tmp/scannerTokens.txt");
+                dumpText(o2.toString(), "/tmp/rescanTokens.txt");
+            } else {
+                s = Util.stringValue(checkAll);
+            }
             ErlLogger.debug("%s", s);
             final String scannerText = ErlideScanner.getText(scannerName);
             dumpText(scannerText, "/tmp/scanner.txt");

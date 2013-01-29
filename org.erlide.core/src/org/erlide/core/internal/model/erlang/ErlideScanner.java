@@ -202,18 +202,23 @@ public class ErlideScanner {
                 + "\": " + t1.elementAt(1).toString());
     }
 
-    public static String checkAll(final String module, final String text) {
+    public static OtpErlangObject checkAll(final String module,
+            final String text, final boolean getTokens) {
         if (module == null) {
-            return "";
+            return null;
         }
         try {
-            final OtpErlangObject o = BackendCore.getBackendManager()
-                    .getIdeBackend().getRpcSite()
-                    .call(ERLIDE_SCANNER, "check_all", "as", module, text);
-            return o.toString();
+            final OtpErlangObject o = BackendCore
+                    .getBackendManager()
+                    .getIdeBackend()
+                    .getRpcSite()
+                    .call(ERLIDE_SCANNER, "check_all", "aso", module, text,
+                            getTokens);
+            return o;
         } catch (final RpcException e) {
-            return "";
+            ErlLogger.warn(e);
         }
+        return null;
 
     }
 

@@ -66,6 +66,12 @@ scanner_test_() ->
                    test_replace("a() -> b.", 0, 1, "test"))
     ].
 
+replace_at_eof_test_() ->
+    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 2, value = ab}],
+                    [#token{kind = atom, line = 0, offset = 0, length = 3, value = abc}]},
+                   test_replace("ab", 2, 0, "c"))
+     ].
+
 %%
 %% Local Functions
 %%

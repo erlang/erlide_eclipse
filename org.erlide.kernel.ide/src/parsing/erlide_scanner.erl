@@ -11,6 +11,7 @@
 
 -include("erlide.hrl").
 -include("erlide_scanner.hrl").
+-include("erlide_scanner_server.hrl").
 
 %%
 %% Exported Functions
@@ -36,7 +37,6 @@ light_scan_string(B, utf8) ->
 do_light_scan(S) ->
     case erlide_scan:string(S, {0, 0}) of
         {ok, T, _} ->
-            ?D(T),
             {ok, fixup_tokens(T, [])};
         {error, _, _} ->
             error
@@ -134,7 +134,13 @@ substr(Text, Start, Length) ->
 replace_between_lines(From, Length, With, Lines) ->
     {LineNo1, Pos1, _Length1, Line1, Beyond1} = find_line_w_offset(From, Lines),
     FirstPiece = substr(Line1, 1, From-Pos1),
-    {LineNo2, Pos2, _Length2, Line2, Beyond2} = find_line_w_offset(From+Length, Lines),
+    {LineNo2, Pos2, _Length2, Line2, Beyond2} = 
+        case Length of
+            0 ->
+                {LineNo1, Pos1, unused, Line1, Beyond1};
+            _ ->
+                find_line_w_offset(From+Length, Lines)
+        end,
     LastPiece = substr(Line2, From+Length-Pos2+1),
     WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
     NOldLines = case {Beyond1, Beyond2} of
@@ -148,12 +154,6 @@ replace_between_lines(From, Length, With, Lines) ->
 
 lines_to_text(Lines) ->
     lists:append([L || {_, L} <- Lines]).
-
--record(module, {name,
-                 lines = [], % [{Length, String}]
-                 tokens = [], % [{Length, [Token]}]
-                 cachedTokens = [],
-                 log = []}).
 
 initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache) ->
     Text = case InitialText of
@@ -185,9 +185,12 @@ scan_line({Length, S}) ->
     end.
 
 replace_text(Module, Offset, RemoveLength, NewText) ->
+    ?D({Offset, RemoveLength, NewText}),
     {Line, NOldLines, AffectedLines, NewLines} =
         replace_between_lines(Offset, RemoveLength, NewText, Module#module.lines),
+    ?D({AffectedLines, NewLines}),
     LineTokens = [scan_line(L) || L <- AffectedLines],
+    ?D(LineTokens),
     NewTokens = replace_between(Line, NOldLines, LineTokens, Module#module.tokens),
     Module#module{lines=NewLines, tokens=NewTokens}.
 
@@ -289,11 +292,8 @@ get_all_tokens([{Length, Tokens} | Rest], Line, Pos, Acc) ->
     get_all_tokens(Rest, Line+1, Pos+Length, [Acc, T]).
 
 get_token_window(Module, Offset, Before, After) ->
-    ?D({Module, Offset, Before, After}),
     A = get_tokens_at(Module, Offset, After),
-    ?D(A),
     B = get_tokens_before(Module, Offset, Before),
-    ?D(B),
     {A, B}.
 
 fix_token(T = #token{offset=O, line=L, last_line=u}, Offset, Line) ->
@@ -428,7 +428,6 @@ kind_small(Kind) when is_atom(Kind) ->
 
 fixup_macro(L, O, G) ->
     ?D({macro, L, O, G}),
-    %%     V = [$? | atom_to_list(V0)],
     <<?TOK_MACRO, L:24, O:24, (G+1):24>>.
 
 fixup_tokens([], Acc) ->
