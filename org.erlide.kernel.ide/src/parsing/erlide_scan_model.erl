@@ -21,6 +21,7 @@
 
 -export([do_scan/2, tokens_to_string/1, get_all_tokens/1, replace_text/4,
          convert_tokens/1]).
+-compile(export_all).
 
 %%
 %% API Functions
@@ -94,7 +95,7 @@ find_line_w_offset(Offset, Pos, N, [{Length, _Line} | Lines]) when Offset >= Pos
 find_line_w_offset(Offset, Pos, N, [{Length, Line} |_]) when Pos =< Offset, Offset < Pos + Length ->
     {N, Pos, Length, Line, false};
 find_line_w_offset(Offset, Pos, N, [{Length, Line}]) ->
-    case ends_with_newline(Line) orelse Offset >= Pos + Length of
+    case ends_with_newline(Line) orelse Offset > Pos + Length of
         true ->
             {N+1, Pos+Length, 0, "", beyond_eof};
         false ->
@@ -134,6 +135,7 @@ substr(Text, Start, Length) ->
 
 replace_between_lines(From, Length, With, Lines) ->
     {LineNo1, Pos1, _Length1, Line1, Beyond1} = find_line_w_offset(From, Lines),
+    ?D({LineNo1, Pos1, _Length1, Line1, Beyond1}),
     FirstPiece = substr(Line1, 1, From-Pos1),
     {LineNo2, Pos2, _Length2, Line2, Beyond2} = 
         case Length of
@@ -142,14 +144,22 @@ replace_between_lines(From, Length, With, Lines) ->
             _ ->
                 find_line_w_offset(From+Length, Lines)
         end,
+    ?D({LineNo2, Pos2, _Length2, Line2, Beyond2}),
     LastPiece = substr(Line2, From+Length-Pos2+1),
-    WLines = split_lines_w_lengths(FirstPiece++With++LastPiece),
-    NOldLines = case {Beyond1, Beyond2} of
-                    {on_eof, on_eof} -> 0;
-                    {beyond_eof, _} -> 0;
-                    {_, beyond_eof} -> LineNo2-LineNo1;
-                    _ -> LineNo2-LineNo1+1
-                end,
+    ?D({FirstPiece, LastPiece}),
+    {NewText, NOldLines} =
+        case {Beyond1, Beyond2} of
+            {on_eof, on_eof} -> 
+                {LastPiece++With, 1};
+            {beyond_eof, _} ->
+                {FirstPiece++With++LastPiece, 0};
+            {_, beyond_eof} ->
+                {FirstPiece++With++LastPiece, LineNo2-LineNo1};
+            _ ->
+                {FirstPiece++With++LastPiece, LineNo2-LineNo1+1}
+        end,
+    WLines = split_lines_w_lengths(NewText),
+    ?D(WLines),
     {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
 

@@ -56,10 +56,18 @@ scanner_test_() ->
                    test_replace("a() -> b.", 0, 1, "test"))
     ].
 
-replace_at_eof_test_() ->
+insert_at_eof_test_() ->
     [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 2, value = ab}],
                     [#token{kind = atom, line = 0, offset = 0, length = 3, value = abc}]},
                    test_replace("ab", 2, 0, "c"))
+     ].
+
+insert_at_eol_test_() ->
+    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 1, value = a},
+                     #token{kind = atom, line = 1, offset = 2, length = 1, value = b}],
+                    [#token{kind = atom, line = 0, offset = 0, length = 2, value = ac},
+                     #token{kind = atom, line = 1, offset = 3, length = 1, value = b}]},
+                   test_replace("a\nb", 1, 0, "c"))
      ].
 
 %%
