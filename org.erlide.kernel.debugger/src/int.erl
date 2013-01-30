@@ -1,7 +1,7 @@
 %% Author: jakob
 %% Created: 21 aug 2008
 -module(int).
--author(jakobce@gmail.com).
+-author('jakobce@gmail.com').
 
 %% TODO Since the error_handler (in R12 and earlier) hard-codes the int
 %% module, we replace it to call erlide_int
@@ -16,11 +16,11 @@
 %%
 
 -export([i/1, ni/1, n/1, nn/1, interpreted/0, file/1,
-	 interpretable/1, auto_attach/0, auto_attach/1, auto_attach/2,
-	 stack_trace/0, stack_trace/1, break/2, delete_break/2, break_in/3,
-	 del_break_in/3, no_break/0, no_break/1, disable_break/2, enable_break/2,
-	 action_at_break/3, test_at_break/3, get_binding/2,
-	 all_breaks/0, all_breaks/1, snapshot/0, clear/0, continue/1, continue/3]).
+   interpretable/1, auto_attach/0, auto_attach/1, auto_attach/2,
+   stack_trace/0, stack_trace/1, break/2, delete_break/2, break_in/3,
+   del_break_in/3, no_break/0, no_break/1, disable_break/2, enable_break/2,
+   action_at_break/3, test_at_break/3, get_binding/2,
+   all_breaks/0, all_breaks/1, snapshot/0, clear/0, continue/1, continue/3]).
 
 %%
 %% Internal Export
@@ -31,8 +31,8 @@
 %% API Functions
 %%
 
-eval(Mod, Func, Args) -> 
-	erlide_int:eval(Mod, Func, Args).
+eval(Mod, Func, Args) ->
+  erlide_int:eval(Mod, Func, Args).
 
 %%
 %% Local Functions
@@ -68,8 +68,8 @@ clear() -> nyi(clear).
 continue(Pid) -> erlide_int:continue(Pid).
 continue(X, Y, Z) -> erlide_int:continue(X, Y, Z).
 
-nyi(F) -> 
-    io:format("function ~p unavailable from within ErlIDE, use Eclipse debugger functions instead\n", [F]), 
+nyi(F) ->
+    io:format("function ~p unavailable from within ErlIDE, use Eclipse debugger functions instead\n", [F]),
     {error, unavaible}.
 
 
