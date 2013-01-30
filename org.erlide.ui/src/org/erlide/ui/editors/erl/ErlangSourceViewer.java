@@ -64,7 +64,7 @@ public class ErlangSourceViewer extends ProjectionViewer implements IDisposable 
     }
 
     private void updateTextBuffer(final DocumentEvent event) {
-        ErlLogger.debug("UPDATE BUFFER " + event);
+        // ErlLogger.debug("UPDATE BUFFER " + event);
     }
 
     @Override
