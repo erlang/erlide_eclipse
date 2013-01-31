@@ -106,12 +106,18 @@ remove_cache_files(ScannerName, StateDir) ->
 get_tokens(ScannerName, ModuleFileName, StateDir) ->
     case whereis(ScannerName) of
         undefined ->
-            {ok, InitialTextBin} = file:read_file(ModuleFileName),
-            InitialText = binary_to_list(InitialTextBin),
-            {{_Cached, Module}, _Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, true),
-            erlide_scanner:get_all_tokens(Module);
+            case file:read_file(ModuleFileName) of
+                {ok, InitialTextBin} ->
+                    InitialText = binary_to_list(InitialTextBin),
+                    {{_Cached, Module}, _Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, true),
+                    erlide_scanner:get_all_tokens(Module);
+                {error, Error} ->
+                    erlide_log:log({"Module not found: ", ModuleFileName, Error}),
+                    %% not much to do here
+                    []
+            end;
         _ ->
-      erlide_scanner_server:getTokens(ScannerName)
+            erlide_scanner_server:getTokens(ScannerName)
     end.
 
 do_parse(ScannerName, RefsFileName, Tokens, StateDir, UpdateSearchServer) ->
