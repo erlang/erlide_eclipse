@@ -20,7 +20,7 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.utils.ErlLogger;
 
-public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
+public class ErlReconcilingStrategy implements IErlReconcilingStrategy,
         IReconcilingStrategyExtension {
 
     private IErlModule fModule;
@@ -30,7 +30,7 @@ public class ErlReconcilerStrategy implements IErlReconcilingStrategy,
 
     // private boolean initialInsert;
 
-    public ErlReconcilerStrategy(final ErlangEditor editor) {
+    public ErlReconcilingStrategy(final ErlangEditor editor) {
         fEditor = editor;
     }
 
