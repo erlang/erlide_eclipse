@@ -13,7 +13,6 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElement;
 import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.core.model.root.IErlProject;
 
 public class ErlangExternalsContentProvider implements ITreeContentProvider {
     // ITreePathContentProvider
@@ -73,9 +72,6 @@ public class ErlangExternalsContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(final Object element) {
-        if (element instanceof IErlProject) {
-            return element;
-        }
         if (element instanceof IErlElement) {
             final IErlElement elt = (IErlElement) element;
             IParent parent = elt.getParent();
