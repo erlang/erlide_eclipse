@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: erlide code database
+Bundle-SymbolicName: org.erlide.codedb;singleton:=true
+Bundle-Version: 0.18.0.qualifier
+Bundle-Activator: org.erlide.codedb.Activator
+Bundle-Vendor: erlide.org project
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.erlide.codedb
