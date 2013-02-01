@@ -1,20 +1,20 @@
 /*
  * %CopyrightBegin%
- *
+ * 
  * Copyright Ericsson AB 2000-2009. All Rights Reserved.
- *
+ * 
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
  * compliance with the License. You should have received a copy of the
  * Erlang Public License along with this software. If not, it can be
  * retrieved online at http://www.erlang.org/.
- *
+ * 
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
  * the License for the specific language governing rights and limitations
  * under the License.
- *
- * %CopyrightEnd%
+ * 
+ * %CopyrightEnd% 
  */
 package com.ericsson.otp.erlang;
 
@@ -90,6 +90,8 @@ public class AbstractNode {
     static final int dFlagExportPtrTag = 0x200; // NOT SUPPORTED
     static final int dFlagBitBinaries = 0x400;
     static final int dFlagNewFloats = 0x800;
+    static final int dFlagUnicodeIo = 0x1000;
+    static final int dFlagUtf8Atoms = 0x10000;
 
     int ntype = NTYPE_R6;
     int proto = 0; // tcp/ip
@@ -98,7 +100,7 @@ public class AbstractNode {
     int creation = 0;
     int flags = dFlagExtendedReferences | dFlagExtendedPidsPorts
             | dFlagBitBinaries | dFlagNewFloats | dFlagFunTags
-            | dflagNewFunTags;
+            | dflagNewFunTags | dFlagUtf8Atoms;
 
     /* initialize hostname and default cookie */
     static {
@@ -116,17 +118,15 @@ public class AbstractNode {
             localHost = "localhost";
         }
 
-        final String homeDir = getHomeDir();
-        final String dotCookieFilename = homeDir + File.separator
-                + ".erlang.cookie";
+        final String dotCookieFilename = System.getProperty("user.home")
+                + File.separator + ".erlang.cookie";
         BufferedReader br = null;
 
         try {
             final File dotCookieFile = new File(dotCookieFilename);
 
             br = new BufferedReader(new FileReader(dotCookieFile));
-            final String line = br.readLine();
-            defaultCookie = line != null ? line.trim() : line;
+            defaultCookie = br.readLine().trim();
         } catch (final IOException e) {
             defaultCookie = "";
         } finally {
@@ -251,16 +251,4 @@ public class AbstractNode {
     public String toString() {
         return node();
     }
-
-    private static String getHomeDir() {
-        final String u = System.getProperty("user.home");
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            final String d = System.getenv("HOMEDRIVE");
-            final String p = System.getenv("HOMEPATH");
-            return (d != null && p != null) ? d + p : u;
-        } else {
-            return u;
-        }
-    }
-
 }

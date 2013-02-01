@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  * 
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2011. All Rights Reserved.
  * 
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
@@ -39,7 +39,10 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     /** The default initial size of the stream. * */
     public static final int defaultInitialSize = 2048;
 
-    /** The default increment used when growing the stream. * */
+    /**
+     * The default increment used when growing the stream (increment at least
+     * this much). *
+     */
     public static final int defaultIncrement = 2048;
 
     // static formats, used to encode floats and doubles
@@ -95,6 +98,44 @@ public class OtpOutputStream extends ByteArrayOutputStream {
     }
 
     /**
+     * Trims the capacity of this <tt>OtpOutputStream</tt> instance to be the
+     * buffer's current size. An application can use this operation to minimize
+     * the storage of an <tt>OtpOutputStream</tt> instance.
+     */
+    public void trimToSize() {
+        if (super.count < super.buf.length) {
+            final byte[] tmp = new byte[super.count];
+            System.arraycopy(super.buf, 0, tmp, 0, super.count);
+            super.buf = tmp;
+        }
+    }
+
+    /**
+     * Increases the capacity of this <tt>OtpOutputStream</tt> instance, if
+     * necessary, to ensure that it can hold at least the number of elements
+     * specified by the minimum capacity argument.
+     * 
+     * @param minCapacity
+     *            the desired minimum capacity
+     */
+    public void ensureCapacity(final int minCapacity) {
+        final int oldCapacity = super.buf.length;
+        if (minCapacity > oldCapacity) {
+            int newCapacity = oldCapacity * 3 / 2 + 1;
+            if (newCapacity < oldCapacity + defaultIncrement) {
+                newCapacity = oldCapacity + defaultIncrement;
+            }
+            if (newCapacity < minCapacity) {
+                newCapacity = minCapacity;
+            }
+            // minCapacity is usually close to size, so this is a win:
+            final byte[] tmp = new byte[newCapacity];
+            System.arraycopy(super.buf, 0, tmp, 0, super.count);
+            super.buf = tmp;
+        }
+    }
+
+    /**
      * Write one byte to the stream.
      * 
      * @param b
@@ -113,6 +154,7 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      *            the array of bytes to write.
      * 
      */
+
     @Override
     public void write(final byte[] buf) {
         ensureCapacity(super.count + buf.length);
@@ -306,9 +348,57 @@ public class OtpOutputStream extends ByteArrayOutputStream {
      *            the string to write.
      */
     public void write_atom(final String atom) {
-        write1(OtpExternal.atomTag);
-        write2BE(atom.length());
-        writeN(atom.getBytes());
+        String enc_atom;
+        byte[] bytes;
+        boolean isLatin1 = true;
+
+        if (atom.codePointCount(0, atom.length()) <= OtpExternal.maxAtomLength) {
+            enc_atom = atom;
+        } else {
+            /*
+             * Throwing an exception would be better I think, but truncation
+             * seems to be the way it has been done in other parts of OTP...
+             */
+            enc_atom = new String(OtpErlangString.stringToCodePoints(atom), 0,
+                    OtpExternal.maxAtomLength);
+        }
+
+        for (int offset = 0; offset < enc_atom.length();) {
+            final int cp = enc_atom.codePointAt(offset);
+            if ((cp & ~0xFF) != 0) {
+                isLatin1 = false;
+                break;
+            }
+            offset += Character.charCount(cp);
+        }
+        try {
+            if (isLatin1) {
+                bytes = enc_atom.getBytes("ISO-8859-1");
+                write1(OtpExternal.atomTag);
+                write2BE(bytes.length);
+            } else {
+                bytes = enc_atom.getBytes("UTF-8");
+                final int length = bytes.length;
+                if (length < 256) {
+                    write1(OtpExternal.smallAtomUtf8Tag);
+                    write1(length);
+                } else {
+                    write1(OtpExternal.atomUtf8Tag);
+                    write2BE(length);
+                }
+            }
+            writeN(bytes);
+        } catch (final java.io.UnsupportedEncodingException e) {
+            /*
+             * Sigh, why didn't the API designer add an OtpErlangEncodeException
+             * to these encoding functions?!? Instead of changing the API we
+             * write an invalid atom and let it fail for whoever trying to
+             * decode this... Sigh, again...
+             */
+            write1(OtpExternal.smallAtomUtf8Tag);
+            write1(2);
+            write2BE(0xffff); /* Invalid UTF-8 */
+        }
     }
 
     /**
@@ -799,44 +889,4 @@ public class OtpOutputStream extends ByteArrayOutputStream {
         write_atom(function);
         write_long(arity);
     }
-
-    /**
-     * Trims the capacity of this <tt>OtpOutputStream</tt> instance to be the
-     * buffer's current size. An application can use this operation to minimize
-     * the storage of an <tt>OtpOutputStream</tt> instance.
-     */
-    public void trimToSize() {
-        if (super.count < super.buf.length) {
-            // super.buf = Arrays.copyOf(super.buf, super.count);
-            final byte[] tmp = new byte[super.count];
-            System.arraycopy(super.buf, 0, tmp, 0, super.count);
-            super.buf = tmp;
-        }
-    }
-
-    /**
-     * Increases the capacity of this <tt>OtpOutputStream</tt> instance, if
-     * necessary, to ensure that it can hold at least the number of elements
-     * specified by the minimum capacity argument.
-     * 
-     * @param minCapacity
-     *            the desired minimum capacity
-     */
-    public void ensureCapacity(final int minCapacity) {
-        final int oldCapacity = super.buf.length;
-        if (minCapacity > oldCapacity) {
-            int newCapacity = oldCapacity * 3 / 2 + 1;
-            if (newCapacity < oldCapacity + defaultIncrement) {
-                newCapacity = oldCapacity + defaultIncrement;
-            }
-            if (newCapacity < minCapacity) {
-                newCapacity = minCapacity;
-            }
-            // minCapacity is usually close to size, so this is a win:
-            final byte[] tmp = new byte[newCapacity];
-            System.arraycopy(super.buf, 0, tmp, 0, super.count);
-            super.buf = tmp;
-        }
-    }
-
 }
