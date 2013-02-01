@@ -1,6 +1,5 @@
 package org.erlide.core.internal.model.erlang;
 
-import org.erlide.backend.IBackend;
 import org.erlide.core.model.ErlModelException;
 import org.erlide.core.model.erlang.IErlFunction;
 import org.erlide.core.model.erlang.IErlModule;
@@ -18,34 +17,30 @@ public class ErlideNoparse {
 
     private static final String ERLIDE_NOPARSE = "erlide_noparse";
 
-    public static OtpErlangTuple initialParse(final IBackend b,
+    public static OtpErlangTuple initialParse(final IRpcSite b,
             final String scannerModuleName, final String moduleFileName,
             final String stateDir, final boolean updateRefs) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.getRpcSite().call(200000, ERLIDE_NOPARSE,
+            res = (OtpErlangTuple) b.call(200000, ERLIDE_NOPARSE,
                     "initial_parse", "assoo", scannerModuleName,
                     moduleFileName, stateDir, true, updateRefs);
         } catch (final RpcTimeoutException e) {
-            if (!b.isStopped()) {
-                ErlLogger.warn(e);
-            }
+            ErlLogger.warn(e);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }
         return res;
     }
 
-    public static OtpErlangTuple reparse(final IBackend b,
+    public static OtpErlangTuple reparse(final IRpcSite b,
             final String scannerModuleName, final boolean updateSearchServer) {
         OtpErlangTuple res = null;
         try {
-            res = (OtpErlangTuple) b.getRpcSite().call(20000, ERLIDE_NOPARSE,
-                    "reparse", "ao", scannerModuleName, updateSearchServer);
+            res = (OtpErlangTuple) b.call(20000, ERLIDE_NOPARSE, "reparse",
+                    "ao", scannerModuleName, updateSearchServer);
         } catch (final RpcTimeoutException e) {
-            if (!b.isStopped()) {
-                ErlLogger.warn(e);
-            }
+            ErlLogger.warn(e);
         } catch (final RpcException e) {
             ErlLogger.warn(e);
         }

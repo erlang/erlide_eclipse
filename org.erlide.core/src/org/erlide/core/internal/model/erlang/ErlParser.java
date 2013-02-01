@@ -90,10 +90,10 @@ public final class ErlParser implements IErlParser {
         if (initialParse) {
             final String stateDir = ErlangPlugin.getDefault()
                     .getStateLocation().toString();
-            res = ErlideNoparse.initialParse(backend, scannerName, path,
-                    stateDir, updateSearchServer);
+            res = ErlideNoparse.initialParse(backend.getRpcSite(), scannerName,
+                    path, stateDir, updateSearchServer);
         } else {
-            res = ErlideNoparse.reparse(backend, scannerName,
+            res = ErlideNoparse.reparse(backend.getRpcSite(), scannerName,
                     updateSearchServer);
         }
         if (Util.isOk(res)) {

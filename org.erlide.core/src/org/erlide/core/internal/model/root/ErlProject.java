@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendUtils;
-import org.erlide.backend.IBackend;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.internal.model.erlang.ErlExternalReferenceEntryList;
 import org.erlide.core.internal.model.erlang.ErlOtpExternalReferenceEntryList;
@@ -178,8 +177,8 @@ public class ErlProject extends Openable implements IErlProject {
     }
 
     private void addOtpExternals(final List<IErlElement> children) {
-        final IBackend backend = BackendCore.getBuildOrIdeBackend(fProject);
-        final String name = backend.getRuntimeInfo().getName();
+        final String name = "OTP "
+                + getProperties().getRuntimeVersion().toString();
         children.add(new ErlOtpExternalReferenceEntryList(this, name));
     }
 
