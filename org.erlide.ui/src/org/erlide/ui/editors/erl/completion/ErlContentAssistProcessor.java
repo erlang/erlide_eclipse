@@ -23,6 +23,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.services.IDisposable;
 import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlProject;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -34,8 +35,9 @@ public class ErlContentAssistProcessor extends
     protected final IPreferenceChangeListener fPreferenceChangeListener;
 
     public ErlContentAssistProcessor(final ISourceViewer sourceViewer,
-            final IErlModule module, final ContentAssistant contentAssistant) {
-        super(sourceViewer, module, contentAssistant);
+            final IErlModule module, final IErlProject project,
+            final ContentAssistant contentAssistant) {
+        super(sourceViewer, module, project, contentAssistant);
         fPreferenceChangeListener = new PreferenceChangeListener();
         final IEclipsePreferences node = CodeAssistPreferences.getNode();
         node.addPreferenceChangeListener(fPreferenceChangeListener);

@@ -100,12 +100,9 @@ public class AutoIndentStrategy implements IAutoEditStrategy {
     }
 
     private IErlMember getMemberNearOffset(final int offset) {
-        if (fEditor == null) {
-            return null;
-        }
-        final IErlElement element = fEditor.getElementAt(offset, false);
+        final IErlElement element = editor.getElementAt(offset, false);
         IErlMember member = (IErlMember) element;
-        final IErlModule module = fEditor.getModule();
+        final IErlModule module = editor.getModule();
         try {
             if (member == null) {
                 member = (IErlMember) module.getChildren().get(

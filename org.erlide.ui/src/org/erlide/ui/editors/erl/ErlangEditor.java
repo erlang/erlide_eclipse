@@ -1936,6 +1936,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         return stateDirCached;
     }
 
+    @Override
     public IErlScanner getScanner() {
         return scanner;
     }

@@ -53,7 +53,7 @@ final public class ErlangConsoleSourceViewerConfiguration extends
         // TODO vi vill ha in en punkt h�r, men den f�r return till
         // styledtext o skickar allt f�r tidigt...
         final ErlContentAssistProcessor contentAssistProcessor = new ErlContentAssistProcessor(
-                sourceViewer, null, contentAssistant);
+                sourceViewer, null, null, contentAssistant);
         contentAssistant.setContentAssistProcessor(contentAssistProcessor,
                 IDocument.DEFAULT_CONTENT_TYPE);
         contentAssistProcessor.setToPrefs();
