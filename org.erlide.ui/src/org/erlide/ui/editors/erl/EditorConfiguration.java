@@ -271,9 +271,11 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     }
 
     public void disposeContentAssistProcessors() {
-        contentAssistProcessor.dispose();
-        contentAssistProcessor = null;
-        contentAssistProcessorForStrings = null;
+        if (contentAssistProcessor != null) {
+            contentAssistProcessor.dispose();
+            contentAssistProcessor = null;
+            contentAssistProcessorForStrings = null;
+        }
     }
 
 }

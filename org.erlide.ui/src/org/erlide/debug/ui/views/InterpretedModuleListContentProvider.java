@@ -12,9 +12,9 @@ import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
+import org.erlide.core.model.util.CommonUtils;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.utils.CommonUtils;
 import org.erlide.utils.ErlLogger;
 
 public class InterpretedModuleListContentProvider extends

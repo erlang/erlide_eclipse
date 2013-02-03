@@ -48,8 +48,8 @@ import org.erlide.core.model.root.IErlElementVisitor;
 import org.erlide.core.model.root.IErlExternal;
 import org.erlide.core.model.root.IErlModel;
 import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.util.ErlideUtil;
 import org.erlide.core.model.util.ModelUtils;
+import org.erlide.core.model.util.NatureUtil;
 import org.erlide.core.services.search.ErlSearchScope;
 import org.erlide.core.services.search.ErlangSearchPattern;
 import org.erlide.core.services.search.FunctionPattern;
@@ -109,7 +109,7 @@ public class SearchUtil {
         final IErlModel model = ErlModelManager.getErlangModel();
         for (final IProject project : projects) {
             addProjectToScope(project, result);
-            if (ErlideUtil.hasErlangNature(project)) {
+            if (NatureUtil.hasErlangNature(project)) {
                 final IErlProject erlProject = model.getErlangProject(project);
                 addExternalModules(erlProject, result, externalModulePaths,
                         addExternals, addOtp);

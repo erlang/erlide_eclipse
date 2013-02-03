@@ -71,9 +71,10 @@ import org.eclipse.ui.internal.console.IConsoleHelpContextIds;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.FindReplaceAction;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.erlide.backend.BackendException;
-import org.erlide.backend.BackendHelper;
 import org.erlide.backend.console.IBackendShell;
+import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.ParserException;
+import org.erlide.runtime.RuntimeHelper;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -111,6 +112,8 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
     private boolean disposeColors;
 
+    private IRpcSite backend;
+
     public ErlangConsolePage(final IConsoleView view,
             final ErlangConsole console) {
         super();
@@ -146,7 +149,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     boolean isInputComplete() {
         try {
             final String str = consoleInput.getText() + " ";
-            final BackendHelper helper = new BackendHelper();
+            final RuntimeHelper helper = new RuntimeHelper(backend);
             final OtpErlangObject o = helper.parseConsoleInput(str);
             if (o instanceof OtpErlangList && ((OtpErlangList) o).arity() == 0) {
                 return false;
@@ -154,7 +157,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
             if (!(o instanceof OtpErlangList)) {
                 return false;
             }
-        } catch (final BackendException e) {
+        } catch (final ParserException e) {
             return false;
         }
         return true;
@@ -318,7 +321,7 @@ public class ErlangConsolePage extends Page implements IAdaptable,
 
         final String id = "#ContextMenu"; //$NON-NLS-1$
         // if (getConsole().getType() != null) {
-        //			id = getConsole().getType() + "." + id; //$NON-NLS-1$
+        //            id = getConsole().getType() + "." + id; //$NON-NLS-1$
         // }
         fMenuManager = new MenuManager("#ContextMenu", id); //$NON-NLS-1$
         fMenuManager.setRemoveAllWhenShown(true);

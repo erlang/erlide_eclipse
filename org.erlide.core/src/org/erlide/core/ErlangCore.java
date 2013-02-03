@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.backend.BackendUtils;
+import org.erlide.codedb.SourcePathUtils;
 import org.erlide.core.services.builder.BuildQueueProcessor;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
 import org.erlide.runtime.rpc.RpcMonitor;
@@ -65,7 +65,7 @@ public final class ErlangCore {
         // TODO can we remove this from here?
         try {
             // ignore result, just setup cache
-            BackendUtils.getSourcePathProviders();
+            SourcePathUtils.getSourcePathProviders();
         } catch (final CoreException e) {
             // ignore
         }

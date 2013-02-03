@@ -11,3 +11,4 @@ Require-Bundle: org.erlide.testing.libs,
  org.junit4
 Eclipse-ExtensibleAPI: true 
 Import-Package: org.apache.commons.io
+Export-Package: org.erlide.test.support

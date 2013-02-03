@@ -343,7 +343,8 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.core.databinding.property,
  org.eclipse.jface.databinding,
  com.ibm.icu,
- org.erlide.runtime
+ org.erlide.runtime,
+ org.erlide.codedb;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
