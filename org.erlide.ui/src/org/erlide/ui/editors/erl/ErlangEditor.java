@@ -90,7 +90,6 @@ import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.ResourceAction;
-import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -106,6 +105,8 @@ import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.ModelUtils;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
@@ -164,11 +165,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
     private InformationPresenter fInformationPresenter;
     private ShowOutlineAction fShowOutline;
     private Object fSelection;
-    /** Preference key for matching brackets */
-    protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
-    /** Preference key for matching brackets color */
-    protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-    /** The bracket inserter. */
     private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
     private ActionGroup fActionGroups;
     private ActionGroup fContextMenuGroup;
@@ -251,9 +247,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         colorManager = new ColorManager();
         setDocumentProvider(new TextFileDocumentProvider());
 
-        // Platform.getAdapterManager().registerAdapters(adapterFactory,
-        // IResource.class);
-
         final IPreferenceStore store = getErlangEditorPreferenceStore();
         setPreferenceStore(store);
 
@@ -275,11 +268,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
             fModule.dispose();
             fModule = null;
         }
-    }
-
-    public ICharacterPairMatcher getBracketMatcher() {
-        return ((ErlangSourceViewerConfiguration) getSourceViewerConfiguration())
-                .getBracketMatcher();
     }
 
     @Override
@@ -584,16 +572,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         }
 
         return viewer;
-    }
-
-    @Override
-    protected void configureSourceViewerDecorationSupport(
-            final SourceViewerDecorationSupport support) {
-        support.setCharacterPairMatcher(getBracketMatcher());
-        support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS,
-                MATCHING_BRACKETS_COLOR);
-
-        super.configureSourceViewerDecorationSupport(support);
     }
 
     /**
@@ -1154,7 +1132,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
 
         readBracketInserterPrefs(getBracketInserter());
 
-        final ISourceViewer sourceViewer = getSourceViewer();
         final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
         v.doOperation(ProjectionViewer.TOGGLE);
 
@@ -1988,6 +1965,16 @@ public class ErlangEditor extends AbstractErlangEditor implements
     @Override
     public ErlToken getTokenAt(final int offset) {
         return getScanner().getTokenAt(offset);
+    }
+
+    @Override
+    public IErlProject getProject() {
+        return ModelUtils.getProject(getModule());
+    }
+
+    @Override
+    public String getScannerName() {
+        return getModule().getScannerName();
     }
 
 }

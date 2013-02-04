@@ -12,7 +12,7 @@ package org.erlide.ui.views;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 
 /**
  * 
@@ -23,7 +23,7 @@ public class ErlangPropertySource implements IPropertySource {
     /**
      * @param editor
      */
-    public ErlangPropertySource(final ErlangEditor editor) {
+    public ErlangPropertySource(final AbstractErlangEditor editor) {
     }
 
     /**

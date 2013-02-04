@@ -19,6 +19,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.model.root.IErlElement;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.SelectionDispatchAction;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 
@@ -34,7 +35,7 @@ import org.erlide.ui.internal.ErlBrowserInformationControlInput;
  */
 public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
-    private ErlangEditor editor;
+    private AbstractErlangEditor editor;
 
     private Shell fShell;
 

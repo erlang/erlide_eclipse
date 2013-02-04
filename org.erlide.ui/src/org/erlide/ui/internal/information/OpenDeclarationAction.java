@@ -8,7 +8,6 @@ import org.erlide.model.services.search.OpenResult;
 import org.erlide.ui.ErlideImage;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
 import org.erlide.ui.util.eclipse.text.BrowserInformationControl;
@@ -24,7 +23,7 @@ public final class OpenDeclarationAction extends Action {
     private final EdocView edocView;
 
     public OpenDeclarationAction(final BrowserInformationControl infoControl,
-            final ErlangEditor editor) {
+            final AbstractErlangEditor editor) {
         fInfoControl = infoControl;
         edocView = null;
         setText("Open declaration");

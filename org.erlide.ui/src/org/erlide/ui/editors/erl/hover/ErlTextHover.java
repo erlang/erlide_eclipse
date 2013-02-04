@@ -43,7 +43,6 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlFunction;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlPreprocessorDef;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
@@ -264,15 +263,11 @@ public class ErlTextHover implements ITextHover,
         if (editor == null) {
             return null;
         }
-        final IErlModule module = editor.getModule();
-        if (module == null) {
-            return null;
-        }
         final StringBuffer result = new StringBuffer();
         Object element = null;
         // TODO our model is too coarse, here we need access to expressions
         final Collection<OtpErlangObject> fImports = ModelUtils
-                .getImportsAsList(module);
+                .getImportsAsList(editor.getModule());
 
         final int offset = hoverRegion.getOffset();
         final int length = hoverRegion.getLength();
@@ -283,7 +278,8 @@ public class ErlTextHover implements ITextHover,
         }
         final String stateDir = ErlideUIPlugin.getDefault().getStateLocation()
                 .toString();
-        final IErlProject erlProject = ModelUtils.getProject(module);
+
+        final IErlProject erlProject = editor.getProject();
 
         final IBackendManager backendManager = BackendCore.getBackendManager();
         final IBackend ide = backendManager.getIdeBackend();
@@ -300,7 +296,7 @@ public class ErlTextHover implements ITextHover,
                     .getExternalModulesString() : null;
             final OtpErlangTuple t = (OtpErlangTuple) ErlideDoc.getOtpDoc(
                     ide.getRpcSite(), backend, offset, stateDir,
-                    module.getScannerName(), fImports, externalModulesString,
+                    editor.getScannerName(), fImports, externalModulesString,
                     model.getPathVars());
             // ErlLogger.debug("otp doc %s", t);
             if (Util.isOk(t)) {
@@ -314,8 +310,9 @@ public class ErlTextHover implements ITextHover,
             } else {
                 final OpenResult or = new OpenResult(t);
                 element = or;
-                final Object found = OpenAction.findOpenResult(editor, module,
-                        backend, erlProject, or, module.getElementAt(offset));
+                final Object found = OpenAction.findOpenResult(editor, null,
+                        backend, erlProject, or,
+                        editor.getElementAt(offset, false));
                 if (found instanceof IErlFunction) {
                     final IErlFunction function = (IErlFunction) found;
                     final String comment = HoverUtil

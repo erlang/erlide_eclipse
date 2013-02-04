@@ -1518,7 +1518,7 @@
                menubarPath="erlideMenu2">
          </action>
          <action
-               class="org.erlide.ui.editors.scratchpad.NewErlangModuleAction"
+               class="org.erlide.ui.editors.scratchpad.NewErlangScratchPadAction"
                icon="icons/full/obj16/erlang_NewModule.png"
                id="org.erlide.ui.menuNewScratchPadAction"
                label="New Scratch Pad"
@@ -2007,5 +2007,12 @@
             class="org.erlide.ui.editors.erl.ErlangDocumentSetupParticipant"
             contentTypeId="org.erlide.core.content.erlang">
       </participant>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <file-association
+            content-type="org.erlide.core.content.erlang"
+            file-extensions="erlScratchPad">
+      </file-association>
    </extension>
 </plugin>

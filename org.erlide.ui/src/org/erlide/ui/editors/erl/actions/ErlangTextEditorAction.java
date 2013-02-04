@@ -27,6 +27,7 @@ import org.erlide.model.root.IErlElement;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.actions.ActionMessages;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
@@ -92,7 +93,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
     protected ITextSelection getTextSelection(final IDocument document,
             final ITextSelection selection) {
         if (getTextEditor() instanceof ErlangEditor) {
-            final ErlangEditor erlangEditor = (ErlangEditor) getTextEditor();
+            final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) getTextEditor();
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
                 final int offset1 = selection.getOffset(), offset2 = offset1
@@ -252,7 +253,7 @@ public class ErlangTextEditorAction extends TextEditorAction {
     protected void selectAndReveal(final int newOffset, final int newLength) {
         final ITextEditor editor = getTextEditor();
         if (editor instanceof ErlangEditor) {
-            final ErlangEditor erlEditor = (ErlangEditor) editor;
+            final AbstractErlangEditor erlEditor = (AbstractErlangEditor) editor;
             erlEditor.selectAndReveal(newOffset, newLength);
         } else {
             // this is too intrusive, but will never get called anyway

@@ -144,7 +144,7 @@ public class OpenAction extends SelectionDispatchAction {
             IErlProject project = null;
             final IErlModel model = ErlModelManager.getErlangModel();
             if (activeEditor instanceof ErlangEditor) {
-                final ErlangEditor editor = (ErlangEditor) activeEditor;
+                final AbstractErlangEditor editor = (AbstractErlangEditor) activeEditor;
                 textEditor = editor;
                 editor.reconcileNow();
                 module = editor.getModule();

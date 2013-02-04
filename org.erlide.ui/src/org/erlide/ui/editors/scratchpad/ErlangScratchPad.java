@@ -50,19 +50,18 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
-import org.erlide.core.model.erlang.ErlToken;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlScanner;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.erlang.ErlToken;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.erlang.IErlScanner;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlProject;
 import org.erlide.ui.actions.CompositeActionGroup;
 import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ColorManager;
 import org.erlide.ui.editors.erl.ErlangEditor;
-import org.erlide.ui.editors.erl.ErlangEditorBracketInserter;
 import org.erlide.ui.editors.erl.ErlangEditorMessages;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
@@ -74,13 +73,13 @@ import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.utils.ErlLogger;
 import org.erlide.utils.Util;
 
 public class ErlangScratchPad extends AbstractErlangEditor implements
         ISaveablePart2 {
 
     private ColorManager colorManager;
-    private ErlangEditorBracketInserter fBracketInserter;
     private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
     private InformationPresenter fInformationPresenter;
     private ProjectionSupport fProjectionSupport;
@@ -155,35 +154,18 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         colorManager = new ColorManager();
         setDocumentProvider(new TextFileDocumentProvider());
 
-        // Platform.getAdapterManager().registerAdapters(adapterFactory,
-        // IResource.class);
-
         final IPreferenceStore store = getErlangEditorPreferenceStore();
         setPreferenceStore(store);
 
         final ErlangSourceViewerConfiguration cfg = new ErlangScratchPadConfiguration(
                 getPreferenceStore(), colorManager, this);
         setSourceViewerConfiguration(cfg);
-
-        // Runnable runnable = new Runnable() {
-        // public void run() {
-        // initFinished = true;
-        // synchronized (getLock()) {
-        // getLock().notifyAll();
-        // }
-        // }
-        // };
-        // Thread thread = new Thread(runnable);
-        // thread.setPriority(Thread.MIN_PRIORITY);
-        // thread.setName("ErlangEditor initializer");
-        // thread.start();
     }
 
+    @Override
     public IErlProject getProject() {
-        final IEditorInput editorInput = getEditorInput();
-        if (editorInput instanceof IFileEditorInput) {
-            final IFileEditorInput input = (IFileEditorInput) editorInput;
-            final IFile file = input.getFile();
+        final IFile file = getFile();
+        if (file != null) {
             final IProject project = file.getProject();
             if (project != null) {
                 return ErlModelManager.getErlangModel().findProject(project);
@@ -198,16 +180,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         return new ChainedPreferenceStore(new IPreferenceStore[] {
                 ErlideUIPlugin.getDefault().getPreferenceStore(),
                 generalTextStore });
-    }
-
-    /**
-	 */
-    private ErlangEditorBracketInserter getBracketInserter() {
-        if (fBracketInserter == null) {
-            fBracketInserter = new ErlangEditorBracketInserter(this,
-                    getSourceViewer());
-        }
-        return fBracketInserter;
     }
 
     @Override
@@ -632,37 +604,53 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
 
     @Override
     public ErlToken getTokenAt(final int offset) {
-        return getScanner().getTokenAt(offset);varför null här?
+        return getScanner().getTokenAt(offset);
+    }
+
+    private IFile getFile() {
+        final IEditorInput editorInput = getEditorInput();
+        if (editorInput instanceof IFileEditorInput) {
+            final IFileEditorInput input = (IFileEditorInput) editorInput;
+            return input.getFile();
+        }
+        return null;
     }
 
     @Override
     public IErlScanner getScanner() {
         if (erlScanner == null) {
-            final IEditorInput editorInput = getEditorInput();
-            if (editorInput instanceof IFileEditorInput) {
-                final IFileEditorInput input = (IFileEditorInput) editorInput;
-                final IFile file = input.getFile();
-                final String filePath = file.getLocation().toPortableString();
-                final IPath fullPath = file.getFullPath();
-                final String scannerName = "scratchPad"
-                        + fullPath.toPortableString().hashCode() + "_"
-                        + fullPath.removeFileExtension().lastSegment();
+            final IFile file = getFile();
+            if (file != null) {
                 try {
-                    final String initialText = Util.getInputStreamAsString(
+                    final String filePath = file.getLocation()
+                            .toPortableString();
+                    String initialText;
+                    initialText = Util.getInputStreamAsString(
                             file.getContents(), file.getCharset());
                     erlScanner = ErlModelManager
                             .getErlangModel()
                             .getToolkit()
-                            .createScanner(scannerName, initialText, filePath,
-                                    false);
+                            .createScanner(getScannerName(), initialText,
+                                    filePath, false);
                 } catch (final CoreException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    ErlLogger.warn(e);
                 }
             }
-
         }
         return erlScanner;
+    }
+
+    @Override
+    public String getScannerName() {
+        final IFile file = getFile();
+        if (file != null) {
+            final IPath fullPath = file.getFullPath();
+            final String scannerName = "scratchPad"
+                    + fullPath.toPortableString().hashCode() + "_"
+                    + fullPath.removeFileExtension().lastSegment();
+            return scannerName;
+        }
+        return null;
     }
 
 }

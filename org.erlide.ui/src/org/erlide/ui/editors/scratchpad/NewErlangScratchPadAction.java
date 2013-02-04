@@ -10,11 +10,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
 
-public class NewErlangModuleAction extends ActionDelegate {
+public class NewErlangScratchPadAction extends ActionDelegate {
 
 	private IStructuredSelection selection;
 
-	public NewErlangModuleAction() {
+	public NewErlangScratchPadAction() {
 		selection = StructuredSelection.EMPTY;
 	}
 

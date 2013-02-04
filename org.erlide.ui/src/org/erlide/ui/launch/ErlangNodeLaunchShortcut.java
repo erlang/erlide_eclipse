@@ -41,6 +41,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
 import org.erlide.model.util.ModelUtils;
+import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.ListsUtils;
@@ -113,7 +114,7 @@ public class ErlangNodeLaunchShortcut implements ILaunchShortcut {
     public void launch(final IEditorPart editor, final String mode) {
         ErlLogger.debug("** Launch :: " + editor.getTitle());
         if (editor instanceof ErlangEditor) {
-            final ErlangEditor erlangEditor = (ErlangEditor) editor;
+            final AbstractErlangEditor erlangEditor = (AbstractErlangEditor) editor;
             final IErlModule module = erlangEditor.getModule();
             if (module != null) {
                 final IErlProject project = ModelUtils.getProject(module);
