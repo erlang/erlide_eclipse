@@ -1053,30 +1053,38 @@ public class ErlModel extends Openable implements IErlModel {
         final List<IErlModule> allModules = Lists.newArrayList();
         final Set<String> paths = Sets.newHashSet();
         try {
-            if (project != null) {
-                final IErlModule module = tryFindModule(
-                        Sets.newHashSet(project), moduleName, modulePath,
-                        ignoreCase, checkExternals, allModules);
-                if (module != null || scope == Scope.PROJECT_ONLY) {
-                    return module;
+            for (int i = 0; i < 2; ++i) {
+                final boolean externalModules = i > 0;
+                if (externalModules && !checkExternals) {
+                    break;
                 }
-            }
-            if (scope == Scope.REFERENCED_PROJECTS
-                    || scope == Scope.ALL_PROJECTS) {
-                final Collection<IErlProject> projects = project
-                        .getReferencedProjects();
-                final IErlModule module = tryFindModule(projects, moduleName,
-                        modulePath, ignoreCase, checkExternals, allModules);
-                if (module != null || scope == Scope.REFERENCED_PROJECTS) {
-                    return module;
+                if (project != null) {
+                    final IErlModule module = tryFindModule(
+                            Sets.newHashSet(project), moduleName, modulePath,
+                            ignoreCase, allModules, paths, externalModules);
+                    if (module != null) {
+                        return module;
+                    }
                 }
-            }
-            if (scope == Scope.ALL_PROJECTS) {
-                final Collection<IErlProject> projects = getErlangProjects();
-                final IErlModule module = tryFindModule(projects, moduleName,
-                        modulePath, ignoreCase, checkExternals, allModules);
-                if (module != null) {
-                    return module;
+                if ((scope == Scope.REFERENCED_PROJECTS || scope == Scope.ALL_PROJECTS)
+                        && project != null) {
+                    final Collection<IErlProject> projects = project
+                            .getReferencedProjects();
+                    final IErlModule module = tryFindModule(projects,
+                            moduleName, modulePath, ignoreCase, allModules,
+                            paths, externalModules);
+                    if (module != null) {
+                        return module;
+                    }
+                }
+                if (scope == Scope.ALL_PROJECTS) {
+                    final Collection<IErlProject> projects = getErlangProjects();
+                    final IErlModule module = tryFindModule(projects,
+                            moduleName, modulePath, ignoreCase, allModules,
+                            paths, externalModules);
+                    if (module != null) {
+                        return module;
+                    }
                 }
             }
             return null;
@@ -1087,26 +1095,19 @@ public class ErlModel extends Openable implements IErlModel {
 
     private IErlModule tryFindModule(final Collection<IErlProject> projects,
             final String moduleName, final String modulePath,
-            final boolean ignoreCase, final boolean checkExternals,
-            final List<IErlModule> allModules) throws ErlModelException {
+            final boolean ignoreCase, final List<IErlModule> allModules,
+            final Set<String> paths, final boolean externalModules)
+            throws ErlModelException {
         IErlModule module;
-        final Set<String> paths = Sets.newHashSet();
         for (final IErlProject project : projects) {
             final Collection<IErlModule> modules = Lists.newArrayList();
-            getAllModulesAux(project.getModules(), modules, paths);
+            final Collection<IErlModule> modulesOrExternals = externalModules ? project
+                    .getExternalModules() : project.getModules();
+            getAllModulesAux(modulesOrExternals, modules, paths);
             allModules.addAll(modules);
             module = findModule(modules, moduleName, modulePath, ignoreCase);
             if (module != null) {
                 return module;
-            }
-            if (checkExternals) {
-                modules.clear();
-                getAllModulesAux(project.getExternalModules(), modules, paths);
-                allModules.addAll(modules);
-                module = findModule(modules, moduleName, modulePath, ignoreCase);
-                if (module != null) {
-                    return module;
-                }
             }
         }
         return null;
