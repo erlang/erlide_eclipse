@@ -15,7 +15,6 @@ import java.net.URL;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.core.model.root.IErlElement;
@@ -23,6 +22,7 @@ import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.internal.ErlBrowserInformationControlInput;
+import org.erlide.ui.util.DisplayUtils;
 
 /**
  * This action opens the selected element's Javadoc in a browser as defined by
@@ -194,7 +194,7 @@ public class OpenEdocInExternalBrowserAction extends SelectionDispatchAction {
 
     private static void showMessage(final Shell shell, final String message,
             final boolean isError) {
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
                 if (isError) {

@@ -41,7 +41,7 @@ import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
-import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
+import org.erlide.ui.editors.internal.reconciling.ErlReconcilingStrategy;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.IColorManager;
@@ -121,7 +121,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
-        final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
+        final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(editor);
         final IErlModule module = editor != null ? editor.getModule() : null;
         final String path = module != null ? module.getFilePath() : null;
         reconciler = new ErlReconciler(strategy, true, true, path, module);

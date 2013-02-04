@@ -19,7 +19,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -49,6 +48,7 @@ import org.erlide.cover.ui.views.helpers.StatsViewContentProvider;
 import org.erlide.cover.ui.views.helpers.StatsViewLabelProvider;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.ui.util.DisplayUtils;
 
 /**
  * View for coverage statistics
@@ -371,7 +371,7 @@ public class CoverStatsView extends ViewPart implements ICoverObserver {
         switch (e.getType()) {
         case UPDATE:
 
-            Display.getDefault().asyncExec(new Runnable() {
+            DisplayUtils.asyncExec(new Runnable() {
                 @Override
                 public void run() {
                     viewer.refresh();

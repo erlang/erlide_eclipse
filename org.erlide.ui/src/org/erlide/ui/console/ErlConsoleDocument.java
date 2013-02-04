@@ -16,10 +16,10 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
-import org.eclipse.swt.widgets.Display;
 import org.erlide.backend.console.BackendShellListener;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.backend.console.IoRequest.IoRequestKind;
+import org.erlide.ui.util.DisplayUtils;
 
 public final class ErlConsoleDocument extends Document implements
         BackendShellListener {
@@ -61,7 +61,7 @@ public final class ErlConsoleDocument extends Document implements
             return;
         }
         final String text = shell.getText();
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
 
             @Override
             public void run() {

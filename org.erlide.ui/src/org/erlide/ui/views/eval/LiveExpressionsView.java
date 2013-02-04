@@ -42,7 +42,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -67,6 +66,7 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.ErlideUIConstants;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.prefs.PreferenceConstants;
+import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.SourceViewerInformationControl;
 
 /**
@@ -546,23 +546,19 @@ public class LiveExpressionsView extends ViewPart implements
 
     private void refreshView() {
         if (!viewer.getControl().isDisposed()) {
-            final Display display = viewer.getControl().getDisplay();
+            DisplayUtils.asyncExec(new Runnable() {
 
-            if (!display.isDisposed()) {
-                display.asyncExec(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (viewer == null) {
-                            return;
-                        }
-                        if (viewer.getControl().isDisposed()) {
-                            return;
-                        }
-                        viewer.refresh();
+                @Override
+                public void run() {
+                    if (viewer == null) {
+                        return;
                     }
-                });
-            }
+                    if (viewer.getControl().isDisposed()) {
+                        return;
+                    }
+                    viewer.refresh();
+                }
+            });
         }
     }
 

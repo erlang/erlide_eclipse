@@ -143,13 +143,13 @@ public class ErlReconciler implements IReconciler {
             while (i > 0 && isDirty) {
                 i--;
                 synchronized (fDirtyRegionQueue) {
-                    isDirty = isDirty();
                     if (isDirty) {
                         try {
                             fDirtyRegionQueue.wait(fDelay);
                         } catch (final InterruptedException x) {
                         }
                     }
+                    isDirty = isDirty();
                 }
             }
             if (i == 0 || isDirty) {
@@ -504,7 +504,7 @@ public class ErlReconciler implements IReconciler {
             }
         }
 
-        final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
+        final ErlReconcilingStrategy s = (ErlReconcilingStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
         if (path != null) {
             ErlModelManager.getErlangModel().putEdited(path, null);
@@ -680,7 +680,7 @@ public class ErlReconciler implements IReconciler {
             extension.initialReconcile();
             if (logging) {
                 log.clear();
-                final ErlReconcilerStrategy erlReconcilerStrategy = (ErlReconcilerStrategy) fStrategy;
+                final ErlReconcilingStrategy erlReconcilerStrategy = (ErlReconcilingStrategy) fStrategy;
                 final IErlModule module = erlReconcilerStrategy.getModule();
                 final String scannerName = module.getScannerName();
                 final String erlFilename = module.getFilePath();

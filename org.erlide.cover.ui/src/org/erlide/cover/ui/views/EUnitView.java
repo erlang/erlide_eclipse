@@ -15,6 +15,7 @@ import org.erlide.cover.core.IEUnitObserver;
 import org.erlide.cover.ui.views.helpers.TestViewContentProvider;
 import org.erlide.cover.ui.views.helpers.TestViewLabelProvider;
 import org.erlide.cover.views.model.TestTreeModel;
+import org.erlide.ui.util.DisplayUtils;
 
 /**
  * Simple view to show EUnit test results
@@ -74,7 +75,7 @@ public class EUnitView extends ViewPart implements IEUnitObserver {
 
     @Override
     public void treeChanged() {
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
                 viewer.refresh();

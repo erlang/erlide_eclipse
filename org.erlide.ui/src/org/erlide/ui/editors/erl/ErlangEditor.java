@@ -12,7 +12,6 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,7 +32,6 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.ITextViewerExtension4;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -90,6 +88,7 @@ import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextEditorAction;
@@ -117,7 +116,6 @@ import org.erlide.ui.editors.erl.actions.IndentAction;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
-import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
@@ -136,6 +134,7 @@ import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.ui.util.ProblemsLabelDecorator;
 import org.erlide.ui.views.ErlangPropertySource;
 import org.erlide.utils.ErlLogger;
+import org.erlide.utils.IDisposable;
 import org.erlide.utils.SystemConfiguration;
 
 /**
@@ -146,6 +145,8 @@ import org.erlide.utils.SystemConfiguration;
  */
 public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         IOutlineSelectionHandler {
+
+    public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
     private ColorManager colorManager;
     private ErlangOutlinePage myOutlinePage;
@@ -166,7 +167,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     /** Preference key for matching brackets color */
     protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
     /** The bracket inserter. */
-    private ErlangEditorBracketInserter fBracketInserter = null;
     private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
     private ActionGroup fActionGroups;
     private ActionGroup fContextMenuGroup;
@@ -186,7 +186,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
 
     private String stateDirCached;
     private IErlScanner scanner;
-    public static final String ERLANG_EDITOR_ID = "org.erlide.ui.editors.erl.ErlangEditor";
 
     /**
      * Simple constructor
@@ -210,10 +209,10 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         }
 
         final ISourceViewer sourceViewer = getSourceViewer();
-        if (sourceViewer instanceof ITextViewerExtension) {
-            ((ITextViewerExtension) sourceViewer)
-                    .removeVerifyKeyListener(getBracketInserter());
+        if (sourceViewer instanceof IDisposable) {
+            ((IDisposable) sourceViewer).dispose();
         }
+
         final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
         node.removePreferenceChangeListener(fPreferenceChangeListener);
         if (fActionGroups != null) {
@@ -291,11 +290,7 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
             // ErlLogger.debug("event:: " + key);
-            if (key.indexOf('/') != -1
-                    && key.split("/")[0]
-                            .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
-                getBracketInserterPrefs();
-            } else if ("markingOccurences".equals(key)) {
+            if ("markingOccurences".equals(key)) {
                 final boolean newBooleanValue = event.getNewValue().equals(
                         "true");
                 if (newBooleanValue != markOccurencesHandler.fMarkOccurrenceAnnotations) {
@@ -531,9 +526,19 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     @Override
     protected ISourceViewer createSourceViewer(final Composite parent,
             final IVerticalRuler ruler, final int styles) {
-        // return new ErlangSourceViewer(parent, ruler, styles);
-        final ISourceViewer viewer = new ProjectionViewer(parent, ruler,
-                getOverviewRuler(), true, styles);
+        final ISourceViewer viewer = new ErlangSourceViewer(parent, ruler,
+                getOverviewRuler(), true, styles,
+                new IBracketInserterValidator() {
+                    @Override
+                    public boolean earlyCancelCheck() {
+                        return getInsertMode() != ITextEditorExtension3.SMART_INSERT;
+                    }
+
+                    @Override
+                    public boolean validInput() {
+                        return validateEditorInputState();
+                    }
+                });
         getSourceViewerDecorationSupport(viewer);
 
         /*
@@ -717,10 +722,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
     protected void doSetInput(final IEditorInput input) throws CoreException {
         final IDocumentProvider provider = getDocumentProvider();
         if (input != getEditorInput()) {
-            final IDocument document = provider.getDocument(getEditorInput());
-            if (document != null) {
-                // document.removeDocumentListener(scannerListener);
-            }
             disposeModule();
             resetReconciler();
         }
@@ -1143,14 +1144,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
             throw filterUTF8Exception(e);
         }
 
-        getBracketInserterPrefs();
-
-        final ISourceViewer sourceViewer = getSourceViewer();
-        if (sourceViewer instanceof ITextViewerExtension) {
-            ((ITextViewerExtension) sourceViewer)
-                    .prependVerifyKeyListener(getBracketInserter());
-        }
-
         final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
         v.doOperation(ProjectionViewer.TOGGLE);
 
@@ -1201,33 +1194,6 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         } else {
             return e;
         }
-    }
-
-    private ErlangEditorBracketInserter getBracketInserter() {
-        if (fBracketInserter == null) {
-            fBracketInserter = new ErlangEditorBracketInserter(this,
-                    getSourceViewer());
-        }
-        return fBracketInserter;
-    }
-
-    @SuppressWarnings("boxing")
-    void getBracketInserterPrefs() {
-        final List<Boolean> prefs = SmartTypingPreferencePage
-                .getBracketInserterPreferences();
-        final ErlangEditorBracketInserter bracketInserter = getBracketInserter();
-        bracketInserter.setCloseAtomsEnabled(prefs
-                .get(SmartTypingPreferencePage.ATOMS));
-        bracketInserter.setCloseBracketsEnabled(prefs
-                .get(SmartTypingPreferencePage.BRACKETS));
-        bracketInserter.setCloseStringsEnabled(prefs
-                .get(SmartTypingPreferencePage.STRINGS));
-        bracketInserter.setCloseBracesEnabled(prefs
-                .get(SmartTypingPreferencePage.BRACES));
-        bracketInserter.setCloseParensEnabled(prefs
-                .get(SmartTypingPreferencePage.PARENS));
-        bracketInserter.setEmbraceSelectionEnabled(prefs
-                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
     }
 
     protected boolean isActivePart() {

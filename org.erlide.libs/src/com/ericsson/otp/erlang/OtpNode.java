@@ -1,7 +1,7 @@
 /* 
  * %CopyrightBegin%
  * 
- * Copyright Ericsson AB 2000-2009. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2012. All Rights Reserved.
  * 
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
@@ -182,7 +182,7 @@ public class OtpNode extends OtpLocalNode {
      * Create an unnamed {@link OtpMbox mailbox} that can be used to send and
      * receive messages with other, similar mailboxes and with Erlang processes.
      * Messages can be sent to this mailbox by using its associated
-     * {@link OtpMbox#self pid}.
+     * {@link OtpMbox#self() pid}.
      * 
      * @return a mailbox.
      */
@@ -248,7 +248,7 @@ public class OtpNode extends OtpLocalNode {
      * Create an named mailbox that can be used to send and receive messages
      * with other, similar mailboxes and with Erlang processes. Messages can be
      * sent to this mailbox by using its registered name or the associated
-     * {@link OtpMbox#self pid}.
+     * {@link OtpMbox#self() pid}.
      * 
      * @param name
      *            a name to register for this mailbox. The name must be unique
@@ -743,7 +743,6 @@ public class OtpNode extends OtpLocalNode {
             return port;
         }
 
-        @SuppressWarnings("unused")
         @Override
         public void run() {
             Socket newsock = null;

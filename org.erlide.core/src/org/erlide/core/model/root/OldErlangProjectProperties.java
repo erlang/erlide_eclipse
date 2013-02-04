@@ -241,11 +241,7 @@ public final class OldErlangProjectProperties implements
     public RuntimeInfo getRuntimeInfo() {
         final RuntimeInfo runtime = BackendCore.getRuntimeInfoCatalog()
                 .getRuntime(runtimeVersion, runtimeName);
-        RuntimeInfo rt = null;
-        if (runtime != null) {
-            rt = RuntimeInfo.copy(runtime);
-        }
-        return rt;
+        return runtime;
     }
 
     public RuntimeVersion getRuntimeVersion() {

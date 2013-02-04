@@ -35,7 +35,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.FontMetrics;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IEditorInput;
@@ -53,6 +52,7 @@ import org.erlide.launch.debug.model.TraceChangedEventData;
 import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.util.EditorUtility;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.DisplayUtils;
 import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
@@ -250,7 +250,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
     }
 
     protected static final Object[] NO_CHILDREN = new Object[0];
-    //	private static final String DEBUG_TRACE_AS_LAUNCH = "DebugTraceAsLaunch"; //$NON-NLS-1$
+    //    private static final String DEBUG_TRACE_AS_LAUNCH = "DebugTraceAsLaunch"; //$NON-NLS-1$
     private TreeViewer viewer;
     private final List<ILaunch> launches = new ArrayList<ILaunch>();
     private final Map<ILaunch, List<IDebugTarget>> nodeMap = new HashMap<ILaunch, List<IDebugTarget>>();
@@ -413,7 +413,7 @@ public class DebuggerTraceView extends AbstractDebugView implements
     // @Override
     // public void widgetSelected(final SelectionEvent e) {
     // final Object o = getSelectedInTree();
-    //				final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
+    //                final String msg = o == null ? "" : o.toString(); //$NON-NLS-1$
     // getViewSite().getActionBars().getStatusLineManager()
     // .setMessage(msg);
     //
@@ -630,53 +630,50 @@ public class DebuggerTraceView extends AbstractDebugView implements
         if (viewer == null || viewer.getControl().isDisposed()) {
             return;
         }
-        final Display display = viewer.getControl().getDisplay();
-        if (!display.isDisposed()) {
-            display.asyncExec(new Runnable() {
-                @Override
-                public void run() {
-                    if (viewer == null || viewer.getControl().isDisposed()) {
-                        return;
-                    }
-                    // if (viewer.getInput() != source) {
-                    // viewer.setInput(source);
-                    // viewer.refresh();
-                    // } else {
-                    if (data.getWhat() == TraceChangedEventData.ADDED) {
-                        final ILaunch launch = data.getLaunch();
-                        if (!launches.contains(launch)) {
-                            launches.add(launch);
-                            viewer.add(viewer.getInput(), launch);
-                            parentMap.put(launch, viewer.getInput());
-                        }
-                        List<IDebugTarget> nodes = nodeMap.get(launch);
-                        if (nodes == null) {
-                            nodes = new ArrayList<IDebugTarget>(1);
-                            nodeMap.put(launch, nodes);
-                        }
-                        final IDebugTarget node = data.getNode();
-                        if (!nodes.contains(node)) {
-                            nodes.add(node);
-                            viewer.add(launch, node);
-                            parentMap.put(node, launch);
-                        }
-                        List<DebugTraceEvent> events = eventMap.get(node);
-                        if (events == null) {
-                            events = new ArrayList<DebugTraceEvent>(data
-                                    .getEvents().length);
-                            eventMap.put(node, events);
-                        }
-                        final OtpErlangPid pid = data.getPid();
-                        for (final OtpErlangTuple t : data.getEvents()) {
-                            events.add(new DebugTraceEvent(pid, t));
-                            parentMap.put(t, node);
-                        }
-                        viewer.add(node, data.getEvents());
-                    }
-                    // }
+        DisplayUtils.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                if (viewer == null || viewer.getControl().isDisposed()) {
+                    return;
                 }
-            });
-        }
+                // if (viewer.getInput() != source) {
+                // viewer.setInput(source);
+                // viewer.refresh();
+                // } else {
+                if (data.getWhat() == TraceChangedEventData.ADDED) {
+                    final ILaunch launch = data.getLaunch();
+                    if (!launches.contains(launch)) {
+                        launches.add(launch);
+                        viewer.add(viewer.getInput(), launch);
+                        parentMap.put(launch, viewer.getInput());
+                    }
+                    List<IDebugTarget> nodes = nodeMap.get(launch);
+                    if (nodes == null) {
+                        nodes = new ArrayList<IDebugTarget>(1);
+                        nodeMap.put(launch, nodes);
+                    }
+                    final IDebugTarget node = data.getNode();
+                    if (!nodes.contains(node)) {
+                        nodes.add(node);
+                        viewer.add(launch, node);
+                        parentMap.put(node, launch);
+                    }
+                    List<DebugTraceEvent> events = eventMap.get(node);
+                    if (events == null) {
+                        events = new ArrayList<DebugTraceEvent>(data
+                                .getEvents().length);
+                        eventMap.put(node, events);
+                    }
+                    final OtpErlangPid pid = data.getPid();
+                    for (final OtpErlangTuple t : data.getEvents()) {
+                        events.add(new DebugTraceEvent(pid, t));
+                        parentMap.put(t, node);
+                    }
+                    viewer.add(node, data.getEvents());
+                }
+                // }
+            }
+        });
     }
 
     Object getSelectedInTree() {

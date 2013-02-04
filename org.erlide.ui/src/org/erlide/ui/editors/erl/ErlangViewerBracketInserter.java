@@ -3,6 +3,9 @@ package org.erlide.ui.editors.erl;
 import java.util.List;
 import java.util.Stack;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -11,6 +14,7 @@ import org.eclipse.jface.text.IDocumentExtension;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.link.ILinkedModeListener;
 import org.eclipse.jface.text.link.LinkedModeModel;
@@ -24,18 +28,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.erlide.backend.BackendException;
 import org.erlide.core.internal.model.erlang.ErlideScanner;
 import org.erlide.core.model.erlang.ErlToken;
+import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
+import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.utils.ErlLogger;
 
-class ErlangEditorBracketInserter implements VerifyKeyListener,
+class ErlangViewerBracketInserter implements VerifyKeyListener,
         ILinkedModeListener {
 
-    private final ErlangEditor fErlangEditor;
-    private final ISourceViewer fSourceViewer;
+    private final ISourceViewer sourceViewer;
+    IBracketInserterValidator validator;
 
     public static class BracketLevel {
         int fOffset;
@@ -133,6 +138,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
     private final IPositionUpdater fUpdater = new ExclusivePositionUpdater(
             CATEGORY);
     private final Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
+    private IPreferenceChangeListener fPreferenceChangeListener;
 
     public void setCloseBracketsEnabled(final boolean enabled) {
         fCloseBrackets = enabled;
@@ -172,8 +178,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
     public void verifyKey(final VerifyEvent event) {
 
         // early pruning to slow down normal typing as little as possible
-        if (!event.doit
-                || fErlangEditor.getInsertMode() != ITextEditorExtension3.SMART_INSERT) {
+        if (!event.doit || validator.earlyCancelCheck()) {
             return;
         }
         switch (event.character) {
@@ -187,9 +192,9 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
             return;
         }
 
-        final IDocument document = fSourceViewer.getDocument();
+        final IDocument document = sourceViewer.getDocument();
 
-        final Point selection = fSourceViewer.getSelectedRange();
+        final Point selection = sourceViewer.getSelectedRange();
         final int offset = selection.x;
         final int length = selection.y;
         try {
@@ -236,7 +241,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
                     return;
                 }
 
-                if (!fErlangEditor.validateEditorInputState()) {
+                if (!validator.validInput()) {
                     return;
                 }
             }
@@ -282,17 +287,17 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
         document.addPosition(CATEGORY, level.fFirstPosition);
         document.addPosition(CATEGORY, level.fSecondPosition);
 
-        level.fUI = new EditorLinkedModeUI(model, fSourceViewer);
+        level.fUI = new EditorLinkedModeUI(model, sourceViewer);
         level.fUI.setSimpleMode(true);
         level.fUI.setExitPolicy(new ExitPolicy(closingCharacter,
                 getEscapeCharacter(closingCharacter), fBracketLevelStack));
-        level.fUI.setExitPosition(fSourceViewer, offset + 2 + selStr.length(),
+        level.fUI.setExitPosition(sourceViewer, offset + 2 + selStr.length(),
                 0, Integer.MAX_VALUE);
         level.fUI.setCyclingMode(LinkedModeUI.CYCLE_NEVER);
         level.fUI.enter();
 
         final IRegion newSelection = level.fUI.getSelectedRegion();
-        fSourceViewer.setSelectedRange(newSelection.getOffset(),
+        sourceViewer.setSelectedRange(newSelection.getOffset(),
                 newSelection.getLength());
     }
 
@@ -348,7 +353,6 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
         }
 
         // remove brackets
-        final ISourceViewer sourceViewer = fSourceViewer;
         final IDocument document = sourceViewer.getDocument();
         if (document instanceof IDocumentExtension) {
             final IDocumentExtension extension = (IDocumentExtension) document;
@@ -485,7 +489,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
                 // don't want to jump after the closing parenthesis when return
                 // is pressed
                 if (event.character == SWT.CR && offset > 0) {
-                    final IDocument document = fSourceViewer.getDocument();
+                    final IDocument document = sourceViewer.getDocument();
                     try {
                         if (document.getChar(offset - 1) == '{') {
                             return new ExitFlags(ILinkedModeListener.EXIT_ALL,
@@ -500,7 +504,7 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
 
         @SuppressWarnings("synthetic-access")
         private boolean isMasked(final int offset) {
-            final IDocument document = fSourceViewer.getDocument();
+            final IDocument document = sourceViewer.getDocument();
             try {
                 return fEscapeCharacter == document.getChar(offset - 1);
             } catch (final BadLocationException e) {
@@ -509,10 +513,68 @@ class ErlangEditorBracketInserter implements VerifyKeyListener,
         }
     }
 
-    public ErlangEditorBracketInserter(final ErlangEditor erlangEditor,
-            final ISourceViewer sourceViewer) {
-        super();
-        fErlangEditor = erlangEditor;
-        fSourceViewer = sourceViewer;
+    public ErlangViewerBracketInserter(final ISourceViewer sourceViewer) {
+        this.sourceViewer = sourceViewer;
+        validator = new IBracketInserterValidator() {
+            @Override
+            public boolean earlyCancelCheck() {
+                return false;
+            }
+
+            @Override
+            public boolean validInput() {
+                return true;
+            }
+        };
+        fPreferenceChangeListener = new PreferenceChangeListener();
     }
+
+    public void configure() {
+        configurePreferences();
+
+        if (sourceViewer instanceof ITextViewerExtension) {
+            ((ITextViewerExtension) sourceViewer)
+                    .prependVerifyKeyListener(this);
+        }
+        final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
+        node.addPreferenceChangeListener(fPreferenceChangeListener);
+    }
+
+    private void configurePreferences() {
+        final List<Boolean> prefs = SmartTypingPreferencePage
+                .getBracketInserterPreferences();
+        setCloseAtomsEnabled(prefs.get(SmartTypingPreferencePage.ATOMS));
+        setCloseBracketsEnabled(prefs.get(SmartTypingPreferencePage.BRACKETS));
+        setCloseStringsEnabled(prefs.get(SmartTypingPreferencePage.STRINGS));
+        setCloseBracesEnabled(prefs.get(SmartTypingPreferencePage.BRACES));
+        setCloseParensEnabled(prefs.get(SmartTypingPreferencePage.PARENS));
+        setEmbraceSelectionEnabled(prefs
+                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+    }
+
+    public void unconfigure() {
+        if (sourceViewer instanceof ITextViewerExtension) {
+            ((ITextViewerExtension) sourceViewer).removeVerifyKeyListener(this);
+        }
+        final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
+        node.removePreferenceChangeListener(fPreferenceChangeListener);
+    }
+
+    void setValidator(final IBracketInserterValidator validator) {
+        this.validator = validator;
+    }
+
+    private class PreferenceChangeListener implements IPreferenceChangeListener {
+        @Override
+        public void preferenceChange(final PreferenceChangeEvent event) {
+            final String key = event.getKey();
+            // ErlLogger.debug("event:: " + key);
+            if (key.indexOf('/') != -1
+                    && key.split("/")[0]
+                            .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
+                configurePreferences();
+            }
+        }
+    }
+
 }

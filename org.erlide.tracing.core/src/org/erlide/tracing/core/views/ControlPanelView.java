@@ -69,6 +69,7 @@ import org.erlide.tracing.core.ui.dialogs.RunnableWithProgress;
 import org.erlide.tracing.core.ui.dialogs.SelectConfigurationDialog;
 import org.erlide.tracing.core.utils.ConfigurationManager;
 import org.erlide.tracing.core.utils.TracingStatusHandler;
+import org.erlide.ui.util.DisplayUtils;
 import org.erlide.utils.ErlLogger;
 
 /**
@@ -848,7 +849,7 @@ public class ControlPanelView extends ViewPart implements ITraceNodeObserver {
 
     @Override
     public void startTracing() {
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
                 startStopAction.setImageDescriptor(PlatformUI.getWorkbench()

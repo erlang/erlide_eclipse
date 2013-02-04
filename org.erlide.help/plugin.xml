@@ -12,16 +12,6 @@
          id="org.erlide.help.cheatsheet.erlang"
          name="Erlang cheatsheets">
    </category>
-   <cheatsheet
-         category="org.erlide.help.cheatsheet.erlang"
-         composite="false"
-         contentFile="$nl$/cheatsheets/tutorial1.xml"
-         id="org.erlide.help.cheatsheet1152782932"
-         name="Quick start">
-      <description>
-         Quick start
-      </description>
-   </cheatsheet>
 </extension>
 </plugin>
 

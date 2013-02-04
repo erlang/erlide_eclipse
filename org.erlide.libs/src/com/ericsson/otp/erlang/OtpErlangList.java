@@ -326,7 +326,7 @@ public class OtpErlangList extends OtpErlangObject implements
         try {
             return new OtpErlangList(elements(), getLastTail());
         } catch (final OtpErlangException e) {
-            throw new AssertionError(e);
+            return null;
         }
     }
 
