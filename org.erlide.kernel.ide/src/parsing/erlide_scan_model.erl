@@ -20,8 +20,7 @@
 %%
 
 -export([do_scan/2, tokens_to_string/1, get_all_tokens/1, replace_text/4,
-         convert_tokens/1]).
--compile(export_all).
+         convert_tokens/1, get_token_window/4, get_token_at/2, get_text/1]).
 
 %%
 %% API Functions
@@ -51,6 +50,27 @@ replace_text(Module, Offset, RemoveLength, NewText) ->
 get_all_tokens(#module{tokens=Tokens}) ->
     get_all_tokens(Tokens, 0, 0, []).
 
+get_token_window(Module, Offset, Before, After) ->
+    A = get_tokens_at(Module, Offset, After),
+    B = get_tokens_before(Module, Offset, Before),
+    {A, B}.
+
+get_token_at(Module, Offset) ->
+    case find_line_w_offset(Offset, Module#module.tokens) of
+        {N, Pos, _Length, Tokens, false} ->
+            case get_token_at_aux(Tokens, Offset - Pos) of
+                token_not_found ->
+                    token_not_found;
+                T ->
+                    M = fix_token(T, Pos, N),
+                    {ok, M}
+            end;
+        _ ->
+            line_not_found
+    end.
+
+get_text(#module{lines=Lines}) ->
+    lists:append([L || {_, L} <- Lines]).
 
 %%
 %% Local Functions
@@ -162,13 +182,6 @@ replace_between_lines(From, Length, With, Lines) ->
     ?D(WLines),
     {LineNo1, NOldLines, WLines,
      replace_between(LineNo1, NOldLines, WLines, Lines)}.
-
-lines_to_text(Lines) ->
-    lists:append([L || {_, L} <- Lines]).
-get_token_window(Module, Offset, Before, After) ->
-    A = get_tokens_at(Module, Offset, After),
-    B = get_tokens_before(Module, Offset, Before),
-    {A, B}.
 
 fix_token(T = #token{offset=O, line=L, last_line=u}, Offset, Line) ->
     T#token{offset=Offset+O, line=Line+L};
@@ -338,18 +351,4 @@ scan_line({Length, S}) ->
         {error, _, _} ->
             {Length, [#token{kind=string, line=0, offset=0, length=length(S),
                              value=S, text="\""++S++"\"", last_line=0}]}
-    end.
-
-get_token_at(Module, Offset) ->
-    case find_line_w_offset(Offset, Module#module.tokens) of
-        {N, Pos, _Length, Tokens, false} ->
-            case get_token_at_aux(Tokens, Offset - Pos) of
-                token_not_found ->
-                    token_not_found;
-                T ->
-                    M = fix_token(T, Pos, N),
-                    {ok, M}
-            end;
-        _ ->
-            line_not_found
     end.

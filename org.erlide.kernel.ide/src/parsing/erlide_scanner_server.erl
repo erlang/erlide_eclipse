@@ -146,7 +146,7 @@ logging(Module, off) ->
 
 do_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}, _Module) ->
     ?D({initial_scan, ScannerName, length(InitialText)}),
-    {{Cached, Module1}, Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache),
+    {{Cached, Module1}, Text} = erlide_scan_model:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache),
     Module2 = logging(Module1, Logging),
     Module3 = log(Module2, {initial_scan, ScannerName, ModuleFileName, InitialText, Text}),
     {{ok, Cached}, Module3};
@@ -159,13 +159,13 @@ do_cmd(dump_log, Filename, Module) ->
     file:close(File),
     {{ok, Filename}, Module};
 do_cmd(get_token_at, Offset, Module) ->
-    {erlide_scanner:get_token_at(Module, Offset), Module};
+    {erlide_scan_model:get_token_at(Module, Offset), Module};
 do_cmd(replace_text, {Offset, RemoveLength, NewText}, Module) ->
     ?D({replace_text, Offset, RemoveLength, length(NewText)}),
     NewModule = log(Module, {replace_text, Offset, RemoveLength, NewText}),
     erlide_scan_model:replace_text(NewModule, Offset, RemoveLength, NewText);
 do_cmd(get_text, [], Module) ->
-    {erlide_scanner:lines_to_text(Module#module.lines), Module};
+    {erlide_scan_model:get_text(Module), Module};
 do_cmd(get_text_line, Line, Module) ->
     L = lists:nth(Line+1, Module#module.lines),
     {L, Module};
