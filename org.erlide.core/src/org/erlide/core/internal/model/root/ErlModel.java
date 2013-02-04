@@ -967,7 +967,7 @@ public class ErlModel extends Openable implements IErlModel {
     }
 
     static void getAllModulesAux(final Collection<IErlModule> modules,
-            final List<IErlModule> result, final Set<String> paths) {
+            final Collection<IErlModule> result, final Set<String> paths) {
         for (final IErlModule module : modules) {
             final String path = module.getFilePath();
             if (path != null) {
@@ -978,42 +978,6 @@ public class ErlModel extends Openable implements IErlModel {
             }
             result.add(module);
         }
-    }
-
-    private Collection<IErlModule> getAllModules(final IErlProject project,
-            final boolean checkExternals, final IErlElementLocator.Scope scope)
-            throws ErlModelException {
-        final Set<IErlProject> projects = Sets.newHashSet();
-        final List<IErlModule> result = Lists.newArrayList();
-        final Set<String> paths = Sets.newHashSet();
-
-        if (project != null) {
-            projects.add(project);
-            if (scope == IErlElementLocator.Scope.REFERENCED_PROJECTS) {
-                projects.addAll(project.getReferencedProjects());
-            }
-        }
-
-        if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
-            projects.addAll(getErlangProjects());
-        }
-
-        for (final IErlProject project2 : projects) {
-            ErlModel.getAllModulesAux(project2.getModules(), result, paths);
-        }
-        if (checkExternals) {
-            if (project != null) {
-                ErlModel.getAllModulesAux(project.getExternalModules(), result,
-                        paths);
-            }
-            if (scope == IErlElementLocator.Scope.ALL_PROJECTS) {
-                for (final IErlProject project2 : projects) {
-                    ErlModel.getAllModulesAux(project2.getExternalModules(),
-                            result, paths);
-                }
-            }
-        }
-        return result;
     }
 
     private IErlModule findIncludeFromProject(final IErlProject project,
@@ -1086,9 +1050,71 @@ public class ErlModel extends Openable implements IErlModel {
                 return module;
             }
         }
-        final Collection<IErlModule> modules = getAllModules(project,
-                checkExternals, scope);
-        ErlModelCache.getDefault().putModules(modules);
+        final List<IErlModule> allModules = Lists.newArrayList();
+        final Set<String> paths = Sets.newHashSet();
+        try {
+            if (project != null) {
+                final IErlModule module = tryFindModule(
+                        Sets.newHashSet(project), moduleName, modulePath,
+                        ignoreCase, checkExternals, allModules);
+                if (module != null || scope == Scope.PROJECT_ONLY) {
+                    return module;
+                }
+            }
+            if (scope == Scope.REFERENCED_PROJECTS
+                    || scope == Scope.ALL_PROJECTS) {
+                final Collection<IErlProject> projects = project
+                        .getReferencedProjects();
+                final IErlModule module = tryFindModule(projects, moduleName,
+                        modulePath, ignoreCase, checkExternals, allModules);
+                if (module != null || scope == Scope.REFERENCED_PROJECTS) {
+                    return module;
+                }
+            }
+            if (scope == Scope.ALL_PROJECTS) {
+                final Collection<IErlProject> projects = getErlangProjects();
+                final IErlModule module = tryFindModule(projects, moduleName,
+                        modulePath, ignoreCase, checkExternals, allModules);
+                if (module != null) {
+                    return module;
+                }
+            }
+            return null;
+        } finally {
+            ErlModelCache.getDefault().putModules(allModules);
+        }
+    }
+
+    private IErlModule tryFindModule(final Collection<IErlProject> projects,
+            final String moduleName, final String modulePath,
+            final boolean ignoreCase, final boolean checkExternals,
+            final List<IErlModule> allModules) throws ErlModelException {
+        IErlModule module;
+        final Set<String> paths = Sets.newHashSet();
+        for (final IErlProject project : projects) {
+            final Collection<IErlModule> modules = Lists.newArrayList();
+            getAllModulesAux(project.getModules(), modules, paths);
+            allModules.addAll(modules);
+            module = findModule(modules, moduleName, modulePath, ignoreCase);
+            if (module != null) {
+                return module;
+            }
+            if (checkExternals) {
+                modules.clear();
+                getAllModulesAux(project.getExternalModules(), modules, paths);
+                allModules.addAll(modules);
+                module = findModule(modules, moduleName, modulePath, ignoreCase);
+                if (module != null) {
+                    return module;
+                }
+            }
+        }
+        return null;
+    }
+
+    private IErlModule findModule(final Collection<IErlModule> modules,
+            final String moduleName, final String modulePath,
+            final boolean ignoreCase) {
         if (modulePath != null) {
             for (final IErlModule module2 : modules) {
                 final String path2 = module2.getFilePath();
