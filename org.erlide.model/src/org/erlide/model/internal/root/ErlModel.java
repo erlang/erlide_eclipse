@@ -1078,6 +1078,7 @@ public class ErlModel extends Openable implements IErlModel {
                         return module;
                     }
                 }
+
                 if (scope == Scope.ALL_PROJECTS) {
                     final Collection<IErlProject> projects = getErlangProjects();
                     final IErlModule module = tryFindModule(projects,
