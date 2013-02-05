@@ -786,6 +786,9 @@ public class RuntimePreferencePage extends PreferencePage implements
         if (defaultRuntime == null) {
             defaultRuntime = (RuntimeInfo) fRuntimeList.getElementAt(0);
         }
+        if (erlideRuntime == null) {
+            erlideRuntime = defaultRuntime;
+        }
         catalog.setRuntimes(runtimes, defaultRuntime.getName(),
                 erlideRuntime.getName());
         final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
