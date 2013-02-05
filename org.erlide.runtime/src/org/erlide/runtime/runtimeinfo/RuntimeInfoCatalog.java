@@ -123,7 +123,7 @@ public final class RuntimeInfoCatalog {
             return vsns.get(0);
         } else {
             for (final RuntimeInfo ri : vsns) {
-                if (ri.getName().equals(runtimeName)) {
+                if (runtimeName == null || ri.getName().equals(runtimeName)) {
                     return ri;
                 }
             }

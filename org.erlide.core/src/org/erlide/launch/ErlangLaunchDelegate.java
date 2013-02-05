@@ -74,8 +74,15 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
     protected IBackend doLaunch(final ILaunchConfiguration config,
             final String mode, final ILaunch launch,
             final IProgressMonitor monitor) throws CoreException {
-        BackendData data = new BackendData(BackendCore.getRuntimeInfoCatalog()
-                .getDefaultRuntime(), config, mode);
+        RuntimeInfo runtimeInfo = BackendCore.getRuntimeInfoCatalog()
+                .getRuntime(
+                        config.getAttribute(ErlLaunchAttributes.RUNTIME_NAME,
+                                ""));
+        if (runtimeInfo == null) {
+            runtimeInfo = BackendCore.getRuntimeInfoCatalog()
+                    .getDefaultRuntime();
+        }
+        BackendData data = new BackendData(runtimeInfo, config, mode);
         final RuntimeInfo info = data.getRuntimeInfo();
         if (info == null) {
             ErlLogger.error("Could not find runtime '%s'",
