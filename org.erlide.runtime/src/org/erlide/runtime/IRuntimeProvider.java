@@ -8,4 +8,6 @@ public interface IRuntimeProvider {
 
     IRpcSite get(RuntimeVersion version);
 
+    IRpcSite get(String name);
+
 }

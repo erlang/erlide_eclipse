@@ -93,7 +93,7 @@ public class SourcePathUtils {
 
     public static IConfigurationElement[] getSourcepathConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        // XXX
+        // XXX CODEDB ?
         return reg.getConfigurationElementsFor("org.erlide.backend",
                 "sourcePathProvider");
     }

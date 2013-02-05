@@ -55,7 +55,6 @@ public class CodeDbPlugin extends Plugin {
                 .getConfigurationElementsFor("org.erlide.runtime.backend");
         for (final IConfigurationElement element : elements) {
             try {
-                final String[] names = element.getAttributeNames();
                 final IRuntimeProvider provider = (IRuntimeProvider) element
                         .createExecutableExtension("class");
                 return provider.get();
@@ -75,6 +74,22 @@ public class CodeDbPlugin extends Plugin {
                 final IRuntimeProvider provider = (IRuntimeProvider) element
                         .createExecutableExtension("class");
                 return provider.get(version);
+            } catch (final CoreException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public IRpcSite getBackend(final String name) {
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        final IConfigurationElement[] elements = reg
+                .getConfigurationElementsFor("org.erlide.runtime", "backend");
+        for (final IConfigurationElement element : elements) {
+            try {
+                final IRuntimeProvider provider = (IRuntimeProvider) element
+                        .createExecutableExtension("class");
+                return provider.get(name);
             } catch (final CoreException e) {
                 e.printStackTrace();
             }

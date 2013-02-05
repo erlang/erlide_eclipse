@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -177,7 +178,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             synchronized (ideBackendLock) {
                 if (ideBackend == null) {
                     ideBackend = factory.createIdeBackend();
-                    // XXX ??? addBackend(ideBackend);
+                    // XXX CODEDB ??? addBackend(ideBackend);
                     notifyBackendChange(ideBackend, BackendEvent.ADDED, null,
                             null);
                 }
@@ -356,6 +357,22 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             }
         }
         return null;
+    }
+
+    @Override
+    public IRpcSite getByProject(final String name) {
+        final IProject prj = ResourcesPlugin.getWorkspace().getRoot()
+                .getProject(name);
+        return getByProject(prj);
+    }
+
+    @Override
+    public IRpcSite getByProject(final IProject project) {
+        try {
+            return getBuildBackend(project).getRpcSite();
+        } catch (final BackendException e) {
+            return null;
+        }
     }
 
     @Override

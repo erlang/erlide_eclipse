@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
-import org.erlide.codedb.CodeDbPlugin;
 import org.erlide.core.internal.model.erlang.PropertiesUtils;
 import org.erlide.core.internal.model.root.ErlProjectInfo;
 import org.erlide.core.internal.model.root.ErlProjectInfoBuilder;
@@ -59,7 +58,7 @@ public final class OldErlangProjectProperties implements
         super();
         project = prj;
         final IEclipsePreferences root = new ProjectScope(project)
-                .getNode(CodeDbPlugin.PLUGIN_ID);
+                .getNode("org.erlide.core");
         // TODO load() should not be in constructor!
         load(root);
     }
@@ -129,7 +128,7 @@ public final class OldErlangProjectProperties implements
             return;
         }
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(CodeDbPlugin.PLUGIN_ID);
+                .getNode("org.erlide.core");
         if (SystemConfiguration.hasFeatureEnabled("erlide.newprops")) {
             try {
                 final ErlProjectInfo npp = PropertiesUtils.convertOld(this);
@@ -253,7 +252,7 @@ public final class OldErlangProjectProperties implements
     @Override
     public void preferenceChange(final PreferenceChangeEvent event) {
         final IEclipsePreferences root = new ProjectScope(project)
-                .getNode(CodeDbPlugin.PLUGIN_ID);
+                .getNode("org.erlide.core");
         load(root);
     }
 

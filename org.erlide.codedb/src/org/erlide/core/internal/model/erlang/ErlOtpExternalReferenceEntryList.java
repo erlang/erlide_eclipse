@@ -32,7 +32,7 @@ public class ErlOtpExternalReferenceEntryList extends Openable implements
     protected boolean buildStructure(final IProgressMonitor pm)
             throws ErlModelException {
         final IRpcSite backend = CodeDbPlugin.getDefault().getBackend(
-                ModelUtils.getProject(this).getRuntimeVersion());
+                ModelUtils.getProject(this).getName());
         if (backend != null) {
             final List<String> libList = ErlideOpen.getLibDirs(backend);
             addExternalEntries(pm, libList, backend);

@@ -63,4 +63,8 @@ public interface IBackendManager {
 
     IRpcSite getByVersion(RuntimeVersion version);
 
+    IRpcSite getByProject(String name);
+
+    IRpcSite getByProject(IProject project);
+
 }

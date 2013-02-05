@@ -674,7 +674,7 @@ public class ErlProject extends Openable implements IErlProject {
                 : "default_external_modules";
         String result = getExternal(external, service, key, "org.erlide.ui");
         if ("".equals(result)) {
-            result = getExternal(external, service, key, CodeDbPlugin.PLUGIN_ID);
+            result = getExternal(external, service, key, "org.erlide.core");
         }
         return result;
     }

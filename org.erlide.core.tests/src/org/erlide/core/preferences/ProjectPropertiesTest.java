@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.erlide.codedb.CodeDbPlugin;
 import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
 import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.model.root.OldErlangProjectProperties;
@@ -40,7 +39,7 @@ public class ProjectPropertiesTest {
 
         final IProject project = erlProject.getWorkspaceProject();
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(CodeDbPlugin.PLUGIN_ID);
+                .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.OUTPUT_DIR, expected);
 
         final OldErlangProjectProperties pp = new OldErlangProjectProperties(
@@ -56,7 +55,7 @@ public class ProjectPropertiesTest {
 
         final IProject project = erlProject.getWorkspaceProject();
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(CodeDbPlugin.PLUGIN_ID);
+                .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.INCLUDE_DIRS, expected);
 
         final OldErlangProjectProperties pp = new OldErlangProjectProperties(
@@ -77,7 +76,7 @@ public class ProjectPropertiesTest {
 
         final IProject project = erlProject.getWorkspaceProject();
         final IEclipsePreferences node = new ProjectScope(project)
-                .getNode(CodeDbPlugin.PLUGIN_ID);
+                .getNode("org.erlide.core");
         node.put(ProjectPreferencesConstants.SOURCE_DIRS, expected);
 
         final OldErlangProjectProperties pp = new OldErlangProjectProperties(

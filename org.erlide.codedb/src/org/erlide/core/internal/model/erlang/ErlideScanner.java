@@ -29,8 +29,8 @@ public class ErlideScanner {
         final IRpcSite backend = CodeDbPlugin.getDefault().getIdeBackend();
         try {
             final String loggingOnOff = logging ? "on" : "off";
-            backend.call(ERLIDE_SCANNER, "initialScan", "asssoa", module, path,
-                    initialText, stateDir, true, loggingOnOff);
+            backend.call(ERLIDE_SCANNER, "initial_scan", "asssoa", module,
+                    path, initialText, stateDir, true, loggingOnOff);
         } catch (final RpcTimeoutException e) {
             ErlLogger.debug(e);
         } catch (final Exception e) {
@@ -77,7 +77,7 @@ public class ErlideScanner {
         try {
             r1 = CodeDbPlugin.getDefault().getIdeBackend()
                     .call(ERLIDE_SCANNER, "get_token_at", "ai", module, offset);
-            // ErlLogger.debug("getTokenAt -> " + r1);
+            ErlLogger.debug("getTokenAt -> " + r1);
         } catch (final Exception e) {
             // e.printStackTrace();
             return null;
@@ -189,7 +189,9 @@ public class ErlideScanner {
             return null;
         }
         try {
-            final OtpErlangObject o = CodeDbPlugin.getDefault().getIdeBackend()
+            final OtpErlangObject o = CodeDbPlugin
+                    .getDefault()
+                    .getIdeBackend()
                     .call(ERLIDE_SCANNER, "check_all", "aso", module, text,
                             getTokens);
             return o;

@@ -17,4 +17,9 @@ public class BackendProvider implements IRuntimeProvider {
     public IRpcSite get(final RuntimeVersion version) {
         return BackendCore.getBackendManager().getByVersion(version);
     }
+
+    @Override
+    public IRpcSite get(final String name) {
+        return BackendCore.getBackendManager().getByProject(name);
+    }
 }

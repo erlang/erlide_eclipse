@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
@@ -15,7 +14,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer {
 
-    private static String rootKey = BackendPlugin.PLUGIN_ID + "/runtimes";
+    private static String rootKey = "org.erlide.core" + "/runtimes";
 
     public static IEclipsePreferences getInstanceRootNode() {
         return new InstanceScope().getNode(rootKey);

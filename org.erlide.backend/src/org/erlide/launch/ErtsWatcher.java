@@ -66,7 +66,7 @@ final public class ErtsWatcher implements Runnable {
                             + "\n\n"
                             + "This error is not recoverable, please restart your Eclipse instance."
                             + reportMsg;
-                    // XXX MessageReporter.showError(bigMsg,
+                    // XXX CODEDB MessageReporter.showError(bigMsg,
                     // ReporterPosition.MODAL);
                 } else {
                     ErlLogger.info(msg);

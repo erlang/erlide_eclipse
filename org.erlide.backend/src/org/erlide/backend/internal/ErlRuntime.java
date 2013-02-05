@@ -315,7 +315,8 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
                     + (SystemConfiguration
                             .hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
-            // XXX MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
+            // XXX CODEDB MessageReporter.showError(bigMsg,
+            // ReporterPosition.CORNER);
             reported = true;
         }
         return msg;
