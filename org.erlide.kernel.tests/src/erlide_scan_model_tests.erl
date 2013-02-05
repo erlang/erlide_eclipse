@@ -1,7 +1,9 @@
-%% Author: jakob
-%% Created: 12 okt 2009
-%% Description: TODO: Add description to erlide_scanner_tests
--module(erlide_scanner_tests).
+%% @author jakob
+%% @doc @todo Add description to erlide_scan_model_tests.
+
+
+-module(erlide_scan_model_tests).
+
 
 %%
 %% Include files
@@ -31,18 +33,6 @@
 -define(TOK_COMMENT, 10).
 -define(TOK_KEYWORD, 11).
 
-scanner_light_scan_string_test_() ->
-    [?_assertEqual({ok,
-                    <<?TOK_ATOM, 0:24, 0:24, 1:24,
-                      $(, 0:24, 1:24, 1:24,
-                      $), 0:24, 2:24, 1:24,
-                      ?TOK_WS, 0:24, 3:24, 1:24,
-                      ?TOK_ARROW, 0:24, 4:24, 2:24,
-                      ?TOK_WS, 0:24, 6:24, 1:24,
-                      ?TOK_ATOM, 0:24, 7:24, 1:24,
-                      ?TOK_OTHER, 0:24, 8:24, 1:24>>},
-                   erlide_scanner:light_scan_string(<<"a() -> b.">>, latin1))].
-
 scanner_test_() ->
     [?_assertEqual([#token{kind = atom, line = 0, offset = 0,length = 1, value = a},
                     #token{kind = '(', line = 0, offset = 1, length = 1},
@@ -66,10 +56,18 @@ scanner_test_() ->
                    test_replace("a() -> b.", 0, 1, "test"))
     ].
 
-replace_at_eof_test_() ->
+insert_at_eof_test_() ->
     [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 2, value = ab}],
                     [#token{kind = atom, line = 0, offset = 0, length = 3, value = abc}]},
                    test_replace("ab", 2, 0, "c"))
+     ].
+
+insert_at_eol_test_() ->
+    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 1, value = a},
+                     #token{kind = atom, line = 1, offset = 2, length = 1, value = b}],
+                    [#token{kind = atom, line = 0, offset = 0, length = 2, value = ac},
+                     #token{kind = atom, line = 1, offset = 3, length = 1, value = b}]},
+                   test_replace("a\nb", 1, 0, "c"))
      ].
 
 %%
@@ -77,17 +75,12 @@ replace_at_eof_test_() ->
 %%
 
 test_scan(S) ->
-    erlide_scanner:create(testing),
-    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
-    R = erlide_scanner:get_tokens(testing),
-    erlide_scanner:dispose(testing),
-    R.
+    M = erlide_scan_model:do_scan(testing, S),
+    erlide_scan_model:get_all_tokens(M).
 
 test_replace(S, Pos, RemoveLength, NewText) ->
-    erlide_scanner:create(testing),
-    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
-    R1 = erlide_scanner:get_tokens(testing),
-    erlide_scanner:replace_text(testing, Pos, RemoveLength, NewText),
-    R2 = erlide_scanner:get_tokens(testing),
-    erlide_scanner:dispose(testing),
+    M = erlide_scan_model:do_scan(testing, S),
+    NewM = erlide_scan_model:replace_text(M, Pos, RemoveLength, NewText),
+    R1 = erlide_scan_model:get_all_tokens(M),
+    R2 = erlide_scan_model:get_all_tokens(NewM),
     {R1, R2}.

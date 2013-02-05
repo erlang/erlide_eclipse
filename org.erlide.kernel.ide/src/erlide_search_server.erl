@@ -11,7 +11,6 @@
 %% -define(DEBUG, 1).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
 
 -include_lib("kernel/include/file.hrl").
 

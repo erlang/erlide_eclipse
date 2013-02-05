@@ -30,7 +30,7 @@
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 -compile(export_all).
 
@@ -50,7 +50,7 @@ open(Mod, Offset, #open_context{imports=Imports0}=Context) ->
     Imports = erlide_util:add_auto_imported(Imports0),
     try
         {TokensWComments, BeforeReversed} =
-            erlide_scanner_server:getTokenWindow(Mod, Offset, 45, 100),
+            erlide_scanner:get_token_window(Mod, Offset, 45, 100),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Offset, TokensWComments, BeforeReversed,
                  Context#open_context{imports=Imports}),

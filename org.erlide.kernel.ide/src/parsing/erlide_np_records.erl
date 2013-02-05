@@ -7,7 +7,7 @@
 %% Include files
 %%
 
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 -include("erlide_search.hrl").
 
 %%

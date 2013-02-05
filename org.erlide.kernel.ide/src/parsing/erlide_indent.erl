@@ -17,7 +17,7 @@
 %% -define(DEBUG, 1).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 default_indent_prefs() ->
     [{before_binary_op, 4},
@@ -53,7 +53,7 @@ indent_line(St, OldLine, CommandText, N, Tablength, UseTabs, Prefs) ->
             case scan(S ++ StrippedCommandText) of
                 {ok, T} ->
                     LineOffsets = erlide_text:get_line_offsets(S),
-                    Tr = erlide_scanner:convert_tokens(T) ++
+                    Tr = erlide_scan_model:convert_tokens(T) ++
 			     [#token{kind=eof, line=size(LineOffsets)+1}],
                     LineN = case N of
                                 -1 ->
