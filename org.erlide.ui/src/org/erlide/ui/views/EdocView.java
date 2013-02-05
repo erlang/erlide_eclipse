@@ -21,11 +21,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -67,17 +65,18 @@ public class EdocView extends AbstractInfoView {
      * 
      * @since 3.0
      */
-    private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
+    //    private static final String DO_NOT_WARN_PREFERENCE_KEY = "EdocView.error.doNotWarn"; //$NON-NLS-1$
 
-    private static final boolean WARNING_DIALOG_ENABLED = true;
+    // private static final boolean WARNING_DIALOG_ENABLED = true;
 
     private Browser fBrowser;
 
     /** The information presenter. */
-    private DefaultInformationControl.IInformationPresenterExtension fPresenter;
+    // private DefaultInformationControl.IInformationPresenterExtension
+    // fPresenter;
 
     /** The text presentation. */
-    private final TextPresentation fPresentation = new TextPresentation();
+    // private final TextPresentation fPresentation = new TextPresentation();
 
     /** The select all action */
     private SelectAllAction fSelectAllAction;
@@ -353,9 +352,9 @@ public class EdocView extends AbstractInfoView {
         if (info instanceof String) {
             edocHtml = (String) info;
         } else if (info instanceof ErlBrowserInformationControlInput) {
-            final ErlBrowserInformationControlInput input = (ErlBrowserInformationControlInput) info;
-            setInput(input);
-            edocHtml = input.getHtml();
+            final ErlBrowserInformationControlInput myInput = (ErlBrowserInformationControlInput) info;
+            setInput(myInput);
+            edocHtml = myInput.getHtml();
         }
         fBrowser.setText(edocHtml);
     }

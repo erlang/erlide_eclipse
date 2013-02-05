@@ -194,6 +194,7 @@ public class AddRefacHandler extends AbstractHandler {
     }
 
     // copying files
+    @SuppressWarnings("resource")
     private boolean copy(final String source, final String dest,
             final String destDir) {
 

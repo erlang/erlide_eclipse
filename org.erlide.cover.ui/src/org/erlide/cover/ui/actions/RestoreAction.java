@@ -81,7 +81,12 @@ public class RestoreAction extends Action {
             final ObjectInputStream objStream = new ObjectInputStream(
                     new FileInputStream(f));
 
-            final Object obj = objStream.readObject();
+            final Object obj;
+            try {
+                obj = objStream.readObject();
+            } finally {
+                objStream.close();
+            }
 
             StatsTreeModel.changeInstance((StatsTreeModel) obj);
             StatsTreeModel.getInstance().setChanged(true);
