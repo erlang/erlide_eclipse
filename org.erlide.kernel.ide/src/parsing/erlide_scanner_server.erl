@@ -146,7 +146,7 @@ logging(Module, off) ->
 
 do_cmd(initial_scan, {ScannerName, ModuleFileName, InitialText, StateDir, UseCache, Logging}, _Module) ->
     ?D({initial_scan, ScannerName, length(InitialText)}),
-    {{Cached, Module1}, Text} = erlide_scan_model:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache),
+    {{Cached, Module1}, Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, UseCache),
     Module2 = logging(Module1, Logging),
     Module3 = log(Module2, {initial_scan, ScannerName, ModuleFileName, InitialText, Text}),
     {{ok, Cached}, Module3};

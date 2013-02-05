@@ -109,7 +109,7 @@ get_tokens(ScannerName, ModuleFileName, StateDir) ->
                 {ok, InitialTextBin} ->
                     InitialText = binary_to_list(InitialTextBin),
                     {{_Cached, Module}, _Text} = erlide_scanner:initial_scan(ScannerName, ModuleFileName, InitialText, StateDir, true),
-                    erlide_scanner:get_all_tokens(Module);
+                    erlide_scan_model:get_all_tokens(Module);
                 {error, Error} ->
                     erlide_log:log({"Module not found: ", ModuleFileName, Error}),
                     %% not much to do here
