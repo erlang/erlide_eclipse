@@ -66,7 +66,6 @@ import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.codedb.SourcePathUtils;
 import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.core.model.root.IErlElementLocator;
 import org.erlide.core.model.root.IErlProject;
@@ -74,6 +73,7 @@ import org.erlide.core.model.util.CommonUtils;
 import org.erlide.core.model.util.PluginUtils;
 import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
+import org.erlide.model.SourcePathUtils;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.utils.PreferencesUtils;
 

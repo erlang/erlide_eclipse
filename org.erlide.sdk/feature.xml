@@ -104,7 +104,7 @@ is available from http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.erlide.codedb.tests"
+         id="org.erlide.model.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"
