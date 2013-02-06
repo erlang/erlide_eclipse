@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
 import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -39,7 +39,7 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     }
 
     @Override
-    public synchronized void store(final RuntimeInfoManagerData data) {
+    public synchronized void store(final RuntimeInfoCatalogData data) {
         try {
             instanceRootNode.clear();
             for (final String node : instanceRootNode.childrenNames()) {
@@ -62,15 +62,15 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
     }
 
     @Override
-    public synchronized RuntimeInfoManagerData load() {
-        RuntimeInfoManagerData data = new RuntimeInfoManagerData();
+    public synchronized RuntimeInfoCatalogData load() {
+        RuntimeInfoCatalogData data = new RuntimeInfoCatalogData();
         data = loadPrefs(data, defaultRootNode);
         data = loadPrefs(data, instanceRootNode);
 
         return data;
     }
 
-    private RuntimeInfoManagerData loadPrefs(final RuntimeInfoManagerData data,
+    private RuntimeInfoCatalogData loadPrefs(final RuntimeInfoCatalogData data,
             final IEclipsePreferences root) {
         final String defrt = root.get("default", null);
         String defaultRuntimeName = null;
@@ -94,6 +94,6 @@ public class RuntimeInfoPreferencesSerializer implements IRuntimeInfoSerializer 
         if (data.defaultRuntimeName == null && data.runtimes.size() > 0) {
             defaultRuntimeName = data.runtimes.iterator().next().getName();
         }
-        return new RuntimeInfoManagerData(runtimes, defaultRuntimeName, null);
+        return new RuntimeInfoCatalogData(runtimes, defaultRuntimeName, null);
     }
 }

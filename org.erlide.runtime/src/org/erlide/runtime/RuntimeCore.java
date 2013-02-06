@@ -2,7 +2,7 @@ package org.erlide.runtime;
 
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
 
 public class RuntimeCore {
 
@@ -11,7 +11,7 @@ public class RuntimeCore {
     public static final RuntimeInfoCatalog getRuntimeInfoCatalog(
             final IRuntimeInfoSerializer serializer) {
         if (runtimeInfoCatalog == null) {
-            final RuntimeInfoManagerData data = serializer.load();
+            final RuntimeInfoCatalogData data = serializer.load();
 
             runtimeInfoCatalog = new RuntimeInfoCatalog();
             runtimeInfoCatalog.setRuntimes(data.runtimes,

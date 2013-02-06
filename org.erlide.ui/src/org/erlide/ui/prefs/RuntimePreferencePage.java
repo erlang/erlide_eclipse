@@ -65,7 +65,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.runtimeinfo.RuntimeInfoPreferencesSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoManagerData;
+import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.ui.util.SWTUtil;
 
@@ -792,7 +792,7 @@ public class RuntimePreferencePage extends PreferencePage implements
         catalog.setRuntimes(runtimes, defaultRuntime.getName(),
                 erlideRuntime.getName());
         final RuntimeInfoPreferencesSerializer serializer = new RuntimeInfoPreferencesSerializer();
-        serializer.store(new RuntimeInfoManagerData(runtimes, defaultRuntime
+        serializer.store(new RuntimeInfoCatalogData(runtimes, defaultRuntime
                 .getName(), erlideRuntime.getName()));
 
         // save column widths
