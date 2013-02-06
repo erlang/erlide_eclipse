@@ -33,11 +33,11 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.OldErlangProjectProperties;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlModel;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.utils.ErlLogger;
 

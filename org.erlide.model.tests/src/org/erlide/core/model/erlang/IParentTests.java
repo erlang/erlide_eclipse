@@ -6,12 +6,13 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.erlide.core.internal.model.erlang.ErlAttribute;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.core.model.root.IErlFolder;
-import org.erlide.core.model.root.IErlModel;
+import org.erlide.model.erlang.IErlAttribute;
+import org.erlide.model.internal.erlang.ErlAttribute;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlFolder;
+import org.erlide.model.root.IErlModel;
+import org.erlide.model.root.IErlElement.Kind;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;

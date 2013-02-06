@@ -24,7 +24,7 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
 import org.erlide.backend.ICodeBundle;
 import org.erlide.backend.ICodeManager;
-import org.erlide.core.model.util.ErlideUtil;
+import org.erlide.model.util.ErlideUtil;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;

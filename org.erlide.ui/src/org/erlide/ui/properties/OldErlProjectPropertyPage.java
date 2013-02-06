@@ -21,9 +21,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.internal.model.root.ProjectPreferencesConstants;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.internal.root.ProjectPreferencesConstants;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlProject;
 import org.erlide.utils.ErlLogger;
 
 import com.bdaum.overlayPages.FieldEditorOverlayPage;

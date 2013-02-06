@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.util.List;
 
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.core.model.root.IErlExternal;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlExternal;
+import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.Before;

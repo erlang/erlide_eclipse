@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.root.IErlElement;
 import org.erlide.ui.ErlideUIMessages;
 import org.erlide.ui.actions.SortAction;
 import org.erlide.ui.editors.erl.ErlangEditor;

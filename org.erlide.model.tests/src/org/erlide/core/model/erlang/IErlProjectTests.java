@@ -11,9 +11,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.OldErlangProjectProperties;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Test;
@@ -391,7 +392,7 @@ public class IErlProjectTests extends ErlModelTestBase {
 
     // TODO check more properties than source dirs property
     /**
-     * @see org.erlide.core.model.root.IErlProject#setAllProperties()
+     * @see org.erlide.model.root.IErlProject#setAllProperties()
      */
     @Test
     public void setAllProperties() throws Exception {
@@ -412,7 +413,7 @@ public class IErlProjectTests extends ErlModelTestBase {
     }
 
     /**
-     * @see org.erlide.core.model.root.IErlProject#getReferencedProjects()
+     * @see org.erlide.model.root.IErlProject#getReferencedProjects()
      */
     @Test
     public void getReferencedProjects() throws Exception {

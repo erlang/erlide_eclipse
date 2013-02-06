@@ -17,13 +17,13 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuildResource;
 import org.erlide.core.services.builder.BuilderHelper;
 import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
 import org.erlide.core.services.builder.MarkerUtils;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlProject;
 import org.erlide.utils.ErlLogger;
 
 public class BuilderVisitor implements IResourceDeltaVisitor, IResourceVisitor {

@@ -2,7 +2,8 @@ package org.erlide.core.model.erlang;
 
 import static org.junit.Assert.*;
 
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.erlang.IErlAttribute;
+import org.erlide.model.root.IErlElement;
 import org.junit.Test;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

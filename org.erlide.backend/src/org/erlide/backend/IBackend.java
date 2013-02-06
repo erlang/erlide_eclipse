@@ -6,7 +6,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.utils.IDisposable;
 import org.osgi.framework.Bundle;

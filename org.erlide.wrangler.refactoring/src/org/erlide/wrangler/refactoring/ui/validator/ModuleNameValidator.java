@@ -1,7 +1,7 @@
 package org.erlide.wrangler.refactoring.ui.validator;
 
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.root.ErlModelManager;
 
 /**
  * Validator for module names

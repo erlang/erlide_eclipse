@@ -27,8 +27,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlProject;
 import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangObject;

@@ -11,14 +11,14 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElementLocator;
-import org.erlide.core.model.root.IErlProject;
 import org.erlide.core.services.builder.BuilderMessages;
 import org.erlide.core.services.builder.DialyzerPreferences;
 import org.erlide.core.services.builder.DialyzerUtils;
 import org.erlide.core.services.builder.MarkerUtils;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElementLocator;
+import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.ErlLogger;
 

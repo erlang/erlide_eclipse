@@ -20,8 +20,8 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
 import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;

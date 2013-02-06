@@ -7,7 +7,7 @@ import java.util.TreeMap;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.services.text.ErlideIndent;
+import org.erlide.model.services.text.ErlideIndent;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;

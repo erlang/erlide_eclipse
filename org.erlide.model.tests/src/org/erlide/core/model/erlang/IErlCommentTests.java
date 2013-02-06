@@ -6,8 +6,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.model.erlang.IErlComment;
+import org.erlide.model.erlang.IErlFunction;
+import org.erlide.model.erlang.IErlMember;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.Test;

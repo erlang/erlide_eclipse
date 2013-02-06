@@ -6,9 +6,9 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.Before;
 import org.junit.Test;
