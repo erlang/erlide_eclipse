@@ -40,7 +40,8 @@ public class BuildQueueProcessor extends Job {
                 }
                 continue;
             }
-            // MarkerUtils.createTaskMarkers(work.project, work.resource);
+            MarkerUtils.removeTaskMarkers(work.resource);
+            MarkerUtils.createTaskMarkers(work.resource);
         }
         return Status.OK_STATUS;
     }

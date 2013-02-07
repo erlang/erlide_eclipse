@@ -1,8 +1,8 @@
 package org.erlide.core.services.builder;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -260,7 +260,7 @@ public final class MarkerUtils {
         removeMarkersFor(resource, PROBLEM_MARKER);
     }
 
-    public static void removeTaskMarkersFor(final IResource resource) {
+    public static void removeTaskMarkers(final IResource resource) {
         removeMarkersFor(resource, TASK_MARKER);
     }
 
@@ -440,19 +440,17 @@ public final class MarkerUtils {
     }
 
     @SuppressWarnings("deprecation")
-    public static void createTaskMarkers(final IResource resource,
-            final String string) {
+    public static void createTaskMarkers(final IResource resource) {
         if (SystemConfiguration.hasFeatureEnabled("erlide.skip.tasks")) {
             return;
         }
-        getNoScanMarkersFor(resource, string == null ? "" : string);
+        getScanMarkersFor(resource);
     }
 
-    public static void getNoScanMarkersFor(final IResource resource,
-            final String string) {
-        final BufferedReader reader = new BufferedReader(new StringReader(
-                string));
+    public static void getScanMarkersFor(final IResource resource) {
         try {
+            final BufferedReader reader = new BufferedReader(new FileReader(
+                    resource.getLocation().toPortableString()));
             try {
                 String line = reader.readLine();
                 final List<Pair<String, Integer>> cl = new ArrayList<Pair<String, Integer>>();
