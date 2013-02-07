@@ -16,6 +16,8 @@ import java.net.Socket;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.MessageReporter;
+import org.erlide.backend.MessageReporter.ReporterPosition;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
@@ -315,8 +317,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
                     + (SystemConfiguration
                             .hasFeatureEnabled("erlide.ericsson.user") ? ""
                             : "http://www.assembla.com/spaces/erlide/support/tickets");
-            // XXX CODEDB MessageReporter.showError(bigMsg,
-            // ReporterPosition.CORNER);
+            MessageReporter.showError(bigMsg, ReporterPosition.CORNER);
             reported = true;
         }
         return msg;

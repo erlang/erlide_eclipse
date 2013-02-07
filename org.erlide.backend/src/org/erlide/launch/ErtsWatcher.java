@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import org.erlide.backend.MessageReporter;
+import org.erlide.backend.MessageReporter.ReporterPosition;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.LogUtil;
 import org.erlide.utils.SystemConfiguration;
@@ -66,8 +68,7 @@ final public class ErtsWatcher implements Runnable {
                             + "\n\n"
                             + "This error is not recoverable, please restart your Eclipse instance."
                             + reportMsg;
-                    // XXX CODEDB MessageReporter.showError(bigMsg,
-                    // ReporterPosition.MODAL);
+                    MessageReporter.showError(bigMsg, ReporterPosition.MODAL);
                 } else {
                     ErlLogger.info(msg);
                 }

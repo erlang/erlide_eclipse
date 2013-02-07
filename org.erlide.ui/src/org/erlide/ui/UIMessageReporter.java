@@ -4,7 +4,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.UIJob;
-import org.erlide.core.MessageReporter;
+import org.erlide.backend.MessageReporter;
 import org.erlide.ui.util.PopupDialog;
 
 public class UIMessageReporter extends MessageReporter {

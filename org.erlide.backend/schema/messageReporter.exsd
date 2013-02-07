@@ -60,7 +60,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.erlide.core.MessageReporter:"/>
+                  <meta.attribute kind="java" basedOn="org.erlide.backend.MessageReporter:"/>
                </appInfo>
             </annotation>
          </attribute>

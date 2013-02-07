@@ -34,7 +34,7 @@
    </persistent>
 </extension>
 <extension
-      point="org.erlide.backend.sourcePathProvider">
+      point="org.erlide.model.sourcePathProvider">
    <sourcePathProvider
          class="org.erlide.test_support.TestSourcePathProvider">
    </sourcePathProvider>
