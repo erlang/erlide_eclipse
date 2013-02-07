@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.services.builder.DialyzerUtils;
+import org.erlide.core.builder.DialyzerUtils;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;

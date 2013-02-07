@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.core.services.builder;
+package org.erlide.core.builder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.internal.services.builder.BuilderVisitor;
-import org.erlide.core.internal.services.builder.InternalErlideBuilder;
+import org.erlide.core.internal.builder.BuilderVisitor;
+import org.erlide.core.internal.builder.InternalErlideBuilder;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ModuleKind;

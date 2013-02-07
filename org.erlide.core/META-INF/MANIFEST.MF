@@ -7,9 +7,9 @@ Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Export-Package: org.erlide.core,
+ org.erlide.core.builder,
  org.erlide.core.content,
- org.erlide.core.internal.services.builder,
- org.erlide.core.services.builder
+ org.erlide.core.internal.builder
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.erlide.backend,
  org.erlide.libs;bundle-version="1.8.4",
  org.erlide.runtime,
- org.erlide.model;bundle-version="0.18.0"
+ org.erlide.model;bundle-version="0.18.0",
+ org.erlide.common;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

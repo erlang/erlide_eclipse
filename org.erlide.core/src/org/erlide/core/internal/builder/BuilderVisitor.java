@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package org.erlide.core.internal.services.builder;
+package org.erlide.core.internal.builder;
 
 import java.util.Set;
 
@@ -17,10 +17,10 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.erlide.core.services.builder.BuildResource;
-import org.erlide.core.services.builder.BuilderHelper;
-import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
-import org.erlide.core.services.builder.MarkerUtils;
+import org.erlide.core.builder.BuildResource;
+import org.erlide.core.builder.BuilderHelper;
+import org.erlide.core.builder.MarkerUtils;
+import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;

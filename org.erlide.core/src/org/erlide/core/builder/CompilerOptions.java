@@ -1,4 +1,4 @@
-package org.erlide.core.services.builder;
+package org.erlide.core.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,12 +11,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.ErlangCore;
-import org.erlide.core.services.builder.CompilerOption.BooleanOption;
-import org.erlide.core.services.builder.CompilerOption.DefineOption;
-import org.erlide.core.services.builder.CompilerOption.ModuleOption;
-import org.erlide.core.services.builder.CompilerOption.PathsOption;
-import org.erlide.core.services.builder.CompilerOption.RawOption;
-import org.erlide.core.services.builder.CompilerOption.WarningOption;
+import org.erlide.core.builder.CompilerOption.BooleanOption;
+import org.erlide.core.builder.CompilerOption.DefineOption;
+import org.erlide.core.builder.CompilerOption.ModuleOption;
+import org.erlide.core.builder.CompilerOption.PathsOption;
+import org.erlide.core.builder.CompilerOption.RawOption;
+import org.erlide.core.builder.CompilerOption.WarningOption;
 import org.erlide.model.internal.erlang.PreferencesHelper;
 import org.erlide.runtime.TermParserException;
 import org.erlide.utils.ErlLogger;

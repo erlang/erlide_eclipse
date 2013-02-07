@@ -1,4 +1,4 @@
-package org.erlide.utils;
+package org.erlide.core.utils;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspace;

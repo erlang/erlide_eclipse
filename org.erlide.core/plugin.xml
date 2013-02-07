@@ -8,7 +8,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.erlide.core.internal.services.builder.ErlangNature">
+               class="org.erlide.core.internal.builder.ErlangNature">
          </run>
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>
@@ -22,7 +22,7 @@
          point="org.eclipse.core.resources.builders">
       <builder >
          <run
-               class="org.erlide.core.internal.services.builder.ErlangBuilder">
+               class="org.erlide.core.internal.builder.ErlangBuilder">
          </run>
       </builder>
    </extension>
@@ -32,7 +32,7 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.erlide.core.internal.services.builder.DialyzerBuilder">
+               class="org.erlide.core.internal.builder.DialyzerBuilder">
          </run></builder>
    </extension>
    <extension

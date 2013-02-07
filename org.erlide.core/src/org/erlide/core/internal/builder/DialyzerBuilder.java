@@ -1,4 +1,4 @@
-package org.erlide.core.internal.services.builder;
+package org.erlide.core.internal.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -11,10 +11,10 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.erlide.core.services.builder.BuilderMessages;
-import org.erlide.core.services.builder.DialyzerPreferences;
-import org.erlide.core.services.builder.DialyzerUtils;
-import org.erlide.core.services.builder.MarkerUtils;
+import org.erlide.core.builder.BuilderMessages;
+import org.erlide.core.builder.DialyzerPreferences;
+import org.erlide.core.builder.DialyzerUtils;
+import org.erlide.core.builder.MarkerUtils;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;

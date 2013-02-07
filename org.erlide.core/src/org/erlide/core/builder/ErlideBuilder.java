@@ -8,7 +8,7 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.core.services.builder;
+package org.erlide.core.builder;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import org.eclipse.osgi.util.NLS;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendException;
 import org.erlide.backend.IBackend;
-import org.erlide.core.services.builder.BuilderHelper.SearchVisitor;
+import org.erlide.core.builder.BuilderHelper.SearchVisitor;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
