@@ -100,6 +100,9 @@ public class ErlangConsolePage extends Page implements IAdaptable,
     private final ErlangConsole fConsole;
     private IConsoleView fConsoleView;
     private MenuManager fMenuManager;
+    private Composite composite;
+    private boolean disposeColors;
+    private final IRpcSite backend;
 
     private final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
         @Override
@@ -108,19 +111,14 @@ public class ErlangConsolePage extends Page implements IAdaptable,
         }
     };
 
-    private Composite composite;
-
-    private boolean disposeColors;
-
-    private IRpcSite backend;
-
     public ErlangConsolePage(final IConsoleView view,
-            final ErlangConsole console) {
+            final ErlangConsole console, final IRpcSite backend) {
         super();
         fConsole = console;
         fConsoleView = view;
         shell = console.getShell();
         fDoc = new ErlConsoleDocument(shell);
+        this.backend = backend;
     }
 
     @Override

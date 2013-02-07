@@ -45,7 +45,7 @@ public class ErlangConsole extends TextConsole {
 
     @Override
     public IPageBookViewPage createPage(final IConsoleView view) {
-        return new ErlangConsolePage(view, this);
+        return new ErlangConsolePage(view, this, backend.getRpcSite());
     }
 
     public IBackend getBackend() {
