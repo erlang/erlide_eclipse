@@ -24,8 +24,7 @@ public class LogUtils {
     }
 
     private static String stackInfo(final int depth) {
-        final StackTraceElement[] stackTrace = Thread.currentThread()
-                .getStackTrace();
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         if (stackTrace.length <= depth) {
             return "";
         }

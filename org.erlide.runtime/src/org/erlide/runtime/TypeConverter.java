@@ -397,8 +397,7 @@ public final class TypeConverter {
         if (TypeConverter.willCheckConversion()) {
             StackTraceElement el = null;
             boolean found = false;
-            final StackTraceElement[] st = Thread.currentThread()
-                    .getStackTrace();
+            final StackTraceElement[] st = new Throwable().getStackTrace();
             for (final StackTraceElement ste : st) {
                 if (found) {
                     if (!((ste.getMethodName().equals("send")

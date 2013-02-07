@@ -144,7 +144,7 @@ public class ErlLogger {
     }
 
     private static StackTraceElement getCaller() {
-        final StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        final StackTraceElement[] st = new Throwable().getStackTrace();
         StackTraceElement el = null;
         int i = 2;
         do {

@@ -243,7 +243,7 @@ public class ErlModel extends Openable implements IErlModel {
 
     private static synchronized String getStack() {
         final StringBuilder result = new StringBuilder();
-        final StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        final StackTraceElement[] st = new Throwable().getStackTrace();
         for (final StackTraceElement el : st) {
             result.append("      ").append(el.toString()).append("\n");
         }
