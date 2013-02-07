@@ -178,7 +178,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
             synchronized (ideBackendLock) {
                 if (ideBackend == null) {
                     ideBackend = factory.createIdeBackend();
-                    // XXX CODEDB ??? addBackend(ideBackend);
                     notifyBackendChange(ideBackend, BackendEvent.ADDED, null,
                             null);
                 }

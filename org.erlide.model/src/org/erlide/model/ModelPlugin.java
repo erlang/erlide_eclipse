@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.RegistryFactory;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeProvider;
 import org.osgi.framework.BundleContext;
@@ -49,7 +50,8 @@ public class ModelPlugin extends Plugin {
         super.stop(bundleContext);
     }
 
-    public IRpcSite getIdeBackend() {
+    private IRpcSite evalWithProviders(
+            final Function1<IRuntimeProvider, IRpcSite> callback) {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
         final IConfigurationElement[] elements = reg
                 .getConfigurationElementsFor("org.erlide.runtime.backend");
@@ -57,44 +59,39 @@ public class ModelPlugin extends Plugin {
             try {
                 final IRuntimeProvider provider = (IRuntimeProvider) element
                         .createExecutableExtension("class");
-                return provider.get();
+                return callback.apply(provider);
             } catch (final CoreException e) {
                 e.printStackTrace();
             }
         }
         return null;
+    }
+
+    public IRpcSite getIdeBackend() {
+        return evalWithProviders(new Function1<IRuntimeProvider, IRpcSite>() {
+            @Override
+            public IRpcSite apply(final IRuntimeProvider provider) {
+                return provider.get();
+            }
+        });
     }
 
     public IRpcSite getBackend(final RuntimeVersion version) {
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor("org.erlide.runtime", "backend");
-        for (final IConfigurationElement element : elements) {
-            try {
-                final IRuntimeProvider provider = (IRuntimeProvider) element
-                        .createExecutableExtension("class");
+        return evalWithProviders(new Function1<IRuntimeProvider, IRpcSite>() {
+            @Override
+            public IRpcSite apply(final IRuntimeProvider provider) {
                 return provider.get(version);
-            } catch (final CoreException e) {
-                e.printStackTrace();
             }
-        }
-        return null;
+        });
     }
 
     public IRpcSite getBackend(final String name) {
-        final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        final IConfigurationElement[] elements = reg
-                .getConfigurationElementsFor("org.erlide.runtime", "backend");
-        for (final IConfigurationElement element : elements) {
-            try {
-                final IRuntimeProvider provider = (IRuntimeProvider) element
-                        .createExecutableExtension("class");
+        return evalWithProviders(new Function1<IRuntimeProvider, IRpcSite>() {
+            @Override
+            public IRpcSite apply(final IRuntimeProvider provider) {
                 return provider.get(name);
-            } catch (final CoreException e) {
-                e.printStackTrace();
             }
-        }
-        return null;
+        });
     }
 
 }
