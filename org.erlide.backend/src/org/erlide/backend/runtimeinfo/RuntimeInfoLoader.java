@@ -11,7 +11,7 @@
 package org.erlide.backend.runtimeinfo;
 
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.utils.PreferencesUtils;
+import org.erlide.util.PreferencesUtils;
 import org.osgi.service.prefs.Preferences;
 
 public class RuntimeInfoLoader {

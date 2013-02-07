@@ -75,7 +75,7 @@ import org.erlide.model.util.CommonUtils;
 import org.erlide.model.util.PluginUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.PreferencesUtils;
+import org.erlide.util.PreferencesUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

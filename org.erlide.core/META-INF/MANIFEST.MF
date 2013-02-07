@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.erlide.libs;bundle-version="1.8.4",
  org.erlide.runtime,
  org.erlide.model;bundle-version="0.18.0",
- org.erlide.common;bundle-version="0.18.0"
+ org.erlide.util;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

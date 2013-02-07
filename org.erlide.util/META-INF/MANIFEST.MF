@@ -1,13 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common code, dependent on Eclipse
-Bundle-SymbolicName: org.erlide.common
+Bundle-SymbolicName: org.erlide.util;singleton:=true
 Bundle-Version: 0.18.0.qualifier
-Bundle-Activator: org.erlide.common.Activator
 Bundle-Vendor: erlide.org
 Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.8.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.common,
- org.erlide.utils
+Export-Package: org.erlide.util

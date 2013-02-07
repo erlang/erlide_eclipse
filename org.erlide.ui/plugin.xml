@@ -1967,7 +1967,7 @@
       </target>
    </extension>
    <extension
-         point="org.erlide.backend.messageReporter">
+         point="org.erlide.util_eclipse.messageReporter">
       <messageReporter
             class="org.erlide.ui.UIMessageReporter">
       </messageReporter>

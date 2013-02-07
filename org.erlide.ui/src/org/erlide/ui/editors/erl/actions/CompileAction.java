@@ -15,7 +15,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchSite;
 import org.erlide.backend.BackendCore;
-import org.erlide.backend.MessageReporter;
 import org.erlide.core.builder.BuildResource;
 import org.erlide.core.builder.BuilderHelper;
 import org.erlide.core.builder.CompilerOptions;
@@ -24,6 +23,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.ui.editors.erl.ErlangEditor;
+import org.erlide.util.MessageReporter;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.OtpErlangList;

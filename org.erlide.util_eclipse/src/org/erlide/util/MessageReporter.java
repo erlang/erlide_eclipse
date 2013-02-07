@@ -1,4 +1,4 @@
-package org.erlide.backend;
+package org.erlide.util;
 
 import java.util.List;
 
@@ -80,7 +80,7 @@ public abstract class MessageReporter {
 
     public static IConfigurationElement[] getMessageReporterConfigurationElements() {
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
-        return reg.getConfigurationElementsFor(BackendPlugin.PLUGIN_ID,
+        return reg.getConfigurationElementsFor("org.erlide.util_eclipse",
                 "messageReporter");
     }
 

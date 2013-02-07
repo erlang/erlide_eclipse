@@ -61,8 +61,8 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.NatureUtil;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.PreferencesUtils;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.PreferencesUtils;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.ericsson.otp.erlang.RuntimeVersion;

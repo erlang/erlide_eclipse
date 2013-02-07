@@ -345,7 +345,8 @@ Require-Bundle: org.eclipse.compare,
  com.ibm.icu,
  org.erlide.runtime,
  org.erlide.model;bundle-version="0.18.0",
- org.erlide.common;bundle-version="0.18.0"
+ org.erlide.util;bundle-version="0.18.0",
+ org.erlide.util_eclipse;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true

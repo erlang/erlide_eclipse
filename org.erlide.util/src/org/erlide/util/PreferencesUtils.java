@@ -1,10 +1,12 @@
-package org.erlide.utils;
+package org.erlide.util;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.erlide.utils.ListsUtils;
 
 public final class PreferencesUtils {
 
