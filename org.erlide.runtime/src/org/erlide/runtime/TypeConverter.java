@@ -553,10 +553,6 @@ public final class TypeConverter {
 
     private static void failConversion(final Object obj, final Signature type)
             throws SignatureException {
-        // ErlLogger.debug("+++++++ "
-        // + String.format("Bad conversion required: %s(%s) - %s", obj
-        // .getClass().getName(), obj.toString(), type));
-
         throw new SignatureException(String.format(
                 "Bad conversion required: %s(%s) - %s", obj.getClass()
                         .getName(), obj.toString(), type.toString()));

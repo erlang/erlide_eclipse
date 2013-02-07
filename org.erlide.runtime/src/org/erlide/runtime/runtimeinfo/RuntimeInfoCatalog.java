@@ -23,6 +23,9 @@ import com.google.common.collect.Maps;
 
 public final class RuntimeInfoCatalog {
 
+    public final static RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(
+            14);
+
     public RuntimeInfo erlideRuntime;
     public final Map<String, RuntimeInfo> runtimes;
     public String defaultRuntimeName;
@@ -46,7 +49,7 @@ public final class RuntimeInfoCatalog {
         }
 
         for (final RuntimeInfo rt : elements) {
-            runtimes.put(rt.getName(), rt);
+            addRuntime(rt);
         }
         defaultRuntimeName = dfltRuntime;
         if (defaultRuntimeName == null) {
@@ -60,7 +63,8 @@ public final class RuntimeInfoCatalog {
     }
 
     public synchronized void addRuntime(final RuntimeInfo rt) {
-        if (!runtimes.containsKey(rt.getName())) {
+        if (rt.getVersion().isCompatible(OLDEST_SUPPORTED_VERSION)
+                && !runtimes.containsKey(rt.getName())) {
             runtimes.put(rt.getName(), rt);
         }
     }
