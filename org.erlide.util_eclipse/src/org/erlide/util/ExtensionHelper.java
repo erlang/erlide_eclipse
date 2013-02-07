@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.util;
 
 import java.util.List;
 import java.util.Map;

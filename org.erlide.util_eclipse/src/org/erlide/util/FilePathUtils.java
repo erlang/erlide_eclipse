@@ -1,4 +1,4 @@
-package org.erlide.core.utils;
+package org.erlide.util;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.Assert;

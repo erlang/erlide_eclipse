@@ -1,4 +1,4 @@
-package org.erlide.core;
+package org.erlide.util;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -14,8 +14,8 @@ import org.osgi.framework.Bundle;
  * <pre>
  * <code>
  * &lt;extension point="org.eclipse.ui.handlers">
- *   &lt;handler 
- *     class="org.erlide.core.ExecutableExtensionFactory:org.erlide.ui.my.MyHandler" 
+ *   &lt;handler
+ *     class="org.erlide.core.ExecutableExtensionFactory:org.erlide.ui.my.MyHandler"
  *     commandId="org.erlide.ui.mycommand">
  *   &lt;/handler>
  * &lt;/extension>
@@ -49,7 +49,8 @@ public class ExecutableExtensionsFactory implements
             return null; // ErlangPlugin.getDefault().getInjector().getInstance(class1);
         } catch (final ClassNotFoundException e) {
             throw new CoreException(new Status(IStatus.ERROR,
-                    ErlangCore.PLUGIN_ID, "Could not load class " + className));
+            // FIXME
+                    "org.erlide.core", "Could not load class " + className));
         }
     }
 
