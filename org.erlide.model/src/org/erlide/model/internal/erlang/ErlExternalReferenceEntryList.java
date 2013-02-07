@@ -64,8 +64,6 @@ public class ErlExternalReferenceEntryList extends Openable implements
         if (externalModuleTree == null || externalIncludeTree == null) {
             final IRpcSite backend = ModelPlugin.getDefault().getBackend(
                     project.getName());
-            System.out.println("aBACKEND FOR " + project.getName() + " IS "
-                    + backend);
             final OtpErlangList pathVars = ErlModelManager.getErlangModel()
                     .getPathVars();
             if (externalModuleTree == null && externalModules.length() > 0) {
