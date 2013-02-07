@@ -101,16 +101,14 @@ public final class OldErlangProjectProperties implements
                 runtimeVersion = new RuntimeVersion(
                         ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
             } else {
-                System.out
-                        .println("################################################");
-                // final RuntimeInfo ri = BackendCore.getRuntimeInfoCatalog()
-                // .getRuntime(runtimeName);
-                // if (ri != null) {
-                // runtimeVersion = new RuntimeVersion(ri.getVersion());
-                // } else {
-                // runtimeVersion = new RuntimeVersion(
-                // ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
-                // }
+                final RuntimeInfo info = RuntimeCore.getRuntimeInfoCatalog()
+                        .getRuntime(runtimeName);
+                if (info != null) {
+                    runtimeVersion = new RuntimeVersion(info.getVersion());
+                } else {
+                    runtimeVersion = new RuntimeVersion(
+                            ProjectPreferencesConstants.DEFAULT_RUNTIME_VERSION);
+                }
             }
         }
         externalModulesFile = node.get(
