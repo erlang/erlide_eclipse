@@ -36,10 +36,10 @@ import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.internal.erlang.ModelInternalUtils;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.services.search.ErlideOpen;
 import org.erlide.model.services.search.OpenResult;
 import org.erlide.model.util.ErlangFunction;
@@ -47,7 +47,6 @@ import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.prefs.plugin.NavigationPreferencePage;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.utils.ErlLogger;
@@ -140,17 +139,18 @@ public class OpenAction extends SelectionDispatchAction {
             ITextEditor textEditor = null;
             OpenResult openResult = null;
             IErlElement element = null;
-            IErlModule module = null;
             IErlProject project = null;
+            IErlModule module = null;
             final IErlModel model = ErlModelManager.getErlangModel();
-            if (activeEditor instanceof ErlangEditor) {
+            if (activeEditor instanceof AbstractErlangEditor) {
                 final AbstractErlangEditor editor = (AbstractErlangEditor) activeEditor;
                 textEditor = editor;
                 editor.reconcileNow();
+                final String scannerName = editor.getScannerName();
                 module = editor.getModule();
-                project = ModelUtils.getProject(module);
+                project = editor.getProject();
                 openResult = ErlideOpen
-                        .open(backend, module, offset,
+                        .open(backend, scannerName, offset,
                                 ModelUtils.getImportsAsList(module),
                                 project.getExternalModulesString(),
                                 model.getPathVars());

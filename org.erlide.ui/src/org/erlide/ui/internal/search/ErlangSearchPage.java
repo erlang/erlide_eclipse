@@ -624,7 +624,7 @@ public class ErlangSearchPage extends DialogPage implements ISearchPage {
             final int offset = textSel.getOffset();
             OpenResult res;
             try {
-                res = ErlideOpen.open(backend, module, offset,
+                res = ErlideOpen.open(backend, module.getScannerName(), offset,
                         ModelUtils.getImportsAsList(module), "",
                         ErlModelManager.getErlangModel().getPathVars());
             } catch (final RpcException e) {

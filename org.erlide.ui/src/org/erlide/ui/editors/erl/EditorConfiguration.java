@@ -127,7 +127,7 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
                 editor);
         final IErlModule module = editor != null ? editor.getModule() : null;
         final String path = module != null ? module.getFilePath() : null;
-        final boolean logging = module != null ? module.getLogging() : true;
+        final boolean logging = module != null ? module.getLogging() : false;
         reconciler = new ErlReconciler(strategy, true, true, path, module,
                 logging, getEditor());
         reconciler.setProgressMonitor(new NullProgressMonitor());

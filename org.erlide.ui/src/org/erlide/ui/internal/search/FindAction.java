@@ -232,9 +232,9 @@ public abstract class FindAction extends SelectionDispatchAction {
         final ISelection sel = getSelection();
         final ITextSelection textSel = (ITextSelection) sel;
         final int offset = textSel.getOffset();
-        final OpenResult res = ErlideOpen.open(b, module, offset, ModelUtils
-                .getImportsAsList(module), "", ErlModelManager.getErlangModel()
-                .getPathVars());
+        final OpenResult res = ErlideOpen.open(b, module.getScannerName(),
+                offset, ModelUtils.getImportsAsList(module), "",
+                ErlModelManager.getErlangModel().getPathVars());
         ErlLogger.debug("find " + res);
         final ErlangSearchPattern ref = SearchUtil
                 .getSearchPatternFromOpenResultAndLimitTo(module, offset, res,

@@ -291,7 +291,7 @@ public class EditorUtility {
 
     public static IEditorInput getEditorInput(final Object input) {
         if (input instanceof IErlElement) {
-            return getEditorInput(input);
+            return getEditorInput((IErlElement) input);
         }
 
         if (input instanceof IFile) {

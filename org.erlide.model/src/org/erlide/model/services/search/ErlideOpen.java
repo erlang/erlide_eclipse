@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.erlide.model.SourcePathUtils;
-import org.erlide.model.erlang.IErlModule;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.utils.ErlLogger;
@@ -32,14 +31,13 @@ public class ErlideOpen {
 
     @SuppressWarnings("boxing")
     public static OpenResult open(final IRpcSite backend,
-            final IErlModule module, final int offset,
+            final String scannerName, final int offset,
             final List<OtpErlangObject> imports, final String externalModules,
             final OtpErlangList pathVars) throws RpcException {
         // ErlLogger.debug("open offset " + offset);
         final Collection<IPath> extra = SourcePathUtils.getExtraSourcePaths();
-        final String scanner = module.getScannerName();
         final OtpErlangObject res = backend.call("erlide_open", "open", "aix",
-                scanner, offset,
+                scannerName, offset,
                 mkContext(externalModules, null, pathVars, extra, imports));
         return new OpenResult(res);
     }
