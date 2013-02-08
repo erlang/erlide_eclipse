@@ -244,7 +244,8 @@ public final class OldErlangProjectProperties implements
     }
 
     public RuntimeVersion getRuntimeVersion() {
-        return runtimeVersion;
+        final RuntimeInfo runtimeInfo = getRuntimeInfo();
+        return runtimeInfo != null ? runtimeInfo.getVersion() : runtimeVersion;
     }
 
     @Override
@@ -264,6 +265,10 @@ public final class OldErlangProjectProperties implements
 
     public void setNukeOutputOnClean(final boolean nukeOutputOnClean) {
         this.nukeOutputOnClean = nukeOutputOnClean;
+    }
+
+    public RuntimeVersion getRequiredRuntimeVersion() {
+        return runtimeVersion;
     }
 
 }

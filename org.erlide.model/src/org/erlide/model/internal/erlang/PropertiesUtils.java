@@ -32,7 +32,8 @@ public final class PropertiesUtils {
     public static ErlProjectInfo convertOld(final OldErlangProjectProperties old)
             throws URISyntaxException {
         ErlProjectInfo result = new ErlProjectInfo();
-        result = result.setRequiredRuntimeVersion(old.getRuntimeVersion());
+        result = result.setRequiredRuntimeVersion(old
+                .getRequiredRuntimeVersion());
         if (!result.getRequiredRuntimeVersion().isDefined()) {
             final RuntimeInfo runtimeInfo = old.getRuntimeInfo();
             if (runtimeInfo != null) {
