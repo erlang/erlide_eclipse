@@ -9,17 +9,23 @@
  *******************************************************************************/
 package org.erlide.runtime;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.erlide.runtime.internal.BindingsImpl;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.utils.ErlLogger;
+import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangList;
+import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
+import com.ericsson.otp.erlang.OtpErlangRangeException;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
@@ -259,5 +265,34 @@ public final class ErlUtils {
         } else {
             return target.toString();
         }
+    }
+
+    public static boolean isAccessibleDir(final IRpcSite backend,
+            final String localDir) {
+        File f = null;
+        try {
+            f = new File(localDir);
+            final OtpErlangObject r = backend.call("file", "read_file_info",
+                    "s", localDir);
+            if (Util.isOk(r)) {
+                final OtpErlangTuple result = (OtpErlangTuple) r;
+                final OtpErlangTuple info = (OtpErlangTuple) result
+                        .elementAt(1);
+                final String access = info.elementAt(3).toString();
+                final int mode = ((OtpErlangLong) info.elementAt(7)).intValue();
+                return ("read".equals(access) || "read_write".equals(access))
+                        && (mode & 4) == 4;
+            }
+    
+        } catch (final OtpErlangRangeException e) {
+            ErlLogger.error(e);
+        } catch (final RpcException e) {
+            ErlLogger.error(e);
+        } finally {
+            if (f != null) {
+                f.delete();
+            }
+        }
+        return false;
     }
 }
