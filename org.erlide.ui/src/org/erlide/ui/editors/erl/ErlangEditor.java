@@ -48,7 +48,6 @@ import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -88,7 +87,6 @@ import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
@@ -118,7 +116,6 @@ import org.erlide.ui.editors.erl.actions.IndentAction;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ShowOutlineAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
-import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProviderExtension;
 import org.erlide.ui.editors.erl.hover.ErlangAnnotationIterator;
@@ -154,8 +151,8 @@ public class ErlangEditor extends AbstractErlangEditor implements
     private ColorManager colorManager;
     private ErlangOutlinePage myOutlinePage;
     private IPropertySource myPropertySource;
-    private ProjectionSupport fProjectionSupport;
-    private IErlangFoldingStructureProvider fProjectionModelUpdater;
+    ProjectionSupport fProjectionSupport;
+    IErlangFoldingStructureProvider fProjectionModelUpdater;
     private OpenAction openAction;
     private IndentAction indentAction;
     private ToggleCommentAction toggleCommentAction;
@@ -279,12 +276,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
         @Override
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
-            // ErlLogger.debug("event:: " + key);
-            if (key.indexOf('/') != -1
-                    && key.split("/")[0]
-                            .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
-                readBracketInserterPrefs(getBracketInserter());
-            } else if ("markingOccurences".equals(key)) {
+            if ("markingOccurences".equals(key)) {
                 final boolean newBooleanValue = event.getNewValue().equals(
                         "true");
                 if (newBooleanValue != markOccurencesHandler.fMarkOccurrenceAnnotations) {
@@ -517,63 +509,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
         return super.getAdapter(required);
     }
 
-    @Override
-    protected ISourceViewer createSourceViewer(final Composite parent,
-            final IVerticalRuler ruler, final int styles) {
-        final ISourceViewer viewer = new ErlangSourceViewer(parent, ruler,
-                getOverviewRuler(), true, styles,
-                new IBracketInserterValidator() {
-                    @Override
-                    public boolean earlyCancelCheck() {
-                        return getInsertMode() != ITextEditorExtension3.SMART_INSERT;
-                    }
-
-                    @Override
-                    public boolean validInput() {
-                        return validateEditorInputState();
-                    }
-                });
-        getSourceViewerDecorationSupport(viewer);
-
-        /*
-         * This is a performance optimization to reduce the computation of the
-         * text presentation triggered by {@link #setVisibleDocument(IDocument)}
-         */
-        // if (javaSourceViewer != null && isFoldingEnabled() && (store == null
-        // ||
-        // !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
-        // javaSourceViewer.prepareDelayedProjection();
-        if (isFoldingEnabled()) {
-            final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
-            fProjectionSupport = new ProjectionSupport(projectionViewer,
-                    getAnnotationAccess(), getSharedColors());
-            fProjectionSupport
-                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
-            fProjectionSupport
-                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
-            // TODO fProjectionSupport.setHoverControlCreator(new
-            // IInformationControlCreator()
-            // {
-            // public IInformationControl createInformationControl(Shell shell)
-            // {
-            // return new CustomSourceInformationControl(shell,
-            // IDocument.DEFAULT_CONTENT_TYPE);
-            // }
-            // });
-
-            fProjectionSupport.install();
-
-            fProjectionModelUpdater = ErlideUIPlugin.getDefault()
-                    .getFoldingStructureProviderRegistry()
-                    .getCurrentFoldingProvider();
-            if (fProjectionModelUpdater != null) {
-                fProjectionModelUpdater.install(this, projectionViewer);
-            }
-        }
-
-        return viewer;
-    }
-
     /**
      * Jumps to the matching bracket.
      */
@@ -783,6 +718,45 @@ public class ErlangEditor extends AbstractErlangEditor implements
             }
         }
         return fModule;
+    }
+
+    @Override
+    protected void addFoldingSupport(final ISourceViewer viewer) {
+        /*
+         * This is a performance optimization to reduce the computation of the
+         * text presentation triggered by {@link #setVisibleDocument(IDocument)}
+         */
+        // if (javaSourceViewer != null && isFoldingEnabled() && (store == null
+        // ||
+        // !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
+        // javaSourceViewer.prepareDelayedProjection();
+        if (isFoldingEnabled()) {
+            final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
+            fProjectionSupport = new ProjectionSupport(projectionViewer,
+                    getAnnotationAccess(), getSharedColors());
+            fProjectionSupport
+                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
+            fProjectionSupport
+                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
+            // TODO fProjectionSupport.setHoverControlCreator(new
+            // IInformationControlCreator()
+            // {
+            // public IInformationControl createInformationControl(Shell shell)
+            // {
+            // return new CustomSourceInformationControl(shell,
+            // IDocument.DEFAULT_CONTENT_TYPE);
+            // }
+            // });
+
+            fProjectionSupport.install();
+
+            fProjectionModelUpdater = ErlideUIPlugin.getDefault()
+                    .getFoldingStructureProviderRegistry()
+                    .getCurrentFoldingProvider();
+            if (fProjectionModelUpdater != null) {
+                fProjectionModelUpdater.install(this, projectionViewer);
+            }
+        }
     }
 
     /**

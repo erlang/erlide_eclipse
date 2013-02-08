@@ -6,9 +6,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -69,7 +66,6 @@ import org.erlide.ui.editors.erl.IErlangHelpContextIds;
 import org.erlide.ui.editors.erl.actions.IndentAction;
 import org.erlide.ui.editors.erl.actions.SendToConsoleAction;
 import org.erlide.ui.editors.erl.actions.ToggleCommentAction;
-import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.editors.erl.folding.IErlangFoldingStructureProvider;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.internal.ErlideUIPlugin;
@@ -80,7 +76,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         ISaveablePart2 {
 
     private ColorManager colorManager;
-    private final IPreferenceChangeListener fPreferenceChangeListener = new PreferenceChangeListener();
     private InformationPresenter fInformationPresenter;
     private ProjectionSupport fProjectionSupport;
     private IErlangFoldingStructureProvider fProjectionModelUpdater;
@@ -99,19 +94,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
     public ErlangScratchPad() {
         super();
         registerListeners();
-    }
-
-    // FIXME copied from ErlangEditor
-    class PreferenceChangeListener implements IPreferenceChangeListener {
-        @Override
-        public void preferenceChange(final PreferenceChangeEvent event) {
-            final String key = event.getKey();
-            if (key.indexOf('/') != -1
-                    && key.split("/")[0]
-                            .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
-                ErlangEditor.readBracketInserterPrefs(getBracketInserter());
-            }
-        }
     }
 
     private void registerListeners() {
@@ -134,9 +116,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
             ((ITextViewerExtension) sourceViewer)
                     .removeVerifyKeyListener(getBracketInserter());
         }
-        final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        node.removePreferenceChangeListener(fPreferenceChangeListener);
-
         if (fActionGroups != null) {
             fActionGroups.dispose();
             fActionGroups = null;
@@ -189,9 +168,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
 
         final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
         v.doOperation(ProjectionViewer.TOGGLE);
-
-        final IEclipsePreferences node = ErlideUIPlugin.getPrefsNode();
-        node.addPreferenceChangeListener(fPreferenceChangeListener);
 
         final IInformationControlCreator informationControlCreator = getSourceViewerConfiguration()
                 .getInformationControlCreator(getSourceViewer());
@@ -644,6 +620,11 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
             return scannerName;
         }
         return null;
+    }
+
+    @Override
+    protected void addFoldingSupport(final ISourceViewer viewer) {
+        // TODO Not yet
     }
 
 }

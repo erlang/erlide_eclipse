@@ -1,19 +1,19 @@
 package org.erlide.ui.editors.erl;
 
-import java.util.List;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.erlide.model.erlang.ErlToken;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
-import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 public abstract class AbstractErlangEditor extends TextEditor {
@@ -65,8 +65,6 @@ public abstract class AbstractErlangEditor extends TextEditor {
     public abstract String getScannerName();
 
     protected void setupBracketInserter() {
-        readBracketInserterPrefs(getBracketInserter());
-
         final ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer instanceof ITextViewerExtension) {
             ((ITextViewerExtension) sourceViewer)
@@ -74,22 +72,29 @@ public abstract class AbstractErlangEditor extends TextEditor {
         }
     }
 
-    public static void readBracketInserterPrefs(
-            final ErlangViewerBracketInserter bracketInserter) {
-        final List<Boolean> prefs = SmartTypingPreferencePage
-                .getBracketInserterPreferences();
-        bracketInserter.setCloseAtomsEnabled(prefs
-                .get(SmartTypingPreferencePage.ATOMS));
-        bracketInserter.setCloseBracketsEnabled(prefs
-                .get(SmartTypingPreferencePage.BRACKETS));
-        bracketInserter.setCloseStringsEnabled(prefs
-                .get(SmartTypingPreferencePage.STRINGS));
-        bracketInserter.setCloseBracesEnabled(prefs
-                .get(SmartTypingPreferencePage.BRACES));
-        bracketInserter.setCloseParensEnabled(prefs
-                .get(SmartTypingPreferencePage.PARENS));
-        bracketInserter.setEmbraceSelectionEnabled(prefs
-                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+    @Override
+    protected ISourceViewer createSourceViewer(final Composite parent,
+            final IVerticalRuler ruler, final int styles) {
+        final ISourceViewer viewer = new ErlangSourceViewer(parent, ruler,
+                getOverviewRuler(), true, styles,
+                new IBracketInserterValidator() {
+                    @Override
+                    public boolean earlyCancelCheck() {
+                        return getInsertMode() != ITextEditorExtension3.SMART_INSERT;
+                    }
+
+                    @Override
+                    public boolean validInput() {
+                        return validateEditorInputState();
+                    }
+                });
+        getSourceViewerDecorationSupport(viewer);
+
+        addFoldingSupport(viewer);
+
+        return viewer;
     }
+
+    protected abstract void addFoldingSupport(final ISourceViewer viewer);
 
 }
