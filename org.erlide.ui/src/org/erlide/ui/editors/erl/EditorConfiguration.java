@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
@@ -271,9 +271,11 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     }
 
     public void disposeContentAssistProcessors() {
-        contentAssistProcessor.dispose();
-        contentAssistProcessor = null;
-        contentAssistProcessorForStrings = null;
+        if (contentAssistProcessor != null) {
+            contentAssistProcessor.dispose();
+            contentAssistProcessor = null;
+            contentAssistProcessorForStrings = null;
+        }
     }
 
 }

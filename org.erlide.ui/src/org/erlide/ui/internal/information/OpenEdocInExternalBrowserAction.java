@@ -16,7 +16,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchSite;
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.root.IErlElement;
 import org.erlide.ui.actions.ActionMessages;
 import org.erlide.ui.actions.SelectionDispatchAction;
 import org.erlide.ui.editors.erl.ErlangEditor;

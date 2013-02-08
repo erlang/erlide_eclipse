@@ -29,9 +29,9 @@ import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.erlide.backend.BackendException;
-import org.erlide.core.internal.model.erlang.ErlideScanner;
-import org.erlide.core.model.erlang.ErlToken;
+import org.erlide.model.erlang.ErlToken;
+import org.erlide.model.internal.erlang.ErlideScanner;
+import org.erlide.model.internal.erlang.ScannerException;
 import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.internal.ErlideUIPlugin;
 import org.erlide.utils.ErlLogger;
@@ -326,7 +326,7 @@ class ErlangViewerBracketInserter implements VerifyKeyListener,
         final String str = document.get(getOffset, getLength);
         try {
             tokens = ErlideScanner.lightScanString(str, 0);
-        } catch (final BackendException e) {
+        } catch (final ScannerException e) {
         }
 
         int kind = ErlToken.KIND_OTHER;

@@ -19,15 +19,15 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.erlang.IErlAttribute;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.erlang.IErlScanner;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlElement.Kind;
-import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.util.ModelUtils;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlAttribute;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.erlang.IErlScanner;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.Activator;
 import org.erlide.wrangler.refactoring.backend.UserRefactoringsManager;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
@@ -194,7 +194,6 @@ public class AddRefacHandler extends AbstractHandler {
     }
 
     // copying files
-    @SuppressWarnings("resource")
     private boolean copy(final String source, final String dest,
             final String destDir) {
 

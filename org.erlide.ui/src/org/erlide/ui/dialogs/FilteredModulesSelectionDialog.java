@@ -66,16 +66,16 @@ import org.eclipse.ui.actions.WorkingSetFilterActionGroup;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.backend.BackendUtils;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElementLocator;
-import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.util.PluginUtils;
-import org.erlide.core.model.util.ResourceUtil;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
+import org.erlide.model.SourcePathUtils;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElementLocator;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.CommonUtils;
+import org.erlide.model.util.PluginUtils;
+import org.erlide.model.util.ResourceUtil;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.CommonUtils;
-import org.erlide.utils.PreferencesUtils;
+import org.erlide.util.PreferencesUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -484,7 +484,7 @@ public class FilteredModulesSelectionDialog extends
             this.progressMonitor = progressMonitor;
             final IResource[] resources = container.members();
             projects = new ArrayList<IResource>(Arrays.asList(resources));
-            extraLocations.addAll(BackendUtils.getExtraSourcePaths());
+            extraLocations.addAll(SourcePathUtils.getExtraSourcePaths());
             if (progressMonitor != null) {
                 progressMonitor.beginTask("Searching", projects.size());
             }
@@ -592,7 +592,7 @@ public class FilteredModulesSelectionDialog extends
                 validPaths.addAll(getFullPaths(project,
                         erlProject.getSourceDirs()));
                 final Collection<IPath> extras = Lists.newArrayList();
-                for (final IPath p : BackendUtils
+                for (final IPath p : SourcePathUtils
                         .getExtraSourcePathsForModel(project)) {
                     extras.add(p);
                 }

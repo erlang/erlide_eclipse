@@ -26,11 +26,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.erlide.backend.BackendUtils;
-import org.erlide.core.services.builder.BuildQueueProcessor;
+import org.erlide.core.builder.BuildQueueProcessor;
 import org.erlide.launch.debug.ErlangDebugOptionsManager;
+import org.erlide.model.SourcePathUtils;
 import org.erlide.runtime.rpc.RpcMonitor;
-import org.erlide.utils.EncodingUtils;
+import org.erlide.util.EncodingUtils;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
@@ -65,7 +65,7 @@ public final class ErlangCore {
         // TODO can we remove this from here?
         try {
             // ignore result, just setup cache
-            BackendUtils.getSourcePathProviders();
+            SourcePathUtils.getSourcePathProviders();
         } catch (final CoreException e) {
             // ignore
         }

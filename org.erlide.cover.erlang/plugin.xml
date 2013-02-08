@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension
-         point="org.erlide.core.codepath">
+  <extension
+         point="org.erlide.backend.codepath">
       <beam_dir
             context="any"
             path="/ebin">

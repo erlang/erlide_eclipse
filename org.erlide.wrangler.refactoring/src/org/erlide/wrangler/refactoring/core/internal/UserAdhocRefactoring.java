@@ -1,9 +1,9 @@
 package org.erlide.wrangler.refactoring.core.internal;
 
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.util.ModelUtils;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.ModelUtils;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.wrangler.refactoring.backend.internal.WranglerBackendManager;
 

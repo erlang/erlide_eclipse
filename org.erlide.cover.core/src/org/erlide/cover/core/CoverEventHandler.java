@@ -5,8 +5,6 @@ import java.util.Iterator;
 
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.util.ModelUtils;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ICoverageObject;
@@ -16,6 +14,8 @@ import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.util.ModelUtils;
 import org.osgi.service.event.Event;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;

@@ -26,13 +26,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.ErlangPlugin;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlProject;
-import org.erlide.core.model.root.OldErlangProjectProperties;
-import org.erlide.core.model.util.ModelUtils;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlModel;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.OldErlangProjectProperties;
+import org.erlide.model.util.ModelUtils;
 
 import com.google.common.collect.Lists;
 

@@ -16,16 +16,16 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.util.ErlangFunction;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.views.model.FunctionStats;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlFunction;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.util.ErlangFunction;
 import org.erlide.ui.editors.erl.ErlangEditor;
 
 /**

@@ -1,0 +1,9 @@
+#Tue Oct 06 10:25:31 CEST 2009
+backend_version=R14B
+eclipse.preferences.version=1
+external_includes=
+external_modules=
+include_dirs=eunit/include
+output_dir=eunit/ebin
+source_dirs=eunit/src
+use_pathz=false

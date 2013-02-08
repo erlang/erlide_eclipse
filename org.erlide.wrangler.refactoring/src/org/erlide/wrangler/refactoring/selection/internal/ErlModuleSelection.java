@@ -11,8 +11,8 @@
 package org.erlide.wrangler.refactoring.selection.internal;
 
 import org.eclipse.core.resources.IFile;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlElement;
 
 /**
  * Represents an Erlang module which is selected by the user

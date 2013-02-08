@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     György Orosz - initial API and implementation
  ******************************************************************************/
@@ -21,7 +21,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.root.IErlElement;
 import org.erlide.wrangler.refactoring.codeinspection.view.CodeInspectionResultsView;
 import org.erlide.wrangler.refactoring.codeinspection.view.GraphImageView;
 

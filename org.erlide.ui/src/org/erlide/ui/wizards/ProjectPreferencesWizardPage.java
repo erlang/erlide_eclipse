@@ -36,10 +36,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
-import org.erlide.core.internal.model.root.PathSerializer;
-import org.erlide.core.model.root.OldErlangProjectProperties;
+import org.erlide.model.internal.root.PathSerializer;
+import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.ui.internal.ErlideUIPlugin;
-import org.erlide.utils.PreferencesUtils;
+import org.erlide.util.PreferencesUtils;
 import org.erlide.utils.SystemConfiguration;
 
 import com.ericsson.otp.erlang.RuntimeVersion;

@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: erlide model
+Bundle-SymbolicName: org.erlide.model;singleton:=true
+Bundle-Version: 0.18.0.qualifier
+Bundle-Activator: org.erlide.model.ModelPlugin
+Bundle-Vendor: erlide.org project
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.6.1",
+ org.eclipse.core.filesystem;bundle-version="1.3.1",
+ org.erlide.libs;bundle-version="1.8.5",
+ org.erlide.runtime;bundle-version="0.18.0",
+ org.erlide.util;bundle-version="0.18.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.erlide.model,
+ org.erlide.model.erlang,
+ org.erlide.model.internal.erlang,
+ org.erlide.model.internal.root,
+ org.erlide.model.root,
+ org.erlide.model.services.cleanup,
+ org.erlide.model.services.codeassist,
+ org.erlide.model.services.search,
+ org.erlide.model.services.text,
+ org.erlide.model.util

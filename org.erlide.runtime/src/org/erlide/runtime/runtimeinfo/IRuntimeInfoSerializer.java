@@ -2,8 +2,8 @@ package org.erlide.runtime.runtimeinfo;
 
 public interface IRuntimeInfoSerializer {
 
-    RuntimeInfoManagerData load();
+    RuntimeInfoCatalogData load();
 
-    void store(RuntimeInfoManagerData data);
+    void store(RuntimeInfoCatalogData data);
 
 }

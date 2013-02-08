@@ -26,7 +26,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.ui.editors,
  org.eclipse.osgi.services;bundle-version="3.2.100",
- org.erlide.runtime
+ org.erlide.runtime,
+ org.erlide.model;bundle-version="0.18.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.erlide.test_support,

@@ -47,8 +47,8 @@ public class ErlangPreferencePage extends PreferencePage implements
 
         final Label img = new Label(panel, SWT.NONE);
         img.setLayoutData(new GridData(79, SWT.DEFAULT));
-        img.setImage(ResourceManager.getPluginImage(
-                ErlideUIPlugin.getDefault(), "icons/full/obj16/erlang058.gif"));
+        img.setImage(ResourceManager.getPluginImage(ErlideUIPlugin.PLUGIN_ID,
+                "icons/full/obj16/erlang058.gif"));
 
         final Group composite = new Group(panel, SWT.NONE);
         final GridData gd_composite = new GridData(SWT.FILL, SWT.CENTER, false,

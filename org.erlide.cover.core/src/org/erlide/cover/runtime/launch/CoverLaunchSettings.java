@@ -2,13 +2,13 @@ package org.erlide.cover.runtime.launch;
 
 import java.util.Collection;
 
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.erlang.IErlModule;
 import org.erlide.cover.api.Configuration;
 import org.erlide.cover.api.CoverException;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.Logger;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlModule;
 
 /**
  * Settings for performing coverage.

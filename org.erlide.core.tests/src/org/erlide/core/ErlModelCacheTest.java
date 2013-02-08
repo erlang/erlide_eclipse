@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlElementLocator;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlElementLocator;
+import org.erlide.model.root.IErlProject;
 import org.erlide.test.support.ErlideTestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

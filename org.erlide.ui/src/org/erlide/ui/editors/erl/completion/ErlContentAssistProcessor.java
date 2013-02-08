@@ -22,7 +22,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.services.IDisposable;
-import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.model.erlang.IErlModule;
 import org.erlide.ui.prefs.plugin.CodeAssistPreferences;
 import org.osgi.service.prefs.BackingStoreException;
 
