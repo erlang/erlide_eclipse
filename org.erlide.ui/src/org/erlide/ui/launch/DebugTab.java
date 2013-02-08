@@ -39,10 +39,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
+import org.erlide.backend.BackendData;
 import org.erlide.debug.ui.utils.ModuleItemLabelProvider;
 import org.erlide.debug.ui.views.InterpretedModuleListContentProvider;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.launch.ErlangLaunchDelegate;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
@@ -249,7 +249,7 @@ public class DebugTab extends AbstractLaunchConfigurationTab {
             listViewer.setInput(config);
         }
 
-        final List<String> interpret = ErlangLaunchDelegate
+        final List<String> interpret = BackendData
                 .addBreakpointProjectsAndModules(null, new ArrayList<String>());
         contentProvider.addModules(interpret);
 

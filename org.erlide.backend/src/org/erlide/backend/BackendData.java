@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.erlide.backend;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -145,10 +146,10 @@ public final class BackendData extends RuntimeData {
 
     public static List<String> addBreakpointProjectsAndModules(
             final Collection<IProject> projects,
-            final Collection<String> interpretedModules2) {
+            final List<String> interpretedModules) {
         final IBreakpointManager bpm = DebugPlugin.getDefault()
                 .getBreakpointManager();
-        final List<String> result = Lists.newArrayList(interpretedModules2);
+        final List<String> result = new ArrayList<String>(interpretedModules);
         for (final IBreakpoint bp : bpm
                 .getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
             final IMarker m = bp.getMarker();
@@ -156,7 +157,7 @@ public final class BackendData extends RuntimeData {
             final String name = r.getName();
             if (ModuleKind.hasErlExtension(name)) {
                 final IProject p = r.getProject();
-                if (projects.contains(p)) {
+                if (projects == null || projects.contains(p)) {
                     final String s = p.getName() + ":" + name;
                     if (!result.contains(s)) {
                         result.add(s);

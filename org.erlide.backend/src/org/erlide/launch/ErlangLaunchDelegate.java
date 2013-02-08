@@ -13,32 +13,22 @@ package org.erlide.launch;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.debug.core.model.IProcess;
 import org.erlide.backend.BackendCore;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
-import org.erlide.launch.debug.ErlDebugConstants;
 import org.erlide.model.BeamLocator;
-import org.erlide.model.erlang.ModuleKind;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
@@ -238,30 +228,6 @@ public class ErlangLaunchDelegate implements ILaunchConfigurationDelegate {
             ErlLogger.warn(e);
             return false;
         }
-    }
-
-    public static List<String> addBreakpointProjectsAndModules(
-            final Collection<IProject> projects,
-            final List<String> interpretedModules) {
-        final IBreakpointManager bpm = DebugPlugin.getDefault()
-                .getBreakpointManager();
-        final List<String> result = new ArrayList<String>(interpretedModules);
-        for (final IBreakpoint bp : bpm
-                .getBreakpoints(ErlDebugConstants.ID_ERLANG_DEBUG_MODEL)) {
-            final IMarker m = bp.getMarker();
-            final IResource r = m.getResource();
-            final String name = r.getName();
-            if (ModuleKind.hasErlExtension(name)) {
-                final IProject p = r.getProject();
-                if (projects == null || projects.contains(p)) {
-                    final String s = p.getName() + ":" + name;
-                    if (!result.contains(s)) {
-                        result.add(s);
-                    }
-                }
-            }
-        }
-        return result;
     }
 
 }
