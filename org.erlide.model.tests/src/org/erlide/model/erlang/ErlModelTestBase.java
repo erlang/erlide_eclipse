@@ -1,4 +1,4 @@
-package org.erlide.core.model.erlang;
+package org.erlide.model.erlang;
 
 import org.eclipse.core.runtime.CoreException;
 import org.erlide.model.erlang.IErlModule;

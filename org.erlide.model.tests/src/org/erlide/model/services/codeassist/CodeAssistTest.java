@@ -1,4 +1,4 @@
-package org.erlide.core.services.codeassist;
+package org.erlide.model.services.codeassist;
 
 import java.util.Collection;
 

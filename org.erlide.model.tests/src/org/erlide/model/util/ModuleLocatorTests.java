@@ -1,4 +1,4 @@
-package org.erlide.core.util;
+package org.erlide.model.util;
 
 import static org.junit.Assert.*;
 

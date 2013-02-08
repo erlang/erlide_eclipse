@@ -1,4 +1,4 @@
-package org.erlide.core.model.erlang;
+package org.erlide.model.erlang;
 
 import static org.junit.Assert.assertEquals;
 
