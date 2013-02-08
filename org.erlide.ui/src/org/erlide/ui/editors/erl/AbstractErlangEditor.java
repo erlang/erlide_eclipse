@@ -1,7 +1,11 @@
 package org.erlide.ui.editors.erl;
 
+import java.util.List;
+
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.erlide.model.erlang.ErlToken;
@@ -9,6 +13,7 @@ import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlProject;
+import org.erlide.ui.editors.erl.autoedit.SmartTypingPreferencePage;
 import org.erlide.ui.prefs.PreferenceConstants;
 
 public abstract class AbstractErlangEditor extends TextEditor {
@@ -58,5 +63,33 @@ public abstract class AbstractErlangEditor extends TextEditor {
     public abstract IErlProject getProject();
 
     public abstract String getScannerName();
+
+    protected void setupBracketInserter() {
+        readBracketInserterPrefs(getBracketInserter());
+
+        final ISourceViewer sourceViewer = getSourceViewer();
+        if (sourceViewer instanceof ITextViewerExtension) {
+            ((ITextViewerExtension) sourceViewer)
+                    .prependVerifyKeyListener(getBracketInserter());
+        }
+    }
+
+    public static void readBracketInserterPrefs(
+            final ErlangViewerBracketInserter bracketInserter) {
+        final List<Boolean> prefs = SmartTypingPreferencePage
+                .getBracketInserterPreferences();
+        bracketInserter.setCloseAtomsEnabled(prefs
+                .get(SmartTypingPreferencePage.ATOMS));
+        bracketInserter.setCloseBracketsEnabled(prefs
+                .get(SmartTypingPreferencePage.BRACKETS));
+        bracketInserter.setCloseStringsEnabled(prefs
+                .get(SmartTypingPreferencePage.STRINGS));
+        bracketInserter.setCloseBracesEnabled(prefs
+                .get(SmartTypingPreferencePage.BRACES));
+        bracketInserter.setCloseParensEnabled(prefs
+                .get(SmartTypingPreferencePage.PARENS));
+        bracketInserter.setEmbraceSelectionEnabled(prefs
+                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
+    }
 
 }

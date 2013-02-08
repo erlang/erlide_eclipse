@@ -106,7 +106,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         @Override
         public void preferenceChange(final PreferenceChangeEvent event) {
             final String key = event.getKey();
-            // ErlLogger.debug("event:: " + key);
             if (key.indexOf('/') != -1
                     && key.split("/")[0]
                             .equals(SmartTypingPreferencePage.SMART_TYPING_KEY)) {
@@ -186,13 +185,7 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
     public void createPartControl(final Composite parent) {
         super.createPartControl(parent);
 
-        ErlangEditor.readBracketInserterPrefs(getBracketInserter());
-
-        final ISourceViewer sourceViewer = getSourceViewer();
-        if (sourceViewer instanceof ITextViewerExtension) {
-            ((ITextViewerExtension) sourceViewer)
-                    .prependVerifyKeyListener(getBracketInserter());
-        }
+        setupBracketInserter();
 
         final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
         v.doOperation(ProjectionViewer.TOGGLE);

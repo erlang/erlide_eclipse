@@ -1130,7 +1130,7 @@ public class ErlangEditor extends AbstractErlangEditor implements
             throw filterUTF8Exception(e);
         }
 
-        readBracketInserterPrefs(getBracketInserter());
+        setupBracketInserter();
 
         final ProjectionViewer v = (ProjectionViewer) getSourceViewer();
         v.doOperation(ProjectionViewer.TOGGLE);
