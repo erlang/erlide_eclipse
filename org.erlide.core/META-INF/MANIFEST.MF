@@ -16,9 +16,9 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.debug.core,
  org.eclipse.osgi.services,
  org.erlide.backend,
- org.erlide.libs;bundle-version="1.8.4",
- org.erlide.runtime,
  org.erlide.model;bundle-version="0.18.0",
+ org.erlide.runtime,
+ org.erlide.libs;bundle-version="1.8.4",
  org.erlide.util;bundle-version="0.18.0",
  org.erlide.util_eclipse;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
