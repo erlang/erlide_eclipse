@@ -218,6 +218,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             final OtpErlangObject gleader, final String module,
             final String fun, final String signature, final Object... args0)
             throws RpcException {
+        if (stopped) {
+            return null;
+        }
         tryConnect();
         OtpErlangObject result;
         try {
@@ -272,7 +275,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             case CONNECTED:
                 break;
             case DOWN:
-                final String msg = reportRuntimeDown(data.getNodeName());
                 try {
                     if (process != null) {
                         process.terminate();
@@ -282,7 +284,10 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
                 }
                 // TODO restart it??
                 // process =
-                throw new RpcException(msg);
+                if (!stopped) {
+                    final String msg = reportRuntimeDown(data.getNodeName());
+                    throw new RpcException(msg);
+                }
             }
         }
     }
