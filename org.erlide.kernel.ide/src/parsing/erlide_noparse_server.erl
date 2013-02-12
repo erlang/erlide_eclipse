@@ -26,7 +26,6 @@
 -define(SERVER, erlide_noparse).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
 
 -record(module, {name, erlide_path, model}).
 

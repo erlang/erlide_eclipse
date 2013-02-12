@@ -34,9 +34,7 @@ public class BackendManagerPopup implements IBackendListener {
     public void runtimeAdded(final IBackend b) {
         ErlLogger.debug("$$ added backend " + b.getRuntimeInfo());
         ErlLogger.debug("$$ added backend " + b.getName() + " " + b);
-        final IWorkbench workbench = PlatformUI.getWorkbench();
-        final Display display = workbench.getDisplay();
-        display.asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
 
             @Override
             public void run() {

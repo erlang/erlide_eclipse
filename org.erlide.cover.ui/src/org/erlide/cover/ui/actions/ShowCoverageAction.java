@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Collection;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.cover.core.Activator;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.MD5Checksum;
@@ -13,6 +12,7 @@ import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.StatsTreeModel;
 import org.erlide.cover.views.model.StatsTreeObject;
+import org.erlide.model.root.ErlModelManager;
 
 /**
  * Showing annotations from context menu for specified objects

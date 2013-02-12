@@ -8,7 +8,6 @@
 %%
 
 -include_lib("eunit/include/eunit.hrl").
--include("erlide_scanner.hrl").
 
 %%
 %% test Functions

@@ -30,8 +30,7 @@ public class DebugStream extends PrintStream {
     }
 
     private void showLocation() {
-        final StackTraceElement element = Thread.currentThread()
-                .getStackTrace()[3];
+        final StackTraceElement element = new Throwable().getStackTrace()[2];
         super.print(MessageFormat.format("({0}:{1, number,#}) : ",
                 element.getFileName(), element.getLineNumber()));
     }

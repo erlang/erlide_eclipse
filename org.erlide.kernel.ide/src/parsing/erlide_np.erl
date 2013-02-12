@@ -9,7 +9,7 @@
 -compile(export_all).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 -include("erlide_noparse.hrl").
 -include("erlide_search.hrl").
 
@@ -36,9 +36,9 @@ cac_form(function, Tokens, Exports, Imports) ->
     get_function(Tokens, Exports, Imports);
 cac_form(attribute, Attribute, _Exports, _Imports) ->
     get_attribute(Attribute);
-cac_form(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _],
+cac_form(other, [#token{value=Name, line=Line, offset=Offset, length=Length} | _]=T,
     _Exports, _Imports) ->
-    {#other{pos={{Line, Line, Offset}, Length}, name=Name}, [], [], []};
+    {#other{pos={{Line, Line, Offset}, Length}, name=Name, tokens=T}, [], [], []};
 cac_form(_, _D, _E, _I) ->
     {eof, [], [], []}.
 
@@ -180,7 +180,7 @@ field_list_from_tokens(_) ->
     [].
 
 to_string(Tokens) ->
-    S = erlide_scanner:tokens_to_string(Tokens),
+    S = erlide_scan_model:tokens_to_string(Tokens),
     erlide_text:strip(S).
 %%     unspacify(S).
 

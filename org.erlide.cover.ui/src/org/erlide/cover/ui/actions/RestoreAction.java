@@ -17,7 +17,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
-import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.cover.core.Logger;
 import org.erlide.cover.core.MD5Checksum;
 import org.erlide.cover.ui.Activator;
@@ -29,6 +28,7 @@ import org.erlide.cover.views.model.ModuleSet;
 import org.erlide.cover.views.model.ModuleStats;
 import org.erlide.cover.views.model.ObjectType;
 import org.erlide.cover.views.model.StatsTreeModel;
+import org.erlide.model.root.ErlModelManager;
 
 /**
  * An action for restoring coverage results which were previously saved
@@ -81,7 +81,12 @@ public class RestoreAction extends Action {
             final ObjectInputStream objStream = new ObjectInputStream(
                     new FileInputStream(f));
 
-            final Object obj = objStream.readObject();
+            final Object obj;
+            try {
+                obj = objStream.readObject();
+            } finally {
+                objStream.close();
+            }
 
             StatsTreeModel.changeInstance((StatsTreeModel) obj);
             StatsTreeModel.getInstance().setChanged(true);

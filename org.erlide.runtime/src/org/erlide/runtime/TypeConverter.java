@@ -397,8 +397,7 @@ public final class TypeConverter {
         if (TypeConverter.willCheckConversion()) {
             StackTraceElement el = null;
             boolean found = false;
-            final StackTraceElement[] st = Thread.currentThread()
-                    .getStackTrace();
+            final StackTraceElement[] st = new Throwable().getStackTrace();
             for (final StackTraceElement ste : st) {
                 if (found) {
                     if (!((ste.getMethodName().equals("send")
@@ -554,10 +553,6 @@ public final class TypeConverter {
 
     private static void failConversion(final Object obj, final Signature type)
             throws SignatureException {
-        // ErlLogger.debug("+++++++ "
-        // + String.format("Bad conversion required: %s(%s) - %s", obj
-        // .getClass().getName(), obj.toString(), type));
-
         throw new SignatureException(String.format(
                 "Bad conversion required: %s(%s) - %s", obj.getClass()
                         .getName(), obj.toString(), type.toString()));

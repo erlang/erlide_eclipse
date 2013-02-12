@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.internal.model.root.ErlProjectLayout;
+import org.erlide.model.internal.root.ErlProjectLayout;
 import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.TermParserException;
 import org.hamcrest.Matchers;

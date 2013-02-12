@@ -27,10 +27,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.util.ModelUtils;
+import org.erlide.model.erlang.IErlFunctionClause;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.util.ModelUtils;
 import org.erlide.wrangler.refactoring.util.WranglerUtils;
 
 /**

@@ -4,9 +4,9 @@ import java.text.Collator;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.erlang.ISourceReference;
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.erlang.IErlFunction;
+import org.erlide.model.erlang.ISourceReference;
+import org.erlide.model.root.IErlElement;
 
 public class ErlElementSorter extends ViewerSorter {
 

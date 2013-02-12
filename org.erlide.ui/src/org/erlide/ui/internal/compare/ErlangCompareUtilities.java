@@ -24,12 +24,12 @@ import org.eclipse.compare.IEncodedStreamContentAccessor;
 import org.eclipse.compare.IStreamContentAccessor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.erlide.core.model.erlang.IErlAttribute;
-import org.erlide.core.model.erlang.IErlFunction;
-import org.erlide.core.model.erlang.IErlFunctionClause;
-import org.erlide.core.model.erlang.IErlPreprocessorDef;
-import org.erlide.core.model.root.IErlElement;
-import org.erlide.core.model.root.IErlElement.Kind;
+import org.erlide.model.erlang.IErlAttribute;
+import org.erlide.model.erlang.IErlFunction;
+import org.erlide.model.erlang.IErlFunctionClause;
+import org.erlide.model.erlang.IErlPreprocessorDef;
+import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
 
 class ErlangCompareUtilities {
 

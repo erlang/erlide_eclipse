@@ -25,6 +25,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.erlide.ui.internal.ErlideUIPlugin;
+import org.erlide.ui.util.DisplayUtils;
 import org.osgi.framework.Bundle;
 
 import com.google.common.base.Charsets;
@@ -47,7 +48,7 @@ public class HTMLPrinter {
         final Display display = Display.getDefault();
         if (display != null && !display.isDisposed()) {
             try {
-                display.asyncExec(new Runnable() {
+                DisplayUtils.asyncExec(new Runnable() {
                     /*
                      * @see java.lang.Runnable#run()
                      */

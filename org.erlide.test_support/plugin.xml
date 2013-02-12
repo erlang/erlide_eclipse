@@ -34,7 +34,7 @@
    </persistent>
 </extension>
 <extension
-      point="org.erlide.core.sourcePathProvider">
+      point="org.erlide.model.sourcePathProvider">
    <sourcePathProvider
          class="org.erlide.test_support.TestSourcePathProvider">
    </sourcePathProvider>
@@ -42,21 +42,21 @@
 <extension
       point="org.eclipse.core.runtime.adapters">
    <factory
-         adaptableType="org.erlide.core.model.erlang.IErlFunction"
+         adaptableType="org.erlide.model.erlang.IErlFunction"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.core.model.erlang.IErlFunctionClause"
+         adaptableType="org.erlide.model.erlang.IErlFunctionClause"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
       </adapter>
    </factory>
    <factory
-         adaptableType="org.erlide.core.model.erlang.IErlModule"
+         adaptableType="org.erlide.model.erlang.IErlModule"
          class="org.erlide.test_support.ui.ErlElementAdapterFactory">
       <adapter
             type="org.eclipse.debug.ui.actions.ILaunchable">
@@ -149,7 +149,7 @@
       </support>
    </extension-->
    <extension
-         point="org.erlide.core.codepath">
+         point="org.erlide.backend.codepath">
       <beam_dir
             context="any"
             path="ebin">

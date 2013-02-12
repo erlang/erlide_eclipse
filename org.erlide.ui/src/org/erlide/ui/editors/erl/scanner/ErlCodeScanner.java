@@ -24,9 +24,9 @@ import org.eclipse.jface.text.rules.ITokenScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.erlide.backend.BackendException;
-import org.erlide.core.internal.model.erlang.ErlideScanner;
-import org.erlide.core.model.erlang.ErlToken;
+import org.erlide.model.erlang.ErlToken;
+import org.erlide.model.internal.erlang.ErlideScanner;
+import org.erlide.model.internal.erlang.ScannerException;
 import org.erlide.ui.prefs.HighlightStyle;
 import org.erlide.ui.prefs.TokenHighlight;
 import org.erlide.ui.prefs.plugin.ColoringPreferencePage;
@@ -211,7 +211,7 @@ public class ErlCodeScanner implements ITokenScanner, IPreferenceChangeListener 
             final String str = text;
             fTokens = ErlideScanner.lightScanString(str, rangeOffset);
 
-        } catch (final BackendException e) {
+        } catch (final ScannerException e) {
             // e.printStackTrace();
         }
     }

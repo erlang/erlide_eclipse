@@ -24,7 +24,7 @@ import org.erlide.ui.util.FolderSelectionDialog;
 import org.erlide.ui.util.StatusInfo;
 import org.erlide.ui.util.TypedElementSelectionValidator;
 import org.erlide.ui.util.TypedViewerFilter;
-import org.erlide.utils.PreferencesUtils;
+import org.erlide.util.PreferencesUtils;
 
 public class ProjectPathEditor extends PathEditor {
     private final IProject project;

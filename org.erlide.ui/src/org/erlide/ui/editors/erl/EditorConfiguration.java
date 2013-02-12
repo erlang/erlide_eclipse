@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.erlide.core.model.erlang.IErlModule;
+import org.erlide.model.erlang.IErlModule;
 import org.erlide.ui.editors.erl.autoedit.AutoIndentStrategy;
 import org.erlide.ui.editors.erl.completion.ErlContentAssistProcessor;
 import org.erlide.ui.editors.erl.completion.ErlStringContentAssistProcessor;
@@ -41,7 +41,7 @@ import org.erlide.ui.editors.erl.correction.ErlangQuickAssistProcessor;
 import org.erlide.ui.editors.erl.hover.ErlTextHover;
 import org.erlide.ui.editors.erl.scanner.IErlangPartitions;
 import org.erlide.ui.editors.internal.reconciling.ErlReconciler;
-import org.erlide.ui.editors.internal.reconciling.ErlReconcilerStrategy;
+import org.erlide.ui.editors.internal.reconciling.ErlReconcilingStrategy;
 import org.erlide.ui.internal.information.ErlInformationPresenter;
 import org.erlide.ui.internal.information.PresenterControlCreator;
 import org.erlide.ui.util.IColorManager;
@@ -121,10 +121,13 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
 
     @Override
     public IReconciler getReconciler(final ISourceViewer sourceViewer) {
-        final ErlReconcilerStrategy strategy = new ErlReconcilerStrategy(editor);
+        final ErlReconcilingStrategy strategy = new ErlReconcilingStrategy(
+                editor);
         final IErlModule module = editor != null ? editor.getModule() : null;
         final String path = module != null ? module.getFilePath() : null;
-        reconciler = new ErlReconciler(strategy, true, true, path, module);
+        final boolean logging = module != null ? module.getLogging() : true;
+        reconciler = new ErlReconciler(strategy, true, true, path, module,
+                logging);
         reconciler.setProgressMonitor(new NullProgressMonitor());
         reconciler.setIsAllowedToModifyDocument(false);
         reconciler.setDelay(500);
@@ -268,9 +271,11 @@ public class EditorConfiguration extends ErlangSourceViewerConfiguration {
     }
 
     public void disposeContentAssistProcessors() {
-        contentAssistProcessor.dispose();
-        contentAssistProcessor = null;
-        contentAssistProcessorForStrings = null;
+        if (contentAssistProcessor != null) {
+            contentAssistProcessor.dispose();
+            contentAssistProcessor = null;
+            contentAssistProcessorForStrings = null;
+        }
     }
 
 }

@@ -2,7 +2,7 @@
 %% Created: Mar 23, 2006
 %% Description: TODO: Add description to erlide_open
 -module(erlide_open).
--author(jakobce@gmail.com).
+-author('jakobce@gmail.com').
 
 %%
 %% Exported Functions
@@ -14,7 +14,7 @@
          get_external_module/2,
          get_external_module_tree/1,
          get_external_include/2,
-		 get_external_1/3,
+     get_external_1/3,
          get_lib_dirs/0,
          get_lib_src_include/1,
          get_lib_files/1
@@ -30,7 +30,7 @@
 %%-define(IO_FORMAT_DEBUG, 1).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 -compile(export_all).
 
@@ -50,7 +50,7 @@ open(Mod, Offset, #open_context{imports=Imports0}=Context) ->
     Imports = erlide_util:add_auto_imported(Imports0),
     try
         {TokensWComments, BeforeReversed} =
-            erlide_scanner_server:getTokenWindow(Mod, Offset, 45, 100),
+            erlide_scanner:get_token_window(Mod, Offset, 45, 100),
         ?D({TokensWComments, BeforeReversed}),
         try_open(Offset, TokensWComments, BeforeReversed,
                  Context#open_context{imports=Imports}),
@@ -79,7 +79,7 @@ open_info(S, #open_context{}=Context) when is_list(S); is_binary(S) ->
             {error, E}
     end.
 
-get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes, 
+get_external_include(FilePath, #open_context{externalIncludes=ExternalIncludes,
                                              pathVars=PathVars}) ->
     ?D(FilePath),
     ExtIncPaths = get_external_modules_files(ExternalIncludes, PathVars),
@@ -150,8 +150,8 @@ get_lib_dir(Dir) ->
         _ ->
             Dir
     end.
-                
-    
+
+
 try_open(Offset, TokensWComments, BeforeReversedWComments, Context) ->
     Tokens = erlide_text:strip_comments(TokensWComments),
     BeforeReversed = erlide_text:strip_comments(BeforeReversedWComments),
@@ -386,7 +386,7 @@ get_external_modules_files(PackedFileNames, PathVars) ->
     Fun = fun(_Parent, FileName, Acc) -> [replace_path_var(FileName, PathVars) | Acc] end,
     Fun2 = fun(_Parent, _FileName, Acc) -> Acc end,
     FileNames = erlide_util:unpack(PackedFileNames),
-    R = fold_externals(Fun, Fun2, FileNames, PathVars), 
+    R = fold_externals(Fun, Fun2, FileNames, PathVars),
     %%?D(R),
     R.
 

@@ -1,7 +1,7 @@
 /*
  * %CopyrightBegin%
  * 
- * Copyright Ericsson AB 2000-2011. All Rights Reserved.
+ * Copyright Ericsson AB 2000-2012. All Rights Reserved.
  * 
  * The contents of this file are subject to the Erlang Public License,
  * Version 1.1, (the "License"); you may not use this file except in
@@ -31,7 +31,7 @@ package com.ericsson.otp.erlang;
  * the recipient of the message. When sending messages to other mailboxes, the
  * recipient can only respond if the sender includes the pid as part of the
  * message contents. The sender can determine his own pid by calling
- * {@link #self self()}.
+ * {@link #self() self()}.
  * </p>
  * 
  * <p>
@@ -141,7 +141,7 @@ public class OtpMbox {
      * Get the registered name of this mailbox.
      * 
      * @return the registered name of this mailbox, or null if the mailbox had
-     *         no registerd name.
+     *         no registered name.
      */
     public String getName() {
         return name;

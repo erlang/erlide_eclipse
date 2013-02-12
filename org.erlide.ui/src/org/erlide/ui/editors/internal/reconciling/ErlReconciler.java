@@ -20,8 +20,8 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
 import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -54,13 +54,14 @@ public class ErlReconciler implements IReconciler {
     final boolean fChunkReconciler;
 
     List<ErlDirtyRegion> log = Lists.newLinkedList();
-    boolean logging = false;
+    boolean logging;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
             final boolean isIncremental, final boolean chunkReconciler,
-            final String path, final IErlModule module) {
+            final String path, final IErlModule module, final boolean logging) {
 
         super();
+        this.logging = logging;
         Assert.isNotNull(strategy);
 
         setIsIncrementalReconciler(isIncremental);
@@ -143,13 +144,13 @@ public class ErlReconciler implements IReconciler {
             while (i > 0 && isDirty) {
                 i--;
                 synchronized (fDirtyRegionQueue) {
-                    isDirty = isDirty();
                     if (isDirty) {
                         try {
                             fDirtyRegionQueue.wait(fDelay);
                         } catch (final InterruptedException x) {
                         }
                     }
+                    isDirty = isDirty();
                 }
             }
             if (i == 0 || isDirty) {
@@ -504,7 +505,7 @@ public class ErlReconciler implements IReconciler {
             }
         }
 
-        final ErlReconcilerStrategy s = (ErlReconcilerStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
+        final ErlReconcilingStrategy s = (ErlReconcilingStrategy) getReconcilingStrategy(IDocument.DEFAULT_CONTENT_TYPE);
         s.uninstall();
         if (path != null) {
             ErlModelManager.getErlangModel().putEdited(path, null);
@@ -680,7 +681,7 @@ public class ErlReconciler implements IReconciler {
             extension.initialReconcile();
             if (logging) {
                 log.clear();
-                final ErlReconcilerStrategy erlReconcilerStrategy = (ErlReconcilerStrategy) fStrategy;
+                final ErlReconcilingStrategy erlReconcilerStrategy = (ErlReconcilingStrategy) fStrategy;
                 final IErlModule module = erlReconcilerStrategy.getModule();
                 final String scannerName = module.getScannerName();
                 final String erlFilename = module.getFilePath();

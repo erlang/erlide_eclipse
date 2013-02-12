@@ -7,14 +7,14 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
-import org.erlide.core.model.root.IErlModel;
-import org.erlide.core.model.root.IErlProject;
 import org.erlide.debug.ui.utils.ModuleListContentProvider;
 import org.erlide.launch.ErlLaunchAttributes;
-import org.erlide.utils.CommonUtils;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
+import org.erlide.model.root.IErlModel;
+import org.erlide.model.root.IErlProject;
+import org.erlide.model.util.CommonUtils;
 import org.erlide.utils.ErlLogger;
 
 public class InterpretedModuleListContentProvider extends

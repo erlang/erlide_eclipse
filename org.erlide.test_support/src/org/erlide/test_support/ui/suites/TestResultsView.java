@@ -14,7 +14,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionBars;
@@ -24,6 +23,7 @@ import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.TermParserException;
 import org.erlide.test_support.ui.suites.TestCaseData.FailReason;
 import org.erlide.test_support.ui.suites.TestCaseData.FailStackItem;
+import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.util.ErlModelUtils;
 import org.erlide.utils.ErlLogger;
 
@@ -119,7 +119,7 @@ public class TestResultsView extends ViewPart {
     }
 
     public void notifyEvent(final OtpErlangObject msg) {
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
                 try {

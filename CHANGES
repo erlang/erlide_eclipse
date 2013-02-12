@@ -1,3 +1,20 @@
+List of user visible changes between 0.18.0 and 0.19.0 (20130208)
+
+f57ef2b remove "backend down" dialogs when stopping debugged runtime
+df39e7f filter out too old runtimes from the list
+8559348 merge model refactoring branch
+b40089d 1118: add preference to enable/disable scanning for TODO comments
+8434ac2 1138: selection of runtime by version always picks the latest
+da564ec 1137: NPE adding Erlang Runtime
+957d119 831: fix jinterface default cookie handling on Windows
+f170282 update jinterface to R16A
+badca63 1127: cyclicpath exception in navigator
+e726812 fix console to work with R16
+9e1c852 improve cold start times (not checking minor version of runtime all the time)
+1009e6d disable cheatsheet, content is malformed
+ff6c42c 1103: NPE when doing global search
+3d12816 145: Color preferences dialog: "enable" box is confusing
+
 List of user visible changes between 0.17.7 and 0.18.0 (20130121)
 
 3e0a09f 1122 completion: no suggestions after guard with macro

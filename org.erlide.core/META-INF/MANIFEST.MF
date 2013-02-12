@@ -2,33 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.erlide.core; singleton:=true
-Bundle-Version: 0.18.0.qualifier
+Bundle-Version: 0.19.0.qualifier
 Bundle-Activator: org.erlide.core.ErlangPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.erlide.backend,
- org.erlide.backend.console,
- org.erlide.backend.events,
- org.erlide.backend.internal;x-friends:="org.erlide.ui,shade.bterl",
- org.erlide.backend.runtimeinfo,
- org.erlide.core,
+Export-Package: org.erlide.core,
+ org.erlide.core.builder,
  org.erlide.core.content,
- org.erlide.core.internal.model.erlang;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
- org.erlide.core.internal.model.root;x-friends:="org.erlide.tracing.core,org.erlide.ui,shade.bterl",
- org.erlide.core.internal.services.builder;x-friends:="shade.bterl",
- org.erlide.core.model,
- org.erlide.core.model.erlang,
- org.erlide.core.model.root,
- org.erlide.core.model.util,
- org.erlide.core.services.builder,
- org.erlide.core.services.cleanup,
- org.erlide.core.services.codeassist,
- org.erlide.core.services.search,
- org.erlide.core.services.text,
- org.erlide.launch,
- org.erlide.launch.debug,
- org.erlide.launch.debug.events,
- org.erlide.launch.debug.model
+ org.erlide.core.internal.builder
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
@@ -36,7 +17,10 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.osgi.services,
  org.erlide.backend,
  org.erlide.libs;bundle-version="1.8.4",
- org.erlide.runtime
+ org.erlide.runtime,
+ org.erlide.model;bundle-version="0.18.0",
+ org.erlide.util;bundle-version="0.18.0",
+ org.erlide.util_eclipse;bundle-version="0.18.0"
 Bundle-ActivationPolicy: lazy; exclude="org.erlide.core.content"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .

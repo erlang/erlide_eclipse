@@ -15,11 +15,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.erlide.backend.BackendCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.epmd.IEpmdListener;
+import org.erlide.ui.util.DisplayUtils;
 
 public class EpmdView extends ViewPart implements IEpmdListener {
 
@@ -126,7 +126,7 @@ public class EpmdView extends ViewPart implements IEpmdListener {
     public void updateNodeStatus(final String host,
             final Collection<String> started, final Collection<String> stopped) {
         model = epmdWatcher.getData();
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
                 treeViewer.setInput(model);

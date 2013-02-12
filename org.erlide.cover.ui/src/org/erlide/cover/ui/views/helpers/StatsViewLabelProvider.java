@@ -10,13 +10,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.erlide.core.model.ErlModelException;
-import org.erlide.core.model.erlang.IErlModule;
-import org.erlide.core.model.root.ErlModelManager;
 import org.erlide.cover.ui.Activator;
 import org.erlide.cover.ui.Images;
 import org.erlide.cover.views.model.ICoverageObject;
 import org.erlide.cover.views.model.ObjectType;
+import org.erlide.model.ErlModelException;
+import org.erlide.model.erlang.IErlModule;
+import org.erlide.model.root.ErlModelManager;
 import org.erlide.ui.editors.erl.outline.ErlangElementImageProvider;
 
 /**

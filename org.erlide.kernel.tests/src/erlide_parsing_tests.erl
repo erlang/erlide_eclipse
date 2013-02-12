@@ -8,8 +8,7 @@
 %%
 
 -include_lib("eunit/include/eunit.hrl").
--include("erlide_scanner.hrl").
--include("erlide_noparse.hrl").
+-include("erlide_noparse.hrl"). 
 
 %%
 %% Exported Functions
@@ -107,7 +106,7 @@ function_comments_only_toplevel_test_() ->
 
 test_parse(S) ->
     {ok, RawTokens, _EndPos} = erlide_scan:string(S, {0, 0}),
-    Tokens = erlide_scanner:convert_tokens(erlide_scan:filter_ws(RawTokens)),
+    Tokens = erlide_scan_model:convert_tokens(erlide_scan:filter_ws(RawTokens)),
     {Forms, Comments, _Refs} = erlide_np:parse(Tokens),
     {Forms, Comments}.
 

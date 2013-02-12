@@ -39,8 +39,8 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import org.erlide.backend.BackendCore;
 import org.erlide.runtime.ErlUtils;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.util.LogUtil;
 import org.erlide.utils.ErlLogger;
-import org.erlide.utils.LogUtil;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 

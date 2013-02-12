@@ -19,7 +19,6 @@
 package com.ericsson.otp.erlang;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 public class OtpErlangFun extends OtpErlangObject implements Serializable {
     // don't change this!
@@ -92,7 +91,7 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
                 return false;
             }
         } else {
-            if (!Arrays.equals(md5, f.md5)) {
+            if (!md5.equals(f.md5)) {
                 return false;
             }
         }
@@ -102,7 +101,7 @@ public class OtpErlangFun extends OtpErlangObject implements Serializable {
         if (freeVars == null) {
             return f.freeVars == null;
         }
-        return Arrays.equals(freeVars, f.freeVars);
+        return freeVars.equals(f.freeVars);
     }
 
     @Override

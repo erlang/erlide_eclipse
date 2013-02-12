@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.erlide.core.model.root.IErlProject;
+import org.erlide.model.root.IErlProject;
 
 /**
  * Content provider for projects

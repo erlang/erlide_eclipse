@@ -65,6 +65,6 @@ external_call_after_empty_record_test_() ->
 
 test_refs(S, SearchPattern) ->
     {ok, RawTokens, _EndPos} = erlide_scan:string(S, {0, 0}),
-    Tokens = erlide_scanner:convert_tokens(erlide_scan:filter_ws(RawTokens)),
+    Tokens = erlide_scan_model:convert_tokens(erlide_scan:filter_ws(RawTokens)),
     {_Forms, _Comments, Refs} = erlide_np:parse(Tokens),
     erlide_search:find_data(Refs, [SearchPattern], xxx, "xxx").

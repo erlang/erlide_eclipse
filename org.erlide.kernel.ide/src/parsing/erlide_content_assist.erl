@@ -13,7 +13,7 @@
 %% -define(DEBUG, 1).
 
 -include("erlide.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 
 %%
@@ -32,14 +32,14 @@ check_record(S) ->
 	{ok, Tokens, _Pos} ->
             ?D(Tokens),
             {State, Name, Prefix, Fields} =
-                check_record_tokens(erlide_scanner:convert_tokens(Tokens)),
+                check_record_tokens(erlide_scan_model:convert_tokens(Tokens)),
             {ok, {state_to_num(State), Name, Prefix, Fields}};
         {error, {_, _, {atom, $', _}}, _} ->
             case erlide_scan:string(S++"><'") of
                 {ok, Tokens, _Pos} ->
                     ?D(Tokens),
                     {State, Name, Prefix, Fields} =
-                        check_record_tokens(erlide_scanner:convert_tokens(Tokens)),
+                        check_record_tokens(erlide_scan_model:convert_tokens(Tokens)),
                     {ok, {state_to_num(State), Name, Prefix, Fields}};
                 _ ->
                     none

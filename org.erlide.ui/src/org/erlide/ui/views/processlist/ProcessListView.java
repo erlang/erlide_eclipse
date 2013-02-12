@@ -33,7 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
@@ -48,6 +47,7 @@ import org.erlide.backend.BackendCore;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.ui.util.DisplayUtils;
 import org.erlide.ui.views.BackendContentProvider;
 import org.erlide.ui.views.BackendLabelProvider;
 import org.osgi.service.event.Event;
@@ -126,7 +126,7 @@ public class ProcessListView extends ViewPart {
 
             @Override
             public void handleEvent(final Event event) {
-                Display.getDefault().asyncExec(new Runnable() {
+                DisplayUtils.asyncExec(new Runnable() {
                     @Override
                     public void run() {
                         if (!viewer.getControl().isDisposed()) {

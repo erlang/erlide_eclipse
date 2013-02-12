@@ -14,17 +14,8 @@ file_export_version=3.0
 /instance/org.erlide.core/compiler/warn_obsolete_guard=true
 /instance/org.erlide.core/compiler/warn_unused_import=true
 
-/instance/org.erlide.core/runtimes/default=erl5.7.5
-/instance/org.erlide.core/runtimes/erlide=erl5.7.5
-
-/instance/org.erlide.core/runtimes/erl5.7.5/args=
-/instance/org.erlide.core/runtimes/erl5.7.5/codePath=
-# homeDir has to be replaced to a proper value
-/instance/org.erlide.core/runtimes/erl5.7.5/homeDir=#{erlang_R13}
-/instance/org.erlide.core/runtimes/erl5.7.5/longName=true
-/instance/org.erlide.core/runtimes/erl5.7.5/managed=false
-/instance/org.erlide.core/runtimes/erl5.7.5/startShell=false
-/instance/org.erlide.core/runtimes/erl5.7.5/workingDir=.
+/instance/org.erlide.core/runtimes/default=erl5.8.5
+/instance/org.erlide.core/runtimes/erlide=erl5.8.5
 
 /instance/org.erlide.core/runtimes/erl5.8.5/args=
 /instance/org.erlide.core/runtimes/erl5.8.5/codePath=

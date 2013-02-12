@@ -2,7 +2,7 @@
 <feature
       id="org.erlide.sdk"
       label="erlide SDK"
-      version="0.18.0.qualifier"
+      version="0.19.0.qualifier"
       provider-name="erlide.org">
 
    <description>
@@ -97,6 +97,14 @@ is available from http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.erlide.backend.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.erlide.model.tests"
          download-size="0"
          install-size="0"
          version="0.0.0"

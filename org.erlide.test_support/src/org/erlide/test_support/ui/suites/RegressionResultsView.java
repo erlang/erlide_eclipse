@@ -7,10 +7,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.part.ViewPart;
+import org.erlide.ui.util.DisplayUtils;
 
 import com.google.common.collect.Lists;
 
@@ -73,7 +73,7 @@ public class RegressionResultsView extends ViewPart {
     }
 
     public void addLine(final String line) {
-        Display.getDefault().asyncExec(new Runnable() {
+        DisplayUtils.asyncExec(new Runnable() {
             @Override
             public void run() {
                 data.add("" + data.size() + ": " + line);

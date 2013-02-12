@@ -3,7 +3,7 @@
  */
 package org.erlide.ui.editors.erl.folding;
 
-import org.erlide.core.model.root.IErlElement;
+import org.erlide.model.root.IErlElement;
 
 /**
  * @author jakob

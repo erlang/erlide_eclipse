@@ -8,7 +8,7 @@
 %%
 
 -include_lib("eunit/include/eunit.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 %%
 %% Exported Functions
@@ -66,22 +66,28 @@ scanner_test_() ->
                    test_replace("a() -> b.", 0, 1, "test"))
     ].
 
+replace_at_eof_test_() ->
+    [?_assertEqual({[#token{kind = atom, line = 0, offset = 0, length = 2, value = ab}],
+                    [#token{kind = atom, line = 0, offset = 0, length = 3, value = abc}]},
+                   test_replace("ab", 2, 0, "c"))
+     ].
+
 %%
 %% Local Functions
 %%
 
 test_scan(S) ->
-    erlide_scanner_server:create(testing),
-    erlide_scanner_server:initialScan(testing, "", S, "/tmp", false, off),
-    R = erlide_scanner_server:getTokens(testing),
-    erlide_scanner_server:dispose(testing),
+    erlide_scanner:create(testing),
+    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
+    R = erlide_scanner:get_tokens(testing),
+    erlide_scanner:dispose(testing),
     R.
 
 test_replace(S, Pos, RemoveLength, NewText) ->
-    erlide_scanner_server:create(testing),
-    erlide_scanner_server:initialScan(testing, "", S, "/tmp", false, off),
-    R1 = erlide_scanner_server:getTokens(testing),
-    erlide_scanner_server:replaceText(testing, Pos, RemoveLength, NewText),
-    R2 = erlide_scanner_server:getTokens(testing),
-    erlide_scanner_server:dispose(testing),
+    erlide_scanner:create(testing),
+    erlide_scanner:initial_scan(testing, "", S, "/tmp", false, off),
+    R1 = erlide_scanner:get_tokens(testing),
+    erlide_scanner:replace_text(testing, Pos, RemoveLength, NewText),
+    R2 = erlide_scanner:get_tokens(testing),
+    erlide_scanner:dispose(testing),
     {R1, R2}.

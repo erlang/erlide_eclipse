@@ -24,9 +24,9 @@ import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpFormatPlaceholder;
 import com.ericsson.otp.erlang.OtpPatternVariable;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class TermParser {
 
@@ -34,7 +34,7 @@ public class TermParser {
         return new TermParser();
     }
 
-    private final Cache<String, OtpErlangObject> cache;
+    private final LoadingCache<String, OtpErlangObject> cache;
 
     private TermParser() {
         cache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.HOURS)

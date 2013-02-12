@@ -11,7 +11,7 @@
 
 -include("erlide.hrl").
 -include("erlide_noparse.hrl").
--include("erlide_scanner.hrl").
+-include("erlide_token.hrl").
 
 %%
 %% Exported Functions

@@ -7,7 +7,6 @@
 
 Thanks to <b>Eli Liang</b> for writing this guide.
 <br/>
-If you can read this cheatsheet, it means you managed to install erlide, wich is a great first step! :-)e, wich is a great first step! :-) erlide, wich is a great first step! :-) a great first step! :-)ged to install erlide, wich is a great first step! :-)
    </description>
    </intro>
    <item
@@ -15,6 +14,6 @@ If you can read this cheatsheet, it means you managed to install erlide, wich is
       <description>
       Configure the Erlang runtime on the X-&gt;Workbench icon on the right side of the main eclipse window.
 
-Select <b>Window &gt; Open Perspective &gt; Java</b> in    </description>
+Select <b>Window &gt; Open Perspective &gt; Java</b> in
    </item>
 </cheatsheet>
