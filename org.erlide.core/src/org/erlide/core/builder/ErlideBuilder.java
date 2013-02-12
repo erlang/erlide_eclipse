@@ -135,7 +135,6 @@ public class ErlideBuilder {
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .getErlangProject(project);
         try {
-            MarkerUtils.deleteMarkers(project);
             initializeBuilder(monitor);
 
             final IPath out = erlProject.getOutputLocation();
@@ -176,6 +175,7 @@ public class ErlideBuilder {
                 for (final BuildResource bres : resourcesToBuild) {
                     notifier.checkCancel();
                     final IResource resource = bres.getResource();
+                    MarkerUtils.deleteMarkers(resource);
                     // notifier.aboutToCompile(resource);
                     if ("erl".equals(resource.getFileExtension())) {
                         final String outputDir = erlProject.getOutputLocation()
