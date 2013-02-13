@@ -1,6 +1,5 @@
 package org.erlide.util;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -35,7 +34,7 @@ public class ExtensionUtils {
         return null;
     }
 
-    public static <T> Collection<T> getExtensions(final String id,
+    public static <T> List<T> getExtensions(final String id,
             final Class<T> clazz) {
         final List<T> result = Lists.newArrayList();
         final IExtensionRegistry reg = RegistryFactory.getRegistry();
