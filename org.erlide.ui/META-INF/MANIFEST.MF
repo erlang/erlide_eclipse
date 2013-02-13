@@ -333,9 +333,6 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.ui.navigator,
  org.eclipse.jface.text,
  org.eclipse.search,
- org.erlide.backend,
- org.erlide.core,
- org.erlide.libs;bundle-version="1.1.4",
  org.eclipse.osgi.services;bundle-version="3.2.100",
  org.eclipse.core.databinding,
  org.eclipse.core.databinding.beans,
@@ -343,11 +340,14 @@ Require-Bundle: org.eclipse.compare,
  org.eclipse.core.databinding.property,
  org.eclipse.jface.databinding,
  com.ibm.icu,
+ org.erlide.core,
+ org.erlide.backend,
+ org.erlide.model;bundle-version="0.18.0",
  org.erlide.model_api;bundle-version="0.19.0",
  org.erlide.runtime,
- org.erlide.model;bundle-version="0.18.0",
+ org.erlide.util_eclipse;bundle-version="0.18.0",
  org.erlide.util;bundle-version="0.18.0",
- org.erlide.util_eclipse;bundle-version="0.18.0"
+ org.erlide.libs;bundle-version="1.1.4"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-ExtensibleAPI: true
