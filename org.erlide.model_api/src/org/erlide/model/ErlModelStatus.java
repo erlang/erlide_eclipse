@@ -56,19 +56,21 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
     public static final IErlModelStatus VERIFIED_OK = new ErlModelStatus(OK,
             OK, Util.bind("status.OK")); //$NON-NLS-1$
 
+    private static final String PLUGIN_ID = "org.erlide.model";
+
     /**
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus() {
         // no code for an multi-status
-        super(ERROR, ModelPlugin.PLUGIN_ID, 0, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, PLUGIN_ID, 0, "ErlModelStatus", null); //$NON-NLS-1$
     }
 
     /**
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code) {
-        super(ERROR, ModelPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = NO_ELEMENTS;
     }
 
@@ -76,7 +78,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with the given corresponding elements.
      */
     public ErlModelStatus(final int code, final IErlElement[] elements) {
-        super(ERROR, ModelPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = elements;
         fPath = null;
     }
@@ -93,7 +95,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      */
     public ErlModelStatus(final int severity, final int code,
             final String string) {
-        super(severity, ModelPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(severity, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = NO_ELEMENTS;
         fPath = null;
         fString = string;
@@ -103,7 +105,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code, final Throwable throwable) {
-        super(ERROR, ModelPlugin.PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
+        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", throwable); //$NON-NLS-1$
         fElements = NO_ELEMENTS;
     }
 
@@ -111,7 +113,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final int code, final IPath path) {
-        super(ERROR, ModelPlugin.PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
+        super(ERROR, PLUGIN_ID, code, "ErlModelStatus", null); //$NON-NLS-1$
         fElements = NO_ELEMENTS;
         fPath = path;
     }
@@ -158,8 +160,7 @@ public class ErlModelStatus extends Status implements IErlModelStatus {
      * Constructs an Erlang model status with no corresponding elements.
      */
     public ErlModelStatus(final CoreException coreException) {
-        super(ERROR, ModelPlugin.PLUGIN_ID,
-                ErlModelStatusConstants.CORE_EXCEPTION,
+        super(ERROR, PLUGIN_ID, ErlModelStatusConstants.CORE_EXCEPTION,
                 "ErlModelStatus", coreException); //$NON-NLS-1$
         fElements = NO_ELEMENTS;
     }

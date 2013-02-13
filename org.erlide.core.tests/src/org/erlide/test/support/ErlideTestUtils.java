@@ -31,6 +31,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.model.root.IErlangProjectProperties;
 import org.erlide.model.root.OldErlangProjectProperties;
 import org.erlide.model.util.ModelUtils;
 
@@ -219,7 +220,7 @@ public class ErlideTestUtils {
         final IErlProject erlProject = ErlModelManager.getErlangModel()
                 .newProject(name, path.toPortableString());
         final IProject project = erlProject.getWorkspaceProject();
-        final OldErlangProjectProperties prefs = new OldErlangProjectProperties(
+        final IErlangProjectProperties prefs = new OldErlangProjectProperties(
                 project);
         final List<IPath> srcDirs = new ArrayList<IPath>();
         srcDirs.add(new Path("src"));

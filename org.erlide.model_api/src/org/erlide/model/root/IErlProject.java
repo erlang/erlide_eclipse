@@ -92,7 +92,7 @@ public interface IErlProject extends IParent, IErlElement, IOpenable {
 
     boolean hasSourceDir(IPath path);
 
-    void setAllProperties(OldErlangProjectProperties properties)
+    void setAllProperties(IErlangProjectProperties properties)
             throws BackingStoreException;
 
     Collection<IErlProject> getReferencedProjects() throws ErlModelException;

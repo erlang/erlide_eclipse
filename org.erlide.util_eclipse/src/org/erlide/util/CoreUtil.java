@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.model.util;
+package org.erlide.util;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -18,7 +18,6 @@ import java.nio.charset.Charset;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.erlide.model.ErlModelException;
 import org.erlide.utils.Util;
 
 public final class CoreUtil {

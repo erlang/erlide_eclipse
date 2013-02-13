@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.erlide.model.root;
 
-import org.erlide.model.ModelPlugin;
-
 /**
  * Markers used by the Erlang model.
  * <p>
@@ -27,16 +25,16 @@ public interface IErlModelMarker {
      * recognize those markers in the workspace that flag problems detected by
      * the Erlang tooling during compilation.
      */
-    String ERLANG_MODEL_PROBLEM_MARKER = ModelPlugin.PLUGIN_ID + ".problem"; //$NON-NLS-1$
+    String ERLANG_MODEL_PROBLEM_MARKER = "org.erlide.model" + ".problem"; //$NON-NLS-1$
 
     /**
      * Erlang model transient problem marker type (value
-     * <code>"org.erlide.model.erlang.transient_problem"</code>). This can
-     * be used to recognize those markers in the workspace that flag transient
+     * <code>"org.erlide.model.erlang.transient_problem"</code>). This can be
+     * used to recognize those markers in the workspace that flag transient
      * problems detected by the Erlang tooling (such as a problem detected by
      * the outliner, or a problem detected during a code completion)
      */
-    String TRANSIENT_PROBLEM = ModelPlugin.PLUGIN_ID + ".transient_problem"; //$NON-NLS-1$
+    String TRANSIENT_PROBLEM = "org.erlide.model" + ".transient_problem"; //$NON-NLS-1$
 
     /**
      * Erlang model task marker type (value
@@ -49,7 +47,7 @@ public interface IErlModelMarker {
      * 
      * 
      */
-    String TASK_MARKER = ModelPlugin.PLUGIN_ID + ".task"; //$NON-NLS-1$
+    String TASK_MARKER = "org.erlide.model" + ".task"; //$NON-NLS-1$
 
     /**
      * Id marker attribute (value <code>"arguments"</code>). Arguments are
@@ -74,21 +72,19 @@ public interface IErlModelMarker {
 
     /**
      * Build path problem marker type (value
-     * <code>"org.erlide.model.erlang.buildpath_problem"</code>). This can
-     * be used to recognize those markers in the workspace that flag problems
+     * <code>"org.erlide.model.erlang.buildpath_problem"</code>). This can be
+     * used to recognize those markers in the workspace that flag problems
      * detected by the Erlang tooling during classpath setting.
      */
-    String BUILDPATH_PROBLEM_MARKER = ModelPlugin.PLUGIN_ID
-            + ".buildpath_problem"; //$NON-NLS-1$
+    String BUILDPATH_PROBLEM_MARKER = "org.erlide.model" + ".buildpath_problem"; //$NON-NLS-1$
 
     /**
      * Path entry problem marker type (value
-     * <code>"org.erlide.model.erlang.pathentry_problem"</code>). This can
-     * be used to recognize those markers in the workspace that flag problems
+     * <code>"org.erlide.model.erlang.pathentry_problem"</code>). This can be
+     * used to recognize those markers in the workspace that flag problems
      * detected by the Erlang tooling during classpath setting.
      */
-    String PATHENTRY_PROBLEM_MARKER = ModelPlugin.PLUGIN_ID
-            + ".pathentry_problem"; //$NON-NLS-1$
+    String PATHENTRY_PROBLEM_MARKER = "org.erlide.model" + ".pathentry_problem"; //$NON-NLS-1$
 
     /**
      * PathEntry file format marker attribute (value
