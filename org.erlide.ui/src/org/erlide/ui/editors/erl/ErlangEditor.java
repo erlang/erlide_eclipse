@@ -1927,4 +1927,30 @@ public class ErlangEditor extends TextEditor implements IOutlineContentCreator,
         return scanner;
     }
 
+    /**
+     * Mutex for the reconciler. See
+     * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898 for a description of
+     * the problem.
+     * <p>
+     * XXX remove once the underlying problem
+     * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
+     * </p>
+     */
+    private final Object fReconcilerLock = new Object();
+
+    /**
+     * Returns the mutex for the reconciler. See
+     * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898 for a description of
+     * the problem.
+     * <p>
+     * XXX remove once the underlying problem
+     * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
+     * </p>
+     * 
+     * @return the lock reconcilers may use to synchronize on
+     */
+    public Object getReconcilerLock() {
+        return fReconcilerLock;
+    }
+
 }

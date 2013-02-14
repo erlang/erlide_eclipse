@@ -20,8 +20,10 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
+import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.utils.ErlLogger;
 
 import com.google.common.collect.Lists;
@@ -55,10 +57,12 @@ public class ErlReconciler implements IReconciler {
 
     List<ErlDirtyRegion> log = Lists.newLinkedList();
     boolean logging;
+    private Object fMutex;
 
     public ErlReconciler(final IErlReconcilingStrategy strategy,
             final boolean isIncremental, final boolean chunkReconciler,
-            final String path, final IErlModule module, final boolean logging) {
+            final String path, final IErlModule module, final boolean logging,
+            final ITextEditor editor) {
 
         super();
         this.logging = logging;
@@ -70,6 +74,26 @@ public class ErlReconciler implements IReconciler {
         this.path = path;
         if (path != null) {
             ErlModelManager.getErlangModel().putEdited(path, module);
+        }
+        // https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898
+        // when re-using editors, a new reconciler is set up by the source
+        // viewer
+        // and the old one uninstalled. However, the old reconciler may still be
+        // running.
+        // To avoid having to reconcilers calling
+        // Editor.reconciled,
+        // we synchronized on a lock object provided by the editor.
+        // The critical section is really the entire run() method of the
+        // reconciler
+        // thread, but synchronizing process() only will keep
+        // the ReconcilingStrategy
+        // from running concurrently on the same editor.
+        // TODO remove once we have ensured that there is only one reconciler
+        // per editor.
+        if (editor instanceof ErlangEditor) {
+            fMutex = ((ErlangEditor) editor).getReconcilerLock();
+        } else {
+            fMutex = new Object(); // Null Object
         }
     }
 
@@ -321,7 +345,7 @@ public class ErlReconciler implements IReconciler {
                     if (fDocument != null && fDocument.getLength() > 0) {
                         // final DocumentEvent e = new DocumentEvent(fDocument,
                         // 0,
-                        //								fDocument.getLength(), ""); //$NON-NLS-1$
+                        //                                fDocument.getLength(), ""); //$NON-NLS-1$
                         // createDirtyRegion(e);
                         fThread.reset();
                         fThread.suspendCallerWhileDirty();
@@ -676,18 +700,20 @@ public class ErlReconciler implements IReconciler {
      * only once during the life time of the reconciler.
      */
     protected void initialProcess() {
-        if (fStrategy instanceof IReconcilingStrategyExtension) {
-            final IReconcilingStrategyExtension extension = (IReconcilingStrategyExtension) fStrategy;
-            extension.initialReconcile();
-            if (logging) {
-                log.clear();
-                final ErlReconcilingStrategy erlReconcilerStrategy = (ErlReconcilingStrategy) fStrategy;
-                final IErlModule module = erlReconcilerStrategy.getModule();
-                final String scannerName = module.getScannerName();
-                final String erlFilename = module.getFilePath();
-                final ErlDirtyRegion erlDirtyRegion = new InitialScan(
-                        getDocument().get(), scannerName, erlFilename);
-                log.add(erlDirtyRegion);
+        synchronized (fMutex) {
+            if (fStrategy instanceof IReconcilingStrategyExtension) {
+                final IReconcilingStrategyExtension extension = (IReconcilingStrategyExtension) fStrategy;
+                extension.initialReconcile();
+                if (logging) {
+                    log.clear();
+                    final ErlReconcilingStrategy erlReconcilerStrategy = (ErlReconcilingStrategy) fStrategy;
+                    final IErlModule module = erlReconcilerStrategy.getModule();
+                    final String scannerName = module.getScannerName();
+                    final String erlFilename = module.getFilePath();
+                    final ErlDirtyRegion erlDirtyRegion = new InitialScan(
+                            getDocument().get(), scannerName, erlFilename);
+                    log.add(erlDirtyRegion);
+                }
             }
         }
     }
