@@ -7,8 +7,7 @@ Bundle-Vendor: erlide.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.erlide.runtime.api;bundle-version="0.19.0",
  org.erlide.libs;bundle-version="1.8.4"
-Export-Package: com.ericsson.otp.erlang,
- org.erlide.runtime,
+Export-Package: org.erlide.runtime,
  org.erlide.runtime.epmd,
  org.erlide.runtime.internal;x-friends:="org.erlide.core",
  org.erlide.runtime.internal.rpc;x-internal:=true,

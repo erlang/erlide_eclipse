@@ -10,4 +10,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.erlide.libs;bundle-version="1.8.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: org.erlide.runtime.api
+Export-Package: com.ericsson.otp.erlang,
+ org.erlide.runtime.api
