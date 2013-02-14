@@ -17,7 +17,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
+import org.erlide.runtime.RuntimeVersion;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 

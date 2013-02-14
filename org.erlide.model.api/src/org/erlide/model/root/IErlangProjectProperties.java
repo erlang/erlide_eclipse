@@ -4,10 +4,10 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 
 public interface IErlangProjectProperties {
 

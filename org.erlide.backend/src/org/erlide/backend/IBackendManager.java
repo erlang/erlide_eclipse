@@ -10,9 +10,9 @@ import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.RuntimeVersion;
 import org.osgi.framework.Bundle;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 
 public interface IBackendManager {
 

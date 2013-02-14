@@ -4,7 +4,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class RuntimeVersionTest {
 

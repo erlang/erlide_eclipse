@@ -3,10 +3,10 @@ package org.erlide.model;
 import org.eclipse.core.runtime.Plugin;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeProvider;
+import org.erlide.runtime.RuntimeVersion;
 import org.erlide.util.ExtensionUtils;
 import org.osgi.framework.BundleContext;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 
 public class ModelPlugin extends Plugin {
 

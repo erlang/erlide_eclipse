@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
+import org.erlide.runtime.RuntimeVersion;
+
 import com.google.common.collect.Sets;
 
 public class ErlProjectInfo {

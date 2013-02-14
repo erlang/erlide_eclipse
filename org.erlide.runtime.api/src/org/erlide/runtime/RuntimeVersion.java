@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package com.ericsson.otp.erlang;
+package org.erlide.runtime;
 
 import java.io.File;
 import java.io.FileFilter;

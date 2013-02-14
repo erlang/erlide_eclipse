@@ -44,6 +44,7 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
@@ -51,7 +52,6 @@ import org.erlide.utils.SystemConfiguration;
 import org.osgi.framework.Bundle;
 import org.osgi.service.event.Event;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

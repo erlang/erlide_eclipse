@@ -26,11 +26,11 @@ import org.erlide.model.internal.root.ErlProjectInfoBuilder;
 import org.erlide.model.internal.root.PathSerializer;
 import org.erlide.model.internal.root.ProjectPreferencesConstants;
 import org.erlide.runtime.RuntimeCore;
+import org.erlide.runtime.RuntimeVersion;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.SystemConfiguration;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
 import com.google.common.collect.Lists;
 
 public final class OldErlangProjectProperties implements

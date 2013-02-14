@@ -16,7 +16,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.ericsson.otp.erlang.RuntimeVersion;
+import org.erlide.runtime.RuntimeVersion;
+
 
 public class RuntimeInfo {
 
