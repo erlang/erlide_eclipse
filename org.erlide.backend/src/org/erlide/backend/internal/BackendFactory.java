@@ -29,17 +29,17 @@ import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.IProvider;
 import org.erlide.utils.SystemConfiguration;
 
 public class BackendFactory implements IBackendFactory {
 
-    final RuntimeInfoCatalog runtimeInfoCatalog;
+    final IRuntimeInfoCatalog runtimeInfoCatalog;
 
-    public BackendFactory(final RuntimeInfoCatalog runtimeInfoManager) {
+    public BackendFactory(final IRuntimeInfoCatalog runtimeInfoManager) {
         this.runtimeInfoCatalog = runtimeInfoManager;
     }
 

@@ -8,8 +8,8 @@ import org.erlide.launch.EpmdWatchJob;
 import org.erlide.runtime.RuntimeCore;
 import org.erlide.runtime.epmd.EpmdWatcher;
 import org.erlide.runtime.epmd.IEpmdListener;
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
-import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 
 public class BackendCore {
 
@@ -20,7 +20,7 @@ public class BackendCore {
 
     public static final IBackendManager getBackendManager() {
         if (backendManager == null) {
-            final RuntimeInfoCatalog catalog = BackendCore
+            final IRuntimeInfoCatalog catalog = BackendCore
                     .getRuntimeInfoCatalog();
             final RuntimeInfo erlideRuntime = catalog.getErlideRuntime();
             backendFactory = new BackendFactory(catalog);
@@ -29,7 +29,7 @@ public class BackendCore {
         return backendManager;
     }
 
-    public static RuntimeInfoCatalog getRuntimeInfoCatalog() {
+    public static IRuntimeInfoCatalog getRuntimeInfoCatalog() {
         return RuntimeCore
                 .getRuntimeInfoCatalog(new RuntimeInfoPreferencesSerializer());
     }

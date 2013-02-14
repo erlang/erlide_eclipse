@@ -22,10 +22,7 @@ import org.erlide.runtime.RuntimeVersion;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public final class RuntimeInfoCatalog {
-
-    public final static RuntimeVersion OLDEST_SUPPORTED_VERSION = new RuntimeVersion(
-            14);
+public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
 
     public RuntimeInfo erlideRuntime;
     public final Map<String, RuntimeInfo> runtimes;
@@ -37,10 +34,12 @@ public final class RuntimeInfoCatalog {
         defaultRuntimeName = null;
     }
 
+    @Override
     public synchronized Collection<RuntimeInfo> getRuntimes() {
         return Collections.unmodifiableCollection(runtimes.values());
     }
 
+    @Override
     public synchronized void setRuntimes(
             final Collection<RuntimeInfo> elements, final String dfltRuntime,
             String ideRuntime) {
@@ -63,6 +62,7 @@ public final class RuntimeInfoCatalog {
         // Asserts.isNotNull(erlideRuntime);
     }
 
+    @Override
     public synchronized void addRuntime(final RuntimeInfo rt) {
         if (rt.getVersion().isCompatible(OLDEST_SUPPORTED_VERSION)
                 && !runtimes.containsKey(rt.getName())) {
@@ -70,19 +70,23 @@ public final class RuntimeInfoCatalog {
         }
     }
 
+    @Override
     public synchronized Collection<String> getRuntimeNames() {
         return runtimes.keySet();
     }
 
+    @Override
     public boolean hasRuntimeWithName(final String name) {
         return runtimes.containsKey(name);
     }
 
+    @Override
     public RuntimeInfo getRuntime(final String name) {
         final RuntimeInfo rt = runtimes.get(name);
         return rt;
     }
 
+    @Override
     public synchronized void removeRuntime(final String name) {
         runtimes.remove(name);
         if (erlideRuntime.getName().equals(name)) {
@@ -93,10 +97,12 @@ public final class RuntimeInfoCatalog {
         }
     }
 
+    @Override
     public synchronized String getDefaultRuntimeName() {
         return defaultRuntimeName;
     }
 
+    @Override
     public synchronized void setDefaultRuntime(final String name) {
         defaultRuntimeName = name;
     }
@@ -110,14 +116,17 @@ public final class RuntimeInfoCatalog {
         }
     }
 
+    @Override
     public synchronized RuntimeInfo getErlideRuntime() {
         return erlideRuntime;
     }
 
+    @Override
     public synchronized RuntimeInfo getDefaultRuntime() {
         return getRuntime(getDefaultRuntimeName());
     }
 
+    @Override
     public RuntimeInfo getRuntime(final RuntimeVersion runtimeVersion,
             final String runtimeName) {
         final List<RuntimeInfo> vsns = VersionLocator.locateVersion(
@@ -136,6 +145,7 @@ public final class RuntimeInfoCatalog {
         }
     }
 
+    @Override
     public List<String> getAllRuntimesVersions() {
         final Collection<RuntimeInfo> rs = getRuntimes();
         final List<String> myVersions = Lists.newArrayList();
@@ -163,6 +173,7 @@ public final class RuntimeInfoCatalog {
      * </ul>
      * 
      */
+    @Override
     public void initializeRuntimesList() {
         final Collection<RuntimeInfo> found = RuntimeFinder
                 .guessRuntimeLocations();

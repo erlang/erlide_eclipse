@@ -1,5 +1,6 @@
 package org.erlide.runtime;
 
+import org.erlide.runtime.runtimeinfo.IRuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.IRuntimeInfoSerializer;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalog;
 import org.erlide.runtime.runtimeinfo.RuntimeInfoCatalogData;
@@ -8,7 +9,7 @@ public class RuntimeCore {
 
     private static RuntimeInfoCatalog runtimeInfoCatalog;
 
-    public static final RuntimeInfoCatalog getRuntimeInfoCatalog(
+    public static final IRuntimeInfoCatalog getRuntimeInfoCatalog(
             final IRuntimeInfoSerializer serializer) {
         if (runtimeInfoCatalog == null) {
             final RuntimeInfoCatalogData data = serializer.load();
@@ -21,7 +22,7 @@ public class RuntimeCore {
         return runtimeInfoCatalog;
     }
 
-    public static RuntimeInfoCatalog getRuntimeInfoCatalog() {
+    public static IRuntimeInfoCatalog getRuntimeInfoCatalog() {
         if (runtimeInfoCatalog != null) {
             return runtimeInfoCatalog;
         }
