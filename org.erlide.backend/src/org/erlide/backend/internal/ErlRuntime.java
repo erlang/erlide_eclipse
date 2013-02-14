@@ -22,6 +22,7 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcHelper;
@@ -54,7 +55,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "400"));
     private static final Object connectLock = new Object();
-    private static final RpcHelper rpcHelper = RpcHelper.getInstance();
+    private static final IRpcHelper rpcHelper = RpcHelper.getInstance();
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN
@@ -548,7 +549,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private static void setDefaultTimeout() {
         final String t = System.getProperty("erlide.rpc.timeout", "9000");
         if ("infinity".equals(t)) {
-            DEFAULT_TIMEOUT = RpcHelper.INFINITY;
+            DEFAULT_TIMEOUT = IRpcHelper.INFINITY;
         } else {
             try {
                 DEFAULT_TIMEOUT = Integer.parseInt(t);
