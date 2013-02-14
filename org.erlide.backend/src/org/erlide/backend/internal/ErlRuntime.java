@@ -25,9 +25,9 @@ import org.erlide.runtime.rpc.IRpcFuture;
 import org.erlide.runtime.rpc.IRpcHelper;
 import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
-import org.erlide.runtime.rpc.RpcHelper;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.util.ExtensionUtils;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.MessageReporter.ReporterPosition;
 import org.erlide.utils.ErlLogger;
@@ -55,7 +55,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     public static final int RETRY_DELAY = Integer.parseInt(System.getProperty(
             "erlide.connect.delay", "400"));
     private static final Object connectLock = new Object();
-    private static final IRpcHelper rpcHelper = RpcHelper.getInstance();
+    private static final IRpcHelper rpcHelper = ExtensionUtils
+            .getSingletonExtension("org.erlide.runtime.api.rpc_helper",
+                    IRpcHelper.class);
 
     public enum State {
         CONNECTED, DISCONNECTED, DOWN

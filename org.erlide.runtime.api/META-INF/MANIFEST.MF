@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: runtime Api
-Bundle-SymbolicName: org.erlide.runtime.api
+Bundle-SymbolicName: org.erlide.runtime.api;singleton:=true
 Bundle-Version: 0.19.0.qualifier
 Bundle-Activator: org.erlide.runtime.api.Activator
 Bundle-Vendor: erlide.org

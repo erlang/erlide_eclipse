@@ -8,11 +8,16 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.runtime.rpc;
+package org.erlide.runtime.internal.rpc;
 
 import org.erlide.runtime.TypeConverter;
-import org.erlide.runtime.internal.rpc.RpcFutureImpl;
-import org.erlide.runtime.internal.rpc.RpcResultReceiver;
+import org.erlide.runtime.rpc.IRpcCallback;
+import org.erlide.runtime.rpc.IRpcFuture;
+import org.erlide.runtime.rpc.IRpcHelper;
+import org.erlide.runtime.rpc.IRpcResultCallback;
+import org.erlide.runtime.rpc.RpcException;
+import org.erlide.runtime.rpc.RpcMonitor;
+import org.erlide.runtime.rpc.RpcTimeoutException;
 import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlang;
@@ -33,7 +38,6 @@ public final class RpcHelper implements IRpcHelper {
     // use this for debugging
     private static final boolean CHECK_RPC = Boolean
             .getBoolean("erlide.checkrpc");
-    private static volatile IRpcHelper instance;
 
     /**
      * Convenience method to send a remote message.
@@ -381,13 +385,7 @@ public final class RpcHelper implements IRpcHelper {
         thread.start();
     }
 
-    private RpcHelper() {
+    public RpcHelper() {
     }
 
-    public static IRpcHelper getInstance() {
-        if (instance == null) {
-            instance = new RpcHelper();
-        }
-        return instance;
-    }
 }

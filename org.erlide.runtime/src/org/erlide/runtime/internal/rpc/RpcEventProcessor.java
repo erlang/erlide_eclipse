@@ -1,5 +1,6 @@
-package org.erlide.runtime.rpc;
+package org.erlide.runtime.internal.rpc;
 
+import org.erlide.runtime.rpc.IRpcEventHandler;
 import org.erlide.utils.ErlLogger;
 
 import com.ericsson.otp.erlang.OtpErlangAtom;
