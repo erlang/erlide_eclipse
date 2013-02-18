@@ -70,11 +70,6 @@ public class ErlideBuilder {
         try {
             initializeBuilder(monitor);
             MarkerUtils.removeProblemMarkersFor(currentProject);
-            final DialyzerPreferences prefs = DialyzerPreferences
-                    .get(currentProject);
-            if (prefs.getRemoveWarningsOnClean()) {
-                MarkerUtils.removeDialyzerMarkersFor(currentProject);
-            }
             final IErlProject erlProject = ErlModelManager.getErlangModel()
                     .getErlangProject(currentProject);
             final IFolder bf = currentProject.getFolder(erlProject

@@ -17,7 +17,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.builder.MarkerUtils;
+import org.erlide.core.builder.DialyzerMarkerUtils;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
@@ -98,7 +98,7 @@ public class DialyzerUtilsTest {
                     .createModule(erlProject, moduleName,
                             "-module(test).\n-export([f/0]).\n-f() ->\n    atom_to_list(\"hej\").\n");
             IMarker[] markers = erlProject.getWorkspaceProject().findMarkers(
-                    MarkerUtils.DIALYZE_WARNING_MARKER, true,
+                    DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
             assertEquals(0, markers.length);
             // when
@@ -106,13 +106,13 @@ public class DialyzerUtilsTest {
             final int lineNumber = 3;
             final String message = "test message";
             final IErlElementLocator model = ErlModelManager.getErlangModel();
-            MarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
+            DialyzerMarkerUtils.addDialyzerWarningMarker(model, erlModule.getResource()
                     .getLocation().toPortableString(), lineNumber, message);
             // then
             // there should be a marker with proper file name and the proper
             // line number
             markers = erlProject.getWorkspaceProject().findMarkers(
-                    MarkerUtils.DIALYZE_WARNING_MARKER, true,
+                    DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
             assertEquals(1, markers.length);
             final IMarker marker = markers[0];
@@ -143,19 +143,19 @@ public class DialyzerUtilsTest {
                     "f([_ | _]=L ->\n    atom_to_list(L).\n");
             externalInclude = ErlideTestUtils.createTmpFile(
                     "external_includes", externalFile.getAbsolutePath());
-            MarkerUtils.removeDialyzerMarkersFor(root);
+            DialyzerMarkerUtils.removeDialyzerMarkersFor(root);
             // when
             // putting dialyzer warning markers on the external file
             final String message = "test message";
             final int lineNumber = 2;
             final IErlElementLocator model = ErlModelManager.getErlangModel();
-            MarkerUtils.addDialyzerWarningMarker(model,
+            DialyzerMarkerUtils.addDialyzerWarningMarker(model,
                     externalFile.getAbsolutePath(), lineNumber, message);
             // then
             // the marker should have the proper file name and the include file
             // should appear in External Files
             final IMarker[] markers = root.findMarkers(
-                    MarkerUtils.DIALYZE_WARNING_MARKER, true,
+                    DialyzerMarkerUtils.DIALYZE_WARNING_MARKER, true,
                     IResource.DEPTH_INFINITE);
             // FIXME this fails on Hudson!
             // assertTrue(markers.length > 0);
@@ -163,7 +163,7 @@ public class DialyzerUtilsTest {
                 // for some reason, when running on Hudson, we get two identical
                 // markers...
                 final String path = (String) marker
-                        .getAttribute(MarkerUtils.PATH_ATTRIBUTE);
+                        .getAttribute(DialyzerMarkerUtils.PATH_ATTRIBUTE);
                 final IPath p = new Path(path);
                 assertEquals(externalFileName, p.lastSegment());
                 assertEquals(lineNumber,
@@ -171,7 +171,7 @@ public class DialyzerUtilsTest {
                 assertEquals(message, marker.getAttribute(IMarker.MESSAGE));
             }
         } finally {
-            MarkerUtils.removeDialyzerMarkersFor(root);
+            DialyzerMarkerUtils.removeDialyzerMarkersFor(root);
             if (externalInclude != null && externalInclude.exists()) {
                 externalInclude.delete();
             }

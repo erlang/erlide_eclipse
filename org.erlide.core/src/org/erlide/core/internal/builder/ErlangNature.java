@@ -3,7 +3,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *     Eric Merritt
  *******************************************************************************/
@@ -88,14 +88,11 @@ public class ErlangNature implements IProjectNature {
     public void configure() throws CoreException {
         final IProjectDescription description = project.getDescription();
         if (!hasBuildSpec(description.getBuildSpec())) {
-            final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 2];
+            final ICommand[] old = description.getBuildSpec(), specs = new ICommand[old.length + 1];
             System.arraycopy(old, 0, specs, 0, old.length);
-            ICommand command = description.newCommand();
+            final ICommand command = description.newCommand();
             command.setBuilderName(ErlangCore.BUILDER_ID);
             specs[old.length] = command;
-            command = description.newCommand();
-            command.setBuilderName(DialyzerBuilder.BUILDER_ID);
-            specs[old.length + 1] = command;
             description.setBuildSpec(specs);
             project.setDescription(description, new NullProgressMonitor());
         }
@@ -117,8 +114,7 @@ public class ErlangNature implements IProjectNature {
             int j = 0;
             while (j < old.length) {
                 final String oldBuilderName = old[j].getBuilderName();
-                if (!ErlangCore.BUILDER_ID.equals(oldBuilderName)
-                        && !DialyzerBuilder.BUILDER_ID.equals(oldBuilderName)) {
+                if (!ErlangCore.BUILDER_ID.equals(oldBuilderName)) {
                     specs[i++] = old[j];
                 }
                 j++;
@@ -167,9 +163,7 @@ public class ErlangNature implements IProjectNature {
     private int getBuildSpecCount(final ICommand[] commands) {
         int count = 0;
         for (final ICommand element : commands) {
-            if (ErlangCore.BUILDER_ID.equals(element.getBuilderName())
-                    || DialyzerBuilder.BUILDER_ID.equals(element
-                            .getBuilderName())) {
+            if (ErlangCore.BUILDER_ID.equals(element.getBuilderName())) {
                 count++;
             }
         }

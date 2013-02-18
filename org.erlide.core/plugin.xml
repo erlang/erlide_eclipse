@@ -11,9 +11,6 @@
          </run>
       </runtime>
       <builder id="org.erlide.core.erlbuilder"/>
-      <builder
-            id="org.erlide.core.builder.dialyzer">
-      </builder>
    </extension>
    <extension
          id="erlbuilder"
@@ -24,15 +21,6 @@
                class="org.erlide.core.internal.builder.ErlangBuilder">
          </run>
       </builder>
-   </extension>
-   <extension
-         id="builder.dialyzer"
-         name="Dialyzer Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.erlide.core.internal.builder.DialyzerBuilder">
-         </run></builder>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

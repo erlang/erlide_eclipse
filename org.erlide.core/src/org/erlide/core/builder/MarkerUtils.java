@@ -17,21 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.erlide.core.ErlangCore;
-import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlFunction;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.ISourceRange;
-import org.erlide.model.erlang.ModuleKind;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.util.ModelUtils;
 import org.erlide.model.util.ResourceUtil;
 import org.erlide.runtime.ErlUtils;
-import org.erlide.runtime.IRpcSite;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.SystemConfiguration;
-import org.erlide.utils.Util;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangLong;
@@ -50,8 +45,6 @@ public final class MarkerUtils {
             + TODO + "|" + XXX + "|" + FIXME + ").*";
     // Copied from org.eclipse.ui.ide (since we don't want ui code in core)
     public static final String PATH_ATTRIBUTE = "org.eclipse.ui.views.markers.path";//$NON-NLS-1$
-    public static final String DIALYZE_WARNING_MARKER = ErlangCore.PLUGIN_ID
-            + ".dialyzewarningmarker";
 
     private MarkerUtils() {
     }
@@ -264,10 +257,6 @@ public final class MarkerUtils {
         removeMarkersFor(resource, TASK_MARKER);
     }
 
-    public static void removeDialyzerMarkersFor(final IResource resource) {
-        removeMarkersFor(resource, DIALYZE_WARNING_MARKER);
-    }
-
     private static void removeMarkersFor(final IResource resource,
             final String type) {
         try {
@@ -277,19 +266,6 @@ public final class MarkerUtils {
         } catch (final CoreException e) {
             // assume there were no problems
         }
-    }
-
-    public static boolean haveDialyzerMarkers(final IResource resource) {
-        try {
-            if (resource.isAccessible()) {
-                final IMarker[] markers = resource.findMarkers(
-                        DIALYZE_WARNING_MARKER, true, IResource.DEPTH_INFINITE);
-                return markers != null && markers.length > 0;
-            }
-        } catch (final CoreException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public static void deleteMarkers(final IResource resource) {
@@ -345,32 +321,6 @@ public final class MarkerUtils {
         }
     }
 
-    public static void addDialyzerWarningMarkersFromResultList(
-            final IRpcSite backend, final OtpErlangList result) {
-        if (result == null) {
-            return;
-        }
-        for (final OtpErlangObject i : result) {
-            final OtpErlangTuple t = (OtpErlangTuple) i;
-            final OtpErlangTuple fileLine = (OtpErlangTuple) t.elementAt(1);
-            final String filename = Util.stringValue(fileLine.elementAt(0));
-            final OtpErlangLong lineL = (OtpErlangLong) fileLine.elementAt(1);
-            int line = 1;
-            try {
-                line = lineL.intValue();
-            } catch (final OtpErlangRangeException e) {
-                ErlLogger.error(e);
-            }
-            String s = ErlideDialyze.formatWarning(backend, t).trim();
-            final int j = s.indexOf(": ");
-            if (j != -1) {
-                s = s.substring(j + 1);
-            }
-            final IErlElementLocator model = ErlModelManager.getErlangModel();
-            addDialyzerWarningMarker(model, filename, line, s);
-        }
-    }
-
     public static IMarker createSearchResultMarker(final IErlModule module,
             final String type, final int offset, final int length)
             throws CoreException {
@@ -413,30 +363,6 @@ public final class MarkerUtils {
         } catch (final CoreException e) {
         }
         return null;
-    }
-
-    public static void addDialyzerWarningMarker(final IErlElementLocator model,
-            final String path, final int line, final String message) {
-        IResource file = null;
-        IProject project = null;
-        IErlModule module = null;
-        try {
-            if (ModuleKind.hasHrlExtension(path)) {
-                module = model.findInclude(null, path);
-            } else {
-                module = model.findModule(null, path);
-            }
-        } catch (final ErlModelException e) {
-        }
-        if (module != null) {
-            file = module.getResource();
-            final IErlProject erlProject = ModelUtils.getProject(module);
-            if (erlProject != null) {
-                project = erlProject.getWorkspaceProject();
-            }
-        }
-        addMarker(file, project, path, message, line, IMarker.SEVERITY_WARNING,
-                DIALYZE_WARNING_MARKER);
     }
 
     @SuppressWarnings("deprecation")

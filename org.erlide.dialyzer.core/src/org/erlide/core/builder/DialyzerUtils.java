@@ -93,7 +93,7 @@ public class DialyzerUtils {
             // ErlLogger.debug("Dialyzer %s", what);
             final OtpErlangObject result = t.elementAt(2);
             if (what.equals("warnings")) {
-                MarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
+                DialyzerMarkerUtils.addDialyzerWarningMarkersFromResultList(backend,
                         (OtpErlangList) result);
             } else if (what.equals("mod_deps")) {
                 int remaining = 100;
@@ -151,7 +151,7 @@ public class DialyzerUtils {
                 final Collection<String> pltPaths = prefs.getEnabledPltPaths();
                 final boolean fromSource = prefs.getFromSource();
                 final boolean noCheckPLT = prefs.getNoCheckPLT();
-                MarkerUtils.removeDialyzerMarkersFor(project);
+                DialyzerMarkerUtils.removeDialyzerMarkersFor(project);
                 final IRpcSite backend = BackendCore.getBackendManager()
                         .getBuildBackend(project).getRpcSite();
                 final List<String> files = Lists.newArrayList();

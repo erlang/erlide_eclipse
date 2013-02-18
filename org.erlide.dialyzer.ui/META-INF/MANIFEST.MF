@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dialyzer Ui
+Bundle-SymbolicName: org.erlide.dialyzer.ui;singleton:=true
+Bundle-Version: 0.19.0.qualifier
+Bundle-Activator: org.erlide.dialyzer.ui.Activator
+Bundle-Vendor: erlide.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.6.1",
+ org.eclipse.core.expressions;bundle-version="3.4.200",
+ org.erlide.dialyzer.core;bundle-version="0.19.0",
+ org.erlide.ui;bundle-version="0.19.0",
+ org.erlide.core.api;bundle-version="0.19.0",
+ org.erlide.core;bundle-version="0.19.0",
+ org.erlide.model.api;bundle-version="0.19.0",
+ org.erlide.model;bundle-version="0.19.0",
+ org.erlide.runtime.api;bundle-version="0.19.0",
+ org.erlide.runtime;bundle-version="0.19.0",
+ org.erlide.libs;bundle-version="1.8.5",
+ org.erlide.backend;bundle-version="0.19.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.erlide.dialyzer.ui,
+ org.erlide.dialyzer.ui.prefs

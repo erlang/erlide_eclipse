@@ -9,7 +9,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.erlide.core.builder.MarkerUtils;
+import org.erlide.core.builder.DialyzerMarkerUtils;
 
 public class RemoveDialyzerWarningsHandler extends AbstractHandler {
 
@@ -21,12 +21,12 @@ public class RemoveDialyzerWarningsHandler extends AbstractHandler {
             for (final Object o : structuredSelection.toArray()) {
                 if (o instanceof IResource) {
                     final IResource resource = (IResource) o;
-                    MarkerUtils.removeDialyzerMarkersFor(resource);
+                    DialyzerMarkerUtils.removeDialyzerMarkersFor(resource);
                 }
             }
         } else {
-            MarkerUtils.removeDialyzerMarkersFor(ResourcesPlugin.getWorkspace()
-                    .getRoot());
+            DialyzerMarkerUtils.removeDialyzerMarkersFor(ResourcesPlugin
+                    .getWorkspace().getRoot());
         }
         return null;
     }
@@ -44,15 +44,16 @@ public class RemoveDialyzerWarningsHandler extends AbstractHandler {
                 for (final Object o : structuredSelection.toArray()) {
                     if (o instanceof IResource) {
                         final IResource resource = (IResource) o;
-                        if (MarkerUtils.haveDialyzerMarkers(resource)) {
+                        if (DialyzerMarkerUtils.haveDialyzerMarkers(resource)) {
                             enabled = true;
                             break;
                         }
                     }
                 }
             } else {
-                enabled = MarkerUtils.haveDialyzerMarkers(ResourcesPlugin
-                        .getWorkspace().getRoot());
+                enabled = DialyzerMarkerUtils
+                        .haveDialyzerMarkers(ResourcesPlugin.getWorkspace()
+                                .getRoot());
             }
             setBaseEnabled(enabled);
         }

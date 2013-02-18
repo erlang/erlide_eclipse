@@ -107,4 +107,26 @@ public class ExtensionUtils {
 
     private ExtensionUtils() {
     }
+
+    public static <T> List<T> getExtensions2(final String id,
+            final String name, final Class<T> clazz) {
+        final List<T> result = Lists.newArrayList();
+        final IExtensionRegistry reg = RegistryFactory.getRegistry();
+        final IConfigurationElement[] elements = reg
+                .getConfigurationElementsFor(id);
+        for (final IConfigurationElement element : elements) {
+            for (final IConfigurationElement child : element.getChildren()) {
+                try {
+                    final Object object = child
+                            .createExecutableExtension("class");
+                    if (clazz.isInstance(object)) {
+                        result.add(clazz.cast(object));
+                    }
+                } catch (final CoreException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
 }

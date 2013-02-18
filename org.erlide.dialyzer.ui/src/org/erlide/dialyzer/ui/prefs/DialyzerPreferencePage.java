@@ -8,7 +8,7 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.ui.prefs;
+package org.erlide.dialyzer.ui.prefs;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,16 +61,17 @@ import org.erlide.backend.BackendCore;
 import org.erlide.core.ErlangCore;
 import org.erlide.core.builder.DialyzerPreferences;
 import org.erlide.core.builder.DialyzerUtils;
-import org.erlide.core.builder.ErlideDialyze;
 import org.erlide.core.builder.DialyzerUtils.DialyzerErrorException;
+import org.erlide.core.builder.ErlideDialyze;
 import org.erlide.model.ErlModelException;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.rpc.RpcException;
+import org.erlide.ui.prefs.ProjectSelectionDialog;
 import org.erlide.utils.ErlLogger;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -197,6 +198,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         removeWarningsOnCleanCheckbox = new Button(comp, SWT.CHECK);
         removeWarningsOnCleanCheckbox
                 .setText("Remove dialyzer warning on clean project");
+        new Label(comp, SWT.NONE);
     }
 
     private void createPltNoCheckbox(final Composite group) {
@@ -204,6 +206,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         comp.setLayout(new GridLayout(2, false));
         noCheckPLTCheckbox = new Button(comp, SWT.CHECK);
         noCheckPLTCheckbox.setText("Do not check PLT on dialyzer run");
+        new Label(comp, SWT.NONE);
     }
 
     private void createPltCheck(final Composite group) {
@@ -227,6 +230,12 @@ public class DialyzerPreferencePage extends PropertyPage implements
         // false));
         comp.setLayout(new GridLayout(1, false));
         dialyzeCheckbox = new Button(comp, SWT.CHECK);
+        dialyzeCheckbox.setEnabled(false);
+        dialyzeCheckbox.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+            }
+        });
         dialyzeCheckbox.setText("Run dialyzer when compiling");
         dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
     }
@@ -253,6 +262,7 @@ public class DialyzerPreferencePage extends PropertyPage implements
         gd = new GridData();
         gd.horizontalSpan = 2;
         l.setLayoutData(gd);
+        new Label(composite, SWT.NONE);
         fPLTTableViewer = CheckboxTableViewer.newCheckList(composite,
                 SWT.BORDER);
         fPLTTableViewer.setLabelProvider(new LabelProvider());
@@ -525,7 +535,8 @@ public class DialyzerPreferencePage extends PropertyPage implements
             fromCombo.setText(fromCombo.getItem(prefs.getFromSource() ? 0 : 1));
         }
         if (dialyzeCheckbox != null) {
-            dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
+            // dialyzeCheckbox.setSelection(prefs.getDialyzeOnCompile());
+            dialyzeCheckbox.setSelection(false);
         }
         if (noCheckPLTCheckbox != null) {
             noCheckPLTCheckbox.setSelection(prefs.getNoCheckPLT());
