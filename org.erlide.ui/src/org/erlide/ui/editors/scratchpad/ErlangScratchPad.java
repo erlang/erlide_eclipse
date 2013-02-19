@@ -26,8 +26,6 @@ import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.search.ui.IContextMenuConstants;
 import org.eclipse.swt.custom.StyledText;
@@ -58,7 +56,6 @@ import org.erlide.ui.actions.ErlangSearchActionGroup;
 import org.erlide.ui.actions.OpenAction;
 import org.erlide.ui.editors.erl.AbstractErlangEditor;
 import org.erlide.ui.editors.erl.ColorManager;
-import org.erlide.ui.editors.erl.ErlangEditor;
 import org.erlide.ui.editors.erl.ErlangEditorMessages;
 import org.erlide.ui.editors.erl.ErlangSourceViewerConfiguration;
 import org.erlide.ui.editors.erl.IErlangEditorActionDefinitionIds;
@@ -77,7 +74,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
 
     private ColorManager colorManager;
     private InformationPresenter fInformationPresenter;
-    private ProjectionSupport fProjectionSupport;
     private IErlangFoldingStructureProvider fProjectionModelUpdater;
     private CompositeActionGroup fActionGroups;
     private CompositeActionGroup fContextMenuGroup;
@@ -180,51 +176,6 @@ public class ErlangScratchPad extends AbstractErlangEditor implements
         fInformationPresenter
                 .setDocumentPartitioning(getSourceViewerConfiguration()
                         .getConfiguredDocumentPartitioning(getSourceViewer()));
-    }
-
-    @Override
-    protected ISourceViewer createSourceViewer(final Composite parent,
-            final IVerticalRuler ruler, final int styles) {
-        final ISourceViewer viewer = new ProjectionViewer(parent, ruler,
-                getOverviewRuler(), true, styles);
-        getSourceViewerDecorationSupport(viewer);
-
-        /*
-         * This is a performance optimization to reduce the computation of the
-         * text presentation triggered by {@link #setVisibleDocument(IDocument)}
-         */
-        // if (javaSourceViewer != null && isFoldingEnabled() && (store == null
-        // ||
-        // !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
-        // javaSourceViewer.prepareDelayedProjection();
-        if (ErlangEditor.isFoldingEnabled()) {
-            final ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
-            fProjectionSupport = new ProjectionSupport(projectionViewer,
-                    getAnnotationAccess(), getSharedColors());
-            fProjectionSupport
-                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
-            fProjectionSupport
-                    .addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
-            // TODO fProjectionSupport.setHoverControlCreator(new
-            // IInformationControlCreator()
-            // {
-            // public IInformationControl createInformationControl(Shell shell)
-            // {
-            // return new CustomSourceInformationControl(shell,
-            // IDocument.DEFAULT_CONTENT_TYPE);
-            // }
-            // });
-
-            fProjectionSupport.install();
-
-            fProjectionModelUpdater = ErlideUIPlugin.getDefault()
-                    .getFoldingStructureProviderRegistry()
-                    .getCurrentFoldingProvider();
-            if (fProjectionModelUpdater != null) {
-                fProjectionModelUpdater.install(this, projectionViewer);
-            }
-        }
-        return viewer;
     }
 
     @Override
