@@ -4,5 +4,6 @@ emma -l org.erlide.testing/junit_runtime.launch -o #{WORKSPACE}/output/junit_res
 emma -l org.erlide.testing/junit_model.launch -o #{WORKSPACE}/output/junit_result_model.xml --xml #{WORKSPACE}/output/coverage_report_model.xml --flatXML --stderr --stdout
 emma -l org.erlide.testing/junit_backend.launch -o #{WORKSPACE}/output/junit_result_backend.xml --xml #{WORKSPACE}/output/coverage_report_backend.xml --flatXML --stderr --stdout
 emma -m -l org.erlide.testing/junit_core.launch -o #{WORKSPACE}/output/junit_result_core.xml --xml #{WORKSPACE}/output/coverage_report_core.xml --flatXML --stderr --stdout
+emma -m -l org.erlide.testing/junit_dialyzer.launch -o #{WORKSPACE}/output/junit_result_dialyzer.xml --xml #{WORKSPACE}/output/coverage_report_dialyzer.xml --flatXML --stderr --stdout
 emma -m -l org.erlide.testing/junit_ui.launch -o #{WORKSPACE}/output/junit_result_ui.xml --xml #{WORKSPACE}/output/coverage_report_ui.xml --flatXML --stderr --stdout
 
