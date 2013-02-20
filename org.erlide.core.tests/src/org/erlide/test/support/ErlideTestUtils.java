@@ -25,7 +25,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.erlide.core.ErlangPlugin;
+import org.erlide.model.ModelPlugin;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
@@ -196,7 +196,7 @@ public class ErlideTestUtils {
         if (file != null) {
             file.delete(true, null);
         }
-        final IPath stateDir = ErlangPlugin.getDefault().getStateLocation();
+        final IPath stateDir = ModelPlugin.getDefault().getStateLocation();
         // FIXME this code should not know about caches!
         final String cacheExts[] = { ".noparse", ".refs", ".scan" };
         for (final String ext : cacheExts) {
