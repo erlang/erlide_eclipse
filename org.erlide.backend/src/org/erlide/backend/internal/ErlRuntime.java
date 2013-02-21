@@ -598,7 +598,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     }
 
     @Override
-    public void addListener(final IRuntimeStateListener listener) {
-        this.listener = listener;
+    public void addListener(final IRuntimeStateListener aListener) {
+        listener = aListener;
     }
 }

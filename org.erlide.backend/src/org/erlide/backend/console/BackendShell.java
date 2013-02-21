@@ -39,8 +39,8 @@ public class BackendShell implements IBackendShell {
         requests = new ArrayList<IoRequest>(1000);
         listeners = new ArrayList<BackendShellListener>();
 
-        final ErlangEventHandler handler = new ConsoleEventHandler(backend,
-                this);
+        final ErlangEventHandler handler = new ConsoleEventHandler(
+                backend.getName(), this);
         handler.register();
     }
 

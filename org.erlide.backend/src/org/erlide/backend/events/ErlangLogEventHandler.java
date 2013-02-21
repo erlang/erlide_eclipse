@@ -1,6 +1,5 @@
 package org.erlide.backend.events;
 
-import org.erlide.backend.IBackend;
 import org.erlide.utils.ErlLogger;
 import org.osgi.service.event.Event;
 
@@ -12,8 +11,8 @@ import com.ericsson.otp.erlang.OtpErlangTuple;
 
 public class ErlangLogEventHandler extends ErlangEventHandler {
 
-    public ErlangLogEventHandler(final IBackend backend) {
-        super("erlang_log", backend);
+    public ErlangLogEventHandler(final String backendName) {
+        super("erlang_log", backendName);
     }
 
     @Override

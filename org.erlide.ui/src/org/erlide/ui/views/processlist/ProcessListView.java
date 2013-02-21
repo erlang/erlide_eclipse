@@ -82,7 +82,7 @@ public class ProcessListView extends ViewPart {
     class ViewContentProvider implements IStructuredContentProvider {
 
         private final ProcessEventHandler handler = new ProcessEventHandler(
-                getBackend());
+                getBackend().getName());
 
         public ViewContentProvider() {
             handler.register();
@@ -120,8 +120,8 @@ public class ProcessListView extends ViewPart {
 
         class ProcessEventHandler extends ErlangEventHandler {
 
-            public ProcessEventHandler(final IBackend backend) {
-                super("processlist", backend);
+            public ProcessEventHandler(final String backendName) {
+                super("processlist", backendName);
             }
 
             @Override

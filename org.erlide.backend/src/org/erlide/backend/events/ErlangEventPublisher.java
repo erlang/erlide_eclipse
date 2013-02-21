@@ -174,13 +174,15 @@ public class ErlangEventPublisher {
         properties.put("DATA", event);
         properties.put("SENDER", sender);
 
-        final Event osgiEvent = new Event(getFullTopic(topic, b), properties);
+        final Event osgiEvent = new Event(getFullTopic(topic, b.getName()),
+                properties);
         eventAdmin.postEvent(osgiEvent);
     }
 
-    public static String getFullTopic(final String topic, final IBackend backend) {
+    public static String getFullTopic(final String topic,
+            final String backendName) {
         final String subtopic = "*".equals(topic) ? "" : "/"
-                + (backend == null ? "*" : backend.getName()
+                + (backendName == null ? "*" : backendName
                         .replaceAll("@", "__").replaceAll("\\.", "_"));
         return "erlideEvent/" + topic + subtopic;
     }

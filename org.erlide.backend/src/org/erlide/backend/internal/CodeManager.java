@@ -233,16 +233,6 @@ public class CodeManager implements ICodeManager {
         }
     }
 
-    private ICodeBundle findBundle(final Bundle b) {
-        for (final ICodeBundle p : registeredBundles) {
-            final Bundle myBundle = OsgiUtil.findOsgiBundle(p.getBundleName());
-            if (myBundle == b) {
-                return p;
-            }
-        }
-        return null;
-    }
-
     private PathItem findItem(final List<PathItem> l, final String p) {
         final Iterator<PathItem> i = l.iterator();
         while (i.hasNext()) {

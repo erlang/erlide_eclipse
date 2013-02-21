@@ -3,7 +3,6 @@ package org.erlide.cover.core;
 import java.io.File;
 import java.util.Iterator;
 
-import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.cover.api.IConfiguration;
 import org.erlide.cover.views.model.FunctionStats;
@@ -39,9 +38,9 @@ public class CoverEventHandler extends ErlangEventHandler {
     private final Logger log; // log
     private final CoverBackend coverBackend; // cover backend
 
-    public CoverEventHandler(final IBackend backend,
+    public CoverEventHandler(final String backendName,
             final CoverBackend coverBackend) {
-        super(EVENT_NAME, backend);
+        super(EVENT_NAME, backendName);
         this.coverBackend = coverBackend;
         log = Activator.getDefault();
     }

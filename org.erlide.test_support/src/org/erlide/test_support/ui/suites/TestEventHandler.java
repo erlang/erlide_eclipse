@@ -1,6 +1,5 @@
 package org.erlide.test_support.ui.suites;
 
-import org.erlide.backend.IBackend;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.osgi.service.event.Event;
 
@@ -10,8 +9,8 @@ public class TestEventHandler extends ErlangEventHandler {
 
     private final TestResultsView view;
 
-    public TestEventHandler(final IBackend backend, final TestResultsView view) {
-        super("bterl", backend);
+    public TestEventHandler(final String backendName, final TestResultsView view) {
+        super("bterl", backendName);
         this.view = view;
     }
 

@@ -221,8 +221,8 @@ public abstract class Backend implements IStreamListener, IBackend {
             eventDaemon = new ErlangEventPublisher(this);
         }
         eventDaemon.start();
-        new LogEventHandler(this).register();
-        new ErlangLogEventHandler(this).register();
+        new LogEventHandler(getName()).register();
+        new ErlangLogEventHandler(getName()).register();
 
         backendManager.addBackendListener(eventDaemon.getBackendListener());
     }
@@ -698,7 +698,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void runtimeDown(final IErlRuntime runtime) {
+    public void runtimeDown(final IErlRuntime aRuntime) {
         // terminate process
     }
 
