@@ -75,7 +75,6 @@ import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpMbox;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public abstract class Backend implements IStreamListener, IBackend {
@@ -272,7 +271,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public boolean isDistributed() {
-        return !Strings.isNullOrEmpty(getData().getNodeName());
+        return runtime.isDistributed();
     }
 
     @Override

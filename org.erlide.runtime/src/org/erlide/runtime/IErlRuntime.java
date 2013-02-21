@@ -51,4 +51,6 @@ public interface IErlRuntime {
 
     String getErlangVersion();
 
+    boolean isDistributed();
+
 }

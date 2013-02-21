@@ -632,4 +632,10 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         }
         return erlangVersion;
     }
+
+    @Override
+    public boolean isDistributed() {
+        return !Strings.isNullOrEmpty(getNodeName());
+    }
+
 }
