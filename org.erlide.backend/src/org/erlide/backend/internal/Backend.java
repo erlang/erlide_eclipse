@@ -86,8 +86,8 @@ public abstract class Backend implements IStreamListener, IBackend {
     private BackendShellManager shellManager;
     private String erlangVersion;
     private ErlangEventPublisher eventDaemon;
-
     private final ICodeManager codeManager;
+
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
     protected final IBackendManager backendManager;
@@ -135,7 +135,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         if (runtime == null) {
             return "<not_connected>";
         }
-        return runtime.getNodeName();
+        return runtime.getName();
     }
 
     private String getScriptId() throws RpcException {

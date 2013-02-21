@@ -19,8 +19,6 @@ public interface IBackend extends IDisposable, IErlRuntime,
 
     BackendData getData();
 
-    String getName();
-
     boolean hasConsole();
 
     boolean isDistributed();
