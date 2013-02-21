@@ -7,11 +7,13 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.model.root.IErlProject;
+import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.IErlRuntime;
+import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.utils.IDisposable;
-import org.osgi.framework.Bundle;
 
-public interface IBackend extends IDisposable, IErlRuntime {
+public interface IBackend extends IDisposable, IErlRuntime,
+        IRuntimeStateListener {
 
     void initialize();
 
@@ -33,7 +35,7 @@ public interface IBackend extends IDisposable, IErlRuntime {
 
     void registerCodeBundle(final ICodeBundle bundle);
 
-    void unregisterCodeBundle(final Bundle b);
+    void unregisterCodeBundle(final ICodeBundle bundle);
 
     IBackendShell getShell(final String id);
 

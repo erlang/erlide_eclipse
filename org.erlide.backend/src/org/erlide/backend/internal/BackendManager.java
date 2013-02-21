@@ -36,15 +36,15 @@ import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendFactory;
 import org.erlide.backend.IBackendListener;
 import org.erlide.backend.IBackendManager;
-import org.erlide.backend.ICodeBundle;
-import org.erlide.backend.ICodeBundle.CodeContext;
 import org.erlide.backend.events.ErlangEventHandler;
 import org.erlide.backend.events.ErlangEventPublisher;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
+import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.ICodeBundle.CodeContext;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
@@ -305,7 +305,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         if (p != null) {
             return;
         }
-        final CodeBundleImpl pp = new CodeBundleImpl(b, paths, inits);
+        final CodeBundleImpl pp = new CodeBundleImpl(b.getSymbolicName(),
+                paths, inits);
         getCodeBundles().put(b, pp);
         forEachBackend(new Procedure1<IBackend>() {
             @Override

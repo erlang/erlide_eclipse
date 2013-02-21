@@ -43,4 +43,8 @@ public interface IErlRuntime {
 
     IRpcSite getRpcSite();
 
+    void restart();
+
+    void addListener(IRuntimeStateListener listener);
+
 }

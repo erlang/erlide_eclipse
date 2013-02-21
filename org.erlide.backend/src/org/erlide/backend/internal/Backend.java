@@ -35,13 +35,11 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
-import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.BackendData;
 import org.erlide.backend.BackendException;
+import org.erlide.backend.BackendPlugin;
 import org.erlide.backend.IBackend;
 import org.erlide.backend.IBackendManager;
-import org.erlide.backend.ICodeBundle;
-import org.erlide.backend.ICodeManager;
 import org.erlide.backend.console.BackendShellManager;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.backend.console.IoRequest.IoRequestKind;
@@ -56,8 +54,11 @@ import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.runtime.ErlUtils;
+import org.erlide.runtime.ICodeBundle;
+import org.erlide.runtime.ICodeManager;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.RpcException;
@@ -82,13 +83,14 @@ import com.google.common.collect.Lists;
 public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
+    private BackendShellManager shellManager;
     private String erlangVersion;
     private ErlangEventPublisher eventDaemon;
-    private BackendShellManager shellManager;
+
     private final ICodeManager codeManager;
     private final BackendData data;
     private ErlangDebugTarget debugTarget;
-    private final IBackendManager backendManager;
+    protected final IBackendManager backendManager;
 
     public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
@@ -148,7 +150,8 @@ public abstract class Backend implements IStreamListener, IBackend {
         return "";
     }
 
-    private boolean startErlangApps(final OtpErlangPid jRex, final boolean watch) {
+    protected boolean startErlangApps(final OtpErlangPid jRex,
+            final boolean watch) {
         try {
             getRpcSite().call(
                     "erlide_kernel_common",
@@ -213,7 +216,10 @@ public abstract class Backend implements IStreamListener, IBackend {
         ErlLogger.debug("initialize %s: %s", getName(), watch);
         startErlangApps(getEventPid(), watch);
 
-        eventDaemon = new ErlangEventPublisher(this);
+        // TODO when restarting, don't need these...
+        if (eventDaemon == null) {
+            eventDaemon = new ErlangEventPublisher(this);
+        }
         eventDaemon.start();
         new LogEventHandler(this).register();
         new ErlangLogEventHandler(this).register();
@@ -227,7 +233,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public void unregisterCodeBundle(final Bundle b) {
+    public void unregisterCodeBundle(final ICodeBundle b) {
         codeManager.unregister(b);
     }
 
@@ -597,6 +603,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public void initialize() {
+        runtime.addListener(this);
         shellManager = new BackendShellManager(this);
         if (isDistributed()) {
             connect();
@@ -682,5 +689,21 @@ public abstract class Backend implements IStreamListener, IBackend {
     @Override
     public RuntimeData getRuntimeData() {
         return data;
+    }
+
+    @Override
+    public void addListener(final IRuntimeStateListener listener) {
+        // TODO not needed
+        runtime.addListener(this);
+    }
+
+    @Override
+    public void runtimeDown(final IErlRuntime runtime) {
+        // terminate process
+    }
+
+    @Override
+    public void restart() {
+        runtime.restart();
     }
 }

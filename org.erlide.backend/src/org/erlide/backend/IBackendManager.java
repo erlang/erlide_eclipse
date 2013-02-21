@@ -8,9 +8,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.xtext.xbase.lib.Pair;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
-import org.erlide.backend.ICodeBundle.CodeContext;
+import org.erlide.runtime.ICodeBundle;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeVersion;
+import org.erlide.runtime.ICodeBundle.CodeContext;
 import org.osgi.framework.Bundle;
 
 

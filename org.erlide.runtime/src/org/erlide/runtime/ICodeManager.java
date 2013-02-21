@@ -8,9 +8,8 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.backend;
+package org.erlide.runtime;
 
-import org.osgi.framework.Bundle;
 
 public interface ICodeManager {
 
@@ -22,6 +21,6 @@ public interface ICodeManager {
 
     void register(final ICodeBundle b);
 
-    void unregister(final Bundle b);
+    void unregister(final ICodeBundle b);
 
 }

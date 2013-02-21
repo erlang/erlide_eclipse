@@ -19,6 +19,7 @@ import org.erlide.backend.BackendException;
 import org.erlide.runtime.HostnameUtils;
 import org.erlide.runtime.IErlRuntime;
 import org.erlide.runtime.IRpcSite;
+import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.RuntimeData;
 import org.erlide.runtime.rpc.IRpcCallback;
 import org.erlide.runtime.rpc.IRpcFuture;
@@ -68,12 +69,13 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     private OtpNode localNode;
     private final Object localNodeLock = new Object();
     private boolean reported;
-    private final IProcess process;
+    private IProcess process;
     private final boolean connectOnce;
     private final IProvider<IProcess> processProvider;
     private final OtpNodeStatus statusWatcher;
     private OtpMbox eventBox;
     private boolean stopped;
+    private IRuntimeStateListener listener;
 
     public ErlRuntime(final String name, final String cookie,
             final IProvider<IProcess> processProvider,
@@ -278,6 +280,7 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
             case CONNECTED:
                 break;
             case DOWN:
+                listener.runtimeDown(this);
                 try {
                     if (process != null) {
                         process.terminate();
@@ -285,8 +288,6 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
                 } catch (final DebugException e) {
                     ErlLogger.info(e);
                 }
-                // TODO restart it??
-                // process =
                 if (!stopped) {
                     final String msg = reportRuntimeDown(data.getNodeName());
                     throw new RpcException(msg);
@@ -584,5 +585,20 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
     @Override
     public RuntimeInfo getRuntimeInfo() {
         return data.getRuntimeInfo();
+    }
+
+    @Override
+    public void restart() {
+        if (stopped) {
+            return;
+        }
+        System.out.println("RESTART " + this);
+        state = State.DISCONNECTED;
+        process = processProvider.get();
+    }
+
+    @Override
+    public void addListener(final IRuntimeStateListener listener) {
+        this.listener = listener;
     }
 }
