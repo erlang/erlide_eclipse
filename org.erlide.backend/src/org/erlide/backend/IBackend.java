@@ -25,8 +25,6 @@ public interface IBackend extends IDisposable, IErlRuntime,
 
     boolean isManaged();
 
-    String getErlangVersion();
-
     ILaunch getLaunch();
 
     IStreamsProxy getStreamsProxy();

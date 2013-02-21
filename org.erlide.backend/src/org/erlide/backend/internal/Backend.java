@@ -61,7 +61,6 @@ import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.IRuntimeStateListener;
 import org.erlide.runtime.InitialCall;
 import org.erlide.runtime.RuntimeData;
-import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.Asserts;
 import org.erlide.utils.ErlLogger;
@@ -72,7 +71,6 @@ import com.ericsson.otp.erlang.OtpErlang;
 import com.ericsson.otp.erlang.OtpErlangAtom;
 import com.ericsson.otp.erlang.OtpErlangBinary;
 import com.ericsson.otp.erlang.OtpErlangList;
-import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
 import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -84,7 +82,6 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     private final IErlRuntime runtime;
     private BackendShellManager shellManager;
-    private String erlangVersion;
     private ErlangEventPublisher eventDaemon;
     private final ICodeManager codeManager;
 
@@ -95,6 +92,7 @@ public abstract class Backend implements IStreamListener, IBackend {
     public Backend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
         Asserts.isNotNull(data.getRuntimeInfo());
+        Asserts.isNotNull(runtime);
         this.runtime = runtime;
         this.data = data;
         this.backendManager = backendManager;
@@ -116,13 +114,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public String getErlangVersion() {
-        if (erlangVersion == null) {
-            try {
-                erlangVersion = getScriptId();
-            } catch (final Exception e) {
-            }
-        }
-        return erlangVersion;
+        return runtime.getErlangVersion();
     }
 
     @Override
@@ -132,22 +124,7 @@ public abstract class Backend implements IStreamListener, IBackend {
 
     @Override
     public String getName() {
-        if (runtime == null) {
-            return "<not_connected>";
-        }
         return runtime.getName();
-    }
-
-    private String getScriptId() throws RpcException {
-        OtpErlangObject r;
-        r = getRpcSite().call("init", "script_id", "");
-        if (r instanceof OtpErlangTuple) {
-            final OtpErlangObject rr = ((OtpErlangTuple) r).elementAt(1);
-            if (rr instanceof OtpErlangString) {
-                return ((OtpErlangString) rr).stringValue();
-            }
-        }
-        return "";
     }
 
     protected boolean startErlangApps(final OtpErlangPid jRex,
@@ -706,4 +683,5 @@ public abstract class Backend implements IStreamListener, IBackend {
     public void restart() {
         runtime.restart();
     }
+
 }

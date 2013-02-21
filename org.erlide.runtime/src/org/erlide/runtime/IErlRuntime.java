@@ -49,4 +49,6 @@ public interface IErlRuntime {
 
     void addListener(IRuntimeStateListener listener);
 
+    String getErlangVersion();
+
 }
