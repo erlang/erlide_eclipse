@@ -21,8 +21,6 @@ public interface IBackend extends IDisposable, IErlRuntime,
 
     boolean hasConsole();
 
-    boolean isDistributed();
-
     boolean isManaged();
 
     ILaunch getLaunch();

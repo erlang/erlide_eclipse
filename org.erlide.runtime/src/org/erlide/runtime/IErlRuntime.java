@@ -19,6 +19,10 @@ public interface IErlRuntime {
 
     String getName();
 
+    String getErlangVersion();
+
+    boolean isDistributed();
+
     RuntimeData getRuntimeData();
 
     RuntimeInfo getRuntimeInfo();
@@ -48,9 +52,5 @@ public interface IErlRuntime {
     void restart();
 
     void addListener(IRuntimeStateListener listener);
-
-    String getErlangVersion();
-
-    boolean isDistributed();
 
 }

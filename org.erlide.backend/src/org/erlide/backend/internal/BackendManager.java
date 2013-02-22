@@ -42,9 +42,9 @@ import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlModel;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.ICodeBundle;
+import org.erlide.runtime.ICodeBundle.CodeContext;
 import org.erlide.runtime.IRpcSite;
 import org.erlide.runtime.RuntimeVersion;
-import org.erlide.runtime.ICodeBundle.CodeContext;
 import org.erlide.runtime.epmd.IEpmdListener;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
 import org.erlide.utils.ErlLogger;
@@ -90,7 +90,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
 
         launchListener = new BackendManagerLaunchListener(this, DebugPlugin
                 .getDefault().getLaunchManager());
-        registerGlobalEventhandlers();
+        registerGlobalEventHandlers();
     }
 
     @SuppressWarnings("unused")
@@ -114,7 +114,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         }
     }
 
-    private void registerGlobalEventhandlers() {
+    private void registerGlobalEventHandlers() {
         new ErlangEventHandler("*", null) {
             @Override
             public void handleEvent(final Event event) {
@@ -298,8 +298,8 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         addBundle(plugin, paths, inits);
     }
 
-    @Override
-    public void addBundle(final Bundle b, final Map<String, CodeContext> paths,
+    private void addBundle(final Bundle b,
+            final Map<String, CodeContext> paths,
             final Collection<Pair<String, String>> inits) {
         final ICodeBundle p = findBundle(b);
         if (p != null) {
@@ -419,13 +419,6 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
         list.add(b);
         final IErlModel model = ErlModelManager.getErlangModel();
         b.addProjectPath(model.findProject(project));
-    }
-
-    @Override
-    public void dispose(final IBackend backend) {
-        if (backend != null && backend != ideBackend) {
-            backend.dispose();
-        }
     }
 
     @Override
