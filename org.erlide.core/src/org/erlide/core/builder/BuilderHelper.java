@@ -577,11 +577,10 @@ public final class BuilderHelper {
                     .getBackendManager();
             for (final IBackend b : backendManager
                     .getExecutionBackends(project)) {
-                ErlLogger.debug(":: loading %s in %s", module, b
-                        .getRuntimeInfo().toString());
+                ErlLogger.debug(":: loading %s in %s", module, b.getName());
                 if (b.isDistributed()) {
                     b.getRpcSite().call("erlide_builder", "load", "ao", module,
-                            b.shouldLoadOnAllNodes());
+                            b.getData().shouldLoadOnAllNodes());
                 }
                 backendManager.moduleLoaded(b, project, module);
             }

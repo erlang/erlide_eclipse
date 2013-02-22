@@ -2,8 +2,6 @@ package org.erlide.backend;
 
 import java.io.IOException;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.model.root.IErlProject;
@@ -19,12 +17,6 @@ public interface IBackend extends IDisposable, IErlRuntime,
 
     BackendData getData();
 
-    boolean hasConsole();
-
-    boolean isManaged();
-
-    ILaunch getLaunch();
-
     IStreamsProxy getStreamsProxy();
 
     void registerCodeBundle(final ICodeBundle bundle);
@@ -38,12 +30,5 @@ public interface IBackend extends IDisposable, IErlRuntime,
     void addProjectPath(final IErlProject project);
 
     void removeProjectPath(final IErlProject project);
-
-    boolean shouldLoadOnAllNodes();
-
-    void installDeferredBreakpoints();
-
-    void interpret(IProject project, String moduleName, boolean distributed,
-            boolean interpret);
 
 }

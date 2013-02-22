@@ -23,7 +23,7 @@ public class InternalBackend extends Backend {
     public InternalBackend(final BackendData data, final IErlRuntime runtime,
             final IBackendManager backendManager) throws BackendException {
         super(data, runtime, backendManager);
-        Assert.isLegal(getLaunch() == null);
+        Assert.isLegal(getData().getLaunch() == null);
     }
 
     @Override

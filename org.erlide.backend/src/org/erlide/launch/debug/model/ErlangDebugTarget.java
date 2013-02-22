@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -32,11 +34,13 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
+import org.erlide.backend.BackendData;
 import org.erlide.backend.IBackend;
 import org.erlide.launch.debug.DebuggerEventDaemon;
 import org.erlide.launch.debug.ErlangLineBreakpoint;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.IErlangDebugNode;
+import org.erlide.model.ErlModelException;
 import org.erlide.runtime.ErlDebugFlags;
 import org.erlide.utils.ErlLogger;
 
@@ -436,5 +440,43 @@ public class ErlangDebugTarget extends ErlangDebugElement implements
 
     public OtpErlangPid getEventMBox() {
         return debuggerDaemon.getMBox();
+    }
+
+    public void interpretModules(final BackendData data,
+            final boolean distributed) {
+        for (final String pm : data.getInterpretedModules()) {
+            final String[] pms = pm.split(":");
+            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
+                    .getProject(pms[0]);
+            interpret(project, pms[1], distributed, true);
+        }
+    }
+
+    public void interpret(final IProject project, final String moduleName,
+            final boolean distributed, final boolean interpret) {
+        try {
+            final IFile beam = fBackend.getData().getBeamLocator()
+                    .findModuleBeam(project, moduleName);
+            if (beam != null) {
+                if (beam.exists()) {
+                    final String de = interpret ? "" : "de";
+                    ErlLogger.debug(de + "interpret " + beam.getLocation());
+                    boolean b = ErlideDebug.interpret(fBackend.getRpcSite(),
+                            beam.getLocation().toString(), distributed,
+                            interpret);
+                    b = !b;
+                } else {
+                    ErlLogger.debug("IGNORED MISSING interpret "
+                            + (project == null ? "null" : project.getName())
+                            + ":" + moduleName);
+                }
+            } else {
+                ErlLogger.debug("IGNORED NULL interpret "
+                        + (project == null ? "null" : project.getName()) + ":"
+                        + moduleName);
+            }
+        } catch (final ErlModelException e) {
+            ErlLogger.warn(e);
+        }
     }
 }

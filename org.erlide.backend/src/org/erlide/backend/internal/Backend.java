@@ -18,9 +18,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IContributor;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -49,7 +47,6 @@ import org.erlide.backend.events.LogEventHandler;
 import org.erlide.launch.debug.ErlideDebug;
 import org.erlide.launch.debug.model.ErlangDebugNode;
 import org.erlide.launch.debug.model.ErlangDebugTarget;
-import org.erlide.model.ErlModelException;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.BeamLoader;
 import org.erlide.runtime.ErlDebugFlags;
@@ -225,11 +222,6 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    @Override
-    public ILaunch getLaunch() {
-        return data.getLaunch();
-    }
-
     public void assignStreamProxyListeners() {
         final IStreamsProxy proxy = getStreamsProxy();
         if (proxy != null) {
@@ -357,16 +349,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean isManaged() {
-        return data.isManaged();
-    }
-
-    @Override
-    public boolean shouldLoadOnAllNodes() {
-        return data.shouldLoadOnAllNodes();
-    }
-
-    @Override
     public IStreamsProxy getStreamsProxy() {
         return null;
     }
@@ -380,18 +362,19 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
         if (data.isDebug()) {
             // add debug debugTarget
-            debugTarget = new ErlangDebugTarget(getLaunch(), this, projects,
+            final ILaunch launch = getData().getLaunch();
+            debugTarget = new ErlangDebugTarget(launch, this, projects,
                     data.getDebugFlags());
             // debugTarget.getWaiter().doWait();
-            getLaunch().addDebugTarget(debugTarget);
+            launch.addDebugTarget(debugTarget);
             // interpret everything we can
             final boolean distributed = (data.getDebugFlags()
                     .contains(ErlDebugFlags.DISTRIBUTED_DEBUG));
             if (distributed) {
                 distributeDebuggerCode();
-                addNodesAsDebugTargets(getLaunch(), debugTarget);
+                addNodesAsDebugTargets(launch, debugTarget);
             }
-            interpretModules(data, distributed);
+            debugTarget.interpretModules(data, distributed);
             registerStartupFunctionStarter(data);
             debugTarget.sendStarted();
         } else {
@@ -442,16 +425,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             ErlLogger.debug("Could not run initial call %s:%s(\"%s\")", module,
                     function, args);
             ErlLogger.warn(e);
-        }
-    }
-
-    private void interpretModules(final BackendData myData,
-            final boolean distributed) {
-        for (final String pm : data.getInterpretedModules()) {
-            final String[] pms = pm.split(":");
-            final IProject project = ResourcesPlugin.getWorkspace().getRoot()
-                    .getProject(pms[0]);
-            interpret(project, pms[1], distributed, true);
         }
     }
 
@@ -568,11 +541,6 @@ public abstract class Backend implements IStreamListener, IBackend {
     }
 
     @Override
-    public boolean hasConsole() {
-        return getData().hasConsole();
-    }
-
-    @Override
     public BackendData getData() {
         return data;
     }
@@ -594,39 +562,6 @@ public abstract class Backend implements IStreamListener, IBackend {
             } catch (final DebugException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    @Override
-    public void installDeferredBreakpoints() {
-        debugTarget.installDeferredBreakpoints();
-    }
-
-    @Override
-    public void interpret(final IProject project, final String moduleName,
-            final boolean distributed, final boolean interpret) {
-        try {
-            final IFile beam = data.getBeamLocator().findModuleBeam(project,
-                    moduleName);
-            if (beam != null) {
-                if (beam.exists()) {
-                    final String de = interpret ? "" : "de";
-                    ErlLogger.debug(de + "interpret " + beam.getLocation());
-                    boolean b = ErlideDebug.interpret(getRpcSite(), beam
-                            .getLocation().toString(), distributed, interpret);
-                    b = !b;
-                } else {
-                    ErlLogger.debug("IGNORED MISSING interpret "
-                            + (project == null ? "null" : project.getName())
-                            + ":" + moduleName);
-                }
-            } else {
-                ErlLogger.debug("IGNORED NULL interpret "
-                        + (project == null ? "null" : project.getName()) + ":"
-                        + moduleName);
-            }
-        } catch (final ErlModelException e) {
-            ErlLogger.warn(e);
         }
     }
 

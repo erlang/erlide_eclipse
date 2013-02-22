@@ -438,7 +438,7 @@ public final class BackendManager implements IEpmdListener, IBackendManager {
     @Override
     public IBackend getBackendForLaunch(final ILaunch launch) {
         for (final IBackend backend : allBackends) {
-            if (backend.getLaunch() == launch) {
+            if (backend.getData().getLaunch() == launch) {
                 return backend;
             }
         }
