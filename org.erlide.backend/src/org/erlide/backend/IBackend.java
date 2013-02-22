@@ -2,7 +2,6 @@ package org.erlide.backend;
 
 import java.io.IOException;
 
-import org.eclipse.debug.core.model.IStreamsProxy;
 import org.erlide.backend.console.IBackendShell;
 import org.erlide.model.root.IErlProject;
 import org.erlide.runtime.ICodeBundle;
@@ -16,8 +15,6 @@ public interface IBackend extends IDisposable, IErlRuntime,
     void initialize();
 
     BackendData getData();
-
-    IStreamsProxy getStreamsProxy();
 
     void registerCodeBundle(final ICodeBundle bundle);
 

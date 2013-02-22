@@ -348,8 +348,7 @@ public abstract class Backend implements IStreamListener, IBackend {
         }
     }
 
-    @Override
-    public IStreamsProxy getStreamsProxy() {
+    protected IStreamsProxy getStreamsProxy() {
         return null;
     }
 

@@ -40,7 +40,7 @@ public class ExternalBackend extends Backend {
     }
 
     @Override
-    public IStreamsProxy getStreamsProxy() {
+    protected IStreamsProxy getStreamsProxy() {
         {
             final IProcess p = getErtsProcess();
             if (p == null) {
