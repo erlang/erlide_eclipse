@@ -89,11 +89,16 @@ public final class RuntimeInfoCatalog implements IRuntimeInfoCatalog {
     @Override
     public synchronized void removeRuntime(final String name) {
         runtimes.remove(name);
-        if (erlideRuntime.getName().equals(name)) {
-            erlideRuntime = runtimes.values().iterator().next();
-        }
-        if (defaultRuntimeName.equals(name)) {
-            defaultRuntimeName = runtimes.keySet().iterator().next();
+        if (runtimes.size() > 0) {
+            if (erlideRuntime.getName().equals(name)) {
+                erlideRuntime = runtimes.values().iterator().next();
+            }
+            if (defaultRuntimeName.equals(name)) {
+                defaultRuntimeName = runtimes.keySet().iterator().next();
+            }
+        } else {
+            erlideRuntime = null;
+            defaultRuntimeName = null;
         }
     }
 
