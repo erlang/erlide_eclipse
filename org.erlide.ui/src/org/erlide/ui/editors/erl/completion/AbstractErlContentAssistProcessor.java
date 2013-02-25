@@ -33,9 +33,9 @@ import org.erlide.model.erlang.ISourceRange;
 import org.erlide.model.erlang.ISourceReference;
 import org.erlide.model.root.ErlModelManager;
 import org.erlide.model.root.IErlElement;
+import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.root.IErlElementLocator;
 import org.erlide.model.root.IErlProject;
-import org.erlide.model.root.IErlElement.Kind;
 import org.erlide.model.services.codeassist.ErlideContextAssist;
 import org.erlide.model.services.codeassist.ErlideContextAssist.RecordCompletion;
 import org.erlide.model.services.search.ErlideDoc;
@@ -286,8 +286,10 @@ public abstract class AbstractErlContentAssistProcessor {
             final int offset, final String prefix, final String moduleOrRecord,
             final int pos, final List<String> fieldsSoFar)
             throws CoreException, OtpErlangRangeException, BadLocationException {
+        final IProject workspaceProject = project != null ? project
+                .getWorkspaceProject() : null;
         final IRpcSite backend = BackendCore.getBuildOrIdeBackend(
-                project.getWorkspaceProject()).getRpcSite();
+                workspaceProject).getRpcSite();
         final List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
         if (flags.contains(Kinds.DECLARED_FUNCTIONS)) {
             addSorted(

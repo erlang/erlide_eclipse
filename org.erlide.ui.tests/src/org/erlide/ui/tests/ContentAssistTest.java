@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
-import org.erlide.model.ErlModelException;
 import org.erlide.model.erlang.IErlModule;
 import org.erlide.model.erlang.IErlScanner;
 import org.erlide.model.root.IErlProject;
@@ -357,8 +356,8 @@ public class ContentAssistTest {
 		final MockSourceViewer sourceViewer = new MockSourceViewer(document,
 				offset);
 		final IContentAssistProcessor p = stringContentAssistProcessor ? new ErlStringContentAssistProcessor(
-				sourceViewer, module, null, null)
-				: new ErlContentAssistProcessor(sourceViewer, module, null,
+				sourceViewer, module, project, null)
+				: new ErlContentAssistProcessor(sourceViewer, module, project,
 						null);
 		final ICompletionProposal[] completionProposals = p
 				.computeCompletionProposals(sourceViewer, offset);
@@ -391,7 +390,7 @@ public class ContentAssistTest {
 	private void completionTestWithoutParsing(final String initialText,
 			final int nTotalExpectedCompletions, final String completionChar,
 			final int nExpectedCompletions, final String expectedFirstCompletion)
-			throws ErlModelException {
+			throws CoreException {
 		// http://www.assembla.com/spaces/erlide/tickets/593-completion--don-t-work-records-with-quoted-names-
 		final int offset = initialText.length();
 		IDocument document = new StringDocument(initialText);
