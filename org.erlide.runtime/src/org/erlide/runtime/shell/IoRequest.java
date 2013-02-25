@@ -8,11 +8,11 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend.console;
+package org.erlide.runtime.shell;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.Assert;
+import org.erlide.utils.Asserts;
 
 import com.ericsson.otp.erlang.OtpErlangList;
 import com.ericsson.otp.erlang.OtpErlangObject;
@@ -77,8 +77,8 @@ public class IoRequest {
     }
 
     public IoRequest(final String msg, final IoRequestKind kind) {
-        Assert.isTrue(kind != IoRequestKind.OUTPUT);
-        Assert.isTrue(kind != IoRequestKind.PROMPT);
+        Asserts.isTrue(kind != IoRequestKind.OUTPUT);
+        Asserts.isTrue(kind != IoRequestKind.PROMPT);
         message = msg;
         leader = new OtpErlangPid("s", 0, 0, 0);
         sender = new OtpErlangPid("s", 0, 0, 0);

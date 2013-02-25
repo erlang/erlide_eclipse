@@ -28,6 +28,7 @@ import org.erlide.runtime.rpc.IRpcResultCallback;
 import org.erlide.runtime.rpc.RpcException;
 import org.erlide.runtime.rpc.RpcResult;
 import org.erlide.runtime.runtimeinfo.RuntimeInfo;
+import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.util.ExtensionUtils;
 import org.erlide.util.MessageReporter;
 import org.erlide.util.MessageReporter.ReporterPosition;
@@ -638,4 +639,9 @@ public class ErlRuntime implements IErlRuntime, IRpcSite {
         return !Strings.isNullOrEmpty(getNodeName());
     }
 
+    @Override
+    public IBackendShell getShell(final String id) {
+        // TODO can we return something here?
+        return null;
+    }
 }

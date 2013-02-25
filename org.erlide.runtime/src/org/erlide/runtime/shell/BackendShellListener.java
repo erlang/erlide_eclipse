@@ -8,10 +8,10 @@
  * Contributors:
  *     Vlad Dumitrescu
  *******************************************************************************/
-package org.erlide.backend.console;
+package org.erlide.runtime.shell;
 
 public interface BackendShellListener {
 
-    void changed(IBackendShell erlConsoleModel);
+    void changed(IBackendShell shell);
 
 }

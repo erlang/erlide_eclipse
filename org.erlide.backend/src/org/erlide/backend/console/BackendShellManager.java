@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.erlide.backend.IBackend;
+import org.erlide.runtime.shell.IBackendShell;
 import org.erlide.utils.ErlLogger;
 import org.erlide.utils.IDisposable;
 

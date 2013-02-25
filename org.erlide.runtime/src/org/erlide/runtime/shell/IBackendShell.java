@@ -8,11 +8,11 @@
  * Contributors:
  *     *
  *******************************************************************************/
-package org.erlide.backend.console;
+package org.erlide.runtime.shell;
 
 import java.util.List;
 
-import org.erlide.backend.console.IoRequest.IoRequestKind;
+import org.erlide.runtime.shell.IoRequest.IoRequestKind;
 
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangPid;
