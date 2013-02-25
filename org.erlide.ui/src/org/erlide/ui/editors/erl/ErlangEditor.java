@@ -12,7 +12,6 @@
 package org.erlide.ui.editors.erl;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
@@ -1916,24 +1915,6 @@ public class ErlangEditor extends AbstractErlangEditor implements
      */
     public Object getReconcilerLock() {
         return fReconcilerLock;
-    }
-
-    public static void readBracketInserterPrefs(
-            final ErlangViewerBracketInserter bracketInserter) {
-        final List<Boolean> prefs = SmartTypingPreferencePage
-                .getBracketInserterPreferences();
-        bracketInserter.setCloseAtomsEnabled(prefs
-                .get(SmartTypingPreferencePage.ATOMS));
-        bracketInserter.setCloseBracketsEnabled(prefs
-                .get(SmartTypingPreferencePage.BRACKETS));
-        bracketInserter.setCloseStringsEnabled(prefs
-                .get(SmartTypingPreferencePage.STRINGS));
-        bracketInserter.setCloseBracesEnabled(prefs
-                .get(SmartTypingPreferencePage.BRACES));
-        bracketInserter.setCloseParensEnabled(prefs
-                .get(SmartTypingPreferencePage.PARENS));
-        bracketInserter.setEmbraceSelectionEnabled(prefs
-                .get(SmartTypingPreferencePage.EMBRACE_SELECTION));
     }
 
     @Override
